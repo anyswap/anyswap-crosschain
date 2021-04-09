@@ -1,0 +1,164 @@
+
+import React from 'react'
+import { Text } from 'rebass'
+import styled from 'styled-components'
+
+import Logo from '../../assets/svg/logo.svg'
+import LogoDark from '../../assets/svg/logo_white.svg'
+import { useActiveWeb3React } from '../../hooks'
+import { useDarkModeManager } from '../../state/user/hooks'
+import { useETHBalances } from '../../state/wallet/hooks'
+
+// import Row, { RowFixed } from '../Row'
+import { RowFixed } from '../Row'
+import Web3Status from '../Web3Status'
+import SelectNetwork from './SelectNetwork'
+// import usePrevious from '../../hooks/usePrevious'
+import config from '../../config'
+
+
+const HeaderFrame = styled.div`
+  display: flex;
+  grid-template-columns: 1fr 120px;
+  align-items: center;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  top: 0;
+  position: relative;
+  padding: 0.875rem 1rem;
+  z-index: 2;
+  height: 70px;
+
+  max-width: 1440px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+    width: calc(100%);
+    position: relative;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 0.5rem 1rem;
+  `}
+`
+
+const HeaderControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: flex-end;
+  height: 100%;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: row;
+    justify-content: space-between;
+    justify-self: center;
+    width: 100%;
+    max-width: 960px;
+    padding: 1rem;
+    z-index: 99;
+    border-radius: 12px 12px 0 0;
+    background-color: ${({ theme }) => theme.bg1};
+  `};
+`
+
+const HeaderElement = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+   flex-direction: row-reverse;
+    align-items: center;
+  `};
+`
+const HeaderRow = styled(RowFixed)`
+  position: relative;
+  height: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 100%;
+    width: 100%;
+  `};
+`
+
+const AccountElement = styled.div<{ active: boolean }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
+  border-radius: 12px;
+  white-space: nowrap;
+  width: 100%;
+  cursor: pointer;
+
+  :focus {
+    border: 1px solid blue;
+  }
+  /* :hover {
+    background-color: ${({ theme, active }) => (!active ? theme.bg2 : theme.bg4)};
+  } */
+`
+const BalanceText = styled(Text)`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `};
+`
+
+const Title = styled.a`
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  justify-self: flex-start;
+  margin-right: 12px;
+  height: 100%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-self: center;
+  `};
+  :hover {
+    cursor: pointer;
+  }
+`
+
+const UniIcon = styled.div`
+  ${({ theme }) => theme.flexSC};
+  height: 100%;
+  // padding: 10px 0;
+  transition: transform 0.3s ease;
+  :hover {
+    transform: rotate(-5deg);
+  }
+`
+export default function Header() {
+  const { account } = useActiveWeb3React()
+  // const { t } = useTranslation()
+
+  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const [isDark] = useDarkModeManager()
+
+  return (
+    <HeaderFrame>
+      <HeaderRow>
+        <Title href="/" target="__blank">
+          <UniIcon>
+            <img height={'42px'} src={isDark ? LogoDark : Logo} alt="logo" />
+          </UniIcon>
+        </Title>
+      </HeaderRow>
+      <HeaderControls>
+        <HeaderElement>
+          {/* <HideSmall>{chainId && <NetworkCard title={config.networkName}>{config.networkName}</NetworkCard>}</HideSmall> */}
+          <SelectNetwork />
+          <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+            {account && userEthBalance ? (
+              <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                {userEthBalance?.toSignificant(4)} {config.symbol}
+              </BalanceText>
+            ) : null}
+            <Web3Status />
+          </AccountElement>
+        </HeaderElement>
+      </HeaderControls>
+    </HeaderFrame>
+  )
+}

@@ -1,0 +1,1 @@
+export const tokenListUrl = 'https://list.htswap.io/tokenList/'
