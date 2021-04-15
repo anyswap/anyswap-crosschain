@@ -50,6 +50,7 @@ interface SelectCurrencyInputPanelProps {
   id: string
   showCommonBases?: boolean
   customBalanceText?: string
+  inputType?: any
 }
 
 export default function SelectCurrencyInputPanel({
@@ -66,11 +67,11 @@ export default function SelectCurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
-  // showCommonBases,
-  customBalanceText
+  customBalanceText,
+  inputType
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -80,6 +81,24 @@ export default function SelectCurrencyInputPanel({
   }, [setModalOpen])
 
   // const formatCurrency = useToken(currency?.address)
+  // const useCurrency = useMemo(() => {
+  //   if (inputType) {
+  //     if (inputType.type === 'INPUT') {
+  //       if (inputType.swapType === 'deposit') {
+  //         return {
+
+  //         }
+  //       } else {
+
+  //       }
+  //     }
+  //   }
+  //   {inputType.type === 'INPUT' ? (
+  //     inputType.swapType === 'deposit' ? '' : 'any'
+  //   ) : (
+  //     inputType.swapType === 'deposit' ? 'any' : ''
+  //   )}
+  // }, [inputType])
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
   const handleMax = useCallback(() => {
@@ -148,12 +167,16 @@ export default function SelectCurrencyInputPanel({
                 <TokenLogo symbol={currency?.symbol} size={'24px'} />
               </TokenLogoBox>
               <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                {inputType.type === 'INPUT' ? (
+                  inputType.swapType === 'deposit' ? '' : 'any'
+                ) : (
+                  inputType.swapType === 'deposit' ? 'any' : ''
+                )}
                 {(currency && currency.symbol && currency.symbol.length > 20
                   ? currency.symbol.slice(0, 4) +
                     '...' +
                     currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                   : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                  {chainId ? '-' + config.suffix : ''}
               </StyledTokenName>
               {!disableCurrencySelect && !!currency && (
                 <StyledDropDownBox>

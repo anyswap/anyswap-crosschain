@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +10,8 @@ import Modal from '../Modal'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 import config from '../../config'
-import {chainList} from '../../config/chainConfig'
+import {chainInfo} from '../../config/chainConfig'
+import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 
 const WalletLogoBox = styled.div`
   width:100%;
@@ -207,6 +208,15 @@ export default function SelectNetwork () {
   }
   // console.log(window.location)
   const [networkView, setNetworkView] = useState(false)
+  const [chainList, setChainList] = useState<Array<any>>([])
+
+  useEffect(() => {
+    
+    getAllChainIDs().then((res:any) => {
+      // console.log(res)
+      setChainList(res)
+    })
+  }, [])
 
   function Option (item:any) {
     return (
@@ -238,7 +248,6 @@ export default function SelectNetwork () {
     )
   }
   function changeNetwork () {
-    const curChainList = chainList[config.type]
     return (
       <Modal
         isOpen={networkView}
@@ -256,10 +265,10 @@ export default function SelectNetwork () {
             <ContentWrapper>
               <NetWorkList>
                 {
-                  curChainList.map((item:any, index:any) => {
+                  chainList.map((item:any, index:any) => {
                     return (
-                      <OptionCardClickable key={index} className={config.symbol === item.symbol && item.type === config.type ? 'active' : ''} onClick={() => {openUrl(item)}}>
-                        {Option(item)}
+                      <OptionCardClickable key={index} className={config.symbol === chainInfo[item].symbol && chainInfo[item].type === config.type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                        {Option(chainInfo[item])}
                         {/* <img alt={''} src={AddIcon} /> */}
                       </OptionCardClickable>
                     )

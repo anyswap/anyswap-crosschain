@@ -43,7 +43,7 @@ function getTokenNetworkInfo (token:any) {
 export default function getTokenInfo (token:any) {
   const lData = getLocalConfig(TOKENINFO, token, config.chainID, TOKENINFO, 1000 * 60 * 60 * 24 * 1000, 1)
   // console.log(lData)
-  if (lData) {
+  if (lData && lData.data.name !== UNKNOWN && lData.data.symbol !== UNKNOWN) {
     return lData.data
   }
   return getTokenNetworkInfo(token)

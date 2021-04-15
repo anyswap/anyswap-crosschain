@@ -52,7 +52,7 @@ function getParamNode(type: any, INIT_NODE: any) {
   } else if (type === 'huobi' || type === '128') {
     return chainInfo['128'].label
   } else if (type === 'huobitestnet' || type === '256') {
-    return chainInfo['128'].label
+    return chainInfo['256'].label
   } else {
     return INIT_NODE
   }

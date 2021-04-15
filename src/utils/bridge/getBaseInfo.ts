@@ -1,6 +1,8 @@
 
 import RouterConfig from '../../constants/abis/bridge/RouterConfig.json'
 import RouterAction from '../../constants/abis/bridge/RouterAction.json'
+import {ZERO_ADDRESS} from '../../constants'
+
 import { getContract, web3Fn } from '../tools/web3Utils'
 import {setLocalConfig, getLocalConfig, formatWeb3Str, fromWei} from '../tools/tools'
 import getTokenInfo from '../tools/getTokenInfo'
@@ -142,7 +144,7 @@ export function isUnderlying (token:any) {
           setLocalConfig(SRCUNDERLYING, token, config.chainID, SRCUNDERLYING, {data: false}, 1)
           resolve(false)
         } else {
-          if (res && res === '0x0000000000000000000000000000000000000000') {
+          if (res && res === ZERO_ADDRESS) {
             resolve(false)
           } else {
             const tokenInfo = await getTokenInfo(res)
@@ -192,6 +194,7 @@ function getAllTokenConfig (list:Array<[]>) {
 
       const gtcData = routerConfigContract.methods.getTokenConfig(tokenid, config.chainID).encodeABI()
       batch.add(web3Fn.eth.call.request({data: gtcData, to: config.bridgeConfigToken}, 'latest', (err:any, res:any) => {
+        // console.log(res)
         if (err) {
           console.log(err)
           resolve('')
@@ -202,13 +205,13 @@ function getAllTokenConfig (list:Array<[]>) {
           if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
           const data = {
             decimals: decimals,
-            ContractVersion: web3Fn.utils.hexToNumber(results[2]),
-            MaximumSwap: fromWei(web3Fn.utils.hexToNumber(results[3]), decimals),
-            MinimumSwap: fromWei(web3Fn.utils.hexToNumber(results[4]), decimals),
-            BigValueThreshold: fromWei(web3Fn.utils.hexToNumber(results[5]), decimals),
-            SwapFeeRatePerMillion: fromWei(web3Fn.utils.hexToNumber(results[6]), decimals),
-            MaximumSwapFee: fromWei(web3Fn.utils.hexToNumber(results[7]), decimals),
-            MinimumSwapFee: fromWei(web3Fn.utils.hexToNumber(results[8]), decimals),
+            ContractVersion: web3Fn.utils.hexToNumberString(results[2]),
+            MaximumSwap: fromWei(web3Fn.utils.hexToNumberString(results[3]), decimals),
+            MinimumSwap: fromWei(web3Fn.utils.hexToNumberString(results[4]), decimals),
+            BigValueThreshold: fromWei(web3Fn.utils.hexToNumberString(results[5]), decimals),
+            SwapFeeRatePerMillion: web3Fn.utils.hexToNumber(results[6]) / 100000,
+            MaximumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[7]), decimals),
+            MinimumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[8]), decimals),
             tokenid: tokenid,
           }
           tokenList[cbtoken] = data
@@ -242,13 +245,14 @@ function getAllTokenIDs () {
             const destChain = {...curTokenIdObj}
             delete destChain[config.chainID]
             const tokenInfo = await getTokenInfo(tokenstr)
+            const underlyingInfo = await isUnderlying(tokenstr)
             if (curTokenObj && curTokenIdObj) {
               const obj = {
                 ...curTokenObj,
                 name: tokenInfo.name,
                 symbol: tokenInfo.symbol,
                 destChain: destChain,
-                underlying: await isUnderlying(tokenstr)
+                underlying: underlyingInfo
               }
               setLocalConfig(BRIDGETOKENCONFIG, tokenstr, config.chainID, BRIDGETOKENCONFIG, {list: obj})
             }
@@ -265,12 +269,12 @@ export function getTokenConfig (token:any) {
     const lData = getLocalConfig(BRIDGETOKENCONFIG, token, config.chainID, BRIDGETOKENCONFIG, timeout)
     // console.log(lData)
     // console.log(token)
-    if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol) {
+    if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol && lData.list.symbol != 'UNKNOWN') {
       resolve(lData.list)
     } else {
       getAllTokenIDs().then(() => {
         const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, config.chainID, BRIDGETOKENCONFIG, timeout)
-        console.log(lData1)
+        // console.log(lData1)
         if (lData1 && lData1.list && lData1.list.name && lData1.list.decimals && lData1.list.symbol) {
           resolve(lData1.list)
         } else {

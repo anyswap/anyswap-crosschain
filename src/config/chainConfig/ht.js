@@ -179,7 +179,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + HT_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
-    bridgeInitToken: '0x6b26780e74cfc64b88c9e1ebc33ffae29c1679ea',
+    bridgeInitToken: '0xaac2bb703093eca3ce9b97434fd16f2765951c0e',
     bridgeRouterToken: '0x306377cFA2ac72e757151591e9eCF0135d7C9613',
     bridgeInitChain: '97',
     swapRouterToken: '0x479ab92bf721de918f01d455e90540149dbfd9da',

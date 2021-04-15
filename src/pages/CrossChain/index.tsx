@@ -92,7 +92,7 @@ export default function CrossChain() {
       } else if (fee > bridgeConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
       }
-      if (value && Number(value)) {
+      if (value && Number(value) && Number(value) > 0) {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
       }
       return ''
@@ -148,7 +148,7 @@ export default function CrossChain() {
     // console.log(token)
     if (token) {
       getTokenConfig(token).then((res:any) => {
-        // console.log(res)
+        console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency) {
@@ -165,7 +165,7 @@ export default function CrossChain() {
           setTimeout(() => {
             setCount(count + 1)
             // setCount(1)
-          }, 100)
+          }, 1000)
           setBridgeConfig('')
         }
       })

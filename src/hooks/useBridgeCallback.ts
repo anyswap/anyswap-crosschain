@@ -138,7 +138,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useSwapUnderlyingContract()
+  const bridgeContract = useSwapUnderlyingContract(inputToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -159,16 +159,13 @@ export function useBridgeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                // console.log(bridgeContract)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = swapType === 'deposit' ? await bridgeContract.deposit(
-                  inputToken,
                   `0x${inputAmount.raw.toString(16)}`
                 ) : await bridgeContract.withdraw(
-                  inputToken,
                   `0x${inputAmount.raw.toString(16)}`
                 )
-                addTransaction(txReceipt, { summary: `Swap underlying ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
               } catch (error) {
                 console.log('Could not swapout', error)
               }

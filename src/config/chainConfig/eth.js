@@ -3,8 +3,8 @@ import {tokenListUrl} from '../constant'
 
 const navLang = navigator.language
 
-export const ETH_MAINNET = 'https://ethmainnet.anyswap.exchange'
-// export const ETH_MAINNET = 'https://mainnet.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0'
+// export const ETH_MAINNET = 'https://ethmainnet.anyswap.exchange'
+export const ETH_MAINNET = 'https://mainnet.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0'
 export const ETH_MAIN_CHAINID = 1
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
@@ -34,9 +34,9 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ETH_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
+    bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
+    bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    bridgeInitChain: '56',
     swapRouterToken: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
     swapInitToken: '',
     multicalToken: '0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441',
