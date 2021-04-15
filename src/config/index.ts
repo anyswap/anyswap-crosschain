@@ -21,11 +21,11 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   localDataDeadline: 1617781347004,
-  bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
-  bridgeInitDataChain: '256',
+  // bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
+  // bridgeInitDataChain: '256',
   
-  // bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
-  // bridgeInitDataChain: '56',
+  bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
+  bridgeInitDataChain: '56',
   getBaseCoin (value:any, type: number) {
     if (value && value === 'BASECURRENCY') {
       if (type) {

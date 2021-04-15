@@ -45,18 +45,24 @@ export default function SwapNative() {
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
-  // const useAddress = swapType === 'deposit' ? {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol} : selectCurrency
-  // console.log(selectCurrency)
   const useAddress = useMemo(() => {
     if (selectCurrency) {
       return swapType !== 'deposit' ? selectCurrency : {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol}
     }
     return
   }, [selectCurrency, swapType])
+
+  const actionAddress = useMemo(() => {
+    if (selectCurrency) {
+      return {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol}
+    }
+    return
+  }, [selectCurrency, swapType])
+
   const formatCurrency = useLocalToken(useAddress)
-  const amountToApprove = formatCurrency ? new TokenAmount(formatCurrency ?? undefined, inputBridgeValue) : undefined
-  // const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, swapType === 'deposit' ? selectCurrency?.address : selectCurrency?.underlying?.address)
-  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, useAddress?.address)
+  const actionCurrency = useLocalToken(actionAddress ?? undefined)
+  const amountToApprove = actionCurrency ? new TokenAmount(actionCurrency ?? undefined, inputBridgeValue) : undefined
+  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, selectCurrency?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useSwapUnderlyingCallback(
     formatCurrency?formatCurrency:undefined,
@@ -68,7 +74,7 @@ export default function SwapNative() {
   const isCrossBridge = useMemo(() => {
     if (
       account
-      && useAddress
+      && selectCurrency
       && inputBridgeValue
       && !wrapInputError
     ) {
@@ -76,7 +82,7 @@ export default function SwapNative() {
     } else {
       return true
     }
-  }, [useAddress, account, wrapInputError, inputBridgeValue])
+  }, [selectCurrency, account, wrapInputError, inputBridgeValue])
 
   const btnTxt = useMemo(() => {
     if (wrapInputError && inputBridgeValue) {
@@ -96,13 +102,13 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
 
   useEffect(() => {
-    const token = useAddress ? useAddress?.address : config.bridgeInitToken
+    const token = selectCurrency ? selectCurrency?.address : config.bridgeInitToken
     // console.log(token)
     if (token) {
       getTokenConfig(token).then((res:any) => {
         // console.log(res)
         if (res && res.decimals && res.symbol) {
-          if (!useAddress) {
+          if (!selectCurrency) {
             setSelectCurrency({
               "address": token,
               "chainId": chainId,
@@ -121,7 +127,7 @@ export default function SwapNative() {
       })
     }
     // getBaseInfo()
-  }, [useAddress, count])
+  }, [selectCurrency, count])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -176,34 +182,6 @@ export default function SwapNative() {
             id="selectCurrency"
             inputType={{swapType, type: 'INPUT'}}
           />
-
-          {/* <SwapIcon
-            onClick={() => {
-              setSwapType('deposit')
-            }}
-            iconUrl={require('../../assets/images/icon/revert.svg')}
-          ></SwapIcon> */}
-
-          {/* <SelectCurrencyInputPanel
-            label={t('From')}
-            value={inputBridgeValue}
-            onUserInput={(value) => {
-              setInputBridgeValue(value)
-            }}
-            onCurrencySelect={(inputCurrency) => {
-              console.log(inputCurrency)
-              setSelectCurrency(inputCurrency)
-            }}
-            onMax={(value) => {
-              handleMaxInput(value)
-            }}
-            currency={formatCurrency}
-            disableCurrencySelect={true}
-            disableInput={true}
-            showMaxButton={true}
-            id="selectCurrency1"
-            inputType={{swapType, type: 'OUTPUT'}}
-          /> */}
 
         </AutoColumn>
         <BottomGrouping>
