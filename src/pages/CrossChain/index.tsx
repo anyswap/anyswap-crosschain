@@ -84,7 +84,7 @@ export default function CrossChain() {
     inputBridgeValue,
     selectChain
   )
-
+    // console.log(selectCurrency)
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {
       const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion)
@@ -243,13 +243,13 @@ export default function CrossChain() {
             onChainSelect={(chainID) => {
               setSelectChain(chainID)
             }}
-            currency={formatCurrency}
             selectChainId={selectChain}
             id="selectChainID"
             onOpenModalView={(value) => {
               console.log(value)
               setModalOpen(value)
             }}
+            bridgeConfig={bridgeConfig}
           />
 
           <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />

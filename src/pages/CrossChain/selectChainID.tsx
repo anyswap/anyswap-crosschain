@@ -36,6 +36,7 @@ import {
 } from '../../components/CurrencySelect/styleds'
 
 import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+import {getNodeBalance} from '../../utils/bridge/getBalance'
 
 
 interface SelectChainIdInputPanel {
@@ -43,12 +44,12 @@ interface SelectChainIdInputPanel {
   onUserInput: (value: string) => void
   label?: string
   onChainSelect?: (selectChainId: any) => void
-  currency?: any
   selectChainId?: any
   disableCurrencySelect?: boolean
   hideInput?: boolean
   id: string
-  onOpenModalView?: (value: any) => void
+  onOpenModalView?: (value: any) => void,
+  bridgeConfig: any
 }
 
 export default function SelectChainIdInputPanel({
@@ -56,15 +57,15 @@ export default function SelectChainIdInputPanel({
   onUserInput,
   label = 'Input',
   onChainSelect,
-  currency,
   selectChainId,
   disableCurrencySelect = false,
   hideInput = false,
   id,
   onOpenModalView,
+  bridgeConfig
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
@@ -92,6 +93,20 @@ export default function SelectChainIdInputPanel({
     },
     [onChainSelect]
   )
+
+  useEffect(() => {
+    if (
+      account
+      && chainId
+      && bridgeConfig
+      && selectChainId
+    ) {
+      const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId] : ''
+      getNodeBalance(account, token, selectChainId, chainId).then(res => {
+        console.log(res)
+      })
+    }
+  }, [account, chainId, bridgeConfig, selectChainId])
 
   function chainListView () {
     return (
@@ -152,24 +167,6 @@ export default function SelectChainIdInputPanel({
                 />
               </>
             )}
-            {/* <CurrencySelect1
-              selected={!!selectChainId}
-              className="open-currency-select-button"
-            >
-              <Aligner>
-                <TokenLogoBox>
-                  <TokenLogo symbol={currency?.symbol} size={'24px'} />
-                </TokenLogoBox>
-                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? currency.symbol.slice(0, 4) +
-                      '...' +
-                      currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                    : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                  {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
-                </StyledTokenName>
-              </Aligner>
-            </CurrencySelect1> */}
             <CurrencySelect
               selected={!!selectChainId}
               className="open-currency-select-button"
@@ -182,19 +179,19 @@ export default function SelectChainIdInputPanel({
             >
               <Aligner>
                 <TokenLogoBox>
-                  <TokenLogo symbol={currency?.symbol} size={'24px'} />
+                  <TokenLogo symbol={bridgeConfig?.symbol} size={'24px'} />
                 </TokenLogoBox>
-                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                   <h3>
-                    {(currency && currency.symbol && currency.symbol.length > 20
-                      ? currency.symbol.slice(0, 4) +
+                    {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
+                      ? bridgeConfig.symbol.slice(0, 4) +
                         '...' +
-                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
+                        bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
+                      : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')}
                     {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
                   </h3>
                   <p>
-                    {currency && currency.name ? currency.name : ''}
+                    {bridgeConfig && bridgeConfig.name ? bridgeConfig.name : ''}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!selectChainId && (
