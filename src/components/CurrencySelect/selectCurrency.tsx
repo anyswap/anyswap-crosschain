@@ -11,6 +11,7 @@ import TokenLogo from '../TokenLogo'
 import { TYPE } from '../../theme'
 
 import { useActiveWeb3React } from '../../hooks'
+import { useToggleNetworkModal } from '../../state/application/hooks'
 // import { useToken } from '../../hooks/Tokens'
 import config from '../../config'
 
@@ -28,7 +29,7 @@ import {
   InputPanel,
   Container,
   StyledTokenName,
-  CurrencySelect1
+  // CurrencySelect1
   // HideSmallBox
 } from './styleds'
 
@@ -83,6 +84,7 @@ export default function SelectCurrencyInputPanel({
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
+  const toggleNetworkModal = useToggleNetworkModal()
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -193,7 +195,50 @@ export default function SelectCurrencyInputPanel({
               )}
             </Aligner>
           </CurrencySelect>
-          <ErrorSpanBox>
+          {
+            isViewNetwork ? (
+              <CurrencySelect
+                selected={true}
+                onClick={() => {toggleNetworkModal()}}
+                className="open-currency-select-button"
+                style={{marginLeft: "10px"}}
+              >
+                <Aligner>
+                  <TokenLogoBox>
+                    <TokenLogo symbol={config?.symbol} size={'24px'} />
+                  </TokenLogoBox>
+                  <StyledTokenName className="token-symbol-container">
+                    {config.networkName}
+                  </StyledTokenName>
+                  {!disableCurrencySelect && !!currency && (
+                    <StyledDropDownBox>
+                      <StyledDropDown selected={!!currency} />
+                    </StyledDropDownBox>
+                  )}
+                </Aligner>
+              </CurrencySelect>
+            ) : (
+              <ErrorSpanBox>
+                {
+                  !hideBalance && !!currency && selectedCurrencyBalance ? (
+                    <ErrorSpan onClick={handleMax}>
+                      <ExtraText>
+                        <h5>{t('balance')}</h5>
+                        <p>
+                          {!hideBalance && !!currency && selectedCurrencyBalance
+                            ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
+                            : ' -'}{' '}
+                        </p>
+                      </ExtraText>
+                    </ErrorSpan>
+                  ) : (
+                    ''
+                  )
+                }
+              </ErrorSpanBox>
+            )
+          }
+          {/* <ErrorSpanBox>
             {isViewNetwork ? (
               <CurrencySelect1
                 selected={true}
@@ -224,7 +269,7 @@ export default function SelectCurrencyInputPanel({
                 ''
               )
             )}
-          </ErrorSpanBox>
+          </ErrorSpanBox> */}
         </InputRow>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && modalOpen && (

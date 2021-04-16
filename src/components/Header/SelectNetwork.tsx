@@ -7,6 +7,9 @@ import { YellowCard } from '../Card'
 import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
 
+import { ApplicationModal } from '../../state/application/actions'
+import { useModalOpen, useToggleNetworkModal } from '../../state/application/hooks'
+
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 import config from '../../config'
@@ -196,7 +199,8 @@ const NetworkCard = styled(YellowCard)`
 export default function SelectNetwork () {
   const history = createBrowserHistory()
   const { t } = useTranslation()
-  // console.log(window.location)
+  const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
+  const toggleNetworkModal = useToggleNetworkModal()
   function openUrl (item:any) {
     if (item.symbol === config.symbol || !item.isSwitch) {
       return
@@ -207,7 +211,7 @@ export default function SelectNetwork () {
     history.go(0)
   }
   // console.log(window.location)
-  const [networkView, setNetworkView] = useState(false)
+  // const [networkView, setNetworkView] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
 
   useEffect(() => {
@@ -250,13 +254,13 @@ export default function SelectNetwork () {
   function changeNetwork () {
     return (
       <Modal
-        isOpen={networkView}
-        onDismiss={() => { setNetworkView(false) }}
+        isOpen={networkModalOpen}
+        onDismiss={() => { toggleNetworkModal() }}
         maxHeight={300}
       >
         <Wrapper>
           <UpperSection>
-            <CloseIcon onClick={() => {setNetworkView(false)}}>
+            <CloseIcon onClick={() => {toggleNetworkModal()}}>
               <CloseColor />
             </CloseIcon>
             <HeaderRow>
@@ -284,7 +288,7 @@ export default function SelectNetwork () {
   return (
     <>
       {changeNetwork()}
-      <HideSmall onClick={() => setNetworkView(true)}>{<NetworkCard title={config.networkName}>{config.networkName}</NetworkCard>}</HideSmall>
+      <HideSmall onClick={() => toggleNetworkModal()}>{<NetworkCard title={config.networkName}>{config.networkName}</NetworkCard>}</HideSmall>
     </>
   )
 }
