@@ -5,13 +5,13 @@ import { Text } from 'rebass'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useTranslation } from 'react-i18next'
 
-import Column from '../../components/Column'
-import { RowBetween } from '../../components/Row'
-import Modal from '../../components/Modal'
-import QuestionHelper from '../../components/QuestionHelper'
-import { PaddedColumn, SearchInput, Separator } from '../../components/SearchModal/styleds'
-import { filterTokens } from '../../components/SearchModal/filtering'
-import { useTokenComparator } from '../../components/SearchModal/sorting'
+import Column from '../Column'
+import { RowBetween } from '../Row'
+import Modal from '../Modal'
+import QuestionHelper from '../QuestionHelper'
+import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
+import { filterTokens } from '../SearchModal/filtering'
+import { useTokenComparator } from '../SearchModal/sorting'
 
 import { CloseIcon } from '../../theme'
 
@@ -30,6 +30,7 @@ interface CurrencySearchModalProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
+  onlyUnderlying?: boolean
 }
 
 export default function SearchModal ({
@@ -37,7 +38,8 @@ export default function SearchModal ({
   onDismiss,
   onCurrencySelect,
   selectedCurrency,
-  otherSelectedCurrency
+  otherSelectedCurrency,
+  onlyUnderlying
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -56,7 +58,18 @@ export default function SearchModal ({
       if (res) {
         const list:any = []
         for (const token in res) {
-          if (res[token].list.underlying) {
+          if (onlyUnderlying) {
+            if (res[token].list.underlying) {
+              list.push({
+                "address": token,
+                "chainId": chainId,
+                "decimals": res[token].list.decimals,
+                "name": res[token].list.name,
+                "symbol": res[token].list.symbol,
+                "underlying": res[token].list.underlying
+              })
+            }
+          } else {
             list.push({
               "address": token,
               "chainId": chainId,

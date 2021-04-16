@@ -33,7 +33,7 @@ import {
   Container,
   StyledTokenName,
   // HideSmallBox
-} from '../../components/CurrencyInputPanel/styleds'
+} from '../../components/CurrencySelect/styleds'
 
 import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 

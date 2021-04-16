@@ -8,12 +8,12 @@ import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 
-import Column from '../../components/Column'
-import { RowFixed } from '../../components/Row'
-import TokenLogo from '../../components/TokenLogo'
-import { MouseoverTooltip } from '../../components/Tooltip'
-import { MenuItem } from '../../components/SearchModal/styleds'
-import Loader from '../../components/Loader'
+import Column from '../Column'
+import { RowFixed } from '../Row'
+import TokenLogo from '../TokenLogo'
+import { MouseoverTooltip } from '../Tooltip'
+import { MenuItem } from '../SearchModal/styleds'
+import Loader from '../Loader'
 
 import config from '../../config'
 
@@ -109,16 +109,7 @@ function CurrencyRow({
   }
   const currencies = useLocalToken(currencyObj)
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
-  // console.log(currency)
-  // console.log(currencyObj)
-  // console.log(balance ? balance.toExact() : '')
-
-  // const removeToken = useRemoveUserAddedToken()
-  // const addToken = useAddUserToken()
-  // console.log(selectedTokenList)
-  // console.log(key)
-  // console.log(Math.random())
-  // only show add or remove buttons if not on selected list
+  
   return (
     <MenuItem
       style={style}

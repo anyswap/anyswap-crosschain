@@ -202,19 +202,21 @@ function getAllTokenConfig (list:Array<[]>) {
           const results = formatWeb3Str(res)
           const decimals = web3Fn.utils.hexToNumber(results[0])
           const cbtoken = results[1].replace('0x000000000000000000000000', '0x')
-          if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
-          const data = {
-            decimals: decimals,
-            ContractVersion: web3Fn.utils.hexToNumberString(results[2]),
-            MaximumSwap: fromWei(web3Fn.utils.hexToNumberString(results[3]), decimals),
-            MinimumSwap: fromWei(web3Fn.utils.hexToNumberString(results[4]), decimals),
-            BigValueThreshold: fromWei(web3Fn.utils.hexToNumberString(results[5]), decimals),
-            SwapFeeRatePerMillion: web3Fn.utils.hexToNumber(results[6]) / 100000,
-            MaximumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[7]), decimals),
-            MinimumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[8]), decimals),
-            tokenid: tokenid,
+          if (cbtoken !=ZERO_ADDRESS) {
+            if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
+            const data = {
+              decimals: decimals,
+              ContractVersion: web3Fn.utils.hexToNumberString(results[2]),
+              MaximumSwap: fromWei(web3Fn.utils.hexToNumberString(results[3]), decimals),
+              MinimumSwap: fromWei(web3Fn.utils.hexToNumberString(results[4]), decimals),
+              BigValueThreshold: fromWei(web3Fn.utils.hexToNumberString(results[5]), decimals),
+              SwapFeeRatePerMillion: web3Fn.utils.hexToNumber(results[6]) / 100000,
+              MaximumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[7]), decimals),
+              MinimumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[8]), decimals),
+              tokenid: tokenid,
+            }
+            tokenList[cbtoken] = data
           }
-          tokenList[cbtoken] = data
         }
         if (i === (len - 1) && tokenidList[tokenid]) {
           resolve({

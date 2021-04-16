@@ -29,9 +29,9 @@ import {
   Container,
   StyledTokenName,
   HideSmallBox
-} from '../../components/CurrencyInputPanel/styleds'
+} from '../../components/CurrencySelect/styleds'
 
-import SearchModal from './searchModal'
+import SearchModal from '../../components/CurrencySelect/searchModal'
 
 interface SelectCurrencyInputPanelProps {
   value: string
