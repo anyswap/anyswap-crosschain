@@ -4,9 +4,9 @@ import { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { RowBetween } from '../../components/Row'
-import { Input as NumericalInput } from '../../components/NumericalInput'
-import TokenLogo from '../../components/TokenLogo'
+import { RowBetween } from '../Row'
+import { Input as NumericalInput } from '../NumericalInput'
+import TokenLogo from '../TokenLogo'
 
 import { TYPE } from '../../theme'
 
@@ -29,9 +29,9 @@ import {
   Container,
   StyledTokenName,
   HideSmallBox
-} from '../../components/CurrencySelect/styleds'
+} from './styleds'
 
-import SearchModal from '../../components/CurrencySelect/searchModal'
+import SearchModal from './searchModal'
 
 interface SelectCurrencyInputPanelProps {
   value: string
@@ -43,12 +43,15 @@ interface SelectCurrencyInputPanelProps {
   // currency?: Currency | null
   currency?: any
   disableCurrencySelect?: boolean
+  disableInput?: boolean
   hideBalance?: boolean
   hideInput?: boolean
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
   customBalanceText?: string
+  inputType?: any,
+  onlyUnderlying?: boolean
 }
 
 export default function SelectCurrencyInputPanel({
@@ -60,12 +63,14 @@ export default function SelectCurrencyInputPanel({
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
+  disableInput = false,
   hideBalance = false,
   hideInput = false,
   otherCurrency,
   id,
-  // showCommonBases,
-  customBalanceText
+  customBalanceText,
+  inputType,
+  onlyUnderlying
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -78,6 +83,24 @@ export default function SelectCurrencyInputPanel({
   }, [setModalOpen])
 
   // const formatCurrency = useToken(currency?.address)
+  // const useCurrency = useMemo(() => {
+  //   if (inputType) {
+  //     if (inputType.type === 'INPUT') {
+  //       if (inputType.swapType === 'deposit') {
+  //         return {
+
+  //         }
+  //       } else {
+
+  //       }
+  //     }
+  //   }
+  //   {inputType.type === 'INPUT' ? (
+  //     inputType.swapType === 'deposit' ? '' : 'any'
+  //   ) : (
+  //     inputType.swapType === 'deposit' ? 'any' : ''
+  //   )}
+  // }, [inputType])
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
   const handleMax = useCallback(() => {
@@ -128,6 +151,7 @@ export default function SelectCurrencyInputPanel({
                   onUserInput(val)
                 }}
                 style={{ marginRight: '1.875rem' }}
+                disabled={disableInput}
               />
             </>
           )}
@@ -145,12 +169,19 @@ export default function SelectCurrencyInputPanel({
                 <TokenLogo symbol={currency?.symbol} size={'24px'} />
               </TokenLogoBox>
               <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                {inputType ? (
+                  inputType.type === 'INPUT' ? (
+                    inputType.swapType === 'deposit' ? '' : 'any'
+                  ) : (
+                    inputType.swapType === 'deposit' ? 'any' : ''
+                  )
+                ) : ''}
                 {(currency && currency.symbol && currency.symbol.length > 20
                   ? currency.symbol.slice(0, 4) +
                     '...' +
                     currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                   : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                  {chainId ? '-' + config.suffix : ''}
+                {!inputType && chainId ? '-' + config.suffix : ''}
               </StyledTokenName>
               {!disableCurrencySelect && !!currency && (
                 <StyledDropDownBox>
@@ -184,6 +215,7 @@ export default function SelectCurrencyInputPanel({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
+          onlyUnderlying={onlyUnderlying}
         />
       )}
     </InputPanel>

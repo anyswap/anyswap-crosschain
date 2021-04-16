@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 // import { ThemeContext } from 'styled-components'
 // import { ArrowDown } from 'react-feather'
 
-import SelectCurrencyInputPanel from './selectCurrency'
+import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 
 import { useActiveWeb3React } from '../../hooks'
 import {useSwapUnderlyingCallback} from '../../hooks/useBridgeCallback'
@@ -181,6 +181,7 @@ export default function SwapNative() {
             showMaxButton={true}
             id="selectCurrency"
             inputType={{swapType, type: 'INPUT'}}
+            onlyUnderlying={true}
           />
 
         </AutoColumn>
