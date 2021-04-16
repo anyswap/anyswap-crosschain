@@ -1,7 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Text } from 'rebass'
-import styled from 'styled-components'
+// import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -37,29 +37,6 @@ import {
 
 import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 
-const CurrencySelect1 = styled(CurrencySelect)`
-
-  border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-  background-color: ${({ theme }) => theme.selectedBgNo};
-  :hover {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-
-  :focus {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-
-  :active {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-  @media screen and (max-width: 960px) {
-    display: none;
-  }
-`
-
 
 interface SelectChainIdInputPanel {
   value: string
@@ -71,6 +48,7 @@ interface SelectChainIdInputPanel {
   disableCurrencySelect?: boolean
   hideInput?: boolean
   id: string
+  onOpenModalView?: (value: any) => void
 }
 
 export default function SelectChainIdInputPanel({
@@ -82,7 +60,8 @@ export default function SelectChainIdInputPanel({
   selectChainId,
   disableCurrencySelect = false,
   hideInput = false,
-  id
+  id,
+  onOpenModalView,
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -173,7 +152,7 @@ export default function SelectChainIdInputPanel({
                 />
               </>
             )}
-            <CurrencySelect1
+            {/* <CurrencySelect1
               selected={!!selectChainId}
               className="open-currency-select-button"
             >
@@ -190,7 +169,41 @@ export default function SelectChainIdInputPanel({
                   {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
                 </StyledTokenName>
               </Aligner>
-            </CurrencySelect1>
+            </CurrencySelect1> */}
+            <CurrencySelect
+              selected={!!selectChainId}
+              className="open-currency-select-button"
+              onClick={() => {
+                if (!disableCurrencySelect && onOpenModalView) {
+                  onOpenModalView(true)
+                }
+              }}
+              style={{marginLeft: "10px"}}
+            >
+              <Aligner>
+                <TokenLogoBox>
+                  <TokenLogo symbol={currency?.symbol} size={'24px'} />
+                </TokenLogoBox>
+                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                  <h3>
+                    {(currency && currency.symbol && currency.symbol.length > 20
+                      ? currency.symbol.slice(0, 4) +
+                        '...' +
+                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                      : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
+                    {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
+                  </h3>
+                  <p>
+                    {currency && currency.name ? currency.name : ''}
+                  </p>
+                </StyledTokenName>
+                {!disableCurrencySelect && !!selectChainId && (
+                  <StyledDropDownBox>
+                    <StyledDropDown selected={!!selectChainId} />
+                  </StyledDropDownBox>
+                )}
+              </Aligner>
+            </CurrencySelect>
 
             <CurrencySelect
               selected={!!selectChainId}

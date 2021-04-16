@@ -44,6 +44,29 @@ export const CurrencySelect = styled.button<{ selected: boolean }>`
   }
 `
 
+export const CurrencySelect1 = styled(CurrencySelect)`
+
+  border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
+  background-color: ${({ theme }) => theme.selectedBgNo};
+  :hover {
+    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
+    background-color: ${({ theme }) => theme.selectedBgNo};
+  }
+
+  :focus {
+    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
+    background-color: ${({ theme }) => theme.selectedBgNo};
+  }
+
+  :active {
+    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
+    background-color: ${({ theme }) => theme.selectedBgNo};
+  }
+  @media screen and (max-width: 960px) {
+    display: none;
+  }
+`
+
 export const ErrorSpanBox = styled.div`
   height: 70px;
   width: 220px;
@@ -176,7 +199,6 @@ export const Container = styled.div<{ hideInput: boolean }>`
 
 export const StyledTokenName = styled.span<{ active?: boolean }>`
   // ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  // font-size:  ${({ active }) => (active ? '20px' : '16px')};
 
   text-align:left;
   width: 100%;
@@ -200,7 +222,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     line-height: 1;
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
-    margin:0;
+    margin:8px 0 0;
   }
 
 `

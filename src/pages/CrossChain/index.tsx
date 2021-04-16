@@ -49,6 +49,8 @@ export default function CrossChain() {
   // const [recipient, setRecipient] = useState<any>('')
   const [count, setCount] = useState<number>(0)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
   const [bridgeConfig, setBridgeConfig] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -205,6 +207,12 @@ export default function CrossChain() {
             currency={formatCurrency}
             disableCurrencySelect={false}
             showMaxButton={true}
+            isViewNetwork={true}
+            onOpenModalView={(value) => {
+              console.log(value)
+              setModalOpen(value)
+            }}
+            isViewModal={modalOpen}
             id="selectCurrency"
           />
 
@@ -238,6 +246,10 @@ export default function CrossChain() {
             currency={formatCurrency}
             selectChainId={selectChain}
             id="selectChainID"
+            onOpenModalView={(value) => {
+              console.log(value)
+              setModalOpen(value)
+            }}
           />
 
           <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
