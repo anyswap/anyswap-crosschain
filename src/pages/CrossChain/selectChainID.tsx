@@ -69,6 +69,7 @@ export default function SelectChainIdInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
+  const [destBalance, setDestBalance] = useState<any>()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -95,6 +96,7 @@ export default function SelectChainIdInputPanel({
   )
 
   useEffect(() => {
+    setDestBalance('')
     if (
       account
       && chainId
@@ -102,8 +104,11 @@ export default function SelectChainIdInputPanel({
       && selectChainId
     ) {
       const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId] : ''
-      getNodeBalance(account, token, selectChainId, chainId).then(res => {
+      getNodeBalance(account, token, selectChainId, bridgeConfig.decimals).then(res => {
         console.log(res)
+        if (res) {
+          setDestBalance(res)
+        }
       })
     }
   }, [account, chainId, bridgeConfig, selectChainId])
@@ -150,6 +155,14 @@ export default function SelectChainIdInputPanel({
                 <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
                   {label}
                 </TYPE.body>
+                <TYPE.body
+                  color={theme.text2}
+                  fontWeight={500}
+                  fontSize={14}
+                  style={{ display: 'inline', cursor: 'pointer' }}
+                >
+                  {destBalance ? (t('balanceTxt') + ': ' + destBalance) : ' -'}
+                </TYPE.body>
               </RowBetween>
             </LabelRow>
           )}
@@ -191,7 +204,11 @@ export default function SelectChainIdInputPanel({
                     {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
                   </h3>
                   <p>
-                    {bridgeConfig && bridgeConfig.name ? bridgeConfig.name : ''}
+                    {
+                      bridgeConfig ? (
+                        bridgeConfig.underlying ? bridgeConfig.underlying.name : bridgeConfig.name
+                      ) : ''
+                    }
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!selectChainId && (

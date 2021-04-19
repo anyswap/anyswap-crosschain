@@ -96,7 +96,7 @@ export default function SelectCurrencyInputPanel({
   }, [setModalOpen])
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-
+  // console.log(currency)
   const handleMax = useCallback(() => {
     // console.log(selectedCurrencyBalance?.toSignificant(6))
     if (selectedCurrencyBalance) {
