@@ -46,7 +46,7 @@ export default function CrossChain() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [recipient, setRecipient] = useState<any>(account ?? '')
-  // const [recipient, setRecipient] = useState<any>('')
+  const [swapType, setSwapType] = useState('swap')
   const [count, setCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -188,7 +188,32 @@ export default function CrossChain() {
   return (
     <>
       <AppBody>
-        <Title title={t('swapChain')}></Title>
+        <Title
+          title={t('swap')} 
+          
+          tabList={[
+            {
+              name: t('swap'),
+              onTabClick: () => {
+                setSwapType('swap')
+                if (account) {
+                  setRecipient(account)
+                }
+              },
+              iconUrl: require('../../assets/images/icon/deposit.svg'),
+              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+            },
+            {
+              name: t('send'),
+              onTabClick: () => {
+                setSwapType('send')
+                setRecipient('')
+              },
+              iconUrl: require('../../assets/images/icon/withdraw.svg'),
+              iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+            }
+          ]}
+        ></Title>
         <AutoColumn gap={'md'}>
 
           <SelectCurrencyInputPanel
@@ -226,13 +251,6 @@ export default function CrossChain() {
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>
           </AutoRow>
-          {/* <SwapIcon
-            onClick={() => {
-              setApprovalSubmitted(false) // reset 2 step UI for approvals
-              onSwitchTokens()
-            }}
-            iconUrl={require('../../assets/images/icon/revert.svg')}
-          ></SwapIcon> */}
 
           <SelectChainIdInputPanel
             label={t('to')}
@@ -251,8 +269,9 @@ export default function CrossChain() {
             }}
             bridgeConfig={bridgeConfig}
           />
-
-          <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
+          {swapType == 'swap' ? '' : (
+            <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
+          )}
         </AutoColumn>
 
         <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
