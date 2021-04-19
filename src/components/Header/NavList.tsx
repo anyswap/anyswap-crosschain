@@ -255,7 +255,7 @@ export default function NavList() {
             <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
           </div>
-          {t('swapChain')}
+          {t('swap')}
         </StyledNavLink>
         <StyledNavLink
           id={`pool-nav-link`}

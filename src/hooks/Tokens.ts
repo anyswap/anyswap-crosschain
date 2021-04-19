@@ -102,7 +102,7 @@ export function useLocalToken(currency?: any): Token | undefined | null {
   const symbol = currency?.symbol
   const name = currency?.name
   const decimals = currency?.decimals
-  const isCrossChain = currency?.isCrossChain
+  const underlying = currency?.underlying
 
   // const token = address && name ? undefined : useToken(address ? address : undefined)
   // console.log(token)
@@ -118,7 +118,7 @@ export function useLocalToken(currency?: any): Token | undefined | null {
       decimals,
       symbol,
       name,
-      isCrossChain
+      underlying
     )
   }, [
     address,
@@ -126,6 +126,6 @@ export function useLocalToken(currency?: any): Token | undefined | null {
     symbol,
     decimals,
     name,
-    isCrossChain
+    underlying
   ])
 }

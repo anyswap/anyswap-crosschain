@@ -129,14 +129,14 @@ export default function CrossChain() {
     if (wrapInputError && inputBridgeValue) {
       return wrapInputError
     } else if (wrapInputError && !inputBridgeValue) {
-      return t('bridgeAssets')
+      return t('swap')
     } else if (
       (wrapType === WrapType.WRAP && !(selectCurrency && selectCurrency.underlying))
       || (wrapTypeUnderlying === WrapType.WRAP && (selectCurrency && selectCurrency.underlying))
     ) {
-      return t('bridgeAssets')
+      return t('swap')
     }
-    return t('bridgeAssets')
+    return t('swap')
   }, [t, wrapInputError, wrapTypeUnderlying, selectCurrency])
 
   useEffect(() => {

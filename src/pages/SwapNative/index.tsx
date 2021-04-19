@@ -29,6 +29,8 @@ import config from '../../config'
 
 import AppBody from '../AppBody'
 
+import PoolTip from './poolTip'
+
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 
 export default function SwapNative() {
@@ -45,27 +47,25 @@ export default function SwapNative() {
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
-  const useAddress = useMemo(() => {
-    if (selectCurrency) {
-      return swapType !== 'deposit' ? selectCurrency : {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol}
+  const underlyingToken =  useMemo(() => {
+    if (selectCurrency && selectCurrency.underlying) {
+      return {
+        address: selectCurrency.underlying.address,
+        name: selectCurrency.underlying.name,
+        symbol: selectCurrency.underlying.symbol,
+        decimals: selectCurrency.decimals
+      }
     }
     return
-  }, [selectCurrency, swapType])
+  }, [selectCurrency])
 
-  const actionAddress = useMemo(() => {
-    if (selectCurrency) {
-      return {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol}
-    }
-    return
-  }, [selectCurrency, swapType])
-
-  const formatCurrency = useLocalToken(useAddress)
-  const actionCurrency = useLocalToken(actionAddress ?? undefined)
-  const amountToApprove = actionCurrency ? new TokenAmount(actionCurrency ?? undefined, inputBridgeValue) : undefined
+  const anyCurrency = useLocalToken(selectCurrency ?? undefined)
+  const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
+  const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
   const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, selectCurrency?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useSwapUnderlyingCallback(
-    formatCurrency?formatCurrency:undefined,
+    swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     selectCurrency?.address,
     inputBridgeValue,
     swapType
@@ -85,15 +85,16 @@ export default function SwapNative() {
   }, [selectCurrency, account, wrapInputError, inputBridgeValue])
 
   const btnTxt = useMemo(() => {
+    const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
     if (wrapInputError && inputBridgeValue) {
       return wrapInputError
     } else if (wrapInputError && !inputBridgeValue) {
-      return t('bridgeAssets')
+      return bt
     } else if (wrapType === WrapType.WRAP) {
-      return t('bridgeAssets')
+      return bt
     }
-    return t('bridgeAssets')
-  }, [t, wrapInputError])
+    return bt
+  }, [t, wrapInputError, swapType])
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -176,7 +177,7 @@ export default function SwapNative() {
             onMax={(value) => {
               handleMaxInput(value)
             }}
-            currency={formatCurrency}
+            currency={swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined)}
             disableCurrencySelect={false}
             showMaxButton={true}
             id="selectCurrency"
@@ -185,6 +186,12 @@ export default function SwapNative() {
           />
 
         </AutoColumn>
+
+        <PoolTip 
+          anyCurrency={anyCurrency}
+          underlyingCurrency={underlyingCurrency}
+        />
+
         <BottomGrouping>
 
           {!account ? (
@@ -205,7 +212,7 @@ export default function SwapNative() {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(useAddress?.symbol)
+                    t('Approve') + ' ' + config.getBaseCoin(anyCurrency?.symbol)
                   )}
                 </ButtonConfirmed>
               ) : (
@@ -217,16 +224,6 @@ export default function SwapNative() {
           }
         </BottomGrouping>
 
-        {/* <BottomGrouping>
-          {!account ? (
-              <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-            ) : (
-              <ButtonPrimary disabled={isCrossBridge} onClick={onWrap}>
-                {btnTxt}
-              </ButtonPrimary>
-            )
-          }
-        </BottomGrouping> */}
       </AppBody>
     </>
   )

@@ -105,7 +105,7 @@ export default function SelectChainIdInputPanel({
     ) {
       const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId] : ''
       getNodeBalance(account, token, selectChainId, bridgeConfig.decimals).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res) {
           setDestBalance(res)
         }
