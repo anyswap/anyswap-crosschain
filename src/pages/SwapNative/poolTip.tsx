@@ -54,10 +54,7 @@ export default function PoolTip ({
 }) {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
-  // console.log(account)
-  // console.log(underlyingCurrency)
-  // const anyCoinBalance = useCurrencyBalance(account ?? undefined, anyCurrency)
-  // const underlyingCoinBalance = useCurrencyBalance(account ?? undefined, underlyingCurrency)
+  
   const list = [anyCurrency, underlyingCurrency]
   const [userTokenList, userTokenLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, list)
   const [totalsupplyList, totalsupplyLoading] = useTokenTotalSupplyWithLoadingIndicator(list)
