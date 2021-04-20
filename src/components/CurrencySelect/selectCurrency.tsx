@@ -170,13 +170,13 @@ export default function SelectCurrencyInputPanel({
               </TokenLogoBox>
               <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                 <h3>
-                  {inputType ? (
+                  {/* {inputType ? (
                     inputType.type === 'INPUT' ? (
                       inputType.swapType === 'deposit' ? '' : 'any'
                     ) : (
                       inputType.swapType === 'deposit' ? 'any' : ''
                     )
-                  ) : ''}
+                  ) : ''} */}
                   {(currency && currency.symbol && currency.symbol.length > 20
                     ? currency.symbol.slice(0, 4) +
                       '...' +

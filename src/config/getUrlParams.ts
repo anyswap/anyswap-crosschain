@@ -1,6 +1,7 @@
 import { chainInfo } from './chainConfig'
+import { isAddress } from '../utils'
 
-function getParams(param: any) {
+export function getParams(param: any) {
   const str = window.location.href.indexOf('?') ? window.location.href.split('?')[1] : ''
   if (str) {
     const arr = str.split('&')
@@ -28,7 +29,7 @@ export function getInitBridgeChain(destChainID: any, bridgeToken: any) {
   if (dc) {
     nc.initChain = dc
   }
-  if (bt) {
+  if (bt && isAddress(bt)) {
     nc.bridgeInitToken = bt
   }
 

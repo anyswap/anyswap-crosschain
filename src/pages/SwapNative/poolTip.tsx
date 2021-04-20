@@ -123,7 +123,7 @@ export default function PoolTip ({
         <dd>
           <i></i>
           {t('yourPoolShare')}: {
-            !userTokenLoading && usersView ? (
+            !userTokenLoading && usersView && account ? (
               (
                 usersView[underlyingCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + underlyingCurrency?.symbol
                 +

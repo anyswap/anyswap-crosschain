@@ -26,6 +26,7 @@ import Title from '../../components/Title'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
 import config from '../../config'
+import {getParams} from '../../config/getUrlParams'
 
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -33,12 +34,13 @@ import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
 
+// let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+// initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
 
 export default function CrossChain() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const history = createBrowserHistory()
-  // const selectedTokenList = useSelectedTokenList()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
@@ -54,6 +56,10 @@ export default function CrossChain() {
   const [bridgeConfig, setBridgeConfig] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+
+  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
+  // console.log(initBridgeToken)
 
   
 
@@ -146,11 +152,10 @@ export default function CrossChain() {
   }, [chainId, selectChain])
 
   useEffect(() => {
-    const token = selectCurrency ? selectCurrency.address : config.bridgeInitToken
-    // console.log(token)
-    if (token) {
+    const token = selectCurrency ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.bridgeInitToken)
+    if (token && isAddress(token)) {
       getTokenConfig(token).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency) {
@@ -175,7 +180,7 @@ export default function CrossChain() {
       setBridgeConfig('')
     }
     // getBaseInfo()
-  }, [selectCurrency, count])
+  }, [selectCurrency, count, initBridgeToken])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {

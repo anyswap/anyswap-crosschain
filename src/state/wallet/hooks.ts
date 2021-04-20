@@ -121,6 +121,83 @@ export function useTokenTotalSupplyWithLoadingIndicator(
   ]
 }
 
+export function useTokenBalancesList(
+  address?: string,
+  tokens?: (string | undefined)[]
+): [{ [tokenAddress: string]: string | undefined }, boolean] {
+  const validatedTokens: string[] = useMemo(
+    () => tokens?.filter((t?: string): t is string => isAddress(t) !== false) ?? [],
+    [tokens]
+  )
+
+  const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt), [validatedTokens])
+  // console.log(tokens)
+  // console.log(validatedTokenAddresses)
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  // console.log(validatedTokenAddresses)
+  // console.log(address)
+  // console.log(balances)
+
+  const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+
+  return [
+    useMemo(
+      () =>
+        address && validatedTokens.length > 0
+          ? validatedTokens.reduce<{ [tokenAddress: string]: string | undefined }>((memo, token, i) => {
+              const value = balances?.[i]?.result?.[0]
+              const amount = value ? JSBI.BigInt(value.toString()) : undefined
+              if (amount) {
+                memo[token] = amount.toString()
+              }
+              // console.log(memo)
+              return memo
+            }, {})
+          : {},
+      [address, validatedTokens, balances]
+    ),
+    anyLoading
+  ]
+}
+
+export function useTokenTotalSupply(
+  tokens?: (string | undefined)[]
+): [{ [tokenAddress: string]: string | undefined }, boolean] {
+  const validatedTokens: string[] = useMemo(
+    () => tokens?.filter((t?: string): t is string => isAddress(t) !== false) ?? [],
+    [tokens]
+  )
+
+  const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt), [validatedTokens])
+  // console.log(tokens)
+  // console.log(validatedTokenAddresses)
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply', [])
+  // console.log(validatedTokenAddresses)
+  // console.log(balances)
+  // console.log(balances)
+
+  const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+
+  return [
+    useMemo(
+      () =>
+        validatedTokens.length > 0
+          ? validatedTokens.reduce<{ [tokenAddress: string]: string | undefined }>((memo, token, i) => {
+              const value = balances?.[i]?.result?.[0]
+              const amount = value ? JSBI.BigInt(value.toString()) : undefined
+              if (amount) {
+                memo[token] = amount.toString()
+              }
+              // console.log(memo)
+              return memo
+            }, {})
+          : {},
+      [validatedTokens, balances]
+    ),
+    anyLoading
+  ]
+}
+
 export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[]

@@ -148,6 +148,7 @@ export default function SwapNative() {
               name: t('deposit'),
               onTabClick: () => {
                 setSwapType('deposit')
+                setInputBridgeValue('')
               },
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
@@ -156,6 +157,7 @@ export default function SwapNative() {
               name: t('widthdrwa'),
               onTabClick: () => {
                 setSwapType('widthdrwa')
+                setInputBridgeValue('')
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')

@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useAllTokenBalances } from '../../state/wallet/hooks'
+// import { useTokenTotalSupply, useTokenBalancesList } from '../../state/wallet/hooks'
+import { useTokenBalancesList } from '../../state/wallet/hooks'
 
 import TokenLogo from '../../components/TokenLogo'
 import AppBody from '../AppBody'
@@ -16,6 +17,9 @@ import { ReactComponent as Dropup } from '../../assets/images/dropup-blue.svg'
 import { ReactComponent as Dropdown } from '../../assets/images/dropdown-blue.svg'
 
 import config from '../../config'
+
+import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {fromWei} from '../../utils/tools/tools'
 
 const MyBalanceBox = styled.div`
   width: 100%;
@@ -273,6 +277,7 @@ const TokenActionBtnSwap = styled(TokenActionBtn)`
 `
 const MoreBtnBox = styled.div`
   ${({ theme }) => theme.flexC};
+  background-color: ${({theme}) => theme.tipBg};
   font-family: 'Manrope';
   width: 110px;
   height: 34px;
@@ -292,7 +297,7 @@ const WrappedDropup = ({ ...rest }) => <Dropup {...rest} />
 const ColoredDropup = styled(WrappedDropup)`
   margin-right: 0.625rem;
   path {
-    stroke: ${({ theme }) => theme.selectedBg};
+    stroke: ${({ theme }) => theme.textColorBold};
   }
 `
 
@@ -300,7 +305,7 @@ const WrappedDropdown = ({ ...rest }) => <Dropdown {...rest} />
 const ColoredDropdown = styled(WrappedDropdown)`
   margin-right: 0.625rem;
   path {
-    stroke: ${({ theme }) => theme.selectedBg};
+    stroke: ${({ theme }) => theme.textColorBold};
   }
 `
 // const ComineSoon = styled.div`
@@ -316,39 +321,107 @@ const ColoredDropdown = styled(WrappedDropdown)`
 // `
 
 export default function DashboardDtil() {
-  const { account } = useActiveWeb3React()
-  // const selectedTokenList = useSelectedTokenList()
-  // const allTokens = useAllTokenBalances()
+  const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  // const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  const balances = useAllTokenBalances()
+  const [poolArr, setPoolArr] = useState<Array<string>>()
+
+  const [allTokenArr, setAllTokenArr] = useState<Array<string>>()
+  const [allTokenList, setAllTokenList] = useState<any>()
+
+  useEffect(() => {
+    getAllToken().then((res:any) => {
+      // console.log(res)
+      if (res) {
+        const ulist:any = []
+        const alist:any = []
+        const tlist:any = {}
+        for (const token in res) {
+          if (res[token].list.underlying) {
+            ulist.push(res[token].list.underlying.address)
+          }
+          tlist[token.toLowerCase()] = {
+            "address": token,
+            "chainId": chainId,
+            "decimals": res[token].list.decimals,
+            "name": res[token].list.name,
+            "symbol": res[token].list.symbol,
+            "underlying": res[token].list.underlying
+          }
+          alist.push(token)
+        }
+        setAllTokenList(tlist)
+        setPoolArr(ulist)
+        setAllTokenArr(alist)
+      }
+    })
+  }, [])
 
   const [searchBalance, setSearchBalance] = useState('')
-  const [searchPool, setSearchPool] = useState('')
   const [showMore, setShowMore] = useState(false)
 
-  const tokenList = useMemo(() => {
-    const list: Array<any> = []
-    for (const tokenAddress in balances) {
-      list.push(balances[tokenAddress])
-    }
-    console.log(account)
-    return list
-  }, [balances, account])
-  // const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
-  // const tokenComparator = useTokenComparator(false)
-  // console.log(tokenList)
-  // console.log(balances)
-  useEffect(() => {
-    console.log(searchPool)
-    // console.log(allTokensArray)
-    // setSearchBalance('')
-    // setSearchPool('')
-    // console.log(tokenComparator)
-    // console.log(t)
-  }, [searchPool])
+  const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
+  const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
 
-  function searchBox(type: number) {
+  const formatUList = useMemo(() => {
+    if (!uListLoading) {
+      const obj:any = {}
+      for (const token in uList) {
+        obj[token.toLowerCase()] = uList[token]
+      }
+      return obj
+    }
+    return ''
+  }, [uList, uListLoading])
+
+  const formatUAllList = useMemo(() => {
+    if (!uAllListLoading) {
+      const obj:any = {}
+      for (const token in uAllList) {
+        obj[token.toLowerCase()] = uAllList[token]
+      }
+      return obj
+    }
+    return ''
+  }, [uAllList, uAllListLoading])
+  const tokenList = useMemo(() => {
+    const l:any = []
+    if (account && !uListLoading && !uAllListLoading) {
+      for (const token in allTokenList) {
+        let balance:any = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
+        let underlyingBlance:any = ''
+        let totalBlance:any = 0
+        if (allTokenList[token]?.underlying) {
+          balance = formatUList && formatUList[allTokenList[token]?.underlying?.address?.toLowerCase()] ? formatUList[allTokenList[token]?.underlying?.address?.toLowerCase()] : ''
+          underlyingBlance = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
+        }
+        const dec = allTokenList[token].decimals
+        balance = balance ? fromWei(balance, dec) : ''
+        underlyingBlance = underlyingBlance ? fromWei(underlyingBlance, dec) : ''
+        if (balance && underlyingBlance) {
+          totalBlance = Number(balance) + Number(underlyingBlance)
+        } else if (balance) {
+          totalBlance = balance
+        } else if (underlyingBlance) {
+          totalBlance = underlyingBlance
+        }
+        l.push({
+          ...allTokenList[token],
+          balance: balance,
+          poolBlance: underlyingBlance,
+          totalBlance: totalBlance
+        })
+      }
+    } else {
+      for (const token in allTokenList) {
+        l.push({
+          ...allTokenList[token]
+        })
+      }
+    }
+    return l
+  }, [formatUList, formatUAllList, allTokenList])
+
+  function searchBox() {
     return (
       <>
         <SearchBox>
@@ -358,33 +431,27 @@ export default function DashboardDtil() {
           <SearchInput
             placeholder={t('searchToken')}
             onChange={(e: any) => {
-              if (type === 1) {
-                setSearchBalance(e.target.value)
-              } else {
-                setSearchPool(e.target.value)
-              }
+              setSearchBalance(e.target.value)
             }}
           ></SearchInput>
         </SearchBox>
       </>
     )
   }
-
   return (
     <>
       <AppBody>
-        <Title title={t('swap')}></Title>
+        <Title title={t('dashboard')}></Title>
         <MyBalanceBox>
           <TitleAndSearchBox>
             <h3>{t('myBalance')}</h3>
-            {searchBox(1)}
+            {searchBox()}
           </TitleAndSearchBox>
           <MyBalanceTokenBox className={showMore ? 'showMore' : ''}>
             <DBTables>
               <DBThead>
                 <tr>
                   <DBTh className="c">{t('Coins')}</DBTh>
-                  <DBTh className="l">{t('price')}</DBTh>
                   <DBTh className="r">{t('balances')}</DBTh>
                   <DBTh className="r">{t('lr')}</DBTh>
                   <DBTh className="r">{t('TotalBalance')}</DBTh>
@@ -393,15 +460,15 @@ export default function DashboardDtil() {
               </DBThead>
               <DBTbody>
                 {tokenList.length > 0 ? (
-                  tokenList.map((item, index) => {
+                  tokenList.map((item:any, index:any) => {
                     if (
-                      !searchBalance ||
-                      (item?.token?.name &&
-                        item?.token?.name.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1) ||
-                      (item?.token?.symbol &&
-                        item?.token?.symbol.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1) ||
-                      (item?.token?.address &&
-                        item?.token?.address.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      !searchBalance
+                      || (item?.name && item?.name.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      || (item?.symbol && item?.symbol.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      || (item?.address && item?.address.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      || (item?.underlying?.address && item?.underlying?.address.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      || (item?.underlying?.symbol && item?.underlying?.symbol.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      || (item?.underlying?.name && item?.underlying?.name.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
                     ) {
                       return (
                         <tr key={index}>
@@ -409,98 +476,31 @@ export default function DashboardDtil() {
                             <TokenTableCoinBox>
                               <TokenTableLogo>
                                 <TokenLogo
-                                  symbol={config.getBaseCoin(item?.token?.symbol)}
+                                  symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}
                                   size={'1.625rem'}
                                 ></TokenLogo>
                               </TokenTableLogo>
                               <TokenNameBox>
-                                <h3>{config.getBaseCoin(item?.token?.symbol)}</h3>
-                                <p>{config.getBaseCoin(item?.token?.name, 1)}</p>
+                                <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}</h3>
+                                <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, 1)}</p>
                               </TokenNameBox>
                             </TokenTableCoinBox>
                           </DBTd>
-                          <DBTd className="l">$ 0.00</DBTd>
-                          <DBTd className="r">{item.toSignificant(4)}</DBTd>
-                          <DBTd className="r">0.00</DBTd>
-                          <DBTd className="r">0.00</DBTd>
+                          <DBTd className="r">{item.balance ? item.balance : '-'}</DBTd>
+                          <DBTd className="r">{item.poolBlance ? item.poolBlance : '-'}</DBTd>
+                          <DBTd className="r">{item.totalBlance ? item.totalBlance : '-'}</DBTd>
                           <DBTd className="c">
                             <span style={{ display: 'inline-block' }}>
-                              <TokenActionBtnSwap to={'/swap?outputCurrency=' + item?.token?.address}>
+                              <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
                                 {t('swap')}
                               </TokenActionBtnSwap>
                             </span>
                           </DBTd>
-                          {/* {
-                            poolObj[item.symbol] ? (
-                              config.dirSwitchFn(poolObj[item.symbol].isSwitch) ? (
-                                <>
-                                  <DBTd className='l'>$ {poolObj[item.symbol] && baseMarket ? 
-                                    (item.symbol === config.symbol ? formatNum(baseMarket, config.keepDec) : getPrice(poolObj[item.symbol].market, item.symbol)) : '-'
-                                  }</DBTd>
-                                  <DBTd className='r'>{account ? item.balance : '-'}</DBTd>
-                                  {
-                                    item.symbol === config.symbol ? (
-                                      <>
-                                        <DBTd className='r'>
-                                          {poolObj[item.symbol] && config.dirSwitchFn(poolObj[item.symbol].isSwitch) ? 
-                                            formatNum(amountFormatter(poolObj[item.symbol].Basebalance, 18, config.keepDec)) : '0'
-                                          }
-                                        </DBTd>
-                                        <DBTd className='r'>
-                                          {
-                                            poolObj[item.symbol]
-                                            && config.dirSwitchFn(poolObj[item.symbol].isSwitch)
-                                            && item.balance !== '-'
-                                            ? formatDecimal(Number(amountFormatter(poolObj[item.symbol].Basebalance, 18, config.keepDec)) + Number(item.balance), config.keepDec) : '0'}
-                                        </DBTd>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <DBTd className='r'>{poolObj[item.symbol] && config.dirSwitchFn(poolObj[item.symbol].isSwitch) && poolObj[item.symbol].balance && !isNaN(poolObj[item.symbol].balance) ? formatNum(poolObj[item.symbol].balance) : '0'}</DBTd>
-                                        <DBTd className='r'>
-                                          {
-                                            poolObj[item.symbol]
-                                            && config.dirSwitchFn(poolObj[item.symbol].isSwitch)
-                                            && item.balance !== '-'
-                                            && !isNaN(item.balance)
-                                            && !isNaN(poolObj[item.symbol].balance)
-                                            ? (
-                                              Number(poolObj[item.symbol].balance) + Number(item.balance) === 0 ?
-                                              '0'
-                                              :
-                                              formatDecimal(Number(poolObj[item.symbol].balance) + Number(item.balance), config.keepDec)
-                                            ) : '0'}</DBTd>
-                                      </>
-                                    )
-                                  }
-                                  <DBTd className='c'>
-                                    <span style={{display:"inline-block"}}><TokenActionBtnSwap to={'/swap?inputCurrency=' + item.address}>{t('swap')}</TokenActionBtnSwap></span>
-                                  </DBTd>
-                                </>
-                              ) : (
-                                <DBTd colSpan='5' className='c'>
-                                  <ComineSoon>
-                                    <img alt={''} src={ScheduleIcon} style={{marginRight: '10px'}} />
-                                    {t('ComineSoon')}
-                                  </ComineSoon>
-                                </DBTd>
-                              )
-                            ) : (
-                              <>
-                                <DBTd className='l'>$-</DBTd>
-                                <DBTd className='r'>-</DBTd>
-                                <DBTd className='r'>-</DBTd>
-                                <DBTd className='r'>-</DBTd>
-                                <DBTd className='r'>-</DBTd>
-                              </>
-                            )
-                          } */}
                         </tr>
                       )
                     } else {
                       return (
                         <tr key={index} style={{ display: 'none' }}>
-                          <DBTd className="c">$-</DBTd>
                           <DBTd className="c">-</DBTd>
                           <DBTd className="c">-</DBTd>
                           <DBTd className="c">-</DBTd>
@@ -512,7 +512,6 @@ export default function DashboardDtil() {
                   })
                 ) : (
                   <tr key={0}>
-                    <DBTd className="c">$-</DBTd>
                     <DBTd className="c">-</DBTd>
                     <DBTd className="c">-</DBTd>
                     <DBTd className="c">-</DBTd>
