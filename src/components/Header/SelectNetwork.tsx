@@ -16,17 +16,17 @@ import config from '../../config'
 import {chainInfo} from '../../config/chainConfig'
 import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 
-const WalletLogoBox = styled.div`
+export const WalletLogoBox = styled.div`
   width:100%;
   ${({theme}) => theme.flexBC}
 `
 
-const WalletLogoBox2 = styled.div`
+export const WalletLogoBox2 = styled.div`
 width:100%;
   ${({theme}) => theme.flexSC}
 `
 
-const IconWrapper = styled.div`
+export const IconWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
@@ -43,25 +43,25 @@ const IconWrapper = styled.div`
   }
 `
 
-const OptionCardLeft = styled.div`
+export const OptionCardLeft = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   justify-content: center;
   height: 100%;
 `
-const HeaderText = styled.div`
+export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
   font-family: 'Manrope';
   font-weight: 500;
 `
-const CircleWrapper = styled.div`
+export const CircleWrapper = styled.div`
   color: #27AE60;
   display: flex;
   justify-content: center;
   align-items: center;
 `
-const GreenCircle = styled.div`
+export const GreenCircle = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   justify-content: center;
   align-items: center;
@@ -75,7 +75,7 @@ const GreenCircle = styled.div`
   }
 `
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   margin: 0;
   padding: 0;
@@ -83,7 +83,7 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
 `
 
-const UpperSection = styled.div`
+export const UpperSection = styled.div`
   position: relative;
   width: 100%;
   font-family: 'Manrope';
@@ -104,7 +104,7 @@ const UpperSection = styled.div`
     font-weight: 500;
   }
 `
-const CloseIcon = styled.div`
+export const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;
   top: 0.875rem;
@@ -113,12 +113,12 @@ const CloseIcon = styled.div`
     opacity: 0.6;
   }
 `
-const CloseColor = styled(Close)`
+export const CloseColor = styled(Close)`
   path {
     stroke: ${({ theme }) => theme.chaliceGray};
   }
 `
-const HeaderRow = styled.div`
+export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1.5rem 1.5rem;
   font-weight: 500;
@@ -127,23 +127,23 @@ const HeaderRow = styled.div`
     padding: 1rem;
   `};
 `
-const HoverText = styled.div`
+export const HoverText = styled.div`
   :hover {
     cursor: pointer;
   }
 `
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.contentBg};
   padding: 0px 0.625rem 0.625rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
 `
-const NetWorkList = styled.div`
+export const NetWorkList = styled.div`
   width:100%;
   overflow:auth;
 `
 
-const InfoCard = styled.button`
+export const InfoCard = styled.button`
   background-color: ${({ theme }) => theme.contentBg};
   padding: 1rem;
   outline: none;
@@ -156,7 +156,7 @@ const InfoCard = styled.button`
   }
 `
 
-const OptionCard = styled(InfoCard)`
+export const OptionCard = styled(InfoCard)`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -164,7 +164,7 @@ const OptionCard = styled(InfoCard)`
   margin-top: 2rem;
   padding: 0.625rem 1rem;
 `
-const OptionCardClickable = styled(OptionCard)`
+export const OptionCardClickable = styled(OptionCard)`
   margin-top: 0;
   &:hover {
     cursor: pointer;
@@ -175,14 +175,14 @@ const OptionCardClickable = styled(OptionCard)`
     border-bottom:none;
   }
 `
-const HideSmall = styled.span`
+export const HideSmall = styled.span`
   cursor:pointer;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
 `
 
-const NetworkCard = styled(YellowCard)`
+export const NetworkCard = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
   white-space:nowrap;
@@ -195,6 +195,36 @@ const NetworkCard = styled(YellowCard)`
     flex-shrink: 1;
   `};
 `
+
+export function Option (item:any) {
+  return (
+    <>
+      <WalletLogoBox>
+        <WalletLogoBox2>
+          <IconWrapper>
+            {/* <img src={icon} alt={'Icon'} /> */}
+            <TokenLogo symbol={item.symbol} size={'46px'}></TokenLogo>
+          </IconWrapper>
+          <OptionCardLeft>
+            <HeaderText>
+              {' '}
+              {config.symbol === item.symbol && item.type === config.type ? (
+                <CircleWrapper>
+                  <GreenCircle>
+                    <div />
+                  </GreenCircle>
+                </CircleWrapper>
+              ) : (
+                ''
+              )}
+              {item.networkName}
+            </HeaderText>
+          </OptionCardLeft>
+        </WalletLogoBox2>
+      </WalletLogoBox>
+    </>
+  )
+}
 
 export default function SelectNetwork () {
   const history = createBrowserHistory()
@@ -222,35 +252,6 @@ export default function SelectNetwork () {
     })
   }, [])
 
-  function Option (item:any) {
-    return (
-      <>
-        <WalletLogoBox>
-          <WalletLogoBox2>
-            <IconWrapper>
-              {/* <img src={icon} alt={'Icon'} /> */}
-              <TokenLogo symbol={item.symbol} size={'46px'}></TokenLogo>
-            </IconWrapper>
-            <OptionCardLeft>
-              <HeaderText>
-                {' '}
-                {config.symbol === item.symbol && item.type === config.type ? (
-                  <CircleWrapper>
-                    <GreenCircle>
-                      <div />
-                    </GreenCircle>
-                  </CircleWrapper>
-                ) : (
-                  ''
-                )}
-                {item.networkName}
-              </HeaderText>
-            </OptionCardLeft>
-          </WalletLogoBox2>
-        </WalletLogoBox>
-      </>
-    )
-  }
   function changeNetwork () {
     return (
       <Modal

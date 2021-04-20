@@ -12,7 +12,11 @@ import { PaddedColumn, Separator } from '../../components/SearchModal/styleds'
 import { Input as NumericalInput } from '../../components/NumericalInput'
 import TokenLogo from '../../components/TokenLogo'
 import Modal from '../../components/Modal'
-import { MenuItem } from '../../components/SearchModal/styleds'
+// import { MenuItem } from '../../components/SearchModal/styleds'
+import {
+  OptionCardClickable,
+  Option
+} from '../../components/Header/SelectNetwork'
 
 import { TYPE, CloseIcon } from '../../theme'
 
@@ -113,38 +117,6 @@ export default function SelectChainIdInputPanel({
     }
   }, [account, chainId, bridgeConfig, selectChainId])
 
-  function chainListView () {
-    return (
-      <>
-        {
-          chainList.map((item:string|number, index) => {
-            if (Number(chainId) === Number(item)) {
-              return ''
-            }
-            return (
-              <MenuItem
-                className={`token-item-${index}`}
-                onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
-                disabled={selectChainId === item}
-                selected={selectChainId === item}
-                key={index}
-              >
-                <TokenLogo symbol={config.chainInfo[item].symbol} size={'24px'}></TokenLogo>
-                <Column>
-                  <Text title={config.chainInfo[item].name} fontWeight={500}>
-                    {config.getBaseCoin(config.chainInfo[item].symbol)}
-                    {selectChainId === item}
-                  </Text>
-                </Column>
-              </MenuItem>
-            )
-          })
-        }
-      </>
-    )
-  }
-
-  // console.log(selectedCurrencyBalance)
   return (
     <>
       <InputPanel id={id}>
@@ -260,7 +232,23 @@ export default function SelectChainIdInputPanel({
             </PaddedColumn>
             <Separator />
             <div style={{ flex: '1' }}>
-              {chainListView()}
+              {/* {chainListView()} */}
+              {
+                  chainList.map((item:any, index:any) => {
+                    if (Number(chainId) === Number(item)) {
+                      return ''
+                    }
+                    return (
+                      <OptionCardClickable
+                        key={index}
+                        className={selectChainId && selectChainId === item ? 'active' : ''}
+                        onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
+                      >
+                        {Option(config.chainInfo[item])}
+                      </OptionCardClickable>
+                    )
+                  })
+                }
             </div>
           </Column>
         </Modal>
