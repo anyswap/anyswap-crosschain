@@ -47,10 +47,12 @@ const SubCurrencySelectBox = styled.div`
 
 export default function PoolTip ({
   anyCurrency,
-  underlyingCurrency
+  underlyingCurrency,
+  bridgeConfig
 }: {
   anyCurrency: any
   underlyingCurrency: any
+  bridgeConfig: any
 }) {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -102,7 +104,7 @@ export default function PoolTip ({
       return '(' + n.toFixed(2) + '%)'
     }
   }
-  // console.log(tipView)
+  console.log(bridgeConfig)
   return (
     <SubCurrencySelectBox>
       <dl className='list'>

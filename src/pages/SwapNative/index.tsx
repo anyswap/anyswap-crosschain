@@ -44,6 +44,7 @@ export default function SwapNative() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [swapType, setSwapType] = useState<any>('deposit')
   const [count, setCount] = useState<number>(0)
+  const [bridgeConfig, setBridgeConfig] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
@@ -103,13 +104,14 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
 
   useEffect(() => {
-    const token = selectCurrency ? selectCurrency?.address : config.bridgeInitToken
+    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency?.address : config.getCurChainInfo(chainId).bridgeInitToken
     // console.log(token)
     if (token) {
-      getTokenConfig(token).then((res:any) => {
-        // console.log(res)
+      getTokenConfig(token, chainId).then((res:any) => {
+        console.log(res)
+        setBridgeConfig(res)
         if (res && res.decimals && res.symbol) {
-          if (!selectCurrency) {
+          if (!selectCurrency || selectCurrency.chainId !== chainId) {
             setSelectCurrency({
               "address": token,
               "chainId": chainId,
@@ -124,11 +126,14 @@ export default function SwapNative() {
             setCount(count + 1)
             // setCount(1)
           }, 100)
+          setBridgeConfig('')
         }
       })
+    } else {
+      setBridgeConfig('')
     }
     // getBaseInfo()
-  }, [selectCurrency, count])
+  }, [selectCurrency, count, chainId])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -192,6 +197,7 @@ export default function SwapNative() {
         <PoolTip 
           anyCurrency={anyCurrency}
           underlyingCurrency={underlyingCurrency}
+          bridgeConfig={bridgeConfig}
         />
 
         <BottomGrouping>

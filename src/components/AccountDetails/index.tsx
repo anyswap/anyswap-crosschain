@@ -318,10 +318,10 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={getEtherscanLink(ENSName, 'address')}
+                            href={getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.name}</span>
+                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -340,10 +340,10 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={false}
-                            href={getEtherscanLink(account, 'address')}
+                            href={getEtherscanLink(chainId, account, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.name}</span>
+                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</span>
                           </AddressLink>
                         )}
                       </div>

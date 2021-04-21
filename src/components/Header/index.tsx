@@ -130,7 +130,7 @@ const UniIcon = styled.div`
   }
 `
 export default function Header() {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -147,12 +147,11 @@ export default function Header() {
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
-          {/* <HideSmall>{chainId && <NetworkCard title={config.networkName}>{config.networkName}</NetworkCard>}</HideSmall> */}
           <SelectNetwork />
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(4)} {config.symbol}
+                {userEthBalance?.toSignificant(4)} {config.getCurChainInfo(chainId).symbol}
               </BalanceText>
             ) : null}
             <Web3Status />

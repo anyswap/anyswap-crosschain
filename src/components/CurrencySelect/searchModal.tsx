@@ -53,7 +53,7 @@ export default function SearchModal ({
   const inputRef = useRef<HTMLInputElement>()
 
   useEffect(() => {
-    getAllToken().then((res:any) => {
+    getAllToken(chainId).then((res:any) => {
       // console.log(res)
       if (res) {
         const list:any = []
@@ -84,7 +84,7 @@ export default function SearchModal ({
         setAllTokens(list)
       }
     })
-  }, [])
+  }, [chainId])
   // const fixedList = useRef<FixedSizeList>()
   // console.log(allTokens)
 

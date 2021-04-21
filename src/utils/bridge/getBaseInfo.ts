@@ -12,79 +12,11 @@ import config from '../../config'
 
 const routerConfigContract = getContract(RouterConfig)
 const routerActionContract = getContract(RouterAction)
-const chainID = config.bridgeInitDataChain
 
 const timeout = 1000 * 60 * 30
 
 interface ObjType {
   [key: string]: any
-}
-
-
-
-// 获取单条链配置
-const BRIDGEALLCHAINCONFIG = 'BRIDGEALLCHAINCONFIG'
-export function getChainConfig () {
-  return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGEALLCHAINCONFIG, BRIDGEALLCHAINCONFIG, config.chainID, BRIDGEALLCHAINCONFIG, timeout)
-    if (lData) {
-      resolve(lData.list)
-    } else {
-      web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
-      routerConfigContract.options.address = config.bridgeConfigToken
-      routerConfigContract.methods.getChainConfig(config.chainID).call((err:any, res:any) => {
-        if (err) {
-          resolve(false)
-        } else {
-          const results = res
-          if (results) {
-            const obj = JSON.parse(web3Fn.utils.hexToUtf8(results))
-            setLocalConfig(BRIDGEALLCHAINCONFIG, BRIDGEALLCHAINCONFIG, config.chainID, BRIDGEALLCHAINCONFIG, {list: obj})
-            resolve(obj)
-          } else {
-            resolve(false)
-          }
-        }
-      })
-    }
-  })
-}
-// 获取所有链配置
-export function getAllChainConfig (list:Array<[]>) {
-  return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGEALLCHAINCONFIG, BRIDGEALLCHAINCONFIG, config.chainID, BRIDGEALLCHAINCONFIG, timeout)
-    if (lData) {
-      resolve(lData.list)
-    } else {
-      web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
-      const batch = new web3Fn.BatchRequest()
-      // for (const chainid of list) {
-      const len = list.length
-      for (let i = 0; i < len; i++) {
-        const chainid = list[i]
-        const data = routerConfigContract.methods.getChainConfig(chainid).encodeABI()
-        batch.add(web3Fn.eth.call.request({data: data, to: config.bridgeConfigToken}, 'latest', (err:any, res:any) => {
-          if (err) {
-            console.log(err)
-            resolve('')
-          } else {
-            const results = res.substr(130)
-            if (results) {
-              setLocalConfig(BRIDGEALLCHAINCONFIG, BRIDGEALLCHAINCONFIG, chainid, BRIDGEALLCHAINCONFIG, {list: JSON.parse(web3Fn.utils.hexToUtf8('0x' + results))})
-            }
-            const lData1 = getLocalConfig(BRIDGEALLCHAINCONFIG, BRIDGEALLCHAINCONFIG, config.chainID, BRIDGEALLCHAINCONFIG, timeout)
-            if (lData1) {
-              resolve(lData1)
-            } else if (i === (len - 1)) {
-              resolve('')
-            }
-          }
-        }))
-      }
-
-      batch.execute()
-    }
-  })
 }
 
 // 校验合约是否可以跨链
@@ -105,14 +37,14 @@ export function isTokenIDExist (token:any) {
 
 // 获取可支持跨链的ID
 const BRIDGEALLCHAIN = 'BRIDGEALLCHAIN'
-export function getAllChainIDs () {
+export function getAllChainIDs (chainId:any) {
   return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, BRIDGEALLCHAIN, BRIDGEALLCHAIN, timeout)
+    const lData = getLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, timeout)
     if (lData) {
       resolve(lData.list)
     } else {
-      web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
-      routerConfigContract.options.address = config.bridgeConfigToken
+      web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
+      routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
     
       routerConfigContract.methods.getAllChainIDs().call((err:any, res:any) => {
         if (err) {
@@ -129,31 +61,31 @@ export function getAllChainIDs () {
 
 // 获取原生underlying地址
 const SRCUNDERLYING = 'SRCUNDERLYING'
-export function isUnderlying (token:any) {
+export function isUnderlying (token:any, chainId:any) {
   return new Promise(resolve => {
     // console.log(token)
-    const lData = getLocalConfig(SRCUNDERLYING, token, config.chainID, SRCUNDERLYING, 1000 * 60 * 60 * 24 * 1000, 1)
+    const lData = getLocalConfig(SRCUNDERLYING, token, chainId, SRCUNDERLYING, 1000 * 60 * 60 * 24 * 1000, 1)
     if (lData) {
       resolve(lData.data)
     } else {
-      web3Fn.setProvider(config.nodeRpc)
+      web3Fn.setProvider(config.getCurChainInfo(chainId).nodeRpc)
       routerActionContract.options.address = token
       routerActionContract.methods.underlying().call(async(err:any, res:any) => {
         if (err) {
           // console.log(err)
-          setLocalConfig(SRCUNDERLYING, token, config.chainID, SRCUNDERLYING, {data: false}, 1)
+          setLocalConfig(SRCUNDERLYING, token, chainId, SRCUNDERLYING, {data: false}, 1)
           resolve(false)
         } else {
           if (res && res === ZERO_ADDRESS) {
             resolve(false)
           } else {
-            const tokenInfo = await getTokenInfo(res)
+            const tokenInfo = await getTokenInfo(res, chainId)
             const data = {
               address: res,
               name: tokenInfo.name,
               symbol: tokenInfo.symbol,
             }
-            setLocalConfig(SRCUNDERLYING, token, config.chainID, SRCUNDERLYING, {data: data}, 1)
+            setLocalConfig(SRCUNDERLYING, token, chainId, SRCUNDERLYING, {data: data}, 1)
             resolve(data)
           }
         }
@@ -164,10 +96,10 @@ export function isUnderlying (token:any) {
 
 // 获取合约配置
 const BRIDGETOKENCONFIG = 'BRIDGETOKENCONFIG'
-function getAllTokenConfig (list:Array<[]>) {
+function getAllTokenConfig (list:Array<[]>, chainId:any) {
   return new Promise(resolve => {
     // let callbackData:any = ''
-    web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
     const batch = new web3Fn.BatchRequest()
 
     const tokenList:ObjType = {}
@@ -178,7 +110,7 @@ function getAllTokenConfig (list:Array<[]>) {
       const tokenid:any = list[i]
       // console.log(tokenid)
       const gamtData = routerConfigContract.methods.getAllMultichainTokens(tokenid).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.getCurBridgeConfigInfo(chainId).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         if (err) {
           console.log(err)
         } else {
@@ -192,8 +124,8 @@ function getAllTokenConfig (list:Array<[]>) {
         }
       }))
 
-      const gtcData = routerConfigContract.methods.getTokenConfig(tokenid, config.chainID).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      const gtcData = routerConfigContract.methods.getTokenConfig(tokenid, chainId).encodeABI()
+      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.getCurBridgeConfigInfo(chainId).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         // console.log(res)
         if (err) {
           console.log(err)
@@ -229,25 +161,25 @@ function getAllTokenConfig (list:Array<[]>) {
     batch.execute()
   })
 }
-function getAllTokenIDs () {
+function getAllTokenIDs (chainId:any) {
   return new Promise(resolve => {
-    web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
-    routerConfigContract.options.address = config.bridgeConfigToken
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
+    routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
   
     routerConfigContract.methods.getAllTokenIDs().call((err:any, res:any) => {
       if (err) {
         console.log(err)
         resolve('')
       } else {
-        getAllTokenConfig(res).then(async(result:any) => {
+        getAllTokenConfig(res, chainId).then(async(result:any) => {
           for (const tokenstr in result.tokenList) {
             const curTokenObj = result.tokenList[tokenstr]
             const curTokenIdObj = result.tokenidList[curTokenObj.tokenid]
             
             const destChain = {...curTokenIdObj}
-            delete destChain[config.chainID]
-            const tokenInfo = await getTokenInfo(tokenstr)
-            const underlyingInfo = await isUnderlying(tokenstr)
+            delete destChain[chainId]
+            const tokenInfo = await getTokenInfo(tokenstr, chainId)
+            const underlyingInfo = await isUnderlying(tokenstr, chainId)
             if (curTokenObj && curTokenIdObj) {
               const obj = {
                 ...curTokenObj,
@@ -256,7 +188,7 @@ function getAllTokenIDs () {
                 destChain: destChain,
                 underlying: underlyingInfo
               }
-              setLocalConfig(BRIDGETOKENCONFIG, tokenstr, config.chainID, BRIDGETOKENCONFIG, {list: obj})
+              setLocalConfig(BRIDGETOKENCONFIG, tokenstr, chainId, BRIDGETOKENCONFIG, {list: obj})
             }
           }
           resolve('')
@@ -266,16 +198,17 @@ function getAllTokenIDs () {
   })
 }
 
-export function getTokenConfig (token:any) {
+export function getTokenConfig (token:any, chainId:any) {
   return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGETOKENCONFIG, token, config.chainID, BRIDGETOKENCONFIG, timeout)
+    if (!chainId) resolve(false)
+    const lData = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
     // console.log(lData)
     // console.log(token)
     if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol && lData.list.symbol != 'UNKNOWN') {
       resolve(lData.list)
     } else {
-      getAllTokenIDs().then(() => {
-        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, config.chainID, BRIDGETOKENCONFIG, timeout)
+      getAllTokenIDs(chainId).then(() => {
+        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
         // console.log(lData1)
         if (lData1 && lData1.list && lData1.list.name && lData1.list.decimals && lData1.list.symbol) {
           resolve(lData1.list)
@@ -287,35 +220,23 @@ export function getTokenConfig (token:any) {
   })
 }
 
-export function getAllToken () {
+export function getAllToken (chainId:any) {
   return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGETOKENCONFIG, 'all', config.chainID, BRIDGETOKENCONFIG, timeout)
+    if (!chainId) resolve(false)
+    const lData = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG, timeout)
     // console.log(lData)
     if (lData) {
       resolve(lData)
     } else {
-      getAllTokenIDs().then(() => {
+      getAllTokenIDs(chainId).then(() => {
         // console.log(res)
-        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, 'all', config.chainID, BRIDGETOKENCONFIG)
+        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG)
         if (lData1) {
           resolve(lData1.list)
         } else {
           resolve('')
         }
       })
-    }
-  })
-}
-
-export function getBaseInfo () {
-  web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
-  routerConfigContract.options.address = config.bridgeConfigToken
-
-  routerConfigContract.methods.getAllTokenIDs().call((err:any, res:any) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(res)
     }
   })
 }

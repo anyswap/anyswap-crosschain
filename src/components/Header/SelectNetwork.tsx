@@ -7,6 +7,8 @@ import { YellowCard } from '../Card'
 import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
 
+import { useActiveWeb3React } from '../../hooks'
+
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleNetworkModal } from '../../state/application/hooks'
 
@@ -196,7 +198,9 @@ export const NetworkCard = styled(YellowCard)`
   `};
 `
 
-export function Option (item:any) {
+export function Option (item:any, selectChain:any) {
+  // const { chainId } = useActiveWeb3React()
+  // console.log(selectChain)
   return (
     <>
       <WalletLogoBox>
@@ -208,7 +212,7 @@ export function Option (item:any) {
           <OptionCardLeft>
             <HeaderText>
               {' '}
-              {config.symbol === item.symbol && item.type === config.type ? (
+              {selectChain === item.symbol ? (
                 <CircleWrapper>
                   <GreenCircle>
                     <div />
@@ -228,11 +232,12 @@ export function Option (item:any) {
 
 export default function SelectNetwork () {
   const history = createBrowserHistory()
+  const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
   function openUrl (item:any) {
-    if (item.symbol === config.symbol || !item.isSwitch) {
+    if (item.symbol === config.getCurChainInfo(chainId).symbol || !item.isSwitch) {
       return
     }
     // console.log(item)
@@ -246,7 +251,7 @@ export default function SelectNetwork () {
 
   useEffect(() => {
     
-    getAllChainIDs().then((res:any) => {
+    getAllChainIDs(chainId).then((res:any) => {
       // console.log(res)
       setChainList(res)
     })
@@ -272,8 +277,8 @@ export default function SelectNetwork () {
                 {
                   chainList.map((item:any, index:any) => {
                     return (
-                      <OptionCardClickable key={index} className={config.symbol === chainInfo[item].symbol && chainInfo[item].type === config.type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        {Option(chainInfo[item])}
+                      <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                        {Option(chainInfo[item], config.getCurChainInfo(chainId).symbol)}
                         {/* <img alt={''} src={AddIcon} /> */}
                       </OptionCardClickable>
                     )
@@ -289,7 +294,7 @@ export default function SelectNetwork () {
   return (
     <>
       {changeNetwork()}
-      <HideSmall onClick={() => toggleNetworkModal()}>{<NetworkCard title={config.networkName}>{config.networkName}</NetworkCard>}</HideSmall>
+      <HideSmall onClick={() => toggleNetworkModal()}>{<NetworkCard title={config.getCurChainInfo(chainId).networkName}>{config.getCurChainInfo(chainId).networkName}</NetworkCard>}</HideSmall>
     </>
   )
 }

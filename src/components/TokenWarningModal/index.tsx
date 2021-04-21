@@ -76,8 +76,8 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
               : config.getBaseCoin(token.name,1) || config.getBaseCoin(token.symbol)}{' '}
           </TYPE.main>
           {chainId && (
-            <ExternalLink style={{ fontWeight: 400 }} href={getEtherscanLink(token.address, 'token')}>
-              <TYPE.blue title={token.address}>{shortenAddress(token.address)} (View on {config.name})</TYPE.blue>
+            <ExternalLink style={{ fontWeight: 400 }} href={getEtherscanLink(chainId, token.address, 'token')}>
+              <TYPE.blue title={token.address}>{shortenAddress(token.address)} (View on {config.getCurChainInfo(chainId).name})</TYPE.blue>
             </ExternalLink>
           )}
         </AutoColumn>

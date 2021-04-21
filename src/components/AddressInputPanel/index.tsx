@@ -107,8 +107,8 @@ export default function AddressInputPanel({
                 {t('Recipient')}
               </TYPE.black>
               {address && chainId && (
-                <ExternalLink href={getEtherscanLink(name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  ({t('ViewOn')} {config.name})
+                <ExternalLink href={getEtherscanLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
+                  ({t('ViewOn')} {config.getCurChainInfo(chainId).name})
                 </ExternalLink>
               )}
             </RowBetween>

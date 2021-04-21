@@ -1,10 +1,10 @@
 import arbitrum from './arbitrum'
 import avax from './avax'
-import bsc from './bsc'
-import eth from './eth'
+import bsc, {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './bsc'
+import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID} from './eth'
 import fsn from './fsn'
 import ftm from './ftm'
-import ht from './ht'
+import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
 import matic from './matic'
 import xdai from './xdai'
 interface ConFig {
@@ -21,3 +21,12 @@ export const chainInfo:ConFig = {
   ...matic,
   ...xdai
 }
+
+export const spportChainArr = [
+  ETH_MAIN_CHAINID,
+  ETH_TEST_CHAINID,
+  HT_MAIN_CHAINID,
+  HT_TEST_CHAINID,
+  BNB_MAIN_CHAINID,
+  BNB_TEST_CHAINID
+]

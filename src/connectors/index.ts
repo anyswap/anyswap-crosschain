@@ -3,10 +3,16 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 
 import { NetworkConnector } from './NetworkConnector'
 
+import {spportChainArr} from '../config/chainConfig'
 import config from '../config'
 
 const NETWORK_URL = config.nodeRpc
 
+const spportChain:any = {}
+for (const chainID in config.chainInfo) {
+  spportChain[chainID] = config.chainInfo[chainID].nodeRpc
+}
+// console.log(spportChain)
 export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 
 if (typeof NETWORK_URL === 'undefined') {
@@ -14,7 +20,9 @@ if (typeof NETWORK_URL === 'undefined') {
 }
 
 export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
+  // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
+  defaultChainId: NETWORK_CHAIN_ID,
+  urls: { ...spportChain }
 })
 
 let networkLibrary: Web3Provider | undefined
@@ -23,5 +31,5 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [config.chainID]
+  supportedChainIds: [...spportChainArr]
 })

@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { useActiveWeb3React } from '../../hooks'
+
 import config from '../../config'
 
 import initPath from '../../assets/images/question.svg'
@@ -55,9 +57,10 @@ export default function TokenLogo({
   style?: React.CSSProperties
   isAny?: any
 }) {
+  const { chainId } = useActiveWeb3React()
   let path = ''
   symbol = config.getBaseCoin(symbol)
-  symbol = symbol === 'W' + config.symbol ? symbol.substr(1) : symbol
+  symbol = symbol === 'W' + config.getCurChainInfo(chainId).symbol ? symbol.substr(1) : symbol
   // symbol = symbol === 'WHT' ? 'HT' : symbol
   // console.log(symbol)
   if (symbol) {

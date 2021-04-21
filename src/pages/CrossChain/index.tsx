@@ -67,7 +67,7 @@ export default function CrossChain() {
     selectCurrency && selectCurrency.underlying ?
       {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol} : selectCurrency)
   const amountToApprove = formatCurrency ? new TokenAmount(formatCurrency ?? undefined, inputBridgeValue) : undefined
-  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, config.bridgeRouterToken)
+  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -147,18 +147,24 @@ export default function CrossChain() {
 
   useEffect(() => {
     if (chainId && !selectChain) {
-      setSelectChain(config.bridgeInitChain)
+      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
     }
   }, [chainId, selectChain])
+  useEffect(() => {
+    if (chainId) {
+      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+    }
+  }, [chainId])
 
   useEffect(() => {
-    const token = selectCurrency ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.bridgeInitToken)
+    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+
     if (token && isAddress(token)) {
-      getTokenConfig(token).then((res:any) => {
-        // console.log(res)
+      getTokenConfig(token, chainId).then((res:any) => {
+        console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
-          if (!selectCurrency) {
+          if (!selectCurrency || selectCurrency.chainId !== chainId) {
             setSelectCurrency({
               "address": token,
               "chainId": chainId,
@@ -180,7 +186,7 @@ export default function CrossChain() {
       setBridgeConfig('')
     }
     // getBaseInfo()
-  }, [selectCurrency, count, initBridgeToken])
+  }, [selectCurrency, count, initBridgeToken, chainId])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {

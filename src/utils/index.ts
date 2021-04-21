@@ -18,26 +18,27 @@ export function isAddress(value: any): string | false {
 }
 
 export function getEtherscanLink(
+  chainId: any,
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
 
   switch (type) {
     case 'transaction': {
-      const url = config.lookHash + data
+      const url = config.getCurChainInfo(chainId).lookHash + data
       return url
     }
     case 'token': {
-      const url = config.lookAddr + data
+      const url = config.getCurChainInfo(chainId).lookAddr + data
       return url
     }
     case 'block': {
-      const url = config.lookBlock + data
+      const url = config.getCurChainInfo(chainId).lookBlock + data
       return url
     }
     case 'address':
     default: {
-      const url = config.lookAddr + data
+      const url = config.getCurChainInfo(chainId).lookAddr + data
       return url
     }
   }

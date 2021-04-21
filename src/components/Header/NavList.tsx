@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
+import { useActiveWeb3React } from '../../hooks'
 
 import config from '../../config'
 
@@ -237,7 +238,7 @@ const Link = styled(ExternalLink)`
 
 // console.log(config)
 export default function NavList() {
-  // const { account, chainId } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
 
   return (
@@ -283,7 +284,7 @@ export default function NavList() {
         </StyledNavLink> */}
       </HeaderLinks>
       <Tabs>
-        <MenuItem id="link" href={config.marketsUrl}>
+        <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
           <div className="icon">
             <img src={require('../../assets/images/icon/markets.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/markets-purpl.svg')} className="on" alt="" />
@@ -304,7 +305,7 @@ export default function NavList() {
           </div>
           {t('Network')}
         </MenuItem>
-        <MenuItem id="link" href={config.document}>
+        <MenuItem id="link" href={config.getCurChainInfo(chainId).document}>
           <div className="icon">
             <img src={require('../../assets/images/icon/documents.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/documents-purpl.svg')} className="on" alt="" />

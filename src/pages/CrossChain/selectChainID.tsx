@@ -83,11 +83,11 @@ export default function SelectChainIdInputPanel({
 
   useEffect(() => {
     
-    getAllChainIDs().then((res:any) => {
+    getAllChainIDs(chainId).then((res:any) => {
       // console.log(res)
       setChainList(res)
     })
-  }, [])
+  }, [chainId])
 
   const handleCurrencySelect = useCallback(
     (chainID) => {
@@ -244,7 +244,7 @@ export default function SelectChainIdInputPanel({
                         className={selectChainId && selectChainId === item ? 'active' : ''}
                         onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
-                        {Option(config.chainInfo[item])}
+                        {Option(config.chainInfo[item], config.chainInfo[selectChainId].symbol)}
                       </OptionCardClickable>
                     )
                   })

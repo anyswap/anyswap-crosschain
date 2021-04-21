@@ -182,7 +182,7 @@ export default function SelectCurrencyInputPanel({
                       '...' +
                       currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                     : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                  {!inputType && chainId ? '-' + config.suffix : ''}
+                  {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''}
                 </h3>
                 <p>
                  {currency && currency.name ? currency.name : ''}
@@ -205,10 +205,10 @@ export default function SelectCurrencyInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={config?.symbol} size={'24px'} />
+                    <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container">
-                    {config.networkName}
+                    {config.getCurChainInfo(chainId).networkName}
                   </StyledTokenName>
                   {!disableCurrencySelect && !!currency && (
                     <StyledDropDownBox>
@@ -238,38 +238,6 @@ export default function SelectCurrencyInputPanel({
               </ErrorSpanBox>
             )
           }
-          {/* <ErrorSpanBox>
-            {isViewNetwork ? (
-              <CurrencySelect1
-                selected={true}
-                className="open-currency-select-button"
-              >
-                <Aligner>
-                  <TokenLogoBox>
-                    <TokenLogo symbol={config?.symbol} size={'24px'} />
-                  </TokenLogoBox>
-                  <StyledTokenName className="token-symbol-container">
-                    {config.networkName}
-                  </StyledTokenName>
-                </Aligner>
-              </CurrencySelect1>
-            ) : (
-              !hideBalance && !!currency && selectedCurrencyBalance ? (
-                <ErrorSpan onClick={handleMax}>
-                  <ExtraText>
-                    <h5>{t('balance')}</h5>
-                    <p>
-                      {!hideBalance && !!currency && selectedCurrencyBalance
-                        ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
-                        : ' -'}{' '}
-                    </p>
-                  </ExtraText>
-                </ErrorSpan>
-              ) : (
-                ''
-              )
-            )}
-          </ErrorSpanBox> */}
         </InputRow>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && modalOpen && (

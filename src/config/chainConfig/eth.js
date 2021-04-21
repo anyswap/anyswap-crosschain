@@ -3,8 +3,8 @@ import {tokenListUrl} from '../constant'
 
 const navLang = navigator.language
 
-export const ETH_MAINNET = 'https://ethmainnet.anyswap.exchange'
-// export const ETH_MAINNET = 'https://eth-mainnet.alchemyapi.io/v2/q1gSNoSMEzJms47Qn93f9-9Xg5clkmEC'
+// export const ETH_MAINNET = 'https://ethmainnet.anyswap.exchange'
+export const ETH_MAINNET = 'https://eth-mainnet.alchemyapi.io/v2/q1gSNoSMEzJms47Qn93f9-9Xg5clkmEC'
 export const ETH_MAIN_CHAINID = 1
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 

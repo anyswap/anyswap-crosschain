@@ -18,7 +18,7 @@ export function getNodeBalance(account:string, token:string, chainID:any, dec:an
         resolve(fromWei(lObj.balance, dec))
       } else {
         contract.options.address = token
-        web3Fn.setProvider(config.chainInfo[chainID].nodeRpc)
+        web3Fn.setProvider(config.getCurChainInfo(chainID).nodeRpc)
         contract.methods.balanceOf(account).call((err:any, res:any) => {
           if (err) {
             console.log(err)

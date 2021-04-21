@@ -15,20 +15,9 @@ const netConfig:ConFig = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
 
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
 
-let envConfig:ConFig = {
-  bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
-  bridgeInitDataChain: '56',
-}
-if (chainInfo[ENV].type === 'test') {
-  envConfig = {
-    bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
-    bridgeInitDataChain: '256',
-  }
-}
 const config: ConFig = {
   ...netConfig,
   ...INITBRIDGE,
-  ...envConfig,
   ENV_NODE_CONFIG,
   chainInfo,
   localDataDeadline: 1617781347004,
@@ -43,6 +32,26 @@ const config: ConFig = {
       return 'W' + netConfig.symbol
     } else {
       return value
+    }
+  },
+  getCurBridgeConfigInfo (chainID:any) {
+    let envConfig:ConFig = {
+      bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
+      bridgeInitDataChain: '56',
+    }
+    if (chainID && chainInfo[chainID].type === 'test') {
+      envConfig = {
+        bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
+        bridgeInitDataChain: '256',
+      }
+    }
+    return envConfig
+  },
+  getCurChainInfo (chainID:any) {
+    if (chainID && chainInfo[chainID]) {
+      return chainInfo[chainID]
+    } else {
+      return netConfig
     }
   }
 }

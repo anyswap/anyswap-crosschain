@@ -329,7 +329,7 @@ export default function DashboardDtil() {
   const [allTokenList, setAllTokenList] = useState<any>()
 
   useEffect(() => {
-    getAllToken().then((res:any) => {
+    getAllToken(chainId).then((res:any) => {
       // console.log(res)
       if (res) {
         const ulist:any = []

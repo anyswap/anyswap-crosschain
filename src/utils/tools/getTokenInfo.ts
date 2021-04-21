@@ -6,13 +6,13 @@ const TOKENINFO = 'TOKENINFO'
 const UNKNOWN = 'UNKNOWN'
 const contract = getContract()
 
-function getTokenNetworkInfo (token:any) {
+function getTokenNetworkInfo (token:any, chainId:any) {
   return new Promise(resolve => {
     const data = {
       name: UNKNOWN,
       symbol: UNKNOWN
     }
-    web3Fn.setProvider(config.nodeRpc)
+    web3Fn.setProvider(config.getCurChainInfo(chainId).nodeRpc)
     const batch = new web3Fn.BatchRequest()
     contract.options.address = token
 
@@ -32,7 +32,7 @@ function getTokenNetworkInfo (token:any) {
       } else {
         data.symbol = web3Fn.utils.hexToUtf8(formatWeb3Str(res)[2])
       }
-      setLocalConfig(TOKENINFO, token, config.chainID, TOKENINFO, {data: data}, 1)
+      setLocalConfig(TOKENINFO, token, chainId, TOKENINFO, {data: data}, 1)
       resolve(data)
     }))
 
@@ -40,11 +40,11 @@ function getTokenNetworkInfo (token:any) {
   })
 }
 
-export default function getTokenInfo (token:any) {
-  const lData = getLocalConfig(TOKENINFO, token, config.chainID, TOKENINFO, 1000 * 60 * 60 * 24 * 1000, 1)
+export default function getTokenInfo (token:any, chainId:any) {
+  const lData = getLocalConfig(TOKENINFO, token, chainId, TOKENINFO, 1000 * 60 * 60 * 24 * 1000, 1)
   // console.log(lData)
   if (lData && lData.data.name !== UNKNOWN && lData.data.symbol !== UNKNOWN) {
     return lData.data
   }
-  return getTokenNetworkInfo(token)
+  return getTokenNetworkInfo(token, chainId)
 }

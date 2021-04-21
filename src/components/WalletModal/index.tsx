@@ -127,7 +127,7 @@ export default function WalletModal({
   ENSName?: string
 }) {
   // important that these are destructed from the account-specific web3-react context
-  const { active, account, connector, activate, error } = useWeb3React()
+  const { active, account, connector, activate, error, chainId } = useWeb3React()
 
   const { t } = useTranslation()
 
@@ -291,7 +291,7 @@ export default function WalletModal({
           <HeaderRow>{error instanceof UnsupportedChainIdError ? t('WrongNetwork') : t('ErrorConnecting')}</HeaderRow>
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
-              <h5>{t('tip37', {name:config.name})}</h5>
+              <h5>{t('tip37', {name:config.getCurChainInfo(chainId).name})}</h5>
             ) : (
               t('tip36')
             )}

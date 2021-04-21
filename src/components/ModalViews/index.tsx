@@ -64,8 +64,8 @@ export function SubmittedView({
       <AutoColumn gap="100px" justify={'center'}>
         {children}
         {chainId && hash && (
-          <ExternalLink href={getEtherscanLink(hash, 'transaction')} style={{ marginLeft: '4px' }}>
-            <TYPE.subHeader>View transaction on {config.name}</TYPE.subHeader>
+          <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')} style={{ marginLeft: '4px' }}>
+            <TYPE.subHeader>View transaction on {config.getCurChainInfo(chainId).name}</TYPE.subHeader>
           </ExternalLink>
         )}
       </AutoColumn>
