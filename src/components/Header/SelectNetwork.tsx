@@ -251,7 +251,7 @@ export default function SelectNetwork () {
         params: [
           {
             chainId: web3Fn.utils.toHex(item.chainID), // A 0x-prefixed hexadecimal string
-            chainName: item.name,
+            chainName: item.networkName,
             nativeCurrency: {
               name: item.name,
               symbol: item.symbol, // 2-6 characters long
