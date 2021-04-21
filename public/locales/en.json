@@ -307,5 +307,7 @@
   "selectNetwork": "Select Network",
   "swapNative": "Swap Native",
   "swapChain": "Swap",
-  "withdraw": "Withdraw"
+  "withdraw": "Withdraw",
+
+  "changeMetamaskNetwork": "Please switch metamask network to：{{label}}"
 }

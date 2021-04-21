@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import { TokenAmount } from 'anyswap-sdk'
-import { createBrowserHistory } from 'history'
+// import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
@@ -23,7 +23,7 @@ import AddressInputPanel from '../../components/AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
@@ -40,7 +40,8 @@ import AppBody from '../AppBody'
 export default function CrossChain() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const history = createBrowserHistory()
+  const toggleNetworkModal = useToggleNetworkModal()
+  // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
@@ -254,10 +255,7 @@ export default function CrossChain() {
 
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
-              localStorage.setItem(config.ENV_NODE_CONFIG, selectChain)
-              console.log(window.location.pathname)
-              history.push(window.location.pathname + window.location.hash)
-              history.go(0)
+              toggleNetworkModal()
             }}>
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>

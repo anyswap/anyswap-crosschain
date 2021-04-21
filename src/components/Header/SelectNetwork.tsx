@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { createBrowserHistory } from 'history'
+// import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -17,6 +17,7 @@ import { ReactComponent as Close } from '../../assets/images/x.svg'
 import config from '../../config'
 import {chainInfo} from '../../config/chainConfig'
 import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+import {web3Fn} from '../../utils/tools/web3Utils'
 
 export const WalletLogoBox = styled.div`
   width:100%;
@@ -231,22 +232,57 @@ export function Option (item:any, selectChain:any) {
 }
 
 export default function SelectNetwork () {
-  const history = createBrowserHistory()
+  // const history = createBrowserHistory()
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
+
+
+  function setMetamaskNetwork (item:any) {
+    const { ethereum } = window
+    const ethereumFN:any = {
+      request: '',
+      ...ethereum
+    }
+    if (ethereumFN && ethereumFN.request) {
+      ethereumFN.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: web3Fn.utils.toHex(item.chainID), // A 0x-prefixed hexadecimal string
+            chainName: item.name,
+            nativeCurrency: {
+              name: item.name,
+              symbol: item.symbol, // 2-6 characters long
+              decimals: 18,
+            },
+            rpcUrls: [item.nodeRpc],
+            blockExplorerUrls: [item.explorer],
+            iconUrls: null // Currently ignored.
+          }
+        ],
+      }).then((res: any) => {
+        console.log(res)
+        localStorage.setItem(config.ENV_NODE_CONFIG, item.label)
+        toggleNetworkModal()
+      }).catch((err: any) => {
+        console.log(err)
+        alert(t('changeMetamaskNetwork', {label: item.networkName}))
+        toggleNetworkModal()
+      })
+    } else {
+      alert(t('changeMetamaskNetwork', {label: item.networkName}))
+      toggleNetworkModal()
+    }
+  }
+
   function openUrl (item:any) {
     if (item.symbol === config.getCurChainInfo(chainId).symbol || !item.isSwitch) {
       return
     }
-    // console.log(item)
-    localStorage.setItem(config.ENV_NODE_CONFIG, item.label)
-    history.push(window.location.pathname + window.location.hash)
-    history.go(0)
+    setMetamaskNetwork(item)
   }
-  // console.log(window.location)
-  // const [networkView, setNetworkView] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
 
   useEffect(() => {
@@ -255,7 +291,9 @@ export default function SelectNetwork () {
       // console.log(res)
       setChainList(res)
     })
-  }, [])
+  }, [chainId])
+
+  
 
   function changeNetwork () {
     return (
@@ -275,7 +313,7 @@ export default function SelectNetwork () {
             <ContentWrapper>
               <NetWorkList>
                 {
-                  chainList.map((item:any, index:any) => {
+                  chainList && chainList.map((item:any, index:any) => {
                     return (
                       <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
                         {Option(chainInfo[item], config.getCurChainInfo(chainId).symbol)}

@@ -306,5 +306,7 @@
   "selectNetwork": "选择网络",
   "swapNative": "充提",
   "swapChain": "交换",
-  "withdraw": "取出"
+  "withdraw": "取出",
+
+  "changeMetamaskNetwork": "请切换Metamask网络为：{{label}}"
 }

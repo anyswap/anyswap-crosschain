@@ -19,42 +19,29 @@ interface ObjType {
   [key: string]: any
 }
 
-// 校验合约是否可以跨链
-export function isTokenIDExist (token:any) {
-  return new Promise(resolve => {
-    web3Fn.setProvider(config.nodeRpc)
-    routerConfigContract.options.address = config.bridgeConfigToken
-    routerConfigContract.methods.isTokenIDExist(token).call((err:any, res:any) => {
-      if (err) {
-        console.log(err)
-        resolve(false)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
 // 获取可支持跨链的ID
 const BRIDGEALLCHAIN = 'BRIDGEALLCHAIN'
 export function getAllChainIDs (chainId:any) {
   return new Promise(resolve => {
-    const lData = getLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, timeout)
-    if (lData) {
-      resolve(lData.list)
-    } else {
-      web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
-      routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
-    
-      routerConfigContract.methods.getAllChainIDs().call((err:any, res:any) => {
-        if (err) {
-          console.log(err)
-          resolve([])
-        } else {
-          setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, BRIDGEALLCHAIN, BRIDGEALLCHAIN, {list: res})
-          resolve(res)
-        }
-      })
+    if (!chainId) resolve(false)
+    else {
+      const lData = getLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, timeout)
+      if (lData) {
+        resolve(lData.list)
+      } else {
+        web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
+        routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
+      
+        routerConfigContract.methods.getAllChainIDs().call((err:any, res:any) => {
+          if (err) {
+            console.log(err)
+            resolve([])
+          } else {
+            setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, {list: res})
+            resolve(res)
+          }
+        })
+      }
     }
   })
 }
@@ -201,21 +188,23 @@ function getAllTokenIDs (chainId:any) {
 export function getTokenConfig (token:any, chainId:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
-    const lData = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
-    // console.log(lData)
-    // console.log(token)
-    if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol && lData.list.symbol != 'UNKNOWN') {
-      resolve(lData.list)
-    } else {
-      getAllTokenIDs(chainId).then(() => {
-        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
-        // console.log(lData1)
-        if (lData1 && lData1.list && lData1.list.name && lData1.list.decimals && lData1.list.symbol) {
-          resolve(lData1.list)
-        } else {
-          resolve('')
-        }
-      })
+    else {
+      const lData = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
+      // console.log(lData)
+      // console.log(token)
+      if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol && lData.list.symbol != 'UNKNOWN') {
+        resolve(lData.list)
+      } else {
+        getAllTokenIDs(chainId).then(() => {
+          const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
+          // console.log(lData1)
+          if (lData1 && lData1.list && lData1.list.name && lData1.list.decimals && lData1.list.symbol) {
+            resolve(lData1.list)
+          } else {
+            resolve('')
+          }
+        })
+      }
     }
   })
 }
@@ -223,20 +212,22 @@ export function getTokenConfig (token:any, chainId:any) {
 export function getAllToken (chainId:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
-    const lData = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG, timeout)
-    // console.log(lData)
-    if (lData) {
-      resolve(lData)
-    } else {
-      getAllTokenIDs(chainId).then(() => {
-        // console.log(res)
-        const lData1 = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG)
-        if (lData1) {
-          resolve(lData1.list)
-        } else {
-          resolve('')
-        }
-      })
+    else {
+      const lData = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG, timeout)
+      // console.log(lData)
+      if (lData) {
+        resolve(lData)
+      } else {
+        getAllTokenIDs(chainId).then(() => {
+          // console.log(res)
+          const lData1 = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG)
+          if (lData1) {
+            resolve(lData1.list)
+          } else {
+            resolve('')
+          }
+        })
+      }
     }
   })
 }
