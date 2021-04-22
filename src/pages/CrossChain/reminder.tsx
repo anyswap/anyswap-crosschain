@@ -82,6 +82,8 @@ function CrossBridge (bridgeConfig:any, currency:any) {
       <></>
     )
   }
+  const viewSymbol = currency?.underlying?.symbol ?? currency?.symbol
+  // console.log(currency)
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
@@ -91,17 +93,17 @@ function CrossBridge (bridgeConfig:any, currency:any) {
         </dt>
         <dd><i></i>{t('mintTip1', {
           dMinFee: bridgeConfig.MinimumSwapFee,
-          coin: currency.symbol,
+          coin: viewSymbol,
           dMaxFee: bridgeConfig.MaximumSwapFee,
           dFee: Number(bridgeConfig.SwapFeeRatePerMillion)
         })}</dd>
-        <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig.MinimumSwap, 'no')} {currency.symbol}</dd>
-        <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig.MaximumSwap, 'no')} {currency.symbol}</dd>
+        <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig.MinimumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig.MaximumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t('mintTip4')}</dd>
         <dd><i></i>{t('mintTip5', {
           depositBigValMoreTime: thousandBit(bridgeConfig.BigValueThreshold, 'no'),
-          coin: currency.symbol,
-        }) + (currency.symbol ? '' : '')}</dd>
+          coin: viewSymbol,
+        }) + (viewSymbol ? '' : '')}</dd>
       </dl>
     </SubCurrencySelectBox>
   )
