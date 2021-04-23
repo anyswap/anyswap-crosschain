@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -6,6 +6,10 @@ import { useActiveWeb3React } from '../../hooks'
 import {useTokenBalancesWithLoadingIndicator, useTokenTotalSupplyWithLoadingIndicator} from '../../state/wallet/hooks'
 
 import {fromWei} from '../../utils/tools/tools'
+import {getNodeBalance, getNodeTotalsupply} from '../../utils/bridge/getBalance'
+
+import TokenLogo from '../../components/TokenLogo'
+import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;
@@ -45,28 +49,42 @@ const SubCurrencySelectBox = styled.div`
   }
 `
 
+const PoolList = styled.ul`
+padding-left: 15px;
+list-style:none;
+margin: 0;
+li {
+    ${({ theme }) => theme.flexSC};
+    margin-bottom: 5px;
+  }
+`
+
 export default function PoolTip ({
   anyCurrency,
-  underlyingCurrency,
   bridgeConfig
 }: {
   anyCurrency: any
-  underlyingCurrency: any
   bridgeConfig: any
 }) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   
-  const list = [anyCurrency, underlyingCurrency]
+  const list = [anyCurrency]
+  console.log(anyCurrency)
   const [userTokenList, userTokenLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, list)
   const [totalsupplyList, totalsupplyLoading] = useTokenTotalSupplyWithLoadingIndicator(list)
   const dec = anyCurrency?.decimals
+
+  const [outChainBalance, setOutChainBalance] = useState<any>()
+
   const poolsView = useMemo(() => {
     if (!totalsupplyLoading) {
       const l1:any = {}
       for (const token in totalsupplyList) {
         // console.log(totalsupplyList[token]?.raw.toString())
         const balance = totalsupplyList[token]
+        console.log(token)
+        console.log(balance?.raw.toString())
         l1[token.toLowerCase()] = {
           balance: balance,
           viewBalance: fromWei(balance?.raw.toString(), dec)
@@ -104,49 +122,151 @@ export default function PoolTip ({
       return '(' + n.toFixed(2) + '%)'
     }
   }
-  console.log(bridgeConfig)
+  async function getAllOutBalance (account:any) {
+    const list:any = []
+    for (const c in bridgeConfig.destChain) {
+      const balance = await getNodeBalance(account, bridgeConfig.destChain[c], c, bridgeConfig.decimals)
+      const totalsupply = await getNodeTotalsupply(bridgeConfig.destChain[c], c, bridgeConfig.decimals)
+      list.push({
+        chainId: c,
+        balance: balance,
+        totalsupply: totalsupply,
+        percent: formatPercent(balance, totalsupply)
+      })
+    }
+    return list
+  }
+  useEffect(() => {
+    console.log(bridgeConfig)
+    if (bridgeConfig) {
+      getAllOutBalance(account).then((res:any) => {
+        console.log(res)
+        setOutChainBalance(res)
+      })
+    }
+  }, [bridgeConfig, account])
+
+  // const formatOurPool = useMemo(() => {
+
+  // }, [outChainBalance])
+  // console.log(outChainBalance)
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
-        <dd><i></i>{t('exchangeRate')}: 1:1</dd>
         <dd>
           <i></i>
-          {t('currentPoolSize')}: {
-            !totalsupplyLoading && poolsView ? (
-              (poolsView[underlyingCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + underlyingCurrency?.symbol)
-              + ' + ' +
-              (poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)
-            ) : ''
-          }
+          {t('currentPoolSize')}:
+          <PoolList>
+            <li>
+              {
+                !userTokenLoading && usersView && account ? (
+                  <>
+                    <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                    {(
+                      (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)
+                      +
+                      (
+                        formatPercent(
+                          usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance,
+                          poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
+                        )
+                      )
+                    )}
+                  </>
+                ) : ''
+              }
+              {!userTokenLoading && usersView && account && !totalsupplyLoading && poolsView ? '+' : ''}
+              {
+                !totalsupplyLoading && poolsView ? (
+                  <>
+                    {(poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)}
+                  </>
+                ) : ''
+              }
+            </li>
+            {
+              outChainBalance ? (
+                outChainBalance.map((item:any, index:number) => {
+                  // if (!item.totalsupply) return ''
+                  return (
+                    <li key={index}>
+                      <TokenLogo symbol={config.getCurChainInfo(item.chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                      {item.balance ? item.balance : '0.00'} {anyCurrency?.symbol}
+                      {item.percent ? item.percent : '(0.00%)'}
+                      +
+                      {item.totalsupply ? item.totalsupply : '0.00'} {anyCurrency?.symbol}
+                    </li>
+                  )
+                })
+              ) : ''
+            }
+          </PoolList>
+        </dd>
+        {/* <dd>
+          <i></i>
+          {t('currentPoolSize')}:
+          <PoolList>
+            
+            {
+              !totalsupplyLoading && poolsView ? (
+                <li>
+                  <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                  {(poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)}
+                </li>
+              ) : ''
+            }
+            {
+              outChainBalance ? (
+                outChainBalance.map((item:any, index:number) => {
+                  // if (!item.totalsupply) return ''
+                  return (
+                    <li key={index}>
+                      <TokenLogo symbol={config.getCurChainInfo(item.chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                      {item.totalsupply ? item.totalsupply : '0.00'} {anyCurrency?.symbol}
+                    </li>
+                  )
+                })
+              ) : ''
+            }
+          </PoolList>
         </dd>
         <dd>
           <i></i>
-          {t('yourPoolShare')}: {
-            !userTokenLoading && usersView && account ? (
-              (
-                usersView[underlyingCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + underlyingCurrency?.symbol
-                +
-                (
-                  formatPercent(
-                    usersView[underlyingCurrency?.address?.toLowerCase()]?.viewBalance,
-                    poolsView[underlyingCurrency?.address?.toLowerCase()]?.viewBalance
+          {t('yourPoolShare')}:
+          <PoolList>
+            {
+              !userTokenLoading && usersView && account ? (
+                <li>
+                  <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                  {(
+                    (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)
+                    +
+                    (
+                      formatPercent(
+                        usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance,
+                        poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
+                      )
+                    )
+                  )}
+                </li>
+              ) : ''
+            }
+            {
+              outChainBalance ? (
+                outChainBalance.map((item:any, index:number) => {
+                  // if (!item.balance) return ''
+                  return (
+                    <li key={index}>
+                      <TokenLogo symbol={config.getCurChainInfo(item.chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
+                      {item.balance ? item.balance : '0.00'} {anyCurrency?.symbol}
+                      {item.percent ? item.percent : '(0.00%)'}
+                    </li>
                   )
-                )
-              )
-              + ' + ' +
-              (
-                (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)
-                +
-                (
-                  formatPercent(
-                    usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance,
-                    poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
-                  )
-                )
-              )
-            ) : ''
-          }
-        </dd>
+                })
+              ) : ''
+            }
+          </PoolList>
+        </dd> */}
       </dl>
     </SubCurrencySelectBox>
   )

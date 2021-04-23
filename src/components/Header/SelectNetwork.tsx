@@ -278,7 +278,7 @@ export default function SelectNetwork () {
   }
 
   function openUrl (item:any) {
-    if (item.symbol === config.getCurChainInfo(chainId).symbol || !item.isSwitch) {
+    if (!item.isSwitch) {
       return
     }
     setMetamaskNetwork(item)

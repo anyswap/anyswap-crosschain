@@ -59,7 +59,7 @@ export default function SwapNative() {
     }
     return
   }, [selectCurrency])
-
+  // console.log(selectCurrency)
   const anyCurrency = useLocalToken(selectCurrency ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
   const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
@@ -196,7 +196,6 @@ export default function SwapNative() {
 
         <PoolTip 
           anyCurrency={anyCurrency}
-          underlyingCurrency={underlyingCurrency}
           bridgeConfig={bridgeConfig}
         />
 
