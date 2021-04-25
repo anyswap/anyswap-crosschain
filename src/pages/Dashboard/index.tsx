@@ -21,7 +21,7 @@ import config from '../../config'
 import {getAllToken} from '../../utils/bridge/getBaseInfo'
 import {fromWei} from '../../utils/tools/tools'
 
-const MyBalanceBox = styled.div`
+export const MyBalanceBox = styled.div`
   width: 100%;
 
   border-radius: 0.5625rem;
@@ -118,12 +118,12 @@ const MyBalanceTokenBox = styled.div`
   }
 `
 
-const DBTables = styled.table`
+export const DBTables = styled.table`
   min-width: 100%;
   table-layer: fixed;
-  // border-spacing:0px 10px;
+  border-spacing:0px 10px;
 `
-const DBThead = styled.thead`
+export const DBThead = styled.thead`
   width: 100%;
   border-radius: 0.5625rem;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
@@ -138,7 +138,7 @@ const DBThead = styled.thead`
     padding: 1rem 5px;
   }
 `
-const DBTh = styled.th`
+export const DBTh = styled.th`
   color: ${({ theme }) => theme.textColorBold};
   background-color: ${({ theme }) => theme.contentBg};
   padding: 12px 8px;
@@ -156,7 +156,7 @@ const DBTh = styled.th`
     text-align: center;
   }
 `
-const DBTbody = styled.tbody`
+export const DBTbody = styled.tbody`
   width: 100%;
   border-radius: 0.5625rem;
   border: solid 1px rgba(0, 0, 0, 0.1);
@@ -172,7 +172,7 @@ const DBTbody = styled.tbody`
   }
 `
 
-const DBTd = styled.td`
+export const DBTd = styled.td`
   background-color: ${({ theme }) => theme.contentBg};
   padding: 12px 8px;
   white-space: nowrap;
@@ -200,18 +200,15 @@ const DBTd = styled.td`
   }
 `
 
-const TokenTableCoinBox = styled.div`
+export const TokenTableCoinBox = styled.div`
   ${({ theme }) => theme.flexSC};
-  // border-right: 0.0625rem  solid rgba(0, 0, 0, 0.1);
   padding: 0 0px;
-  // min-width: 160px;
-  // width:25%;
+
   @media screen and (max-width: 960px) {
-    // min-width: 120px;
     padding: 0 5px;
   }
 `
-const TokenTableLogo = styled.div`
+export const TokenTableLogo = styled.div`
   ${({ theme }) => theme.flexC};
   width: 36px;
   height: 36px;
@@ -228,7 +225,7 @@ const TokenTableLogo = styled.div`
   }
 `
 
-const TokenNameBox = styled.div`
+export const TokenNameBox = styled.div`
   font-family: 'Manrope';
   h3 {
     margin: 0;
@@ -247,7 +244,7 @@ const TokenNameBox = styled.div`
     color: ${({ theme }) => theme.textColorBold};
   }
 `
-const TokenActionBtn = styled(NavLink)`
+export const TokenActionBtn = styled(NavLink)`
   ${({ theme }) => theme.flexC};
   font-family: 'Manrope';
   width: 88px;
@@ -272,7 +269,7 @@ const TokenActionBtn = styled(NavLink)`
     background: ${({ theme }) => theme.selectedBg};
   }
 `
-const TokenActionBtnSwap = styled(TokenActionBtn)`
+export const TokenActionBtnSwap = styled(TokenActionBtn)`
   margin-right: 0.125rem;
 `
 const MoreBtnBox = styled.div`

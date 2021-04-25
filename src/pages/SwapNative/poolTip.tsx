@@ -70,7 +70,7 @@ export default function PoolTip ({
   const { t } = useTranslation()
   
   const list = [anyCurrency]
-  console.log(anyCurrency)
+  // console.log(anyCurrency)
   const [userTokenList, userTokenLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, list)
   const [totalsupplyList, totalsupplyLoading] = useTokenTotalSupplyWithLoadingIndicator(list)
   const dec = anyCurrency?.decimals
@@ -126,7 +126,7 @@ export default function PoolTip ({
     const list:any = []
     for (const c in bridgeConfig.destChain) {
       const balance = await getNodeBalance(account, bridgeConfig.destChain[c], c, bridgeConfig.decimals)
-      const totalsupply = await getNodeTotalsupply(bridgeConfig.destChain[c], c, bridgeConfig.decimals)
+      const totalsupply = await getNodeTotalsupply(bridgeConfig.destChain[c], c, bridgeConfig.decimals, account)
       list.push({
         chainId: c,
         balance: balance,

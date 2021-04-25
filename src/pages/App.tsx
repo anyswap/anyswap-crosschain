@@ -11,6 +11,7 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import Dashboard from './Dashboard'
 import CrossChain from './CrossChain'
 import SwapNative from './SwapNative'
+import Pool from './SwapNative/poolList'
 
 const AppWrapper = styled.div`
   // display: flex;
@@ -127,7 +128,8 @@ export default function App() {
               <Route exact strict path="/dashboard" component={Dashboard} />
               <Route exact strict path="/swap" component={CrossChain} />
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
-              <Route exact strict path="/pool" component={SwapNative} />
+              <Route exact strict path="/pool" component={Pool} />
+              <Route exact strict path="/pool/add" component={SwapNative} />
               <Redirect to={{ pathname: '/swap' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>
