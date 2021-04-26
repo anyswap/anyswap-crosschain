@@ -1,6 +1,6 @@
 // import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { TokenAmount } from 'anyswap-sdk'
+// import { TokenAmount } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 // import { ThemeContext } from 'styled-components'
 // import { ArrowDown } from 'react-feather'
@@ -23,6 +23,7 @@ import Title from '../../components/Title'
 
 
 
+import { tryParseAmount } from '../../state/swap/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
 import config from '../../config'
@@ -71,8 +72,9 @@ export default function SwapNative() {
   // console.log(selectCurrency)
   const anyCurrency = useLocalToken(selectCurrency ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
-  const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
-  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, selectCurrency?.address)
+  // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useSwapUnderlyingCallback(
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),

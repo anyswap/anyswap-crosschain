@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-import { TokenAmount } from 'anyswap-sdk'
+// import { TokenAmount } from 'anyswap-sdk'
 // import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
@@ -24,6 +24,7 @@ import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 
 import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
+import { tryParseAmount } from '../../state/swap/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
@@ -64,8 +65,9 @@ export default function CrossChain() {
   const formatCurrency = useLocalToken(
     selectCurrency && selectCurrency.underlying ?
       {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol} : selectCurrency)
-  const amountToApprove = formatCurrency ? new TokenAmount(formatCurrency ?? undefined, inputBridgeValue) : undefined
-  const [approval, approveCallback] = useApproveCallback(amountToApprove ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
+  // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -229,7 +231,10 @@ export default function CrossChain() {
             label={t('From')}
             value={inputBridgeValue}
             onUserInput={(value) => {
+              console.log(value)
               setInputBridgeValue(value)
+              // if (value && Number(value)) {
+              // }
             }}
             onCurrencySelect={(inputCurrency) => {
               console.log(inputCurrency)
