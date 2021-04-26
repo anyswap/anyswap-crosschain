@@ -83,16 +83,17 @@ export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, accoun
       token
       && chainId
     ) {
-      const lObj = getLocalConfig(SRCTOTALSUPPLY, token, chainId, SRCTOTALSUPPLY, 1000 * 10)
+      const lObj = getLocalConfig(SRCTOTALSUPPLY, SRCTOTALSUPPLY, chainId, SRCTOTALSUPPLY, 1000 * 10)
       if (lObj && lObj.totalsupply) {
-        resolve(fromWei(lObj.totalsupply, dec))
+        resolve(lObj)
       } else {
         const tokenList = [{
           token: token,
           dec: dec
         }]
         getBlandTs(tokenList, chainId, account).then((res:any) => {
-          console.log(res)
+          // console.log(res)
+          resolve(res)
         })
       }
     } else {

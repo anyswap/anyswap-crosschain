@@ -34,9 +34,6 @@ import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
 
-// let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-// initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
-
 export default function CrossChain() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()

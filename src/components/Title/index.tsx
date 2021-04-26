@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 const TitleBox = styled.div`
@@ -6,8 +7,8 @@ const TitleBox = styled.div`
   margin-bottom:1rem;
 `
 const TitleTxt = styled.div`
-  height: 24px;
-  line-height: 24px;
+  height: 38px;
+  line-height: 38px;
   font-size: 24px;
   font-weight: 800;
   color: ${({ theme }) => theme.textColorBold};
@@ -85,21 +86,112 @@ const TabLinkBox = styled.ul`
     }
   }
 `
+const activeClassName = 'active'
+const StyledNavLink = styled(NavLink).attrs({
+  activeClassName
+})`
+  ${({ theme }) => theme.flexC}
+  height: 38px;
+  font-family: 'Manrope';
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: ${({ theme }) => theme.tabColor};
+  border-top: 0.0625rem solid rgba(0, 0, 0, 0.04);
+  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.04);
+  border-left: 0.0625rem solid rgba(0, 0, 0, 0.04);
+  cursor:pointer;
+  text-decoration: none;
+  padding: 0 0.625rem;
+  background: ${({ theme }) => theme.tabBg};
+  white-space:nowrap;
+
+  .icon {
+    ${({ theme }) => theme.flexC}
+    width: 28px;
+    height: 28px;
+    background:#f5f5f5;
+    border-radius:100%;
+    margin-right:0.625rem;
+  }
+  &:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    &.active {
+      border: 0.0625rem solid ${({ theme }) => theme.tabBdColor};
+    }
+  }
+  &:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-right: 0.0625rem solid rgba(0, 0, 0, 0.04);
+    &.active {
+      border: 0.0625rem solid ${({ theme }) => theme.tabBdColor};
+    }
+  }
+
+  &.${activeClassName} {
+    background: ${({ theme }) => theme.tabActiveBg};
+    border: 0.0625rem solid ${({ theme }) => theme.tabBdColor};
+    color: ${({ theme }) => theme.tabActiveColor};
+    font-weight: bold;
+    .icon {
+      background: #734be2;
+    }
+  }
+  @media screen and (max-width: 960px) {
+    .icon {
+      display:none;
+    }
+  }
+`
+
 interface TabList {
   name: string
   onTabClick: (val: any) => void
   iconUrl: string
   iconActiveUrl: string
+  regex?: any
+  path?: any
 }
 interface Title {
   title?: string
-  tabList?: Array<TabList>
+  tabList?: Array<TabList>,
+  isNavLink?: boolean,
+  currentTab?: any,
+  children?: any
 }
 
-export default function Title({ title, tabList = [] }: Title) {
+export default function Title({ title, tabList = [] , isNavLink = false, currentTab, children}:Title) {
   const [tabIndex, setTabIndex] = useState(0)
   const [tabName, setTabName] = useState('')
+  const pathname = window.location.pathname
+  const activeTabKey = tabList.length > 0 ? tabList[tabList.findIndex(({ regex }) => pathname.match(regex))].name : ''
+  
   function tabListView() {
+    if (isNavLink) {
+      return (
+        <>
+          <TabLinkBox>
+            {tabList.map(({ path, name, regex, iconUrl, iconActiveUrl }) => (
+              <StyledNavLink
+                key={path}
+                to={path}
+                isActive={(_, { pathname }) => Boolean(pathname.match(regex))}
+              > 
+                <div className='icon'>
+                  <img alt={''} src={pathname.match(regex) ? iconActiveUrl : iconUrl}/>
+                </div>
+                {name}
+              </StyledNavLink>
+            ))}
+          </TabLinkBox>
+        </>
+      )
+    }
+
     return (
       <>
         <TabLinkBox>
@@ -107,7 +199,10 @@ export default function Title({ title, tabList = [] }: Title) {
             return (
               <li
                 key={index}
-                className={tabIndex === index ? 'active' : ''}
+                className={
+                  !isNaN(currentTab) && Number(currentTab) === index ? 'active' :
+                  (tabIndex === index && isNaN(currentTab) ? 'active' : '')
+                }
                 onClick={() => {
                   setTabIndex(index)
                   setTabName(item.name)
@@ -115,7 +210,11 @@ export default function Title({ title, tabList = [] }: Title) {
                 }}
               >
                 <div className="icon">
-                  {tabIndex === index ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />}
+                  {
+                    !isNaN(currentTab) && Number(currentTab) === index ? <img alt={''} src={item.iconActiveUrl} /> :
+                    (tabIndex === index && isNaN(currentTab) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />)
+                  }
+                  {/* {tabIndex === index || (!isNaN(currentTab) && Number(currentTab) === index) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />} */}
                 </div>
                 {item.name}
               </li>
@@ -128,7 +227,11 @@ export default function Title({ title, tabList = [] }: Title) {
   return (
     <>
       <TitleBox>
-        <TitleTxt>{tabName ? tabName : title}</TitleTxt>
+        <TitleTxt>{
+        !isNaN(currentTab) ? tabList[currentTab].name : (tabName ? tabName : (isNavLink ? activeTabKey : title))
+        }
+        {children}
+        </TitleTxt>
         {tabList.length > 0 ? tabListView() : ''}
       </TitleBox>
     </>

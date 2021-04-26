@@ -26,12 +26,14 @@ import Title from '../../components/Title'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
 import config from '../../config'
+import {getParams} from '../../config/getUrlParams'
 
 import AppBody from '../AppBody'
 
 import PoolTip from './poolTip'
 
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+import { isAddress } from '../../utils'
 
 export default function SwapNative() {
   const { account, chainId } = useActiveWeb3React()
@@ -40,13 +42,20 @@ export default function SwapNative() {
   // const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
+  const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
+
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
-  const [swapType, setSwapType] = useState<any>('deposit')
+  const [swapType, setSwapType] = useState<any>(urlSwapType)
   const [count, setCount] = useState<number>(0)
   const [bridgeConfig, setBridgeConfig] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+
+  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
+
+  
 
   const underlyingToken =  useMemo(() => {
     if (selectCurrency && selectCurrency.underlying) {
@@ -104,7 +113,7 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
 
   useEffect(() => {
-    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency?.address : config.getCurChainInfo(chainId).bridgeInitToken
+    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // console.log(token)
     if (token) {
       getTokenConfig(token, chainId).then((res:any) => {
@@ -147,7 +156,7 @@ export default function SwapNative() {
     <>
       <AppBody>
         <Title
-          title={t('pool')}
+          title={t(swapType)}
           tabList={[
             {
               name: t('deposit'),
@@ -168,6 +177,7 @@ export default function SwapNative() {
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
             }
           ]}
+          currentTab={swapType === 'deposit' ? 0 : 1}
         ></Title>
         <AutoColumn gap={'md'}>
 

@@ -34,6 +34,10 @@ export const MyBalanceBox = styled.div`
   }
 `
 
+export const Flex = styled.div`
+  ${({ theme }) => theme.flexC};
+`
+
 const TitleAndSearchBox = styled.div`
   ${({ theme }) => theme.flexBC};
   margin-bottom: 1.5625rem;

@@ -20,7 +20,8 @@ import {
   TokenTableLogo,
   TokenNameBox,
   MyBalanceBox,
-  TokenActionBtn
+  TokenActionBtn,
+  Flex
 } from '../Dashboard'
 
 import config from '../../config'
@@ -80,20 +81,20 @@ export default function PoolLists ({
 
   function viewTd (item:any, c?:any) {
     if (c) {
+      const ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? poolData[c][item.token].ts : '0.00'
+      const bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? poolData[c][item.token].balance : '0.00'
       return (
         <DBTd className='c'>
-          {
-            c && poolData && poolData[c] && item.token && poolData[c][item.token] ? poolData[c][item.token].ts : '0.00'
-          }
+          {bl}/{ts}
         </DBTd>
       )
     }
     return Object.keys(poolList[0].destChain).map((chainID:any, indexs:any) => {
+      const ts = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? poolData[chainID][item.destChain[chainID]].ts : '0.00'
+      const bl = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].balance ? poolData[chainID][item.destChain[chainID]].balance : '0.00'
       return (
         <DBTd key={indexs} className='c'>
-          {
-            poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? poolData[chainID][item.destChain[chainID]].ts : '0.00'
-          }
+          {bl}/{ts}
         </DBTd>
       )
     })
@@ -148,8 +149,11 @@ export default function PoolLists ({
                       </DBTd>
                       {viewTd(item, chainId)}
                       {viewTd(item)}
-                      <DBTd className="c" width={'90'}>
-                        <TokenActionBtn to={'/pool/add'}>123</TokenActionBtn>
+                      <DBTd className="c" width={'180'}>
+                        <Flex>
+                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('bridge')}</TokenActionBtn>
+                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('withdraw')}</TokenActionBtn>
+                        </Flex>
                       </DBTd>
                     </tr>
                   )
