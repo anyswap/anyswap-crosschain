@@ -129,7 +129,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
               MaximumSwap: fromWei(web3Fn.utils.hexToNumberString(results[3]), decimals),
               MinimumSwap: fromWei(web3Fn.utils.hexToNumberString(results[4]), decimals),
               BigValueThreshold: fromWei(web3Fn.utils.hexToNumberString(results[5]), decimals),
-              SwapFeeRatePerMillion: web3Fn.utils.hexToNumber(results[6]) / 100000,
+              SwapFeeRatePerMillion: web3Fn.utils.hexToNumber(results[6]) / 10000,
               MaximumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[7]), decimals),
               MinimumSwapFee: fromWei(web3Fn.utils.hexToNumberString(results[8]), decimals),
               tokenid: tokenid,
