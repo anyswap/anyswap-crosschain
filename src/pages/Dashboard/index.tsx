@@ -178,7 +178,7 @@ export const DBTbody = styled.tbody`
 
 export const DBTd = styled.td`
   background-color: ${({ theme }) => theme.contentBg};
-  padding: 12px 8px;
+  padding: 8px 8px;
   white-space: nowrap;
   font-size: 0.875rem;
   font-weight: bold;

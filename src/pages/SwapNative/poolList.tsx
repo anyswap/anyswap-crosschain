@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -25,6 +26,19 @@ import {
 } from '../Dashboard'
 
 import config from '../../config'
+
+const BalanceTxt = styled.div`
+.p1 {
+    font-size:14px;
+    font-weight:bold;
+    color: ${({ theme }) => theme.textColorBold}
+  }
+  .p2 {
+    color: ${({ theme }) => theme.text3};
+    font-weight: normal;
+    font-size:14px;
+  }
+`
 
 export default function PoolLists ({
 
@@ -84,8 +98,11 @@ export default function PoolLists ({
       const ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? poolData[c][item.token].ts : '0.00'
       const bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? poolData[c][item.token].balance : '0.00'
       return (
-        <DBTd className='c'>
-          {bl}/{ts}
+        <DBTd className='l'>
+          <BalanceTxt>
+            <p className='p1'>User: {bl}</p>
+            <p className='p2'>Pool: {ts}</p>
+          </BalanceTxt>
         </DBTd>
       )
     }
@@ -93,8 +110,11 @@ export default function PoolLists ({
       const ts = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? poolData[chainID][item.destChain[chainID]].ts : '0.00'
       const bl = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].balance ? poolData[chainID][item.destChain[chainID]].balance : '0.00'
       return (
-        <DBTd key={indexs} className='c'>
-          {bl}/{ts}
+        <DBTd key={indexs} className='l'>
+          <BalanceTxt>
+            <p className='p1'>User: {bl}</p>
+            <p className='p2'>Pool: {ts}</p>
+          </BalanceTxt>
         </DBTd>
       )
     })
@@ -111,11 +131,11 @@ export default function PoolLists ({
               {
                 poolList && poolList.length > 0 ? (
                   <>
-                    <DBTh>{config.getCurChainInfo(chainId).symbol}</DBTh>
+                    <DBTh className="l">{config.getCurChainInfo(chainId).symbol}</DBTh>
                     {
                       Object.keys(poolList[0].destChain).map((item:any, index:any) => {
                         return (
-                          <DBTh key={index}>{config.getCurChainInfo(item).symbol}</DBTh>
+                          <DBTh key={index} className="l">{config.getCurChainInfo(item).symbol}</DBTh>
                         )
                       })
                     }
@@ -151,7 +171,7 @@ export default function PoolLists ({
                       {viewTd(item)}
                       <DBTd className="c" width={'180'}>
                         <Flex>
-                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('bridge')}</TokenActionBtn>
+                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('deposit')}</TokenActionBtn>
                           <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('withdraw')}</TokenActionBtn>
                         </Flex>
                       </DBTd>
