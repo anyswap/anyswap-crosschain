@@ -11,6 +11,8 @@ import AppBody from '../AppBody'
 
 import {getAllToken} from '../../utils/bridge/getBaseInfo'
 import {getGroupTotalsupply} from '../../utils/bridge/getBalance'
+import {thousandBit} from '../../utils/tools/tools'
+
 import {
   DBTables,
   DBThead,
@@ -100,8 +102,8 @@ export default function PoolLists ({
       return (
         <DBTd className='l'>
           <BalanceTxt>
-            <p className='p1'>User: {bl}</p>
-            <p className='p2'>Pool: {ts}</p>
+            <p className='p1'>User: {thousandBit(bl, 2)}</p>
+            <p className='p2'>Pool: {thousandBit(ts, 2)}</p>
           </BalanceTxt>
         </DBTd>
       )
@@ -112,8 +114,8 @@ export default function PoolLists ({
       return (
         <DBTd key={indexs} className='l'>
           <BalanceTxt>
-            <p className='p1'>User: {bl}</p>
-            <p className='p2'>Pool: {ts}</p>
+            <p className='p1'>User: {thousandBit(bl, 2)}</p>
+            <p className='p2'>Pool: {thousandBit(ts, 2)}</p>
           </BalanceTxt>
         </DBTd>
       )
@@ -144,7 +146,7 @@ export default function PoolLists ({
                   <DBTh>{config.getCurChainInfo(chainId).symbol}</DBTh>
                 )
               }
-              <DBTh className="c">{t('Action')}</DBTh>
+              <DBTh className="c">{t('lr')}</DBTh>
             </tr>
           </DBThead>
           <DBTbody>

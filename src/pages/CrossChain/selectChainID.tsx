@@ -168,11 +168,27 @@ export default function SelectChainIdInputPanel({
                 </TokenLogoBox>
                 <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                   <h3>
-                    {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
+                    {/* {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
                       ? bridgeConfig.symbol.slice(0, 4) +
                         '...' +
                         bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                      : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')}
+                      : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
+                    {
+                      bridgeConfig?.underlying?.symbol ? (
+                        bridgeConfig?.underlying?.symbol.length > 20
+                          ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
+                            '...' +
+                            bridgeConfig?.underlying?.symbol.slice(bridgeConfig?.underlying?.symbol.length - 5, bridgeConfig?.underlying?.symbol.length)
+                          : config.getBaseCoin(bridgeConfig?.underlying?.symbol)
+                      ) : (
+                        bridgeConfig?.symbol ? (
+                          bridgeConfig?.symbol.length > 20
+                            ? bridgeConfig.symbol.slice(0, 4) +
+                              '...' +
+                              bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
+                            : config.getBaseCoin(bridgeConfig?.symbol)) : t('selectToken')
+                      )
+                    }
                     {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
                   </h3>
                   <p>

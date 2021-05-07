@@ -9,8 +9,8 @@ import {fromWei} from '../../utils/tools/tools'
 // import {getNodeBalance, getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 
-import TokenLogo from '../../components/TokenLogo'
-import config from '../../config'
+// import TokenLogo from '../../components/TokenLogo'
+// import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;
@@ -50,15 +50,15 @@ const SubCurrencySelectBox = styled.div`
   }
 `
 
-const PoolList = styled.ul`
-padding-left: 15px;
-list-style:none;
-margin: 0;
-li {
-    ${({ theme }) => theme.flexSC};
-    margin-bottom: 5px;
-  }
-`
+// const PoolList = styled.ul`
+// padding-left: 15px;
+// list-style:none;
+// margin: 0;
+// li {
+//     ${({ theme }) => theme.flexSC};
+//     margin-bottom: 5px;
+//   }
+// `
 
 export default function PoolTip ({
   anyCurrency,
@@ -67,7 +67,8 @@ export default function PoolTip ({
   anyCurrency: any
   bridgeConfig: any
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  // const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const { t } = useTranslation()
   
   const list = [anyCurrency]
@@ -156,6 +157,39 @@ export default function PoolTip ({
         <dd>
           <i></i>
           {t('currentPoolSize')}:
+          {
+            !totalsupplyLoading && poolsView ? (
+              <>
+                {(poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.underlying?.symbol)}
+              </>
+            ) : ''
+          }
+        </dd>
+        <dd>
+          <i></i>
+          {t('yourPoolShare')}:
+          {
+            !userTokenLoading && usersView && account ? (
+              <>
+                {(
+                  (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.underlying?.symbol)
+                  +
+                  (
+                    formatPercent(
+                      usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance,
+                      poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
+                    )
+                  )
+                )}
+              </>
+            ) : ''
+          }
+        </dd>
+      </dl>
+      {/* <dl className='list'>
+        <dd>
+          <i></i>
+          {t('currentPoolSize')}:
           <PoolList>
             <li>
               {
@@ -171,11 +205,12 @@ export default function PoolTip ({
                           poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
                         )
                       )
+                      + '(User)'
                     )}
                   </>
                 ) : ''
               }
-              {!userTokenLoading && usersView && account && !totalsupplyLoading && poolsView ? '+' : ''}
+              {!userTokenLoading && usersView && account && !totalsupplyLoading && poolsView ? '/' : ''}
               {
                 !totalsupplyLoading && poolsView ? (
                   <>
@@ -184,7 +219,7 @@ export default function PoolTip ({
                 ) : ''
               }
             </li>
-            {/* {
+            {
               outChainBalance ? (
                 outChainBalance.map((item:any, index:number) => {
                   // if (!item.totalsupply) return ''
@@ -199,10 +234,10 @@ export default function PoolTip ({
                   )
                 })
               ) : ''
-            } */}
+            }
           </PoolList>
         </dd>
-      </dl>
+      </dl> */}
     </SubCurrencySelectBox>
   )
 }
