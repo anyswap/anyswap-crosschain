@@ -158,10 +158,10 @@ export default function SwapNative() {
     <>
       <AppBody>
         <Title
-          title={t(swapType)}
+          title={t(swapType === 'deposit' ? 'Add' : 'Remove')}
           tabList={[
             {
-              name: t('deposit'),
+              name: t('Add'),
               onTabClick: () => {
                 setSwapType('deposit')
                 setInputBridgeValue('')
@@ -170,7 +170,7 @@ export default function SwapNative() {
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
             },
             {
-              name: t('withdraw'),
+              name: t('Remove'),
               onTabClick: () => {
                 setSwapType('withdraw')
                 setInputBridgeValue('')

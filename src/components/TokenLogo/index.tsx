@@ -78,6 +78,7 @@ export default function TokenLogo({
           symbol.indexOf('HT') === -1 &&
           symbol.indexOf('HTC') === -1 &&
           symbol.indexOf('Hi') === -1 &&
+          symbol.indexOf('HGET') === -1 &&
           symbol.indexOf('H') === 0
         ) {
           if (symbol === 'HPT') {

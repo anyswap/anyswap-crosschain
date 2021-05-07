@@ -131,11 +131,11 @@ export default function PoolLists ({
               {
                 poolList && poolList.length > 0 ? (
                   <>
-                    <DBTh className="l">{config.getCurChainInfo(chainId).symbol}</DBTh>
+                    <DBTh className="l">{config.getCurChainInfo(chainId).name}</DBTh>
                     {
                       Object.keys(poolList[0].destChain).map((item:any, index:any) => {
                         return (
-                          <DBTh key={index} className="l">{config.getCurChainInfo(item).symbol}</DBTh>
+                          <DBTh key={index} className="l">{config.getCurChainInfo(item).name}</DBTh>
                         )
                       })
                     }
@@ -171,8 +171,8 @@ export default function PoolLists ({
                       {viewTd(item)}
                       <DBTd className="c" width={'180'}>
                         <Flex>
-                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('deposit')}</TokenActionBtn>
-                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('withdraw')}</TokenActionBtn>
+                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('Add')}</TokenActionBtn>
+                          <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('Remove')}</TokenActionBtn>
                         </Flex>
                       </DBTd>
                     </tr>

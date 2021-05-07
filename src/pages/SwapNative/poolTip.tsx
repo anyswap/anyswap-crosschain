@@ -77,7 +77,7 @@ export default function PoolTip ({
   const dec = anyCurrency?.decimals
 
   const [outChainBalance, setOutChainBalance] = useState<any>()
-
+  console.log(outChainBalance)
   const poolsView = useMemo(() => {
     if (!totalsupplyLoading) {
       const l1:any = {}
@@ -163,7 +163,7 @@ export default function PoolTip ({
                   <>
                     <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'16px'} style={{margin: '0 5px'}} />
                     {(
-                      (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)
+                      (usersView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.underlying?.symbol)
                       +
                       (
                         formatPercent(
@@ -179,12 +179,12 @@ export default function PoolTip ({
               {
                 !totalsupplyLoading && poolsView ? (
                   <>
-                    {(poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.symbol)}
+                    {(poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance + ' ' + anyCurrency?.underlying?.symbol)}
                   </>
                 ) : ''
               }
             </li>
-            {
+            {/* {
               outChainBalance ? (
                 outChainBalance.map((item:any, index:number) => {
                   // if (!item.totalsupply) return ''
@@ -199,7 +199,7 @@ export default function PoolTip ({
                   )
                 })
               ) : ''
-            }
+            } */}
           </PoolList>
         </dd>
       </dl>
