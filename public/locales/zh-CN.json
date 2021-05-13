@@ -308,5 +308,7 @@
   "swapChain": "交换",
   "withdraw": "取出",
 
-  "changeMetamaskNetwork": "请切换Metamask网络为：{{label}}"
+  "changeMetamaskNetwork": "请切换Metamask网络为：{{label}}",
+  "supportChain": "支持的链",
+  "totalPools": "总资金池"
 }

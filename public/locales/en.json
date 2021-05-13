@@ -309,5 +309,7 @@
   "swapChain": "Swap",
   "withdraw": "Withdraw",
 
-  "changeMetamaskNetwork": "Please switch metamask network to：{{label}}"
+  "changeMetamaskNetwork": "Please switch metamask network to：{{label}}",
+  "supportChain": "Support Chain",
+  "totalPools": "Total Pools"
 }

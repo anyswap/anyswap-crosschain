@@ -295,7 +295,7 @@ const MoreBtnBox = styled.div`
   cursor: pointer;
 `
 const WrappedDropup = ({ ...rest }) => <Dropup {...rest} />
-const ColoredDropup = styled(WrappedDropup)`
+export const ColoredDropup = styled(WrappedDropup)`
   margin-right: 0.625rem;
   path {
     stroke: ${({ theme }) => theme.textColorBold};
@@ -303,7 +303,7 @@ const ColoredDropup = styled(WrappedDropup)`
 `
 
 const WrappedDropdown = ({ ...rest }) => <Dropdown {...rest} />
-const ColoredDropdown = styled(WrappedDropdown)`
+export const ColoredDropdown = styled(WrappedDropdown)`
   margin-right: 0.625rem;
   path {
     stroke: ${({ theme }) => theme.textColorBold};
