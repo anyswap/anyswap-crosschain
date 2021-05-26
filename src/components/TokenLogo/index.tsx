@@ -71,24 +71,6 @@ export default function TokenLogo({
       } else if (symbol.indexOf('any') !== -1) {
         path = getAnyPath(symbol)
       } else {
-        if (symbol.lastIndexOf('B') === symbol.length - 1 && symbol.indexOf('BNB') === -1) {
-          symbol = symbol.substr(0, symbol.lastIndexOf('B'))
-        } else if (
-          symbol.indexOf('HUSD') === -1 &&
-          symbol.indexOf('HT') === -1 &&
-          symbol.indexOf('HTC') === -1 &&
-          symbol.indexOf('Hi') === -1 &&
-          symbol.indexOf('HGET') === -1 &&
-          symbol.indexOf('H') === 0
-        ) {
-          if (symbol === 'HPT') {
-            symbol = 'HT'
-          } else {
-            symbol = symbol.substr(1)
-          }
-        } else if (symbol === 'WHT') {
-          symbol = 'HT'
-        }
         path = getSourcePath(symbol)
       }
     } else {
