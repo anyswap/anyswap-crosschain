@@ -306,10 +306,10 @@ export default function PoolLists ({
         <DBTables>
           <DBThead>
             <tr>
-              <DBTh className="c">{t('Coins')}</DBTh>
+              <DBTh className="l">{t('tokens')}</DBTh>
               <DBTh className="c">{t('supportChain')}</DBTh>
-              <DBTh className="r">{t('totalPools')}</DBTh>
-              <DBTh className="c">{t('lr')}</DBTh>
+              <DBTh className="r">{t('lr')}</DBTh>
+              <DBTh className="c">{t('details')}</DBTh>
             </tr>
           </DBThead>
             {

@@ -1,5 +1,6 @@
 import { getContract, web3Fn } from '../tools/web3Utils'
 import {setLocalConfig, getLocalConfig, fromWei} from '../tools/tools'
+import {isUnderlying} from './getBaseInfo'
 import config from '../../config'
 const contract = getContract()
 
@@ -38,27 +39,49 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
 
 const SRCTOTALSUPPLY = 'SRCTOTALSUPPLY'
 function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undefined) {
-  return new Promise(resolve => {
+  return new Promise(async(resolve) => {
     web3Fn.setProvider(config.getCurChainInfo(chainId).nodeRpc)
     const batch = new web3Fn.BatchRequest()
     const len = tokenList.length
     const list:any = {}
     for (let i = 0; i < len; i++) {
       const tokenObj = tokenList[i]
-      contract.options.address = tokenObj.token
-      const tsData = contract.methods.totalSupply().encodeABI()
-      batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
-        if (!list[tokenObj.token]) list[tokenObj.token] = {}
-        if (err) {
-          // console.log(err)
-          list[tokenObj.token].ts = ''
-        } else {
-          list[tokenObj.token].ts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
-        }
-        if ((i + 1) === len) {
-          resolve(list)
-        }
-      }))
+      const underlyingInfo:any = await isUnderlying(tokenObj.token, chainId)
+      console.log(tokenObj)
+      console.log(underlyingInfo)
+      if (underlyingInfo) {
+        contract.options.address = underlyingInfo?.address
+        const tsData = contract.methods.balanceOf(tokenObj.token).encodeABI()
+        batch.add(web3Fn.eth.call.request({data: tsData, to: underlyingInfo?.address}, 'latest', (err:any, res:any) => {
+        // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+          if (!list[tokenObj.token]) list[tokenObj.token] = {}
+          if (err) {
+            console.log(err)
+            list[tokenObj.token].ts = ''
+          } else {
+            list[tokenObj.token].ts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+          }
+          if ((i + 1) === len) {
+            resolve(list)
+          }
+        }))
+      } else {
+        contract.options.address = tokenObj.token
+        const tsData = contract.methods.totalSupply().encodeABI()
+        batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+        // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+          if (!list[tokenObj.token]) list[tokenObj.token] = {}
+          if (err) {
+            // console.log(err)
+            list[tokenObj.token].ts = ''
+          } else {
+            list[tokenObj.token].ts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+          }
+          if ((i + 1) === len) {
+            resolve(list)
+          }
+        }))
+      }
 
       if (account) {
         const blData = contract.methods.balanceOf(account).encodeABI()

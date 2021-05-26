@@ -310,5 +310,7 @@
 
   "changeMetamaskNetwork": "请切换Metamask网络为：{{label}}",
   "supportChain": "支持的链",
-  "totalPools": "总资金池"
+  "totalPools": "总资金池",
+  "details": "详情",
+  "tokens": "Tokens"
 }

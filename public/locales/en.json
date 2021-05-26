@@ -310,6 +310,8 @@
   "withdraw": "Withdraw",
 
   "changeMetamaskNetwork": "Please switch metamask network to：{{label}}",
-  "supportChain": "Support Chain",
-  "totalPools": "Total Pools"
+  "supportChain": "Chains",
+  "totalPools": "Total Pools",
+  "details": "Details",
+  "tokens": "Tokens"
 }
