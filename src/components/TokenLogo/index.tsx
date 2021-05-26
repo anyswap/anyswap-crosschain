@@ -80,6 +80,7 @@ export default function TokenLogo({
   } else {
     path = initPath
   }
-
+  // console.log(symbol)
+  // console.log(path)
   return <Image {...rest} alt={symbol} src={path} size={size} style={style} />
 }
