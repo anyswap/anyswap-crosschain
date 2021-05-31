@@ -1,19 +1,24 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const XDAI_MAINNET = 'https://rpc.xdaichain.com'
 export const XDAI_MAIN_CHAINID = 100
 export const XDAI_MAIN_EXPLORER = 'https://blockscout.com/xdai/mainnet'
 
-export const tokenList = [
-
-]
-
-export const testTokenList = [
-
-]
+export const tokenList = []
+export const testTokenList = []
 
 const symbol = 'xDAI'
+
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+    swapInitToken: '',
+  }
+}
 
 export default {
   [XDAI_MAIN_CHAINID]: {
@@ -22,11 +27,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + XDAI_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0xb5b692a88BDFc81ca69dcB1d924f59f0413A602a',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

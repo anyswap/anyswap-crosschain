@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const FTM_MAINNET = 'https://rpc.fantom.network'
 export const FTM_MAIN_CHAINID = 250
@@ -24,6 +24,16 @@ export const tokenList = [
 
 const symbol = 'FTM'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+    swapInitToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6',
+  }
+}
+
 export default {
   [FTM_MAIN_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -31,11 +41,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + FTM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0x63B8310c5093ac917552931D8b15d5AB6945c0a6',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

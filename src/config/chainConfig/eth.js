@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 const navLang = navigator.language
 
@@ -27,6 +27,16 @@ export const testTokenList = [
 
 const symbol = 'ETH'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
+    bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    bridgeInitChain: '56',
+    swapRouterToken: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
+    swapInitToken: '',
+  }
+}
+
 export default {
   [ETH_MAIN_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -34,11 +44,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ETH_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
-    bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
-    bridgeInitChain: '56',
-    swapRouterToken: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
-    swapInitToken: '',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441',
     v1FactoryToken: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
     v2FactoryToken: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',

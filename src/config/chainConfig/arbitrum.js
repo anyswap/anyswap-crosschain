@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const ARBITRUM_TESTNET = 'https://kovan4.arbitrum.io/rpc'
 export const ARBITRUM_TEST_CHAINID = 212984383488152
@@ -11,6 +11,16 @@ export const tokenList = [
 
 const symbol = 'ARBITRUM'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '',
+    swapInitToken: '',
+  }
+}
+
 export default {
   [ARBITRUM_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -18,11 +28,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ARBITRUM_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',

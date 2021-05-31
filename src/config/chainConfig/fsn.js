@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const FSN_MAINNET = 'https://mainnet.anyswap.exchange'
 export const FSN_MAINNET1 = 'https://mainnet.anyswap.exchange'
@@ -20,6 +20,16 @@ export const testTokenList = [
 
 const symbol = 'FSN'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '',
+    swapInitToken: '',
+  }
+}
+
 export default {
   [FSN_MAIN_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -27,11 +37,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + FSN_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',

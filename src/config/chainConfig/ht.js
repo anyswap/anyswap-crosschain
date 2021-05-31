@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const HT_MAINNET = 'https://http-mainnet.hecochain.com'
 export const HT_MAIN_CHAINID = 128
@@ -143,6 +143,16 @@ export const testTokenList = [
 
 const symbol = 'HT'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '0x77e0e26de17be1ea2df87269475431e0e17dc74f',
+    swapInitToken: '0x734922e7b793b408cd434eedaa407c9c0c575d1e',
+  }
+}
+
 export default {
   [HT_MAIN_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -150,11 +160,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + HT_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '0x77e0e26de17be1ea2df87269475431e0e17dc74f',
-    swapInitToken: '0x734922e7b793b408cd434eedaa407c9c0c575d1e',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0xbff74da37df72695b1d7e8185edd47fd0771ee3a',
     v1FactoryToken: '0xdd2bc74e7a5e613379663e72689e668300b42f37',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

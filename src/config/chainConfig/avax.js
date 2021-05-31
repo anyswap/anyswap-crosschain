@@ -1,5 +1,5 @@
 import {formatSwapTokenList} from './methods'
-import {tokenListUrl} from '../constant'
+import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const AVAX_MAINNET = 'https://api.avax.network/ext/bc/C/rpc'
 export const AVAX_MAIN_CHAINID = 43114
@@ -11,6 +11,16 @@ export const tokenList = [
 
 const symbol = 'AVAX'
 
+const bridgeToken = {
+  [VERSION.V1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '',
+    bridgeInitChain: '',
+    swapRouterToken: '',
+    swapInitToken: '',
+  }
+}
+
 export default {
   [AVAX_MAIN_CHAINID]: {
     oldAppName: 'Anyswap V1',
@@ -18,11 +28,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + AVAX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
-    bridgeInitToken: '',
-    bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
