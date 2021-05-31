@@ -47,6 +47,8 @@ const LiquidityView = styled.div`
     ${({theme}) => theme.flexBC}
     .cont {
       margin-left: 10px;
+      color: ${({ theme }) => theme.tipColor};
+      font-size: 14px;
     }
   }
 `
