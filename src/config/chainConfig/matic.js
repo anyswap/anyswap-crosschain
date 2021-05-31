@@ -16,8 +16,11 @@ const bridgeToken = {
     bridgeInitToken: '',
     bridgeRouterToken: '',
     bridgeInitChain: '',
-    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '',
+  },
+  [VERSION.V2]: {
+    bridgeInitToken: '0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605',
+    bridgeRouterToken: '0x1ccca1ce62c62f7be95d4a67722a8fdbed6eecb4',
+    bridgeInitChain: '250',
   }
 }
 

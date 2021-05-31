@@ -85,7 +85,7 @@ export default function SelectChainIdInputPanel({
   useEffect(() => {
     
     getAllChainIDs(chainId).then((res:any) => {
-      // console.log(res)
+      console.log(res)
       setChainList(res)
     })
   }, [chainId])
@@ -108,7 +108,7 @@ export default function SelectChainIdInputPanel({
       && bridgeConfig
       && selectChainId
     ) {
-      const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId] : ''
+      const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
       getNodeBalance(account, token, selectChainId, bridgeConfig.decimals).then(res => {
         // console.log(res)
         if (res) {

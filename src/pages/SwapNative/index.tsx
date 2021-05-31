@@ -64,7 +64,7 @@ export default function SwapNative() {
         address: selectCurrency.underlying.address,
         name: selectCurrency.underlying.name,
         symbol: selectCurrency.underlying.symbol,
-        decimals: selectCurrency.decimals
+        decimals: selectCurrency.underlying.decimals
       }
     }
     return
@@ -129,7 +129,8 @@ export default function SwapNative() {
               "decimals": res.decimals,
               "name": res.name,
               "symbol": res.symbol,
-              "underlying": res.underlying
+              "underlying": res.underlying,
+              "destChain": res.destChain,
             })
           }
         } else {

@@ -15,9 +15,7 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
+    bridgeInitChain: ''
   }
 }
 

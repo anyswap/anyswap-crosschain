@@ -47,8 +47,8 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
     for (let i = 0; i < len; i++) {
       const tokenObj = tokenList[i]
       const underlyingInfo:any = await isUnderlying(tokenObj.token, chainId)
-      console.log(tokenObj)
-      console.log(underlyingInfo)
+      // console.log(tokenObj)
+      // console.log(underlyingInfo)
       if (underlyingInfo) {
         contract.options.address = underlyingInfo?.address
         const tsData = contract.methods.balanceOf(tokenObj.token).encodeABI()
@@ -101,7 +101,6 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
 }
 export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, account?:string | null | undefined) {
   return new Promise(resolve => {
-    
     if (
       token
       && chainId

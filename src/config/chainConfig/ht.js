@@ -148,8 +148,6 @@ const bridgeToken = {
     bridgeInitToken: '',
     bridgeRouterToken: '',
     bridgeInitChain: '',
-    swapRouterToken: '0x77e0e26de17be1ea2df87269475431e0e17dc74f',
-    swapInitToken: '0x734922e7b793b408cd434eedaa407c9c0c575d1e',
   }
 }
 
@@ -188,8 +186,6 @@ export default {
     bridgeInitToken: '0xaac2bb703093eca3ce9b97434fd16f2765951c0e',
     bridgeRouterToken: '0x306377cFA2ac72e757151591e9eCF0135d7C9613',
     bridgeInitChain: '97',
-    swapRouterToken: '0x479ab92bf721de918f01d455e90540149dbfd9da',
-    swapInitToken: '0xe069af87450fb51fc0d0e044617f1c134163e591',
     multicalToken: '0xe4ea48020f648b1aa7fc25af7b196596190c6b29',
     v1FactoryToken: '0x87fe4ea2692aeb64dbab6593de87cc4741e20c7f',
     v2FactoryToken: '0x2302c14f2928bb9b68053320309b84db3702f89f',

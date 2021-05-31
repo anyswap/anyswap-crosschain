@@ -71,6 +71,7 @@ export function isUnderlying (token:any, chainId:any) {
               address: res,
               name: tokenInfo.name,
               symbol: tokenInfo.symbol,
+              decimals: tokenInfo.decimals,
             }
             setLocalConfig(SRCUNDERLYING, token, chainId, SRCUNDERLYING, {data: data}, 1)
             resolve(data)
@@ -119,6 +120,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
           resolve('')
         } else {
           const results = formatWeb3Str(res)
+          // console.log(results)
           const decimals = web3Fn.utils.hexToNumber(results[0])
           const cbtoken = results[1].replace('0x000000000000000000000000', '0x')
           if (cbtoken !=ZERO_ADDRESS) {
@@ -163,7 +165,14 @@ function getAllTokenIDs (chainId:any) {
             const curTokenObj = result.tokenList[tokenstr]
             const curTokenIdObj = result.tokenidList[curTokenObj.tokenid]
             
-            const destChain = {...curTokenIdObj}
+            const destChain:any = {}
+            for (const chainID in curTokenIdObj) {
+              const ti = await getTokenInfo(curTokenIdObj[chainID], chainID)
+              destChain[chainID] = {
+                ...ti,
+                token: curTokenIdObj[chainID]
+              }
+            }
             delete destChain[chainId]
             const tokenInfo = await getTokenInfo(tokenstr, chainId)
             const underlyingInfo = await isUnderlying(tokenstr, chainId)
@@ -172,6 +181,7 @@ function getAllTokenIDs (chainId:any) {
                 ...curTokenObj,
                 name: tokenInfo.name,
                 symbol: tokenInfo.symbol,
+                decimals: tokenInfo.decimals,
                 destChain: destChain,
                 underlying: underlyingInfo
               }

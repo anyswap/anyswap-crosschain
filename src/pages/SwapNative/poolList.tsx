@@ -12,7 +12,7 @@ import { useWalletModalToggle, useToggleNetworkModal } from '../../state/applica
 
 import AppBody from '../AppBody'
 
-import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {getAllToken, getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 import {getGroupTotalsupply} from '../../utils/bridge/getBalance'
 import {thousandBit} from '../../utils/tools/tools'
 
@@ -143,6 +143,7 @@ export default function PoolLists ({
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
+  const [chainList, setChainList] = useState<Array<any>>([])
 
   async function getOutChainInfo (destList:any) {
     const list:any = {}
@@ -154,6 +155,17 @@ export default function PoolLists ({
     return list
   }
   // console.log(poolData)
+
+  useEffect(() => {
+    getAllChainIDs(chainId).then((res:any) => {
+      // console.log(res)
+      if (res && res.length > 0) {
+        setChainList(res.sort())
+      } else {
+        setChainList([])
+      }
+    })
+  }, [chainId])
 
   useEffect(() => {
     setPoolList([])
@@ -172,10 +184,9 @@ export default function PoolLists ({
             }
             for (const chainID in tObj.destChain) {
               if (!destList[chainID]) destList[chainID] = []
-              destList[chainID].push({token: tObj.destChain[chainID], dec: tObj.decimals})
+              destList[chainID].push({token: tObj.destChain[chainID].token, dec: tObj.destChain[chainID].decimals})
               // console.log(chainID)
             }
-            // console.log(Object.keys(tObj.destChain))
             allToken.push({
               ...tObj,
               token: token
@@ -196,7 +207,6 @@ export default function PoolLists ({
 
     for (const chainID in poolList[0].destChain) {
       const ts1 = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? Number(poolData[chainID][item.destChain[chainID]].ts) : 0
-      // const bl1 = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].balance ? Number(poolData[chainID][item.destChain[chainID]].balance) : 0
       ts += ts1
       // bl += bl1
     }
@@ -350,8 +360,18 @@ export default function PoolLists ({
                         </DBTd>
                         <DBTd className="c">
                           <Flex>
-                            <ChainLogoBox title="ETH"><TokenLogo symbol={'ETH'} size={'20px'}></TokenLogo></ChainLogoBox>
-                            <ChainLogoBox title="BSC"><TokenLogo symbol={'BNB'} size={'20px'}></TokenLogo></ChainLogoBox>
+                            {
+                              chainList && chainList.length > 0 ? (
+                                chainList.map((chainID, index) => {
+                                  if (index >= 2) return ''
+                                  return (
+                                    <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}><TokenLogo symbol={config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo></ChainLogoBox>
+                                  )
+                                })
+                              ) : ''
+                            }
+                            {/* <ChainLogoBox title="ETH"><TokenLogo symbol={'ETH'} size={'20px'}></TokenLogo></ChainLogoBox>
+                            <ChainLogoBox title="BSC"><TokenLogo symbol={'BNB'} size={'20px'}></TokenLogo></ChainLogoBox> */}
                             <MoreView></MoreView>
                           </Flex>
                         </DBTd>

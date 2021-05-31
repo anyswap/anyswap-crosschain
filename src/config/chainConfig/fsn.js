@@ -24,9 +24,7 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeRouterToken: '',
-    bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
+    bridgeInitChain: ''
   }
 }
 
@@ -67,8 +65,6 @@ export default {
     bridgeInitToken: '',
     bridgeRouterToken: '',
     bridgeInitChain: '',
-    swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',

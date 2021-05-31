@@ -21,6 +21,10 @@ const bridgeChain = {
   [VERSION.V1]: {
     bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
     bridgeInitDataChain: '56',
+  },
+  [VERSION.V2]: {
+    bridgeConfigToken: '0xdccd7b567da13a11cde232522be708b2d1a14498',
+    bridgeInitDataChain: '56',
   }
 }
 
@@ -28,6 +32,10 @@ const bridgeTestChain = {
   [VERSION.V1]: {
     bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
     bridgeInitDataChain: '256',
+  },
+  [VERSION.V2]: {
+    bridgeConfigToken: '',
+    bridgeInitDataChain: '',
   }
 }
 
@@ -36,7 +44,7 @@ const config: ConFig = {
   ...INITBRIDGE,
   ENV_NODE_CONFIG,
   chainInfo,
-  localDataDeadline: 1617781347004,
+  localDataDeadline: 1622459444615,
   getBaseCoin (value:any, type: number) {
     if (value && value === 'BASECURRENCY') {
       if (type) {

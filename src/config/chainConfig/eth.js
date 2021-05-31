@@ -4,7 +4,6 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 const navLang = navigator.language
 
 export const ETH_MAINNET = 'https://ethmainnet.anyswap.exchange'
-// export const ETH_MAINNET = 'https://eth-mainnet.alchemyapi.io/v2/q1gSNoSMEzJms47Qn93f9-9Xg5clkmEC'
 export const ETH_MAIN_CHAINID = 1
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
@@ -31,9 +30,7 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
     bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
-    bridgeInitChain: '56',
-    swapRouterToken: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
-    swapInitToken: '',
+    bridgeInitChain: '56'
   }
 }
 
@@ -72,8 +69,6 @@ export default {
     bridgeInitToken: '0x332730a4f6e03d9c55829435f10360e13cfa41ff',
     bridgeRouterToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
     bridgeInitChain: '97',
-    swapRouterToken: '',
-    swapInitToken: '0xb09bad01684f6d47fc7dc9591889cc77eaed8d22',
     multicalToken: '0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821',
     v1FactoryToken: '',
     v2FactoryToken: '',

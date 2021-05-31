@@ -11,6 +11,7 @@
 /swap
 /anyswapv2
 /crossbridge
+/stable
 /anyswapExchange_test
 *.zip
 

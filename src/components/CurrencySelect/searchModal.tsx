@@ -66,7 +66,8 @@ export default function SearchModal ({
                 "decimals": res[token].list.decimals,
                 "name": res[token].list.name,
                 "symbol": res[token].list.symbol,
-                "underlying": res[token].list.underlying
+                "underlying": res[token].list.underlying,
+                "destChain": res[token].list.destChain,
               })
             }
           } else {
@@ -76,7 +77,8 @@ export default function SearchModal ({
               "decimals": res[token].list.decimals,
               "name": res[token].list.name,
               "symbol": res[token].list.symbol,
-              "underlying": res[token].list.underlying
+              "underlying": res[token].list.underlying,
+              "destChain": res[token].list.destChain,
             })
           }
         }

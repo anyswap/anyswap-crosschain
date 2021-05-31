@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useMemo, useCallback } from 're
 // import { TokenAmount } from 'anyswap-sdk'
 // import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
@@ -30,13 +30,29 @@ import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
 
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
+import TokenLogo from '../../components/TokenLogo'
+
+const LiquidityView = styled.div`
+  ${({theme}) => theme.flexBC};
+  border: solid 0.5px ${({ theme }) => theme.tipBorder};
+  background-color: ${({ theme }) => theme.tipBg};
+  border-radius: 0.5625rem;
+  padding: 1rem 8px;
+  .item {
+    ${({theme}) => theme.flexBC}
+    .cont {
+      margin-left: 10px;
+    }
+  }
+`
 
 export default function CrossChain() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
@@ -56,6 +72,17 @@ export default function CrossChain() {
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
+  const [curChain, setCurChain] = useState<any>({
+    chain: '',
+    liq: '',
+    bl: ''
+  })
+  const [destChain, setDestChain] = useState<any>({
+    chain: '',
+    liq: '',
+    bl: ''
+  })
+
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
   // console.log(initBridgeToken)
@@ -64,7 +91,7 @@ export default function CrossChain() {
 
   const formatCurrency = useLocalToken(
     selectCurrency && selectCurrency.underlying ?
-      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol} : selectCurrency)
+      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
@@ -74,6 +101,41 @@ export default function CrossChain() {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
+
+  // console.log(selectCurrency)
+
+  const getSelectPool = useCallback(async() => {
+    if (selectCurrency && chainId) {
+      const curChain:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
+      if (curChain) {
+        setCurChain({
+          chain: chainId,
+          liq: curChain?.ts,
+          bl: curChain?.balance
+        })
+      }
+      const destChain:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain].token, selectChain, selectCurrency?.destChain[selectChain].decimals, account)
+      if (destChain) {
+        setDestChain({
+          chain: selectChain,
+          liq: destChain?.ts,
+          bl: destChain?.balance
+        })
+      }
+    }
+  }, [selectCurrency, chainId, account, selectChain])
+
+  useEffect(() => {
+    getSelectPool()
+    if (library) {
+      library.on('block', getSelectPool)
+      return () => {
+        library.removeListener('block', getSelectPool)
+      }
+    } else {
+      return () => {return ''}
+    }
+  }, [getSelectPool, library])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     formatCurrency?formatCurrency:undefined,
@@ -171,7 +233,8 @@ export default function CrossChain() {
               "decimals": res.decimals,
               "name": res.name,
               "symbol": res.symbol,
-              "underlying": res.underlying
+              "underlying": res.underlying,
+              "destChain": res.destChain
             })
           }
         } else {
@@ -254,6 +317,17 @@ export default function CrossChain() {
             isViewModal={modalOpen}
             id="selectCurrency"
           />
+
+          <LiquidityView>
+            <div className='item'>
+              <TokenLogo symbol={curChain ? config.getCurChainInfo(curChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
+              <span className='cont'>{t('pool')}:{curChain.ts ? curChain.ts : '0.00'}</span>
+            </div>
+            <div className='item'>
+              <TokenLogo symbol={destChain ? config.getCurChainInfo(destChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
+              <span className='cont'>{t('pool')}:{destChain.ts ? destChain.ts : '0.00'}</span>
+            </div>
+          </LiquidityView>
 
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {

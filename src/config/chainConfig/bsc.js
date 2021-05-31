@@ -1,7 +1,18 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const BNB_MAINNET = 'https://bsc-dataseed1.binance.org/'
+// export const BNB_MAINNET = 'https://bsc-dataseed3.defibit.io/'
+// export const BNB_MAINNET = 'https://bsc-dataseed4.defibit.io/'
+
+// export const BNB_MAINNET = 'https://bsc-dataseed1.ninicoin.io/'
+// export const BNB_MAINNET = 'https://bsc-dataseed2.ninicoin.io/'
+export const BNB_MAINNET = 'https://bsc-dataseed3.ninicoin.io/'
+// export const BNB_MAINNET = 'https://bsc-dataseed4.ninicoin.io/'
+
+// export const BNB_MAINNET = 'https://bsc-dataseed1.binance.org/'
+// export const BNB_MAINNET = 'https://bsc-dataseed2.binance.org/'
+// export const BNB_MAINNET = 'https://bsc-dataseed3.binance.org/'
+// export const BNB_MAINNET = 'https://bsc-dataseed4.binance.org/'
 export const BNB_MAIN_CHAINID = 56
 export const BNB_MAIN_EXPLORER = 'https://bscscan.com'
 
@@ -28,9 +39,12 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '0xb12c13e66ade1f72f71834f2fc5082db8c091358',
     bridgeRouterToken: '0xabd380327fe66724ffda91a87c772fb8d00be488',
-    bridgeInitChain: '1',
-    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '',
+    bridgeInitChain: '1'
+  },
+  [VERSION.V2]: {
+    bridgeInitToken: '0xc8a45dd787a301c38ad33f692f0d41c18590ef94',
+    bridgeRouterToken: '0xd1a891e6eccb7471ebd6bc352f57150d4365db21',
+    bridgeInitChain: '137'
   }
 }
 
@@ -69,8 +83,6 @@ export default {
     bridgeInitToken: '0xc9baa8cfdde8e328787e29b4b078abf2dadc2055',
     bridgeRouterToken: '0x332730a4F6E03D9C55829435f10360E13cfA41Ff',
     bridgeInitChain: '4',
-    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5',
     multicalToken: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

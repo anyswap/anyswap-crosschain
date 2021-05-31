@@ -127,8 +127,8 @@ export default function PoolTip ({
   async function getAllOutBalance (account:any) {
     const list:any = []
     for (const c in bridgeConfig.destChain) {
-      const destToken = bridgeConfig.destChain[c]
-      const obj:any = await getNodeTotalsupply(destToken, c, bridgeConfig.decimals, account)
+      const destToken = bridgeConfig.destChain[c].token
+      const obj:any = await getNodeTotalsupply(destToken, c, bridgeConfig.destChain[c].decimals, account)
       // console.log(obj)
       const ts = obj[destToken].ts
       const bl = obj[destToken].balance
