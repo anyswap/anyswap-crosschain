@@ -7,7 +7,7 @@ const TOKENINFO = 'TOKENINFO'
 const UNKNOWN = 'UNKNOWN'
 const contract = getContract()
 
-function getTokenNetworkInfo (token:any, chainId:any) {
+function getTokenNetworkInfo (token:any, chainId:any, delay?:any) {
   return new Promise(resolve => {
     const data = {
       name: UNKNOWN,
@@ -27,6 +27,17 @@ function getTokenNetworkInfo (token:any, chainId:any) {
       }
     }))
 
+    const dData = contract.methods.decimals().encodeABI()
+    batch.add(web3Fn.eth.call.request({data: dData, to: token}, 'latest', (err:any, res:any) => {
+      if (err) {
+        data.decimals = UNKNOWN
+        console.log(err)
+      } else {
+        const hexValue = ethers.utils.hexValue(res)
+        data.decimals = web3Fn.utils.hexToNumber(hexValue)
+      }
+    }))
+
     const sData = contract.methods.symbol().encodeABI()
     batch.add(web3Fn.eth.call.request({data: sData, to: token}, 'latest', (err:any, res:any) => {
       if (err) {
@@ -35,36 +46,36 @@ function getTokenNetworkInfo (token:any, chainId:any) {
         data.symbol = web3Fn.utils.hexToUtf8(formatWeb3Str(res)[2])
       }
       setLocalConfig(TOKENINFO, token, chainId, TOKENINFO, {data: data}, 1)
-      resolve(data)
-    }))
-
-    const dData = contract.methods.decimals().encodeABI()
-    batch.add(web3Fn.eth.call.request({data: dData, to: token}, 'latest', (err:any, res:any) => {
-      if (err) {
-        data.decimals = UNKNOWN
-        console.log(err)
+      if (delay) {
+        setTimeout(() => {
+          resolve(data)
+        }, 3000)
       } else {
-        console.log(res)
-        // console.log(formatWeb3Str(res))
-        // console.log(web3Fn.utils.hexToNumber(res[0]))
-        // console.log(ethers.utils)
-        // console.log(ethers.utils.hexValue(res))
-        const hexValue = ethers.utils.hexValue(res)
-        data.decimals = web3Fn.utils.hexToNumber(hexValue)
-        console.log(data)
+        resolve(data)
       }
-      resolve(data)
     }))
 
     batch.execute()
   })
 }
 
-export default function getTokenInfo (token:any, chainId:any) {
+export default async function getTokenInfo (token:any, chainId:any, delay?:any):Promise<any> {
   const lData = getLocalConfig(TOKENINFO, token, chainId, TOKENINFO, 1000 * 60 * 60 * 24 * 1000, 1)
   // console.log(lData)
-  if (lData && lData.data.name !== UNKNOWN && lData.data.symbol !== UNKNOWN) {
+  if (lData
+    && lData.data.name !== UNKNOWN
+    && lData.data.symbol !== UNKNOWN
+    && lData.data.decimals !== UNKNOWN
+  ) {
     return lData.data
   }
-  return getTokenNetworkInfo(token, chainId)
+  const data:any = await getTokenNetworkInfo(token, chainId, delay)
+  if (data
+    && data.name !== UNKNOWN
+    && data.symbol !== UNKNOWN
+    && data.decimals !== UNKNOWN
+  ) {
+    return data
+  }
+  return getTokenInfo(token, chainId, 1)
 }

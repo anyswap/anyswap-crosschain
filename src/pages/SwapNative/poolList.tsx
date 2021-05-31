@@ -144,6 +144,7 @@ export default function PoolLists ({
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
   const [chainList, setChainList] = useState<Array<any>>([])
+  const [count, setCount] = useState<number>(0)
 
   async function getOutChainInfo (destList:any) {
     const list:any = {}
@@ -158,9 +159,9 @@ export default function PoolLists ({
 
   useEffect(() => {
     getAllChainIDs(chainId).then((res:any) => {
-      // console.log(res)
+      console.log(res)
       if (res && res.length > 0) {
-        setChainList(res.sort())
+        setChainList(res)
       } else {
         setChainList([])
       }
@@ -170,8 +171,8 @@ export default function PoolLists ({
   useEffect(() => {
     setPoolList([])
     getAllToken(chainId).then((res:any) => {
+      // console.log(res)
       if (res) {
-        // console.log(res)
         // const list:any = []
         const destList:any = {}
         const allToken = []
@@ -196,9 +197,13 @@ export default function PoolLists ({
         // console.log(destList)
         setPoolList(allToken)
         getOutChainInfo(destList)
+      } else {
+        setTimeout(() => {
+          setCount(count + 1)
+        }, 1000)
       }
     })
-  }, [chainId])
+  }, [chainId, count])
 
   function viewTd (item:any, c?:any) {
     // console.log(poolList)

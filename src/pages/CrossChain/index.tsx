@@ -74,12 +74,12 @@ export default function CrossChain() {
 
   const [curChain, setCurChain] = useState<any>({
     chain: '',
-    liq: '',
+    ts: '',
     bl: ''
   })
   const [destChain, setDestChain] = useState<any>({
     chain: '',
-    liq: '',
+    ts: '',
     bl: ''
   })
 
@@ -106,25 +106,25 @@ export default function CrossChain() {
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
-      const curChain:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
-      if (curChain) {
+      const CC:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
+      // console.log(CC)
+      if (CC) {
         setCurChain({
           chain: chainId,
-          liq: curChain?.ts,
-          bl: curChain?.balance
+          ts: CC[selectCurrency?.address]?.ts,
+          bl: CC[selectCurrency?.address]?.balance
         })
       }
-      const destChain:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain].token, selectChain, selectCurrency?.destChain[selectChain].decimals, account)
-      if (destChain) {
+      const DC:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain].token, selectChain, selectCurrency?.destChain[selectChain].decimals, account)
+      if (DC) {
         setDestChain({
           chain: selectChain,
-          liq: destChain?.ts,
-          bl: destChain?.balance
+          ts: DC[selectCurrency?.destChain[selectChain].token]?.ts,
+          bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
         })
       }
     }
   }, [selectCurrency, chainId, account, selectChain])
-
   useEffect(() => {
     getSelectPool()
     if (library) {
@@ -240,7 +240,6 @@ export default function CrossChain() {
         } else {
           setTimeout(() => {
             setCount(count + 1)
-            // setCount(1)
           }, 1000)
           setBridgeConfig('')
         }
@@ -317,17 +316,20 @@ export default function CrossChain() {
             isViewModal={modalOpen}
             id="selectCurrency"
           />
-
-          <LiquidityView>
-            <div className='item'>
-              <TokenLogo symbol={curChain ? config.getCurChainInfo(curChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
-              <span className='cont'>{t('pool')}:{curChain.ts ? curChain.ts : '0.00'}</span>
-            </div>
-            <div className='item'>
-              <TokenLogo symbol={destChain ? config.getCurChainInfo(destChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
-              <span className='cont'>{t('pool')}:{destChain.ts ? destChain.ts : '0.00'}</span>
-            </div>
-          </LiquidityView>
+          {
+            account && chainId ? (
+              <LiquidityView>
+                <div className='item'>
+                  <TokenLogo symbol={curChain ? config.getCurChainInfo(curChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
+                  <span className='cont'>{t('pool')}:{curChain.ts ? curChain.ts : '0.00'}</span>
+                </div>
+                <div className='item'>
+                  <TokenLogo symbol={destChain ? config.getCurChainInfo(destChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
+                  <span className='cont'>{t('pool')}:{destChain.ts ? destChain.ts : '0.00'}</span>
+                </div>
+              </LiquidityView>
+            ) : ''
+          }
 
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {

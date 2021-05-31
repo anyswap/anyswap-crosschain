@@ -122,6 +122,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
           const results = formatWeb3Str(res)
           // console.log(results)
           const decimals = web3Fn.utils.hexToNumber(results[0])
+          console.log(decimals)
           const cbtoken = results[1].replace('0x000000000000000000000000', '0x')
           if (cbtoken !=ZERO_ADDRESS) {
             if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
@@ -166,15 +167,25 @@ function getAllTokenIDs (chainId:any) {
             const curTokenIdObj = result.tokenidList[curTokenObj.tokenid]
             
             const destChain:any = {}
+            let tokenInfo:any = ''
             for (const chainID in curTokenIdObj) {
               const ti = await getTokenInfo(curTokenIdObj[chainID], chainID)
+              const ud = await isUnderlying(curTokenIdObj[chainID], chainID)
               destChain[chainID] = {
                 ...ti,
-                token: curTokenIdObj[chainID]
+                token: curTokenIdObj[chainID],
+                underlying: ud
               }
+              if (Number(chainID) === Number(chainId)) {
+                tokenInfo = ti
+              } 
             }
             delete destChain[chainId]
-            const tokenInfo = await getTokenInfo(tokenstr, chainId)
+            if (!tokenInfo) {
+              tokenInfo = await getTokenInfo(tokenstr, chainId)
+            }
+            // const tokenInfo = await getTokenInfo(tokenstr, chainId)
+            console.log(tokenInfo)
             const underlyingInfo = await isUnderlying(tokenstr, chainId)
             if (curTokenObj && curTokenIdObj) {
               const obj = {
@@ -202,7 +213,16 @@ export function getTokenConfig (token:any, chainId:any) {
       const lData = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
       // console.log(lData)
       // console.log(token)
-      if (lData && lData.list && lData.list.name && lData.list.decimals && lData.list.symbol && lData.list.symbol != 'UNKNOWN') {
+      if (
+        lData
+        && lData.list
+        && lData.list.name
+        && lData.list.decimals
+        && lData.list.symbol
+        && lData.list.name != 'UNKNOWN'
+        && lData.list.decimals != 'UNKNOWN'
+        && lData.list.symbol != 'UNKNOWN'
+      ) {
         resolve(lData.list)
       } else {
         getAllTokenIDs(chainId).then(() => {

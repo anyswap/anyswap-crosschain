@@ -5,8 +5,8 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 // export const BNB_MAINNET = 'https://bsc-dataseed4.defibit.io/'
 
 // export const BNB_MAINNET = 'https://bsc-dataseed1.ninicoin.io/'
-// export const BNB_MAINNET = 'https://bsc-dataseed2.ninicoin.io/'
-export const BNB_MAINNET = 'https://bsc-dataseed3.ninicoin.io/'
+export const BNB_MAINNET = 'https://bsc-dataseed2.ninicoin.io/'
+// export const BNB_MAINNET = 'https://bsc-dataseed3.ninicoin.io/'
 // export const BNB_MAINNET = 'https://bsc-dataseed4.ninicoin.io/'
 
 // export const BNB_MAINNET = 'https://bsc-dataseed1.binance.org/'
