@@ -29,8 +29,7 @@ import {
   InputPanel,
   Container,
   StyledTokenName,
-  // CurrencySelect1
-  // HideSmallBox
+  CurrencySelectBox
 } from './styleds'
 
 import SearchModal from './searchModal'
@@ -150,94 +149,95 @@ export default function SelectCurrencyInputPanel({
                 onUserInput={val => {
                   onUserInput(val)
                 }}
-                style={{ marginRight: '1.875rem' }}
                 disabled={disableInput}
               />
             </>
           )}
-          <CurrencySelect
-            selected={!!currency}
-            className="open-currency-select-button"
-            onClick={() => {
-              if (!disableCurrencySelect) {
-                setModalOpen(true)
-              }
-            }}
-          >
-            <Aligner>
-              <TokenLogoBox>
-                <TokenLogo symbol={currency?.symbol} size={'24px'} />
-              </TokenLogoBox>
-              <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                <h3>
-                  {/* {inputType ? (
-                    inputType.type === 'INPUT' ? (
-                      inputType.swapType === 'deposit' ? '' : 'any'
-                    ) : (
-                      inputType.swapType === 'deposit' ? 'any' : ''
-                    )
-                  ) : ''} */}
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? currency.symbol.slice(0, 4) +
-                      '...' +
-                      currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                    : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                  {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''}
-                </h3>
-                <p>
-                 {currency && currency.name ? currency.name : ''}
-                </p>
-              </StyledTokenName>
-              {!disableCurrencySelect && !!currency && (
-                <StyledDropDownBox>
-                  <StyledDropDown selected={!!currency} />
-                </StyledDropDownBox>
-              )}
-            </Aligner>
-          </CurrencySelect>
-          {
-            isViewNetwork ? (
-              <CurrencySelect
-                selected={true}
-                onClick={() => {toggleNetworkModal()}}
-                className="open-currency-select-button"
-                style={{marginLeft: "10px"}}
-              >
-                <Aligner>
-                  <TokenLogoBox>
-                    <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
-                  </TokenLogoBox>
-                  <StyledTokenName className="token-symbol-container">
-                    {config.getCurChainInfo(chainId).networkName}
-                  </StyledTokenName>
-                  {!disableCurrencySelect && !!currency && (
-                    <StyledDropDownBox>
-                      <StyledDropDown selected={!!currency} />
-                    </StyledDropDownBox>
-                  )}
-                </Aligner>
-              </CurrencySelect>
-            ) : (
-              <ErrorSpanBox>
-                {
-                  !hideBalance && !!currency && selectedCurrencyBalance ? (
-                    <ErrorSpan onClick={handleMax}>
-                      <ExtraText>
-                        <h5>{t('balance')}</h5>
-                        <p>
-                          {!hideBalance && !!currency && selectedCurrencyBalance
-                            ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
-                            : ' -'}{' '}
-                        </p>
-                      </ExtraText>
-                    </ErrorSpan>
-                  ) : (
-                    ''
-                  )
+          <CurrencySelectBox>
+
+            <CurrencySelect
+              selected={!!currency}
+              className="open-currency-select-button"
+              onClick={() => {
+                if (!disableCurrencySelect) {
+                  setModalOpen(true)
                 }
-              </ErrorSpanBox>
-            )
-          }
+              }}
+            >
+              <Aligner>
+                <TokenLogoBox>
+                  <TokenLogo symbol={currency?.symbol} size={'24px'} />
+                </TokenLogoBox>
+                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                  <h3>
+                    {/* {inputType ? (
+                      inputType.type === 'INPUT' ? (
+                        inputType.swapType === 'deposit' ? '' : 'any'
+                      ) : (
+                        inputType.swapType === 'deposit' ? 'any' : ''
+                      )
+                    ) : ''} */}
+                    {(currency && currency.symbol && currency.symbol.length > 20
+                      ? currency.symbol.slice(0, 4) +
+                        '...' +
+                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                      : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
+                    {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''}
+                  </h3>
+                  <p>
+                  {currency && currency.name ? currency.name : ''}
+                  </p>
+                </StyledTokenName>
+                {!disableCurrencySelect && !!currency && (
+                  <StyledDropDownBox>
+                    <StyledDropDown selected={!!currency} />
+                  </StyledDropDownBox>
+                )}
+              </Aligner>
+            </CurrencySelect>
+            {
+              isViewNetwork ? (
+                <CurrencySelect
+                  selected={true}
+                  onClick={() => {toggleNetworkModal()}}
+                  className="open-currency-select-button"
+                >
+                  <Aligner>
+                    <TokenLogoBox>
+                      <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
+                    </TokenLogoBox>
+                    <StyledTokenName className="token-symbol-container">
+                      {config.getCurChainInfo(chainId).networkName}
+                    </StyledTokenName>
+                    {!disableCurrencySelect && !!currency && (
+                      <StyledDropDownBox>
+                        <StyledDropDown selected={!!currency} />
+                      </StyledDropDownBox>
+                    )}
+                  </Aligner>
+                </CurrencySelect>
+              ) : (
+                <ErrorSpanBox>
+                  {
+                    !hideBalance && !!currency && selectedCurrencyBalance ? (
+                      <ErrorSpan onClick={handleMax}>
+                        <ExtraText>
+                          <h5>{t('balance')}</h5>
+                          <p>
+                            {!hideBalance && !!currency && selectedCurrencyBalance
+                              ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
+                              : ' -'}{' '}
+                          </p>
+                        </ExtraText>
+                      </ErrorSpan>
+                    ) : (
+                      ''
+                    )
+                  }
+                </ErrorSpanBox>
+              )
+            }
+          </CurrencySelectBox>
         </InputRow>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && modalOpen && (

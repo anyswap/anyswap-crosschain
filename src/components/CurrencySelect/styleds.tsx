@@ -5,9 +5,23 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 
 export const InputRow = styled.div<{ selected: boolean }>`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${({ theme }) => theme.flexRowNoWrap};
+  
   align-items: center;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0rem 0.75rem')};
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    flex-wrap:wrap;
+    padding: 0;
+  `};
+`
+
+export const CurrencySelectBox = styled.div`
+  ${({ theme }) => theme.flexBC};
+  width: 100%;
+  overflow:hidden;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    margin-top:10px;
+  `};
 `
 
 export const CurrencySelect = styled.button<{ selected: boolean }>`
@@ -25,6 +39,7 @@ export const CurrencySelect = styled.button<{ selected: boolean }>`
   user-select: none;
   padding: 0 1.25rem;
   position: relative;
+  margin: 0 5px;
 
   :hover {
     border: 0.0625rem solid ${({ theme }) => theme.selectedHoverBorder};
@@ -38,42 +53,21 @@ export const CurrencySelect = styled.button<{ selected: boolean }>`
   :active {
     background-color: ${({ theme }) => darken(0.1, theme.selectedBorder)};
   }
-  @media screen and (max-width: 960px) {
-    width: 50%;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    height: 60px;
+    width: 100%;
     padding: 0 0.625rem;
-  }
-`
-
-export const CurrencySelect1 = styled(CurrencySelect)`
-
-  border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-  background-color: ${({ theme }) => theme.selectedBgNo};
-  :hover {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-
-  :focus {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-
-  :active {
-    border: 0.0625rem solid ${({ theme }) => theme.selectedBorderNo};
-    background-color: ${({ theme }) => theme.selectedBgNo};
-  }
-  @media screen and (max-width: 960px) {
-    display: none;
-  }
+    margin: 0 5px;
+  `};
 `
 
 export const ErrorSpanBox = styled.div`
   height: 70px;
   width: 220px;
   margin-left: 0.625rem;
-  @media screen and (max-width: 960px) {
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     display: none;
-  }
+  `};
 `
 export const ErrorSpan = styled.span`
   display: flex;
@@ -142,6 +136,9 @@ export const Aligner = styled.span`
   &.pl-0 {
     padding-left: 0;
   }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 0px 1.625rem 0 40px;
+  `};
 `
 
 export const TokenLogoBox = styled.div`
@@ -151,10 +148,13 @@ export const TokenLogoBox = styled.div`
   background: ${({ theme }) => theme.white};
   box-sizing: border-box;
   border-radius: 100%;
-  margin-right: 1.25rem;
   position: absolute;
   top: 0.625rem;
   left: 0;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 36px;
+    height: 36px;
+  `};
 `
 
 export const StyledDropDownBox = styled.div`
@@ -182,26 +182,32 @@ export const InputPanel = styled.div<{ hideInput?: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '1.25rem' : '1.25rem')};
   background-color: ${({ theme }) => theme.bg2};
   z-index: 1;
+  width:100%;
 `
 
 export const Container = styled.div<{ hideInput: boolean }>`
   // border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
   // border: 1px solid ${({ theme }) => theme.bg2};
+  width:100%;
   background-color: ${({ theme }) => theme.contentBg};
   box-shadow: 0 0.25rem 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
   border-radius: 1.25rem;
   border: 1px solid rgb (255, 92, 177);
   padding: 1.25rem 2.5rem;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem 1.5625rem;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 1rem 1rem;
   `}
 `
 
 export const StyledTokenName = styled.span<{ active?: boolean }>`
-  // ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-
   text-align:left;
   width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 12px;
+  `}
+  // white-space:nowrap;
+  // text-overflow:ellipsis;
+  // overflow:hidden;
   h3 {
     font-family: 'Manrope';
     font-size: 1rem;
@@ -212,6 +218,9 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
     margin:0 0 2px;
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      font-size: 12px;
+    `}
   }
   p {
     font-family: 'Manrope';
@@ -224,12 +233,11 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     color: ${({ theme }) => theme.selectTextColor};
     margin:8px 0 0;
   }
-
 `
 
 export const HideSmallBox = styled.div`
   display:none;
-  @media screen and (max-width: 960px) {
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     display: block;
-  }
+  `}
 `

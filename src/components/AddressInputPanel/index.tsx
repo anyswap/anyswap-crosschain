@@ -17,6 +17,10 @@ const InputPanel = styled.div`
   background: ${({ theme }) => theme.bg1};
   z-index: 1;
   width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    flex-wrap:wrap;
+    padding: 0;
+  `};
 `
 
 const ContainerRow = styled.div<{ error: boolean }>`
@@ -33,6 +37,9 @@ const ContainerRow = styled.div<{ error: boolean }>`
 const InputContainer = styled.div`
   flex: 1;
   padding: 1.25rem 2.5rem;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 1rem 1rem;
+  `}
 `
 
 const Input = styled.input<{ error?: boolean }>`
@@ -68,6 +75,12 @@ const Input = styled.input<{ error?: boolean }>`
   ::placeholder {
     color: ${({ theme }) => theme.text4};
   }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 100%;
+    margin-right: 0;
+    height: 50px;
+    font-size: 24px;
+  `};
 `
 
 export default function AddressInputPanel({

@@ -225,7 +225,7 @@ export default function CrossChain() {
             }
           ]}
         ></Title>
-        <AutoColumn gap={'md'}>
+        <AutoColumn gap={'sm'}>
 
           <SelectCurrencyInputPanel
             label={t('From')}

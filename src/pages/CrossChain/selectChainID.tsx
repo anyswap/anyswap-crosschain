@@ -36,6 +36,7 @@ import {
   InputPanel,
   Container,
   StyledTokenName,
+  CurrencySelectBox
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
@@ -147,90 +148,90 @@ export default function SelectChainIdInputPanel({
                   onUserInput={val => {
                     onUserInput(val)
                   }}
-                  style={{ marginRight: '1.875rem' }}
                   disabled
                 />
               </>
             )}
-            <CurrencySelect
-              selected={!!selectChainId}
-              className="open-currency-select-button"
-              onClick={() => {
-                if (!disableCurrencySelect && onOpenModalView) {
-                  onOpenModalView(true)
-                }
-              }}
-              style={{marginLeft: "10px"}}
-            >
-              <Aligner>
-                <TokenLogoBox>
-                  <TokenLogo symbol={bridgeConfig?.symbol} size={'24px'} />
-                </TokenLogoBox>
-                <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
-                  <h3>
-                    {/* {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
-                      ? bridgeConfig.symbol.slice(0, 4) +
-                        '...' +
-                        bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                      : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
-                    {
-                      bridgeConfig?.underlying?.symbol ? (
-                        bridgeConfig?.underlying?.symbol.length > 20
-                          ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
-                            '...' +
-                            bridgeConfig?.underlying?.symbol.slice(bridgeConfig?.underlying?.symbol.length - 5, bridgeConfig?.underlying?.symbol.length)
-                          : config.getBaseCoin(bridgeConfig?.underlying?.symbol)
-                      ) : (
-                        bridgeConfig?.symbol ? (
-                          bridgeConfig?.symbol.length > 20
-                            ? bridgeConfig.symbol.slice(0, 4) +
-                              '...' +
-                              bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                            : config.getBaseCoin(bridgeConfig?.symbol)) : t('selectToken')
-                      )
-                    }
-                    {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
-                  </h3>
-                  <p>
-                    {
-                      bridgeConfig ? (
-                        bridgeConfig.underlying ? bridgeConfig.underlying.name : bridgeConfig.name
-                      ) : ''
-                    }
-                  </p>
-                </StyledTokenName>
-                {!disableCurrencySelect && !!selectChainId && (
-                  <StyledDropDownBox>
-                    <StyledDropDown selected={!!selectChainId} />
-                  </StyledDropDownBox>
-                )}
-              </Aligner>
-            </CurrencySelect>
+            <CurrencySelectBox>
 
-            <CurrencySelect
-              selected={!!selectChainId}
-              className="open-currency-select-button"
-              onClick={() => {
-                if (!disableCurrencySelect) {
-                  setModalOpen(true)
-                }
-              }}
-              style={{marginLeft: "10px"}}
-            >
-              <Aligner>
-                <TokenLogoBox>
-                  <TokenLogo symbol={selectChainId ? config.chainInfo[selectChainId].symbol : ''} size={'24px'} />
-                </TokenLogoBox>
-                <StyledTokenName className="token-symbol-container" active={Boolean(selectChainId)}>
-                  {selectChainId && config.chainInfo[selectChainId].networkName ? config.chainInfo[selectChainId].networkName : t('selectNetwork')}
-                </StyledTokenName>
-                {!disableCurrencySelect && !!selectChainId && (
-                  <StyledDropDownBox>
-                    <StyledDropDown selected={!!selectChainId} />
-                  </StyledDropDownBox>
-                )}
-              </Aligner>
-            </CurrencySelect>
+              <CurrencySelect
+                selected={!!selectChainId}
+                className="open-currency-select-button"
+                onClick={() => {
+                  if (!disableCurrencySelect && onOpenModalView) {
+                    onOpenModalView(true)
+                  }
+                }}
+              >
+                <Aligner>
+                  <TokenLogoBox>
+                    <TokenLogo symbol={bridgeConfig?.symbol} size={'24px'} />
+                  </TokenLogoBox>
+                  <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
+                    <h3>
+                      {/* {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
+                        ? bridgeConfig.symbol.slice(0, 4) +
+                          '...' +
+                          bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
+                        : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
+                      {
+                        bridgeConfig?.underlying?.symbol ? (
+                          bridgeConfig?.underlying?.symbol.length > 20
+                            ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
+                              '...' +
+                              bridgeConfig?.underlying?.symbol.slice(bridgeConfig?.underlying?.symbol.length - 5, bridgeConfig?.underlying?.symbol.length)
+                            : config.getBaseCoin(bridgeConfig?.underlying?.symbol)
+                        ) : (
+                          bridgeConfig?.symbol ? (
+                            bridgeConfig?.symbol.length > 20
+                              ? bridgeConfig.symbol.slice(0, 4) +
+                                '...' +
+                                bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
+                              : config.getBaseCoin(bridgeConfig?.symbol)) : t('selectToken')
+                        )
+                      }
+                      {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
+                    </h3>
+                    <p>
+                      {
+                        bridgeConfig ? (
+                          bridgeConfig.underlying ? bridgeConfig.underlying.name : bridgeConfig.name
+                        ) : ''
+                      }
+                    </p>
+                  </StyledTokenName>
+                  {!disableCurrencySelect && !!selectChainId && (
+                    <StyledDropDownBox>
+                      <StyledDropDown selected={!!selectChainId} />
+                    </StyledDropDownBox>
+                  )}
+                </Aligner>
+              </CurrencySelect>
+
+              <CurrencySelect
+                selected={!!selectChainId}
+                className="open-currency-select-button"
+                onClick={() => {
+                  if (!disableCurrencySelect) {
+                    setModalOpen(true)
+                  }
+                }}
+              >
+                <Aligner>
+                  <TokenLogoBox>
+                    <TokenLogo symbol={selectChainId ? config.chainInfo[selectChainId].symbol : ''} size={'24px'} />
+                  </TokenLogoBox>
+                  <StyledTokenName className="token-symbol-container" active={Boolean(selectChainId)}>
+                    {selectChainId && config.chainInfo[selectChainId].networkName ? config.chainInfo[selectChainId].networkName : t('selectNetwork')}
+                  </StyledTokenName>
+                  {!disableCurrencySelect && !!selectChainId && (
+                    <StyledDropDownBox>
+                      <StyledDropDown selected={!!selectChainId} />
+                    </StyledDropDownBox>
+                  )}
+                </Aligner>
+              </CurrencySelect>
+            </CurrencySelectBox>
           </InputRow>
         </Container>
       </InputPanel>

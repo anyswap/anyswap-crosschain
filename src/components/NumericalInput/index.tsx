@@ -4,7 +4,7 @@ import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
-  width: 0;
+  width: 100%;
   position: relative;
   font-weight: 500;
   outline: none;
@@ -21,6 +21,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   height: 70px;
   background: none;
   border-bottom: 0.0625rem solid ${({ theme }) => theme.inputBorder};
+  margin-right: 1.875rem;
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;
@@ -39,6 +40,12 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     // color: ${({ theme }) => theme.text4};
     color:#DADADA;
   }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 100%;
+    margin-right: 0;
+    height: 50px;
+    font-size: 24px;
+  `};
 `
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group

@@ -29,6 +29,7 @@ export const MyBalanceBox = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
   padding: 1rem 2.5rem;
   margin-bottom: 20px;
+  overflow:auto;
   @media screen and (max-width: 960px) {
     padding: 1rem 1rem;
   }
