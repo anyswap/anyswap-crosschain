@@ -74,7 +74,7 @@ export default function SelectCurrencyInputPanel({
   otherCurrency,
   id,
   customBalanceText,
-  inputType,
+  // inputType,
   onlyUnderlying,
   isViewModal,
   onOpenModalView,
@@ -182,7 +182,7 @@ export default function SelectCurrencyInputPanel({
                         '...' +
                         currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                       : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
-                    {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''}
+                    {/* {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''} */}
                   </h3>
                   <p>
                   {currency && currency.name ? currency.name : ''}

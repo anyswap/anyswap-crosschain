@@ -203,7 +203,7 @@ export default function SelectChainIdInputPanel({
                               : config.getBaseCoin(bridgeConfig?.symbol)) : t('selectToken')
                         )
                       }
-                      {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''}
+                      {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {
