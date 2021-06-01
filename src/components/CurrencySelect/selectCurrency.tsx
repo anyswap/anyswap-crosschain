@@ -219,14 +219,14 @@ export default function SelectCurrencyInputPanel({
               ) : (
                 <ErrorSpanBox>
                   {
-                    !hideBalance && !!currency && selectedCurrencyBalance ? (
+                    !hideBalance && !!currency ? (
                       <ErrorSpan onClick={handleMax}>
                         <ExtraText>
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && selectedCurrencyBalance
                               ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
-                              : ' -'}{' '}
+                              : '0'}{' '}
                           </p>
                         </ExtraText>
                       </ErrorSpan>

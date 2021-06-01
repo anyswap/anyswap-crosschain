@@ -354,7 +354,7 @@ export default function CrossChain() {
           {
             account && chainId ? (
               <LiquidityView>
-                {t('pool')}
+                {t('pool')}： 
                 {
                   curChain ? (
                     <div className='item'>
@@ -442,6 +442,9 @@ export default function CrossChain() {
                   } else {
                     if (onWrapUnderlying) onWrapUnderlying()
                   }
+                  setTimeout(() => {
+                    setInputBridgeValue('')
+                  }, 1000 * 3)
                 }}>
                   {btnTxt}
                 </ButtonPrimary>

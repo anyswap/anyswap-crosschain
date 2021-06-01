@@ -147,7 +147,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {destBalance ? (t('balanceTxt') + ': ' + formatDecimal(destBalance, 2)) : ' -'}
+                  {destBalance ? (t('balanceTxt') + ': ' + formatDecimal(destBalance, 2)) : '0'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>
@@ -208,7 +208,7 @@ export default function SelectChainIdInputPanel({
                     <p>
                       {
                         bridgeConfig ? (
-                          bridgeConfig.destChain ? bridgeConfig.destChain[selectChainId].underlying.name : bridgeConfig.name
+                          bridgeConfig.destChain ? bridgeConfig.destChain[selectChainId]?.underlying?.name : bridgeConfig?.name
                         ) : ''
                       }
                     </p>
