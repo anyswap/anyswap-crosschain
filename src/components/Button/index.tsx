@@ -62,7 +62,7 @@ export const ButtonPrimary = styled(Base)`
     box-shadow: none;
     border: 1px solid transparent;
     outline: none;
-    opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
+    opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.5' : '0.5')};
   }
 `
 

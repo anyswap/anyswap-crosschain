@@ -106,7 +106,6 @@ export default function SelectChainIdInputPanel({
   )
 
   useEffect(() => {
-    setDestBalance('')
     if (
       account
       && chainId
@@ -122,9 +121,13 @@ export default function SelectChainIdInputPanel({
           console.log(res)
           if (res) {
             setDestBalance(res)
+          } else {
+            setDestBalance('')
           }
         })
       }
+    } else {
+      setDestBalance('')
     }
   }, [account, chainId, bridgeConfig, selectChainId, intervalCount])
 
