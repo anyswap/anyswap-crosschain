@@ -1,6 +1,7 @@
 import { ChainId, Pair, Token } from 'anyswap-sdk'
 import { useCallback, useMemo } from 'react'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+// import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -41,18 +42,19 @@ function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export function useIsDarkMode(): boolean {
-  const { userDarkMode, matchesDarkMode } = useSelector<
-    AppState,
-    { userDarkMode: boolean | null; matchesDarkMode: boolean }
-  >(
-    ({ user: { matchesDarkMode, userDarkMode } }) => ({
-      userDarkMode,
-      matchesDarkMode
-    }),
-    shallowEqual
-  )
+  // const { userDarkMode, matchesDarkMode } = useSelector<
+  //   AppState,
+  //   { userDarkMode: boolean | null; matchesDarkMode: boolean }
+  // >(
+  //   ({ user: { matchesDarkMode, userDarkMode } }) => ({
+  //     userDarkMode,
+  //     matchesDarkMode
+  //   }),
+  //   shallowEqual
+  // )
 
-  return userDarkMode === null ? matchesDarkMode : userDarkMode
+  return false
+  // return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

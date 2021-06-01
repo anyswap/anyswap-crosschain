@@ -86,7 +86,7 @@ export default function SelectChainIdInputPanel({
   }, [setModalOpen])
 
   const theme = useContext(ThemeContext)
-
+  // console.log(bridgeConfig)
   useEffect(() => {
     
     getAllChainIDs(chainId).then((res:any) => {
@@ -208,7 +208,7 @@ export default function SelectChainIdInputPanel({
                     <p>
                       {
                         bridgeConfig ? (
-                          bridgeConfig.underlying ? bridgeConfig.underlying.name : bridgeConfig.name
+                          bridgeConfig.destChain ? bridgeConfig.destChain[selectChainId].underlying.name : bridgeConfig.name
                         ) : ''
                       }
                     </p>

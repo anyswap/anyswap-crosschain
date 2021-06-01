@@ -19,7 +19,7 @@ import { ReactComponent as Dropdown } from '../../assets/images/dropdown-blue.sv
 import config from '../../config'
 
 import {getAllToken} from '../../utils/bridge/getBaseInfo'
-import {fromWei} from '../../utils/tools/tools'
+import {fromWei, formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
 export const MyBalanceBox = styled.div`
@@ -326,6 +326,8 @@ export const ColoredDropdown = styled(WrappedDropdown)`
 
 export default function DashboardDtil() {
   const { account, chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   const [poolArr, setPoolArr] = useState<Array<string>>()
 
@@ -492,9 +494,9 @@ export default function DashboardDtil() {
                               </TokenNameBox>
                             </TokenTableCoinBox>
                           </DBTd>
-                          <DBTd className="r">{item.balance ? item.balance : '-'}</DBTd>
-                          <DBTd className="r">{item.poolBlance ? item.poolBlance : '-'}</DBTd>
-                          <DBTd className="r">{item.totalBlance ? item.totalBlance : '-'}</DBTd>
+                          <DBTd className="r">{item.balance ? formatDecimal(item.balance, 2) : '-'}</DBTd>
+                          <DBTd className="r">{item.poolBlance ? formatDecimal(item.poolBlance, 2) : '-'}</DBTd>
+                          <DBTd className="r">{item.totalBlance ? formatDecimal(item.totalBlance, 2) : '-'}</DBTd>
                           <DBTd className="c">
                             <span style={{ display: 'inline-block' }}>
                               <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>

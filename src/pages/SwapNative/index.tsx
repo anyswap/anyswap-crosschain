@@ -107,6 +107,7 @@ export default function SwapNative() {
       && poolInfo
       && Number(poolInfo.balance) > Number(inputBridgeValue)
       && Number(poolInfo.totalsupply) > Number(inputBridgeValue)
+      && swapType !== 'deposit'
     ) {
       return false
     } else {

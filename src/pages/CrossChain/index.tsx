@@ -163,16 +163,7 @@ export default function CrossChain() {
   }, [selectCurrency, chainId, account, selectChain, intervalCount])
   useEffect(() => {
     getSelectPool()
-    // if (library) {
-    //   library.on('block', getSelectPool)
-    //   return () => {
-    //     library.removeListener('block', getSelectPool)
-    //   }
-    // } else {
-    //   return () => {return ''}
-    // }
   }, [getSelectPool])
-  // }, [getSelectPool, library])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     formatCurrency?formatCurrency:undefined,
@@ -219,8 +210,13 @@ export default function CrossChain() {
         || (!wrapInputErrorUnderlying && (selectCurrency && selectCurrency.underlying))
       )
       && isAddress(recipient)
+      && destChain
     ) {
-      if (Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap) || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)) {
+      if (
+        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        || Number(inputBridgeValue) > Number(destChain.ts)
+      ) {
         return true
       } else {
         return false
@@ -228,7 +224,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying])
+  }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain])
 
   const btnTxt = useMemo(() => {
     if (wrapInputError && inputBridgeValue) {
