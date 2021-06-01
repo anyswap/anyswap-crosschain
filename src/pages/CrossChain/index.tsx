@@ -83,6 +83,8 @@ export default function CrossChain() {
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
+  const [delayAction, setDelayAction] = useState<boolean>(false)
+
   const [curChain, setCurChain] = useState<any>({
     chain: '',
     ts: '',
@@ -114,6 +116,13 @@ export default function CrossChain() {
   }, [approval, approvalSubmitted])
 
   // console.log(selectCurrency)
+
+  const onDelay = useCallback(() => {
+    setDelayAction(true)
+    setTimeout(() => {
+      setDelayAction(false)
+    }, 1000 * 3)
+  }, [])
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
@@ -380,6 +389,7 @@ export default function CrossChain() {
               setModalOpen(value)
             }}
             bridgeConfig={bridgeConfig}
+            intervalCount={intervalCount}
           />
           {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
@@ -394,8 +404,11 @@ export default function CrossChain() {
             ) : (
               selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
-                  onClick={approveCallback}
-                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                  onClick={() => {
+                    onDelay()
+                    approveCallback()
+                  }}
+                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                   width="48%"
                   altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
                   // confirmed={approval === ApprovalState.APPROVED}
@@ -411,7 +424,14 @@ export default function CrossChain() {
                   )}
                 </ButtonConfirmed>
               ) : (
-                <ButtonPrimary disabled={isCrossBridge} onClick={!selectCurrency || !selectCurrency.underlying ? onWrap : onWrapUnderlying}>
+                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  onDelay()
+                  if (!selectCurrency || !selectCurrency.underlying) {
+                    if (onWrap) onWrap()
+                  } else {
+                    if (onWrapUnderlying) onWrapUnderlying()
+                  }
+                }}>
                   {btnTxt}
                 </ButtonPrimary>
               )

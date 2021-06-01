@@ -34,6 +34,7 @@ import AppBody from '../AppBody'
 import PoolTip from './poolTip'
 
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 
 export default function SwapNative() {
@@ -51,9 +52,11 @@ export default function SwapNative() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [swapType, setSwapType] = useState<any>(urlSwapType)
   const [count, setCount] = useState<number>(0)
-  const [bridgeConfig, setBridgeConfig] = useState<any>()
+  const [poolInfo, setPoolInfo] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+
+  const [delayAction, setDelayAction] = useState<boolean>(false)
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
@@ -85,12 +88,22 @@ export default function SwapNative() {
     swapType
   )
 
+  const onDelay = useCallback(() => {
+    setDelayAction(true)
+    setTimeout(() => {
+      setDelayAction(false)
+    }, 1000 * 3)
+  }, [])
+
   const isCrossBridge = useMemo(() => {
     if (
       account
       && selectCurrency
       && inputBridgeValue
       && !wrapInputError
+      && poolInfo
+      && Number(poolInfo.balance) > Number(inputBridgeValue)
+      && Number(poolInfo.totalsupply) > Number(inputBridgeValue)
     ) {
       return false
     } else {
@@ -122,7 +135,6 @@ export default function SwapNative() {
     if (token) {
       getTokenConfig(token, chainId).then((res:any) => {
         console.log(res)
-        setBridgeConfig(res)
         if (res && res.decimals && res.symbol) {
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
             setSelectCurrency({
@@ -140,14 +152,43 @@ export default function SwapNative() {
             setCount(count + 1)
             // setCount(1)
           }, 100)
-          setBridgeConfig('')
         }
       })
-    } else {
-      setBridgeConfig('')
     }
-    // getBaseInfo()
   }, [selectCurrency, count, chainId])
+
+  function formatPercent (n1:any, n2:any) {
+    if (!n1 || !n2) return ''
+    const n = (Number(n1) / Number(n2)) * 100
+    if (n < 0.01) {
+      return '(<0.01%)'
+    } else {
+      return '(' + n.toFixed(2) + '%)'
+    }
+  }
+
+  async function getAllOutBalance (account:any) {
+    const token = selectCurrency.address
+    const obj:any = await getNodeTotalsupply(token, chainId, selectCurrency.decimals, account)
+    // console.log(obj)
+    const ts = obj[token].ts
+    const bl = obj[token].balance
+    return {
+      chainId: chainId,
+      balance: bl,
+      totalsupply: ts,
+      percent: formatPercent(bl, ts)
+    }
+  }
+  useEffect(() => {
+    // console.log(bridgeConfig)
+    if (selectCurrency) {
+      getAllOutBalance(account).then((res:any) => {
+        // console.log(res)
+        setPoolInfo(res)
+      })
+    }
+  }, [selectCurrency, account])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -211,7 +252,7 @@ export default function SwapNative() {
 
         <PoolTip 
           anyCurrency={anyCurrency}
-          bridgeConfig={bridgeConfig}
+          bridgeConfig={poolInfo}
         />
 
         <BottomGrouping>
@@ -221,8 +262,11 @@ export default function SwapNative() {
             ) : (
               inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
-                  onClick={approveCallback}
-                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                  onClick={() => {
+                    onDelay()
+                    approveCallback()
+                  }}
+                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                   width="48%"
                   altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
                   // confirmed={approval === ApprovalState.APPROVED}
@@ -238,7 +282,10 @@ export default function SwapNative() {
                   )}
                 </ButtonConfirmed>
               ) : (
-                <ButtonPrimary disabled={isCrossBridge} onClick={onWrap}>
+                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  onDelay()
+                  if (onWrap) onWrap()
+                }}>
                   {btnTxt}
                 </ButtonPrimary>
               )

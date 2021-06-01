@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import { useActiveWeb3React } from '../../hooks'
-import {useTokenBalancesWithLoadingIndicator, useTokenTotalSupplyWithLoadingIndicator} from '../../state/wallet/hooks'
+// import { useActiveWeb3React } from '../../hooks'
+// import {useTokenBalancesWithLoadingIndicator, useTokenTotalSupplyWithLoadingIndicator} from '../../state/wallet/hooks'
 
-import {fromWei} from '../../utils/tools/tools'
+// import {fromWei} from '../../utils/tools/tools'
 // import {getNodeBalance, getNodeTotalsupply} from '../../utils/bridge/getBalance'
-import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
+// import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 
 // import TokenLogo from '../../components/TokenLogo'
 // import config from '../../config'
@@ -68,95 +68,108 @@ export default function PoolTip ({
   bridgeConfig: any
 }) {
   // const { account, chainId } = useActiveWeb3React()
-  const { account } = useActiveWeb3React()
-  // let { account } = useActiveWeb3React()
-  // account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
+  // const { account } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   
-  const list = [anyCurrency]
+  // const list = [anyCurrency]
   // console.log(anyCurrency)
-  const [userTokenList, userTokenLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, list)
-  const [totalsupplyList, totalsupplyLoading] = useTokenTotalSupplyWithLoadingIndicator(list)
-  const dec = anyCurrency?.decimals
+  // const [userTokenList, userTokenLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, list)
+  // const [totalsupplyList, totalsupplyLoading] = useTokenTotalSupplyWithLoadingIndicator(list)
+  // const dec = anyCurrency?.decimals
 
-  const [outChainBalance, setOutChainBalance] = useState<any>()
-  console.log(outChainBalance)
-  const poolsView = useMemo(() => {
-    if (!totalsupplyLoading) {
-      const l1:any = {}
-      for (const token in totalsupplyList) {
-        // console.log(totalsupplyList[token]?.raw.toString())
-        const balance = totalsupplyList[token]
-        // console.log(token)
-        // console.log(balance?.raw.toString())
-        l1[token.toLowerCase()] = {
-          balance: balance,
-          viewBalance: fromWei(balance?.raw.toString(), dec)
-        }
-      }
+  // const [outChainBalance, setOutChainBalance] = useState<any>()
+  // console.log(outChainBalance)
+  // const poolsView = useMemo(() => {
+  //   if (!totalsupplyLoading) {
+  //     const l1:any = {}
+  //     for (const token in totalsupplyList) {
+  //       // console.log(totalsupplyList[token]?.raw.toString())
+  //       const balance = totalsupplyList[token]
+  //       // console.log(token)
+  //       // console.log(balance?.raw.toString())
+  //       l1[token.toLowerCase()] = {
+  //         balance: balance,
+  //         viewBalance: fromWei(balance?.raw.toString(), dec)
+  //       }
+  //     }
 
-      return l1
-    }
-    return ''
-  }, [totalsupplyList, totalsupplyLoading])
+  //     return l1
+  //   }
+  //   return ''
+  // }, [totalsupplyList, totalsupplyLoading])
 
-  const usersView = useMemo(() => {
-    if (!userTokenLoading) {
-      const l1:any = {}
-      for (const token in userTokenList) {
-        // console.log(userTokenList[token]?.raw.toString())
-        const balance = userTokenList[token]
-        l1[token.toLowerCase()] = {
-          balance: balance,
-          viewBalance: fromWei(balance?.raw.toString(), dec)
-        }
-      }
+  // const usersView = useMemo(() => {
+  //   if (!userTokenLoading) {
+  //     const l1:any = {}
+  //     for (const token in userTokenList) {
+  //       // console.log(userTokenList[token]?.raw.toString())
+  //       const balance = userTokenList[token]
+  //       l1[token.toLowerCase()] = {
+  //         balance: balance,
+  //         viewBalance: fromWei(balance?.raw.toString(), dec)
+  //       }
+  //     }
 
-      return l1
-    }
-    return ''
-  }, [userTokenList, userTokenLoading])
+  //     return l1
+  //   }
+  //   return ''
+  // }, [userTokenList, userTokenLoading])
 
-  function formatPercent (n1:any, n2:any) {
-    if (!n1 || !n2) return ''
-    const n = (Number(n1) / Number(n2)) * 100
-    if (n < 0.01) {
-      return '(<0.01%)'
-    } else {
-      return '(' + n.toFixed(2) + '%)'
-    }
-  }
-  async function getAllOutBalance (account:any) {
-    const list:any = []
-    for (const c in bridgeConfig.destChain) {
-      const destToken = bridgeConfig.destChain[c].token
-      const obj:any = await getNodeTotalsupply(destToken, c, bridgeConfig.destChain[c].decimals, account)
-      // console.log(obj)
-      const ts = obj[destToken].ts
-      const bl = obj[destToken].balance
-      list.push({
-        chainId: c,
-        balance: bl,
-        totalsupply: ts,
-        percent: formatPercent(bl, ts)
-      })
-    }
-    return list
-  }
-  useEffect(() => {
-    // console.log(bridgeConfig)
-    if (bridgeConfig) {
-      getAllOutBalance(account).then((res:any) => {
-        // console.log(res)
-        setOutChainBalance(res)
-      })
-    }
-  }, [bridgeConfig, account])
+  // function formatPercent (n1:any, n2:any) {
+  //   if (!n1 || !n2) return ''
+  //   const n = (Number(n1) / Number(n2)) * 100
+  //   if (n < 0.01) {
+  //     return '(<0.01%)'
+  //   } else {
+  //     return '(' + n.toFixed(2) + '%)'
+  //   }
+  // }
+  // async function getAllOutBalance (account:any) {
+  //   const list:any = []
+  //   // for (const c in bridgeConfig.destChain) {
+  //   //   const destToken = bridgeConfig.destChain[c].token
+  //   //   const obj:any = await getNodeTotalsupply(destToken, c, bridgeConfig.destChain[c].decimals, account)
+  //   //   // console.log(obj)
+  //   //   const ts = obj[destToken].ts
+  //   //   const bl = obj[destToken].balance
+  //   //   list.push({
+  //   //     chainId: c,
+  //   //     balance: bl,
+  //   //     totalsupply: ts,
+  //   //     percent: formatPercent(bl, ts)
+  //   //   })
+  //   // }
+  //   // console.log(bridgeConfig)
+  //   const token = bridgeConfig.address
+  //   const obj:any = await getNodeTotalsupply(token, chainId, bridgeConfig.decimals, account)
+  //   // console.log(obj)
+  //   const ts = obj[token].ts
+  //   const bl = obj[token].balance
+  //   list.push({
+  //     chainId: chainId,
+  //     balance: bl,
+  //     totalsupply: ts,
+  //     percent: formatPercent(bl, ts)
+  //   })
+  //   // console.log(list)
+  //   return list
+  // }
+  // useEffect(() => {
+  //   // console.log(bridgeConfig)
+  //   if (bridgeConfig) {
+  //     getAllOutBalance(account).then((res:any) => {
+  //       // console.log(res)
+  //       setOutChainBalance(res)
+  //     })
+  //   }
+  // }, [bridgeConfig, account])
 
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
-        <dd>
+        {/* <dd>
           <i></i>
           {t('currentPoolSize')}:
           {
@@ -182,6 +195,32 @@ export default function PoolTip ({
                       poolsView[anyCurrency?.address?.toLowerCase()]?.viewBalance
                     )
                   )
+                )}
+              </>
+            ) : ''
+          }
+        </dd> */}
+        <dd>
+          <i></i>
+          {t('currentPoolSize')}:
+          {
+            bridgeConfig ? (
+              <>
+                {(bridgeConfig.totalsupply + ' ' + anyCurrency?.underlying?.symbol)}
+              </>
+            ) : ''
+          }
+        </dd>
+        <dd>
+          <i></i>
+          {t('yourPoolShare')}:
+          {
+            bridgeConfig ? (
+              <>
+                {(
+                  (bridgeConfig.balance + ' ' + anyCurrency?.underlying?.symbol)
+                  +
+                  bridgeConfig.percent
                 )}
               </>
             ) : ''

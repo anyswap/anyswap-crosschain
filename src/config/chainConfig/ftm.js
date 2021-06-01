@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const FTM_MAINNET = 'https://rpc.fantom.network'
 export const FTM_MAIN_CHAINID = 250
-export const FTM_MAIN_EXPLORER = 'https://explorer.fantom.network'
+export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
 export const tokenList = [
   {

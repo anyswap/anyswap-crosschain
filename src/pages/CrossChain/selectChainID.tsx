@@ -54,7 +54,8 @@ interface SelectChainIdInputPanel {
   hideInput?: boolean
   id: string
   onOpenModalView?: (value: any) => void,
-  bridgeConfig: any
+  bridgeConfig: any,
+  intervalCount: any
 }
 
 export default function SelectChainIdInputPanel({
@@ -67,11 +68,13 @@ export default function SelectChainIdInputPanel({
   hideInput = false,
   id,
   onOpenModalView,
-  bridgeConfig
+  bridgeConfig,
+  intervalCount
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
-
+  // const { chainId } = useActiveWeb3React()
+  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const [modalOpen, setModalOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>()
@@ -119,7 +122,7 @@ export default function SelectChainIdInputPanel({
         }
       })
     }
-  }, [account, chainId, bridgeConfig, selectChainId])
+  }, [account, chainId, bridgeConfig, selectChainId, intervalCount])
 
   return (
     <>
