@@ -7,8 +7,9 @@ import { useActiveWeb3React } from '../../hooks'
 import TokenLogo from '../../components/TokenLogo'
 import Title from '../../components/Title'
 import { ButtonLight } from '../../components/Button'
+import {selectNetwork} from '../../components/Header/SelectNetwork'
 
-import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
+import { useWalletModalToggle } from '../../state/application/hooks'
 
 import AppBody from '../AppBody'
 
@@ -114,24 +115,24 @@ const ChainLogoBox = styled.div`
   overflow:hidden;
   margin: 0 2px;
 `
-const MoreView = styled.div`
-  ${({ theme }) => theme.flexC};
-  width: ${LogoSize};
-  height: ${LogoSize};
-  border-radius: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  overflow:hidden;
-  position:relative;
-  margin: 0 2px;
-  ::after {
-    content: '...';
-    line-height: 20px;
-    position: absolute;
-    top: 0px;
-    font-size: 12px;
-    color: #ccc;
-  }
-`
+// const MoreView = styled.div`
+//   ${({ theme }) => theme.flexC};
+//   width: ${LogoSize};
+//   height: ${LogoSize};
+//   border-radius: 100%;
+//   border: 1px solid rgba(0, 0, 0, 0.1);
+//   overflow:hidden;
+//   position:relative;
+//   margin: 0 2px;
+//   ::after {
+//     content: '...';
+//     line-height: 20px;
+//     position: absolute;
+//     top: 0px;
+//     font-size: 12px;
+//     color: #ccc;
+//   }
+// `
 
 export default function PoolLists ({
 
@@ -139,7 +140,7 @@ export default function PoolLists ({
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
-  const toggleNetworkModal = useToggleNetworkModal()
+  // const toggleNetworkModal = useToggleNetworkModal()
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
@@ -206,12 +207,14 @@ export default function PoolLists ({
   }, [chainId, count])
 
   function viewTd (item:any, c?:any) {
-    // console.log(poolList)
+    console.log(item)
+    // const token = 
     let ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? Number(poolData[c][item.token].ts) : 0
     // let bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? Number(poolData[c][item.token].balance) : 0
 
     for (const chainID in poolList[0].destChain) {
-      const ts1 = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? Number(poolData[chainID][item.destChain[chainID]].ts) : 0
+      const token = item.destChain[chainID].token
+      const ts1 = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? Number(poolData[chainID][token].ts) : 0
       ts += ts1
       // bl += bl1
     }
@@ -235,6 +238,7 @@ export default function PoolLists ({
     if (c) {
       const ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? poolData[c][item.token].ts : '0.00'
       const bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? poolData[c][item.token].balance : '0.00'
+      console.log(ts)
       listView = <TokenList className='l'>
           <div className="chain">
             <TokenLogo
@@ -263,13 +267,19 @@ export default function PoolLists ({
           </div>
         </TokenList>
     }
+    function changeNetwork (chainID:any) {
+      selectNetwork(chainID).then((res: any) => {
+        console.log(res)
+      })
+    }
     return (
       <>
         {listView}
         {
           Object.keys(poolList[0].destChain).map((chainID:any, indexs:any) => {
-            const ts = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].ts ? poolData[chainID][item.destChain[chainID]].ts : '0.00'
-            const bl = poolData && poolData[chainID] && poolData[chainID][item.destChain[chainID]] && poolData[chainID][item.destChain[chainID]].balance ? poolData[chainID][item.destChain[chainID]].balance : '0.00'
+            const token = item.destChain[chainID].token
+            const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
+            const bl = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].balance ? poolData[chainID][token].balance : '0.00'
             return (
               <TokenList className='l' key={indexs}>
                 <div className="chain">
@@ -287,7 +297,7 @@ export default function PoolLists ({
                   <Flex>
                     {
                       account ? (
-                        <TokenActionBtn1 onClick={toggleNetworkModal}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionBtn1>
+                        <TokenActionBtn1 onClick={() => changeNetwork(chainID)}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionBtn1>
                       ) : (
                         <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
                       )
@@ -368,7 +378,7 @@ export default function PoolLists ({
                             {
                               chainList && chainList.length > 0 ? (
                                 chainList.map((chainID, index) => {
-                                  if (index >= 2) return ''
+                                  // if (index >= 2) return ''
                                   return (
                                     <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}><TokenLogo symbol={config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo></ChainLogoBox>
                                   )
@@ -377,7 +387,7 @@ export default function PoolLists ({
                             }
                             {/* <ChainLogoBox title="ETH"><TokenLogo symbol={'ETH'} size={'20px'}></TokenLogo></ChainLogoBox>
                             <ChainLogoBox title="BSC"><TokenLogo symbol={'BNB'} size={'20px'}></TokenLogo></ChainLogoBox> */}
-                            <MoreView></MoreView>
+                            {/* <MoreView></MoreView> */}
                           </Flex>
                         </DBTd>
                         {viewTd(item, chainId)}

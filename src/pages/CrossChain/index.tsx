@@ -38,23 +38,27 @@ import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
 
 const LiquidityView = styled.div`
-  ${({theme}) => theme.flexBC};
+  ${({theme}) => theme.flexSC};
   border: solid 0.5px ${({ theme }) => theme.tipBorder};
   background-color: ${({ theme }) => theme.tipBg};
   border-radius: 0.5625rem;
-  padding: 1rem 8px;
+  padding: 8px 16px;
   .item {
-    ${({theme}) => theme.flexBC}
+    ${({theme}) => theme.flexBC};
+    margin-right: 20px;
     .cont {
       margin-left: 10px;
       color: ${({ theme }) => theme.tipColor};
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 `
 
+let intervalFN:any = ''
+
 export default function CrossChain() {
-  const { account, chainId, library } = useActiveWeb3React()
+  // const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
@@ -67,6 +71,7 @@ export default function CrossChain() {
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState('swap')
   const [count, setCount] = useState<number>(0)
+  const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -110,6 +115,7 @@ export default function CrossChain() {
     if (selectCurrency && chainId) {
       const CC:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
       // console.log(CC)
+      // console.log(intervalCount)
       if (CC) {
         setCurChain({
           chain: chainId,
@@ -125,19 +131,24 @@ export default function CrossChain() {
           bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
         })
       }
+      if (intervalFN) clearTimeout(intervalFN)
+      intervalFN = setTimeout(() => {
+        setIntervalCount(intervalCount + 1)
+      }, 1000 * 10)
     }
-  }, [selectCurrency, chainId, account, selectChain])
+  }, [selectCurrency, chainId, account, selectChain, intervalCount])
   useEffect(() => {
     getSelectPool()
-    if (library) {
-      library.on('block', getSelectPool)
-      return () => {
-        library.removeListener('block', getSelectPool)
-      }
-    } else {
-      return () => {return ''}
-    }
-  }, [getSelectPool, library])
+    // if (library) {
+    //   library.on('block', getSelectPool)
+    //   return () => {
+    //     library.removeListener('block', getSelectPool)
+    //   }
+    // } else {
+    //   return () => {return ''}
+    // }
+  }, [getSelectPool])
+  // }, [getSelectPool, library])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     formatCurrency?formatCurrency:undefined,
@@ -321,14 +332,22 @@ export default function CrossChain() {
           {
             account && chainId ? (
               <LiquidityView>
-                <div className='item'>
-                  <TokenLogo symbol={curChain ? config.getCurChainInfo(curChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
-                  <span className='cont'>{t('pool')}:{curChain.ts ? curChain.ts : '0.00'}</span>
-                </div>
-                <div className='item'>
-                  <TokenLogo symbol={destChain ? config.getCurChainInfo(destChain.chain).symbol : ''} size={'1rem'}></TokenLogo>
-                  <span className='cont'>{t('pool')}:{destChain.ts ? destChain.ts : '0.00'}</span>
-                </div>
+                {
+                  curChain ? (
+                    <div className='item'>
+                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain).symbol} size={'1rem'}></TokenLogo>
+                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name} {t('lr')}:{curChain.ts ? curChain.ts : '0.00'}</span>
+                    </div>
+                  ) : ''
+                }
+                {
+                  destChain ? (
+                    <div className='item'>
+                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain).symbol} size={'1rem'}></TokenLogo>
+                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name} {t('lr')}:{destChain.ts ? destChain.ts : '0.00'}</span>
+                    </div>
+                  ) : ''
+                }
               </LiquidityView>
             ) : ''
           }

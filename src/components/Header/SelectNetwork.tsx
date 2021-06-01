@@ -231,15 +231,8 @@ export function Option (item:any, selectChain:any) {
   )
 }
 
-export default function SelectNetwork () {
-  // const history = createBrowserHistory()
-  const { chainId } = useActiveWeb3React()
-  const { t } = useTranslation()
-  const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
-  const toggleNetworkModal = useToggleNetworkModal()
-
-
-  function setMetamaskNetwork (item:any) {
+export function selectNetwork (chainID:any) {
+  return new Promise(resolve => {
     const { ethereum } = window
     const ethereumFN:any = {
       request: '',
@@ -250,31 +243,55 @@ export default function SelectNetwork () {
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: web3Fn.utils.toHex(item.chainID), // A 0x-prefixed hexadecimal string
-            chainName: item.networkName,
+            chainId: web3Fn.utils.toHex(chainID), // A 0x-prefixed hexadecimal string
+            chainName: config.getCurChainInfo(chainID).networkName,
             nativeCurrency: {
-              name: item.name,
-              symbol: item.symbol, // 2-6 characters long
+              name: config.getCurChainInfo(chainID).name,
+              symbol: config.getCurChainInfo(chainID).symbol, // 2-6 characters long
               decimals: 18,
             },
-            rpcUrls: [item.nodeRpc],
-            blockExplorerUrls: [item.explorer],
+            rpcUrls: [config.getCurChainInfo(chainID).nodeRpc],
+            blockExplorerUrls: [config.getCurChainInfo(chainID).explorer],
             iconUrls: null // Currently ignored.
           }
         ],
       }).then((res: any) => {
         console.log(res)
-        localStorage.setItem(config.ENV_NODE_CONFIG, item.label)
-        toggleNetworkModal()
+        localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(chainID).label)
+        resolve({
+          msg: 'Success'
+        })
       }).catch((err: any) => {
         console.log(err)
-        alert(t('changeMetamaskNetwork', {label: item.networkName}))
-        toggleNetworkModal()
+        // alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+        resolve({
+          msg: 'Error'
+        })
       })
     } else {
-      alert(t('changeMetamaskNetwork', {label: item.networkName}))
-      toggleNetworkModal()
+      // alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      resolve({
+        msg: 'Error'
+      })
     }
+  })
+}
+
+export default function SelectNetwork () {
+  // const history = createBrowserHistory()
+  const { chainId } = useActiveWeb3React()
+  const { t } = useTranslation()
+  const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
+  const toggleNetworkModal = useToggleNetworkModal()
+
+
+  function setMetamaskNetwork (item:any) {
+    selectNetwork(item.chainID).then((res:any) => {
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: item.networkName}))
+      }
+      toggleNetworkModal()
+    })
   }
 
   function openUrl (item:any) {
