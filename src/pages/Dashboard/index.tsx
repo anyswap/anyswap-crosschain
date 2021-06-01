@@ -295,6 +295,7 @@ const MoreBtnBox = styled.div`
   color: #734be2;
   margin: 1.25rem auto 0;
   cursor: pointer;
+  display:none;
 `
 const WrappedDropup = ({ ...rest }) => <Dropup {...rest} />
 export const ColoredDropup = styled(WrappedDropup)`

@@ -20,6 +20,8 @@ import {
 
 import { TYPE, CloseIcon } from '../../theme'
 
+import {formatDecimal} from '../../utils/tools/tools'
+
 import config from '../../config'
 
 import {
@@ -114,13 +116,15 @@ export default function SelectChainIdInputPanel({
       // console.log(bridgeConfig)
       // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
       const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId]?.underlying?.address : ''
-      getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
-      // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
-        console.log(res)
-        if (res) {
-          setDestBalance(res)
-        }
-      })
+      if (token) {
+        getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals).then(res => {
+        // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
+          console.log(res)
+          if (res) {
+            setDestBalance(res)
+          }
+        })
+      }
     }
   }, [account, chainId, bridgeConfig, selectChainId, intervalCount])
 
@@ -140,7 +144,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {destBalance ? (t('balanceTxt') + ': ' + destBalance) : ' -'}
+                  {destBalance ? (t('balanceTxt') + ': ' + formatDecimal(destBalance, 2)) : ' -'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

@@ -1,5 +1,6 @@
 // import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import { createBrowserHistory } from 'history'
 // import { TokenAmount } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 // import { ThemeContext } from 'styled-components'
@@ -37,8 +38,10 @@ import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 
+let onlyFirst = 0
 export default function SwapNative() {
   const { account, chainId } = useActiveWeb3React()
+  const history = createBrowserHistory()
   // const { chainId } = useActiveWeb3React()
   // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
@@ -88,12 +91,12 @@ export default function SwapNative() {
     swapType
   )
 
-  const onDelay = useCallback(() => {
+  function onDelay () {
     setDelayAction(true)
     setTimeout(() => {
       setDelayAction(false)
     }, 1000 * 3)
-  }, [])
+  }
 
   const isCrossBridge = useMemo(() => {
     if (
@@ -128,6 +131,13 @@ export default function SwapNative() {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
+  useEffect(() => {
+    console.log(window.location)
+    if (onlyFirst) {
+      history.push(window.location.pathname + '#/pool/add')
+    }
+    onlyFirst ++
+  }, [chainId])
 
   useEffect(() => {
     const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)

@@ -22,8 +22,10 @@ import Loader from '../../components/Loader'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
+import {selectNetwork} from '../../components/Header/SelectNetwork'
 
-import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
+// import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
+import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 
 import config from '../../config'
@@ -64,7 +66,7 @@ export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const toggleNetworkModal = useToggleNetworkModal()
+  // const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
@@ -117,12 +119,21 @@ export default function CrossChain() {
 
   // console.log(selectCurrency)
 
-  const onDelay = useCallback(() => {
+  function onDelay () {
     setDelayAction(true)
     setTimeout(() => {
       setDelayAction(false)
     }, 1000 * 3)
-  }, [])
+  }
+
+  function changeNetwork (chainID:any) {
+    selectNetwork(chainID).then((res: any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      }
+    })
+  }
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
@@ -136,7 +147,7 @@ export default function CrossChain() {
           bl: CC[selectCurrency?.address]?.balance
         })
       }
-      const DC:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain].token, selectChain, selectCurrency?.destChain[selectChain].decimals, account)
+      const DC:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain]?.token, selectChain, selectCurrency?.destChain[selectChain]?.decimals, account)
       if (DC) {
         setDestChain({
           chain: selectChain,
@@ -367,7 +378,8 @@ export default function CrossChain() {
 
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
-              toggleNetworkModal()
+              // toggleNetworkModal()
+              changeNetwork(selectChain)
             }}>
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>
