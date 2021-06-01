@@ -49,6 +49,8 @@ const LiquidityView = styled.div`
   background-color: ${({ theme }) => theme.tipBg};
   border-radius: 0.5625rem;
   padding: 8px 16px;
+  color: ${({ theme }) => theme.tipColor};
+  font-size: 12px;
   .item {
     ${({theme}) => theme.flexBC};
     margin-right: 20px;
@@ -352,11 +354,12 @@ export default function CrossChain() {
           {
             account && chainId ? (
               <LiquidityView>
+                {t('pool')}
                 {
                   curChain ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(curChain.chain).symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name} {t('lr')}:{curChain.ts ? curChain.ts : '0.00'}</span>
+                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name} :{curChain.ts ? curChain.ts : '0.00'}</span>
                     </div>
                   ) : ''
                 }
@@ -364,7 +367,7 @@ export default function CrossChain() {
                   destChain ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(destChain.chain).symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name} {t('lr')}:{destChain.ts ? destChain.ts : '0.00'}</span>
+                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name} :{destChain.ts ? destChain.ts : '0.00'}</span>
                     </div>
                   ) : ''
                 }

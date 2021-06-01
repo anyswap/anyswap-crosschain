@@ -1,7 +1,7 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-// export const BNB_MAINNET = 'https://bscnode1.anyswap.exchange'
+export const BNB_MAINNET = 'https://bscnode1.anyswap.exchange'
 // export const BNB_MAINNET = 'https://bsc-dataseed1.defibit.io/'
 // export const BNB_MAINNET = 'https://bsc-dataseed2.defibit.io/'
 // export const BNB_MAINNET = 'https://bsc-dataseed3.defibit.io/'
@@ -14,7 +14,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 // export const BNB_MAINNET = 'https://bsc-dataseed1.binance.org/'
 // export const BNB_MAINNET = 'https://bsc-dataseed2.binance.org/'
-export const BNB_MAINNET = 'https://bsc-dataseed3.binance.org/'
+// export const BNB_MAINNET = 'https://bsc-dataseed3.binance.org/'
 // export const BNB_MAINNET = 'https://bsc-dataseed4.binance.org/'
 export const BNB_MAIN_CHAINID = 56
 export const BNB_MAIN_EXPLORER = 'https://bscscan.com'

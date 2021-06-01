@@ -39,6 +39,7 @@ import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 
 let onlyFirst = 0
+let intervalFN:any
 export default function SwapNative() {
   const { account, chainId } = useActiveWeb3React()
   const history = createBrowserHistory()
@@ -60,6 +61,8 @@ export default function SwapNative() {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
+
+  const [intervalCount, setIntervalCount] = useState<number>(0)
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
@@ -105,12 +108,19 @@ export default function SwapNative() {
       && inputBridgeValue
       && !wrapInputError
       && poolInfo
-      && Number(poolInfo.balance) > Number(inputBridgeValue)
-      && Number(poolInfo.totalsupply) > Number(inputBridgeValue)
+      && Number(poolInfo.balance) >= Number(inputBridgeValue)
+      && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
       && swapType !== 'deposit'
     ) {
       return false
     } else {
+      if (
+        swapType === 'deposit'
+        && inputBridgeValue
+        && Number(inputBridgeValue) > 0
+      ) {
+        return false
+      }
       return true
     }
   }, [selectCurrency, account, wrapInputError, inputBridgeValue])
@@ -133,7 +143,6 @@ export default function SwapNative() {
     }
   }, [approval, approvalSubmitted])
   useEffect(() => {
-    console.log(window.location)
     if (onlyFirst) {
       history.push(window.location.pathname + '#/pool/add')
     }
@@ -195,11 +204,19 @@ export default function SwapNative() {
     // console.log(bridgeConfig)
     if (selectCurrency) {
       getAllOutBalance(account).then((res:any) => {
-        // console.log(res)
         setPoolInfo(res)
+        if (intervalFN) clearTimeout(intervalFN)
+        intervalFN = setTimeout(() => {
+          setIntervalCount(intervalCount + 1)
+        }, 1000 * 10)
       })
+    } else {
+      if (intervalFN) clearTimeout(intervalFN)
+      intervalFN = setTimeout(() => {
+        setIntervalCount(intervalCount + 1)
+      }, 1000 * 10)
     }
-  }, [selectCurrency, account])
+  }, [selectCurrency, account, intervalCount])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {

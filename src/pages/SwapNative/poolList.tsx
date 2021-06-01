@@ -134,6 +134,7 @@ const ChainLogoBox = styled.div`
 //     color: #ccc;
 //   }
 // `
+let intervalFN:any
 
 export default function PoolLists ({
 
@@ -147,6 +148,7 @@ export default function PoolLists ({
   const [poolList, setPoolList] = useState<any>()
   const [chainList, setChainList] = useState<Array<any>>([])
   const [count, setCount] = useState<number>(0)
+  const [intervalCount, setIntervalCount] = useState<number>(0)
 
   async function getOutChainInfo (destList:any) {
     const list:any = {}
@@ -155,6 +157,10 @@ export default function PoolLists ({
     }
     setPoolData(list)
     console.log(list)
+    if (intervalFN) clearTimeout(intervalFN)
+    intervalFN = setTimeout(() => {
+      setIntervalCount(intervalCount + 1)
+    }, 1000 * 10)
     return list
   }
   // console.log(poolData)
@@ -206,7 +212,7 @@ export default function PoolLists ({
         }, 1000)
       }
     })
-  }, [chainId, count])
+  }, [chainId, count, intervalFN])
 
   function viewTd (item:any, c?:any) {
     console.log(item)
