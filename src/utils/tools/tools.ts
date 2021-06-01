@@ -1,5 +1,6 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import config from '../../config'
+import {USE_VERSION} from '../../config/constant'
 
 export function formatWeb3Str (str:string, len = 64) {
   // console.log(str)
@@ -15,7 +16,7 @@ export function formatWeb3Str (str:string, len = 64) {
 
 export function getLocalConfig (account:string, token:string, chainID:any, type:string, timeout?:string|number|undefined, saveType?:number|undefined) {
   const lStorage = saveType ? localStorage : sessionStorage
-  const lstr = lStorage.getItem(type)
+  const lstr = lStorage.getItem(USE_VERSION + '_' + type)
   if (!lstr) {
     return false
   } else {
@@ -43,7 +44,7 @@ export function getLocalConfig (account:string, token:string, chainID:any, type:
 
 export function setLocalConfig (account:string, token:string, chainID:any, type:string, data: any, saveType?:number|undefined) {
   const lStorage = saveType ? localStorage : sessionStorage
-  const lstr = lStorage.getItem(type)
+  const lstr = lStorage.getItem(USE_VERSION + '_' + type)
   let lboj:any = {}
   if (!lstr) {
     lboj[chainID] = {timestamp: Date.now()}
@@ -74,7 +75,7 @@ export function setLocalConfig (account:string, token:string, chainID:any, type:
       }
     }
   }
-  lStorage.setItem(type, JSON.stringify(lboj))
+  lStorage.setItem(USE_VERSION + '_' + type, JSON.stringify(lboj))
 }
 
 

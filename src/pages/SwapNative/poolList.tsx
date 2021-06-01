@@ -272,6 +272,9 @@ export default function PoolLists ({
     function changeNetwork (chainID:any) {
       selectNetwork(chainID).then((res: any) => {
         console.log(res)
+        if (res.msg === 'Error') {
+          alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+        }
       })
     }
     return (

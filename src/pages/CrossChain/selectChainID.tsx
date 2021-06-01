@@ -112,8 +112,8 @@ export default function SelectChainIdInputPanel({
       && selectChainId
     ) {
       // console.log(bridgeConfig)
-      const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
-      // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId]?.underlying?.address : ''
+      // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
+      const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId]?.underlying?.address : ''
       getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
       // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
         console.log(res)

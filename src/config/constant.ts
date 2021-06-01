@@ -1,8 +1,8 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 
 export enum VERSION {
-  V1 = 'V1',
-  V2 = 'V2'
+  V1 = 'UNDERLYING',
+  V2 = 'STABLE'
 }
 
 export const USE_VERSION = VERSION.V2
