@@ -20,6 +20,7 @@ import config from '../../config'
 
 import {getAllToken} from '../../utils/bridge/getBaseInfo'
 import {fromWei} from '../../utils/tools/tools'
+import { isAddress } from '../../utils'
 
 export const MyBalanceBox = styled.div`
   width: 100%;
@@ -338,6 +339,7 @@ export default function DashboardDtil() {
         const alist:any = []
         const tlist:any = {}
         for (const token in res) {
+          if (!isAddress(token)) continue
           if (res[token].list.underlying) {
             ulist.push(res[token].list.underlying.address)
           }

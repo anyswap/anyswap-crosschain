@@ -26,11 +26,14 @@ export function getLocalConfig (account:string, token:string, chainID:any, type:
       return false
     } else if (!lboj[chainID][account][token] && token !== 'all') {
       return false
+    } else if (
+      (lboj[chainID][account].timestamp < config.localDataDeadline && token !== 'all')
+      || (lboj[chainID][account].timestamp < config.localDataDeadline && token === 'all')
+    ) { // 在某个时间之前的数据无效
+      return false
     } else if (token === 'all') {
       return lboj[chainID][account]
     } else if (timeout && (Date.now() - lboj[chainID][account][token].timestamp) > timeout) {
-      return false
-    } else if (lboj[chainID][account][token].timestamp < config.localDataDeadline) { // 在某个时间之前的数据无效
       return false
     } else {
       return lboj[chainID][account][token]
@@ -43,8 +46,8 @@ export function setLocalConfig (account:string, token:string, chainID:any, type:
   const lstr = lStorage.getItem(type)
   let lboj:any = {}
   if (!lstr) {
-    lboj[chainID] = {}
-    lboj[chainID][account] = {}
+    lboj[chainID] = {timestamp: Date.now()}
+    lboj[chainID][account] = {timestamp: Date.now()}
     lboj[chainID][account][token] = {
       ...data,
       timestamp: Date.now()
@@ -52,14 +55,14 @@ export function setLocalConfig (account:string, token:string, chainID:any, type:
   } else {
     lboj = JSON.parse(lstr)
     if (!lboj[chainID]) {
-      lboj[chainID] = {}
-      lboj[chainID][account] = {}
+      lboj[chainID] = {timestamp: Date.now()}
+      lboj[chainID][account] = {timestamp: Date.now()}
       lboj[chainID][account][token] = {
         ...data,
         timestamp: Date.now()
       }
     } else if (!lboj[chainID][account]) {
-      lboj[chainID][account] = {}
+      lboj[chainID][account] = {timestamp: Date.now()}
       lboj[chainID][account][token] = {
         ...data,
         timestamp: Date.now()

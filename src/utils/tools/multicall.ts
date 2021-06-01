@@ -1,37 +1,44 @@
-import { MULTICALL_ABI } from '../../constants/multicall'
-import {getContract} from './web3Utils'
+import * as multicall from '@makerdao/multicall'
+// import { MULTICALL_ABI } from '../../constants/multicall'
+// import {getContract} from './web3Utils'
 
-const crontract = getContract(MULTICALL_ABI)
+// const crontract = getContract(MULTICALL_ABI)
 
-console.log(crontract)
+// console.log(crontract)
 
 // import * as multicall from '@makerdao/multicall'
-// import config from '../../config'
+import config from '../../config'
 
 
-// function getData (chainId:any, arr:any, account?: string | undefined) {
-//   const multicallConfig = {
-//     rpcUrl: config.chainInfo[chainId].nodeRpc,
-//     multicallAddress: config.chainInfo[chainId].queryToken
-//   }
-//   const callArr = []
-//   for (let obj of arr) {
-//     callArr.push([
-//       {
-//         target: obj.token,
-//         call: ['totalSupply()(uint256)'],
-//         returns: [['TS_' + obj.symbol, (val:any) => val / 10 ** Number(obj.decimals)]]
-//       }
-//     ])
-//     if (account) {
-//       callArr.push({
-//         target: obj.token,
-//         call: ['balanceOf(address)(uint256)', account],
-//         returns: [['BL_' + obj.symbol, (val:any) => val / 10 ** Number(obj.decimals)]]
-//       })
-//     }
-//   }
-//   multicall.aggregate([...callArr], multicallConfig).then((res:any) => {
-//     console.log(res)
-//   })
-// }
+export function getData (chainId:any) {
+  const multicallConfig = {
+    rpcUrl: config.getCurChainInfo(chainId).nodeRpc,
+    multicallAddress: config.getCurChainInfo(chainId).multicalToken
+  }
+  const token = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
+  // const callArr = [{
+  //   target: token,
+  //   call: ['getAllTokenIDs()(string[])'],
+  //   returns: [['QQQ']]
+  // }]
+  const callArr = [
+    {
+      target: token,
+      // components: [{ type: 'uint256' }, { type: 'address' }, { type: 'uint256' }],
+      call: ['getAllMultichainTokens(string)(uint256[])', 'anyUSDC'],
+      returns: [['QQQ']]
+    }
+  ]
+  // const callArr = [{
+  //   target: token,
+  //   call: ['getTokenConfig(string)(address[])', 'anyUSDC'],
+  //   returns: [['QQQ']]
+  // }]
+  multicall.aggregate([...callArr], multicallConfig).then((res:any) => {
+    
+    console.log(res)
+  }).catch((err:any) => {
+    console.log(err)
+  })
+}
+

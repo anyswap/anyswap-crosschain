@@ -58,6 +58,7 @@ export default function SearchModal ({
       if (res) {
         const list:any = []
         for (const token in res) {
+          if (!isAddress(token)) continue
           if (onlyUnderlying) {
             if (res[token].list.underlying) {
               list.push({

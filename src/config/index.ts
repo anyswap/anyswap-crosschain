@@ -23,7 +23,7 @@ const bridgeChain = {
     bridgeInitDataChain: '56',
   },
   [VERSION.V2]: {
-    bridgeConfigToken: '0xdccd7b567da13a11cde232522be708b2d1a14498',
+    bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',
   }
 }
@@ -44,7 +44,7 @@ const config: ConFig = {
   ...INITBRIDGE,
   ENV_NODE_CONFIG,
   chainInfo,
-  localDataDeadline: 1622459444615,
+  localDataDeadline: 1622532945161,
   getBaseCoin (value:any, type: number) {
     if (value && value === 'BASECURRENCY') {
       if (type) {

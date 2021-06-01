@@ -34,6 +34,7 @@ import {
 } from '../Dashboard'
 
 import config from '../../config'
+import { isAddress } from '@ethersproject/address'
 
 const BalanceTxt = styled.div`
 .p1 {
@@ -172,12 +173,13 @@ export default function PoolLists ({
   useEffect(() => {
     setPoolList([])
     getAllToken(chainId).then((res:any) => {
-      // console.log(res)
+      console.log(res)
       if (res) {
         // const list:any = []
         const destList:any = {}
         const allToken = []
         for (const token in res) {
+          if (!isAddress(token)) continue
           const tObj = res[token].list
           if (tObj.underlying) {
             if (chainId) {

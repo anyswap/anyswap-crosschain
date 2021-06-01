@@ -71,6 +71,8 @@ declare module 'jazzicon' {
 
 declare module 'fortmatic'
 
+declare module '@makerdao/multicall';
+
 interface Window {
   ethereum?: {
     isMetaMask?: true
