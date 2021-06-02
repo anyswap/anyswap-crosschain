@@ -14,6 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 // import { useToken } from '../../hooks/Tokens'
 import config from '../../config'
+import {formatDecimal} from '../../utils/tools/tools'
 
 import {
   InputRow,
@@ -57,6 +58,7 @@ interface SelectCurrencyInputPanelProps {
   isViewModal?: boolean
   onOpenModalView?: (value: any) => void
   isViewNetwork?: boolean
+  isError?: boolean
 }
 
 export default function SelectCurrencyInputPanel({
@@ -78,10 +80,13 @@ export default function SelectCurrencyInputPanel({
   onlyUnderlying,
   isViewModal,
   onOpenModalView,
-  isViewNetwork
+  isViewNetwork,
+  isError
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const theme = useContext(ThemeContext)
   const toggleNetworkModal = useToggleNetworkModal()
 
@@ -96,7 +101,7 @@ export default function SelectCurrencyInputPanel({
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   // console.log(currency)
-  // console.log(selectedCurrencyBalance?.toSignificant(3))
+  // console.log(selectedCurrencyBalance?.toSignificant(6))
   const handleMax = useCallback(() => {
     if (selectedCurrencyBalance) {
       onMax(selectedCurrencyBalance?.toSignificant(6))
@@ -113,7 +118,7 @@ export default function SelectCurrencyInputPanel({
 
   
   return (
-    <InputPanel id={id}>
+    <InputPanel id={id} className={isError ? 'error' : ''}>
       <Container hideInput={hideInput}>
         {!hideInput && (
           <LabelRow>
@@ -130,7 +135,7 @@ export default function SelectCurrencyInputPanel({
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? (customBalanceText ?? (t('balanceTxt') + ': ')) + selectedCurrencyBalance?.toSignificant(3)
+                    ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
                     : t('balanceTxt') + ': ' + '-'}
                 </TYPE.body>
               ) : t('balanceTxt') + ': ' + '-'}
@@ -222,7 +227,7 @@ export default function SelectCurrencyInputPanel({
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && selectedCurrencyBalance
-                              ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(3)
+                              ? (customBalanceText ?? '') + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>

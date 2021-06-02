@@ -186,6 +186,9 @@ export const InputPanel = styled.div<{ hideInput?: boolean }>`
   background-color: ${({ theme }) => theme.bg2};
   z-index: 1;
   width:100%;
+  &.error {
+    border: 1px solid ${({ theme }) => theme.red1};
+  }
 `
 
 export const Container = styled.div<{ hideInput: boolean }>`

@@ -109,8 +109,6 @@ export default function CrossChain() {
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
   // console.log(initBridgeToken)
 
-  
-
   const formatCurrency = useLocalToken(
     selectCurrency && selectCurrency.underlying ?
       {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
@@ -232,6 +230,29 @@ export default function CrossChain() {
       return true
     }
   }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain])
+  // console.log(wrapInputError)
+  const isInputError = useMemo(() => {
+    if (
+      account
+      && bridgeConfig
+      && selectCurrency
+      && inputBridgeValue
+      && wrapInputError
+    ) {
+      if (
+        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        || Number(inputBridgeValue) > Number(destChain.ts)
+        || (wrapInputError && inputBridgeValue)
+      ) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, wrapInputError])
 
   const btnTxt = useMemo(() => {
     if (wrapInputError && inputBridgeValue) {
@@ -355,6 +376,7 @@ export default function CrossChain() {
             }}
             isViewModal={modalOpen}
             id="selectCurrency"
+            isError={isInputError}
           />
           {
             account && chainId ? (
