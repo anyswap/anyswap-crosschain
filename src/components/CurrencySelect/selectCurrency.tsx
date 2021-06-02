@@ -96,8 +96,8 @@ export default function SelectCurrencyInputPanel({
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   // console.log(currency)
+  // console.log(selectedCurrencyBalance?.toSignificant(3))
   const handleMax = useCallback(() => {
-    // console.log(selectedCurrencyBalance?.toSignificant(6))
     if (selectedCurrencyBalance) {
       onMax(selectedCurrencyBalance?.toSignificant(6))
     } else {
@@ -130,10 +130,10 @@ export default function SelectCurrencyInputPanel({
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? (customBalanceText ?? (t('balanceTxt') + ': ')) + selectedCurrencyBalance?.toSignificant(2)
+                    ? (customBalanceText ?? (t('balanceTxt') + ': ')) + selectedCurrencyBalance?.toSignificant(3)
                     : t('balanceTxt') + ': ' + '-'}
                 </TYPE.body>
-              ) : ''}
+              ) : t('balanceTxt') + ': ' + '-'}
             </RowBetween>
           </LabelRow>
         )}
@@ -222,8 +222,8 @@ export default function SelectCurrencyInputPanel({
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && selectedCurrencyBalance
-                              ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(6)
-                              : '0'}{' '}
+                              ? (customBalanceText ?? '') + selectedCurrencyBalance?.toSignificant(3)
+                              : '-'}{' '}
                           </p>
                         </ExtraText>
                       </ErrorSpan>

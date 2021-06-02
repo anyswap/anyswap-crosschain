@@ -258,6 +258,7 @@ export function selectNetwork (chainID:any) {
       }).then((res: any) => {
         console.log(res)
         localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(chainID).label)
+        history.go(0)
         resolve({
           msg: 'Success'
         })
