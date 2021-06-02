@@ -140,6 +140,14 @@ export const DBTh = styled.th`
   &.c {
     text-align: center;
   }
+  &.hideSmall {
+    
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.hideSmall {
+      display:none;
+    }
+  `}
 `
 export const DBTbody = styled.tbody`
   width: 100%;
@@ -183,6 +191,15 @@ export const DBTd = styled.td`
       ${({ theme }) => theme.flexEC};
     }
   }
+  
+  &.hideSmall {
+    
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.hideSmall {
+      display:none;
+    }
+  `}
 `
 
 export const TokenTableCoinBox = styled.div`
@@ -275,4 +292,25 @@ export const MoreBtnBox = styled.div`
   margin: 1.25rem auto 0;
   cursor: pointer;
   display:none;
+`
+
+export const ChainCardList = styled.div`
+  width: 100%;
+  display:none;
+  border-bottom: 1px solid #f0f0f0;
+  .chain {
+    ${({ theme }) => theme.flexBC};
+    margin: 10px 0;
+  }
+  .dtil {
+    margin-bottom: 10px;
+    .p {
+      ${({ theme }) => theme.flexBC};
+      margin:0;
+      font-size: 10px;
+    }
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display:block;
+  `}
 `

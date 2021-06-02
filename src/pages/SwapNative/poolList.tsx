@@ -28,7 +28,8 @@ import {
   TokenNameBox,
   MyBalanceBox,
   TokenActionBtn,
-  Flex
+  Flex,
+  ChainCardList
 } from '../Dashboard/styleds'
 
 import {
@@ -52,9 +53,9 @@ const BalanceTxt = styled.div`
   }
 `
 
-const TableListBox = styled.div`
-  width:100%;
-`
+// const TableListBox = styled.div`
+//   width:100%;
+// `
 const TokenList = styled.div`
   ${({ theme }) => theme.flexBC};
   width:100%;
@@ -81,6 +82,9 @@ const TokenList = styled.div`
   .action {
     width: 30%;
   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display:none;
+  `}
 `
 
 const TokenActionBtn1 = styled(ButtonLight)`
@@ -108,7 +112,29 @@ const TokenActionBtn1 = styled(ButtonLight)`
   &:active {
     background: ${({ theme }) => theme.selectedBg};
   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 28px;
+    margin-bottom: 10px;
+  `}
 `
+
+const TokenActionBtn2 = styled(TokenActionBtn)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 28px;
+    margin-bottom: 10px;
+  `}
+`
+
+// const TokenActionCardBtn = styled(ButtonLight)`
+//   background:none;
+//   border:none;
+//   width: auto;
+//   height: 20px;
+//   color: ${({ theme }) => theme.tipColor};
+//   font-size: 10px;
+//   padding:0;
+// `
+
 const LogoSize = '28px'
 const ChainLogoBox = styled.div`
   ${({ theme }) => theme.flexC};
@@ -153,19 +179,6 @@ export default function PoolLists ({
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
-  async function getOutChainInfo (destList:any) {
-    const list:any = {}
-    for (const chainID in destList) {
-      list[chainID] = await getGroupTotalsupply(destList[chainID], chainID, account)
-    }
-    setPoolData(list)
-    console.log(list)
-    if (intervalFN) clearTimeout(intervalFN)
-    intervalFN = setTimeout(() => {
-      setIntervalCount(intervalCount + 1)
-    }, 1000 * 10)
-    return list
-  }
 
   useEffect(() => {
     getAllChainIDs(chainId).then((res:any) => {
@@ -177,6 +190,20 @@ export default function PoolLists ({
       }
     })
   }, [chainId])
+
+  async function getOutChainInfo (destList:any) {
+    const list:any = {}
+    for (const chainID in destList) {
+      list[chainID] = await getGroupTotalsupply(destList[chainID], chainID, account)
+    }
+    setPoolData(list)
+    console.log(list)
+    if (intervalFN) clearTimeout(intervalFN)
+    intervalFN = setTimeout(() => {
+      setIntervalCount(intervalCount + 1)
+    }, 1000 * 10)
+    // return list
+  }
 
   useEffect(() => {
     // setPoolList([])
@@ -216,6 +243,15 @@ export default function PoolLists ({
       }
     })
   }, [chainId, count, intervalCount])
+  
+  function changeNetwork (chainID:any) {
+    selectNetwork(chainID).then((res: any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      }
+    })
+  }
 
   function viewTd (item:any, c?:any) {
     // console.log(item)
@@ -231,11 +267,6 @@ export default function PoolLists ({
     }
     return (
       <>
-        {/* <DBTd className='r'>
-          <BalanceTxt>
-            <p className='p1'>{thousandBit(bl, 2)}</p>
-          </BalanceTxt>
-        </DBTd> */}
         <DBTd className='r'>
           <BalanceTxt>
             <p className='p1'>{thousandBit(ts, 2)}</p>
@@ -278,14 +309,6 @@ export default function PoolLists ({
           </div>
         </TokenList>
     }
-    function changeNetwork (chainID:any) {
-      selectNetwork(chainID).then((res: any) => {
-        console.log(res)
-        if (res.msg === 'Error') {
-          alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
-        }
-      })
-    }
     return (
       <>
         {listView}
@@ -325,117 +348,186 @@ export default function PoolLists ({
       </>
     )
   }
+
+  function viewCard2 (item:any, c?:any) {
+    let listView:any = ''
+    if (c) {
+      const ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? poolData[c][item.token].ts : '0.00'
+      const bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? poolData[c][item.token].balance : '0.00'
+      // console.log(ts)
+      listView = <ChainCardList className='l'>
+          <div className="chain">
+            <TokenLogo symbol={config.getCurChainInfo(c).symbol} size={'1.2rem'} ></TokenLogo>
+            <span className="label">{config.getCurChainInfo(c).name}</span>
+          </div>
+          <div className="dtil">
+            <p className='p'>
+              <span className='txt'>{t('yourPoolShare')}:</span>
+              <span className='txt'>{thousandBit(bl, 2)}</span>
+            </p>
+            <p className='p'>
+              <span className='txt'>{t('pool')}:</span>
+              <span className='txt'>{thousandBit(ts, 2)}</span>
+            </p>
+          </div>
+          <div className="action">
+            <Flex>
+              {
+                account ? (
+                  <>
+                    <TokenActionBtn2 to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('Add')}</TokenActionBtn2>
+                    <TokenActionBtn2 to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('Remove')}</TokenActionBtn2>
+                  </>
+                ) : (
+                  <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
+                )
+              }
+            </Flex>
+          </div>
+        </ChainCardList>
+    }
+    return (
+      <>
+        {listView}
+        {
+          Object.keys(poolList[0].destChain).map((chainID:any, indexs:any) => {
+            const token = item.destChain[chainID].token
+            const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
+            const bl = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].balance ? poolData[chainID][token].balance : '0.00'
+            return (
+              <ChainCardList className='l' key={indexs}>
+                <div className="chain">
+                  <TokenLogo symbol={config.getCurChainInfo(chainID).symbol} size={'1.2rem'} ></TokenLogo>
+                  <span className="label">{config.getCurChainInfo(chainID).name}</span>
+                  {/* {
+                    account ? (
+                      <TokenActionCardBtn onClick={() => changeNetwork(chainID)}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionCardBtn>
+                    ) : (
+                      <TokenActionCardBtn onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionCardBtn>
+                    )
+                  } */}
+                </div>
+                <div className="dtil">
+                  <p className='p'>
+                    <span className='txt'>{t('yourPoolShare')}:</span>
+                    <span className='txt'>{thousandBit(bl, 2)}</span>
+                  </p>
+                  <p className='p'>
+                    <span className='txt'>{t('pool')}:</span>
+                    <span className='txt'>{thousandBit(ts, 2)}</span>
+                  </p>
+                </div>
+                <div className="action">
+                  <Flex>
+                    {
+                      account ? (
+                        <TokenActionBtn1 onClick={() => changeNetwork(chainID)}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionBtn1>
+                      ) : (
+                        <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
+                      )
+                    }
+                  </Flex>
+                </div>
+              </ChainCardList>
+            )
+          })
+        }
+      </>
+    )
+  }
+
   return (
     <AppBody>
       <Title title={t('pool')}></Title>
-
-      <TableListBox>
-        {/* {
-          poolList && poolList.length > 0 ? (
-            <TokenList>
-              <div className="item">
-    
-              </div>
-            </TokenList>
-          ) : ''
-        } */}
-      </TableListBox>
 
       <MyBalanceBox>
         <DBTables>
           <DBThead>
             <tr>
               <DBTh className="l">{t('tokens')}</DBTh>
-              <DBTh className="c">{t('supportChain')}</DBTh>
+              <DBTh className="c hideSmall">{t('supportChain')}</DBTh>
               <DBTh className="r">{t('lr')}</DBTh>
               <DBTh className="c">{t('details')}</DBTh>
             </tr>
           </DBThead>
-            {
-              poolList && poolList.length > 0 ? (
-                poolList.map((item:any, index:any) => {
-                  return (
-                    <DBTbody key={index}>
-                      <tr onClick={() => {
-                        // console.log(1)
-                        const htmlNode = document.getElementById('chain_list_' + index)
-                        const upNode = document.getElementById('chain_dropup_' + index)
-                        const downNode = document.getElementById('chain_dropdown_' + index)
-                        if (htmlNode && upNode && downNode) {
-                          if (htmlNode.style.display === 'none') {
-                            htmlNode.style.display = ''
-                            upNode.style.display = ''
-                            downNode.style.display = 'none'
-                          } else {
-                            htmlNode.style.display = 'none'
-                            upNode.style.display = 'none'
-                            downNode.style.display = ''
-                          }
+          {
+            poolList && poolList.length > 0 ? (
+              poolList.map((item:any, index:any) => {
+                return (
+                  <DBTbody key={index}>
+                    <tr onClick={() => {
+                      // console.log(1)
+                      const htmlNode = document.getElementById('chain_list_' + index)
+                      const upNode = document.getElementById('chain_dropup_' + index)
+                      const downNode = document.getElementById('chain_dropdown_' + index)
+                      if (htmlNode && upNode && downNode) {
+                        if (htmlNode.style.display === 'none') {
+                          htmlNode.style.display = ''
+                          upNode.style.display = ''
+                          downNode.style.display = 'none'
+                        } else {
+                          htmlNode.style.display = 'none'
+                          upNode.style.display = 'none'
+                          downNode.style.display = ''
                         }
-                      }}>
-                        <DBTd width={'150'}>
-                          <TokenTableCoinBox>
-                            <TokenTableLogo>
-                              <TokenLogo
-                                symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}
-                                size={'1.625rem'}
-                              ></TokenLogo>
-                            </TokenTableLogo>
-                            <TokenNameBox>
-                              <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}</h3>
-                              <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, 1)}</p>
-                            </TokenNameBox>
-                          </TokenTableCoinBox>
-                        </DBTd>
-                        <DBTd className="c">
-                          <Flex>
-                            {
-                              chainList && chainList.length > 0 ? (
-                                chainList.map((chainID, index) => {
-                                  // if (index >= 2) return ''
-                                  return (
-                                    <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}><TokenLogo symbol={config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo></ChainLogoBox>
-                                  )
-                                })
-                              ) : ''
-                            }
-                            {/* <ChainLogoBox title="ETH"><TokenLogo symbol={'ETH'} size={'20px'}></TokenLogo></ChainLogoBox>
-                            <ChainLogoBox title="BSC"><TokenLogo symbol={'BNB'} size={'20px'}></TokenLogo></ChainLogoBox> */}
-                            {/* <MoreView></MoreView> */}
-                          </Flex>
-                        </DBTd>
-                        {viewTd(item, chainId)}
-                        {/* {viewTd(item)} */}
-                        <DBTd className="c" width={'180'}>
-                          <Flex>
-                            {/* <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('Add')}</TokenActionBtn>
-                            <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('Remove')}</TokenActionBtn> */}
-                            <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
-                            <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
-                          </Flex>
-                        </DBTd>
-                      </tr>
-                      <tr id={'chain_list_' + index} style={{display: 'none'}}>
-                        <DBTd colSpan={4}>
-                          {viewTd2(item, chainId)}
-                        </DBTd>
-                      </tr>
-                    </DBTbody>
-                  )
-                })
-              ) : (
-                <DBTbody>
-                  <tr>
-                    <DBTd></DBTd>
-                    <DBTd></DBTd>
-                    <DBTd></DBTd>
-                    <DBTd></DBTd>
-                  </tr>
-                </DBTbody>
-              )
-            }
-          {/* <DBTbody>
-          </DBTbody> */}
+                      }
+                    }}>
+                      <DBTd width={'150'}>
+                        <TokenTableCoinBox>
+                          <TokenTableLogo>
+                            <TokenLogo
+                              symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}
+                              size={'1.625rem'}
+                            ></TokenLogo>
+                          </TokenTableLogo>
+                          <TokenNameBox>
+                            <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}</h3>
+                            <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, 1)}</p>
+                          </TokenNameBox>
+                        </TokenTableCoinBox>
+                      </DBTd>
+                      <DBTd className="c hideSmall">
+                        <Flex>
+                          {
+                            chainList && chainList.length > 0 ? (
+                              chainList.map((chainID, index) => {
+                                // if (index >= 2) return ''
+                                return (
+                                  <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}><TokenLogo symbol={config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo></ChainLogoBox>
+                                )
+                              })
+                            ) : ''
+                          }
+                        </Flex>
+                      </DBTd>
+                      {viewTd(item, chainId)}
+                      <DBTd className="c" width={'180'}>
+                        <Flex>
+                          <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
+                          <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
+                        </Flex>
+                      </DBTd>
+                    </tr>
+                    <tr id={'chain_list_' + index} style={{display: 'none'}}>
+                      <DBTd colSpan={4}>
+                        {viewTd2(item, chainId)}
+                        {viewCard2(item, chainId)}
+                      </DBTd>
+                    </tr>
+                  </DBTbody>
+                )
+              })
+            ) : (
+              <DBTbody>
+                <tr>
+                  <DBTd></DBTd>
+                  <DBTd></DBTd>
+                  <DBTd></DBTd>
+                  <DBTd></DBTd>
+                </tr>
+              </DBTbody>
+            )
+          }
         </DBTables>
       </MyBalanceBox>
     </AppBody>
