@@ -124,10 +124,10 @@ const UniIcon = styled.div`
   ${({ theme }) => theme.flexSC};
   height: 100%;
   // padding: 10px 0;
-  transition: transform 0.3s ease;
-  :hover {
-    transform: rotate(-5deg);
-  }
+  // transition: transform 0.3s ease;
+  // :hover {
+  //   transform: rotate(-5deg);
+  // }
 `
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()

@@ -227,6 +227,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     `}
   }
   p {
+    width: 100%;
     font-family: 'Manrope';
     font-size: 0.75rem;
     font-weight: normal;
@@ -236,9 +237,6 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
     margin:8px 0 0;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    overflow:hidden;
     ${({ theme }) => theme.mediaWidth.upToLarge`
       display:none;
     `}

@@ -100,16 +100,16 @@ function CrossBridge (bridgeConfig:any, currency:any) {
           {t('Reminder')}:
         </dt>
         <dd><i></i>{t('mintTip1', {
-          dMinFee: bridgeConfig.MinimumSwapFee,
+          dMinFee: bridgeConfig?.MinimumSwapFee,
           coin: viewSymbol,
-          dMaxFee: bridgeConfig.MaximumSwapFee,
-          dFee: Number(bridgeConfig.SwapFeeRatePerMillion)
+          dMaxFee: bridgeConfig?.MaximumSwapFee,
+          dFee: Number(bridgeConfig?.SwapFeeRatePerMillion)
         })}</dd>
-        <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig.MinimumSwap, 'no')} {viewSymbol}</dd>
-        <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig.MaximumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t('mintTip4')}</dd>
         <dd><i></i>{t('mintTip5', {
-          depositBigValMoreTime: thousandBit(bridgeConfig.BigValueThreshold, 'no'),
+          depositBigValMoreTime: thousandBit(bridgeConfig?.BigValueThreshold, 'no'),
           coin: viewSymbol,
         }) + (viewSymbol ? '' : '')}</dd>
       </dl>

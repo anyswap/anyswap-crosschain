@@ -28,7 +28,10 @@ import {
   TokenNameBox,
   MyBalanceBox,
   TokenActionBtn,
-  Flex,
+  Flex
+} from '../Dashboard/styleds'
+
+import {
   ColoredDropup,
   ColoredDropdown
 } from '../Dashboard'
