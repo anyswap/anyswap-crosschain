@@ -168,10 +168,13 @@ export default function SwapNative() {
             })
           }
         } else {
-          setTimeout(() => {
-            setCount(count + 1)
-            // setCount(1)
-          }, 100)
+          if (count >= 5) {
+            history.push(window.location.pathname + '#/pool/add')
+          } else {
+            setTimeout(() => {
+              setCount(count + 1)
+            }, 100)
+          }
         }
       })
     }

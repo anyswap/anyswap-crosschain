@@ -243,7 +243,7 @@ export default function CrossChain() {
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
         || Number(inputBridgeValue) > Number(destChain.ts)
-        || (wrapInputError && inputBridgeValue)
+        || (wrapInputError && inputBridgeValue && Number(inputBridgeValue))
       ) {
         return true
       } else {
@@ -354,10 +354,8 @@ export default function CrossChain() {
             label={t('From')}
             value={inputBridgeValue}
             onUserInput={(value) => {
-              console.log(value)
+              // console.log(value)
               setInputBridgeValue(value)
-              // if (value && Number(value)) {
-              // }
             }}
             onCurrencySelect={(inputCurrency) => {
               console.log(inputCurrency)

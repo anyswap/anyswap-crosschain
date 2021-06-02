@@ -215,7 +215,7 @@ export default function PoolLists ({
         }, 1000)
       }
     })
-  }, [chainId, count, intervalFN])
+  }, [chainId, count, intervalCount])
 
   function viewTd (item:any, c?:any) {
     // console.log(item)
@@ -357,7 +357,7 @@ export default function PoolLists ({
                   return (
                     <DBTbody key={index}>
                       <tr onClick={() => {
-                        console.log(1)
+                        // console.log(1)
                         const htmlNode = document.getElementById('chain_list_' + index)
                         const upNode = document.getElementById('chain_dropup_' + index)
                         const downNode = document.getElementById('chain_dropdown_' + index)

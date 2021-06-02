@@ -51,7 +51,7 @@ export default {
     timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: FTM_MAINNET,
     chainID: FTM_MAIN_CHAINID,
-    lookHash: FTM_MAIN_EXPLORER + '/transactions/',
+    lookHash: FTM_MAIN_EXPLORER + '/tx/',
     lookAddr: FTM_MAIN_EXPLORER + '/address/',
     lookBlock: FTM_MAIN_EXPLORER + '/block/',
     explorer: FTM_MAIN_EXPLORER,
