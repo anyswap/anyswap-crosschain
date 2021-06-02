@@ -147,7 +147,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {destBalance ? (t('balanceTxt') + ': ' + formatDecimal(destBalance, 2)) : '0'}
+                  {t('balanceTxt') + ': '}{destBalance ? formatDecimal(destBalance, 2) : '-'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

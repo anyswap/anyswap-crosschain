@@ -131,11 +131,8 @@ export default function SelectCurrencyInputPanel({
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? (customBalanceText ?? (t('balanceTxt') + ': ')) + selectedCurrencyBalance?.toSignificant(2)
-                    : ' -'}
+                    : t('balanceTxt') + ': ' + '-'}
                 </TYPE.body>
-                // <HideSmallBox>
-
-                // </HideSmallBox>
               ) : ''}
             </RowBetween>
           </LabelRow>

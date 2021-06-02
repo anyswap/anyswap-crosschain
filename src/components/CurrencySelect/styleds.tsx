@@ -118,7 +118,7 @@ export const LabelRow = styled.div`
   color: ${({ theme }) => theme.text1};
   font-size: 0.75rem;
   line-height: 1rem;
-  padding: 0.75rem 0rem 0;
+  padding: 0.75rem 5px 0 0;
   span:hover {
     cursor: pointer;
     color: ${({ theme }) => darken(0.2, theme.text2)};
