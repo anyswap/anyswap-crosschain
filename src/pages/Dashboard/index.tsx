@@ -133,8 +133,8 @@ export default function DashboardDtil() {
           underlyingBlance = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
         }
         const dec = allTokenList[token].decimals
-        balance = balance ? fromWei(balance, dec) : ''
-        underlyingBlance = underlyingBlance ? fromWei(underlyingBlance, dec) : ''
+        balance = balance ? fromWei(balance, dec) : '0'
+        underlyingBlance = underlyingBlance ? fromWei(underlyingBlance, dec) : '0'
         if (balance && underlyingBlance) {
           totalBlance = Number(balance) + Number(underlyingBlance)
         } else if (balance) {
@@ -158,7 +158,7 @@ export default function DashboardDtil() {
     }
     return l
   }, [formatUList, formatUAllList, allTokenList])
-
+  // console.log(tokenList)
   function searchBox() {
     return (
       <>
@@ -224,9 +224,9 @@ export default function DashboardDtil() {
                               </TokenNameBox>
                             </TokenTableCoinBox>
                           </DBTd>
-                          <DBTd className="r">{item.balance ? formatDecimal(item.balance, 2) : '-'}</DBTd>
-                          <DBTd className="r">{item.poolBlance ? formatDecimal(item.poolBlance, 2) : '-'}</DBTd>
-                          <DBTd className="r">{item.totalBlance ? formatDecimal(item.totalBlance, 2) : '-'}</DBTd>
+                          <DBTd className="r">{item.balance || item.balance === 0 ? formatDecimal(item.balance, 2) : '-'}</DBTd>
+                          <DBTd className="r">{item.poolBlance || item.poolBlance === 0 ? formatDecimal(item.poolBlance, 2) : '-'}</DBTd>
+                          <DBTd className="r">{item.totalBlance || item.totalBlance === 0 ? formatDecimal(item.totalBlance, 2) : '-'}</DBTd>
                           <DBTd className="c">
                             <span style={{ display: 'inline-block' }}>
                               <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>

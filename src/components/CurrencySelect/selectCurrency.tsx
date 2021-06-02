@@ -146,7 +146,7 @@ export default function SelectCurrencyInputPanel({
           {!hideInput && (
             <>
               <NumericalInput
-                className="token-amount-input"
+                className={isError ? 'error' : ''}
                 value={value}
                 onUserInput={val => {
                   onUserInput(val)

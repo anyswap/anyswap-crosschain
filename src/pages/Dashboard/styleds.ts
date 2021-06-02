@@ -299,8 +299,11 @@ export const ChainCardList = styled.div`
   display:none;
   border-bottom: 1px solid #f0f0f0;
   .chain {
-    ${({ theme }) => theme.flexBC};
+    ${({ theme }) => theme.flexSC};
     margin: 10px 0;
+    .label {
+      margin-left: 10px;
+    }
   }
   .dtil {
     margin-bottom: 10px;
