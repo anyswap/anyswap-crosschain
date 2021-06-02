@@ -166,6 +166,9 @@ export const StyledDropDownBox = styled.div`
   position: absolute;
   top: 1.25rem;
   right: 0px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    top: 1rem;
+  `};
 `
 export const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
@@ -205,9 +208,6 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 12px;
   `}
-  // white-space:nowrap;
-  // text-overflow:ellipsis;
-  // overflow:hidden;
   h3 {
     font-family: 'Manrope';
     font-size: 1rem;
@@ -218,8 +218,12 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
     margin:0 0 2px;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
     ${({ theme }) => theme.mediaWidth.upToLarge`
       font-size: 12px;
+      margin:0;
     `}
   }
   p {
@@ -232,6 +236,12 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
     margin:8px 0 0;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      display:none;
+    `}
   }
 `
 

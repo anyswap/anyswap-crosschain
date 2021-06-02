@@ -67,6 +67,14 @@ const SubCurrencySelectBox = styled.div`
       }
     }
   }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 1rem 0.5rem;
+    .list {
+      dd {
+        margin-left: 20px;
+      }
+    }
+  `};
 `
 
 interface ReminderType {

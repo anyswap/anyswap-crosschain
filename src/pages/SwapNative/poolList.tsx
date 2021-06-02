@@ -163,11 +163,10 @@ export default function PoolLists ({
     }, 1000 * 10)
     return list
   }
-  // console.log(poolData)
 
   useEffect(() => {
     getAllChainIDs(chainId).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       if (res && res.length > 0) {
         setChainList(res)
       } else {
@@ -177,9 +176,9 @@ export default function PoolLists ({
   }, [chainId])
 
   useEffect(() => {
-    setPoolList([])
+    // setPoolList([])
     getAllToken(chainId).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       if (res) {
         // const list:any = []
         const destList:any = {}
@@ -207,6 +206,7 @@ export default function PoolLists ({
         setPoolList(allToken)
         getOutChainInfo(destList)
       } else {
+        setPoolList([])
         setTimeout(() => {
           setCount(count + 1)
         }, 1000)
@@ -215,7 +215,7 @@ export default function PoolLists ({
   }, [chainId, count, intervalFN])
 
   function viewTd (item:any, c?:any) {
-    console.log(item)
+    // console.log(item)
     // const token = 
     let ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? Number(poolData[c][item.token].ts) : 0
     // let bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? Number(poolData[c][item.token].balance) : 0
@@ -246,7 +246,7 @@ export default function PoolLists ({
     if (c) {
       const ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? poolData[c][item.token].ts : '0.00'
       const bl = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].balance ? poolData[c][item.token].balance : '0.00'
-      console.log(ts)
+      // console.log(ts)
       listView = <TokenList className='l'>
           <div className="chain">
             <TokenLogo
@@ -354,7 +354,7 @@ export default function PoolLists ({
                   return (
                     <DBTbody key={index}>
                       <tr onClick={() => {
-                        // console.log(e)
+                        console.log(1)
                         const htmlNode = document.getElementById('chain_list_' + index)
                         const upNode = document.getElementById('chain_dropup_' + index)
                         const downNode = document.getElementById('chain_dropdown_' + index)

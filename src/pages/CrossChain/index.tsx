@@ -51,6 +51,7 @@ const LiquidityView = styled.div`
   padding: 8px 16px;
   color: ${({ theme }) => theme.tipColor};
   font-size: 12px;
+  white-space:nowrap;
   .item {
     ${({theme}) => theme.flexBC};
     margin-right: 20px;
@@ -60,6 +61,9 @@ const LiquidityView = styled.div`
       font-size: 12px;
     }
   }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    padding: 8px 12px;
+  `};
 `
 
 let intervalFN:any = ''
