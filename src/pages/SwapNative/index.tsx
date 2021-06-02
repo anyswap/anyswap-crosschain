@@ -38,7 +38,7 @@ import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 
-let onlyFirst = 0
+// let onlyFirst = 0
 let intervalFN:any
 export default function SwapNative() {
   const { account, chainId } = useActiveWeb3React()
@@ -142,12 +142,12 @@ export default function SwapNative() {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
-  useEffect(() => {
-    if (onlyFirst) {
-      history.push(window.location.pathname + '#/pool/add')
-    }
-    onlyFirst ++
-  }, [chainId])
+  // useEffect(() => {
+  //   if (onlyFirst) {
+  //     history.push(window.location.pathname + '#/pool/add')
+  //   }
+  //   onlyFirst ++
+  // }, [chainId])
 
   useEffect(() => {
     const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
@@ -168,8 +168,9 @@ export default function SwapNative() {
             })
           }
         } else {
-          if (count >= 5) {
+          if (count >= 2) {
             history.push(window.location.pathname + '#/pool/add')
+            setCount(count + 1)
           } else {
             setTimeout(() => {
               setCount(count + 1)
