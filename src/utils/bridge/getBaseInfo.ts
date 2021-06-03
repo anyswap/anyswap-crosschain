@@ -5,7 +5,7 @@ import {ZERO_ADDRESS} from '../../constants'
 
 import { getContract, web3Fn } from '../tools/web3Utils'
 import {setLocalConfig, getLocalConfig, formatWeb3Str, fromWei} from '../tools/tools'
-import getTokenInfo from '../tools/getTokenInfo'
+import getTokenInfo from '../tools/getTokenInfoV2'
 import config from '../../config'
 
 // import {formatWeb3Str} from '../tools/tools'

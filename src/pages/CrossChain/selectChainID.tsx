@@ -90,7 +90,7 @@ export default function SelectChainIdInputPanel({
   useEffect(() => {
     
     getAllChainIDs(chainId).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       setChainList(res)
     })
   }, [chainId])

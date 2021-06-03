@@ -39,10 +39,6 @@ import { isAddress } from '../../utils'
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
 
-
-// import {getData} from '../../utils/tools/multicall'
-// getData('56')
-
 const LiquidityView = styled.div`
   ${({theme}) => theme.flexSC};
   border: solid 0.5px ${({ theme }) => theme.tipBorder};
