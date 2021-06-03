@@ -226,7 +226,16 @@ export default function CrossChain() {
       return true
     }
   }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain])
+  // console.log('---------------account----------------------')
+  // console.log(account)
+  // console.log(selectCurrency)
+  // console.log(bridgeConfig)
   // console.log(wrapInputError)
+  // console.log(inputBridgeValue)
+  // console.log(recipient)
+  // console.log(wrapInputErrorUnderlying)
+  // console.log(destChain)
+  // console.log('---------------destChain----------------------')
   const isInputError = useMemo(() => {
     if (
       account
@@ -274,6 +283,11 @@ export default function CrossChain() {
       setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
     }
   }, [chainId])
+  useEffect(() => {
+    if (swapType == 'swap' && account) {
+      setRecipient(account)
+    }
+  }, [account, swapType])
 
   useEffect(() => {
     const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
