@@ -30,7 +30,8 @@ import {
   InputPanel,
   Container,
   StyledTokenName,
-  CurrencySelectBox
+  CurrencySelectBox,
+  HideSmallBox
 } from './styleds'
 
 import SearchModal from './searchModal'
@@ -126,28 +127,34 @@ export default function SelectCurrencyInputPanel({
               <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
                 {label}
               </TYPE.body>
-              {account && showMaxButton && isViewNetwork ? (
-                <TYPE.body
-                  onClick={handleMax}
-                  color={theme.text2}
-                  fontWeight={500}
-                  fontSize={14}
-                  style={{ display: 'inline', cursor: 'pointer' }}
-                >
-                  {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
-                    : t('balanceTxt') + ': ' + '-'}
-                </TYPE.body>
-              ) : (
-                <TYPE.body
-                  color={theme.text2}
-                  fontWeight={500}
-                  fontSize={14}
-                  style={{ display: 'inline', cursor: 'pointer' }}
-                >
-                  {t('balanceTxt') + ': ' + '-'}
-                </TYPE.body>
-              )}
+              
+
+                {account && showMaxButton && isViewNetwork ? (
+                  <TYPE.body
+                    onClick={handleMax}
+                    color={theme.text2}
+                    fontWeight={500}
+                    fontSize={14}
+                    style={{ display: 'inline', cursor: 'pointer' }}
+                  >
+                    {!hideBalance && !!currency && selectedCurrencyBalance
+                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
+                      : t('balanceTxt') + ': ' + '-'}
+                  </TYPE.body>
+                ) : (
+                  <HideSmallBox>
+                  <TYPE.body
+                    color={theme.text2}
+                    fontWeight={500}
+                    fontSize={14}
+                    style={{ display: 'inline', cursor: 'pointer' }}
+                  >
+                    {!hideBalance && !!currency && selectedCurrencyBalance && account
+                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
+                      : t('balanceTxt') + ': ' + '-'}
+                  </TYPE.body>
+                  </HideSmallBox>
+                )}
             </RowBetween>
           </LabelRow>
         )}
