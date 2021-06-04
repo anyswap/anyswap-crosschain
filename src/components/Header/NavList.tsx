@@ -343,7 +343,7 @@ export default function NavList() {
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
             <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
           </div>
-          {t('swap')}
+          {t('explorer')}
         </StyledNavLink1>
         {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
           <div className="icon">

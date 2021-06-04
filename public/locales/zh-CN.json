@@ -312,5 +312,6 @@
   "supportChain": "支持的链",
   "totalPools": "总资金池",
   "details": "详情",
-  "tokens": "Tokens"
+  "tokens": "Tokens",
+  "explorer": "浏览器"
 }

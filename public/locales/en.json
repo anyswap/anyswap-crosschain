@@ -313,5 +313,6 @@
   "supportChain": "Chains",
   "totalPools": "Total Pools",
   "details": "Details",
-  "tokens": "Tokens"
+  "tokens": "Tokens",
+  "explorer": "Explorer"
 }
