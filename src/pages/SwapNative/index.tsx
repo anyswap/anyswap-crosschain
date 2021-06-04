@@ -310,7 +310,7 @@ export default function SwapNative() {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(anyCurrency?.symbol)
+                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol)
                   )}
                 </ButtonConfirmed>
               ) : (

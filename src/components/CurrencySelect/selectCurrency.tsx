@@ -138,7 +138,16 @@ export default function SelectCurrencyInputPanel({
                     ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
                     : t('balanceTxt') + ': ' + '-'}
                 </TYPE.body>
-              ) : t('balanceTxt') + ': ' + '-'}
+              ) : (
+                <TYPE.body
+                  color={theme.text2}
+                  fontWeight={500}
+                  fontSize={14}
+                  style={{ display: 'inline', cursor: 'pointer' }}
+                >
+                  {t('balanceTxt') + ': ' + '-'}
+                </TYPE.body>
+              )}
             </RowBetween>
           </LabelRow>
         )}

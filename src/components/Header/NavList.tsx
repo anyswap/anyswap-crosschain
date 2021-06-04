@@ -100,6 +100,68 @@ const StyledNavLink = styled(NavLink).attrs({
     }
   `}
 `
+
+const StyledNavLink1 = styled(ExternalLink)`
+  ${({ theme }) => theme.flexSC}
+  align-items: left;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+
+  width: 100%;
+  font-weight: 500;
+  color: ${({ theme }) => theme.textNav};
+  font-size: 0.875rem;
+  font-family: 'Manrope';
+  box-sizing: border-box;
+  padding: 1rem 0.875rem;
+  line-height: 1rem;
+  margin: 6px 0;
+  height: 48px;
+  border-radius: 0.5625rem;
+  position: relative;
+  white-space: nowrap;
+
+  .icon {
+    ${({ theme }) => theme.flexC};
+    width: 38px;
+    height: 38px;
+    border-radius: 100%;
+    background: ${({ theme }) => theme.navIconBg};
+    margin-right: 1rem;
+    .on {
+      display: none;
+    }
+    .off {
+      display: block;
+    }
+    img {
+      height: 100%;
+    }
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.textColor};
+    font-weight: 600;
+    text-decoration: none;
+    .icon {
+      background: ${({ theme }) => theme.navBg2};
+      .on {
+        display: block;
+      }
+      .off {
+        display: none;
+      }
+    }
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${({ theme }) => theme.flexC};
+    margin:0;
+    .icon {
+      display:none;
+    }
+  `}
+`
 const Tabs = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   align-items: center;
@@ -275,6 +337,14 @@ export default function NavList() {
           </div>
           {t('pool')}
         </StyledNavLink>
+        
+        <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
+          <div className="icon">
+            <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
+          </div>
+          {t('swap')}
+        </StyledNavLink1>
         {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
