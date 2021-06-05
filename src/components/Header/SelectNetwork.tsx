@@ -251,7 +251,7 @@ export function selectNetwork (chainID:any) {
               decimals: 18,
             },
             rpcUrls: [config.getCurChainInfo(chainID).nodeRpc],
-            blockExplorerUrls: [config.getCurChainInfo(chainID).explorer],
+            blockExplorerUrls: config.getCurChainInfo(chainID).nodeRpcList ? config.getCurChainInfo(chainID).nodeRpcList : [config.getCurChainInfo(chainID).explorer],
             iconUrls: null // Currently ignored.
           }
         ],

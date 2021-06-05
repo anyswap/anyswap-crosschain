@@ -64,6 +64,12 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: BNB_MAINNET,
+    nodeRpcList: [
+      'https://bsc-dataseed1.defibit.io/',
+      'https://bsc-dataseed2.defibit.io/',
+      'https://bsc-dataseed3.defibit.io/',
+      'https://bsc-dataseed4.defibit.io/',
+    ],
     chainID: BNB_MAIN_CHAINID,
     lookHash: BNB_MAIN_EXPLORER + '/tx/',
     lookAddr: BNB_MAIN_EXPLORER + '/address/',
