@@ -1,6 +1,6 @@
 import { Currency } from 'anyswap-sdk'
 import React, { useState, useContext, useCallback, useEffect, useMemo} from 'react'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
@@ -36,6 +36,9 @@ import {
 
 import SearchModal from './searchModal'
 
+const HeadterRightBox = styled.div`
+
+`
 
 interface SelectCurrencyInputPanelProps {
   value: string
@@ -61,6 +64,9 @@ interface SelectCurrencyInputPanelProps {
   isViewNetwork?: boolean
   isError?: boolean
   isNativeToken?: boolean
+  isViewMode?: boolean
+  modeConent?: any
+  onChangeMode?: (value: any) => void
 }
 
 export default function SelectCurrencyInputPanel({
@@ -84,7 +90,10 @@ export default function SelectCurrencyInputPanel({
   onOpenModalView,
   isViewNetwork,
   isError,
-  isNativeToken
+  isNativeToken,
+  isViewMode,
+  modeConent,
+  onChangeMode
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -142,33 +151,52 @@ export default function SelectCurrencyInputPanel({
                 {label}
               </TYPE.body>
               
+              <HeadterRightBox>
 
-                {account && showMaxButton && isViewNetwork ? (
+                {isViewMode && onChangeMode ? (
                   <TYPE.body
-                    onClick={handleMax}
-                    color={theme.text2}
+                    onClick={() => {
+                      if (modeConent.isFlag) {
+                        onChangeMode(false)
+                      } else {
+                        onChangeMode(true)
+                      }
+                    }}
+                    color={theme.tipColor}
                     fontWeight={500}
                     fontSize={14}
-                    style={{ display: 'inline', cursor: 'pointer' }}
-                  >
-                    {!hideBalance && !!currency && useBalance
-                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
-                      : t('balanceTxt') + ': ' + '-'}
-                  </TYPE.body>
+                    style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
+                  >{modeConent.txt}</TYPE.body>
+                ) : ''}
+                {account && showMaxButton && isViewNetwork ? (
+                  <>
+                    <TYPE.body
+                      onClick={handleMax}
+                      color={theme.text2}
+                      fontWeight={500}
+                      fontSize={14}
+                      style={{ display: 'inline', cursor: 'pointer' }}
+                    >
+                      {!hideBalance && !!currency && useBalance
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
+                        : t('balanceTxt') + ': ' + '-'}
+                    </TYPE.body>
+                  </>
                 ) : (
                   <HideSmallBox>
-                  <TYPE.body
-                    color={theme.text2}
-                    fontWeight={500}
-                    fontSize={14}
-                    style={{ display: 'inline', cursor: 'pointer' }}
-                  >
-                    {!hideBalance && !!currency && useBalance && account
-                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
-                      : t('balanceTxt') + ': ' + '-'}
-                  </TYPE.body>
+                    <TYPE.body
+                      color={theme.text2}
+                      fontWeight={500}
+                      fontSize={14}
+                      style={{ display: 'inline', cursor: 'pointer' }}
+                    >
+                      {!hideBalance && !!currency && useBalance && account
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
+                        : t('balanceTxt') + ': ' + '-'}
+                    </TYPE.body>
                   </HideSmallBox>
                 )}
+              </HeadterRightBox>
             </RowBetween>
           </LabelRow>
         )}

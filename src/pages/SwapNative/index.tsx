@@ -1,22 +1,22 @@
 // import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import { createBrowserHistory } from 'history'
 // import { TokenAmount } from 'anyswap-sdk'
+import { ArrowDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-// import { ThemeContext } from 'styled-components'
-// import { ArrowDown } from 'react-feather'
+import { ThemeContext } from 'styled-components'
 
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useSwapUnderlyingCallback} from '../../hooks/useBridgeCallback'
+import {useSwapUnderlyingCallback, useBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 
 import { AutoColumn } from '../../components/Column'
 // import SwapIcon from '../../components/SwapIcon'
-import { BottomGrouping } from '../../components/swap/styleds'
+import { BottomGrouping, ArrowWrapper } from '../../components/swap/styleds'
 import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import { AutoRow } from '../../components/Row'
 import Loader from '../../components/Loader'
@@ -37,6 +37,11 @@ import PoolTip from './poolTip'
 import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
+import {formatDecimal} from '../../utils/tools/tools'
+
+import SelectChainIdInputPanel from '../CrossChain/selectChainID'
+import Reminder from '../CrossChain/reminder'
+
 
 // let onlyFirst = 0
 let intervalFN:any
@@ -46,6 +51,7 @@ export default function SwapNative() {
   // const { chainId } = useActiveWeb3React()
   // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
   // const selectedTokenList = useSelectedTokenList()
   // const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
@@ -54,9 +60,14 @@ export default function SwapNative() {
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
+  const [selectChain, setSelectChain] = useState<any>()
+  const [bridgeConfig, setBridgeConfig] = useState<any>()
+  const [openAdvance, setOpenAdvance] = useState<any>(false)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
   const [count, setCount] = useState<number>(0)
   const [poolInfo, setPoolInfo] = useState<any>()
+
+  const [modalOpen, setModalOpen] = useState(false)
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
@@ -84,10 +95,22 @@ export default function SwapNative() {
   const anyCurrency = useLocalToken(selectCurrency ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
   // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
+  const formatCurrency = useLocalToken(
+    selectCurrency && selectCurrency.underlying ?
+      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
 
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useSwapUnderlyingCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
+    formatCurrency?formatCurrency:undefined,
+    selectCurrency?.address,
+    account ?? undefined,
+    inputBridgeValue,
+    selectChain
+  )
+    // console.log(wrapType)
+    // console.log(wrapInputError)
+  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     selectCurrency?.address,
     inputBridgeValue,
@@ -106,42 +129,110 @@ export default function SwapNative() {
       account
       && selectCurrency
       && inputBridgeValue
-      && !wrapInputError
-      && poolInfo
-      && Number(poolInfo.balance) >= Number(inputBridgeValue)
-      && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
-      && swapType !== 'deposit'
     ) {
-      return false
-    } else {
       if (
         swapType === 'deposit'
-        && inputBridgeValue
         && Number(inputBridgeValue) > 0
+        && !wrapInputErrorUnderlying
       ) {
+        // console.log(11)
         return false
+      } else if (
+        swapType !== 'deposit'
+        && (
+          (!wrapInputError && openAdvance)
+          || (!wrapInputErrorUnderlying && !openAdvance)
+        )
+        && poolInfo
+        && Number(poolInfo.balance) >= Number(inputBridgeValue)
+        && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
+      ) {
+        // console.log(12)
+        return false
+      } else {
+        // console.log(13)
+        return true
       }
+    } else {
       return true
     }
-  }, [selectCurrency, account, wrapInputError, inputBridgeValue])
+  }, [selectCurrency, account, wrapInputErrorUnderlying, inputBridgeValue, poolInfo, wrapInputError, openAdvance, swapType])
+
+  const isInputError = useMemo(() => {
+    // console.log(isCrossBridge)
+    if (
+      account
+      && bridgeConfig
+      && selectCurrency
+      && inputBridgeValue
+      && Number(inputBridgeValue)
+    ) {
+      if (
+        swapType !== 'deposit'
+        && (
+          Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
+          || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+          || isCrossBridge
+        )
+      ) {
+        // console.log(1)
+        return true
+      } else {
+        // console.log(2)
+        return false
+      }
+    } else {
+      // console.log(3)
+      return false
+    }
+  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  console.log(isInputError)
 
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
-    if (wrapInputError && inputBridgeValue) {
-      return wrapInputError
-    } else if (wrapInputError && !inputBridgeValue) {
+    if (wrapInputErrorUnderlying && inputBridgeValue) {
+      return wrapInputErrorUnderlying
+    } else if (wrapInputErrorUnderlying && !inputBridgeValue) {
       return bt
-    } else if (wrapType === WrapType.WRAP) {
+    } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP) {
       return bt
     }
     return bt
-  }, [t, wrapInputError, swapType])
+  }, [t, wrapInputErrorUnderlying, swapType, wrapType])
+
+  const outputBridgeValue = useMemo(() => {
+    if (inputBridgeValue && bridgeConfig) {
+      const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
+      let value = Number(inputBridgeValue) - fee
+      if (fee < Number(bridgeConfig.MinimumSwapFee)) {
+        value = Number(inputBridgeValue) - Number(bridgeConfig.MinimumSwapFee)
+      } else if (fee > bridgeConfig.MaximumSwapFee) {
+        value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
+      }
+      if (value && Number(value) && Number(value) > 0) {
+        return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+      }
+      return ''
+    } else {
+      return ''
+    }
+  }, [inputBridgeValue, bridgeConfig])
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
+  useEffect(() => {
+    if (chainId && !selectChain) {
+      setSelectChain(chainId)
+    }
+  }, [chainId, selectChain])
+  useEffect(() => {
+    if (chainId) {
+      setSelectChain(chainId)
+    }
+  }, [chainId])
   // useEffect(() => {
   //   if (onlyFirst) {
   //     history.push(window.location.pathname + '#/pool/add')
@@ -156,6 +247,7 @@ export default function SwapNative() {
       getTokenConfig(token, chainId).then((res:any) => {
         console.log(res)
         if (res && res.decimals && res.symbol) {
+          setBridgeConfig(res)
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
             setSelectCurrency({
               "address": token,
@@ -168,6 +260,7 @@ export default function SwapNative() {
             })
           }
         } else {
+          setBridgeConfig('')
           if (count >= 2) {
             history.push(window.location.pathname + '#/pool/add')
             setCount(count + 1)
@@ -207,7 +300,6 @@ export default function SwapNative() {
     }
   }
   useEffect(() => {
-    // console.log(bridgeConfig)
     if (selectCurrency) {
       getAllOutBalance(account).then((res:any) => {
         setPoolInfo(res)
@@ -243,6 +335,7 @@ export default function SwapNative() {
               onTabClick: () => {
                 setSwapType('deposit')
                 setInputBridgeValue('')
+                setOpenAdvance(false)
               },
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
@@ -274,13 +367,50 @@ export default function SwapNative() {
             onMax={(value) => {
               handleMaxInput(value)
             }}
+            isViewNetwork={openAdvance}
             currency={swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined)}
             disableCurrencySelect={false}
             showMaxButton={true}
             id="selectCurrency"
             inputType={{swapType, type: 'INPUT'}}
             onlyUnderlying={true}
+            isViewModal={modalOpen}
+            isError={isInputError}
+            isViewMode={swapType === 'deposit' ? false : true}
+            modeConent={{txt: openAdvance ? t('Simple') : t('Advance'), isFlag: openAdvance}}
+            onChangeMode={(value) => {
+              setOpenAdvance(value)
+            }}
           />
+          {
+            openAdvance ? (
+              <>
+                <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+                  <ArrowWrapper clickable={false} style={{cursor:'pointer'}}>
+                    <ArrowDown size="16" color={theme.text2} />
+                  </ArrowWrapper>
+                </AutoRow>
+                <SelectChainIdInputPanel
+                  label={t('to')}
+                  value={outputBridgeValue.toString()}
+                  onUserInput={(value) => {
+                    setInputBridgeValue(value)
+                  }}
+                  onChainSelect={(chainID) => {
+                    setSelectChain(chainID)
+                  }}
+                  selectChainId={selectChain}
+                  id="selectChainID"
+                  onOpenModalView={(value) => {
+                    console.log(value)
+                    setModalOpen(value)
+                  }}
+                  bridgeConfig={bridgeConfig}
+                  intervalCount={intervalCount}
+                />
+              </>
+            ) : ''
+          }
 
         </AutoColumn>
 
@@ -288,6 +418,11 @@ export default function SwapNative() {
           anyCurrency={anyCurrency}
           bridgeConfig={poolInfo}
         />
+        {
+          openAdvance ? (
+            <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
+          ) : ''
+        }
 
         <BottomGrouping>
 
@@ -316,9 +451,16 @@ export default function SwapNative() {
                   )}
                 </ButtonConfirmed>
               ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
                   onDelay()
-                  if (onWrap) onWrap()
+                  if (openAdvance) {
+                    if (onWrap) onWrap()
+                  } else {
+                    if (onWrapUnderlying) onWrapUnderlying()
+                  }
+                  setTimeout(() => {
+                    setInputBridgeValue('')
+                  }, 1000 * 3)
                 }}>
                   {btnTxt}
                 </ButtonPrimary>

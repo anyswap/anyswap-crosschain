@@ -315,5 +315,6 @@
   "details": "Details",
   "tokens": "Tokens",
   "explorer": "Explorer",
-  "UnderlyingLiquidity": "Underlying Liquidity"
+  "UnderlyingLiquidity": "Underlying Liquidity",
+  "Advance": "Advance"
 }

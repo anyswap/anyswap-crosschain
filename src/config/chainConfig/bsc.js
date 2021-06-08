@@ -1,10 +1,10 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const BNB_MAINNET = 'https://bscnode1.anyswap.exchange'
+// export const BNB_MAINNET = 'https://bscnode1.anyswap.exchange'
 // export const BNB_MAINNET = 'https://bsc-dataseed1.defibit.io/'
 // export const BNB_MAINNET = 'https://bsc-dataseed2.defibit.io/'
-// export const BNB_MAINNET = 'https://bsc-dataseed3.defibit.io/'
+export const BNB_MAINNET = 'https://bsc-dataseed3.defibit.io/'
 // export const BNB_MAINNET = 'https://bsc-dataseed4.defibit.io/'
 
 // export const BNB_MAINNET = 'https://bsc-dataseed1.ninicoin.io/'

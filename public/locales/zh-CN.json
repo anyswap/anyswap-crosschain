@@ -154,7 +154,7 @@
   "Approved": "已批准",
   "Approving": "批准中",
   "Amount": "数量",
-  "Simple": "简单",
+  "Simple": "返回",
   "Detailed": "明细",
   "Receive": "接收",
   "TransactionSettings": "交易设置",
@@ -314,5 +314,6 @@
   "details": "详情",
   "tokens": "Tokens",
   "explorer": "浏览器",
-  "UnderlyingLiquidity": "实际流动性"
+  "UnderlyingLiquidity": "实际流动性",
+  "Advance": "高级"
 }
