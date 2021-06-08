@@ -1,6 +1,6 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
-console.log(process.env)
+// console.log(process.env)
 // alert(process.env.NODE_ENV)
 
 // const useNode = 'https://bsc-dataseed1.defibit.io/'

@@ -27,7 +27,7 @@ const bridgeChain = {
     bridgeInitDataChain: '56',
   },
   [VERSION.V3]: {
-    bridgeConfigToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
+    bridgeConfigToken: '0x7beb05cf5681f402e762f8569c2fc138a2172978',
     bridgeInitDataChain: '56',
   }
 }

@@ -33,10 +33,10 @@ const bridgeToken = {
     bridgeInitChain: '56'
   },
   [VERSION.V3]: {
-    bridgeInitToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
-    bridgeRouterToken: '0x332730a4f6e03d9c55829435f10360e13cfa41ff',
+    bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',
+    bridgeRouterToken: '0xdc42728b0ea910349ed3c6e1c9dc06b5fb591f98',
     bridgeInitChain: '42161',
-    nativeToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f'
+    nativeToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa'
   },
 }
 
