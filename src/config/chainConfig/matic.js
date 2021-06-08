@@ -1,8 +1,8 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-// export const MATIC_MAINNET = 'https://rpc-mainnet.maticvigil.com'
-export const MATIC_MAINNET = 'https://maticnode1.anyswap.exchange'
+export const MATIC_MAINNET = 'https://rpc-mainnet.maticvigil.com'
+// export const MATIC_MAINNET = 'https://maticnode1.anyswap.exchange'
 export const MATIC_MAIN_CHAINID = 137
 export const MATIC_MAIN_EXPLORER = 'https://explorer-mainnet.maticvigil.com'
 
@@ -38,6 +38,7 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: MATIC_MAINNET,
+    nodeRpcList: ['https://rpc-mainnet.maticvigil.com'],
     chainID: MATIC_MAIN_CHAINID,
     lookHash: MATIC_MAIN_EXPLORER + '/tx/',
     lookAddr: MATIC_MAIN_EXPLORER + '/address/',

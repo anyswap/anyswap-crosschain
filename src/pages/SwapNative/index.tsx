@@ -196,12 +196,14 @@ export default function SwapNative() {
     const obj:any = await getNodeTotalsupply(token, chainId, selectCurrency.decimals, account)
     // console.log(obj)
     const ts = obj[token].ts
+    const anyts = obj[token].anyts
     const bl = obj[token].balance
     return {
       chainId: chainId,
       balance: bl,
       totalsupply: ts,
-      percent: formatPercent(bl, ts)
+      anyTotalsupply: anyts,
+      percent: formatPercent(bl, anyts)
     }
   }
   useEffect(() => {
@@ -310,7 +312,7 @@ export default function SwapNative() {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol)
+                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
                   )}
                 </ButtonConfirmed>
               ) : (

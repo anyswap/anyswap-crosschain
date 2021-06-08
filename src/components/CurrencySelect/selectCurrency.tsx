@@ -1,9 +1,9 @@
 import { Currency } from 'anyswap-sdk'
-import React, { useState, useContext, useCallback, useEffect} from 'react'
+import React, { useState, useContext, useCallback, useEffect, useMemo} from 'react'
 import { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 import TokenLogo from '../TokenLogo'
@@ -60,6 +60,7 @@ interface SelectCurrencyInputPanelProps {
   onOpenModalView?: (value: any) => void
   isViewNetwork?: boolean
   isError?: boolean
+  isNativeToken?: boolean
 }
 
 export default function SelectCurrencyInputPanel({
@@ -77,12 +78,13 @@ export default function SelectCurrencyInputPanel({
   otherCurrency,
   id,
   customBalanceText,
-  // inputType,
+  inputType,
   onlyUnderlying,
   isViewModal,
   onOpenModalView,
   isViewNetwork,
-  isError
+  isError,
+  isNativeToken
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -101,15 +103,27 @@ export default function SelectCurrencyInputPanel({
   }, [setModalOpen])
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  // console.log(currency)
+  const selectedETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+
+  const useBalance = useMemo(() => {
+    if (selectedCurrencyBalance && !isNativeToken) {
+      return selectedCurrencyBalance
+    } else if (selectedETHBalance && isNativeToken) {
+      return selectedETHBalance
+    } else {
+      return undefined
+    }
+  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance])
+  // console.log(isNativeToken)
+  // console.log(selectedETHBalance?.toSignificant(6))
   // console.log(selectedCurrencyBalance?.toSignificant(6))
   const handleMax = useCallback(() => {
-    if (selectedCurrencyBalance) {
-      onMax(selectedCurrencyBalance?.toSignificant(6))
+    if (useBalance) {
+      onMax(useBalance?.toSignificant(6))
     } else {
       onMax('')
     }
-  }, [selectedCurrencyBalance, onMax])
+  }, [useBalance, onMax])
 
   useEffect(() => {
     if (typeof isViewModal != 'undefined') {
@@ -137,8 +151,8 @@ export default function SelectCurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}
                   >
-                    {!hideBalance && !!currency && selectedCurrencyBalance
-                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
+                    {!hideBalance && !!currency && useBalance
+                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
                       : t('balanceTxt') + ': ' + '-'}
                   </TYPE.body>
                 ) : (
@@ -149,8 +163,8 @@ export default function SelectCurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}
                   >
-                    {!hideBalance && !!currency && selectedCurrencyBalance && account
-                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
+                    {!hideBalance && !!currency && useBalance && account
+                      ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
                       : t('balanceTxt') + ': ' + '-'}
                   </TYPE.body>
                   </HideSmallBox>
@@ -195,11 +209,15 @@ export default function SelectCurrencyInputPanel({
                         inputType.swapType === 'deposit' ? 'any' : ''
                       )
                     ) : ''} */}
-                    {(currency && currency.symbol && currency.symbol.length > 20
-                      ? currency.symbol.slice(0, 4) +
-                        '...' +
-                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : config.getBaseCoin(currency?.symbol)) || t('selectToken')}
+                    {
+                      (
+                        currency && currency.symbol && currency.symbol.length > 20
+                          ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                          : (
+                            inputType && inputType.swapType === 'deposit' ? currency?.symbol : config.getBaseCoin(currency?.symbol, chainId)
+                          )
+                      ) || t('selectToken')
+                    }
                     {/* {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''} */}
                   </h3>
                   <p>
@@ -222,7 +240,7 @@ export default function SelectCurrencyInputPanel({
                 >
                   <Aligner>
                     <TokenLogoBox>
-                      <TokenLogo symbol={config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
+                      <TokenLogo symbol={config.getCurChainInfo(chainId)?.networkLogo ?? config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
                     </TokenLogoBox>
                     <StyledTokenName className="token-symbol-container">
                       {config.getCurChainInfo(chainId).networkName}
@@ -242,8 +260,8 @@ export default function SelectCurrencyInputPanel({
                         <ExtraText>
                           <h5>{t('balance')}</h5>
                           <p>
-                            {!hideBalance && !!currency && selectedCurrencyBalance
-                              ? (customBalanceText ?? '') + formatDecimal(selectedCurrencyBalance.toSignificant(6), 2)
+                            {!hideBalance && !!currency && useBalance
+                              ? (customBalanceText ?? '') + formatDecimal(useBalance.toSignificant(6), 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>

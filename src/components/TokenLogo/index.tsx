@@ -59,7 +59,7 @@ export default function TokenLogo({
 }) {
   const { chainId } = useActiveWeb3React()
   let path = ''
-  symbol = config.getBaseCoin(symbol)
+  symbol = config.getBaseCoin(symbol, chainId)
   symbol = symbol === 'W' + config.getCurChainInfo(chainId).symbol ? symbol.substr(1) : symbol
   // symbol = symbol === 'WHT' ? 'HT' : symbol
   // console.log(symbol)

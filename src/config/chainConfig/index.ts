@@ -1,4 +1,4 @@
-import arbitrum from './arbitrum'
+import arbitrum, {ARBITRUM_MAIN_CHAINID} from './arbitrum'
 import avax from './avax'
 import bsc, {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './bsc'
 import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID} from './eth'
@@ -38,6 +38,10 @@ const useChain = {
     BNB_MAIN_CHAINID,
     FTM_MAIN_CHAINID,
     MATIC_MAIN_CHAINID
+  ],
+  [VERSION.V3]: [
+    ETH_MAIN_CHAINID,
+    ARBITRUM_MAIN_CHAINID
   ]
 }
 

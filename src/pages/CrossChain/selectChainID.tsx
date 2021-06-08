@@ -178,7 +178,7 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={bridgeConfig?.symbol} size={'24px'} />
+                    <TokenLogo symbol={bridgeConfig?.underlying?.symbol ?? bridgeConfig?.symbol} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>
@@ -193,14 +193,14 @@ export default function SelectChainIdInputPanel({
                             ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
                               '...' +
                               bridgeConfig?.underlying?.symbol.slice(bridgeConfig?.underlying?.symbol.length - 5, bridgeConfig?.underlying?.symbol.length)
-                            : config.getBaseCoin(bridgeConfig?.underlying?.symbol)
+                            : config.getBaseCoin(bridgeConfig?.underlying?.symbol, chainId)
                         ) : (
                           bridgeConfig?.symbol ? (
                             bridgeConfig?.symbol.length > 20
                               ? bridgeConfig.symbol.slice(0, 4) +
                                 '...' +
                                 bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                              : config.getBaseCoin(bridgeConfig?.symbol)) : t('selectToken')
+                              : config.getBaseCoin(bridgeConfig?.symbol, chainId)) : t('selectToken')
                         )
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
@@ -232,7 +232,7 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={selectChainId ? config.chainInfo[selectChainId].symbol : ''} size={'24px'} />
+                    <TokenLogo symbol={selectChainId ? (config.getCurChainInfo(selectChainId)?.networkLogo ?? config.getCurChainInfo(selectChainId)?.symbol) : ''} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(selectChainId)}>
                     {selectChainId && config.chainInfo[selectChainId].networkName ? config.chainInfo[selectChainId].networkName : t('selectNetwork')}

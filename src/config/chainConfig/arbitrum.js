@@ -1,25 +1,59 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
+export const ARBITRUM_MAINNET = 'https://arb-mainnet.g.alchemy.com/v2/u04Uw5dp98OohbK6fylEVaEd2OD2Rxaj'
+export const ARBITRUM_MAIN_CHAINID = 42161
+export const ARBITRUM_MAIN_EXPLORER = 'https://mainnet-arb-explorer.netlify.app'
+
 export const ARBITRUM_TESTNET = 'https://kovan4.arbitrum.io/rpc'
 export const ARBITRUM_TEST_CHAINID = 212984383488152
 export const ARBITRUM_TEST_EXPLORER = 'https://explorer.arbitrum.io/#/'
 
-export const tokenList = [
+export const tokenList = []
 
-]
-
-const symbol = 'ARBITRUM'
+const symbol = 'ETH'
 
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeRouterToken: '',
     bridgeInitChain: ''
-  }
+  },
+  [VERSION.V3]: {
+    bridgeInitToken: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b',
+    bridgeRouterToken: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+    bridgeInitChain: '1'
+  },
 }
 
 export default {
+  
+  [ARBITRUM_MAIN_CHAINID]: {
+    oldAppName: 'Anyswap V1',
+    appName: 'HTswap LP',
+    baseCurrency: 'ANY',
+    tokenListUrl: tokenListUrl + ARBITRUM_MAIN_CHAINID,
+    tokenList: formatSwapTokenList(symbol, tokenList),
+    ...bridgeToken[USE_VERSION],
+    multicalToken: '0x9e73d56dd1942743ffdf055449b052a806b854be',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    timelock: '',
+    nodeRpc: ARBITRUM_MAINNET,
+    chainID: ARBITRUM_MAIN_CHAINID,
+    lookHash: ARBITRUM_MAIN_EXPLORER + '/tx/',
+    lookAddr: ARBITRUM_MAIN_EXPLORER + '/address/',
+    lookBlock: ARBITRUM_MAIN_EXPLORER + '/block/',
+    explorer: ARBITRUM_MAIN_EXPLORER,
+    symbol: symbol,
+    name: 'Arbitrum',
+    networkName: 'ARBITRUM mainnet',
+    networkLogo: 'ARBITRUM',
+    type: 'main',
+    label: ARBITRUM_MAIN_CHAINID,
+    isSwitch: 1,
+    suffix: 'ARBITRUM'
+  },
   [ARBITRUM_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',
     appName: 'HTswap LP',
@@ -40,6 +74,7 @@ export default {
     symbol: symbol,
     name: 'Arbitrum',
     networkName: 'ARBITRUM mainnet',
+    networkLogo: 'ARBITRUM',
     type: 'main',
     label: ARBITRUM_TEST_CHAINID,
     isSwitch: 1,

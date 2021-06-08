@@ -281,6 +281,32 @@
 		"name": "txs",
 		"type": "bytes32"
 	}, {
+		"internalType": "address",
+		"name": "token",
+		"type": "address"
+	}, {
+		"internalType": "address",
+		"name": "to",
+		"type": "address"
+	}, {
+		"internalType": "uint256",
+		"name": "amount",
+		"type": "uint256"
+	}, {
+		"internalType": "uint256",
+		"name": "fromChainID",
+		"type": "uint256"
+	}],
+	"name": "anySwapInAuto",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "bytes32",
+		"name": "txs",
+		"type": "bytes32"
+	}, {
 		"internalType": "uint256",
 		"name": "amountIn",
 		"type": "uint256"
@@ -394,6 +420,28 @@
 		"internalType": "uint256",
 		"name": "toChainID",
 		"type": "uint256"
+	}],
+	"name": "anySwapOut",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "address[]",
+		"name": "tokens",
+		"type": "address[]"
+	}, {
+		"internalType": "address[]",
+		"name": "to",
+		"type": "address[]"
+	}, {
+		"internalType": "uint256[]",
+		"name": "amounts",
+		"type": "uint256[]"
+	}, {
+		"internalType": "uint256[]",
+		"name": "toChainIDs",
+		"type": "uint256[]"
 	}],
 	"name": "anySwapOut",
 	"outputs": [],
@@ -702,6 +750,24 @@
 	"name": "anySwapOutExactTokensForTokensUnderlyingWithTransferPermit",
 	"outputs": [],
 	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "address",
+		"name": "token",
+		"type": "address"
+	}, {
+		"internalType": "address",
+		"name": "to",
+		"type": "address"
+	}, {
+		"internalType": "uint256",
+		"name": "toChainID",
+		"type": "uint256"
+	}],
+	"name": "anySwapOutNative",
+	"outputs": [],
+	"stateMutability": "payable",
 	"type": "function"
 }, {
 	"inputs": [{

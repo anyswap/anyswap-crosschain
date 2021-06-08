@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import config from '../../config'
 
-// import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React } from '../../hooks'
 // import {useTokenBalancesWithLoadingIndicator, useTokenTotalSupplyWithLoadingIndicator} from '../../state/wallet/hooks'
 
 // import {fromWei} from '../../utils/tools/tools'
@@ -69,7 +70,7 @@ export default function PoolTip ({
 }) {
   // const { account, chainId } = useActiveWeb3React()
   // const { account } = useActiveWeb3React()
-  // const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   
@@ -141,7 +142,7 @@ export default function PoolTip ({
   //   //     percent: formatPercent(bl, ts)
   //   //   })
   //   // }
-  //   // console.log(bridgeConfig)
+    // console.log(bridgeConfig)
   //   const token = bridgeConfig.address
   //   const obj:any = await getNodeTotalsupply(token, chainId, bridgeConfig.decimals, account)
   //   // console.log(obj)
@@ -202,26 +203,37 @@ export default function PoolTip ({
         </dd> */}
         <dd>
           <i></i>
-          {t('currentPoolSize')}:
+          {t('currentPoolSize') + ' '}: 
           {
             bridgeConfig ? (
               <>
-                {(bridgeConfig.totalsupply + ' ' + anyCurrency?.underlying?.symbol)}
+                {(bridgeConfig.anyTotalsupply + ' ' + anyCurrency?.symbol)}
               </>
             ) : ''
           }
         </dd>
         <dd>
           <i></i>
-          {t('yourPoolShare')}:
+          {t('yourPoolShare') + ' '}: 
           {
             bridgeConfig ? (
               <>
                 {(
-                  (bridgeConfig.balance + ' ' + anyCurrency?.underlying?.symbol)
+                  (bridgeConfig.balance + ' ' + anyCurrency?.symbol)
                   +
                   bridgeConfig.percent
                 )}
+              </>
+            ) : ''
+          }
+        </dd>
+        <dd>
+          <i></i>
+          {t('UnderlyingLiquidity') + ' '}: 
+          {
+            bridgeConfig ? (
+              <>
+                {(bridgeConfig.totalsupply + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
               </>
             ) : ''
           }

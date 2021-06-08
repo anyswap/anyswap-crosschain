@@ -9,7 +9,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useBridgeCallback, useBridgeUnderlyingCallback} from '../../hooks/useBridgeCallback'
+import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -144,7 +144,7 @@ export default function CrossChain() {
       if (CC) {
         setCurChain({
           chain: chainId,
-          ts: CC[selectCurrency?.address]?.ts,
+          ts: selectCurrency?.underlying ? CC[selectCurrency?.address]?.ts : CC[selectCurrency?.address]?.anyts,
           bl: CC[selectCurrency?.address]?.balance
         })
       }
@@ -152,7 +152,7 @@ export default function CrossChain() {
       if (DC) {
         setDestChain({
           chain: selectChain,
-          ts: DC[selectCurrency?.destChain[selectChain].token]?.ts,
+          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChain[selectChain].token]?.ts : DC[selectCurrency?.destChain[selectChain].token]?.anyts,
           bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
         })
       }
@@ -174,6 +174,14 @@ export default function CrossChain() {
     selectChain
   )
 
+  const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
+    formatCurrency?formatCurrency:undefined,
+    selectCurrency?.address,
+    recipient,
+    inputBridgeValue,
+    selectChain
+  )
+
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
     formatCurrency?formatCurrency:undefined,
     selectCurrency?.address,
@@ -182,6 +190,20 @@ export default function CrossChain() {
     selectChain
   )
     // console.log(selectCurrency)
+  
+  const isNativeToken = useMemo(() => {
+    if (
+      selectCurrency
+      && chainId
+      && config.getCurChainInfo(chainId)
+      && config.getCurChainInfo(chainId).nativeToken
+      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency, chainId])
+
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {
       const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
@@ -201,14 +223,22 @@ export default function CrossChain() {
   }, [inputBridgeValue, bridgeConfig])
 
   const isCrossBridge = useMemo(() => {
+    // console.log(!wrapInputErrorUnderlying && !isNativeToken)
+    // console.log(!wrapInputErrorNative && isNativeToken)
     if (
       account
       && bridgeConfig
       && selectCurrency
       && inputBridgeValue
       && (
-        (!wrapInputError && !(selectCurrency && selectCurrency.underlying))
-        || (!wrapInputErrorUnderlying && (selectCurrency && selectCurrency.underlying))
+        (!wrapInputError && !selectCurrency?.underlying)
+        || (
+          selectCurrency?.underlying
+          && (
+            (!wrapInputErrorUnderlying && !isNativeToken)
+            || (!wrapInputErrorNative && isNativeToken)
+          )
+        )
       )
       && isAddress(recipient)
       && destChain
@@ -225,30 +255,21 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain])
-  // console.log('---------------account----------------------')
-  // console.log(account)
-  // console.log(selectCurrency)
-  // console.log(bridgeConfig)
-  // console.log(wrapInputError)
-  // console.log(inputBridgeValue)
-  // console.log(recipient)
-  // console.log(wrapInputErrorUnderlying)
-  // console.log(destChain)
-  // console.log('---------------destChain----------------------')
+  }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain, wrapInputErrorNative, isNativeToken])
+
   const isInputError = useMemo(() => {
     if (
       account
       && bridgeConfig
       && selectCurrency
       && inputBridgeValue
-      && wrapInputError
+      && isCrossBridge
+      && Number(inputBridgeValue)
     ) {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
         || Number(inputBridgeValue) > Number(destChain.ts)
-        || (wrapInputError && inputBridgeValue && Number(inputBridgeValue))
       ) {
         return true
       } else {
@@ -257,21 +278,29 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, wrapInputError])
+  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+
 
   const btnTxt = useMemo(() => {
-    if (wrapInputError && inputBridgeValue) {
+    if (wrapInputError && inputBridgeValue && !isNativeToken) {
       return wrapInputError
-    } else if (wrapInputError && !inputBridgeValue) {
+    } else if (wrapTypeNative && inputBridgeValue && isNativeToken) {
+      return wrapTypeNative
+    } else if (wrapTypeNative && wrapInputError && !inputBridgeValue) {
       return t('swap')
     } else if (
-      (wrapType === WrapType.WRAP && !(selectCurrency && selectCurrency.underlying))
-      || (wrapTypeUnderlying === WrapType.WRAP && (selectCurrency && selectCurrency.underlying))
+      (wrapType === WrapType.WRAP && !(selectCurrency && selectCurrency?.underlying))
+      || (
+        selectCurrency?.underlying && (
+          (wrapTypeUnderlying === WrapType.WRAP && selectCurrency && isNativeToken)
+          || (wrapTypeNative === WrapType.WRAP && selectCurrency && !isNativeToken)
+        )
+      )
     ) {
       return t('swap')
     }
     return t('swap')
-  }, [t, wrapInputError, wrapTypeUnderlying, selectCurrency])
+  }, [t, wrapInputError, wrapTypeUnderlying, selectCurrency, wrapTypeNative, isNativeToken])
 
   useEffect(() => {
     if (chainId && !selectChain) {
@@ -294,7 +323,7 @@ export default function CrossChain() {
 
     if (token && isAddress(token)) {
       getTokenConfig(token, chainId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
@@ -385,6 +414,7 @@ export default function CrossChain() {
             isViewModal={modalOpen}
             id="selectCurrency"
             isError={isInputError}
+            isNativeToken={isNativeToken}
           />
           {
             account && chainId ? (
@@ -448,7 +478,7 @@ export default function CrossChain() {
           {!account ? (
               <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
             ) : (
-              selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+              !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
                   onClick={() => {
                     onDelay()
@@ -466,16 +496,24 @@ export default function CrossChain() {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol)
+                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol, chainId)
                   )}
                 </ButtonConfirmed>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                // <ButtonPrimary disabled={delayAction} onClick={() => {
                   onDelay()
                   if (!selectCurrency || !selectCurrency.underlying) {
                     if (onWrap) onWrap()
                   } else {
-                    if (onWrapUnderlying) onWrapUnderlying()
+                    // if (onWrapUnderlying) onWrapUnderlying()
+                    if (isNativeToken) {
+                      console.log(1)
+                      if (onWrapNative) onWrapNative()
+                    } else {
+                      console.log(2)
+                      if (onWrapUnderlying) onWrapUnderlying()
+                    }
                   }
                   setTimeout(() => {
                     setInputBridgeValue('')

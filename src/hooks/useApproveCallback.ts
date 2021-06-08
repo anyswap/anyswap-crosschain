@@ -22,7 +22,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   // console.log(spender)
   // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
@@ -86,7 +86,7 @@ export function useApproveCallback(
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
-          summary: 'Approve ' + config.getBaseCoin(amountToApprove.currency.symbol),
+          summary: 'Approve ' + config.getBaseCoin(amountToApprove.currency.symbol, chainId),
           approval: { tokenAddress: token.address, spender: spender }
         })
       })

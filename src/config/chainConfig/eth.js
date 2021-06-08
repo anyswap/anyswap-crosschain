@@ -31,7 +31,13 @@ const bridgeToken = {
     bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
     bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '56'
-  }
+  },
+  [VERSION.V3]: {
+    bridgeInitToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
+    bridgeRouterToken: '0x332730a4f6e03d9c55829435f10360e13cfa41ff',
+    bridgeInitChain: '42161',
+    nativeToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f'
+  },
 }
 
 export default {

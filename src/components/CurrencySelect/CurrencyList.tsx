@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -97,8 +97,8 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
 }) {
-  // const { account, chainId } = useActiveWeb3React()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
   // const { t } = useTranslation()
   const key = currencyKey(currency)
   const currencyObj = {
@@ -108,7 +108,9 @@ function CurrencyRow({
     name: currency.name ? currency.underlying.name : currency.name,
   }
   const currencies = useLocalToken(currencyObj)
+  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currency?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
+  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   
   return (
     <MenuItem
@@ -121,7 +123,7 @@ function CurrencyRow({
       <TokenLogo symbol={currencyObj.symbol} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
-          {config.getBaseCoin(currencyObj.symbol)}
+          {config.getBaseCoin(currencyObj.symbol, chainId)}
         </Text>
         {/* <FadedSpan>
           {!isOnSelectedList && customAdded && !currency?.isCrossChain ? (
@@ -153,9 +155,17 @@ function CurrencyRow({
         </FadedSpan> */}
       </Column>
       <TokenTags currency={currencyObj} />
-      <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </RowFixed>
+      {
+        isNativeToken ? (
+          <RowFixed style={{ justifySelf: 'flex-end' }}>
+            {ETHBalance ? <Balance balance={ETHBalance} /> : account ? <Loader /> : null}
+          </RowFixed>
+        ) : (
+          <RowFixed style={{ justifySelf: 'flex-end' }}>
+            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+          </RowFixed>
+        )
+      }
     </MenuItem>
   )
 }

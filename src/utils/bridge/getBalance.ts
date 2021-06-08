@@ -65,23 +65,22 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
             resolve(list)
           }
         }))
-      } else {
-        contract.options.address = tokenObj.token
-        const tsData = contract.methods.totalSupply().encodeABI()
-        batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
-        // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
-          if (!list[tokenObj.token]) list[tokenObj.token] = {}
-          if (err) {
-            // console.log(err)
-            list[tokenObj.token].ts = ''
-          } else {
-            list[tokenObj.token].ts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
-          }
-          if ((i + 1) === len) {
-            resolve(list)
-          }
-        }))
       }
+      contract.options.address = tokenObj.token
+      const tsData = contract.methods.totalSupply().encodeABI()
+      batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+      // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+        if (!list[tokenObj.token]) list[tokenObj.token] = {}
+        if (err) {
+          // console.log(err)
+          list[tokenObj.token].anyts = ''
+        } else {
+          list[tokenObj.token].anyts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+        }
+        if ((i + 1) === len) {
+          resolve(list)
+        }
+      }))
 
       if (account) {
         const blData = contract.methods.balanceOf(account).encodeABI()

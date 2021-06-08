@@ -72,8 +72,8 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
         <AutoColumn gap="10px" justify="flex-start">
           <TYPE.main>
             {token && token.name && token.symbol && token.name !== token.symbol
-              ? `${config.getBaseCoin(token.name,1)} (${config.getBaseCoin(token.symbol)})`
-              : config.getBaseCoin(token.name,1) || config.getBaseCoin(token.symbol)}{' '}
+              ? `${config.getBaseCoin(token.name, chainId,1)} (${config.getBaseCoin(token.symbol, chainId)})`
+              : config.getBaseCoin(token.name, chainId,1) || config.getBaseCoin(token.symbol, chainId)}{' '}
           </TYPE.main>
           {chainId && (
             <ExternalLink style={{ fontWeight: 400 }} href={getEtherscanLink(chainId, token.address, 'token')}>

@@ -314,5 +314,6 @@
   "totalPools": "Total Pools",
   "details": "Details",
   "tokens": "Tokens",
-  "explorer": "Explorer"
+  "explorer": "Explorer",
+  "UnderlyingLiquidity": "Underlying Liquidity"
 }

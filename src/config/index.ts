@@ -25,6 +25,10 @@ const bridgeChain = {
   [VERSION.V2]: {
     bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',
+  },
+  [VERSION.V3]: {
+    bridgeConfigToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
+    bridgeInitDataChain: '56',
   }
 }
 
@@ -36,6 +40,10 @@ const bridgeTestChain = {
   [VERSION.V2]: {
     bridgeConfigToken: '',
     bridgeInitDataChain: '',
+  },
+  [VERSION.V3]: {
+    bridgeConfigToken: '',
+    bridgeInitDataChain: '',
   }
 }
 
@@ -45,15 +53,22 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   localDataDeadline: 1622532945161,
-  getBaseCoin (value:any, type: number) {
-    if (value && value === 'BASECURRENCY') {
+  getBaseCoin (value:any, chainId:any, type?: number) {
+    // console.log(value)
+    if (
+      value
+      && (
+        value === 'BASECURRENCY'
+        || value === 'W' + this.getCurChainInfo(chainId).symbol
+      )
+    ) {
       if (type) {
-        return netConfig.name
+        return this.getCurChainInfo(chainId).name
       } else {
-        return netConfig.symbol
+        return this.getCurChainInfo(chainId).symbol
       }
     } else if (value && value === 'WETH') {
-      return 'W' + netConfig.symbol
+      return 'W' + this.getCurChainInfo(chainId).symbol
     } else {
       return value
     }

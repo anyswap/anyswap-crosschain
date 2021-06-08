@@ -214,13 +214,13 @@ export default function DashboardDtil() {
                             <TokenTableCoinBox>
                               <TokenTableLogo>
                                 <TokenLogo
-                                  symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}
+                                  symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}
                                   size={'1.625rem'}
                                 ></TokenLogo>
                               </TokenTableLogo>
                               <TokenNameBox>
-                                <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol)}</h3>
-                                <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, 1)}</p>
+                                <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}</h3>
+                                <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, chainId, 1)}</p>
                               </TokenNameBox>
                             </TokenTableCoinBox>
                           </DBTd>

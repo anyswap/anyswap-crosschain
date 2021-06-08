@@ -208,12 +208,16 @@ export function Option (item:any, selectChain:any) {
         <WalletLogoBox2>
           <IconWrapper>
             {/* <img src={icon} alt={'Icon'} /> */}
-            <TokenLogo symbol={item.symbol} size={'46px'}></TokenLogo>
+            <TokenLogo symbol={item?.networkLogo ?? item?.symbol} size={'46px'}></TokenLogo>
           </IconWrapper>
           <OptionCardLeft>
             <HeaderText>
               {' '}
-              {selectChain === item.symbol ? (
+              {
+              (
+                (selectChain === item.symbol && !item.networkLogo)
+                || (item.networkLogo && selectChain === item.networkLogo)
+              ) ? (
                 <CircleWrapper>
                   <GreenCircle>
                     <div />
@@ -264,13 +268,11 @@ export function selectNetwork (chainID:any) {
         })
       }).catch((err: any) => {
         console.log(err)
-        // alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
         resolve({
           msg: 'Error'
         })
       })
     } else {
-      // alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
       resolve({
         msg: 'Error'
       })
@@ -334,7 +336,7 @@ export default function SelectNetwork () {
                   chainList && chainList.map((item:any, index:any) => {
                     return (
                       <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        {Option(chainInfo[item], config.getCurChainInfo(chainId).symbol)}
+                        {Option(chainInfo[item], config.getCurChainInfo(chainId)?.networkLogo ?? config.getCurChainInfo(chainId)?.symbol)}
                         {/* <img alt={''} src={AddIcon} /> */}
                       </OptionCardClickable>
                     )
