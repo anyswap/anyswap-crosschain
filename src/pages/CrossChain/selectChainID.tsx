@@ -197,9 +197,9 @@ export default function SelectChainIdInputPanel({
                         ) : (
                           bridgeConfig?.symbol ? (
                             bridgeConfig?.symbol.length > 20
-                              ? bridgeConfig.symbol.slice(0, 4) +
+                              ? bridgeConfig?.symbol.slice(0, 4) +
                                 '...' +
-                                bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
+                                bridgeConfig?.symbol.slice(bridgeConfig?.symbol.length - 5, bridgeConfig?.symbol.length)
                               : config.getBaseCoin(bridgeConfig?.symbol, chainId)) : t('selectToken')
                         )
                       }
@@ -274,7 +274,7 @@ export default function SelectChainIdInputPanel({
                         className={selectChainId && selectChainId === item ? 'active' : ''}
                         onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
-                        {Option(config.chainInfo[item], config.chainInfo[selectChainId].symbol)}
+                        {Option(config.chainInfo[item], config.chainInfo[selectChainId]?.symbol)}
                       </OptionCardClickable>
                     )
                   })

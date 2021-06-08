@@ -107,7 +107,7 @@ export default function CrossChain() {
 
   const formatCurrency = useLocalToken(
     selectCurrency && selectCurrency.underlying ?
-      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
+      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying?.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
@@ -423,7 +423,7 @@ export default function CrossChain() {
                 {
                   curChain ? (
                     <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain).symbol} size={'1rem'}></TokenLogo>
+                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? formatDecimal(curChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''
@@ -431,7 +431,7 @@ export default function CrossChain() {
                 {
                   destChain ? (
                     <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain).symbol} size={'1rem'}></TokenLogo>
+                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? formatDecimal(destChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''
