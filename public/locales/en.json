@@ -316,5 +316,7 @@
   "tokens": "Tokens",
   "explorer": "Explorer",
   "UnderlyingLiquidity": "Underlying Liquidity",
-  "Advance": "Advanced"
+  "Advance": "Advanced",
+  "select": "Select",
+  "farms": "Farms"
 }

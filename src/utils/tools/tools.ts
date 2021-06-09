@@ -142,12 +142,16 @@ export function formatNum (num:any) {
   }
 }
 
-export function fromWei (value:any, decimals:number) {
+export function fromWei (value:any, decimals?:number, dec?:number) {
   if (!value || !value) {
     return ''
   }
   if (Number(value) === 0) {
     return 0
+  }
+  decimals = decimals ? decimals : 18
+  if (dec) {
+    return formatDecimal(Number(formatUnits(value.toString(), decimals)), dec)
   }
   return Number(formatUnits(value.toString(), decimals))
 }

@@ -315,5 +315,7 @@
   "tokens": "Tokens",
   "explorer": "浏览器",
   "UnderlyingLiquidity": "实际流动性",
-  "Advance": "高级"
+  "Advance": "高级",
+  "select": "选择",
+  "farms": "农场"
 }

@@ -1,7 +1,7 @@
 import React, { HTMLProps, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
-import { darken } from 'polished'
+// import { darken } from 'polished'
 import { ArrowLeft, X } from 'react-feather'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
@@ -21,12 +21,10 @@ export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColo
 
   :hover,
   :focus {
-    // background-color: ${({ backgroundColor }) => darken(0.05, backgroundColor)};
     background-color: linear-gradient(to bottom, #5f6bfb , #724de4);
   }
 
   :active {
-    // background-color: ${({ backgroundColor }) => darken(0.1, backgroundColor)};
     background-color: linear-gradient(to bottom, #5f6bfb , #724de4);
   }
 

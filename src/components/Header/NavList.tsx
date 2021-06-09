@@ -345,6 +345,13 @@ export default function NavList() {
           </div>
           {t('explorer')}
         </StyledNavLink1>
+        <StyledNavLink id={`swap-nav-link`} to={'/farm/matic'}>
+          <div className="icon">
+            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
+          </div>
+          {t('farms')}
+        </StyledNavLink>
         {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />

@@ -12,6 +12,9 @@ import Dashboard from './Dashboard'
 import CrossChain from './CrossChain'
 import SwapNative from './SwapNative'
 import Pool from './SwapNative/poolList'
+import MATICfarming from './Farms/MATICfarming'
+
+// import config from '../config'
 
 const AppWrapper = styled.div`
   // display: flex;
@@ -130,6 +133,14 @@ export default function App() {
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
               <Route exact strict path="/pool" component={Pool} />
               <Route exact strict path="/pool/add" component={SwapNative} />
+              <Route exact strict path="/farm/matic" component={MATICfarming} />
+              <Route
+                path={"/farm/matic/:lpToken"}
+                render={({ match }) => {
+                  console.log(match)
+                  return <MATICfarming initialTrade={match.params.lpToken} />
+                }}
+              />
               <Redirect to={{ pathname: '/swap' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>

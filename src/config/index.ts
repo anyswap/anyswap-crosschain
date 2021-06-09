@@ -53,6 +53,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   localDataDeadline: 1622532945161,
+  farmUrl: '#/',
   getBaseCoin (value:any, chainId:any, type?: number) {
     // console.log(value)
     if (
