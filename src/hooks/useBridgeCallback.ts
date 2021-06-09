@@ -33,7 +33,7 @@ export function useBridgeCallback(
   const bridgeContract = useBridgeContract()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
-  // console.log(balance)
+  // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])

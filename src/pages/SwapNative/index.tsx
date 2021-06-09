@@ -75,6 +75,12 @@ export default function SwapNative() {
 
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
+  const [destChain, setDestChain] = useState<any>({
+    chain: '',
+    ts: '',
+    bl: ''
+  })
+
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
 
@@ -95,9 +101,7 @@ export default function SwapNative() {
   const anyCurrency = useLocalToken(selectCurrency ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
   // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
-  const formatCurrency = useLocalToken(
-    selectCurrency && selectCurrency.underlying ?
-      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
+  const formatCurrency = useLocalToken(selectCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
 
@@ -143,12 +147,28 @@ export default function SwapNative() {
           (!wrapInputError && openAdvance)
           || (!wrapInputErrorUnderlying && !openAdvance)
         )
-        && poolInfo
-        && Number(poolInfo.balance) >= Number(inputBridgeValue)
-        && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
       ) {
-        // console.log(12)
-        return false
+        if (
+          openAdvance
+          && destChain
+          && poolInfo
+          && Number(poolInfo.balance) >= Number(inputBridgeValue)
+          && Number(destChain.ts) >= Number(inputBridgeValue)
+        ) {
+          // console.log(14)
+          return false
+        } else if (
+          !openAdvance
+            && poolInfo
+            && Number(poolInfo.balance) >= Number(inputBridgeValue)
+            && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
+        ) {
+          // console.log(15)
+          return false
+        } else {
+          // console.log(16)
+          return true
+        }
       } else {
         // console.log(13)
         return true
@@ -156,7 +176,7 @@ export default function SwapNative() {
     } else {
       return true
     }
-  }, [selectCurrency, account, wrapInputErrorUnderlying, inputBridgeValue, poolInfo, wrapInputError, openAdvance, swapType])
+  }, [selectCurrency, account, wrapInputErrorUnderlying, inputBridgeValue, poolInfo, wrapInputError, openAdvance, swapType, destChain])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -186,7 +206,8 @@ export default function SwapNative() {
       return false
     }
   }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
-  console.log(isInputError)
+
+  // console.log(isInputError)
 
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
@@ -218,6 +239,8 @@ export default function SwapNative() {
     }
   }, [inputBridgeValue, bridgeConfig])
 
+  
+
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -225,12 +248,12 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
   useEffect(() => {
     if (chainId && !selectChain) {
-      setSelectChain(chainId)
+      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
     }
   }, [chainId, selectChain])
   useEffect(() => {
     if (chainId) {
-      setSelectChain(chainId)
+      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
     }
   }, [chainId])
   // useEffect(() => {
@@ -245,7 +268,7 @@ export default function SwapNative() {
     // console.log(token)
     if (token) {
       getTokenConfig(token, chainId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
@@ -287,10 +310,18 @@ export default function SwapNative() {
   async function getAllOutBalance (account:any) {
     const token = selectCurrency.address
     const obj:any = await getNodeTotalsupply(token, chainId, selectCurrency.decimals, account)
-    // console.log(obj)
+    const DC:any = openAdvance ? await getNodeTotalsupply(selectCurrency?.destChain[selectChain]?.token, selectChain, selectCurrency?.destChain[selectChain]?.decimals, account) : ''
+    // console.log(DC)
     const ts = obj[token].ts
     const anyts = obj[token].anyts
     const bl = obj[token].balance
+    if (DC) {
+      setDestChain({
+        chain: selectChain,
+        ts: selectCurrency?.underlying ? DC[selectCurrency?.destChain[selectChain].token]?.ts : DC[selectCurrency?.destChain[selectChain].token]?.anyts,
+        bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
+      })
+    }
     return {
       chainId: chainId,
       balance: bl,
@@ -314,7 +345,7 @@ export default function SwapNative() {
         setIntervalCount(intervalCount + 1)
       }, 1000 * 10)
     }
-  }, [selectCurrency, account, intervalCount])
+  }, [selectCurrency, account, intervalCount, selectChain])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -454,8 +485,10 @@ export default function SwapNative() {
                 <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
                   onDelay()
                   if (openAdvance) {
+                    console.log(1)
                     if (onWrap) onWrap()
                   } else {
+                    console.log(2)
                     if (onWrapUnderlying) onWrapUnderlying()
                   }
                   setTimeout(() => {

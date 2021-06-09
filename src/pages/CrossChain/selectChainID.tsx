@@ -86,7 +86,7 @@ export default function SelectChainIdInputPanel({
   }, [setModalOpen])
 
   const theme = useContext(ThemeContext)
-  console.log(bridgeConfig)
+  // console.log(bridgeConfig)
   useEffect(() => {
     
     getAllChainIDs(chainId).then((res:any) => {
