@@ -493,7 +493,7 @@ export default function Farming ({
 
   const MMErcContract = useTokenContract(exchangeAddress)
 
-  const dec = lpObj && exchangeAddress ? lpObj[exchangeAddress].tokenObj.decimals : ''
+  const dec = lpObj && exchangeAddress && lpObj[exchangeAddress] ? lpObj[exchangeAddress]?.tokenObj?.decimals : ''
 
   // useEffect(() => {
   //   getPrice(config.getCurChainInfo(CHAINID).symbol).then((res:any) => {
@@ -537,7 +537,7 @@ export default function Farming ({
     // console.log(stakeAmount)
     if (stakeAmount && !isNaN(stakeAmount) && Number(stakeAmount) > 0 && !BtnDelayDisabled) {
       
-      const dec = lpObj ? lpObj[exchangeAddress].tokenObj.decimals : ''
+      const dec = lpObj && lpObj[exchangeAddress] ? lpObj[exchangeAddress]?.tokenObj?.decimals : ''
       const amount = stakeAmount
       const value = fromWei(balance, dec, dec)
       const ui = fromWei(userInfo, dec, dec)
@@ -718,7 +718,6 @@ export default function Farming ({
   }
 
   function getStakingInfo () {
-    // const curToken = lpObj && lpObj[exchangeAddress] && lpObj[exchangeAddress].tokenObj && lpObj[exchangeAddress].tokenObj.token ? lpObj[exchangeAddress].tokenObj.token : ''
     const curLpToken = exchangeAddress
     // console.log(lpObj)
     if (account && curLpToken && lpObj && lpObj[curLpToken]) {
@@ -861,6 +860,10 @@ export default function Farming ({
     if (!MMErcContract) {
       return
     }
+    setBtnDelayDisabled(1)
+    setTimeout(() => {
+      setBtnDelayDisabled(0)
+    }, 3000)
     let _userTokenBalance = ethers.constants.MaxUint256.toString()
     // console.log(MMErcContract)
     MMErcContract.approve(FARMTOKEN, _userTokenBalance).then((res:any) => {
@@ -995,8 +998,9 @@ export default function Farming ({
                           <Button1 style={{height: '45px', maxWidth: '200px'}} onClick={() => {
                             // console.log(item)
                             // localStorage.setItem(LPTOKEN, item.lpToken)
-                            let coin = item && item.tokenObj && item.tokenObj?.underlying?.symbol ? item.tokenObj?.underlying?.symbol : ''
-                            history.push(FARMURL + '/' + coin + '-' + config.getCurChainInfo(CHAINID).symbol)
+                            // let coin = item && item.tokenObj && item.tokenObj?.underlying?.symbol ? item.tokenObj?.underlying?.symbol : ''
+                            // history.push(FARMURL + '/' + coin + '-' + config.getCurChainInfo(CHAINID).symbol)
+                            // history.push(FARMURL + '/' + coin)
                             setExchangeAddress(item.lpToken.toLowerCase())
                           }}>{t('select')}</Button1>
                         ) : (
@@ -1077,7 +1081,7 @@ export default function Farming ({
         </AddBox>
       </>
     } else {
-      btnView = <Button1 style={{height: '45px', maxWidth: '200px'}} disabled={unlocking} onClick={() => {
+      btnView = <Button1 style={{height: '45px', maxWidth: '200px'}} disabled={BtnDelayDisabled || unlocking} onClick={() => {
         approve()
       }}>{unlocking ? t('pending') : t('unlock')}</Button1>
     }
@@ -1201,7 +1205,7 @@ export default function Farming ({
               <MaxBox onClick={() => {onMax()}}>Max</MaxBox>
             </InputRow>
             <AmountView>
-              {amountView} {lpObj && lpObj[exchangeAddress] && lpObj[exchangeAddress].tokenObj && lpObj[exchangeAddress].tokenObj.symbol ? lpObj[exchangeAddress].tokenObj.symbol : ''} - {config.getCurChainInfo(CHAINID).symbol} LP Token
+              {amountView} {lpObj && lpObj[exchangeAddress] && lpObj[exchangeAddress]?.tokenObj && lpObj[exchangeAddress]?.tokenObj?.symbol ? lpObj[exchangeAddress].tokenObj.symbol : ''} LP Token
               
             </AmountView>
             <Button1 style={{height: '45px',width: '150px'}} disabled={stakeDisabled} onClick={() => {
