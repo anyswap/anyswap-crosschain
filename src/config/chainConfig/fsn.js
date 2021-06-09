@@ -54,7 +54,8 @@ export default {
     label: FSN_MAIN_CHAINID,
     isSwitch: 1,
     underlying: [],
-    suffix: 'Fusion'
+    suffix: 'Fusion',
+    anyToken: '0xed0294dbd2a0e52a09c3f38a09f6e03de2c44fcf'
   },
   [FSN_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',

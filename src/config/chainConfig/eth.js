@@ -64,7 +64,8 @@ export default {
     type: 'main',
     label: ETH_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ERC20'
+    suffix: 'ERC20',
+    anyToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6'
   },
   [ETH_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',

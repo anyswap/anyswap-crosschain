@@ -52,7 +52,8 @@ export default {
     type: 'main',
     label: ARBITRUM_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ARBITRUM'
+    suffix: 'ARBITRUM',
+    anyToken: ''
   },
   [ARBITRUM_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',

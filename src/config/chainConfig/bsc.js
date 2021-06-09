@@ -92,7 +92,8 @@ export default {
     type: 'main',
     label: BNB_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'BEP20'
+    suffix: 'BEP20',
+    anyToken: '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa'
   },
   [BNB_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',

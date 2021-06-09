@@ -43,6 +43,7 @@ export default {
     type: 'main',
     label: AVAX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'AVAX'
+    suffix: 'AVAX',
+    anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
 }

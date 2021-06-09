@@ -71,6 +71,20 @@ export default function DashboardDtil() {
         const ulist:any = []
         const alist:any = []
         const tlist:any = {}
+        const anyToken = config.getCurChainInfo(chainId)?.anyToken
+        if (anyToken) {
+          tlist[anyToken] = {
+            "address": anyToken,
+            "chainId": chainId,
+            "decimals": 18,
+            "name": "Anyswap",
+            "symbol": "ANY",
+            "underlying": '',
+            "destChain": '',
+            "isView": 1
+          }
+          alist.push(anyToken)
+        }
         for (const token in res) {
           if (!isAddress(token)) continue
           if (res[token].list.underlying) {
@@ -228,11 +242,15 @@ export default function DashboardDtil() {
                           <DBTd className="r">{item.poolBlance || item.poolBlance === 0 ? formatDecimal(item.poolBlance, 2) : '-'}</DBTd>
                           <DBTd className="r">{item.totalBlance || item.totalBlance === 0 ? formatDecimal(item.totalBlance, 2) : '-'}</DBTd>
                           <DBTd className="c">
-                            <span style={{ display: 'inline-block' }}>
-                              <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
-                                {t('swap')}
-                              </TokenActionBtnSwap>
-                            </span>
+                            {
+                              item.isView ? '' : (
+                                <span style={{ display: 'inline-block' }}>
+                                  <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
+                                    {t('swap')}
+                                  </TokenActionBtnSwap>
+                                </span>
+                              )
+                            }
                           </DBTd>
                         </tr>
                       )

@@ -43,6 +43,7 @@ export default {
     label: XDAI_MAIN_CHAINID,
     isSwitch: 1,
     underlying: [],
-    suffix: 'xDAI'
+    suffix: 'xDAI',
+    anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
 }

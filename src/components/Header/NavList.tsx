@@ -338,13 +338,6 @@ export default function NavList() {
           {t('pool')}
         </StyledNavLink>
         
-        <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
-          <div className="icon">
-            <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
-          </div>
-          {t('explorer')}
-        </StyledNavLink1>
         <StyledNavLink id={`swap-nav-link`} to={'/farm/matic'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
@@ -352,6 +345,13 @@ export default function NavList() {
           </div>
           {t('farms')}
         </StyledNavLink>
+        <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
+          <div className="icon">
+            <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
+          </div>
+          {t('explorer')}
+        </StyledNavLink1>
         {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />

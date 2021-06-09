@@ -318,5 +318,7 @@
   "UnderlyingLiquidity": "Underlying Liquidity",
   "Advance": "Advanced",
   "select": "Select",
+  "TotalStaking": "Total Staking",
+  "MyStaking": "My Staking",
   "farms": "Farms"
 }

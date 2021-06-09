@@ -10,6 +10,7 @@ import { useFarmContract, useTokenContract } from '../../hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import { Button } from '../../theme'
 
@@ -90,6 +91,9 @@ const Button1 = styled(Button)`
   ${({theme}) => theme.flexC};
   background: ${({ theme }) => theme.primary1};
   white-space:nowrap;
+  :disabled {
+    opacity: 0.3;
+  }
 `
 
 const ComineSoon = styled.div`
@@ -415,6 +419,7 @@ interface FarmProps {
   CHAINID?:any,
   blockNumber?:any,
   BASEMARKET?:any,
+  price?:any,
 }
 
 export default function Farming ({
@@ -425,7 +430,8 @@ export default function Farming ({
   poolCoin,
   CHAINID,
   blockNumber = 28800,
-  BASEMARKET = 100
+  BASEMARKET = 100,
+  price
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -433,7 +439,7 @@ export default function Farming ({
   const { t } = useTranslation()
   const [isDark] = useDarkModeManager()
   const toggleWalletModal = useWalletModalToggle()
-
+  const addTransaction = useTransactionAdder()
   
 
   const history = createBrowserHistory()
@@ -812,6 +818,7 @@ export default function Farming ({
     console.log(amount.toString())
     MMContract.deposit(lpObj[exchangeAddress].index, amount).then((res:any) => {
       console.log(res)
+      addTransaction(res, { summary: `Stake ${stakeAmount} ${lpObj[exchangeAddress]?.tokenObj?.symbol}` })
       backInit()
     }).catch((err:any) => {
       console.log(err)
@@ -842,6 +849,7 @@ export default function Farming ({
     // console.log(lpObj[exchangeAddress].index)
     MMContract.withdraw(lpObj[exchangeAddress].index, amount.toString()).then((res:any) => {
       console.log(res)
+      addTransaction(res, { summary: `Stake ${stakeAmount} ${lpObj[exchangeAddress]?.tokenObj?.symbol}` })
       backInit()
     }).catch((err:any) => {
       console.log(err)
@@ -857,6 +865,7 @@ export default function Farming ({
     // console.log(MMErcContract)
     MMErcContract.approve(FARMTOKEN, _userTokenBalance).then((res:any) => {
       console.log(res)
+      addTransaction(res, { summary: `Approve ${lpObj[exchangeAddress]?.tokenObj?.symbol}` })
       setUnlocking(true)
       backInit()
     }).catch((err:any) => {
@@ -876,16 +885,18 @@ export default function Farming ({
   }
 
   function getAPY (item:any, allocPoint:any, lpBalance:any) {
+    // console.log(price)
     if (
       BlockReward
       && lpBalance
       && TotalPoint
       && allocPoint
+      && price
     ) {
       const curdec = item.tokenObj.decimals
       const br = fromWei(BlockReward, 18)
       const lb = fromWei(lpBalance, curdec)
-      const baseYear =  (Number(br) * blockNumber * 365 * Number(allocPoint) * 2.4) / (Number(TotalPoint)) / lb / 100
+      const baseYear =  (Number(br) * blockNumber * 365 * Number(allocPoint) * price * 100) / (Number(TotalPoint)) / lb
       // console.log(baseYear)
       return baseYear.toFixed(2)
     }
@@ -967,7 +978,7 @@ export default function Farming ({
                     <FarmInfo>
                       <div className="item">
                         <span className="left">Deposit</span>
-                        <span className="right">{item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} - {config.getCurChainInfo(CHAINID).symbol} LP</span>
+                        <span className="right">{item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} LP</span>
                       </div>
                       <div className="item">
                         <span className="left">APY</span>
@@ -1090,7 +1101,7 @@ export default function Farming ({
         <StakingBox>
           <StakingList>
             <StakingLi>
-              <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='48px'></TokenLogo1>
+              <TokenLogo1 symbol={curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} size='48px'></TokenLogo1>
               <div className='content'>
                 <h2 className='title'>{t('TotalStaking')}</h2>
                 <h3 className='num'>
@@ -1142,7 +1153,7 @@ export default function Farming ({
               </DoubleLogo>
               <div className='info'>
                 <h3>{userInfo && Number(userInfo) > 0 && dec? fromWei(userInfo, dec, 6) : '0.00'}</h3>
-                <p>{curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} - {config.getCurChainInfo(CHAINID).symbol} LP {t('Staked')}</p>
+                <p>{curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} LP {t('Staked')}</p>
               </div>
               <div className='btn'>
                 {btnView}

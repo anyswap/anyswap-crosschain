@@ -175,7 +175,8 @@ export default {
     type: 'main',
     label: HT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'HECO'
+    suffix: 'HECO',
+    anyToken: '0x538cee985e930557d16c383783ca957fa90b63b3'
   },
   [HT_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',

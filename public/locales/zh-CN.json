@@ -317,5 +317,7 @@
   "UnderlyingLiquidity": "实际流动性",
   "Advance": "高级",
   "select": "选择",
+  "TotalStaking": "总抵押",
+  "MyStaking": "我的抵押",
   "farms": "农场"
 }
