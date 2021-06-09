@@ -813,7 +813,7 @@ export default function Farming ({
     setTimeout(() => {
       setBtnDelayDisabled(0)
     }, 3000)
-    let amount = toWei(stakeAmount, dec)
+    let amount = toWei(Number(stakeAmount).toFixed(dec), dec)
     console.log(amount.toString())
     MMContract.deposit(lpObj[exchangeAddress].index, amount).then((res:any) => {
       console.log(res)
@@ -843,7 +843,8 @@ export default function Farming ({
     setTimeout(() => {
       setBtnDelayDisabled(0)
     }, 3000)
-    amount = amount || amount === 0 ? amount : toWei(stakeAmount, dec)
+    
+    amount = amount || amount === 0 ? amount : toWei(Number(stakeAmount).toFixed(dec), dec)
     // console.log(amount.toString())
     // console.log(lpObj[exchangeAddress].index)
     MMContract.withdraw(lpObj[exchangeAddress].index, amount.toString()).then((res:any) => {
