@@ -7,6 +7,7 @@ import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
 
+import {registerSwap} from '../utils/bridge/register'
 import config from '../config'
 
 export enum WrapType {
@@ -60,6 +61,7 @@ export function useBridgeCallback(
                   toChainID
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                registerSwap(txReceipt, chainId)
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -115,6 +117,7 @@ export function useBridgeCallback(
                   toChainID
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                registerSwap(txReceipt, chainId)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -174,6 +177,7 @@ export function useBridgeNativeCallback(
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                registerSwap(txReceipt, chainId)
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -225,6 +229,7 @@ export function useBridgeNativeCallback(
                   `0x${inputAmount.raw.toString(16)}`
                 )
                 addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                registerSwap(txReceipt, chainId)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -282,6 +287,7 @@ export function useBridgeNativeCallback(
                   account
                 )
                 addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                registerSwap(txReceipt, chainId)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
