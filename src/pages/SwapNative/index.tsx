@@ -189,7 +189,7 @@ export default function SwapNative() {
   }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative])
 
   const isCrossBridge = useMemo(() => {
-    console.log(isWrapInputError)
+    // console.log(isWrapInputError)
     if (
       account
       && selectCurrency
@@ -208,20 +208,21 @@ export default function SwapNative() {
           && destChain
           && Number(destChain.ts) >= Number(inputBridgeValue)
         ) {
-          console.log(14)
+          // console.log(14)
           return false
         } else if (
           !openAdvance
+          && poolInfo
           && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
-          console.log(15)
+          // console.log(15)
           return false
         } else {
-          console.log(16)
+          // console.log(16)
           return true
         }
       } else {
-        console.log(13)
+        // console.log(13)
         return true
       }
     } else {

@@ -189,7 +189,7 @@ export default function CrossChain() {
     inputBridgeValue,
     selectChain
   )
-    // console.log(selectCurrency)
+    // console.log(wrapInputError)
   
   const isNativeToken = useMemo(() => {
     if (
@@ -222,6 +222,32 @@ export default function CrossChain() {
     }
   }, [inputBridgeValue, bridgeConfig])
 
+  const isWrapInputError = useMemo(() => {
+    if (!selectCurrency?.underlying && !isNativeToken) {
+      if (wrapInputError) {
+        return wrapInputError
+      } else {
+        return false
+      }
+    } else {
+      if (selectCurrency?.underlying && !isNativeToken) {
+        if (wrapInputErrorUnderlying) {
+          return wrapInputErrorUnderlying
+        } else {
+          return false
+        }
+      } else if (selectCurrency?.underlying && isNativeToken) {
+        if (wrapInputErrorNative) {
+          return wrapInputErrorNative
+        } else {
+          return false
+        }
+      }
+      return false
+    }
+    
+  }, [isNativeToken, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency])
+
   const isCrossBridge = useMemo(() => {
     // console.log(!wrapInputErrorUnderlying && !isNativeToken)
     // console.log(!wrapInputErrorNative && isNativeToken)
@@ -230,16 +256,7 @@ export default function CrossChain() {
       && bridgeConfig
       && selectCurrency
       && inputBridgeValue
-      && (
-        (!wrapInputError && !selectCurrency?.underlying)
-        || (
-          selectCurrency?.underlying
-          && (
-            (!wrapInputErrorUnderlying && !isNativeToken)
-            || (!wrapInputErrorNative && isNativeToken)
-          )
-        )
-      )
+      && !isWrapInputError
       && isAddress(recipient)
       && destChain
     ) {
@@ -255,7 +272,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, wrapInputError, inputBridgeValue, recipient, wrapInputErrorUnderlying, destChain, wrapInputErrorNative, isNativeToken])
+  }, [selectCurrency, account, bridgeConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
     if (
@@ -264,7 +281,6 @@ export default function CrossChain() {
       && selectCurrency
       && inputBridgeValue
       && isCrossBridge
-      && Number(inputBridgeValue)
     ) {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
@@ -282,25 +298,14 @@ export default function CrossChain() {
 
 
   const btnTxt = useMemo(() => {
-    if (wrapInputError && inputBridgeValue && !isNativeToken) {
-      return wrapInputError
-    } else if (wrapTypeNative && inputBridgeValue && isNativeToken) {
-      return wrapTypeNative
-    } else if (wrapTypeNative && wrapInputError && !inputBridgeValue) {
-      return t('swap')
-    } else if (
-      (wrapType === WrapType.WRAP && !(selectCurrency && selectCurrency?.underlying))
-      || (
-        selectCurrency?.underlying && (
-          (wrapTypeUnderlying === WrapType.WRAP && selectCurrency && isNativeToken)
-          || (wrapTypeNative === WrapType.WRAP && selectCurrency && !isNativeToken)
-        )
-      )
-    ) {
+    // console.log(isWrapInputError)
+    if (isWrapInputError && inputBridgeValue) {
+      return isWrapInputError
+    } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, wrapInputError, wrapTypeUnderlying, selectCurrency, wrapTypeNative, isNativeToken])
+  }, [t, isWrapInputError, inputBridgeValue])
 
   useEffect(() => {
     if (chainId && !selectChain) {
