@@ -2,7 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import {thousandBit} from '../../utils/tools/tools'
+import { useActiveWeb3React } from '../../hooks'
 import BulbIcon from '../../assets/images/icon/bulb.svg'
+import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;
@@ -85,12 +87,13 @@ interface ReminderType {
 
 function CrossBridge (bridgeConfig:any, currency:any) {
   const { t } = useTranslation()
+  const { chainId } = useActiveWeb3React()
   if (!bridgeConfig || !currency) {
     return (
       <></>
     )
   }
-  const viewSymbol = currency?.underlying?.symbol ?? currency?.symbol
+  const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
   // console.log(currency)
   return (
     <SubCurrencySelectBox>

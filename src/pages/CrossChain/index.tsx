@@ -423,7 +423,7 @@ export default function CrossChain() {
                 {
                   curChain ? (
                     <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
+                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? formatDecimal(curChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''
@@ -431,7 +431,7 @@ export default function CrossChain() {
                 {
                   destChain ? (
                     <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
+                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? formatDecimal(destChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''

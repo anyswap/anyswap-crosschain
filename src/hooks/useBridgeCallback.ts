@@ -7,7 +7,7 @@ import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
 
-// import config from '../config'
+import config from '../config'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -59,7 +59,7 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -114,7 +114,7 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -173,7 +173,7 @@ export function useBridgeNativeCallback(
                   toChainID],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -224,7 +224,7 @@ export function useBridgeNativeCallback(
                 ) : await bridgeContract.withdraw(
                   `0x${inputAmount.raw.toString(16)}`
                 )
-                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
               }
