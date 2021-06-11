@@ -117,11 +117,11 @@ export default function SelectCurrencyInputPanel({
   const useBalance = useMemo(() => {
     if (selectedCurrencyBalance && !isNativeToken) {
       return selectedCurrencyBalance
-    } else if (selectedETHBalance && isNativeToken) {
-      if (inputType && inputType.swapType === 'deposit') {
-        return selectedETHBalance
-      } else if (selectedCurrencyBalance) {
+    } else if (isNativeToken) {
+      if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
         return selectedCurrencyBalance
+      } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
+        return selectedETHBalance
       }
       return undefined
     } else {
