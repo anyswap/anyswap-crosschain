@@ -4,14 +4,6 @@ import { useTranslation } from 'react-i18next'
 import config from '../../config'
 
 import { useActiveWeb3React } from '../../hooks'
-// import {useTokenBalancesWithLoadingIndicator, useTokenTotalSupplyWithLoadingIndicator} from '../../state/wallet/hooks'
-
-// import {fromWei} from '../../utils/tools/tools'
-// import {getNodeBalance, getNodeTotalsupply} from '../../utils/bridge/getBalance'
-// import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
-
-// import TokenLogo from '../../components/TokenLogo'
-// import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;

@@ -57,7 +57,8 @@ interface SelectChainIdInputPanel {
   id: string
   onOpenModalView?: (value: any) => void,
   bridgeConfig: any,
-  intervalCount: any
+  intervalCount: any,
+  isNativeToken?: boolean
 }
 
 export default function SelectChainIdInputPanel({
@@ -71,7 +72,8 @@ export default function SelectChainIdInputPanel({
   id,
   onOpenModalView,
   bridgeConfig,
-  intervalCount
+  intervalCount,
+  isNativeToken
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
@@ -116,9 +118,9 @@ export default function SelectChainIdInputPanel({
       // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
       const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId]?.underlying?.address : ''
       if (token) {
-        getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals).then(res => {
+        getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals, isNativeToken).then(res => {
         // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
-          // console.log(res)
+          console.log(res)
           if (res) {
             setDestBalance(res)
           } else {
@@ -129,7 +131,7 @@ export default function SelectChainIdInputPanel({
     } else {
       setDestBalance('')
     }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount])
+  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
 
   return (
     <>

@@ -119,6 +119,15 @@ export function formatDecimal(num:any, decimal:number) {
   if (isNaN(num)) {
     return num
   }
+  const minnum = 1 / Math.pow(10, decimal)
+  // console.log(decimal)
+  // console.log(minnum)
+  if (!num || Number(num) <= 0) {
+    return '0.00'
+  }
+  if (Number(num) < minnum) {
+    return '<' + minnum
+  }
   // num = (num * 10000).toFixed(decimal) / 10000
   num = num.toString()
   const index = num.indexOf('.')

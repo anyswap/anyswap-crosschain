@@ -6,7 +6,7 @@ const contract = getContract()
 
 const DESTBALANCE = 'DESTBALANCE'
 
-export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:any) {
+export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:any, isNativeToken?:boolean) {
   return new Promise(resolve => {
     
     if (
@@ -18,18 +18,29 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       if (lObj && lObj.balance) {
         resolve(fromWei(lObj.balance, dec))
       } else {
-        contract.options.address = token
         web3Fn.setProvider(config.getCurChainInfo(chainID).nodeRpc)
-        contract.methods.balanceOf(account).call((err:any, res:any) => {
-          if (err) {
-            console.log(err)
-            resolve('')
-          } else {
+        if (isNativeToken) {
+          web3Fn.eth.getBalance(account).then((res:any) => {
             // console.log(res)
             setLocalConfig(account, token, chainID, DESTBALANCE, {balance: res})
             resolve(fromWei(res, dec))
-          }
-        })
+          }).catch((err:any) => {
+            console.log(err)
+            resolve('')
+          })
+        } else {
+          contract.options.address = token
+          contract.methods.balanceOf(account).call((err:any, res:any) => {
+            if (err) {
+              console.log(err)
+              resolve('')
+            } else {
+              // console.log(res)
+              setLocalConfig(account, token, chainID, DESTBALANCE, {balance: res})
+              resolve(fromWei(res, dec))
+            }
+          })
+        }
       }
     } else {
       resolve('')

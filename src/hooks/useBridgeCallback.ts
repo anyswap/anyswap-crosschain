@@ -234,3 +234,60 @@ export function useBridgeNativeCallback(
     }
   }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
 }
+
+
+/**
+ * 给定选定的输入和输出货币，返回一个wrap回调
+ * @param inputCurrency 选定的输入货币
+ * @param typedValue 用户输入值
+ */
+ export function useSwapNativeCallback(
+  inputCurrency: Currency | undefined,
+  inputToken: string | undefined,
+  typedValue: string | undefined,
+  swapType: string | undefined,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  const { chainId, account } = useActiveWeb3React()
+  const bridgeContract = useBridgeContract()
+  const { t } = useTranslation()
+  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = swapType === 'deposit' ? ethbalance : anybalance
+  // console.log(balance)
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+  return useMemo(() => {
+    // console.log(inputCurrency)
+    if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+        sufficientBalance && inputAmount
+          ? async () => {
+              try {
+                console.log(bridgeContract)
+                const txReceipt = swapType === 'deposit' ? await bridgeContract.depositNative(
+                  ...[inputToken, account],
+                  {value: `0x${inputAmount.raw.toString(16)}`}
+                ) : await bridgeContract.withdrawNative(
+                  inputToken,
+                  `0x${inputAmount.raw.toString(16)}`,
+                  account
+                )
+                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+              } catch (error) {
+                console.log('Could not swapout', error)
+              }
+            }
+          : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
+}

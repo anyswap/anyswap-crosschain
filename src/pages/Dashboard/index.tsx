@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
+import { useETHBalances } from '../../state/wallet/hooks'
 import { useTokenBalancesList } from '../../state/wallet/hooks'
 
 import TokenLogo from '../../components/TokenLogo'
@@ -63,6 +64,8 @@ export default function DashboardDtil() {
 
   const [allTokenArr, setAllTokenArr] = useState<Array<string>>()
   const [allTokenList, setAllTokenList] = useState<any>()
+
+  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
   useEffect(() => {
     getAllToken(chainId).then((res:any) => {
@@ -147,7 +150,11 @@ export default function DashboardDtil() {
           underlyingBlance = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
         }
         const dec = allTokenList[token].decimals
-        balance = balance ? fromWei(balance, dec) : '0'
+        if (ETHBalance && token === config.getCurChainInfo(chainId).nativeToken.toLowerCase()) {
+          balance = ETHBalance ? formatDecimal(ETHBalance.toSignificant(6), 2) : '0'
+        } else {
+          balance = balance ? fromWei(balance, dec) : '0'
+        }
         underlyingBlance = underlyingBlance ? fromWei(underlyingBlance, dec) : '0'
         if (balance && underlyingBlance) {
           totalBlance = Number(balance) + Number(underlyingBlance)

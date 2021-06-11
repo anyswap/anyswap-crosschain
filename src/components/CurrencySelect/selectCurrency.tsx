@@ -118,7 +118,12 @@ export default function SelectCurrencyInputPanel({
     if (selectedCurrencyBalance && !isNativeToken) {
       return selectedCurrencyBalance
     } else if (selectedETHBalance && isNativeToken) {
-      return selectedETHBalance
+      if (inputType && inputType.swapType === 'deposit') {
+        return selectedETHBalance
+      } else if (selectedCurrencyBalance) {
+        return selectedCurrencyBalance
+      }
+      return undefined
     } else {
       return undefined
     }
@@ -242,7 +247,7 @@ export default function SelectCurrencyInputPanel({
                         currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : (
-                            inputType && inputType.swapType === 'deposit' ? currency?.symbol : config.getBaseCoin(currency?.symbol, chainId)
+                            inputType && inputType.swapType === 'deposit' ? config.getBaseCoin(currency?.symbol, chainId) : config.getBaseCoin(currency?.symbol, chainId)
                           )
                       ) || t('selectToken')
                     }
@@ -250,6 +255,7 @@ export default function SelectCurrencyInputPanel({
                   </h3>
                   <p>
                   {currency && currency.name ? currency.name : ''}
+                  {/* {currency && currency.name ? config.getBaseCoin(currency.symbol, chainId, 1) : ''} */}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (

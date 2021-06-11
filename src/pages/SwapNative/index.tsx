@@ -9,7 +9,7 @@ import { ThemeContext } from 'styled-components'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useSwapUnderlyingCallback, useBridgeCallback} from '../../hooks/useBridgeCallback'
+import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -121,6 +121,13 @@ export default function SwapNative() {
     swapType
   )
 
+  const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
+    swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
+    selectCurrency?.address,
+    inputBridgeValue,
+    swapType
+  )
+
   function onDelay () {
     setDelayAction(true)
     setTimeout(() => {
@@ -128,55 +135,99 @@ export default function SwapNative() {
     }, 1000 * 3)
   }
 
+  const isNativeToken = useMemo(() => {
+    if (
+      selectCurrency
+      && chainId
+      && config.getCurChainInfo(chainId)
+      && config.getCurChainInfo(chainId).nativeToken
+      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency, chainId])
+
+  const isWrapInputError = useMemo(() => {
+    if (swapType === 'deposit') {
+      if (isNativeToken) {
+        if (wrapInputErrorNative) {
+          return wrapInputErrorNative
+        } else {
+          return false
+        }
+      } else {
+        if (wrapInputErrorUnderlying) {
+          return wrapInputErrorUnderlying
+        } else {
+          return false
+        }
+      }
+    }  else {
+      if (openAdvance) {
+        if (wrapInputError) {
+          return wrapInputError
+        } else {
+          return false
+        }
+      } else {
+        if (isNativeToken) {
+          if (wrapInputErrorNative) {
+            return wrapInputErrorNative
+          } else {
+            return false
+          }
+        } else {
+          if (wrapInputErrorUnderlying) {
+            return wrapInputErrorUnderlying
+          } else {
+            return false
+          }
+        }
+      }
+    }
+  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative])
+
   const isCrossBridge = useMemo(() => {
+    console.log(isWrapInputError)
     if (
       account
       && selectCurrency
       && inputBridgeValue
+      && Number(inputBridgeValue) > 0
+      && !isWrapInputError
     ) {
       if (
         swapType === 'deposit'
         && Number(inputBridgeValue) > 0
-        && !wrapInputErrorUnderlying
       ) {
-        // console.log(11)
         return false
-      } else if (
-        swapType !== 'deposit'
-        && (
-          (!wrapInputError && openAdvance)
-          || (!wrapInputErrorUnderlying && !openAdvance)
-        )
-      ) {
+      } else if (swapType !== 'deposit') {
         if (
           openAdvance
           && destChain
-          && poolInfo
-          && Number(poolInfo.balance) >= Number(inputBridgeValue)
           && Number(destChain.ts) >= Number(inputBridgeValue)
         ) {
-          // console.log(14)
+          console.log(14)
           return false
         } else if (
           !openAdvance
-            && poolInfo
-            && Number(poolInfo.balance) >= Number(inputBridgeValue)
-            && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
+          && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
-          // console.log(15)
+          console.log(15)
           return false
         } else {
-          // console.log(16)
+          console.log(16)
           return true
         }
       } else {
-        // console.log(13)
+        console.log(13)
         return true
       }
     } else {
       return true
     }
-  }, [selectCurrency, account, wrapInputErrorUnderlying, inputBridgeValue, poolInfo, wrapInputError, openAdvance, swapType, destChain])
+  }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -184,15 +235,17 @@ export default function SwapNative() {
       account
       && bridgeConfig
       && selectCurrency
+      && isCrossBridge
       && inputBridgeValue
-      && Number(inputBridgeValue)
     ) {
-      if (
+      if (Number(inputBridgeValue) <= 0) {
+        return true
+      } else if (
         swapType !== 'deposit'
+        && openAdvance
         && (
           Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
           || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
-          || isCrossBridge
         )
       ) {
         // console.log(1)
@@ -211,15 +264,15 @@ export default function SwapNative() {
 
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
-    if (wrapInputErrorUnderlying && inputBridgeValue) {
-      return wrapInputErrorUnderlying
-    } else if (wrapInputErrorUnderlying && !inputBridgeValue) {
+    if (isWrapInputError && inputBridgeValue && Number(inputBridgeValue) > 0) {
+      return isWrapInputError
+    } else if (!inputBridgeValue) {
       return bt
-    } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP) {
+    } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP) {
       return bt
     }
     return bt
-  }, [t, wrapInputErrorUnderlying, swapType, wrapType])
+  }, [t, swapType, wrapType, wrapTypeUnderlying, isWrapInputError, inputBridgeValue])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {
@@ -412,6 +465,7 @@ export default function SwapNative() {
             onChangeMode={(value) => {
               setOpenAdvance(value)
             }}
+            isNativeToken={isNativeToken}
           />
           {
             openAdvance ? (
@@ -489,7 +543,11 @@ export default function SwapNative() {
                     if (onWrap) onWrap()
                   } else {
                     console.log(2)
-                    if (onWrapUnderlying) onWrapUnderlying()
+                    if (isNativeToken) {
+                      if (onWrapNative) onWrapNative()
+                    } else {
+                      if (onWrapUnderlying) onWrapUnderlying()
+                    }
                   }
                   setTimeout(() => {
                     setInputBridgeValue('')

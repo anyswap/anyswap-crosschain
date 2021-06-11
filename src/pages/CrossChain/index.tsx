@@ -91,12 +91,12 @@ export default function CrossChain() {
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
   const [curChain, setCurChain] = useState<any>({
-    chain: '',
+    chain: chainId,
     ts: '',
     bl: ''
   })
   const [destChain, setDestChain] = useState<any>({
-    chain: '',
+    chain: config.getCurChainInfo(chainId).bridgeInitChain,
     ts: '',
     bl: ''
   })
@@ -466,6 +466,7 @@ export default function CrossChain() {
             }}
             bridgeConfig={bridgeConfig}
             intervalCount={intervalCount}
+            isNativeToken={isNativeToken}
           />
           {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
