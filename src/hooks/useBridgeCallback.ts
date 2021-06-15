@@ -228,7 +228,7 @@ export function useBridgeNativeCallback(
                 ) : await bridgeContract.withdraw(
                   `0x${inputAmount.raw.toString(16)}`
                 )
-                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
               } catch (error) {
                 console.log('Could not swapout', error)
@@ -286,7 +286,7 @@ export function useBridgeNativeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   account
                 )
-                addTransaction(txReceipt, { summary: `Swap ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
               } catch (error) {
                 console.log('Could not swapout', error)

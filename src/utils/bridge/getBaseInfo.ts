@@ -180,7 +180,7 @@ function getAllTokenIDs (chainId:any) {
                 tokenInfo = ti
               } 
             }
-            delete destChain[chainId]
+            // delete destChain[chainId]
             if (!tokenInfo) {
               tokenInfo = await getTokenInfo(tokenstr, chainId)
             }

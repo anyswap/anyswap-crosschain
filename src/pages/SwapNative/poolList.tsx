@@ -208,7 +208,7 @@ export default function PoolLists ({
   useEffect(() => {
     // setPoolList([])
     getAllToken(chainId).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       if (res) {
         // const list:any = []
         const destList:any = {}
@@ -223,6 +223,7 @@ export default function PoolLists ({
               // destList[chainId].push({token: token, dec: tObj.decimals})
             }
             for (const chainID in tObj.destChain) {
+              if (Number(chainID) === Number(chainId)) continue
               if (!destList[chainID]) destList[chainID] = []
               destList[chainID].push({token: tObj.destChain[chainID].token, dec: tObj.destChain[chainID].decimals})
               // console.log(chainID)
@@ -255,11 +256,12 @@ export default function PoolLists ({
   }
 
   function viewTd (item:any, c?:any) {
-    // console.log(item)
+    // console.log(poolList)
     // const token = 
     let ts = c && poolData && poolData[c] && item.token && poolData[c][item.token] && poolData[c][item.token].ts ? Number(poolData[c][item.token].ts) : 0
 
     for (const chainID in poolList[0].destChain) {
+      if (Number(chainID) === Number(chainId)) continue
       const token = item.destChain[chainID].token
       const ts1 = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? Number(poolData[chainID][token].ts) : 0
       ts += ts1
@@ -316,6 +318,7 @@ export default function PoolLists ({
         {listView}
         {
           Object.keys(poolList[0].destChain).map((chainID:any, indexs:any) => {
+            if (Number(chainID) === Number(chainId)) return ''
             const token = item.destChain[chainID].token
             const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
             // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
@@ -400,6 +403,7 @@ export default function PoolLists ({
         {listView}
         {
           Object.keys(poolList[0].destChain).map((chainID:any, indexs:any) => {
+            if (Number(chainID) === Number(chainId)) return ''
             const token = item.destChain[chainID].token
             const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
             // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'

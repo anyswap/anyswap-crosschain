@@ -59,6 +59,7 @@ interface SelectChainIdInputPanel {
   bridgeConfig: any,
   intervalCount: any,
   isNativeToken?: boolean
+  isViewAllChain?: boolean
 }
 
 export default function SelectChainIdInputPanel({
@@ -73,7 +74,8 @@ export default function SelectChainIdInputPanel({
   onOpenModalView,
   bridgeConfig,
   intervalCount,
-  isNativeToken
+  isNativeToken,
+  isViewAllChain
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
@@ -117,10 +119,12 @@ export default function SelectChainIdInputPanel({
       // console.log(bridgeConfig)
       // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
       const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId]?.underlying?.address : ''
+      // console.log(token)
+      
       if (token) {
         getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals, isNativeToken).then(res => {
         // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
-          // console.log(res)
+          console.log(res)
           if (res) {
             setDestBalance(res)
           } else {
@@ -132,6 +136,10 @@ export default function SelectChainIdInputPanel({
       setDestBalance('')
     }
   }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
+
+  useEffect(() => {
+    setDestBalance('')
+  }, [account, chainId, bridgeConfig, selectChainId])
 
   return (
     <>
@@ -267,7 +275,7 @@ export default function SelectChainIdInputPanel({
               {/* {chainListView()} */}
               {
                   chainList.map((item:any, index:any) => {
-                    if (Number(chainId) === Number(item)) {
+                    if (Number(chainId) === Number(item) && !isViewAllChain) {
                       return ''
                     }
                     return (

@@ -62,7 +62,7 @@ export default function SwapNative() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [bridgeConfig, setBridgeConfig] = useState<any>()
-  const [openAdvance, setOpenAdvance] = useState<any>(false)
+  const [openAdvance, setOpenAdvance] = useState<any>(urlSwapType === 'deposit' ? false : true)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
   const [count, setCount] = useState<number>(0)
   const [poolInfo, setPoolInfo] = useState<any>()
@@ -130,9 +130,10 @@ export default function SwapNative() {
 
   function onDelay () {
     setDelayAction(true)
-    setTimeout(() => {
-      setDelayAction(false)
-    }, 1000 * 3)
+  }
+  function onClear () {
+    setDelayAction(false)
+    setInputBridgeValue('')
   }
 
   const isNativeToken = useMemo(() => {
@@ -302,12 +303,14 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
   useEffect(() => {
     if (chainId && !selectChain) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+      // setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+      setSelectChain(chainId)
     }
   }, [chainId, selectChain])
   useEffect(() => {
     if (chainId) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+      // setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+      setSelectChain(chainId)
     }
   }, [chainId])
   // useEffect(() => {
@@ -430,6 +433,7 @@ export default function SwapNative() {
               onTabClick: () => {
                 setSwapType('withdraw')
                 setInputBridgeValue('')
+                setOpenAdvance(true)
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
@@ -461,7 +465,8 @@ export default function SwapNative() {
             onlyUnderlying={true}
             isViewModal={modalOpen}
             isError={isInputError}
-            isViewMode={swapType === 'deposit' ? false : true}
+            // isViewMode={swapType === 'deposit' ? false : true}
+            isViewMode={false}
             modeConent={{txt: openAdvance ? t('Simple') : t('Advance'), isFlag: openAdvance}}
             onChangeMode={(value) => {
               setOpenAdvance(value)
@@ -493,6 +498,7 @@ export default function SwapNative() {
                   }}
                   bridgeConfig={bridgeConfig}
                   intervalCount={intervalCount}
+                  isViewAllChain={true}
                 />
               </>
             ) : ''
@@ -519,7 +525,9 @@ export default function SwapNative() {
                 <ButtonConfirmed
                   onClick={() => {
                     onDelay()
-                    approveCallback()
+                    approveCallback().then(() => {
+                      onClear()
+                    })
                   }}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                   width="48%"
@@ -539,20 +547,23 @@ export default function SwapNative() {
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
                   onDelay()
-                  if (openAdvance) {
+                  if (openAdvance && Number(chainId) !== Number(selectChain)) {
                     console.log(1)
-                    if (onWrap) onWrap()
+                    if (onWrap) onWrap().then(() => {
+                      onClear()
+                    })
                   } else {
                     console.log(2)
                     if (isNativeToken) {
-                      if (onWrapNative) onWrapNative()
+                      if (onWrapNative) onWrapNative().then(() => {
+                        onClear()
+                      })
                     } else {
-                      if (onWrapUnderlying) onWrapUnderlying()
+                      if (onWrapUnderlying) onWrapUnderlying().then(() => {
+                        onClear()
+                      })
                     }
                   }
-                  setTimeout(() => {
-                    setInputBridgeValue('')
-                  }, 1000 * 3)
                 }}>
                   {btnTxt}
                 </ButtonPrimary>

@@ -5,7 +5,7 @@ import styled, { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
-// import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink } from '../../utils'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
 
@@ -38,8 +38,14 @@ export default function TransactionPopup({
         <TYPE.body fontWeight={500} color={theme.text2}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
         {chainId && (
           <>
+            {
+              summary?.indexOf('Cross bridge') === 0 ? (
+                <ExternalLink href={config.explorerUrl + '/tx?params=' + hash}>{t('txnsTip')}：{config.explorerUrl + '/tx?params=' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</ExternalLink>
+              ) : (
+                <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</ExternalLink>
+              )
+            }
             {/* <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</ExternalLink> */}
-            <ExternalLink href={config.explorerUrl + '/tx?params=' + hash}>{t('txnsTip')}：{config.explorerUrl + '/tx?params=' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</ExternalLink>
           </>
         )}
       </AutoColumn>
