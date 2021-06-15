@@ -22,6 +22,7 @@ import Loader from '../../components/Loader'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
+import ModalContent from '../../components/Modal/ModalContent'
 import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
@@ -63,6 +64,44 @@ const LiquidityView = styled.div`
   `};
 `
 
+const LogoBox = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+  border: solid 0.5px rgba(0, 0, 0, 0.1);
+  border-radius:100%;
+  margin: auto;
+
+  img{
+    height: 24px;
+    width: 24px;
+    display:block;
+  }
+`
+const ConfirmContent = styled.div`
+  width: 100%;
+`
+const TxnsInfoText = styled.div`
+  font-family: 'Manrope';
+  font-size: 22px;
+  text-align: center;
+  color: ${({ theme }) => theme.textColorBold};
+  margin-top: 1rem;
+`
+const ConfirmText = styled.div`
+  width: 100%;
+  font-family: 'Manrope';
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+  color: #734be2;
+  padding: 1.25rem 0;
+  border-top: 0.0625rem solid rgba(0, 0, 0, 0.08);
+  margin-top:1.25rem
+`
+
 let intervalFN:any = ''
 
 export default function CrossChain() {
@@ -83,6 +122,7 @@ export default function CrossChain() {
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
+  const [modalTipOpen, setModalTipOpen] = useState(false)
 
   const [bridgeConfig, setBridgeConfig] = useState<any>()
 
@@ -122,9 +162,11 @@ export default function CrossChain() {
 
   function onDelay () {
     setDelayAction(true)
-    setTimeout(() => {
-      setDelayAction(false)
-    }, 1000 * 3)
+  }
+  function onClear () {
+    setDelayAction(false)
+    setModalTipOpen(false)
+    setInputBridgeValue('')
   }
 
   function changeNetwork (chainID:any) {
@@ -365,6 +407,80 @@ export default function CrossChain() {
 
   return (
     <>
+      <ModalContent
+        isOpen={modalTipOpen}
+        title={'Tip'}
+        onDismiss={() => {
+          setModalTipOpen(false)
+        }}
+      >
+        <LogoBox>
+          <TokenLogo symbol={selectCurrency?.symbol} size={'1rem'}></TokenLogo>
+        </LogoBox>
+        <ConfirmContent>
+          <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
+          <ConfirmText>
+            {t('swapTip', {
+              symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
+              chainName: config.getCurChainInfo(selectChain).name
+            })}
+          </ConfirmText>
+          <BottomGrouping>
+            {!account ? (
+                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+              ) : (
+                !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                  <ButtonConfirmed
+                    onClick={() => {
+                      onDelay()
+                      approveCallback().then(() => {
+                        onClear()
+                      })
+                    }}
+                    disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                    width="48%"
+                    altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                    // confirmed={approval === ApprovalState.APPROVED}
+                  >
+                    {approval === ApprovalState.PENDING ? (
+                      <AutoRow gap="6px" justify="center">
+                        {t('Approving')} <Loader stroke="white" />
+                      </AutoRow>
+                    ) : approvalSubmitted ? (
+                      t('Approved')
+                    ) : (
+                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol, chainId)
+                    )}
+                  </ButtonConfirmed>
+                ) : (
+                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  // <ButtonPrimary disabled={delayAction} onClick={() => {
+                    onDelay()
+                    if (!selectCurrency || !selectCurrency.underlying) {
+                      if (onWrap) onWrap().then(() => {
+                        onClear()
+                      })
+                    } else {
+                      // if (onWrapUnderlying) onWrapUnderlying()
+                      if (isNativeToken) {
+                        if (onWrapNative) onWrapNative().then(() => {
+                          onClear()
+                        })
+                      } else {
+                        if (onWrapUnderlying) onWrapUnderlying().then(() => {
+                          onClear()
+                        })
+                      }
+                    }
+                  }}>
+                    {btnTxt}
+                  </ButtonPrimary>
+                )
+              )
+            }
+          </BottomGrouping>
+        </ConfirmContent>
+      </ModalContent>
       <AppBody>
         <Title
           title={t('swap')} 
@@ -487,8 +603,9 @@ export default function CrossChain() {
               !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
                   onClick={() => {
-                    onDelay()
-                    approveCallback()
+                    // onDelay()
+                    // approveCallback()
+                    setModalTipOpen(true)
                   }}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                   width="48%"
@@ -508,22 +625,24 @@ export default function CrossChain() {
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                 // <ButtonPrimary disabled={delayAction} onClick={() => {
-                  onDelay()
-                  if (!selectCurrency || !selectCurrency.underlying) {
-                    if (onWrap) onWrap()
-                  } else {
-                    // if (onWrapUnderlying) onWrapUnderlying()
-                    if (isNativeToken) {
-                      console.log(1)
-                      if (onWrapNative) onWrapNative()
-                    } else {
-                      console.log(2)
-                      if (onWrapUnderlying) onWrapUnderlying()
-                    }
-                  }
-                  setTimeout(() => {
-                    setInputBridgeValue('')
-                  }, 1000 * 3)
+                  // onDelay()
+                  // if (!selectCurrency || !selectCurrency.underlying) {
+                  //   if (onWrap) onWrap()
+                  // } else {
+                  //   // if (onWrapUnderlying) onWrapUnderlying()
+                  //   if (isNativeToken) {
+                  //     console.log(1)
+                  //     if (onWrapNative) onWrapNative()
+                  //   } else {
+                  //     console.log(2)
+                  //     if (onWrapUnderlying) onWrapUnderlying()
+                  //   }
+                  // }
+                  // setTimeout(() => {
+                  //   setInputBridgeValue('')
+                  // }, 1000 * 3)
+                  
+                  setModalTipOpen(true)
                 }}>
                   {btnTxt}
                 </ButtonPrimary>

@@ -46,7 +46,7 @@ const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean }>`
 export default function Popups() {
   // get all popups
   const activePopups = useActivePopups()
-
+  // console.log(activePopups)
   const urlWarningActive = useURLWarningVisible()
 
   return (

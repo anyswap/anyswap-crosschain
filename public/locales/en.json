@@ -320,5 +320,7 @@
   "select": "Select",
   "TotalStaking": "Total Staking",
   "MyStaking": "My Staking",
-  "farms": "Farms"
+  "farms": "Farms",
+  "swapTip": "If the liquidity of the target chain is insufficient, you will receive {{symbol}} ({{chainName}}), please check the balance in the fund pool.",
+  "txnsTip": "Please wait 2 minutes to check the status of cross-chain transactions in your browser"
 }

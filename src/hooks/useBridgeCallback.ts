@@ -168,7 +168,7 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                console.log(bridgeContract.anySwapOutNative)
+                // console.log(bridgeContract.anySwapOutNative)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOutNative(
                   ...[inputToken,
@@ -277,7 +277,7 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                console.log(bridgeContract)
+                // console.log(bridgeContract)
                 const txReceipt = swapType === 'deposit' ? await bridgeContract.depositNative(
                   ...[inputToken, account],
                   {value: `0x${inputAmount.raw.toString(16)}`}

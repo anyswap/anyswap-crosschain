@@ -319,5 +319,7 @@
   "select": "选择",
   "TotalStaking": "总抵押",
   "MyStaking": "我的抵押",
-  "farms": "农场"
+  "farms": "农场",
+  "swapTip": "如果目标链的流动性不足会收到{{symbol}}({{chainName}})，请在资金池里面查看余额。",
+  "txnsTip": "请等待2分钟，在浏览器查看跨链交易状态"
 }

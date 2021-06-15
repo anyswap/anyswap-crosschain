@@ -150,7 +150,7 @@ export default function DashboardDtil() {
           underlyingBlance = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
         }
         const dec = allTokenList[token].decimals
-        if (ETHBalance && token === config.getCurChainInfo(chainId).nativeToken.toLowerCase()) {
+        if (ETHBalance && config.getCurChainInfo(chainId)?.nativeToken &&  token === config.getCurChainInfo(chainId).nativeToken.toLowerCase()) {
           balance = ETHBalance ? formatDecimal(ETHBalance.toSignificant(6), 2) : '0'
         } else {
           balance = balance ? fromWei(balance, dec) : '0'
