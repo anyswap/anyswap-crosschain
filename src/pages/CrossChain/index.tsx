@@ -409,7 +409,7 @@ export default function CrossChain() {
     <>
       <ModalContent
         isOpen={modalTipOpen}
-        title={'Tip'}
+        title={'Cross-chain Router'}
         onDismiss={() => {
           setModalTipOpen(false)
         }}
@@ -473,7 +473,7 @@ export default function CrossChain() {
                       }
                     }
                   }}>
-                    {btnTxt}
+                    {t('Confirm')}
                   </ButtonPrimary>
                 )
               )
