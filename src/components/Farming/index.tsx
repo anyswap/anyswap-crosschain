@@ -990,7 +990,7 @@ export default function Farming ({
                       </div>
                       <div className="item">
                         <span className="left">Total Liquidity</span>
-                        <span className="right">$ {item.lpBalance ? fromWei(item.lpBalance,item.tokenObj.decimals) : '0.00'}</span>
+                        <span className="right">$ {item.lpBalance ? Number(fromWei(item.lpBalance,item.tokenObj.decimals)).toFixed(2) : '0.00'}</span>
                       </div>
                     </FarmInfo>
                     <Flex>
@@ -1110,7 +1110,7 @@ export default function Farming ({
               <div className='content'>
                 <h2 className='title'>{t('TotalStaking')}</h2>
                 <h3 className='num'>
-                  <p>{curLpObj.lpBalance ? fromWei(curLpObj.lpBalance, dec, 6) : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
+                  <p>{curLpObj.lpBalance ? Number(fromWei(curLpObj.lpBalance, dec, 6)).toFixed(2) : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
                   {/* <p>{pbaObj.ba ? fromWei(pbaObj.ba, 18, 6) : '0.00'} {config.getCurChainInfo(CHAINID).symbol}</p> */}
                 </h3>
               </div>
