@@ -320,6 +320,9 @@
   "TotalStaking": "总抵押",
   "MyStaking": "我的抵押",
   "farms": "农场",
-  "swapTip": "如果目标链的流动性不足会收到{{symbol}}({{chainName}})，请在资金池里面查看余额。",
-  "txnsTip": "请等待几分钟，在浏览器查看跨链交易状态"
+  "swapTip": "如果目标链的流动性不足会收到{{symbol}}({{chainName}})，请在资金池里面查看余额。可以在移除中赎回流动性！",
+  "txnsTip": "请等待几分钟，在浏览器查看跨链交易状态",
+  "ExceedLimit": "超出限制",
+  "nodestlr": "目标链流动性不足",
+  "destTS": "目标链流动性"
 }

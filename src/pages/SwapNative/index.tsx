@@ -268,6 +268,24 @@ export default function SwapNative() {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
     if (isWrapInputError && inputBridgeValue && Number(inputBridgeValue) > 0) {
       return isWrapInputError
+    } else if (
+      swapType !== 'deposit'
+      && openAdvance
+      && bridgeConfig
+      && inputBridgeValue
+      && (
+        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+      )
+    ) {
+      return t('ExceedLimit')
+    } else if (
+      swapType !== 'deposit'
+      && openAdvance
+      && destChain
+      && Number(destChain.ts) < Number(inputBridgeValue)
+    ) {
+      return t('nodestlr')
     } else if (!inputBridgeValue) {
       return bt
     } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP) {
@@ -509,6 +527,8 @@ export default function SwapNative() {
         <PoolTip 
           anyCurrency={anyCurrency}
           bridgeConfig={poolInfo}
+          destChain={destChain}
+          swapType={swapType}
         />
         {
           openAdvance ? (

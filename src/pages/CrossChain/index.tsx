@@ -343,6 +343,17 @@ export default function CrossChain() {
     // console.log(isWrapInputError)
     if (isWrapInputError && inputBridgeValue) {
       return isWrapInputError
+    } else if (
+      bridgeConfig
+      && inputBridgeValue
+      && (
+        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+      )
+    ) {
+      return t('ExceedLimit')
+    } else if (Number(inputBridgeValue) > Number(destChain.ts)) {
+      return t('nodestlr')
     } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
       return t('swap')
     }

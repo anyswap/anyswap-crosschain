@@ -55,10 +55,14 @@ const SubCurrencySelectBox = styled.div`
 
 export default function PoolTip ({
   anyCurrency,
-  bridgeConfig
+  bridgeConfig,
+  destChain,
+  swapType
 }: {
   anyCurrency: any
   bridgeConfig: any
+  destChain: any
+  swapType: any
 }) {
   // const { account, chainId } = useActiveWeb3React()
   // const { account } = useActiveWeb3React()
@@ -230,6 +234,21 @@ export default function PoolTip ({
             ) : ''
           }
         </dd>
+        {
+          swapType !== 'deposit' ? (
+            <dd>
+              <i></i>
+              {t('destTS') + ' '}: 
+              {
+                destChain ? (
+                  <>
+                    {(destChain.ts + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
+                  </>
+                ) : ''
+              }
+            </dd>
+          ) : ''
+        }
       </dl>
       {/* <dl className='list'>
         <dd>
