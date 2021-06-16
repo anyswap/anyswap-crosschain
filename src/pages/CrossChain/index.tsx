@@ -433,6 +433,7 @@ export default function CrossChain() {
           <ConfirmText>
             {t('swapTip', {
               symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
+              symbol1: config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId),
               chainName: config.getCurChainInfo(selectChain).name
             })}
           </ConfirmText>
