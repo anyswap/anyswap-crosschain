@@ -3,7 +3,8 @@ import {
   ENV_NODE_CONFIG,
   INIT_NODE,
   VERSION,
-  USE_VERSION
+  USE_VERSION,
+  bridgeApi
 } from './constant'
 
 import {getNetwork, getInitBridgeChain} from './getUrlParams'
@@ -52,6 +53,7 @@ const config: ConFig = {
   ...INITBRIDGE,
   ENV_NODE_CONFIG,
   chainInfo,
+  bridgeApi,
   localDataDeadline: 1622532945161,
   farmUrl: '#/',
   explorerUrl: 'https://anyswap.net/explorer',
