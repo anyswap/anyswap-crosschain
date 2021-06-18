@@ -31,11 +31,11 @@ import TokenLogo from '../TokenLogo'
 // import {getPrice} from '../../utils/axios'
 import {getAllToken} from '../../utils/bridge/getBaseInfo'
 
-// import {getBaseInfo} from './common'
+import {getBaseInfo} from './common'
 
-// getBaseInfo([], '137', '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49', '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249', 41143, 2.3).then((res:any) => {
-//   console.log(res)
-// })
+getBaseInfo([], '137', '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49', '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249', 41143, 2.3).then((res:any) => {
+  console.log(res)
+})
 
 const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}

@@ -258,11 +258,6 @@ export default function FarmsList () {
   const { t } = useTranslation()
 
   const [StakingAPY, setStakingAPY] = useState()
-  // const [BSCStakingAPY, setBSCStakingAPY] = useState()
-  // const [HTStakingAPY, setHTStakingAPY] = useState()
-  // const [FSNStakingAPY, setFSNStakingAPY] = useState()
-  // const [BSCFarmingAPY, setBSCFarmingAPY] = useState()
-  // const [FTMFarmingAPY, setFTMFarmingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',

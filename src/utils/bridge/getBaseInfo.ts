@@ -124,7 +124,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
           const decimals = web3Fn.utils.hexToNumber(results[0])
           // console.log(decimals)
           const cbtoken = results[1].replace('0x000000000000000000000000', '0x')
-          if (cbtoken !=ZERO_ADDRESS) {
+          if (cbtoken != ZERO_ADDRESS) {
             if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
             const data = {
               decimals: decimals,
