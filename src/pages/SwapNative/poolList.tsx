@@ -298,8 +298,8 @@ export default function PoolLists ({
                   <>
                     {/* <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit'}>{t('Add')}</TokenActionBtn>
                     <TokenActionBtn to={'/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw'}>{t('Remove')}</TokenActionBtn> */}
-                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit' : ''} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' : ''} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
                   </>
                 ) : (
                   <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
@@ -388,8 +388,8 @@ export default function PoolLists ({
               {
                 account ? (
                   <>
-                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit' : ''} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' : ''} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                    <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
                   </>
                 ) : (
                   <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
@@ -414,13 +414,6 @@ export default function PoolLists ({
                 <div className="chain">
                   <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'1.2rem'} ></TokenLogo>
                   <span className="label">{config.getCurChainInfo(chainID).name}</span>
-                  {/* {
-                    account ? (
-                      <TokenActionCardBtn onClick={() => changeNetwork(chainID)}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionCardBtn>
-                    ) : (
-                      <TokenActionCardBtn onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionCardBtn>
-                    )
-                  } */}
                 </div>
                 <div className="dtil">
                   <p className='p'>
@@ -431,10 +424,6 @@ export default function PoolLists ({
                     <span className='txt'>{t('pool')}:</span>
                     <span className='txt'>{thousandBit(ts, 2)}</span>
                   </p>
-                  {/* <p className='p'>
-                    <span className='txt'>{t('pool')}:</span>
-                    <span className='txt'>{thousandBit(anyts, 2)}</span>
-                  </p> */}
                 </div>
                 <div className="action">
                   <Flex>

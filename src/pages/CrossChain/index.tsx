@@ -431,7 +431,7 @@ export default function CrossChain() {
       setInputBridgeValue('')
     }
   }, [setInputBridgeValue])
-
+  // console.log(curChain)
   return (
     <>
       <ModalContent
@@ -546,7 +546,7 @@ export default function CrossChain() {
               setInputBridgeValue(value)
             }}
             onCurrencySelect={(inputCurrency) => {
-              console.log(inputCurrency)
+              // console.log(inputCurrency)
               setSelectCurrency(inputCurrency)
             }}
             onMax={(value) => {
@@ -570,7 +570,7 @@ export default function CrossChain() {
               <LiquidityView>
                 {t('pool') + ': '}
                 {
-                  curChain ? (
+                  curChain && selectCurrency?.underlying ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? formatDecimal(curChain.ts, 2) : '0.00'}</span>

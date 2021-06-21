@@ -94,7 +94,7 @@ export default function SelectChainIdInputPanel({
   const theme = useContext(ThemeContext)
   // console.log(bridgeConfig)
   useEffect(() => {
-    console.log(selectChainList)
+    // console.log(selectChainList)
     if (selectChainList.length > 0) {
       setChainList(selectChainList)
     } else {
@@ -130,7 +130,7 @@ export default function SelectChainIdInputPanel({
       if (token) {
         getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals, isNativeToken).then(res => {
         // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res) {
             setDestBalance(res)
           } else {
