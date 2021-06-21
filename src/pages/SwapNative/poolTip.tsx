@@ -235,12 +235,12 @@ export default function PoolTip ({
           }
         </dd>
         {
-          swapType !== 'deposit' ? (
+          swapType !== 'deposit' && destChain && typeof destChain.ts !== 'undefined' ? (
             <dd>
               <i></i>
               {t('destTS') + ' '}: 
               {
-                destChain ? (
+                destChain && typeof destChain.ts !== 'undefined' ? (
                   <>
                     {(destChain.ts + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
                   </>
