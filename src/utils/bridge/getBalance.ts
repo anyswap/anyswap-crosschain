@@ -72,9 +72,6 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
           } else {
             list[tokenObj.token].ts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
           }
-          if ((i + 1) === len) {
-            resolve(list)
-          }
         }))
       }
       contract.options.address = tokenObj.token

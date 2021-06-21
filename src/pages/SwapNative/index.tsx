@@ -61,6 +61,7 @@ export default function SwapNative() {
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
+  const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [bridgeConfig, setBridgeConfig] = useState<any>()
   const [openAdvance, setOpenAdvance] = useState<any>(urlSwapType === 'deposit' ? false : true)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
@@ -422,6 +423,19 @@ export default function SwapNative() {
     }
   }, [selectCurrency, account, intervalCount, selectChain])
 
+  useEffect(() => {
+    console.log(selectCurrency)
+    if (selectCurrency) {
+      const arr = []
+      for (const c in selectCurrency?.destChain) {
+        if (Number(c) === Number(chainId)) continue
+        arr.push(c)
+      }
+      setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
+      setSelectChainList(arr)
+    }
+  }, [selectCurrency])
+
   const handleMaxInput = useCallback((value) => {
     if (value) {
       setInputBridgeValue(value)
@@ -517,6 +531,7 @@ export default function SwapNative() {
                   bridgeConfig={bridgeConfig}
                   intervalCount={intervalCount}
                   isViewAllChain={true}
+                  selectChainList={selectChainList}
                 />
               </>
             ) : ''

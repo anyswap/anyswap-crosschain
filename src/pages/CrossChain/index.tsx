@@ -183,7 +183,7 @@ export default function CrossChain() {
     if (selectCurrency && chainId) {
       const CC:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
       // console.log(CC)
-      // console.log(intervalCount)
+      // console.log(selectCurrency)
       if (CC) {
         setCurChain({
           chain: chainId,
@@ -199,6 +199,8 @@ export default function CrossChain() {
           bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
         })
       }
+      // console.log(CC)
+      // console.log(DC)
       if (intervalFN) clearTimeout(intervalFN)
       intervalFN = setTimeout(() => {
         setIntervalCount(intervalCount + 1)
@@ -293,7 +295,7 @@ export default function CrossChain() {
 
   const isCrossBridge = useMemo(() => {
     // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-    // console.log(!wrapInputErrorNative && isNativeToken)
+    // console.log(destChain)
     if (
       account
       && bridgeConfig
@@ -306,7 +308,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
-        || Number(inputBridgeValue) > Number(destChain.ts)
+        || (typeof destChain.ts !== 'undefined' && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -328,7 +330,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
-        || Number(inputBridgeValue) > Number(destChain.ts)
+        || (typeof destChain.ts !== 'undefined' && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -475,7 +477,7 @@ export default function CrossChain() {
                     ) : approvalSubmitted ? (
                       t('Approved')
                     ) : (
-                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol, chainId)
+                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
                     )}
                   </ButtonConfirmed>
                 ) : (
@@ -576,7 +578,7 @@ export default function CrossChain() {
                   ) : ''
                 }
                 {
-                  destChain ? (
+                  destChain && typeof destChain.ts !== 'undefined' ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? formatDecimal(destChain.ts, 2) : '0.00'}</span>
@@ -646,7 +648,7 @@ export default function CrossChain() {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol, chainId)
+                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
                   )}
                 </ButtonConfirmed>
               ) : (
