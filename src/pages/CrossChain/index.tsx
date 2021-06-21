@@ -249,6 +249,20 @@ export default function CrossChain() {
     return false
   }, [selectCurrency, chainId])
 
+  const isUnderlying = useMemo(() => {
+    if (selectChain && selectCurrency?.underlying) {
+      return true
+    }
+    return false
+  }, [])
+
+  const isDestUnderlying = useMemo(() => {
+    if (selectChain && selectCurrency?.destChain[selectChain]?.underlying) {
+      return true
+    }
+    return false
+  }, [])
+
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {
       const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
@@ -308,7 +322,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
-        || (typeof destChain.ts !== 'undefined' && Number(inputBridgeValue) > Number(destChain.ts))
+        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -320,6 +334,7 @@ export default function CrossChain() {
   }, [selectCurrency, account, bridgeConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
+    // console.log(destChain)
     if (
       account
       && bridgeConfig
@@ -330,7 +345,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
-        || (typeof destChain.ts !== 'undefined' && Number(inputBridgeValue) > Number(destChain.ts))
+        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -355,7 +370,7 @@ export default function CrossChain() {
       )
     ) {
       return t('ExceedLimit')
-    } else if (Number(inputBridgeValue) > Number(destChain.ts)) {
+    } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
       return t('nodestlr')
     } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
       return t('swap')
@@ -570,7 +585,7 @@ export default function CrossChain() {
               <LiquidityView>
                 {t('pool') + ': '}
                 {
-                  curChain && selectCurrency?.underlying ? (
+                  curChain && isUnderlying ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? formatDecimal(curChain.ts, 2) : '0.00'}</span>
@@ -578,7 +593,7 @@ export default function CrossChain() {
                   ) : ''
                 }
                 {
-                  destChain && typeof destChain.ts !== 'undefined' ? (
+                  destChain && isDestUnderlying ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
                       <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? formatDecimal(destChain.ts, 2) : '0.00'}</span>
