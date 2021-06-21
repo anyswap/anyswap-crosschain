@@ -35,6 +35,7 @@ const useChain = {
     BNB_TEST_CHAINID,
   ],
   [VERSION.V2]: [
+    ETH_MAIN_CHAINID,
     BNB_MAIN_CHAINID,
     FTM_MAIN_CHAINID,
     MATIC_MAIN_CHAINID

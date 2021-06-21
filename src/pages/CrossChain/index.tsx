@@ -116,6 +116,7 @@ export default function CrossChain() {
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
+  const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState('swap')
   const [count, setCount] = useState<number>(0)
@@ -408,6 +409,19 @@ export default function CrossChain() {
     // getBaseInfo()
   }, [selectCurrency, count, initBridgeToken, chainId])
 
+  useEffect(() => {
+    // console.log(selectCurrency)
+    if (selectCurrency) {
+      const arr = []
+      for (const c in selectCurrency?.destChain) {
+        if (Number(c) === Number(chainId)) continue
+        arr.push(c)
+      }
+      setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
+      setSelectChainList(arr)
+    }
+  }, [selectCurrency])
+
   const handleMaxInput = useCallback((value) => {
     if (value) {
       setInputBridgeValue(value)
@@ -600,6 +614,7 @@ export default function CrossChain() {
             bridgeConfig={bridgeConfig}
             intervalCount={intervalCount}
             isNativeToken={isNativeToken}
+            selectChainList={selectChainList}
           />
           {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />

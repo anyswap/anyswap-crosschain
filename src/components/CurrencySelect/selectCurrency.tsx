@@ -254,7 +254,7 @@ export default function SelectCurrencyInputPanel({
                     {/* {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''} */}
                   </h3>
                   <p>
-                  {currency && currency.name ? currency.name : ''}
+                  {currency && currency.name ? config.getBaseCoin(currency.symbol, chainId, 1, currency.name) : ''}
                   {/* {currency && currency.name ? config.getBaseCoin(currency.symbol, chainId, 1) : ''} */}
                   </p>
                 </StyledTokenName>

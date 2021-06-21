@@ -25,6 +25,7 @@ export function getAllChainIDs (chainId:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
     else {
+      // resolve(["56", "137", "250"])
       const lData = getLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, timeout)
       if (lData) {
         resolve(lData.list)
@@ -37,8 +38,14 @@ export function getAllChainIDs (chainId:any) {
             console.log(err)
             resolve([])
           } else {
-            setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, {list: res})
-            resolve(res)
+            const arr:any = []
+            for (const c of res) {
+              if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c)) continue
+              arr.push(c)
+            }
+            // console.log(arr)
+            setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, {list: arr})
+            resolve(arr)
           }
         })
       }
@@ -163,6 +170,7 @@ function getAllTokenIDs (chainId:any) {
       } else {
         getAllTokenConfig(res, chainId).then(async(result:any) => {
           for (const tokenstr in result.tokenList) {
+            // console.log(tokenstr)
             const curTokenObj = result.tokenList[tokenstr]
             const curTokenIdObj = result.tokenidList[curTokenObj.tokenid]
             
@@ -184,8 +192,8 @@ function getAllTokenIDs (chainId:any) {
             if (!tokenInfo) {
               tokenInfo = await getTokenInfo(tokenstr, chainId)
             }
+            if (config.getCurBridgeConfigInfo(chainId)?.hiddenCoin?.includes(tokenInfo.symbol)) continue
             // const tokenInfo = await getTokenInfo(tokenstr, chainId)
-            // console.log(tokenInfo)
             const underlyingInfo = await isUnderlying(tokenstr, chainId)
             if (curTokenObj && curTokenIdObj) {
               const obj = {

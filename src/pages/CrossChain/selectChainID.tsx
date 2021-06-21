@@ -60,6 +60,7 @@ interface SelectChainIdInputPanel {
   intervalCount: any,
   isNativeToken?: boolean
   isViewAllChain?: boolean
+  selectChainList?: Array<any>
 }
 
 export default function SelectChainIdInputPanel({
@@ -75,7 +76,8 @@ export default function SelectChainIdInputPanel({
   bridgeConfig,
   intervalCount,
   isNativeToken,
-  isViewAllChain
+  isViewAllChain,
+  selectChainList = []
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
@@ -92,12 +94,17 @@ export default function SelectChainIdInputPanel({
   const theme = useContext(ThemeContext)
   // console.log(bridgeConfig)
   useEffect(() => {
-    
-    getAllChainIDs(chainId).then((res:any) => {
-      // console.log(res)
-      setChainList(res)
-    })
-  }, [chainId])
+    console.log(selectChainList)
+    if (selectChainList.length > 0) {
+      setChainList(selectChainList)
+    } else {
+      getAllChainIDs(chainId).then((res:any) => {
+        // console.log(res)
+        setChainList(res)
+      })
+    }
+  }, [chainId, selectChainList])
+  // console.log(selectChainList)
 
   const handleCurrencySelect = useCallback(
     (chainID) => {
@@ -215,10 +222,17 @@ export default function SelectChainIdInputPanel({
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
-                    <p>
+                    {/* <p>
                       {
                         bridgeConfig ? (
                           bridgeConfig.destChain ? bridgeConfig.destChain[selectChainId]?.underlying?.name : bridgeConfig?.name
+                        ) : ''
+                      }
+                    </p> */}
+                    <p>
+                      {
+                        bridgeConfig ? (
+                          bridgeConfig.destChain ? config.getBaseCoin(bridgeConfig.destChain[selectChainId]?.underlying?.symbol, chainId, 1, bridgeConfig.destChain[selectChainId]?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
                         ) : ''
                       }
                     </p>

@@ -18,6 +18,17 @@ const netConfig:ConFig = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
 
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
 
+function formatHiddenCoin (list?:Array<any>) {
+  const arr:any = []
+  if (list) {
+    for (let str of list) {
+      if (str.indexOf('any') === 0) str = 'any' + str
+      arr.push(str)
+    }
+  }
+  return arr
+}
+
 const bridgeChain = {
   [VERSION.V1]: {
     bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
@@ -26,6 +37,8 @@ const bridgeChain = {
   [VERSION.V2]: {
     bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
   },
   [VERSION.V3]: {
     bridgeConfigToken: '0x7beb05cf5681f402e762f8569c2fc138a2172978',
@@ -57,7 +70,7 @@ const config: ConFig = {
   localDataDeadline: 1622532945161,
   farmUrl: '#/',
   explorerUrl: 'https://anyswap.net/explorer',
-  getBaseCoin (value:any, chainId:any, type?: number) {
+  getBaseCoin (value:any, chainId:any, type?: number, name?: string) {
     // console.log(value)
     if (
       value
@@ -74,7 +87,11 @@ const config: ConFig = {
     } else if (value && value === 'WETH') {
       return 'W' + this.getCurChainInfo(chainId).symbol
     } else {
-      return value
+      if (type) {
+        return name
+      } else {
+        return value
+      }
     }
   },
   getCurBridgeConfigInfo (chainID:any) {
