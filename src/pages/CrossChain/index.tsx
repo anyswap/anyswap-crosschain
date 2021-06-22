@@ -207,6 +207,8 @@ export default function CrossChain() {
       }, 1000 * 10)
     }
   }, [selectCurrency, chainId, account, selectChain, intervalCount])
+
+
   useEffect(() => {
     getSelectPool()
   }, [getSelectPool])
@@ -250,18 +252,19 @@ export default function CrossChain() {
   }, [selectCurrency, chainId])
 
   const isUnderlying = useMemo(() => {
-    if (selectChain && selectCurrency?.underlying) {
+    if (selectCurrency && selectCurrency?.underlying) {
       return true
     }
     return false
-  }, [])
+  }, [selectCurrency])
 
+  
   const isDestUnderlying = useMemo(() => {
-    if (selectChain && selectCurrency?.destChain[selectChain]?.underlying) {
+    if (selectCurrency && selectCurrency?.destChain[selectChain]?.underlying) {
       return true
     }
     return false
-  }, [])
+  }, [selectCurrency])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {

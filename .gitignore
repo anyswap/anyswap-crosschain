@@ -13,6 +13,7 @@
 /crossbridge
 /stable
 /anyswapExchange_test
+/arb
 *.zip
 
 # misc
