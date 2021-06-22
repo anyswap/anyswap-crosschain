@@ -25,5 +25,5 @@
     "types": ["react-spring", "jest"]
   },
   "exclude": ["node_modules", "cypress"],
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/pages/Farms/FarmsList.txt"]
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/pages/Farms/FarmsList.tsx"]
 }

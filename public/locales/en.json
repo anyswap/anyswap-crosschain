@@ -325,5 +325,6 @@
   "txnsTip": "Please wait minutes to check the cross-chain tx status on the explorer",
   "ExceedLimit": "Exceed limit",
   "nodestlr": "Dest Liquidity Insufficient",
-  "destTS": "Dest Liquidity"
+  "destTS": "Dest Liquidity",
+  "maticUSDCStakingTip": "Stake USDC earn ANY, APY:"
 }

@@ -338,7 +338,7 @@ export default function NavList() {
           {t('pool')}
         </StyledNavLink>
         
-        <StyledNavLink id={`swap-nav-link`} to={'/farm/matic'}>
+        <StyledNavLink id={`swap-nav-link`} to={'/farm'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />

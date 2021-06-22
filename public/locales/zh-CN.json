@@ -324,5 +324,6 @@
   "txnsTip": "请等待几分钟，在浏览器查看跨链交易状态",
   "ExceedLimit": "超出限制",
   "nodestlr": "目标链流动性不足",
-  "destTS": "目标链流动性"
+  "destTS": "目标链流动性",
+  "maticUSDCStakingTip": "存USDC挖矿 年化收益率"
 }

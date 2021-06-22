@@ -7,10 +7,9 @@ import AppBody from '../AppBody'
 
 import {getPrice} from '../../utils/tools/getPrice'
 
+import farmlist from '../../config/farmlist'
+
 export default function MATICfaring({initialTrade}: {initialTrade?:string}) {
-  // let initLpToken = getQueryParam(window.location, 'lpToken')
-  const CHAINID = '137'
-  const FARMTOKEN = '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49'
   const [price, setPrice] = useState()
   // console.log(initialTrade)
   useEffect(() => {
@@ -26,8 +25,8 @@ export default function MATICfaring({initialTrade}: {initialTrade?:string}) {
         <Farming
           // initLpToken = {initLpToken}
           initialTrade = {initialTrade}
-          CHAINID = {CHAINID}
-          FARMTOKEN = {FARMTOKEN}
+          CHAINID = {farmlist['MATIC'].chainId}
+          FARMTOKEN = {farmlist['MATIC'].farmToken}
           FARMURL = {config.farmUrl + 'farm/matic'}
           // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
           poolCoin = 'ANY'

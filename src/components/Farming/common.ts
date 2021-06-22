@@ -8,6 +8,7 @@ import config from '../../config'
 const Web3Fn = require('web3')
 const stateList:any = {}
 const stateInfo:any = {}
+const farmlist:any = {}
 
 function getWeb3 (CHAINID:any, FARMTOKEN?: string, abi?:any) {
   const web3Fn = new Web3Fn(new Web3Fn.providers.HttpProvider(config.getCurChainInfo(CHAINID).nodeRpc))
@@ -33,7 +34,6 @@ function dispatchFarmState (key: string, action: any) {
     accRewardPerShare = '',
     pendingReward = '',
     tokenObj,
-    poolBalance,
     lpBalance
   } = action
   // console.log(action)
@@ -48,7 +48,6 @@ function dispatchFarmState (key: string, action: any) {
       accRewardPerShare: accRewardPerShare ? accRewardPerShare : (lpArr[index].accRewardPerShare ? lpArr[index].accRewardPerShare : ''),
       pendingReward: pendingReward ? pendingReward : (lpArr[index].pendingReward ? lpArr[index].pendingReward : ''),
       tokenObj: tokenObj ? tokenObj : (lpArr[index].tokenObj ? lpArr[index].tokenObj : ''),
-      poolBalance: poolBalance ? poolBalance : (lpArr[index].poolBalance ? lpArr[index].poolBalance : ''),
       lpBalance: lpBalance ? lpBalance : (lpArr[index].lpBalance ? lpArr[index].lpBalance : ''),
     }
   } else {
@@ -60,13 +59,12 @@ function dispatchFarmState (key: string, action: any) {
       accRewardPerShare: accRewardPerShare ? accRewardPerShare : '',
       pendingReward: pendingReward ? pendingReward : '',
       tokenObj: tokenObj ? tokenObj : '',
-      poolBalance: poolBalance ? poolBalance : '',
       lpBalance: lpBalance ? lpBalance : '',
     }
   }
   lpArr[index] = obj
   stateList[key] = lpArr
-  console.log(stateList)
+  // console.log(stateList)
 }
 
 function dispatchInfoState (key: string, action: any) {
@@ -101,7 +99,7 @@ function getAPY (item:any, allocPoint:any, lpBalance:any, blockNumber:number, To
   return '0.00'
 }
 
-function getAllTotalSupply (CHAINID:any, FARMTOKEN:string, account: any) {
+function getAllTotalSupply (CHAINID:any, FARMTOKEN:string) {
   return new Promise(resolve => {
 
     const web3Fn = getWeb3(CHAINID, '', ERC20_ABI)
@@ -136,30 +134,6 @@ function getAllTotalSupply (CHAINID:any, FARMTOKEN:string, account: any) {
           resolve('')
         }
       }))
-      if (account) {
-        web3Fn.contract.options.address = obj.lpToken
-        const pblData = web3Fn.contract.methods.balanceOf(account).encodeABI()
-        batch.add(web3Fn.web3.eth.call.request({data: pblData, to: obj.lpToken}, 'latest', (err:any, bl:any) => {
-          if (!err) {
-            // console.log(formatCellData(bl, 66).toString())
-            const results = formatWeb3Str(bl)
-            // console.log(results)
-            // console.log(formatNum(results[0]))
-            dispatchFarmState(FARMTOKEN, {
-              type: 'UPDATE_LP',
-              index: i,
-              poolBalance: formatNum(results[0])
-            })
-          } else {
-            // console.log(err)
-            dispatchFarmState(FARMTOKEN, {
-              type: 'UPDATE_LP',
-              index: i,
-              poolBalance: ''
-            })
-          }
-        }))
-      }
     }
     batch.execute()
   })
@@ -196,7 +170,7 @@ function getTokenList(num:number, tokenlist:any, CHAINID:any, FARMTOKEN:string, 
             accRewardPerShare: formatNum(results[3]),
             tokenObj: tokenlist[exAddr]?.list,
           }
-          console.log(obj)
+          // console.log(obj)
           dispatchFarmState(FARMTOKEN, obj)
           totalPoint += Number(curPoint)
         } else {
@@ -210,12 +184,10 @@ function getTokenList(num:number, tokenlist:any, CHAINID:any, FARMTOKEN:string, 
           })
         }
         if (i === (num - 1)) {
-          getAllTotalSupply(CHAINID, FARMTOKEN, account).then(() => {
+          getAllTotalSupply(CHAINID, FARMTOKEN).then(() => {
             dispatchInfoState(FARMTOKEN, {TotalPoint: totalPoint})
             resolve('')
           })
-          // setTotalPoint(totalPoint)
-          // console.log(totalPoint)
         }
       }))
       if (account) {
@@ -253,36 +225,44 @@ export function getBaseInfo (
   price: number
 ) {
   return new Promise(resolve => {
-    const web3Fn = getWeb3(CHAINID, FARMTOKEN)
-    const batch = new web3Fn.web3.BatchRequest()
-    // console.log(12)
-    const plData = web3Fn.contract.methods.poolLength().encodeABI()
-  
-    batch.add(web3Fn.web3.eth.call.request({data: plData, to: FARMTOKEN}, 'latest', (err:any, pl:any) => {
-      if (!err) {
-        // console.log(formatNum(pl))
-        getTokenList(formatNum(pl), tokenlist, CHAINID, FARMTOKEN, account).then(() => {
-          const list:any = {}
-          for (const obj of stateList[FARMTOKEN]) {
-            const apy = getAPY(obj, obj.allocPoint, obj.lpBalance, blockNumber, stateInfo[FARMTOKEN]?.TotalPoint, stateInfo[FARMTOKEN]?.BlockReward, price)
-            list[obj.lpToken] = {
-              ...obj,
-              apy: apy
+    if (farmlist[FARMTOKEN] && (Date.now() - farmlist[FARMTOKEN].timestamp < 1000 * 3)) {
+      resolve(farmlist[FARMTOKEN])
+    } else {
+
+      const web3Fn = getWeb3(CHAINID, FARMTOKEN)
+      const batch = new web3Fn.web3.BatchRequest()
+      // console.log(12)
+      const plData = web3Fn.contract.methods.poolLength().encodeABI()
+    
+      batch.add(web3Fn.web3.eth.call.request({data: plData, to: FARMTOKEN}, 'latest', (err:any, pl:any) => {
+        if (!err) {
+          // console.log(formatNum(pl))
+          getTokenList(formatNum(pl), tokenlist, CHAINID, FARMTOKEN, account).then(() => {
+            const list:any = {}
+            for (const obj of stateList[FARMTOKEN]) {
+              const apy = getAPY(obj, obj.allocPoint, obj.lpBalance, blockNumber, stateInfo[FARMTOKEN]?.TotalPoint, stateInfo[FARMTOKEN]?.BlockReward, price)
+              list[obj.lpToken] = {
+                ...obj,
+                apy: apy
+              }
             }
-          }
-          resolve({
-            lpArr: list
+            farmlist[FARMTOKEN] = {
+              lpArr: list,
+              info: stateInfo[FARMTOKEN],
+              timestamp: Date.now()
+            }
+            resolve(farmlist[FARMTOKEN])
           })
-        })
-      }
-    }))
-    const rpbData = web3Fn.contract.methods.rewardPerBlock().encodeABI()
-    batch.add(web3Fn.web3.eth.call.request({data: rpbData, to: FARMTOKEN}, 'latest', (err:any, res:any) => {
-      if (!err && res) {
-        dispatchInfoState(FARMTOKEN, {BlockReward: formatNum(res)})
-      }
-    }))
-  
-    batch.execute()
+        }
+      }))
+      const rpbData = web3Fn.contract.methods.rewardPerBlock().encodeABI()
+      batch.add(web3Fn.web3.eth.call.request({data: rpbData, to: FARMTOKEN}, 'latest', (err:any, res:any) => {
+        if (!err && res) {
+          dispatchInfoState(FARMTOKEN, {BlockReward: formatNum(res)})
+        }
+      }))
+    
+      batch.execute()
+    }
   })
 }

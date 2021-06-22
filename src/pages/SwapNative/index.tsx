@@ -424,14 +424,14 @@ export default function SwapNative() {
   }, [selectCurrency, account, intervalCount, selectChain])
 
   useEffect(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChain) {
-        if (Number(c) === Number(chainId)) continue
+        // if (Number(c) === Number(chainId)) continue
         arr.push(c)
       }
-      setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
+      // setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
       setSelectChainList(arr)
     }
   }, [selectCurrency])
