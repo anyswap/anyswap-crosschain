@@ -29,7 +29,7 @@ function formatHiddenCoin (list?:Array<any>) {
   return arr
 }
 
-const bridgeChain = {
+const bridgeChain:ConFig = {
   [VERSION.V1]: {
     bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
     bridgeInitDataChain: '56',
@@ -46,7 +46,7 @@ const bridgeChain = {
   }
 }
 
-const bridgeTestChain = {
+const bridgeTestChain:ConFig = {
   [VERSION.V1]: {
     bridgeConfigToken: '0x826Ee16b4B401E84c76b48a2A81545cBb994A995',
     bridgeInitDataChain: '256',
@@ -94,10 +94,11 @@ const config: ConFig = {
       }
     }
   },
-  getCurBridgeConfigInfo (chainID:any) {
-    let envConfig:ConFig = bridgeChain[USE_VERSION]
+  getCurBridgeConfigInfo (chainID:any, version?:any) {
+    version = version ? version : USE_VERSION
+    let envConfig:ConFig = bridgeChain[version]
     if (chainID && chainInfo[chainID].type === 'test') {
-      envConfig = bridgeTestChain[USE_VERSION]
+      envConfig = bridgeTestChain[version]
     }
     return envConfig
   },

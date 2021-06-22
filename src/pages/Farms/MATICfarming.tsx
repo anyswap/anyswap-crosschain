@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Farming from '../../components/Farming'
 // import { getQueryParam } from '../../utils'
 import config from '../../config'
+import {VERSION} from '../../config/constant'
 import Title from '../../components/Title'
 import AppBody from '../AppBody'
 
@@ -32,6 +33,7 @@ export default function MATICfaring({initialTrade}: {initialTrade?:string}) {
           poolCoin = 'ANY'
           blockNumber = {41143}
           price={price}
+          version={VERSION.V2}
         />
       </AppBody>
     </>

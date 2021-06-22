@@ -21,7 +21,7 @@ interface ObjType {
 
 // 获取可支持跨链的ID
 const BRIDGEALLCHAIN = 'BRIDGEALLCHAIN'
-export function getAllChainIDs (chainId:any) {
+export function getAllChainIDs (chainId:any, version?:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
     else {
@@ -30,8 +30,8 @@ export function getAllChainIDs (chainId:any) {
       if (lData) {
         resolve(lData.list)
       } else {
-        web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
-        routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
+        web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
+        routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken
       
         routerConfigContract.methods.getAllChainIDs().call((err:any, res:any) => {
           if (err) {
@@ -40,7 +40,7 @@ export function getAllChainIDs (chainId:any) {
           } else {
             const arr:any = []
             for (const c of res) {
-              if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c)) continue
+              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenChain?.includes(c)) continue
               arr.push(c)
             }
             // console.log(arr)
@@ -91,21 +91,22 @@ export function isUnderlying (token:any, chainId:any) {
 
 // 获取合约配置
 const BRIDGETOKENCONFIG = 'BRIDGETOKENCONFIG'
-function getAllTokenConfig (list:Array<[]>, chainId:any) {
+function getAllTokenConfig (list:Array<[]>, chainId:any, version?:any) {
   return new Promise(resolve => {
     // let callbackData:any = ''
-    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
     const batch = new web3Fn.BatchRequest()
 
     const tokenList:ObjType = {}
     const tokenidList:ObjType = {}
+    console.log(list)
     // for (const chainid of list) {
     const len = list.length
     for (let i = 0; i < len; i++) {
       const tokenid:any = list[i]
       // console.log(tokenid)
       const gamtData = routerConfigContract.methods.getAllMultichainTokens(tokenid).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.getCurBridgeConfigInfo(chainId).bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         if (err) {
           console.log(err)
         } else {
@@ -116,21 +117,29 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
             if (!tokenidList[tokenid]) tokenidList[tokenid] = {}
             tokenidList[tokenid][chainID] = results[2 * j + 3].replace('0x000000000000000000000000', '0x')
           }
+          if (i === (len - 1) && tokenidList[tokenid]) {
+            resolve({
+              tokenList,
+              tokenidList
+            })
+          }
         }
       }))
 
       const gtcData = routerConfigContract.methods.getTokenConfig(tokenid, chainId).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.getCurBridgeConfigInfo(chainId).bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         // console.log(res)
         if (err) {
           console.log(err)
           resolve('')
         } else {
+          
           const results = formatWeb3Str(res)
           // console.log(results)
           const decimals = web3Fn.utils.hexToNumber(results[0])
           // console.log(decimals)
           const cbtoken = results[1].replace('0x000000000000000000000000', '0x')
+          // console.log(cbtoken)
           if (cbtoken != ZERO_ADDRESS) {
             if (!tokenList[cbtoken]) tokenList[cbtoken] = {}
             const data = {
@@ -147,30 +156,25 @@ function getAllTokenConfig (list:Array<[]>, chainId:any) {
             tokenList[cbtoken] = data
           }
         }
-        if (i === (len - 1) && tokenidList[tokenid]) {
-          resolve({
-            tokenList,
-            tokenidList
-          })
-        }
       }))
     }
     batch.execute()
   })
 }
-function getAllTokenIDs (chainId:any) {
+function getAllTokenIDs (chainId:any, version?:any) {
   return new Promise(resolve => {
-    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId).bridgeInitDataChain).nodeRpc)
-    routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
+    routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken
   
     routerConfigContract.methods.getAllTokenIDs().call((err:any, res:any) => {
       if (err) {
         console.log(err)
         resolve('')
       } else {
-        getAllTokenConfig(res, chainId).then(async(result:any) => {
+        getAllTokenConfig(res, chainId, version).then(async(result:any) => {
+          // console.log(version)
+          // console.log(result)
           for (const tokenstr in result.tokenList) {
-            // console.log(tokenstr)
             const curTokenObj = result.tokenList[tokenstr]
             const curTokenIdObj = result.tokenidList[curTokenObj.tokenid]
             
@@ -192,7 +196,7 @@ function getAllTokenIDs (chainId:any) {
             if (!tokenInfo) {
               tokenInfo = await getTokenInfo(tokenstr, chainId)
             }
-            if (config.getCurBridgeConfigInfo(chainId)?.hiddenCoin?.includes(tokenInfo.symbol)) continue
+            if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenCoin?.includes(tokenInfo.symbol)) continue
             // const tokenInfo = await getTokenInfo(tokenstr, chainId)
             const underlyingInfo = await isUnderlying(tokenstr, chainId)
             if (curTokenObj && curTokenIdObj) {
@@ -214,7 +218,7 @@ function getAllTokenIDs (chainId:any) {
   })
 }
 
-export function getTokenConfig (token:any, chainId:any) {
+export function getTokenConfig (token:any, chainId:any, version?:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
     else {
@@ -233,7 +237,7 @@ export function getTokenConfig (token:any, chainId:any) {
       ) {
         resolve(lData.list)
       } else {
-        getAllTokenIDs(chainId).then(() => {
+        getAllTokenIDs(chainId, version).then(() => {
           const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout)
           // console.log(lData1)
           if (lData1 && lData1.list && lData1.list.name && lData1.list.decimals && lData1.list.symbol) {
@@ -247,7 +251,7 @@ export function getTokenConfig (token:any, chainId:any) {
   })
 }
 
-export function getAllToken (chainId:any) {
+export function getAllToken (chainId:any, version?:any) {
   return new Promise(resolve => {
     if (!chainId) resolve(false)
     else {
@@ -256,7 +260,7 @@ export function getAllToken (chainId:any) {
       if (lData) {
         resolve(lData)
       } else {
-        getAllTokenIDs(chainId).then(() => {
+        getAllTokenIDs(chainId, version).then(() => {
           // console.log(res)
           const lData1 = getLocalConfig(BRIDGETOKENCONFIG, 'all', chainId, BRIDGETOKENCONFIG)
           if (lData1) {

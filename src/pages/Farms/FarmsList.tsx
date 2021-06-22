@@ -11,6 +11,7 @@ import {getBaseInfo} from '../../components/Farming/common'
 // import config from '../../config'
 import farmlist from '../../config/farmlist'
 import {USE_VERSION} from '../../config/constant'
+import {VERSION} from '../../config/constant'
 
 import { Button } from '../../theme'
 
@@ -247,11 +248,13 @@ export default function FarmsList () {
 
   function getFarmAPY (key:string) {
     return new Promise(resolve => {
-      getAllToken(farmlist[key].chainId).then((res:any) => {
+      // console.log(VERSION.V2)
+      getAllToken(farmlist[key].chainId, VERSION.V2).then((res:any) => {
+        // console.log(farmlist[key])
         if (res) {
           if (price) {
             getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
-              console.log(res)
+              // console.log(res)
               setStakingAPY(res.lpArr[farmlist[key].lpToken].apy)
               resolve(res.lpArr[farmlist[key].lpToken].apy)
             })
@@ -262,6 +265,7 @@ export default function FarmsList () {
   }
 
   useEffect(() => {
+    console.log(price)
     if (price) {
       const MATIC = 'MATIC'
       getFarmAPY(MATIC).then((res:any) => {

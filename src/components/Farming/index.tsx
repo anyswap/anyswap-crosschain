@@ -357,6 +357,7 @@ interface FarmProps {
   blockNumber?:any,
   BASEMARKET?:any,
   price?:any,
+  version?:any,
 }
 
 export default function Farming ({
@@ -368,7 +369,8 @@ export default function Farming ({
   CHAINID,
   blockNumber = 28800,
   BASEMARKET = 100,
-  price
+  price,
+  version
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -542,7 +544,7 @@ export default function Farming ({
   // }, [account, exchangeAddress, LpList])
 
   useEffect(() => {
-    getAllToken(CHAINID).then((res:any) => {
+    getAllToken(CHAINID, version).then((res:any) => {
       // console.log(res)
       if (res) {
         // getBaseInfo(res)
