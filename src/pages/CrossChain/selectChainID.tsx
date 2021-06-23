@@ -97,7 +97,7 @@ export default function SelectChainIdInputPanel({
   useEffect(() => {
     // console.log(selectChainList)
     if (selectChainList.length > 0) {
-      setChainList(selectChainList)
+      setChainList([chainId, ...selectChainList])
     } else {
       getAllChainIDs(chainId).then((res:any) => {
         // console.log(res)
@@ -130,6 +130,7 @@ export default function SelectChainIdInputPanel({
       } else {
         token = bridgeConfig?.destChains[selectChainId]?.underlying?.address ? bridgeConfig.destChains[selectChainId]?.underlying?.address : bridgeConfig?.destChains[selectChainId]?.address
       }
+      // console.log(token)
       if (token) {
         getNodeBalance(account, token, selectChainId, bridgeConfig.destChains[selectChainId]?.decimals, isNativeToken).then(res => {
           // console.log(res)
