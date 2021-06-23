@@ -16,7 +16,8 @@ import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 import config from '../../config'
 import {chainInfo} from '../../config/chainConfig'
-import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+// import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
 import {web3Fn} from '../../utils/tools/web3Utils'
 
 export const WalletLogoBox = styled.div`
@@ -199,9 +200,11 @@ export const NetworkCard = styled(YellowCard)`
   `};
 `
 
-export function Option (item:any, selectChain:any) {
+export function Option (curChainId:any, selectChainId:any) {
   // const { chainId } = useActiveWeb3React()
+  // console.log(item)
   // console.log(selectChain)
+  const item = config.getCurChainInfo(curChainId)
   return (
     <>
       <WalletLogoBox>
@@ -215,8 +218,9 @@ export function Option (item:any, selectChain:any) {
               {' '}
               {
               (
-                (selectChain === item.symbol && !item.networkLogo)
-                || (item.networkLogo && selectChain === item.networkLogo)
+                curChainId
+                && selectChainId
+                && Number(curChainId) === Number(selectChainId)
               ) ? (
                 <CircleWrapper>
                   <GreenCircle>
@@ -336,7 +340,7 @@ export default function SelectNetwork () {
                   chainList && chainList.map((item:any, index:any) => {
                     return (
                       <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        {Option(chainInfo[item], config.getCurChainInfo(chainId)?.networkLogo ?? config.getCurChainInfo(chainId)?.symbol)}
+                        {Option(item, chainId)}
                         {/* <img alt={''} src={AddIcon} /> */}
                       </OptionCardClickable>
                     )

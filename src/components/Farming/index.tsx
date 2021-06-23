@@ -28,8 +28,7 @@ import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
 
-// import {getPrice} from '../../utils/axios'
-import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 import {getBaseInfo} from './common'
 
@@ -551,7 +550,7 @@ export default function Farming ({
         // console.log(price)
         if (price) {
           getBaseInfo(res, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
-            console.log(res)
+            // console.log(res)
             setLpList(res.lpArr)
             // getStakingInfo()
           })

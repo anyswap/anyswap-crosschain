@@ -42,7 +42,8 @@ import {
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
-import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+// import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
+import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
 import {getNodeBalance} from '../../utils/bridge/getBalance'
 
 
@@ -123,13 +124,14 @@ export default function SelectChainIdInputPanel({
       && bridgeConfig
       && selectChainId
     ) {
-      // console.log(bridgeConfig)
-      // const token = bridgeConfig && bridgeConfig.destChain && bridgeConfig.destChain[selectChainId] ? bridgeConfig.destChain[selectChainId].token : ''
-      const token = bridgeConfig?.destChain[selectChainId]?.underlying?.address ? bridgeConfig.destChain[selectChainId]?.underlying?.address : bridgeConfig?.destChain[selectChainId]?.token
-      
+      let token:any = ''
+      if (Number(chainId) === Number(selectChainId)) {
+        token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
+      } else {
+        token = bridgeConfig?.destChains[selectChainId]?.underlying?.address ? bridgeConfig.destChains[selectChainId]?.underlying?.address : bridgeConfig?.destChains[selectChainId]?.address
+      }
       if (token) {
-        getNodeBalance(account, token, selectChainId, bridgeConfig.destChain[selectChainId]?.decimals, isNativeToken).then(res => {
-        // getNodeBalance('0x12139f3afa1C93303e1EfE3Df142039CC05C6c58', token, selectChainId, bridgeConfig.destChain[selectChainId].decimals).then(res => {
+        getNodeBalance(account, token, selectChainId, bridgeConfig.destChains[selectChainId]?.decimals, isNativeToken).then(res => {
           // console.log(res)
           if (res) {
             setDestBalance(res)
@@ -221,17 +223,10 @@ export default function SelectChainIdInputPanel({
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
-                    {/* <p>
-                      {
-                        bridgeConfig ? (
-                          bridgeConfig.destChain ? bridgeConfig.destChain[selectChainId]?.underlying?.name : bridgeConfig?.name
-                        ) : ''
-                      }
-                    </p> */}
                     <p>
                       {
                         bridgeConfig ? (
-                          bridgeConfig.destChain ? config.getBaseCoin(bridgeConfig.destChain[selectChainId]?.underlying?.symbol, chainId, 1, bridgeConfig.destChain[selectChainId]?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
+                          bridgeConfig.destChains ? config.getBaseCoin(bridgeConfig.destChains[selectChainId]?.underlying?.symbol, chainId, 1, bridgeConfig.destChains[selectChainId]?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
                         ) : ''
                       }
                     </p>
@@ -291,13 +286,14 @@ export default function SelectChainIdInputPanel({
                     if (Number(chainId) === Number(item) && !isViewAllChain) {
                       return ''
                     }
+                    // console.log(selectChainId)
                     return (
                       <OptionCardClickable
                         key={index}
                         className={selectChainId && selectChainId === item ? 'active' : ''}
                         onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
-                        {Option(config.chainInfo[item], config.chainInfo[selectChainId]?.symbol)}
+                        {Option(item, selectChainId)}
                       </OptionCardClickable>
                     )
                   })

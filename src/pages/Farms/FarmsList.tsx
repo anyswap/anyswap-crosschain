@@ -17,7 +17,7 @@ import { Button } from '../../theme'
 
 
 import {getPrice} from '../../utils/tools/getPrice'
-import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 import AppBody from '../AppBody'
 
@@ -265,7 +265,7 @@ export default function FarmsList () {
   }
 
   useEffect(() => {
-    console.log(price)
+    // console.log(price)
     if (price) {
       const MATIC = 'MATIC'
       getFarmAPY(MATIC).then((res:any) => {

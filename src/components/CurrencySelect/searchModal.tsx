@@ -22,7 +22,7 @@ import { useActiveWeb3React } from '../../hooks'
 
 import CurrencyList from './CurrencyList'
 
-import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
@@ -53,6 +53,7 @@ export default function SearchModal ({
   const inputRef = useRef<HTMLInputElement>()
 
   useEffect(() => {
+    
     getAllToken(chainId).then((res:any) => {
       // console.log(res)
       if (res) {
@@ -68,7 +69,7 @@ export default function SearchModal ({
                 "name": res[token].list.name,
                 "symbol": res[token].list.symbol,
                 "underlying": res[token].list.underlying,
-                "destChain": res[token].list.destChain,
+                "destChains": res[token].list.destChains,
               })
             }
           } else {
@@ -79,7 +80,7 @@ export default function SearchModal ({
               "name": res[token].list.name,
               "symbol": res[token].list.symbol,
               "underlying": res[token].list.underlying,
-              "destChain": res[token].list.destChain,
+              "destChains": res[token].list.destChains,
             })
           }
         }

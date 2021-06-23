@@ -17,7 +17,7 @@ import { ReactComponent as Dropdown } from '../../assets/images/dropdown-blue.sv
 
 import config from '../../config'
 
-import {getAllToken} from '../../utils/bridge/getBaseInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {fromWei, formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
@@ -83,7 +83,7 @@ export default function DashboardDtil() {
             "name": "Anyswap",
             "symbol": "ANY",
             "underlying": '',
-            "destChain": '',
+            "destChains": '',
             "isView": 1
           }
           alist.push(anyToken)
@@ -100,7 +100,7 @@ export default function DashboardDtil() {
             "name": res[token].list.name,
             "symbol": res[token].list.symbol,
             "underlying": res[token].list.underlying,
-            "destChain": res[token].list.destChain,
+            "destChains": res[token].list.destChains,
           }
           alist.push(token)
         }

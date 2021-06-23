@@ -14,9 +14,18 @@ export function formatWeb3Str (str:string, len = 64) {
   return arr
 }
 
-export function getLocalConfig (account:string, token:string, chainID:any, type:string, timeout?:string|number|undefined, saveType?:number|undefined) {
+export function getLocalConfig (
+  account:string,
+  token:string,
+  chainID:any,
+  type:string,
+  timeout?:string|number|undefined,
+  saveType?:number|undefined,
+  version?: string
+) {
+  version = version ? version : USE_VERSION 
   const lStorage = saveType ? localStorage : sessionStorage
-  const lstr = lStorage.getItem(USE_VERSION + '_' + type)
+  const lstr = lStorage.getItem(version + '_' + type)
   if (!lstr) {
     return false
   } else {
@@ -42,9 +51,18 @@ export function getLocalConfig (account:string, token:string, chainID:any, type:
   }
 }
 
-export function setLocalConfig (account:string, token:string, chainID:any, type:string, data: any, saveType?:number|undefined) {
+export function setLocalConfig (
+  account:string,
+  token:string,
+  chainID:any,
+  type:string,
+  data: any,
+  saveType?:number|undefined,
+  version?: string
+) {
+  version = version ? version : USE_VERSION 
   const lStorage = saveType ? localStorage : sessionStorage
-  const lstr = lStorage.getItem(USE_VERSION + '_' + type)
+  const lstr = lStorage.getItem(version + '_' + type)
   let lboj:any = {}
   if (!lstr) {
     lboj[chainID] = {timestamp: Date.now()}
@@ -75,7 +93,7 @@ export function setLocalConfig (account:string, token:string, chainID:any, type:
       }
     }
   }
-  lStorage.setItem(USE_VERSION + '_' + type, JSON.stringify(lboj))
+  lStorage.setItem(version + '_' + type, JSON.stringify(lboj))
 }
 
 

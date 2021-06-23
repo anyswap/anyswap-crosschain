@@ -32,7 +32,8 @@ import { tryParseAmount } from '../../state/swap/hooks'
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
 
-import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+// import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+import {getTokenConfig} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
@@ -191,12 +192,12 @@ export default function CrossChain() {
           bl: CC[selectCurrency?.address]?.balance
         })
       }
-      const DC:any = await getNodeTotalsupply(selectCurrency?.destChain[selectChain]?.token, selectChain, selectCurrency?.destChain[selectChain]?.decimals, account)
+      const DC:any = await getNodeTotalsupply(selectCurrency?.destChains[selectChain]?.token, selectChain, selectCurrency?.destChains[selectChain]?.decimals, account)
       if (DC) {
         setDestChain({
           chain: selectChain,
-          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChain[selectChain].token]?.ts : DC[selectCurrency?.destChain[selectChain].token]?.anyts,
-          bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
+          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].token]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
+          bl: DC[selectCurrency?.destChains[selectChain].token]?.balance
         })
       }
       // console.log(CC)
@@ -260,7 +261,7 @@ export default function CrossChain() {
 
   
   const isDestUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChain[selectChain]?.underlying) {
+    if (selectCurrency && selectCurrency?.destChains[selectChain]?.underlying) {
       return true
     }
     return false
@@ -402,7 +403,7 @@ export default function CrossChain() {
 
     if (token && isAddress(token)) {
       getTokenConfig(token, chainId).then((res:any) => {
-        // console.log(res)
+        console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
@@ -413,7 +414,7 @@ export default function CrossChain() {
               "name": res.name,
               "symbol": res.symbol,
               "underlying": res.underlying,
-              "destChain": res.destChain
+              "destChains": res.destChains
             })
           }
         } else {
@@ -433,7 +434,7 @@ export default function CrossChain() {
     // console.log(selectCurrency)
     if (selectCurrency) {
       const arr = []
-      for (const c in selectCurrency?.destChain) {
+      for (const c in selectCurrency?.destChains) {
         if (Number(c) === Number(chainId)) continue
         arr.push(c)
       }

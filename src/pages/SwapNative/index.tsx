@@ -34,7 +34,8 @@ import AppBody from '../AppBody'
 
 import PoolTip from './poolTip'
 
-import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+// import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
+import {getTokenConfig} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -355,7 +356,7 @@ export default function SwapNative() {
               "name": res.name,
               "symbol": res.symbol,
               "underlying": res.underlying,
-              "destChain": res.destChain,
+              "destChains": res.destChains,
             })
           }
         } else {
@@ -386,7 +387,7 @@ export default function SwapNative() {
   async function getAllOutBalance (account:any) {
     const token = selectCurrency.address
     const obj:any = await getNodeTotalsupply(token, chainId, selectCurrency.decimals, account)
-    const DC:any = openAdvance ? await getNodeTotalsupply(selectCurrency?.destChain[selectChain]?.token, selectChain, selectCurrency?.destChain[selectChain]?.decimals, account) : ''
+    const DC:any = openAdvance ? await getNodeTotalsupply(selectCurrency?.destChains[selectChain]?.address, selectChain, selectCurrency?.destChains[selectChain]?.decimals, account) : ''
     // console.log(DC)
     const ts = obj[token].ts
     const anyts = obj[token].anyts
@@ -394,8 +395,8 @@ export default function SwapNative() {
     if (DC) {
       setDestChain({
         chain: selectChain,
-        ts: selectCurrency?.underlying ? DC[selectCurrency?.destChain[selectChain].token]?.ts : DC[selectCurrency?.destChain[selectChain].token]?.anyts,
-        bl: DC[selectCurrency?.destChain[selectChain].token]?.balance
+        ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].address]?.ts : DC[selectCurrency?.destChains[selectChain].address]?.anyts,
+        bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
       })
     }
     return {
@@ -427,7 +428,7 @@ export default function SwapNative() {
     // console.log(selectCurrency)
     if (selectCurrency) {
       const arr = []
-      for (const c in selectCurrency?.destChain) {
+      for (const c in selectCurrency?.destChains) {
         // if (Number(c) === Number(chainId)) continue
         arr.push(c)
       }
