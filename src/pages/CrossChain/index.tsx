@@ -269,7 +269,7 @@ export default function CrossChain() {
       return true
     }
     return false
-  }, [selectCurrency])
+  }, [selectCurrency, selectChain])
 
   
   const isDestUnderlying = useMemo(() => {
@@ -277,7 +277,7 @@ export default function CrossChain() {
       return true
     }
     return false
-  }, [selectCurrency])
+  }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && bridgeConfig) {
@@ -462,7 +462,8 @@ export default function CrossChain() {
       setInputBridgeValue('')
     }
   }, [setInputBridgeValue])
-  // console.log(curChain)
+  // console.log(isUnderlying)
+  // console.log(isDestUnderlying)
   return (
     <>
       <ModalContent
@@ -597,7 +598,7 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
           />
           {
-            account && chainId ? (
+            account && chainId && isUnderlying && isDestUnderlying ? (
               <LiquidityView>
                 {t('pool') + ': '}
                 {

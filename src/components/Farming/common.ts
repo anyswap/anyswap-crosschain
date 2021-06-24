@@ -236,7 +236,7 @@ export function getBaseInfo (
     
       batch.add(web3Fn.web3.eth.call.request({data: plData, to: FARMTOKEN}, 'latest', (err:any, pl:any) => {
         if (!err) {
-          // console.log(formatNum(pl))
+          console.log(formatNum(pl))
           getTokenList(formatNum(pl), tokenlist, CHAINID, FARMTOKEN, account).then(() => {
             const list:any = {}
             for (const obj of stateList[FARMTOKEN]) {

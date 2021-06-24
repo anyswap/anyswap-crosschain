@@ -10,9 +10,9 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const FARMTYPE = 'MATIC'
+const FARMTYPE = 'FTM'
 
-export default function MATICfaring({initialTrade}: {initialTrade?:string}) {
+export default function FTMfaring({initialTrade}: {initialTrade?:string}) {
   const [price, setPrice] = useState()
   // console.log(initialTrade)
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function MATICfaring({initialTrade}: {initialTrade?:string}) {
           initialTrade = {initialTrade}
           CHAINID = {farmlist[FARMTYPE].chainId}
           FARMTOKEN = {farmlist[FARMTYPE].farmToken}
-          FARMURL = {config.farmUrl + 'farm/matic'}
+          FARMURL = {config.farmUrl + 'farm/ftm'}
           // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
           poolCoin = 'ANY'
           blockNumber = {farmlist[FARMTYPE].blockNumber}

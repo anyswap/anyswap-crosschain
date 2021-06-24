@@ -229,7 +229,8 @@ export default function FarmsList () {
   
   const { t } = useTranslation()
 
-  const [StakingAPY, setStakingAPY] = useState()
+  const [MATICStakingAPY, setMATICStakingAPY] = useState()
+  const [FTMStakingAPY, setFTMStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -255,7 +256,6 @@ export default function FarmsList () {
           if (price) {
             getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
               // console.log(res)
-              setStakingAPY(res.lpArr[farmlist[key].lpToken].apy)
               resolve(res.lpArr[farmlist[key].lpToken].apy)
             })
           }
@@ -267,9 +267,12 @@ export default function FarmsList () {
   useEffect(() => {
     // console.log(price)
     if (price) {
-      const MATIC = 'MATIC'
-      getFarmAPY(MATIC).then((res:any) => {
-        setStakingAPY(res)
+      getFarmAPY('MATIC').then((res:any) => {
+        setMATICStakingAPY(res)
+      })
+
+      getFarmAPY('FTM').then((res:any) => {
+        setFTMStakingAPY(res)
       })
     }
   }, [price])
@@ -385,14 +388,15 @@ export default function FarmsList () {
           {farmItem(1, 1, 'https://dashboard.modefi.io', 'MOD Farming', 'Modefi Farming', 'MOD', 'BNB')}
           {farmItem(2, 1, 'https://popsicle.finance/popsicle-stand', 'ICE Farming', 'Popsicle Farming', 'ICE', 'FTM', 'BNB')}
           {farmItem(1, 0, config.farmUrl + 'ftmfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (FTMFarmingAPY ? (Number(FTMFarmingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'FTM')}
-          {farmItem(1, 0, config.farmUrl + 'fsnfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (FSNStakingAPY ? (Number(FSNStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'FSN')}
+          {farmItem(1, 0, config.farmUrl + 'fsnfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (FSNMATICStakingAPY ? (Number(FSNMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'FSN')}
           {farmItem(1, 1, 'https://htswap.io/rebase', 'SDC Farming', 'USD Rebase token Farming', 'SDC', 'HT')}
           {farmItem(1, 1, 'http://heco.earndefi.finance/', 'EDC Farming', 'EarnDefiCoin Farming', 'EDC', 'HT')}
           {farmItem(1, 0, config.farmUrl + 'bscfarming2', 'EDC ANY', (t('ANYHTStakingTip') + "<span class='pecent'>" + (BSCFarmingAPY ? (Number(BSCFarmingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'BNB')}
           {farmItem(1, 1, 'https://htswap.io', 'HT Swap', t('htSwapTip'), 'HTC', 'HT')}
-          {farmItem(1, 0, config.farmUrl + 'htfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (HTStakingAPY ? (Number(HTStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'HT')}
-          {farmItem(0, 0, config.farmUrl + 'bscfarming', 'CYC Farming', (t('BSCStakingTip') + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/cycIcon.svg'))} */}
-          {farmItem(0, 0, 'farm/matic', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (StakingAPY ? (Number(StakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/anyIcon.svg'))}
+          {farmItem(1, 0, config.farmUrl + 'htfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (HTMATICStakingAPY ? (Number(HTMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'HT')}
+          {farmItem(0, 0, config.farmUrl + 'bscfarming', 'CYC Farming', (t('BSCStakingTip') + "<span class='pecent'>" + (BSCMATICStakingAPY ? (Number(BSCMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/cycIcon.svg'))} */}
+          {farmItem(0, 0, 'farm/ftm', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/anyIcon.svg'))}
+          {farmItem(0, 0, 'farm/matic', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/anyIcon.svg'))}
         </FarmListBox>
       </AppBody>
     </>

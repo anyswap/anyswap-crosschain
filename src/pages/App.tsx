@@ -14,6 +14,7 @@ import SwapNative from './SwapNative'
 import Pool from './SwapNative/poolList'
 
 import MATICfarming from './Farms/MATICfarming'
+import FTMfarming from './Farms/FTMfarming'
 import FarmList from './Farms/FarmsList'
 
 // import config from '../config'
@@ -136,6 +137,7 @@ export default function App() {
               <Route exact strict path="/pool" component={Pool} />
               <Route exact strict path="/pool/add" component={SwapNative} />
               <Route exact strict path="/farm" component={FarmList} />
+
               <Route exact strict path="/farm/matic" component={MATICfarming} />
               <Route
                 path={"/farm/matic/:lpToken"}
@@ -144,6 +146,16 @@ export default function App() {
                   return <MATICfarming initialTrade={match.params.lpToken} />
                 }}
               />
+
+              <Route exact strict path="/farm/ftm" component={FTMfarming} />
+              <Route
+                path={"/farm/ftm/:lpToken"}
+                render={({ match }) => {
+                  console.log(match)
+                  return <FTMfarming initialTrade={match.params.lpToken} />
+                }}
+              />
+
               <Redirect to={{ pathname: '/swap' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>

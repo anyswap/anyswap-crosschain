@@ -550,7 +550,7 @@ export default function Farming ({
         // console.log(price)
         if (price) {
           getBaseInfo(res, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
-            // console.log(res)
+            console.log(res)
             setLpList(res.lpArr)
             // getStakingInfo()
           })
