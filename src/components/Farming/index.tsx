@@ -688,7 +688,7 @@ export default function Farming ({
                       <span className="right">{item} - {config.getCurChainInfo(CHAINID).symbol} LP</span>
                     </div>
                     <div className="item">
-                      <span className="left">APY</span>
+                      <span className="left">APR</span>
                       <span className="right">-- %</span>
                     </div>
                     <div className="item">
@@ -741,7 +741,7 @@ export default function Farming ({
                         <span className="right">{item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} LP</span>
                       </div>
                       <div className="item">
-                        <span className="left">APY</span>
+                        <span className="left">APR</span>
                         <span className="right">{item.apy} %</span>
                       </div>
                       <div className="item">

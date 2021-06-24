@@ -395,8 +395,22 @@ export default function FarmsList () {
           {farmItem(1, 1, 'https://htswap.io', 'HT Swap', t('htSwapTip'), 'HTC', 'HT')}
           {farmItem(1, 0, config.farmUrl + 'htfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (HTMATICStakingAPY ? (Number(HTMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'HT')}
           {farmItem(0, 0, config.farmUrl + 'bscfarming', 'CYC Farming', (t('BSCStakingTip') + "<span class='pecent'>" + (BSCMATICStakingAPY ? (Number(BSCMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/cycIcon.svg'))} */}
-          {farmItem(0, 0, 'farm/ftm', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/anyIcon.svg'))}
-          {farmItem(0, 0, 'farm/matic', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/anyIcon.svg'))}
+          {farmItem(
+            1,
+            0,
+            'farm/ftm',
+            'USDC Staking',
+            (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+            'USDC',
+            'FTM'
+          )}
+          {farmItem(
+            1,
+            0,
+            'farm/matic', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+            'USDC',
+            'MATIC'
+          )}
         </FarmListBox>
       </AppBody>
     </>
