@@ -118,11 +118,15 @@ export default function SelectChainIdInputPanel({
   )
 
   const destChainInfo = useMemo(() => {
-    if (Number(selectChainId) === Number(chainId)) {
-      return bridgeConfig
-    } else {
-      return bridgeConfig?.destChains[selectChainId]
+    // console.log(bridgeConfig)
+    if (bridgeConfig) {
+      if (Number(selectChainId) === Number(chainId)) {
+        return bridgeConfig
+      } else {
+        return bridgeConfig?.destChains[selectChainId]
+      }
     }
+    return false
   }, [bridgeConfig, selectChainId, chainId])
   // console.log(chainId)
   // console.log(selectChainId)
