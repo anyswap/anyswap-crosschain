@@ -407,7 +407,9 @@ export default function FarmsList () {
           {farmItem(
             1,
             0,
-            'farm/matic', 'USDC Staking', (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+            'farm/matic',
+            'USDC Staking',
+            (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
             'USDC',
             'MATIC'
           )}
