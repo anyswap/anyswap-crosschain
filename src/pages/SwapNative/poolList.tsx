@@ -212,12 +212,20 @@ export default function PoolLists ({
           const tObj = res[token].list
           if (chainId) {
             if (!destList[chainId]) destList[chainId] = []
-            destList[chainId].push({token: token, dec: tObj.decimals})
+            destList[chainId].push({
+              token: token,
+              dec: tObj.decimals,
+              underlying: tObj?.underlying?.address
+            })
           }
           for (const chainID in tObj.destChains) {
             if (Number(chainID) === Number(chainId)) continue
             if (!destList[chainID]) destList[chainID] = []
-            destList[chainID].push({token: tObj.destChains[chainID].address, dec: tObj.destChains[chainID].decimals})
+            destList[chainID].push({
+              token: tObj.destChains[chainID].address,
+              dec: tObj.destChains[chainID].decimals,
+              underlying: tObj.destChains[chainID]?.underlying?.address
+            })
             // console.log(chainID)
           }
           allToken.push({

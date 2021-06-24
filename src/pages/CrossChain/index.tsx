@@ -182,7 +182,13 @@ export default function CrossChain() {
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
-      const CC:any = await getNodeTotalsupply(selectCurrency?.address, chainId, selectCurrency?.decimals, account)
+      const CC:any = await getNodeTotalsupply(
+        selectCurrency?.address,
+        chainId,
+        selectCurrency?.decimals,
+        account,
+        selectCurrency?.underlying?.address
+      )
       // console.log(CC)
       // console.log(selectCurrency)
       if (CC) {
@@ -192,12 +198,18 @@ export default function CrossChain() {
           bl: CC[selectCurrency?.address]?.balance
         })
       }
-      const DC:any = await getNodeTotalsupply(selectCurrency?.destChains[selectChain]?.token, selectChain, selectCurrency?.destChains[selectChain]?.decimals, account)
+      const DC:any = await getNodeTotalsupply(
+        selectCurrency?.destChains[selectChain]?.address,
+        selectChain,
+        selectCurrency?.destChains[selectChain]?.decimals,
+        account,
+        selectCurrency?.destChains[selectChain]?.underlying?.address
+      )
       if (DC) {
         setDestChain({
           chain: selectChain,
-          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].token]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
-          bl: DC[selectCurrency?.destChains[selectChain].token]?.balance
+          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].address]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
+          bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
         })
       }
       // console.log(CC)
@@ -403,7 +415,7 @@ export default function CrossChain() {
 
     if (token && isAddress(token)) {
       getTokenConfig(token, chainId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res && res.decimals && res.symbol) {
           setBridgeConfig(res)
           if (!selectCurrency || selectCurrency.chainId !== chainId) {

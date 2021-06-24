@@ -386,17 +386,30 @@ export default function SwapNative() {
 
   async function getAllOutBalance (account:any) {
     const token = selectCurrency.address
-    const obj:any = await getNodeTotalsupply(token, chainId, selectCurrency.decimals, account)
-    const DC:any = openAdvance ? await getNodeTotalsupply(selectCurrency?.destChains[selectChain]?.address, selectChain, selectCurrency?.destChains[selectChain]?.decimals, account) : ''
-    // console.log(DC)
+    // console.log(selectCurrency)
+    const obj:any = await getNodeTotalsupply(
+      token,
+      chainId,
+      selectCurrency.decimals,
+      account,
+      selectCurrency?.underlying?.address
+    )
+    const dObj = Number(chainId) === Number(selectChain) ? selectCurrency : selectCurrency?.destChains[selectChain]
+    const DC:any = openAdvance ? await getNodeTotalsupply(
+      dObj?.address,
+      selectChain,
+      dObj?.decimals,
+      account,
+      dObj?.underlying?.address
+    ) : ''
     const ts = obj[token].ts
     const anyts = obj[token].anyts
     const bl = obj[token].balance
     if (DC) {
       setDestChain({
         chain: selectChain,
-        ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].address]?.ts : DC[selectCurrency?.destChains[selectChain].address]?.anyts,
-        bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
+        ts: selectCurrency?.underlying ? DC[dObj.address]?.ts : DC[dObj.address]?.anyts,
+        bl: DC[dObj.address]?.balance
       })
     }
     return {
@@ -422,7 +435,7 @@ export default function SwapNative() {
         setIntervalCount(intervalCount + 1)
       }, 1000 * 10)
     }
-  }, [selectCurrency, account, intervalCount, selectChain])
+  }, [selectCurrency, account, intervalCount, selectChain, openAdvance])
 
   useEffect(() => {
     // console.log(selectCurrency)

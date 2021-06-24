@@ -1,6 +1,6 @@
 import { getContract, web3Fn } from '../tools/web3Utils'
 import {setLocalConfig, getLocalConfig, fromWei} from '../tools/tools'
-import {isUnderlying} from './getBaseInfo'
+// import {isUnderlying} from './getBaseInfo'
 import config from '../../config'
 const contract = getContract()
 
@@ -57,13 +57,13 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
     const list:any = {}
     for (let i = 0; i < len; i++) {
       const tokenObj = tokenList[i]
-      const underlyingInfo:any = await isUnderlying(tokenObj.token, chainId)
+      // const underlyingInfo:any = await isUnderlying(tokenObj.token, chainId)
       // console.log(tokenObj)
-      // console.log(underlyingInfo)
-      if (underlyingInfo) {
-        contract.options.address = underlyingInfo?.address
+      // console.log(tokenObj.underlying)
+      if (tokenObj.underlying) {
+        contract.options.address = tokenObj.underlying
         const tsData = contract.methods.balanceOf(tokenObj.token).encodeABI()
-        batch.add(web3Fn.eth.call.request({data: tsData, to: underlyingInfo?.address}, 'latest', (err:any, res:any) => {
+        batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.underlying}, 'latest', (err:any, res:any) => {
         // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
           if (!list[tokenObj.token]) list[tokenObj.token] = {}
           if (err) {
@@ -95,7 +95,7 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
         batch.add(web3Fn.eth.call.request({data: blData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
           if (!list[tokenObj.token]) list[tokenObj.token] = {}
           if (err) {
-            // console.log(err)
+            console.log(err)
             list[tokenObj.token].balance = ''
           } else {
             list[tokenObj.token].balance = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
@@ -106,7 +106,7 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
     batch.execute()
   })
 }
-export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, account?:string | null | undefined) {
+export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, account?:string | null | undefined, underlying?:string | undefined) {
   return new Promise(resolve => {
     if (
       token
@@ -118,9 +118,11 @@ export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, accoun
       } else {
         const tokenList = [{
           token: token,
-          dec: dec
+          dec: dec,
+          underlying: underlying
         }]
         getBlandTs(tokenList, chainId, account).then((res:any) => {
+          // console.log(token)
           // console.log(res)
           resolve(res)
         })
@@ -144,7 +146,7 @@ export function getGroupTotalsupply (tokenList:any, chainId?:any, account?:strin
         resolve(lData.list)
       } else {
         getBlandTs(tokenList, chainId, account).then((res:any) => {
-          // console.log(res)
+          console.log(res)
           if (res) {
             setLocalConfig(SRCTOTALSUPPLY, SRCTOTALSUPPLY, chainId, SRCTOTALSUPPLY, {list: res})
           }
