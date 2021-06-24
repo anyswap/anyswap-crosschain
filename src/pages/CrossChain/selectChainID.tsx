@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react'
+import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Text } from 'rebass'
 // import styled from 'styled-components'
@@ -117,6 +117,16 @@ export default function SelectChainIdInputPanel({
     [onChainSelect]
   )
 
+  const destChainInfo = useMemo(() => {
+    if (Number(selectChainId) === Number(chainId)) {
+      return bridgeConfig
+    } else {
+      return bridgeConfig?.destChains[selectChainId]
+    }
+  }, [bridgeConfig, selectChainId, chainId])
+  // console.log(chainId)
+  // console.log(selectChainId)
+  // console.log(destChainInfo)
   useEffect(() => {
     if (
       account
@@ -128,11 +138,11 @@ export default function SelectChainIdInputPanel({
       if (Number(chainId) === Number(selectChainId)) {
         token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
       } else {
-        token = bridgeConfig?.destChains[selectChainId]?.underlying?.address ? bridgeConfig.destChains[selectChainId]?.underlying?.address : bridgeConfig?.destChains[selectChainId]?.address
+        token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
       }
       // console.log(token)
       if (token) {
-        getNodeBalance(account, token, selectChainId, bridgeConfig.destChains[selectChainId]?.decimals, isNativeToken).then(res => {
+        getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
           // console.log(res)
           if (res) {
             setDestBalance(res)
@@ -227,7 +237,7 @@ export default function SelectChainIdInputPanel({
                     <p>
                       {
                         bridgeConfig ? (
-                          bridgeConfig.destChains ? config.getBaseCoin(bridgeConfig.destChains[selectChainId]?.underlying?.symbol, chainId, 1, bridgeConfig.destChains[selectChainId]?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
+                          bridgeConfig.destChains ? config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
                         ) : ''
                       }
                     </p>

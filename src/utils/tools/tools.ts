@@ -30,6 +30,7 @@ export function getLocalConfig (
     return false
   } else {
     const lboj = JSON.parse(lstr)
+    // console.log(lboj)
     if (!lboj[chainID]) {
       return false
     } else if (!lboj[chainID][account]) {
@@ -40,6 +41,7 @@ export function getLocalConfig (
       (lboj[chainID][account].timestamp < config.localDataDeadline && token !== 'all')
       || (lboj[chainID][account].timestamp < config.localDataDeadline && token === 'all')
     ) { // 在某个时间之前的数据无效
+      lStorage.setItem(version + '_' + type, '')
       return false
     } else if (token === 'all') {
       return lboj[chainID][account]
@@ -81,6 +83,10 @@ export function setLocalConfig (
         timestamp: Date.now()
       }
     } else if (!lboj[chainID][account]) {
+      lboj[chainID] = {
+        ...lboj[chainID],
+        timestamp: Date.now()
+      }
       lboj[chainID][account] = {timestamp: Date.now()}
       lboj[chainID][account][token] = {
         ...data,

@@ -67,7 +67,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,
-  localDataDeadline: 1622532945161,
+  localDataDeadline: 1624515127265,
   farmUrl: '#/',
   explorerUrl: 'https://anyswap.net/explorer',
   getBaseCoin (value:any, chainId:any, type?: number, name?: string) {

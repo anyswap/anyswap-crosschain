@@ -146,7 +146,7 @@ export function getGroupTotalsupply (tokenList:any, chainId?:any, account?:strin
         resolve(lData.list)
       } else {
         getBlandTs(tokenList, chainId, account).then((res:any) => {
-          console.log(res)
+          // console.log(res)
           if (res) {
             setLocalConfig(SRCTOTALSUPPLY, SRCTOTALSUPPLY, chainId, SRCTOTALSUPPLY, {list: res})
           }
