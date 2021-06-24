@@ -112,7 +112,7 @@ export default function DashboardDtil() {
   }, [])
 
   const [searchBalance, setSearchBalance] = useState('')
-  const [showMore, setShowMore] = useState(false)
+  const [showMore, setShowMore] = useState(true)
 
   const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
   const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)

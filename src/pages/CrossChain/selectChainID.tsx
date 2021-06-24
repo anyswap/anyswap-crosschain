@@ -241,7 +241,7 @@ export default function SelectChainIdInputPanel({
                     <p>
                       {
                         bridgeConfig ? (
-                          bridgeConfig.destChains ? config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(bridgeConfig?.symbol, chainId, 1, bridgeConfig?.name)
+                          destChainInfo?.underlying ? config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(destChainInfo?.symbol, chainId, 1, destChainInfo?.name)
                         ) : ''
                       }
                     </p>

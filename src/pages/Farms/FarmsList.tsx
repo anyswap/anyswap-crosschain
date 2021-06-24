@@ -404,6 +404,7 @@ export default function FarmsList () {
             'USDC',
             'FTM'
           )}
+          {/* {FTMStakingAPY ? '' : ''} */}
           {farmItem(
             1,
             0,
