@@ -56,6 +56,7 @@ function getTokenInfo(token:any, chainId:any, version?:any) {
         getUrlData(url).then((res:any) => {
           if (res.msg === 'Success') {
             for (const t in res.data) {
+              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenCoin?.includes(res.data[t].symbol)) continue
               setLocalConfig(BRIDGETOKENCONFIG, t, chainId, BRIDGETOKENCONFIG, {list: res.data[t]}, undefined, version)
             }
             const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout, undefined, version)

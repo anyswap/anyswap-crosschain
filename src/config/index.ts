@@ -22,10 +22,12 @@ function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []
   if (list) {
     for (let str of list) {
-      if (str.indexOf('any') === 0) str = 'any' + str
+      arr.push(str)
+      if (str.indexOf('any') !== 0) str = 'any' + str
       arr.push(str)
     }
   }
+  // console.log(arr)
   return arr
 }
 
@@ -37,8 +39,8 @@ const bridgeChain:ConFig = {
   [VERSION.V2]: {
     bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin([]),
-    hiddenChain: [],
+    hiddenCoin: formatHiddenCoin(['MIM']),
+    hiddenChain: ['1'],
   },
   [VERSION.V3]: {
     bridgeConfigToken: '0x7beb05cf5681f402e762f8569c2fc138a2172978',

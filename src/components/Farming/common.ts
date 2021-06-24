@@ -92,7 +92,8 @@ function getAPY (item:any, allocPoint:any, lpBalance:any, blockNumber:number, To
     const curdec = item?.tokenObj?.decimals
     const br = fromWei(BlockReward, 18)
     const lb = fromWei(lpBalance, curdec)
-    const baseYear =  (Number(br) * blockNumber * 365 * Number(allocPoint) * price * 100) / (Number(TotalPoint)) / lb
+    // console.log(br)
+    const baseYear =  br ? (Number(br) * blockNumber * 365 * Number(allocPoint) * price * 100) / (Number(TotalPoint)) / lb : 0
     // console.log(baseYear)
     return baseYear.toFixed(2)
   }
