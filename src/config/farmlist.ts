@@ -15,7 +15,7 @@ const config: FarmConfig = {
     chainId: FTM_MAIN_CHAINID,
     farmToken: '0xdccd7b567da13a11cde232522be708b2d1a14498',
     lpToken: '0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605',
-    blockNumber: 8500
+    blockNumber: 86393
   },
 }
 export default config
