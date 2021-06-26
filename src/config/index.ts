@@ -39,8 +39,8 @@ const bridgeChain:ConFig = {
   [VERSION.V2]: {
     bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin([]),
-    hiddenChain: [],
+    hiddenCoin: formatHiddenCoin(['']),
+    hiddenChain: ['1'],
   },
   [VERSION.V3]: {
     bridgeConfigToken: '0x7beb05cf5681f402e762f8569c2fc138a2172978',
@@ -69,7 +69,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,
-  localDataDeadline: 1624526764957,
+  localDataDeadline: 1624700942896,
   farmUrl: '#/',
   explorerUrl: 'https://anyswap.net/explorer',
   getBaseCoin (value:any, chainId:any, type?: number, name?: string) {

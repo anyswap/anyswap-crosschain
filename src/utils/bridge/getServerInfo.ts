@@ -26,7 +26,7 @@ export function getAllChainIDs (chainId:any, version?:any) {
           if (res.msg === 'Success') {
             const arr:any = []
             for (const c of res.data) {
-              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenChain?.includes(c)) continue
+              // if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenChain?.includes(c)) continue
               arr.push(c)
             }
             setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, {list: arr}, undefined, version)

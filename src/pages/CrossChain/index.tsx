@@ -450,7 +450,15 @@ export default function CrossChain() {
         if (Number(c) === Number(chainId)) continue
         arr.push(c)
       }
-      setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
+      if (arr.length > 0) {
+        for (const c of arr) {
+          if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c) && selectCurrency?.symbol.indexOf('USDC') !== -1) continue
+          setSelectChain(c)
+          break
+        }
+      } else {
+        setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+      }
       setSelectChainList(arr)
     }
   }, [selectCurrency])

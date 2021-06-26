@@ -297,8 +297,11 @@ export default function SelectChainIdInputPanel({
             <div style={{ flex: '1' }}>
               {/* {chainListView()} */}
               {
-                  chainList.map((item:any, index:any) => {
-                    if (Number(chainId) === Number(item) && !isViewAllChain) {
+                  chainList && chainList.map((item:any, index:any) => {
+                    if (
+                      (Number(chainId) === Number(item) && !isViewAllChain)
+                      || (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(item) && bridgeConfig?.symbol.indexOf('USDC') !== -1)
+                    ) {
                       return ''
                     }
                     // console.log(selectChainId)

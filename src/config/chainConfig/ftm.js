@@ -1,7 +1,8 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const FTM_MAINNET = 'https://rpc.fantom.network'
+// export const FTM_MAINNET = 'https://rpc.fantom.network'
+export const FTM_MAINNET = 'https://rpcapi.fantom.network'
 export const FTM_MAIN_CHAINID = 250
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
