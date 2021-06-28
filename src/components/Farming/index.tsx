@@ -8,14 +8,15 @@ import { ethers } from 'ethers'
 // import { transparentize } from 'polished'
 import { useFarmContract, useTokenContract } from '../../hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
+
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import { Button } from '../../theme'
 
-import MasterChef from '../../constants/abis/farm/MasterChef.json'
-import ERC20_ABI from '../../constants/abis/erc20.json'
+// import MasterChef from '../../constants/abis/farm/MasterChef.json'
+// import ERC20_ABI from '../../constants/abis/erc20.json'
 
 import Modal from '../Modal'
 import Column from '../Column'
@@ -24,7 +25,8 @@ import { RowBetween } from '../Row'
 import { CloseIcon } from '../../theme'
 
 import config from '../../config'
-import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
+// import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
+import {fromWei, toWei} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
 
@@ -341,7 +343,7 @@ const BackBox = styled.div`
   display:inline-block;
 `
 
-const Web3Fn = require('web3')
+// const Web3Fn = require('web3')
 
 // const BASEMARKET = 100
 // let onlyOne = 0
@@ -383,12 +385,12 @@ export default function Farming ({
   const history = createBrowserHistory()
   // history.push(window.location.pathname + '')
   
-  const web3Fn = new Web3Fn(new Web3Fn.providers.HttpProvider(config.getCurChainInfo(CHAINID).nodeRpc))
-  function formatNum (str:any) {
-    // console.log(str)
-    // console.log(web3Fn.utils.hexToNumberString(str))
-    return web3Fn.utils.hexToNumberString(str)
-  }
+  // const web3Fn = new Web3Fn(new Web3Fn.providers.HttpProvider(config.getCurChainInfo(CHAINID).nodeRpc))
+  // function formatNum (str:any) {
+  //   // console.log(str)
+  //   // console.log(web3Fn.utils.hexToNumberString(str))
+  //   return web3Fn.utils.hexToNumberString(str)
+  // }
 
   const [LpList, setLpList] = useState<any>()
   
@@ -416,8 +418,8 @@ export default function Farming ({
   const [InterverTime, setInterverTime] = useState<any>(0)
   // const [CYCMarket, setCYCMarket] = useState<any>()
 
-  const web3Contract = new web3Fn.eth.Contract(MasterChef, FARMTOKEN)
-  const web3ErcContract = new web3Fn.eth.Contract(ERC20_ABI)
+  // const web3Contract = new web3Fn.eth.Contract(MasterChef, FARMTOKEN)
+  // const web3ErcContract = new web3Fn.eth.Contract(ERC20_ABI)
 
   const MMContract = useFarmContract(FARMTOKEN)
 
@@ -483,64 +485,40 @@ export default function Farming ({
     setStakeDisabled(status)
   }, [stakingType, balance, stakeAmount, BtnDelayDisabled, exchangeAddress, userInfo])
 
-// console.log(exchangeAddress)
   const getStakingInfo = useCallback(() => {
   // function getStakingInfo () {
     const curLpToken = exchangeAddress
     
-    // console.log(account)
-    // console.log(curLpToken)
-    // console.log(LpList)
     if (account && curLpToken && LpList && LpList[curLpToken]) {
-      // console.log(123)
-      const batch = new web3Fn.BatchRequest()
-      // console.log(exchangeAddress)
-      web3ErcContract.options.address = curLpToken
-      const blData = web3ErcContract.methods.balanceOf(account).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: blData, to: curLpToken}, 'latest', (err:any, balance:any) => {
-        if (!err) {
-          // console.log('balance')
-          // console.log(balance)
-          // console.log(formatNum(balance))
-          setBalance(formatNum(balance))
-        }
-      }))
-
-      web3ErcContract.options.address = FARMTOKEN
-      const alData = web3ErcContract.methods.allowance(account, FARMTOKEN).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: alData, to: curLpToken}, 'latest', (err:any, allowance:any) => {
-        if (!err) {
+      if (MMErcContract) {
+        MMErcContract.balanceOf(account).then((res:any) => {
+          // console.log('balanceOf')
+          // console.log(res?.toString())
+          setBalance(res?.toString())
+        })
+        MMErcContract.allowance(account, FARMTOKEN).then((res:any) => {
           // console.log('allowance')
-          // console.log(formatNum(allowance))
-          setApproveAmount(formatNum(allowance))
-          if (Number(formatNum(allowance).toString()) > 0) {
+          // console.log(res?.toString())
+          setApproveAmount(res?.toString())
+          if (Number(res?.toString()) > 0) {
             setUnlocking(false)
           }
-        }
-      }))
-
-      const uiData = web3Contract.methods.userInfo(LpList[curLpToken].index, account).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: uiData, to: FARMTOKEN}, 'latest', (err:any, userInfo:any) => {
-        if (!err) {
-          const results:any = formatWeb3Str(userInfo)
+        })
+      }
+      if (MMContract) {
+        MMContract.userInfo(LpList[curLpToken].index, account).then((res:any) => {
           // console.log('userInfo')
-          // console.log(userInfo)
-          setUserInfo(formatNum(results[0]))
-        }
-      }))
-      batch.execute()
+          // console.log(res)
+          setUserInfo(res[0]?.toString())
+        })
+      }
     }
-  }, [account, exchangeAddress, LpList])
+  }, [account, exchangeAddress, LpList, MMContract, MMErcContract])
 
   useEffect(() => {
     getStakingInfo()
   // }, [InterverTime])
-  }, [account, exchangeAddress, LpList])
-  // useEffect(() => {
-  //   if (!approveAmount) {
-  //     getStakingInfo()
-  //   }
-  // }, [account, exchangeAddress, LpList])
+  }, [account, exchangeAddress, LpList, MMContract, MMErcContract])
 
   useEffect(() => {
     getAllToken(CHAINID, version).then((res:any) => {
