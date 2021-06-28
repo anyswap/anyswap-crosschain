@@ -489,7 +489,7 @@ export default function Farming ({
   // function getStakingInfo () {
     const curLpToken = exchangeAddress
     
-    if (account && curLpToken && LpList && LpList[curLpToken]) {
+    if (account && curLpToken && LpList && LpList[curLpToken] && Number(CHAINID) === Number(chainId)) {
       if (MMErcContract) {
         MMErcContract.balanceOf(account).then((res:any) => {
           // console.log('balanceOf')
@@ -513,12 +513,12 @@ export default function Farming ({
         })
       }
     }
-  }, [account, exchangeAddress, LpList, MMContract, MMErcContract])
+  }, [account, exchangeAddress, LpList, MMContract, MMErcContract, CHAINID, chainId])
 
   useEffect(() => {
     getStakingInfo()
   // }, [InterverTime])
-  }, [account, exchangeAddress, LpList, MMContract, MMErcContract])
+  }, [account, exchangeAddress, LpList, MMContract, MMErcContract, CHAINID, chainId])
 
   useEffect(() => {
     getAllToken(CHAINID, version).then((res:any) => {
