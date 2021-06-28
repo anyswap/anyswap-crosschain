@@ -452,7 +452,7 @@ export default function CrossChain() {
       }
       if (arr.length > 0) {
         for (const c of arr) {
-          if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c) && selectCurrency?.symbol.indexOf('USDC') !== -1) continue
+          if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c)) continue
           setSelectChain(c)
           break
         }
