@@ -47,6 +47,11 @@ const bridgeToken = {
     bridgeRouterToken: '0xabd380327fe66724ffda91a87c772fb8d00be488',
     bridgeInitChain: '1'
   },
+  [VERSION.V1_T1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
+    bridgeInitChain: '4'
+  },
   [VERSION.V2]: {
     bridgeInitToken: '0xaeddc4a469ace97e90c605e3f52eb89620e305c0',
     bridgeRouterToken: '0xd1c5966f9f5ee6881ff6b261bbeda45972b1b5f3',
@@ -101,9 +106,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + BNB_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
-    bridgeInitToken: '0xc9baa8cfdde8e328787e29b4b078abf2dadc2055',
-    bridgeRouterToken: '0x332730a4F6E03D9C55829435f10360E13cfA41Ff',
-    bridgeInitChain: '4',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

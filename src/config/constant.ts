@@ -4,6 +4,7 @@ export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
 
 export enum VERSION {
   V1 = 'UNDERLYING',
+  V1_T1 = 'UNDERLYING_TEST',
   V2 = 'STABLE',
   V3 = 'ARB_DEV',
 }

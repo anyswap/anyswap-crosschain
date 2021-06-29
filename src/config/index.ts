@@ -36,6 +36,12 @@ const bridgeChain:ConFig = {
     bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
     bridgeInitDataChain: '56',
   },
+  [VERSION.V1_T1]: {
+    bridgeConfigToken: '0xd96ddb35c6268cb3085003248853c39f3bfffb4b',
+    bridgeInitDataChain: '256',
+    hiddenCoin: formatHiddenCoin(['']),
+    hiddenChain: [''],
+  },
   [VERSION.V2]: {
     bridgeConfigToken: '0xe6f658118bcc6d344c812826b1af13bd7d59956c',
     bridgeInitDataChain: '56',

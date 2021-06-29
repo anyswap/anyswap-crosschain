@@ -32,6 +32,11 @@ const bridgeToken = {
     bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '56'
   },
+  [VERSION.V1_T1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+    bridgeInitChain: '97'
+  },
   [VERSION.V2]: {
     bridgeInitToken: '0xbbc4a8d076f4b1888fec42581b6fc58d242cf2d5',
     bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
@@ -78,9 +83,7 @@ export default {
     baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
-    bridgeInitToken: '0x332730a4f6e03d9c55829435f10360e13cfa41ff',
-    bridgeRouterToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
-    bridgeInitChain: '97',
+    ...bridgeToken[USE_VERSION],
     multicalToken: '0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821',
     v1FactoryToken: '',
     v2FactoryToken: '',
