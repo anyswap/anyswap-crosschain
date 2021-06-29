@@ -42,8 +42,6 @@ import {
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
-// import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
-import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
 import {getNodeBalance} from '../../utils/bridge/getBalance'
 
 
@@ -99,13 +97,10 @@ export default function SelectChainIdInputPanel({
     if (selectChainList.length > 0) {
       setChainList([chainId, ...selectChainList])
     } else {
-      getAllChainIDs(chainId).then((res:any) => {
-        // console.log(res)
-        setChainList(res)
-      })
+      setChainList([])
     }
   }, [chainId, selectChainList])
-  // console.log(selectChainList)
+  // console.log(chainList)
 
   const handleCurrencySelect = useCallback(
     (chainID) => {
