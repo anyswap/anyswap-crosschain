@@ -9,7 +9,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback} from '../../hooks/useBridgeCallback'
+import {useBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -33,7 +33,7 @@ import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
+import {getTokenConfig} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
@@ -119,7 +119,7 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
-  const [swapType, setSwapType] = useState('swap')
+  const [swapType, setSwapType] = useState('swapin')
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -131,8 +131,6 @@ export default function CrossChain() {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
-
-  const [allTokens, setAllTokens] = useState<any>([])
 
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
@@ -236,23 +234,6 @@ export default function CrossChain() {
     selectChain
   )
 
-  const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    formatCurrency?formatCurrency:undefined,
-    selectCurrency?.address,
-    recipient,
-    inputBridgeValue,
-    selectChain
-  )
-
-  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    formatCurrency?formatCurrency:undefined,
-    selectCurrency?.address,
-    recipient,
-    inputBridgeValue,
-    selectChain
-  )
-    // console.log(wrapInputError)
-  
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
@@ -307,23 +288,10 @@ export default function CrossChain() {
         return false
       }
     } else {
-      if (selectCurrency?.underlying && !isNativeToken) {
-        if (wrapInputErrorUnderlying) {
-          return wrapInputErrorUnderlying
-        } else {
-          return false
-        }
-      } else if (selectCurrency?.underlying && isNativeToken) {
-        if (wrapInputErrorNative) {
-          return wrapInputErrorNative
-        } else {
-          return false
-        }
-      }
       return false
     }
     
-  }, [isNativeToken, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency])
+  }, [isNativeToken, wrapInputError, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
     // console.log(!wrapInputErrorUnderlying && !isNativeToken)
@@ -390,35 +358,11 @@ export default function CrossChain() {
       return t('ExceedLimit')
     } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
       return t('nodestlr')
-    } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
+    } else if (wrapType === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue])
-
-  useEffect(() => {
-    
-    getAllToken(chainId).then((res:any) => {
-      // console.log(res)
-      if (res) {
-        const list:any = []
-        for (const token in res) {
-          if (!isAddress(token)) continue
-          list.push({
-            "address": token,
-            "chainId": chainId,
-            "decimals": res[token].list.decimals,
-            "name": res[token].list.name,
-            "symbol": res[token].list.symbol,
-            "underlying": res[token].list.underlying,
-            "destChains": res[token].list.destChains,
-          })
-        }
-        // console.log(list)
-        setAllTokens(list)
-      }
-    })
-  }, [chainId])
 
   useEffect(() => {
     if (chainId && !selectChain) {
@@ -556,22 +500,9 @@ export default function CrossChain() {
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
                     onDelay()
-                    if (!selectCurrency || !selectCurrency.underlying) {
-                      if (onWrap) onWrap().then(() => {
-                        onClear()
-                      })
-                    } else {
-                      // if (onWrapUnderlying) onWrapUnderlying()
-                      if (isNativeToken) {
-                        if (onWrapNative) onWrapNative().then(() => {
-                          onClear()
-                        })
-                      } else {
-                        if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                          onClear()
-                        })
-                      }
-                    }
+                    if (onWrap) onWrap().then(() => {
+                      onClear()
+                    })
                   }}>
                     {t('Confirm')}
                   </ButtonPrimary>
@@ -589,7 +520,7 @@ export default function CrossChain() {
             {
               name: t('swap'),
               onTabClick: () => {
-                setSwapType('swap')
+                setSwapType('swapout')
                 if (account) {
                   setRecipient(account)
                 }
@@ -600,7 +531,7 @@ export default function CrossChain() {
             {
               name: t('send'),
               onTabClick: () => {
-                setSwapType('send')
+                setSwapType('swapin')
                 setRecipient('')
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
@@ -636,7 +567,6 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
-            allTokens={allTokens}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

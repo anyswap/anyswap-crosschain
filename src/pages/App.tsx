@@ -10,8 +10,8 @@ import Web3ReactManager from '../components/Web3ReactManager'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
 import CrossChain from './CrossChain'
-import SwapNative from './SwapNative'
-import Pool from './SwapNative/poolList'
+import Pools from './Pools'
+import PoolList from './Pools/poolList'
 
 import MATICfarming from './Farms/MATICfarming'
 import FTMfarming from './Farms/FTMfarming'
@@ -134,8 +134,8 @@ export default function App() {
               <Route exact strict path="/dashboard" component={Dashboard} />
               <Route exact strict path="/swap" component={CrossChain} />
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
-              <Route exact strict path="/pool" component={Pool} />
-              <Route exact strict path="/pool/add" component={SwapNative} />
+              <Route exact strict path="/pool" component={PoolList} />
+              <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />

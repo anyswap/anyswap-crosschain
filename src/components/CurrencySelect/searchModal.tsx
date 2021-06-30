@@ -18,11 +18,11 @@ import { CloseIcon } from '../../theme'
 import { isAddress } from '../../utils'
 
 import { useToken } from '../../hooks/Tokens'
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
 
 import CurrencyList from './CurrencyList'
 
-import {getAllToken} from '../../utils/bridge/getServerInfo'
+// import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
@@ -30,7 +30,8 @@ interface CurrencySearchModalProps {
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
-  onlyUnderlying?: boolean
+  // onlyUnderlying?: boolean
+  allTokens?: any
 }
 
 export default function SearchModal ({
@@ -39,56 +40,57 @@ export default function SearchModal ({
   onCurrencySelect,
   selectedCurrency,
   otherSelectedCurrency,
-  onlyUnderlying
+  // onlyUnderlying,
+  allTokens = []
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
 
   const tokenComparator = useTokenComparator(true)
 
-  const [allTokens, setAllTokens] = useState<any>([])
+  // const [allTokens, setAllTokens] = useState<any>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
 
 
   const inputRef = useRef<HTMLInputElement>()
 
-  useEffect(() => {
+  // useEffect(() => {
     
-    getAllToken(chainId).then((res:any) => {
-      // console.log(res)
-      if (res) {
-        const list:any = []
-        for (const token in res) {
-          if (!isAddress(token)) continue
-          if (onlyUnderlying) {
-            if (res[token].list.underlying) {
-              list.push({
-                "address": token,
-                "chainId": chainId,
-                "decimals": res[token].list.decimals,
-                "name": res[token].list.name,
-                "symbol": res[token].list.symbol,
-                "underlying": res[token].list.underlying,
-                "destChains": res[token].list.destChains,
-              })
-            }
-          } else {
-            list.push({
-              "address": token,
-              "chainId": chainId,
-              "decimals": res[token].list.decimals,
-              "name": res[token].list.name,
-              "symbol": res[token].list.symbol,
-              "underlying": res[token].list.underlying,
-              "destChains": res[token].list.destChains,
-            })
-          }
-        }
-        // console.log(list)
-        setAllTokens(list)
-      }
-    })
-  }, [chainId])
+  //   getAllToken(chainId).then((res:any) => {
+  //     // console.log(res)
+  //     if (res) {
+  //       const list:any = []
+  //       for (const token in res) {
+  //         if (!isAddress(token)) continue
+  //         if (onlyUnderlying) {
+  //           if (res[token].list.underlying) {
+  //             list.push({
+  //               "address": token,
+  //               "chainId": chainId,
+  //               "decimals": res[token].list.decimals,
+  //               "name": res[token].list.name,
+  //               "symbol": res[token].list.symbol,
+  //               "underlying": res[token].list.underlying,
+  //               "destChains": res[token].list.destChains,
+  //             })
+  //           }
+  //         } else {
+  //           list.push({
+  //             "address": token,
+  //             "chainId": chainId,
+  //             "decimals": res[token].list.decimals,
+  //             "name": res[token].list.name,
+  //             "symbol": res[token].list.symbol,
+  //             "underlying": res[token].list.underlying,
+  //             "destChains": res[token].list.destChains,
+  //           })
+  //         }
+  //       }
+  //       // console.log(list)
+  //       setAllTokens(list)
+  //     }
+  //   })
+  // }, [chainId])
   // const fixedList = useRef<FixedSizeList>()
   // console.log(allTokens)
 

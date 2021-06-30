@@ -58,7 +58,7 @@ interface SelectCurrencyInputPanelProps {
   showCommonBases?: boolean
   customBalanceText?: string
   inputType?: any
-  onlyUnderlying?: boolean
+  // onlyUnderlying?: boolean
   isViewModal?: boolean
   onOpenModalView?: (value: any) => void
   isViewNetwork?: boolean
@@ -67,6 +67,7 @@ interface SelectCurrencyInputPanelProps {
   isViewMode?: boolean
   modeConent?: any
   onChangeMode?: (value: any) => void
+  allTokens?: any
 }
 
 export default function SelectCurrencyInputPanel({
@@ -85,7 +86,7 @@ export default function SelectCurrencyInputPanel({
   id,
   customBalanceText,
   inputType,
-  onlyUnderlying,
+  // onlyUnderlying,
   isViewModal,
   onOpenModalView,
   isViewNetwork,
@@ -93,7 +94,8 @@ export default function SelectCurrencyInputPanel({
   isNativeToken,
   isViewMode,
   modeConent,
-  onChangeMode
+  onChangeMode,
+  allTokens = []
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -317,7 +319,8 @@ export default function SelectCurrencyInputPanel({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
-          onlyUnderlying={onlyUnderlying}
+          // onlyUnderlying={onlyUnderlying}
+          allTokens={allTokens}
         />
       )}
     </InputPanel>

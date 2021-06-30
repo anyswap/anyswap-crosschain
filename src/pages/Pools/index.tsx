@@ -35,7 +35,7 @@ import AppBody from '../AppBody'
 import PoolTip from './poolTip'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-import {getTokenConfig} from '../../utils/bridge/getServerInfo'
+import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -76,6 +76,8 @@ export default function SwapNative() {
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
   const [intervalCount, setIntervalCount] = useState<number>(0)
+
+  const [allTokens, setAllTokens] = useState<any>([])
 
   const [destChain, setDestChain] = useState<any>({
     chain: '',
@@ -314,8 +316,6 @@ export default function SwapNative() {
     }
   }, [inputBridgeValue, bridgeConfig])
 
-  
-
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -333,12 +333,6 @@ export default function SwapNative() {
       setSelectChain(chainId)
     }
   }, [chainId])
-  // useEffect(() => {
-  //   if (onlyFirst) {
-  //     history.push(window.location.pathname + '#/pool/add')
-  //   }
-  //   onlyFirst ++
-  // }, [chainId])
 
   useEffect(() => {
     const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
@@ -420,6 +414,33 @@ export default function SwapNative() {
       percent: formatPercent(bl, anyts)
     }
   }
+
+  useEffect(() => {
+    
+    getAllToken(chainId).then((res:any) => {
+      // console.log(res)
+      if (res) {
+        const list:any = []
+        for (const token in res) {
+          if (!isAddress(token)) continue
+          if (res[token].list.underlying) {
+            list.push({
+              "address": token,
+              "chainId": chainId,
+              "decimals": res[token].list.decimals,
+              "name": res[token].list.name,
+              "symbol": res[token].list.symbol,
+              "underlying": res[token].list.underlying,
+              "destChains": res[token].list.destChains,
+            })
+          }
+        }
+        // console.log(list)
+        setAllTokens(list)
+      }
+    })
+  }, [chainId])
+
   useEffect(() => {
     if (selectCurrency) {
       getAllOutBalance(account).then((res:any) => {
@@ -508,7 +529,7 @@ export default function SwapNative() {
             showMaxButton={true}
             id="selectCurrency"
             inputType={{swapType, type: 'INPUT'}}
-            onlyUnderlying={true}
+            // onlyUnderlying={true}
             isViewModal={modalOpen}
             isError={isInputError}
             // isViewMode={swapType === 'deposit' ? false : true}
@@ -518,6 +539,7 @@ export default function SwapNative() {
               setOpenAdvance(value)
             }}
             isNativeToken={isNativeToken}
+            allTokens={allTokens}
           />
           {
             openAdvance ? (

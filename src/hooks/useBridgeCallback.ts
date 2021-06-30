@@ -6,6 +6,7 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
+import {signSwapoutData, signSwapinData} from 'anyswapsdk'
 
 // import {registerSwap, recordsTxns} from '../utils/bridge/register'
 import {recordsTxns} from '../utils/bridge/register'
@@ -19,6 +20,7 @@ export enum WrapType {
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
+ * 跨链any token
  * 给定选定的输入和输出货币，返回一个wrap回调
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
@@ -88,6 +90,7 @@ export function useBridgeCallback(
 
 
 /**
+ * 跨链underlying
  * 给定选定的输入和输出货币，返回一个wrap回调
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
@@ -161,13 +164,11 @@ export function useBridgeCallback(
 
 
 /**
+ * 跨链native
  * 给定选定的输入和输出货币，返回一个wrap回调
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
  */
-//  @吴迪 AnyswapV3Router 合约新增接口：
-//  function anySwapOutNative(address token, address to, uint toChainID) external payable
-//  提现数额在 msg.value 中指定
 export function useBridgeNativeCallback(
   inputCurrency: Currency | undefined,
   inputToken: string | undefined,
@@ -232,6 +233,7 @@ export function useBridgeNativeCallback(
 }
 
 /**
+ * any token 充值与提现underlying
  * 给定选定的输入和输出货币，返回一个wrap回调
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
@@ -284,6 +286,7 @@ export function useBridgeNativeCallback(
 
 
 /**
+ * any token 充值与提现native
  * 给定选定的输入和输出货币，返回一个wrap回调
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
@@ -329,6 +332,231 @@ export function useBridgeNativeCallback(
                   account
                 )
                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+              } catch (error) {
+                console.log('Could not swapout', error)
+              }
+            }
+          : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
+}
+
+
+/**
+ * 跨链交易 native swap to native
+ * 给定选定的输入和输出货币，返回一个wrap回调
+ * @param inputCurrency 选定的输入货币
+ * @param typedValue 用户输入值
+ */
+ export function useBridgeSwapNativeCallback(
+  inputCurrency: Currency | undefined,
+  toAddress:  string | undefined,
+  typedValue: string | undefined,
+  toChainID: string | undefined,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  const { chainId, account } = useActiveWeb3React()
+  const bridgeContract = useBridgeContract()
+  const { t } = useTranslation()
+  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  // console.log(balance)
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+  return useMemo(() => {
+    // console.log(inputCurrency)
+    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+        sufficientBalance && inputAmount
+          ? async () => {
+              try {
+                // console.log(bridgeContract)
+                // console.log(inputAmount.raw.toString(16))
+                // console.log(inputAmount.raw.toString())
+                // console.log(inputAmount?.toSignificant(6))
+                
+                const txReceipt = await bridgeContract.anySwapOutExactTokensForNative(
+                  `0x${inputAmount.raw.toString(16)}`,
+                  'minamount',
+                  [],
+                  toAddress,
+                  'deadline',
+                  toChainID
+                )
+                addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                // registerSwap(txReceipt.hash, chainId)
+                if (txReceipt?.hash && account) {
+                  const data = {
+                    hash: txReceipt.hash?.toLowerCase(),
+                    chainId: chainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: inputAmount.raw.toString(),
+                    formatvalue: inputAmount?.toSignificant(6),
+                    to: toAddress?.toLowerCase(),
+                    symbol: inputCurrency?.symbol
+                  }
+                  recordsTxns(data)
+                }
+              } catch (error) {
+                console.log('Could not swapout', error)
+              }
+            }
+          : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
+}
+
+/**
+ * 跨链交易native swap to underlying
+ * 给定选定的输入和输出货币，返回一个wrap回调
+ * @param inputCurrency 选定的输入货币
+ * @param typedValue 用户输入值
+ */
+ export function useBridgeSwapNativeUnderlyingCallback(
+  inputCurrency: Currency | undefined,
+  toAddress:  string | undefined,
+  typedValue: string | undefined,
+  toChainID: string | undefined,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  const { chainId, account } = useActiveWeb3React()
+  const bridgeContract = useBridgeContract()
+  const { t } = useTranslation()
+  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  // console.log(balance)
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+  return useMemo(() => {
+    // console.log(inputCurrency)
+    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+        sufficientBalance && inputAmount
+          ? async () => {
+              try {
+                // console.log(bridgeContract)
+                // console.log(inputAmount.raw.toString(16))
+                // console.log(inputAmount.raw.toString())
+                // console.log(inputAmount?.toSignificant(6))
+                
+                const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
+                  `0x${inputAmount.raw.toString(16)}`,
+                  'minamount',
+                  [],
+                  toAddress,
+                  'deadline',
+                  toChainID
+                )
+                addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                // registerSwap(txReceipt.hash, chainId)
+                if (txReceipt?.hash && account) {
+                  const data = {
+                    hash: txReceipt.hash?.toLowerCase(),
+                    chainId: chainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: inputAmount.raw.toString(),
+                    formatvalue: inputAmount?.toSignificant(6),
+                    to: toAddress?.toLowerCase(),
+                    symbol: inputCurrency?.symbol
+                  }
+                  recordsTxns(data)
+                }
+              } catch (error) {
+                console.log('Could not swapout', error)
+              }
+            }
+          : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
+}
+
+
+/**
+ * 跨链桥
+ * 给定选定的输入和输出货币，返回一个wrap回调
+ * @param inputCurrency 选定的输入货币
+ * @param typedValue 用户输入值
+ */
+ export function useCrossBridgeCallback(
+  inputCurrency: Currency | undefined,
+  toAddress:  string | undefined,
+  typedValue: string | undefined,
+  toChainID: any,
+  txnsType: string | undefined,
+  inputToken: string | undefined,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  const { chainId, account } = useActiveWeb3React()
+  const bridgeContract = useBridgeContract()
+  const { t } = useTranslation()
+  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  // console.log(balance)
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+  return useMemo(() => {
+    // console.log(inputCurrency)
+    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+        sufficientBalance && inputAmount
+          ? async () => {
+              try {
+                // console.log(bridgeContract)
+                // console.log(inputAmount.raw.toString(16))
+                // console.log(inputAmount.raw.toString())
+                // console.log(inputAmount?.toSignificant(6))
+                
+                const txReceipt:any = txnsType === 'swapin' ? await signSwapinData({
+                  value: `0x${inputAmount.raw.toString(16)}`,
+                  address: toAddress,
+                  token: inputToken
+                }) : await signSwapoutData({
+                  value: `0x${inputAmount.raw.toString(16)}`,
+                  address: toAddress,
+                  token: inputToken,
+                  destChain: toChainID
+                })
+                addTransaction(txReceipt?.info, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                // registerSwap(txReceipt.hash, chainId)
+                if (txReceipt?.hash && account) {
+                  const data = {
+                    hash: txReceipt.hash?.toLowerCase(),
+                    chainId: chainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: inputAmount.raw.toString(),
+                    formatvalue: inputAmount?.toSignificant(6),
+                    to: toAddress?.toLowerCase(),
+                    symbol: inputCurrency?.symbol
+                  }
+                  recordsTxns(data)
+                }
               } catch (error) {
                 console.log('Could not swapout', error)
               }

@@ -125,34 +125,6 @@ function CurrencyRow({
         <Text title={currencyObj.name} fontWeight={500}>
           {config.getBaseCoin(currencyObj.symbol, chainId)}
         </Text>
-        {/* <FadedSpan>
-          {!isOnSelectedList && customAdded && !currency?.isCrossChain ? (
-            <TYPE.main fontWeight={500}>
-              Added by user
-              <LinkStyledButton
-                onClick={event => {
-                  event.stopPropagation()
-                  if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
-                }}
-              >
-                ({t('Remove')})
-              </LinkStyledButton>
-            </TYPE.main>
-          ) : null}
-          {!isOnSelectedList && !customAdded && !currency?.isCrossChain ? (
-            <TYPE.main fontWeight={500}>
-              Found by address
-              <LinkStyledButton
-                onClick={event => {
-                  event.stopPropagation()
-                  if (currency instanceof Token) addToken(currency)
-                }}
-              >
-                ({t('Add')})
-              </LinkStyledButton>
-            </TYPE.main>
-          ) : null}
-        </FadedSpan> */}
       </Column>
       <TokenTags currency={currencyObj} />
       {
