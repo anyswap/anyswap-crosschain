@@ -123,7 +123,7 @@ export default function SelectChainIdInputPanel({
     }
     return false
   }, [bridgeConfig, selectChainId, chainId])
-  // console.log(chainId)
+  // console.log(bridgeConfig)
   // console.log(selectChainId)
   // console.log(destChainInfo)
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={bridgeConfig?.underlying?.symbol ?? bridgeConfig?.symbol} size={'24px'} />
+                    <TokenLogo symbol={bridgeConfig?.underlying?.symbol ?? bridgeConfig?.symbol} logoUrl={bridgeConfig?.logoUrl} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>

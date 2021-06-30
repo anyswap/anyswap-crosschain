@@ -41,68 +41,34 @@ export default function SearchModal ({
   selectedCurrency,
   otherSelectedCurrency,
   // onlyUnderlying,
-  allTokens = []
+  allTokens = {}
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
   // const { chainId } = useActiveWeb3React()
 
   const tokenComparator = useTokenComparator(true)
 
-  // const [allTokens, setAllTokens] = useState<any>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
 
 
   const inputRef = useRef<HTMLInputElement>()
 
-  // useEffect(() => {
-    
-  //   getAllToken(chainId).then((res:any) => {
-  //     // console.log(res)
-  //     if (res) {
-  //       const list:any = []
-  //       for (const token in res) {
-  //         if (!isAddress(token)) continue
-  //         if (onlyUnderlying) {
-  //           if (res[token].list.underlying) {
-  //             list.push({
-  //               "address": token,
-  //               "chainId": chainId,
-  //               "decimals": res[token].list.decimals,
-  //               "name": res[token].list.name,
-  //               "symbol": res[token].list.symbol,
-  //               "underlying": res[token].list.underlying,
-  //               "destChains": res[token].list.destChains,
-  //             })
-  //           }
-  //         } else {
-  //           list.push({
-  //             "address": token,
-  //             "chainId": chainId,
-  //             "decimals": res[token].list.decimals,
-  //             "name": res[token].list.name,
-  //             "symbol": res[token].list.symbol,
-  //             "underlying": res[token].list.underlying,
-  //             "destChains": res[token].list.destChains,
-  //           })
-  //         }
-  //       }
-  //       // console.log(list)
-  //       setAllTokens(list)
-  //     }
-  //   })
-  // }, [chainId])
-  // const fixedList = useRef<FixedSizeList>()
-  // console.log(allTokens)
-
   const isAddressSearch = isAddress(searchQuery)
 
   const searchToken = useToken(searchQuery)
 
+  const tokenList = useMemo(() => {
+    const arr:any = []
+    for (const token in allTokens) {
+      arr.push(allTokens[token])
+    }
+    return arr
+  }, [allTokens])
+
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []
-    // console.log(allTokens)
-    return filterTokens(Object.values(allTokens), searchQuery)
-  }, [isAddressSearch, searchToken, allTokens, searchQuery])
+    return filterTokens(Object.values(tokenList), searchQuery)
+  }, [isAddressSearch, searchToken, tokenList, searchQuery])
 
   const filteredSortedTokens: Token[] = useMemo(() => {
     // console.log(searchToken)

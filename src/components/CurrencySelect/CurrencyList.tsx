@@ -91,7 +91,7 @@ function CurrencyRow({
   otherSelected,
   style
 }: {
-  currency: Currency
+  currency: any
   onSelect: () => void
   isSelected: boolean
   otherSelected: boolean
@@ -111,7 +111,7 @@ function CurrencyRow({
   const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currency?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  
+  // console.log(currency)
   return (
     <MenuItem
       style={style}
@@ -120,7 +120,7 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
-      <TokenLogo symbol={currencyObj.symbol} size={'24px'}></TokenLogo>
+      <TokenLogo symbol={currencyObj.symbol} logoUrl={currency?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
           {config.getBaseCoin(currencyObj.symbol, chainId)}

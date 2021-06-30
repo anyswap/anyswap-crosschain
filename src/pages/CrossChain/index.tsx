@@ -33,7 +33,8 @@ import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
+// import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
@@ -126,13 +127,13 @@ export default function CrossChain() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
 
-  const [bridgeConfig, setBridgeConfig] = useState<any>()
+  // const [bridgeConfig, setBridgeConfig] = useState<any>()
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  const [allTokens, setAllTokens] = useState<any>([])
+  const [allTokens, setAllTokens] = useState<any>({})
 
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
@@ -252,6 +253,10 @@ export default function CrossChain() {
     selectChain
   )
     // console.log(wrapInputError)
+  const bridgeConfig = useMemo(() => {
+    if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
+    return ''
+  }, [selectCurrency, allTokens])
   
   const isNativeToken = useMemo(() => {
     if (
@@ -396,15 +401,17 @@ export default function CrossChain() {
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue])
 
+  
+
   useEffect(() => {
-    
+    const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     getAllToken(chainId).then((res:any) => {
-      // console.log(res)
+      console.log(res)
       if (res) {
         const list:any = []
         for (const token in res) {
           if (!isAddress(token)) continue
-          list.push({
+          list[token] = {
             "address": token,
             "chainId": chainId,
             "decimals": res[token].list.decimals,
@@ -412,13 +419,23 @@ export default function CrossChain() {
             "symbol": res[token].list.symbol,
             "underlying": res[token].list.underlying,
             "destChains": res[token].list.destChains,
-          })
+            "logoUrl": res[token].list.logoUrl,
+          }
+          if (!selectCurrency || selectCurrency.chainId !== chainId) {
+            if (t === token) {
+              setSelectCurrency(list[token])
+            }
+          }
         }
         // console.log(list)
         setAllTokens(list)
+      } else {
+        setTimeout(() => {
+          setCount(count + 1)
+        }, 1000)
       }
     })
-  }, [chainId])
+  }, [chainId, count])
 
   useEffect(() => {
     if (chainId && !selectChain) {
@@ -435,38 +452,6 @@ export default function CrossChain() {
       setRecipient(account)
     }
   }, [account, swapType])
-
-  useEffect(() => {
-    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-
-    if (token && isAddress(token)) {
-      getTokenConfig(token, chainId).then((res:any) => {
-        // console.log(res)
-        if (res && res.decimals && res.symbol) {
-          setBridgeConfig(res)
-          if (!selectCurrency || selectCurrency.chainId !== chainId) {
-            setSelectCurrency({
-              "address": token,
-              "chainId": chainId,
-              "decimals": res.decimals,
-              "name": res.name,
-              "symbol": res.symbol,
-              "underlying": res.underlying,
-              "destChains": res.destChains
-            })
-          }
-        } else {
-          setTimeout(() => {
-            setCount(count + 1)
-          }, 1000)
-          setBridgeConfig('')
-        }
-      })
-    } else {
-      setBridgeConfig('')
-    }
-    // getBaseInfo()
-  }, [selectCurrency, count, initBridgeToken, chainId])
 
   useEffect(() => {
     // console.log(selectCurrency)

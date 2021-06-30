@@ -35,7 +35,8 @@ import AppBody from '../AppBody'
 import PoolTip from './poolTip'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
+// import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
+import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -63,7 +64,7 @@ export default function SwapNative() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
-  const [bridgeConfig, setBridgeConfig] = useState<any>()
+  // const [bridgeConfig, setBridgeConfig] = useState<any>()
   const [openAdvance, setOpenAdvance] = useState<any>(urlSwapType === 'deposit' ? false : true)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
   const [count, setCount] = useState<number>(0)
@@ -77,7 +78,7 @@ export default function SwapNative() {
 
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
-  const [allTokens, setAllTokens] = useState<any>([])
+  const [allTokens, setAllTokens] = useState<any>({})
 
   const [destChain, setDestChain] = useState<any>({
     chain: '',
@@ -139,6 +140,11 @@ export default function SwapNative() {
     setDelayAction(false)
     setInputBridgeValue('')
   }
+
+  const bridgeConfig = useMemo(() => {
+    if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
+    return ''
+  }, [selectCurrency, allTokens])
 
   const isNativeToken = useMemo(() => {
     if (
@@ -334,40 +340,6 @@ export default function SwapNative() {
     }
   }, [chainId])
 
-  useEffect(() => {
-    const token = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-    // console.log(token)
-    if (token) {
-      getTokenConfig(token, chainId).then((res:any) => {
-        // console.log(res)
-        if (res && res.decimals && res.symbol) {
-          setBridgeConfig(res)
-          if (!selectCurrency || selectCurrency.chainId !== chainId) {
-            setSelectCurrency({
-              "address": token,
-              "chainId": chainId,
-              "decimals": res.decimals,
-              "name": res.name,
-              "symbol": res.symbol,
-              "underlying": res.underlying,
-              "destChains": res.destChains,
-            })
-          }
-        } else {
-          setBridgeConfig('')
-          if (count >= 2) {
-            history.push(window.location.pathname + '#/pool/add')
-            setCount(count + 1)
-          } else {
-            setTimeout(() => {
-              setCount(count + 1)
-            }, 100)
-          }
-        }
-      })
-    }
-  }, [selectCurrency, count, chainId])
-
   function formatPercent (n1:any, n2:any) {
     if (!n1 || !n2) return ''
     const n = (Number(n1) / Number(n2)) * 100
@@ -416,30 +388,43 @@ export default function SwapNative() {
   }
 
   useEffect(() => {
-    
+    const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     getAllToken(chainId).then((res:any) => {
-      // console.log(res)
+      console.log(res)
       if (res) {
         const list:any = []
         for (const token in res) {
           if (!isAddress(token)) continue
-          if (res[token].list.underlying) {
-            list.push({
-              "address": token,
-              "chainId": chainId,
-              "decimals": res[token].list.decimals,
-              "name": res[token].list.name,
-              "symbol": res[token].list.symbol,
-              "underlying": res[token].list.underlying,
-              "destChains": res[token].list.destChains,
-            })
+          list[token] = {
+            "address": token,
+            "chainId": chainId,
+            "decimals": res[token].list.decimals,
+            "name": res[token].list.name,
+            "symbol": res[token].list.symbol,
+            "underlying": res[token].list.underlying,
+            "destChains": res[token].list.destChains,
+            "logoUrl": res[token].list.logoUrl,
+          }
+          if (!selectCurrency || selectCurrency.chainId !== chainId) {
+            if (t === token) {
+              setSelectCurrency(list[token])
+            }
           }
         }
         // console.log(list)
         setAllTokens(list)
+      } else {
+        if (count >= 2) {
+          history.push(window.location.pathname + '#/pool/add')
+          setCount(count + 1)
+        } else {
+          setTimeout(() => {
+            setCount(count + 1)
+          }, 100)
+        }
       }
     })
-  }, [chainId])
+  }, [chainId, count])
 
   useEffect(() => {
     if (selectCurrency) {

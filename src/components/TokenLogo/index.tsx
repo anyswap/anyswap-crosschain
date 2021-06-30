@@ -50,11 +50,13 @@ export default function TokenLogo({
   size = '1rem',
   isAny = true,
   style,
+  logoUrl,
   ...rest
 }: {
   symbol: any
   size?: any
   style?: React.CSSProperties
+  logoUrl?: any
   isAny?: any
 }) {
   const { chainId } = useActiveWeb3React()
@@ -63,7 +65,9 @@ export default function TokenLogo({
   symbol = symbol === 'W' + config.getCurChainInfo(chainId).symbol ? symbol.substr(1) : symbol
   // symbol = symbol === 'WHT' ? 'HT' : symbol
   // console.log(symbol)
-  if (symbol) {
+  if (logoUrl) {
+    path = logoUrl
+  } else if (symbol) {
     if (isAny) {
       if (symbol.indexOf('a') === 0 && symbol.indexOf('any') === -1) {
         symbol = symbol.replace('a', 'any')

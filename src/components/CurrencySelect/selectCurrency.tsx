@@ -95,7 +95,7 @@ export default function SelectCurrencyInputPanel({
   isViewMode,
   modeConent,
   onChangeMode,
-  allTokens = []
+  allTokens = {}
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -130,7 +130,7 @@ export default function SelectCurrencyInputPanel({
       return undefined
     }
   }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance])
-  // console.log(isNativeToken)
+  // console.log(currency)
   // console.log(selectedETHBalance?.toSignificant(6))
   // console.log(selectedCurrencyBalance?.toSignificant(6))
   const handleMax = useCallback(() => {
@@ -233,7 +233,7 @@ export default function SelectCurrencyInputPanel({
             >
               <Aligner>
                 <TokenLogoBox>
-                  <TokenLogo symbol={currency?.symbol} size={'24px'} />
+                  <TokenLogo symbol={currency?.symbol} logoUrl={allTokens[currency?.address?.toLowerCase()]?.logoUrl} size={'24px'} />
                 </TokenLogoBox>
                 <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                   <h3>
