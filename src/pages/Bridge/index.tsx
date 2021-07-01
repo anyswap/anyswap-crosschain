@@ -394,6 +394,7 @@ export default function CrossChain() {
             if (!isAddress(token)) continue
             const obj = res[swapType]
             list[token] = {
+              ...obj[token],
               "address": token,
               "chainId": chainId,
               "decimals": obj[token].decimals,

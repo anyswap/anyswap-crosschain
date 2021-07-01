@@ -320,13 +320,13 @@ export default function NavList() {
           </div>
           {t('swap')}
         </StyledNavLink>
-        <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
+        {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
           </div>
           {t('bridge')}
-        </StyledNavLink>
+        </StyledNavLink> */}
         <StyledNavLink
           id={`pool-nav-link`}
           to={'/pool'}

@@ -257,6 +257,9 @@ export default function CrossChain() {
     if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
     return ''
   }, [selectCurrency, allTokens])
+
+  // console.log(allTokens)
+  // console.log(bridgeConfig)
   
   const isNativeToken = useMemo(() => {
     if (
@@ -412,6 +415,7 @@ export default function CrossChain() {
         for (const token in res) {
           if (!isAddress(token)) continue
           list[token] = {
+            ...res[token].list,
             "address": token,
             "chainId": chainId,
             "decimals": res[token].list.decimals,

@@ -313,6 +313,9 @@ export default function SwapNative() {
       } else if (fee > bridgeConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
       }
+      if (Number(chainId) === Number(selectChain)) {
+        value = Number(inputBridgeValue)
+      }
       if (value && Number(value) && Number(value) > 0) {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
       }
@@ -396,6 +399,7 @@ export default function SwapNative() {
         for (const token in res) {
           if (!isAddress(token)) continue
           list[token] = {
+            ...res[token].list,
             "address": token,
             "chainId": chainId,
             "decimals": res[token].list.decimals,
