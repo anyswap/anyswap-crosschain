@@ -510,7 +510,7 @@ export default function PoolLists ({
                                 {
                                   Object.keys(item.destChains).map((chainID, index) => {
                                   // chainList.map((chainID, index) => {
-                                    if (index >= 2) return ''
+                                    // if (index >= 2) return ''
                                     return (
                                       <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
                                         <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
@@ -518,7 +518,7 @@ export default function PoolLists ({
                                     )
                                   })
                                 }
-                                <MoreView></MoreView>
+                                {Object.keys(item.destChains).length > 0 ? '' : <MoreView></MoreView>}
                               </>
                             ) : ''
                           }
