@@ -147,7 +147,24 @@ export default function SelectCurrencyInputPanel({
     }
   }, [isViewModal])
 
-  
+  const logoUrl = useMemo(() => {
+    if (allTokens && currency?.address) {
+      for (const t in allTokens) {
+        if (
+          t === currency?.address?.toLowerCase()
+          || allTokens[t]?.underlying?.address === currency?.address?.toLowerCase()
+        ) {
+          return allTokens[t]?.logoUrl
+        }
+      }
+    }
+    return ''
+  }, [allTokens, currency])
+
+  // console.log( logoUrl)
+  // console.log( currency)
+  // console.log( currency?.address?.toLowerCase())
+  // console.log( allTokens[currency?.underlying?.address?.toLowerCase() ?? currency?.address?.toLowerCase()]?.logoUrl)
   return (
     <InputPanel id={id} className={isError ? 'error' : ''}>
       <Container hideInput={hideInput}>
@@ -233,7 +250,7 @@ export default function SelectCurrencyInputPanel({
             >
               <Aligner>
                 <TokenLogoBox>
-                  <TokenLogo symbol={currency?.symbol} logoUrl={allTokens[currency?.address?.toLowerCase()]?.logoUrl} size={'24px'} />
+                  <TokenLogo symbol={currency?.symbol} logoUrl={logoUrl} size={'24px'} />
                 </TokenLogoBox>
                 <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                   <h3>

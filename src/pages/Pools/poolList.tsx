@@ -151,24 +151,24 @@ const ChainLogoBox = styled.div`
   overflow:hidden;
   margin: 0 2px;
 `
-// const MoreView = styled.div`
-//   ${({ theme }) => theme.flexC};
-//   width: ${LogoSize};
-//   height: ${LogoSize};
-//   border-radius: 100%;
-//   border: 1px solid rgba(0, 0, 0, 0.1);
-//   overflow:hidden;
-//   position:relative;
-//   margin: 0 2px;
-//   ::after {
-//     content: '...';
-//     line-height: 20px;
-//     position: absolute;
-//     top: 0px;
-//     font-size: 12px;
-//     color: #ccc;
-//   }
-// `
+const MoreView = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: ${LogoSize};
+  height: ${LogoSize};
+  border-radius: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  overflow:hidden;
+  position:relative;
+  margin: 0 2px;
+  ::after {
+    content: '...';
+    line-height: 20px;
+    position: absolute;
+    top: 0px;
+    font-size: 12px;
+    color: #ccc;
+  }
+`
 let intervalFN:any
 
 export default function PoolLists ({
@@ -506,15 +506,20 @@ export default function PoolLists ({
                           </ChainLogoBox>
                           {
                             item.destChains && Object.keys(item.destChains).length > 0 ? (
-                              Object.keys(item.destChains).map((chainID, index) => {
-                              // chainList.map((chainID, index) => {
-                                // if (index >= 2) return ''
-                                return (
-                                  <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
-                                    <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
-                                  </ChainLogoBox>
-                                )
-                              })
+                              <>
+                                {
+                                  Object.keys(item.destChains).map((chainID, index) => {
+                                  // chainList.map((chainID, index) => {
+                                    if (index >= 2) return ''
+                                    return (
+                                      <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
+                                        <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
+                                      </ChainLogoBox>
+                                    )
+                                  })
+                                }
+                                <MoreView></MoreView>
+                              </>
                             ) : ''
                           }
                         </Flex>

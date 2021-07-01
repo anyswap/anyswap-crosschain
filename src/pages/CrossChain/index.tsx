@@ -298,6 +298,9 @@ export default function CrossChain() {
       } else if (fee > bridgeConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
       }
+      if (!bridgeConfig?.destChains[selectChain]?.swapfeeon) {
+        value = Number(inputBridgeValue)
+      }
       if (value && Number(value) && Number(value) > 0) {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
       }
@@ -305,7 +308,7 @@ export default function CrossChain() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig])
+  }, [inputBridgeValue, bridgeConfig, selectChain])
 
   const isWrapInputError = useMemo(() => {
     if (!selectCurrency?.underlying && !isNativeToken) {

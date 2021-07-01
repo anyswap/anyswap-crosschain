@@ -313,7 +313,7 @@ export default function SwapNative() {
       } else if (fee > bridgeConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
       }
-      if (Number(chainId) === Number(selectChain)) {
+      if (Number(chainId) === Number(selectChain) || !bridgeConfig?.destChains[selectChain]?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
@@ -323,7 +323,7 @@ export default function SwapNative() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig])
+  }, [inputBridgeValue, bridgeConfig, selectChain])
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
