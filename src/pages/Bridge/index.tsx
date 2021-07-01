@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
-import SelectChainIdInputPanel from './selectChainID'
+import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -199,19 +199,21 @@ export default function CrossChain() {
           bl: CC[selectCurrency?.address]?.balance
         })
       }
-      const DC:any = await getNodeTotalsupply(
-        selectCurrency?.destChains[selectChain]?.address,
-        selectChain,
-        selectCurrency?.destChains[selectChain]?.decimals,
-        account,
-        selectCurrency?.destChains[selectChain]?.underlying?.address
-      )
-      if (DC) {
-        setDestChain({
-          chain: selectChain,
-          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].address]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
-          bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
-        })
+      if (!isNaN(selectChain)) {
+        const DC:any = await getNodeTotalsupply(
+          selectCurrency?.destChains[selectChain]?.address,
+          selectChain,
+          selectCurrency?.destChains[selectChain]?.decimals,
+          account,
+          selectCurrency?.destChains[selectChain]?.underlying?.address
+        )
+        if (DC) {
+          setDestChain({
+            chain: selectChain,
+            ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain].address]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
+            bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
+          })
+        }
       }
       // console.log(CC)
       // console.log(DC)
@@ -371,8 +373,17 @@ export default function CrossChain() {
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue])
 
+  
+  useEffect(() => {
+    setSelectCurrency('')
+    if (swapType == 'swapin' && account) {
+      setRecipient(account)
+    }
+  }, [account, swapType])
+
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
+    console.log(swapType)
     if (chainId) {
       CurrentBridgeInfo(chainId).then((res:any) => {
         console.log(res)
@@ -415,7 +426,7 @@ export default function CrossChain() {
     } else {
       setAllTokens({})
     }
-  }, [chainId, swapType, count])
+  }, [chainId, swapType, count, selectCurrency])
 
   useEffect(() => {
     if (chainId && !selectChain) {
@@ -427,16 +438,11 @@ export default function CrossChain() {
       setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
     }
   }, [chainId])
-  useEffect(() => {
-    if (swapType == 'swap' && account) {
-      setRecipient(account)
-    }
-  }, [account, swapType])
 
   useEffect(() => {
     // console.log(selectCurrency)
     if (selectCurrency) {
-      const arr = []
+      const arr:any = []
       for (const c in selectCurrency?.destChains) {
         if (Number(c) === Number(chainId)) continue
         arr.push(c)
@@ -541,7 +547,7 @@ export default function CrossChain() {
             {
               name: t('swap'),
               onTabClick: () => {
-                setSwapType('swapout')
+                setSwapType('swapin')
                 if (account) {
                   setRecipient(account)
                 }
@@ -552,7 +558,7 @@ export default function CrossChain() {
             {
               name: t('send'),
               onTabClick: () => {
-                setSwapType('swapin')
+                setSwapType('swapout')
                 setRecipient('')
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
@@ -643,7 +649,7 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />
-          {swapType == 'swap' ? '' : (
+          {swapType == 'swapin' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
           )}
         </AutoColumn>

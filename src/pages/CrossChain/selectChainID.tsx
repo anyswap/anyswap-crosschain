@@ -132,6 +132,7 @@ export default function SelectChainIdInputPanel({
       && chainId
       && bridgeConfig
       && selectChainId
+      && !isNaN(selectChainId)
     ) {
       let token:any = ''
       if (Number(chainId) === Number(selectChainId)) {
@@ -263,7 +264,7 @@ export default function SelectChainIdInputPanel({
                     <TokenLogo symbol={selectChainId ? (config.getCurChainInfo(selectChainId)?.networkLogo ?? config.getCurChainInfo(selectChainId)?.symbol) : ''} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(selectChainId)}>
-                    {selectChainId && config.chainInfo[selectChainId].networkName ? config.chainInfo[selectChainId].networkName : t('selectNetwork')}
+                    {selectChainId && config.chainInfo[selectChainId]?.networkName ? config.chainInfo[selectChainId].networkName : t('selectNetwork')}
                   </StyledTokenName>
                   {!disableCurrencySelect && !!selectChainId && (
                     <StyledDropDownBox>

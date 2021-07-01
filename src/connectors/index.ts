@@ -10,6 +10,7 @@ const NETWORK_URL = config.nodeRpc
 
 const spportChain:any = {}
 for (const chainID in config.chainInfo) {
+  if (isNaN(Number(chainID))) continue
   spportChain[chainID] = config.chainInfo[chainID].nodeRpc
 }
 // console.log(spportChain)
