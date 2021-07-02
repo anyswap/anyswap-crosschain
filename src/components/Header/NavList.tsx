@@ -313,6 +313,13 @@ export default function NavList() {
           </div>
           {t('dashboard')}
         </StyledNavLink>
+        <StyledNavLink id={`swap-nav-link`} to={'/router'}>
+          <div className="icon">
+            <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
+          </div>
+          {t('router')}
+        </StyledNavLink>
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
@@ -368,13 +375,13 @@ export default function NavList() {
         </StyledNavLink> */}
       </HeaderLinks>
       <Tabs>
-        <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
+        {/* <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
           <div className="icon">
             <img src={require('../../assets/images/icon/markets.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/markets-purpl.svg')} className="on" alt="" />
           </div>
           {t('Markets')}
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem id="link" href="https://vote.anyswap.exchange/">
           <div className="icon">
             <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />

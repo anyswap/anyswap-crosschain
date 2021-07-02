@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
-import SelectChainIdInputPanel from './selectChainID'
+import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -688,7 +688,7 @@ export default function CrossChain() {
           )}
         </AutoColumn>
 
-        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
 
         <BottomGrouping>
           {!account ? (

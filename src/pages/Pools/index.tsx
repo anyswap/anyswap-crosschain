@@ -572,7 +572,7 @@ export default function SwapNative() {
         />
         {
           openAdvance ? (
-            <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
+            <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
           ) : ''
         }
 

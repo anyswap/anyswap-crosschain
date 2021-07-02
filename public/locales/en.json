@@ -326,5 +326,6 @@
   "ExceedLimit": "Exceed limit",
   "nodestlr": "Dest Liquidity Insufficient",
   "destTS": "Dest Liquidity",
-  "maticUSDCStakingTip": "Stake USDC earn ANY, APR:"
+  "maticUSDCStakingTip": "Stake USDC earn ANY, APR:",
+  "router": "Router"
 }
