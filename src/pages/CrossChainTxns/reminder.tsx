@@ -82,17 +82,21 @@ const SubCurrencySelectBox = styled.div`
 interface ReminderType {
   bridgeConfig: any,
   bridgeType: string | undefined,
-  currency: any
+  currency: any,
+  selectChain: any
 }
 
-function CrossBridge (bridgeConfig:any, currency:any) {
+function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
+  // console.log(selectChain)
+  // console.log(bridgeConfig)
   if (!bridgeConfig || !currency) {
     return (
       <></>
     )
   }
+  const isSwapfeeon = bridgeConfig?.destChains[selectChain]?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
   // console.log(currency)
   return (
@@ -103,10 +107,10 @@ function CrossBridge (bridgeConfig:any, currency:any) {
           {t('Reminder')}:
         </dt>
         <dd><i></i>{t('mintTip1', {
-          dMinFee: bridgeConfig?.MinimumSwapFee,
+          dMinFee: isSwapfeeon ? bridgeConfig?.MinimumSwapFee : 0,
           coin: viewSymbol,
-          dMaxFee: bridgeConfig?.MaximumSwapFee,
-          dFee: Number(bridgeConfig?.SwapFeeRatePerMillion)
+          dMaxFee: isSwapfeeon ? bridgeConfig?.MaximumSwapFee : 0,
+          dFee: isSwapfeeon ? Number(bridgeConfig?.SwapFeeRatePerMillion) : 0
         })}</dd>
         <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
@@ -123,10 +127,11 @@ function CrossBridge (bridgeConfig:any, currency:any) {
 export default function Reminder ({
   bridgeConfig,
   bridgeType,
-  currency
+  currency,
+  selectChain
 }: ReminderType) {
   if (bridgeType) {
-    return CrossBridge(bridgeConfig, currency)
+    return CrossBridge(bridgeConfig, currency, selectChain)
   }
   return (
     <></>

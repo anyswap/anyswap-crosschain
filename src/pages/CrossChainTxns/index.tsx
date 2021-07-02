@@ -660,7 +660,7 @@ export default function CrossChain() {
           )}
         </AutoColumn>
 
-        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
+        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} />
 
         <BottomGrouping>
           {!account ? (
