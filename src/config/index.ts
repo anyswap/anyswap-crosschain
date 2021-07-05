@@ -4,7 +4,9 @@ import {
   INIT_NODE,
   VERSION,
   USE_VERSION,
-  bridgeApi
+  bridgeApi,
+  env,
+  version
 } from './constant'
 
 import {getNetwork, getInitBridgeChain} from './getUrlParams'
@@ -72,6 +74,8 @@ const bridgeTestChain:ConFig = {
 const config: ConFig = {
   ...netConfig,
   ...INITBRIDGE,
+  env,
+  version,
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,

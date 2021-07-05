@@ -16,3 +16,7 @@ export const ENV_NODE_CONFIG = USE_VERSION + '_ENV_NODE_CONFIG'
 export const INIT_NODE = '56'
 
 export const timeout = 1000 * 60 * 30
+
+export const env = 'dev'
+
+export const version = '0.1.0'

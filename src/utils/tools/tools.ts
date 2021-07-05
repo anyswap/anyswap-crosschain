@@ -14,6 +14,8 @@ export function formatWeb3Str (str:string, len = 64) {
   return arr
 }
 
+const VERSION = 'VERSION'
+
 export function getLocalConfig (
   account:string,
   token:string,
@@ -23,7 +25,12 @@ export function getLocalConfig (
   saveType?:number|undefined,
   version?: string
 ) {
-  version = version ? version : USE_VERSION 
+  version = version ? version : USE_VERSION
+  const curVersion = localStorage.getItem(version + '_' + VERSION)
+  // console.log(curVersion)
+  if (curVersion && curVersion !== config.version) {
+    return false
+  }
   const lStorage = saveType ? localStorage : sessionStorage
   const lstr = lStorage.getItem(version + '_' + type)
   if (!lstr) {
@@ -99,6 +106,7 @@ export function setLocalConfig (
       }
     }
   }
+  localStorage.setItem(version + '_' + VERSION, config.version)
   lStorage.setItem(version + '_' + type, JSON.stringify(lboj))
 }
 

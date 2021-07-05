@@ -19,7 +19,7 @@ import MATICfarming from './Farms/MATICfarming'
 import FTMfarming from './Farms/FTMfarming'
 import FarmList from './Farms/FarmsList'
 
-// import config from '../config'
+import config from '../config'
 
 const AppWrapper = styled.div`
   // display: flex;
@@ -134,13 +134,19 @@ export default function App() {
             <Switch>
               {/* <Route exact strict path="/bridge" component={Bridge} /> */}
               <Route exact strict path="/dashboard" component={Dashboard} />
-              <Route exact strict path="/router" component={CrossChain} />
+              <Route exact strict path={config.env === 'dev' ? "/router" : "/swap"} component={CrossChain} />
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
               <Route exact strict path="/pool" component={PoolList} />
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
-              <Route exact strict path="/bridge" component={Bridge} />
-              <Route exact strict path="/swap" component={CrossChainTxns} />
+              {
+                config.env === 'dev' ? (
+                  <>
+                    <Route exact strict path="/bridge" component={Bridge} />
+                    <Route exact strict path="/swap" component={CrossChainTxns} />
+                  </>
+                ) : ''
+              }
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />
               <Route
