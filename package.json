@@ -1,5 +1,6 @@
 {
   "name": "anyswap-crosschain",
+  "version": "0.1.1",
   "description": "Anyswap CrossChain",
   "homepage": "/",
   "private": true,

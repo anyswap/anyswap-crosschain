@@ -277,7 +277,7 @@ export default function PoolLists ({
     )
   }
   function viewTd2 (item:any, index:number, c?:any) {
-    // console.log(poolList)
+    // console.log(item)
     let listView:any = ''
     if (c) {
       const ts = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].ts ? poolData[c][item.address].ts : '0.00'
