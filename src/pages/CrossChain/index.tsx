@@ -444,16 +444,18 @@ export default function CrossChain() {
     })
   }, [chainId, count])
 
-  useEffect(() => {
-    if (chainId && !selectChain) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-    }
-  }, [chainId, selectChain])
-  useEffect(() => {
-    if (chainId) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-    }
-  }, [chainId])
+  // useEffect(() => {
+  //   if (chainId && !selectChain) {
+  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+  //   }
+  // }, [chainId, selectChain])
+
+  // useEffect(() => {
+  //   if (chainId) {
+  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+  //   }
+  // }, [chainId])
+
   useEffect(() => {
     if (swapType == 'swap' && account) {
       setRecipient(account)
