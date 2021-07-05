@@ -53,6 +53,12 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: FTM_MAINNET,
+    nodeRpcList: [
+      'https://rpc.fantom.network',
+      'https://rpc2.fantom.network',
+      'https://rpc3.fantom.network',
+      'https://rpcapi.fantom.network'
+    ],
     chainID: FTM_MAIN_CHAINID,
     lookHash: FTM_MAIN_EXPLORER + '/tx/',
     lookAddr: FTM_MAIN_EXPLORER + '/address/',
