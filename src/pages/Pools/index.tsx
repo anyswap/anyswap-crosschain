@@ -146,6 +146,13 @@ export default function SwapNative() {
     return ''
   }, [selectCurrency, allTokens])
 
+  const destConfig = useMemo(() => {
+    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
+      return bridgeConfig?.destChains[selectChain]
+    }
+    return false
+  }, [bridgeConfig, selectChain])
+
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
@@ -245,7 +252,7 @@ export default function SwapNative() {
     // console.log(isCrossBridge)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && isCrossBridge
       && inputBridgeValue
@@ -256,8 +263,8 @@ export default function SwapNative() {
         swapType !== 'deposit'
         && openAdvance
         && (
-          Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-          || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+          Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+          || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         )
       ) {
         // console.log(1)
@@ -270,7 +277,7 @@ export default function SwapNative() {
       // console.log(3)
       return false
     }
-  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
   // console.log(isInputError)
 
@@ -281,11 +288,11 @@ export default function SwapNative() {
     } else if (
       swapType !== 'deposit'
       && openAdvance
-      && bridgeConfig
+      && destConfig
       && inputBridgeValue
       && (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
       )
     ) {
       return t('ExceedLimit')
@@ -305,15 +312,15 @@ export default function SwapNative() {
   }, [t, swapType, wrapType, wrapTypeUnderlying, isWrapInputError, inputBridgeValue])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && bridgeConfig) {
-      const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
+    if (inputBridgeValue && destConfig) {
+      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(bridgeConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MinimumSwapFee)
-      } else if (fee > bridgeConfig.MaximumSwapFee) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
+      if (fee < Number(destConfig.MinimumSwapFee)) {
+        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      } else if (fee > destConfig.MaximumSwapFee) {
+        value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
-      if (Number(chainId) === Number(selectChain) || !bridgeConfig?.destChains[selectChain]?.swapfeeon) {
+      if (Number(chainId) === Number(selectChain) || !destConfig?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
@@ -323,7 +330,7 @@ export default function SwapNative() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig, selectChain])
+  }, [inputBridgeValue, destConfig, selectChain])
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {

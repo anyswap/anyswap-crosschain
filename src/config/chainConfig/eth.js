@@ -7,7 +7,7 @@ export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? process.env.
 export const ETH_MAIN_CHAINID = 1
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
-export const ETH_TESTNET = 'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0'
+export const ETH_TESTNET = 'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd'
 export const ETH_TEST_CHAINID = 4
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
@@ -32,15 +32,15 @@ const bridgeToken = {
     bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '56'
   },
-  [VERSION.V1_T1]: {
-    bridgeInitToken: '',
-    bridgeRouterToken: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
-    bridgeInitChain: '97'
-  },
   [VERSION.V2]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
     bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
     bridgeInitChain: '56'
+  },
+  [VERSION.V2_T1]: {
+    bridgeInitToken: '0xd4143e8db48a8f73afcdf13d7b3305f28da38116',
+    bridgeRouterToken: '0x750bfe8490175c2a9a9387b19aa2aae2d75db638',
+    bridgeInitChain: '97'
   },
   [VERSION.V3]: {
     bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',

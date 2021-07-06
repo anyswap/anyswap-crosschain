@@ -149,9 +149,9 @@ const bridgeToken = {
     bridgeRouterToken: '',
     bridgeInitChain: '',
   },
-  [VERSION.V1_T1]: {
+  [VERSION.V2_T1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '0xcb58418aa51ba525aef0fe474109c0354d844b7c',
+    bridgeRouterToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
     bridgeInitChain: '97'
   },
 }

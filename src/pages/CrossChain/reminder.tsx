@@ -96,7 +96,8 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
       <></>
     )
   }
-  const isSwapfeeon = bridgeConfig?.destChains[selectChain]?.swapfeeon ? true : false
+  const destConfig = bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
+  const isSwapfeeon = destConfig?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
   // console.log(currency)
   return (
@@ -107,16 +108,16 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
           {t('Reminder')}:
         </dt>
         <dd><i></i>{t('mintTip1', {
-          dMinFee: isSwapfeeon ? bridgeConfig?.MinimumSwapFee : 0,
+          dMinFee: isSwapfeeon ? destConfig?.MinimumSwapFee : 0,
           coin: viewSymbol,
-          dMaxFee: isSwapfeeon ? bridgeConfig?.MaximumSwapFee : 0,
-          dFee: isSwapfeeon ? Number(bridgeConfig?.SwapFeeRatePerMillion) : 0
+          dMaxFee: isSwapfeeon ? destConfig?.MaximumSwapFee : 0,
+          dFee: isSwapfeeon ? Number(destConfig?.SwapFeeRatePerMillion) : 0
         })}</dd>
-        <dd><i></i>{t('mintTip2')} {thousandBit(bridgeConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
-        <dd><i></i>{t('mintTip3')} {thousandBit(bridgeConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t('mintTip2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t('mintTip3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t('mintTip4')}</dd>
         <dd><i></i>{t('mintTip5', {
-          depositBigValMoreTime: thousandBit(bridgeConfig?.BigValueThreshold, 'no'),
+          depositBigValMoreTime: thousandBit(destConfig?.BigValueThreshold, 'no'),
           coin: viewSymbol,
         }) + (viewSymbol ? '' : '')}</dd>
       </dl>

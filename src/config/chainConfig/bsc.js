@@ -47,16 +47,16 @@ const bridgeToken = {
     bridgeRouterToken: '0xabd380327fe66724ffda91a87c772fb8d00be488',
     bridgeInitChain: '1'
   },
-  [VERSION.V1_T1]: {
-    bridgeInitToken: '',
-    bridgeRouterToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
-    bridgeInitChain: '4'
-  },
   [VERSION.V2]: {
     bridgeInitToken: '0xaeddc4a469ace97e90c605e3f52eb89620e305c0',
     bridgeRouterToken: '0xd1c5966f9f5ee6881ff6b261bbeda45972b1b5f3',
     bridgeInitChain: '137'
-  }
+  },
+  [VERSION.V2_T1]: {
+    bridgeInitToken: '',
+    bridgeRouterToken: '0x76a0182cd55ed477c54d747b88314b8687a04c4c',
+    bridgeInitChain: '4'
+  },
 }
 
 export default {

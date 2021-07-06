@@ -22,7 +22,7 @@ export function getAllChainIDs (chainId:any, version?:any) {
       } else {
         const url = `${config.bridgeApi}/v3/chaininfo?version=${version}`
         getUrlData(url).then((res:any) => {
-          // console.log(res)
+          console.log(res)
           if (res.msg === 'Success') {
             const arr:any = []
             for (const c of res.data) {

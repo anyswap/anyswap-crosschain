@@ -127,8 +127,6 @@ export default function CrossChain() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
 
-  // const [bridgeConfig, setBridgeConfig] = useState<any>()
-
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
@@ -258,7 +256,14 @@ export default function CrossChain() {
     return ''
   }, [selectCurrency, allTokens])
 
-  // console.log(allTokens)
+  const destConfig = useMemo(() => {
+    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
+      return bridgeConfig?.destChains[selectChain]
+    }
+    return false
+  }, [bridgeConfig, selectChain])
+
+  // console.log(destConfig)
   // console.log(bridgeConfig)
   
   const isNativeToken = useMemo(() => {
@@ -290,15 +295,15 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && bridgeConfig) {
-      const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
+    if (inputBridgeValue && destConfig) {
+      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(bridgeConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MinimumSwapFee)
-      } else if (fee > bridgeConfig.MaximumSwapFee) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
+      if (fee < Number(destConfig.MinimumSwapFee)) {
+        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      } else if (fee > destConfig.MaximumSwapFee) {
+        value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
-      if (!bridgeConfig?.destChains[selectChain]?.swapfeeon) {
+      if (!destConfig?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
@@ -308,7 +313,7 @@ export default function CrossChain() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig, selectChain])
+  }, [inputBridgeValue, destConfig, selectChain])
 
   const isWrapInputError = useMemo(() => {
     if (!selectCurrency?.underlying && !isNativeToken) {
@@ -341,7 +346,7 @@ export default function CrossChain() {
     // console.log(destChain)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
@@ -349,8 +354,8 @@ export default function CrossChain() {
       && destChain
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
@@ -360,20 +365,20 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
     // console.log(destChain)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && isCrossBridge
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
@@ -383,7 +388,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
 
   const btnTxt = useMemo(() => {
@@ -391,11 +396,11 @@ export default function CrossChain() {
     if (isWrapInputError && inputBridgeValue) {
       return isWrapInputError
     } else if (
-      bridgeConfig
+      destConfig
       && inputBridgeValue
       && (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
       )
     ) {
       return t('ExceedLimit')
@@ -443,18 +448,6 @@ export default function CrossChain() {
       }
     })
   }, [chainId, count])
-
-  // useEffect(() => {
-  //   if (chainId && !selectChain) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId, selectChain])
-
-  // useEffect(() => {
-  //   if (chainId) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId])
 
   useEffect(() => {
     if (swapType == 'swap' && account) {
@@ -720,24 +713,6 @@ export default function CrossChain() {
                 </ButtonConfirmed>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                // <ButtonPrimary disabled={delayAction} onClick={() => {
-                  // onDelay()
-                  // if (!selectCurrency || !selectCurrency.underlying) {
-                  //   if (onWrap) onWrap()
-                  // } else {
-                  //   // if (onWrapUnderlying) onWrapUnderlying()
-                  //   if (isNativeToken) {
-                  //     console.log(1)
-                  //     if (onWrapNative) onWrapNative()
-                  //   } else {
-                  //     console.log(2)
-                  //     if (onWrapUnderlying) onWrapUnderlying()
-                  //   }
-                  // }
-                  // setTimeout(() => {
-                  //   setInputBridgeValue('')
-                  // }, 1000 * 3)
-                  
                   setModalTipOpen(true)
                 }}>
                   {btnTxt}
