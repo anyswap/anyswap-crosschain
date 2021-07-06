@@ -81,7 +81,7 @@
 			"name": "TokenAddress",
 			"type": "address"
 		}],
-		"internalType": "structIConfigQuery.MultichainToken[]",
+		"internalType": "struct IConfigQuery.MultichainToken[]",
 		"name": "",
 		"type": "tuple[]"
 	}],
@@ -121,32 +121,8 @@
 			"internalType": "uint64",
 			"name": "InitialHeight",
 			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "WaitTimeToReplace",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "MaxReplaceCount",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "SwapDeadlineOffset",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "PlusGasPricePercentage",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "MaxGasPriceFluctPercent",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "DefaultGasLimit",
-			"type": "uint64"
 		}],
-		"internalType": "structIConfigQuery.ChainConfig",
+		"internalType": "struct IConfigQuery.ChainConfig",
 		"name": "",
 		"type": "tuple"
 	}],
@@ -209,24 +185,12 @@
 		"type": "string"
 	}, {
 		"internalType": "uint256",
-		"name": "chainID",
+		"name": "toChainID",
 		"type": "uint256"
 	}],
-	"name": "getTokenConfig",
+	"name": "getSwapConfig",
 	"outputs": [{
 		"components": [{
-			"internalType": "uint8",
-			"name": "Decimals",
-			"type": "uint8"
-		}, {
-			"internalType": "address",
-			"name": "ContractAddress",
-			"type": "address"
-		}, {
-			"internalType": "uint256",
-			"name": "ContractVersion",
-			"type": "uint256"
-		}, {
 			"internalType": "uint256",
 			"name": "MaximumSwap",
 			"type": "uint256"
@@ -251,9 +215,58 @@
 			"name": "MinimumSwapFee",
 			"type": "uint256"
 		}],
-		"internalType": "structIConfigQuery.TokenConfig",
+		"internalType": "struct IConfigQuery.SwapConfig",
 		"name": "",
 		"type": "tuple"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "string",
+		"name": "tokenID",
+		"type": "string"
+	}, {
+		"internalType": "uint256",
+		"name": "chainID",
+		"type": "uint256"
+	}],
+	"name": "getTokenConfig",
+	"outputs": [{
+		"components": [{
+			"internalType": "uint8",
+			"name": "Decimals",
+			"type": "uint8"
+		}, {
+			"internalType": "address",
+			"name": "ContractAddress",
+			"type": "address"
+		}, {
+			"internalType": "uint256",
+			"name": "ContractVersion",
+			"type": "uint256"
+		}],
+		"internalType": "struct IConfigQuery.TokenConfig",
+		"name": "",
+		"type": "tuple"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "uint256",
+		"name": "chainID",
+		"type": "uint256"
+	}, {
+		"internalType": "address",
+		"name": "tokenAddress",
+		"type": "address"
+	}],
+	"name": "getTokenID",
+	"outputs": [{
+		"internalType": "string",
+		"name": "",
+		"type": "string"
 	}],
 	"stateMutability": "view",
 	"type": "function"
@@ -281,32 +294,8 @@
 			"internalType": "uint256",
 			"name": "ContractVersion",
 			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MaximumSwap",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MinimumSwap",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "BigValueThreshold",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "SwapFeeRatePerMillion",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MaximumSwapFee",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MinimumSwapFee",
-			"type": "uint256"
 		}],
-		"internalType": "structIConfigQuery.TokenConfig",
+		"internalType": "struct IConfigQuery.TokenConfig",
 		"name": "",
 		"type": "tuple"
 	}],
@@ -408,9 +397,9 @@
 	}],
 	"name": "removeMultichainToken",
 	"outputs": [{
-		"internalType": "uint256",
+		"internalType": "bool",
 		"name": "",
-		"type": "uint256"
+		"type": "bool"
 	}],
 	"stateMutability": "nonpayable",
 	"type": "function"
@@ -450,32 +439,8 @@
 			"internalType": "uint64",
 			"name": "InitialHeight",
 			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "WaitTimeToReplace",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "MaxReplaceCount",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "SwapDeadlineOffset",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "PlusGasPricePercentage",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "MaxGasPriceFluctPercent",
-			"type": "uint64"
-		}, {
-			"internalType": "uint64",
-			"name": "DefaultGasLimit",
-			"type": "uint64"
 		}],
-		"internalType": "structIConfigQuery.ChainConfig",
+		"internalType": "struct IConfigQuery.ChainConfig",
 		"name": "config",
 		"type": "tuple"
 	}],
@@ -552,22 +517,10 @@
 		"type": "string"
 	}, {
 		"internalType": "uint256",
-		"name": "chainID",
+		"name": "toChainID",
 		"type": "uint256"
 	}, {
 		"components": [{
-			"internalType": "uint8",
-			"name": "Decimals",
-			"type": "uint8"
-		}, {
-			"internalType": "address",
-			"name": "ContractAddress",
-			"type": "address"
-		}, {
-			"internalType": "uint256",
-			"name": "ContractVersion",
-			"type": "uint256"
-		}, {
 			"internalType": "uint256",
 			"name": "MaximumSwap",
 			"type": "uint256"
@@ -592,7 +545,42 @@
 			"name": "MinimumSwapFee",
 			"type": "uint256"
 		}],
-		"internalType": "structIConfigQuery.TokenConfig",
+		"internalType": "struct IConfigQuery.SwapConfig",
+		"name": "config",
+		"type": "tuple"
+	}],
+	"name": "setSwapConfig",
+	"outputs": [{
+		"internalType": "bool",
+		"name": "",
+		"type": "bool"
+	}],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "string",
+		"name": "tokenID",
+		"type": "string"
+	}, {
+		"internalType": "uint256",
+		"name": "chainID",
+		"type": "uint256"
+	}, {
+		"components": [{
+			"internalType": "uint8",
+			"name": "Decimals",
+			"type": "uint8"
+		}, {
+			"internalType": "address",
+			"name": "ContractAddress",
+			"type": "address"
+		}, {
+			"internalType": "uint256",
+			"name": "ContractVersion",
+			"type": "uint256"
+		}],
+		"internalType": "struct IConfigQuery.TokenConfig",
 		"name": "config",
 		"type": "tuple"
 	}],
@@ -626,32 +614,8 @@
 			"internalType": "uint256",
 			"name": "ContractVersion",
 			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MaximumSwap",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MinimumSwap",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "BigValueThreshold",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "SwapFeeRatePerMillion",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MaximumSwapFee",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "MinimumSwapFee",
-			"type": "uint256"
 		}],
-		"internalType": "structIConfigQuery.TokenConfig",
+		"internalType": "struct IConfigQuery.TokenConfig",
 		"name": "config",
 		"type": "tuple"
 	}],
