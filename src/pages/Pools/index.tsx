@@ -221,16 +221,21 @@ export default function SwapNative() {
       ) {
         return false
       } else if (swapType !== 'deposit') {
+        // console.log(poolInfo)
         if (
           openAdvance
           && destChain
+          && Number(chainId) !== Number(selectChain)
           && Number(destChain.ts) >= Number(inputBridgeValue)
+          && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
+          && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
         ) {
           // console.log(14)
           return false
         } else if (
-          !openAdvance
+          openAdvance
           && poolInfo
+          && Number(chainId) === Number(selectChain)
           && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
           // console.log(15)
@@ -249,6 +254,7 @@ export default function SwapNative() {
   }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
+    // console.log(destConfig)
     // console.log(isCrossBridge)
     if (
       account
@@ -257,6 +263,7 @@ export default function SwapNative() {
       && isCrossBridge
       && inputBridgeValue
     ) {
+      // console.log(1)
       if (Number(inputBridgeValue) <= 0) {
         return true
       } else if (
@@ -312,7 +319,7 @@ export default function SwapNative() {
   }, [t, swapType, wrapType, wrapTypeUnderlying, isWrapInputError, inputBridgeValue])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && destConfig) {
+    if (inputBridgeValue && destConfig && Number(chainId) !== Number(selectChain)) {
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
       if (fee < Number(destConfig.MinimumSwapFee)) {
@@ -323,10 +330,13 @@ export default function SwapNative() {
       if (Number(chainId) === Number(selectChain) || !destConfig?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
+      
       if (value && Number(value) && Number(value) > 0) {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
       }
       return ''
+    } else if (inputBridgeValue && !destConfig && Number(chainId) === Number(selectChain)) {
+      return formatDecimal(inputBridgeValue, Math.min(6, selectCurrency.decimals))
     } else {
       return ''
     }
@@ -570,15 +580,15 @@ export default function SwapNative() {
           }
 
         </AutoColumn>
-
         <PoolTip 
           anyCurrency={anyCurrency}
           bridgeConfig={poolInfo}
           destChain={destChain}
           swapType={swapType}
         />
+        
         {
-          openAdvance ? (
+          openAdvance && Number(chainId) !== Number(selectChain) ? (
             <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
           ) : ''
         }

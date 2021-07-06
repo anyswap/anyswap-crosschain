@@ -495,7 +495,7 @@ export default function CrossChain() {
         }}
       >
         <LogoBox>
-          <TokenLogo symbol={selectCurrency?.symbol} size={'1rem'}></TokenLogo>
+          <TokenLogo symbol={selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
         </LogoBox>
         <ConfirmContent>
           <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
