@@ -13,11 +13,11 @@ export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
 export const tokenList = [
   {
-    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
     "chainId": ETH_MAIN_CHAINID,
     "decimals": 6,
-    "name": "USDC",
-    "symbol": "USDC"
+    "name": "Tether USD",
+    "symbol": "USDT"
   }
 ]
 export const testTokenList = [

@@ -1,6 +1,6 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
-// export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
-export const bridgeApi = 'http://localhost:8107'
+export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
+// export const bridgeApi = 'http://localhost:8107'
 
 export enum VERSION {
   V1 = 'UNDERLYING',
@@ -9,7 +9,7 @@ export enum VERSION {
   V3 = 'ARB_DEV',
 }
 
-export const USE_VERSION = VERSION.V2_T1
+export const USE_VERSION = VERSION.V2
 
 export const ENV_NODE_CONFIG = USE_VERSION + '_ENV_NODE_CONFIG'
 
