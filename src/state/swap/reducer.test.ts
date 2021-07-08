@@ -7,8 +7,18 @@ describe('swap reducer', () => {
 
   beforeEach(() => {
     store = createStore(reducer, {
-      [Field.OUTPUT]: { currencyId: '' },
-      [Field.INPUT]: { currencyId: '' },
+      [Field.OUTPUT]: {
+        currencyId: '',
+        decimals: '',
+        symbol: '',
+        name: ''
+      },
+      [Field.INPUT]: {
+        currencyId: '',
+        decimals: '',
+        symbol: '',
+        name: ''
+      },
       typedValue: '',
       independentField: Field.INPUT,
       recipient: null
@@ -20,7 +30,10 @@ describe('swap reducer', () => {
       store.dispatch(
         selectCurrency({
           field: Field.OUTPUT,
-          currencyId: '0x0000'
+          currencyId: '0x0000',
+          decimals: '',
+          symbol: '',
+          name: ''
         })
       )
 

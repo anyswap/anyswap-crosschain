@@ -29,9 +29,11 @@ export function getLocalConfig (
   const curVersion = localStorage.getItem(version + '_' + VERSION)
   // console.log(curVersion)
   if (curVersion && curVersion !== config.version) {
+    sessionStorage.clear()
     return false
   }
   const lStorage = saveType ? localStorage : sessionStorage
+  // console.log(version + '_' + type)
   const lstr = lStorage.getItem(version + '_' + type)
   if (!lstr) {
     return false

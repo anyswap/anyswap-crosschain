@@ -249,8 +249,7 @@ export default function FarmsList () {
 
   function getFarmAPY (key:string) {
     return new Promise(resolve => {
-      // console.log(VERSION.V2)
-      getAllToken(farmlist[key].chainId, VERSION.V2).then((res:any) => {
+      getAllToken(farmlist[key].chainId, VERSION.V2_1).then((res:any) => {
         // console.log(farmlist[key])
         if (res) {
           if (price) {

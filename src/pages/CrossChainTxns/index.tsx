@@ -27,15 +27,28 @@ import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { tryParseAmount } from '../../state/swap/hooks'
+import {
+  tryParseAmount,
+  useDerivedSwapInfo,
+  useSwapActionHandlers
+} from '../../state/swap/hooks'
+// import {
+//   useDefaultsFromURLSearch,
+//   useDerivedSwapInfo,
+//   useSwapActionHandlers,
+//   useSwapState
+// } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/actions'
 
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
+
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 // import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
 import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
+import {getPairs} from '../../utils/bridge/getRouterTxns'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
@@ -118,6 +131,7 @@ export default function CrossChain() {
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
+  const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState('swap')
@@ -242,14 +256,62 @@ export default function CrossChain() {
     inputBridgeValue,
     selectChain
   )
+
+  const {
+    v1Trade,
+    v2Trade,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError
+  } = useDerivedSwapInfo()
+
+  // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
+  if (parsedAmount) {
+    console.log(v1Trade)
+    console.log(v2Trade)
+    console.log(currencyBalances)
+    console.log(parsedAmount)
+    console.log(currencies)
+    console.log(swapInputError)
+  }
   
   const bridgeConfig = useMemo(() => {
     if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
     return ''
   }, [selectCurrency, allTokens])
 
+  const destConfig = useMemo(() => {
+    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
+      return bridgeConfig?.destChains[selectChain]
+    }
+    return false
+  }, [bridgeConfig, selectChain])
+
   // console.log(allTokens)
   // console.log(bridgeConfig)
+  useEffect(() => {
+    onCurrencySelection(
+      Field.INPUT,
+      destConfig?.underlying?.address ?? destConfig?.address,
+      selectChain,
+      destConfig?.underlying?.decimals ?? destConfig?.decimals,
+      destConfig?.underlying?.symbol ?? destConfig?.symbol,
+      destConfig?.underlying?.name ?? destConfig?.name,
+    )
+  }, [destConfig])
+
+  useEffect(() => {
+    onCurrencySelection(
+      Field.OUTPUT,
+      selectDestCurrency?.address,
+      selectChain,
+      selectDestCurrency?.decimals,
+      selectDestCurrency?.symbol,
+      selectDestCurrency?.name,
+    )
+  }, [selectDestCurrency])
   
   const isNativeToken = useMemo(() => {
     if (
@@ -280,15 +342,15 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && bridgeConfig) {
-      const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
+    if (inputBridgeValue && destConfig) {
+      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(bridgeConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MinimumSwapFee)
-      } else if (fee > bridgeConfig.MaximumSwapFee) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
+      if (fee < Number(destConfig.MinimumSwapFee)) {
+        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      } else if (fee > destConfig.MaximumSwapFee) {
+        value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
-      if (!bridgeConfig?.destChains[selectChain]?.swapfeeon) {
+      if (!destConfig?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
@@ -298,7 +360,7 @@ export default function CrossChain() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig, selectChain])
+  }, [inputBridgeValue, destConfig, selectChain])
 
   const isWrapInputError = useMemo(() => {
     
@@ -324,7 +386,7 @@ export default function CrossChain() {
     // console.log(destChain)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
@@ -332,8 +394,8 @@ export default function CrossChain() {
       && destChain
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
@@ -343,20 +405,20 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
     // console.log(destChain)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && isCrossBridge
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
@@ -366,7 +428,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
 
   const btnTxt = useMemo(() => {
@@ -374,11 +436,11 @@ export default function CrossChain() {
     if (isWrapInputError && inputBridgeValue) {
       return isWrapInputError
     } else if (
-      bridgeConfig
+      destConfig
       && inputBridgeValue
       && (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
       )
     ) {
       return t('ExceedLimit')
@@ -427,16 +489,6 @@ export default function CrossChain() {
     })
   }, [chainId, count])
 
-  // useEffect(() => {
-  //   if (chainId && !selectChain) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId, selectChain])
-  // useEffect(() => {
-  //   if (chainId) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId])
   useEffect(() => {
     if (swapType == 'swap' && account) {
       setRecipient(account)
@@ -464,6 +516,12 @@ export default function CrossChain() {
     }
   }, [selectCurrency])
 
+  useEffect(() => {
+    getPairs(selectChain, destConfig?.underlying?.address ?? destConfig?.address, selectDestCurrency?.address).then(res => {
+      console.log(res)
+    })
+  }, [destConfig, selectDestCurrency, selectChain])
+
   const handleMaxInput = useCallback((value) => {
     if (value) {
       setInputBridgeValue(value)
@@ -471,6 +529,7 @@ export default function CrossChain() {
       setInputBridgeValue('')
     }
   }, [setInputBridgeValue])
+
   // console.log(isUnderlying)
   // console.log(isDestUnderlying)
   return (
@@ -583,6 +642,7 @@ export default function CrossChain() {
             value={inputBridgeValue}
             onUserInput={(value) => {
               // console.log(value)
+              onUserInput(Field.INPUT, value)
               setInputBridgeValue(value)
             }}
             onCurrencySelect={(inputCurrency) => {
@@ -597,7 +657,7 @@ export default function CrossChain() {
             showMaxButton={true}
             isViewNetwork={true}
             onOpenModalView={(value) => {
-              console.log(value)
+              // console.log(value)
               setModalOpen(value)
             }}
             isViewModal={modalOpen}
@@ -648,7 +708,12 @@ export default function CrossChain() {
             onChainSelect={(chainID) => {
               setSelectChain(chainID)
             }}
+            onDestCurrencySelect={(item) => {
+              console.log(item)
+              setSelectDestCurrency(item)
+            }}
             selectChainId={selectChain}
+            selectDestCurrency={selectDestCurrency}
             id="selectChainID"
             bridgeConfig={bridgeConfig}
             intervalCount={intervalCount}

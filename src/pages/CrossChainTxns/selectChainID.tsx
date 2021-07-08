@@ -1,7 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Text } from 'rebass'
-// import styled from 'styled-components'
+import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -51,7 +51,9 @@ interface SelectChainIdInputPanel {
   onUserInput: (value: string) => void
   label?: string
   onChainSelect?: (selectChainId: any) => void
+  onDestCurrencySelect?: (selectChainId: any) => void
   selectChainId?: any
+  selectDestCurrency?: any
   disableCurrencySelect?: boolean
   hideInput?: boolean
   id: string
@@ -62,12 +64,19 @@ interface SelectChainIdInputPanel {
   selectChainList?: Array<any>
 }
 
+const ListBox = styled.div`
+  overflow:auto;
+  max-height: 300px;
+`
+
 export default function SelectChainIdInputPanel({
   value,
   onUserInput,
   label = 'Input',
   onChainSelect,
+  onDestCurrencySelect,
   selectChainId,
+  selectDestCurrency,
   disableCurrencySelect = false,
   hideInput = false,
   id,
@@ -85,7 +94,6 @@ export default function SelectChainIdInputPanel({
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>()
-  const [selectCurrency, setSelectCurrency] = useState<any>()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -112,6 +120,16 @@ export default function SelectChainIdInputPanel({
       if (onChainSelect) {
         onChainSelect(chainID)
         handleDismissSearch()
+      }
+    },
+    [onChainSelect]
+  )
+
+  const handleDestCurrencySelect = useCallback(
+    (item) => {
+      if (onDestCurrencySelect) {
+        onDestCurrencySelect(item)
+        handleDismissCurrency()
       }
     },
     [onChainSelect]
@@ -219,7 +237,7 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={selectCurrency?.symbol} size={'24px'} />
+                    <TokenLogo symbol={selectDestCurrency?.symbol} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>
@@ -229,19 +247,19 @@ export default function SelectChainIdInputPanel({
                           bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
                         : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
                       {
-                        selectCurrency?.symbol ? (
-                          selectCurrency?.symbol.length > 20
-                            ? selectCurrency?.symbol.slice(0, 4) +
+                        selectDestCurrency?.symbol ? (
+                          selectDestCurrency?.symbol.length > 20
+                            ? selectDestCurrency?.symbol.slice(0, 4) +
                               '...' +
-                              selectCurrency?.symbol.slice(selectCurrency?.symbol.length - 5, selectCurrency?.symbol.length)
-                            : config.getBaseCoin(selectCurrency?.symbol, chainId)
+                              selectDestCurrency?.symbol.slice(selectDestCurrency?.symbol.length - 5, selectDestCurrency?.symbol.length)
+                            : config.getBaseCoin(selectDestCurrency?.symbol, chainId)
                         ) : t('selectToken')
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {
-                        selectCurrency?.symbol ? config.getBaseCoin(selectCurrency?.symbol, chainId, 1, selectCurrency?.name) : ''
+                        selectDestCurrency?.symbol ? config.getBaseCoin(selectDestCurrency?.symbol, chainId, 1, selectDestCurrency?.name) : ''
                       }
                     </p>
                   </StyledTokenName>
@@ -325,7 +343,7 @@ export default function SelectChainIdInputPanel({
           <PaddedColumn gap="14px">
             <RowBetween>
               <Text fontWeight={500} fontSize={16}>
-                {t('selectNetwork')}
+                {t('selectToken')}
                 {/* <QuestionHelper text={t('tip6')} /> */}
               </Text>
               <CloseIcon onClick={handleDismissCurrency} />
@@ -334,20 +352,22 @@ export default function SelectChainIdInputPanel({
           <Separator />
           <div style={{ flex: '1' }}>
             {/* {chainListView()} */}
-            {
+            <ListBox>
+              {
                 destTokenList.map((item:any, index:any) => {
                   
                   return (
                     <MenuItem
                       className={`token-item-${index}`}
                       onClick={() => {
-                        if (item?.address !== selectCurrency?.address) {
-                          setSelectCurrency(item)
-                          handleDismissCurrency()
+                        if (item?.address !== selectDestCurrency?.address) {
+                          // setSelectCurrency(item)
+                          // handleDismissCurrency()
+                          handleDestCurrencySelect(item)
                         }
                       }}
-                      disabled={item?.address === selectCurrency?.address}
-                      selected={item?.address === selectCurrency?.address}
+                      disabled={item?.address === selectDestCurrency?.address}
+                      selected={item?.address === selectDestCurrency?.address}
                       key={index}
                     >
                       <TokenLogo symbol={item.symbol} size={'24px'}></TokenLogo>
@@ -372,6 +392,7 @@ export default function SelectChainIdInputPanel({
                   )
                 })
               }
+            </ListBox>
           </div>
         </Column>
       </Modal>

@@ -18,7 +18,56 @@ export const tokenList = [
     "decimals": 6,
     "name": "Tether USD",
     "symbol": "USDT"
-  }
+  },
+  {
+    "address": "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "BNB",
+    "symbol": "BNB"
+  },
+  {
+    "address": "0x4fabb145d64652a948d72533023f6e7a623c7c53",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Binance USD",
+    "symbol": "BUSD"
+  },
+  {
+    "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "ChainLink",
+    "symbol": "LINK"
+  },
+  {
+    "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 8,
+    "name": "Wrapped BTC",
+    "symbol": "WBTC"
+  },
+  {
+    "address": "0x3883f5e181fccaf8410fa61e12b59bad963fb645",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Theta",
+    "symbol": "THETA"
+  },
+  {
+    "address": "0xd850942ef8811f2a866692a623011bde52a462c1",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "VeChain",
+    "symbol": "VEN"
+  },
+  {
+    "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "chainId": ETH_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Dai Stablecoin",
+    "symbol": "DAI"
+  },
 ]
 export const testTokenList = [
 
@@ -33,6 +82,11 @@ const bridgeToken = {
     bridgeInitChain: '56'
   },
   [VERSION.V2]: {
+    bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
+    bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
+    bridgeInitChain: '56'
+  },
+  [VERSION.V2_1]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
     bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
     bridgeInitChain: '56'

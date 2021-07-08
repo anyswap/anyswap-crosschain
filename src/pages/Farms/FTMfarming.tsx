@@ -35,7 +35,7 @@ export default function FTMfaring({initialTrade}: {initialTrade?:string}) {
           poolCoin = 'ANY'
           blockNumber = {farmlist[FARMTYPE].blockNumber}
           price={price}
-          version={VERSION.V2}
+          version={VERSION.V2_1}
         />
       </AppBody>
     </>

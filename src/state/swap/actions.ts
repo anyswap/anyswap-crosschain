@@ -5,7 +5,14 @@ export enum Field {
   OUTPUT = 'OUTPUT'
 }
 
-export const selectCurrency = createAction<{ field: Field; currencyId: string }>('swap/selectCurrency')
+export const selectCurrency = createAction<{
+  field: Field;
+  currencyId: string,
+  decimals: number,
+  symbol: string,
+  name: string,
+  chainId: any
+}>('swap/selectCurrency')
 export const switchCurrencies = createAction<void>('swap/switchCurrencies')
 export const typeInput = createAction<{ field: Field; typedValue: string }>('swap/typeInput')
 export const replaceSwapState = createAction<{
@@ -14,5 +21,9 @@ export const replaceSwapState = createAction<{
   inputCurrencyId?: string
   outputCurrencyId?: string
   recipient: string | null
+  decimals?: number,
+  symbol?: string,
+  name?: string,
+  chainId?: any
 }>('swap/replaceSwapState')
 export const setRecipient = createAction<{ recipient: string | null }>('swap/setRecipient')

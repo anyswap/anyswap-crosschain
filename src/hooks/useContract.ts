@@ -10,6 +10,7 @@ import MasterChef from '../constants/abis/farm/MasterChef.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import WETH_ABI from '../constants/abis/weth.json'
 import { MULTICALL_ABI } from '../constants/multicall'
+import { V1_FACTORY_ABI } from '../constants/v1'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
 
@@ -47,6 +48,10 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
 //     }
 //   }, [address, ABI, library, withSignerIfPossible, account])
 // }
+export function useV1FactoryContract(): Contract | null {
+  // const { chainId } = useActiveWeb3React()
+  return useContract(config.v1FactoryToken ? config.v1FactoryToken : undefined, V1_FACTORY_ABI, false)
+}
 
 export function useV2MigratorContract(): Contract | null {
   return useContract(MIGRATOR_ADDRESS, MIGRATOR_ABI, true)

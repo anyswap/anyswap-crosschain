@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Token } from 'anyswap-sdk'
+import { Currency, Token, ETHER } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -8,7 +8,7 @@ import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
 import { useBytes32TokenContract, useTokenContract } from './useContract'
-
+import config from '../config'
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
   const userAddedTokens = useUserAddedTokens()
@@ -54,6 +54,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
   const token: Token | undefined = address ? tokens[address] : undefined
 
+  // console.log(token)
   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
   const tokenNameBytes32 = useSingleCallResult(
     token ? undefined : tokenContractBytes32,
@@ -128,4 +129,66 @@ export function useLocalToken(currency?: any): Token | undefined | null {
     name,
     underlying
   ])
+}
+
+export function useFormatToken(
+  chainId?: any,
+  address?: any,
+  decimals?: any,
+  name?: any,
+  symbol?: any,
+  underlying?: any,
+): Token | undefined | null {
+
+  return useMemo(() => {
+    if (
+      !chainId
+      || !address
+      || !decimals
+      || !name
+      || !symbol
+    ) return undefined
+    return new Token(
+      chainId,
+      address,
+      decimals,
+      symbol,
+      name,
+      underlying
+    )
+  }, [
+    address,
+    chainId,
+    symbol,
+    decimals,
+    name,
+    underlying
+  ])
+}
+
+export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
+  const isETH = currencyId?.toUpperCase() === config.symbol
+
+  const token = useToken(isETH ? undefined : currencyId)
+  return isETH ? ETHER : token
+}
+
+export function useFormatCurrency(
+  chainId?: any,
+  address?: any,
+  decimals?: any,
+  name?: any,
+  symbol?: any,
+  underlying?: any
+): Currency | null | undefined {
+
+  const token = useFormatToken(
+    chainId,
+    address,
+    decimals,
+    name,
+    symbol,
+    underlying,
+  )
+  return token
 }

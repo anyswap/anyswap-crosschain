@@ -8,6 +8,7 @@ import {
   BRIDGEALLCHAIN,
   BRIDGETOKENCONFIG
 } from './type'
+import { isAddress } from '..'
 
 // 获取可支持跨链的ID
 export function getAllChainIDs (chainId:any, version?:any) {
@@ -48,15 +49,18 @@ function getTokenInfo(token:any, chainId:any, version?:any) {
     if (!chainId) resolve(false)
     else {
       version = version ? version : USE_VERSION
+      // console.log(version)
       const lData = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout, undefined, version)
       if (lData) {
         resolve(lData)
       } else {
         const url = `${config.bridgeApi}/v3/serverinfo?chainId=${chainId}&version=${version}`
         getUrlData(url).then((res:any) => {
-          if (res.msg === 'Success') {
+          console.log(res)
+          if (res.msg === 'Success' && res.data) {
             for (const t in res.data) {
               if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenCoin?.includes(res.data[t].symbol)) continue
+              if (!isAddress(t)) continue
               setLocalConfig(BRIDGETOKENCONFIG, t, chainId, BRIDGETOKENCONFIG, {list: res.data[t]}, undefined, version)
             }
             const lData1 = getLocalConfig(BRIDGETOKENCONFIG, token, chainId, BRIDGETOKENCONFIG, timeout, undefined, version)
@@ -85,6 +89,7 @@ export function getAllToken (chainId:any, version?:any) {
   return new Promise(resolve => {
     getTokenInfo('all', chainId, version).then((res:any) => {
       // resolve({list: res})
+      // console.log(res)
       resolve(res)
     })
   })
