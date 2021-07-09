@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 // export const FTM_MAINNET = 'https://rpc.fantom.network'
 // export const FTM_MAINNET = 'https://rpc2.fantom.network'
-export const FTM_MAINNET = 'https://rpc3.fantom.network'
+export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? 'https://rpc3.fantom.network' : 'https://ftmnode1.anyswap.exchange'
 // export const FTM_MAINNET = 'https://rpcapi.fantom.network'
 export const FTM_MAIN_CHAINID = 250
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
@@ -53,6 +53,8 @@ export default {
     tokenListUrl: tokenListUrl + FTM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
+    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+    swapInitToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6',
     multicalToken: '0x63B8310c5093ac917552931D8b15d5AB6945c0a6',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

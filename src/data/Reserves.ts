@@ -41,6 +41,11 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
+        console.log(tokenA)
+        console.log(tokenB)
+        if (tokenA && tokenB) {
+          console.log(Pair.getAddress(tokenA, tokenB))
+        }
         return tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB) : undefined
       }),
     [tokens]

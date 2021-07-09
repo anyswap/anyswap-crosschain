@@ -27,6 +27,7 @@ import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
+// import { useAddDestChainId } from '../../state/multicall/hooks'
 import {
   tryParseAmount,
   useDerivedSwapInfo,
@@ -264,9 +265,10 @@ export default function CrossChain() {
     parsedAmount,
     currencies,
     inputError: swapInputError
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(selectChain)
 
   // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  // const {onSelectChainId} = useAddDestChainId()
   const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
   if (parsedAmount) {
     console.log(v1Trade)
@@ -291,6 +293,7 @@ export default function CrossChain() {
 
   // console.log(allTokens)
   // console.log(bridgeConfig)
+  
   useEffect(() => {
     onCurrencySelection(
       Field.INPUT,
@@ -521,6 +524,20 @@ export default function CrossChain() {
       console.log(res)
     })
   }, [destConfig, selectDestCurrency, selectChain])
+
+  useEffect(() => {
+    // onSelectChainId(selectChain)
+    if (!selectDestCurrency && selectChain) {
+      const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens
+      const initToken = config.getCurChainInfo(selectChain).swapInitToken
+      for (const obj of arr) {
+        if (obj.address.toLowerCase() === initToken?.toLowerCase()) {
+          setSelectDestCurrency(obj)
+          break
+        }
+      }
+    }
+  }, [selectChain])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {

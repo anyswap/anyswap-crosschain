@@ -36,6 +36,9 @@ export interface ListenerOptions {
 export const addMulticallListeners = createAction<{ chainId: number; calls: Call[]; options?: ListenerOptions }>(
   'multicall/addMulticallListeners'
 )
+export const addUseChainId = createAction<{ chainId?: any }>(
+  'multicall/addUseChainId'
+)
 export const removeMulticallListeners = createAction<{ chainId: number; calls: Call[]; options?: ListenerOptions }>(
   'multicall/removeMulticallListeners'
 )

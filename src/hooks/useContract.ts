@@ -19,6 +19,8 @@ import RouterAction from '../constants/abis/bridge/RouterAction.json'
 
 import config from '../config/index'
 
+const Web3 = require('web3')
+
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { library, account } = useActiveWeb3React()
@@ -32,6 +34,22 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
       return null
     }
   }, [address, ABI, library, withSignerIfPossible, account])
+}
+
+// returns null on errors
+export function useRpcContract(address: string | undefined, ABI: any, withSignerIfPossible = true, chainId: any): Contract | null {
+
+  return useMemo(() => {
+    if (!address || !ABI || !chainId) return null
+    const web3Fn = new Web3(new Web3.providers.HttpProvider(config.getCurChainInfo(chainId).nodeRpc))
+    try {
+      // return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      return new web3Fn.eth.Contract(ABI, address)
+    } catch (error) {
+      console.error('Failed to get contract', error)
+      return null
+    }
+  }, [address, ABI, withSignerIfPossible, chainId])
 }
 
 // function useMoreContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -108,6 +126,13 @@ export function useMulticallContract(): Contract | null {
   // return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
   return useContract(config.getCurChainInfo(chainId).multicalToken, MULTICALL_ABI, false)
 }
+
+export function useRpcMulticallContract(chainId:any): Contract | null {
+  // return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
+  return useRpcContract(config.getCurChainInfo(chainId).multicalToken, MULTICALL_ABI, false, chainId)
+}
+
+
 
 export function useFarmContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, MasterChef, withSignerIfPossible)

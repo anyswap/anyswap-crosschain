@@ -121,7 +121,7 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 // 根据当前的交换输入，计算出最佳交易并返回。
-export function useDerivedSwapInfo(): {
+export function useDerivedSwapInfo(chainId?:any): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
@@ -147,22 +147,22 @@ export function useDerivedSwapInfo(): {
   // console.log(inputDecimals)
   // console.log(inputChainId)
   
-  console.log(outputCurrencyId ? outputCurrencyId : config.swapInitToken)
-  console.log(outputName)
-  console.log(outputSymbol)
-  console.log(outputDecimals)
-  console.log(outputChainId)
+  // console.log(outputCurrencyId ? outputCurrencyId : config.swapInitToken)
+  // console.log(outputName)
+  // console.log(outputSymbol)
+  // console.log(outputDecimals)
+  // console.log(chainId)
   const inputCurrency = useFormatCurrency(inputChainId, inputCurrencyId, inputDecimals, inputName, inputSymbol)
-  console.log(inputCurrency)
+  // console.log(inputCurrency)
   const outputCurrency = useFormatCurrency(outputChainId, outputCurrencyId ? outputCurrencyId : config.swapInitToken, outputDecimals, outputName, outputSymbol)
-  console.log(outputCurrency)
+  // console.log(outputCurrency)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined
-  ])
+  ], chainId)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)

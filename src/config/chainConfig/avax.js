@@ -27,6 +27,8 @@ export default {
     tokenListUrl: tokenListUrl + AVAX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    swapInitToken: '',
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',

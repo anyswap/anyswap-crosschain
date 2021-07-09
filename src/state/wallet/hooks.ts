@@ -47,7 +47,8 @@ export function useETHBalances(
  */
 export function useTokenBalancesWithLoadingIndicator(
   address?: string,
-  tokens?: (Token | undefined)[]
+  tokens?: (Token | undefined)[],
+  chainId?:any
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
@@ -57,7 +58,7 @@ export function useTokenBalancesWithLoadingIndicator(
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
   // console.log(tokens)
   // console.log(validatedTokenAddresses)
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address], undefined, chainId)
   // console.log(validatedTokenAddresses)
   // console.log(address)
   // console.log(balances)
@@ -85,7 +86,8 @@ export function useTokenBalancesWithLoadingIndicator(
 }
 
 export function useTokenTotalSupplyWithLoadingIndicator(
-  tokens?: (Token | undefined)[]
+  tokens?: (Token | undefined)[],
+  chainId?:any
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
@@ -95,7 +97,7 @@ export function useTokenTotalSupplyWithLoadingIndicator(
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
   // console.log(tokens)
   // console.log(validatedTokenAddresses)
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply', [])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply', [], undefined, chainId)
   // console.log(validatedTokenAddresses)
   // console.log(balances)
   // console.log(balances)
@@ -124,7 +126,8 @@ export function useTokenTotalSupplyWithLoadingIndicator(
 
 export function useTokenBalancesList(
   address?: string,
-  tokens?: (string | undefined)[]
+  tokens?: (string | undefined)[],
+  chainId?:any
 ): [{ [tokenAddress: string]: string | undefined }, boolean] {
   const validatedTokens: string[] = useMemo(
     () => tokens?.filter((t?: string): t is string => isAddress(t) !== false) ?? [],
@@ -134,7 +137,7 @@ export function useTokenBalancesList(
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt), [validatedTokens])
   // console.log(tokens)
   // console.log(validatedTokenAddresses)
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address], undefined, chainId)
   // console.log(validatedTokenAddresses)
   // console.log(address)
   // console.log(balances)
@@ -162,7 +165,8 @@ export function useTokenBalancesList(
 }
 
 export function useTokenTotalSupply(
-  tokens?: (string | undefined)[]
+  tokens?: (string | undefined)[],
+  chainId?:any
 ): [{ [tokenAddress: string]: string | undefined }, boolean] {
   const validatedTokens: string[] = useMemo(
     () => tokens?.filter((t?: string): t is string => isAddress(t) !== false) ?? [],
@@ -172,7 +176,7 @@ export function useTokenTotalSupply(
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt), [validatedTokens])
   // console.log(tokens)
   // console.log(validatedTokenAddresses)
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply', [])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply', [], undefined, chainId)
   // console.log(validatedTokenAddresses)
   // console.log(balances)
   // console.log(balances)
@@ -201,27 +205,30 @@ export function useTokenTotalSupply(
 
 export function useTokenBalances(
   address?: string,
-  tokens?: (Token | undefined)[]
+  tokens?: (Token | undefined)[],
+  chainId?:any
 ): { [tokenAddress: string]: TokenAmount | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address, tokens)[0]
+  return useTokenBalancesWithLoadingIndicator(address, tokens, chainId)[0]
 }
 
 // get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const tokenBalances = useTokenBalances(account, [token])
+export function useTokenBalance(account?: string, token?: Token, chainId?:any): TokenAmount | undefined {
+  const tokenBalances = useTokenBalances(account, [token], chainId)
   if (!token) return undefined
   return tokenBalances[token.address]
 }
 
 export function useCurrencyBalances(
   account?: string,
-  currencies?: (Currency | undefined)[]
+  currencies?: (Currency | undefined)[],
+  chainId?:any
 ): (CurrencyAmount | undefined)[] {
   const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
     currencies
   ])
 
-  const tokenBalances = useTokenBalances(account, tokens)
+  const tokenBalances = useTokenBalances(account, tokens, chainId)
+  // console.log(tokenBalances)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
 
@@ -237,8 +244,8 @@ export function useCurrencyBalances(
   )
 }
 
-export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
-  return useCurrencyBalances(account, [currency])[0]
+export function useCurrencyBalance(account?: string, currency?: Currency, chainId?:any): CurrencyAmount | undefined {
+  return useCurrencyBalances(account, [currency], chainId)[0]
 }
 
 // mimics useAllBalances

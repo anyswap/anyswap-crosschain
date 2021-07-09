@@ -25,7 +25,21 @@ function useAllCommonPairs(chainId?: ChainId, currencyA?: Currency, currencyB?: 
       ),
     [bases]
   )
+  // console.log(tokenA)
+  // console.log(tokenB)
+  if (tokenA && tokenB) {
 
+    console.log([
+      // 直接对
+      [tokenA, tokenB],
+      // token A against all bases
+      ...bases.map((base): [Token, Token] => [tokenA, base]),
+      // token B against all bases
+      ...bases.map((base): [Token, Token] => [tokenB, base]),
+      // each base against all bases
+      ...basePairs
+    ])
+  }
   const allPairCombinations: [Token, Token][] = useMemo(
     () =>
       tokenA && tokenB
@@ -43,6 +57,7 @@ function useAllCommonPairs(chainId?: ChainId, currencyA?: Currency, currencyB?: 
             .filter(([t0, t1]) => t0.address !== t1.address)
             .filter(([tokenA, tokenB]) => {
               if (!chainId) return true
+              console.log(chainId)
               const customBases = CUSTOM_BASES[chainId]
               if (!customBases) return true
 
@@ -59,7 +74,7 @@ function useAllCommonPairs(chainId?: ChainId, currencyA?: Currency, currencyB?: 
         : [],
     [tokenA, tokenB, bases, basePairs, chainId]
   )
-
+  // console.log(allPairCombinations)
   const allPairs = usePairs(allPairCombinations, chainId)
 
   // 只传递有效对、非重复对
@@ -86,7 +101,7 @@ export function useTradeExactIn(chainId: ChainId, currencyAmountIn?: CurrencyAmo
   const allowedPairs = useAllCommonPairs(chainId, currencyAmountIn?.currency, currencyOut)
 
   // console.log(allowedPairs)
-  // console.log(currencyAmountIn?.raw?.toString())
+  // console.log(currencyAmountIn)
   // console.log(currencyOut)
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {

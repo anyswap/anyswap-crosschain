@@ -26,6 +26,8 @@ export default {
     tokenListUrl: tokenListUrl + XDAI_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
+    swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+    swapInitToken: '',
     multicalToken: '0xb5b692a88BDFc81ca69dcB1d924f59f0413A602a',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
