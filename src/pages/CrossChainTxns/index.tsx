@@ -733,7 +733,7 @@ export default function CrossChain() {
             selectDestCurrency={selectDestCurrency}
             id="selectChainID"
             bridgeConfig={bridgeConfig}
-            intervalCount={intervalCount}
+            // intervalCount={intervalCount}
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />

@@ -48,6 +48,7 @@ function Updaters() {
       <ApplicationUpdater />
       <TransactionUpdater />
       <MulticallUpdater />
+      <MulticallUpdater type={1}/>
     </>
   )
 }

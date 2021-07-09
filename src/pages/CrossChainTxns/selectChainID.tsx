@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
+import {useFormatCurrency} from '../../hooks/Tokens'
 
 import { RowBetween } from '../../components/Row'
 import Column from '../../components/Column'
@@ -22,6 +23,8 @@ import {
 import { TYPE, CloseIcon } from '../../theme'
 
 import {formatDecimal} from '../../utils/tools/tools'
+
+import {useCurrencyBalance} from '../../state/wallet/hooks'
 
 import config from '../../config'
 
@@ -43,7 +46,7 @@ import {
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
-import {getNodeBalance} from '../../utils/bridge/getBalance'
+// import {getNodeBalance} from '../../utils/bridge/getBalance'
 
 
 interface SelectChainIdInputPanel {
@@ -58,7 +61,7 @@ interface SelectChainIdInputPanel {
   hideInput?: boolean
   id: string
   bridgeConfig: any,
-  intervalCount: any,
+  // intervalCount: any,
   isNativeToken?: boolean
   isViewAllChain?: boolean
   selectChainList?: Array<any>
@@ -81,7 +84,7 @@ export default function SelectChainIdInputPanel({
   hideInput = false,
   id,
   bridgeConfig,
-  intervalCount,
+  // intervalCount,
   isNativeToken,
   isViewAllChain,
   selectChainList = []
@@ -93,8 +96,12 @@ export default function SelectChainIdInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
-  const [destBalance, setDestBalance] = useState<any>()
+  // const [destBalance, setDestBalance] = useState<any>()
 
+  const formatCurrency = useFormatCurrency(selectChainId, selectDestCurrency?.address, selectDestCurrency?.decimals, selectDestCurrency?.name, selectDestCurrency?.symbol)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, formatCurrency ?? undefined, selectChainId)
+  // console.log(formatCurrency)
+  // console.log(selectedCurrencyBalance?.toSignificant(6))
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
@@ -135,17 +142,17 @@ export default function SelectChainIdInputPanel({
     [onChainSelect]
   )
 
-  const destChainInfo = useMemo(() => {
-    // console.log(bridgeConfig)
-    if (bridgeConfig) {
-      if (Number(selectChainId) === Number(chainId)) {
-        return bridgeConfig
-      } else {
-        return bridgeConfig?.destChains[selectChainId]
-      }
-    }
-    return false
-  }, [bridgeConfig, selectChainId, chainId])
+  // const destChainInfo = useMemo(() => {
+  //   // console.log(bridgeConfig)
+  //   if (bridgeConfig) {
+  //     if (Number(selectChainId) === Number(chainId)) {
+  //       return bridgeConfig
+  //     } else {
+  //       return bridgeConfig?.destChains[selectChainId]
+  //     }
+  //   }
+  //   return false
+  // }, [bridgeConfig, selectChainId, chainId])
 
   const destTokenList = useMemo(() => {
     // console.log(selectChainId)
@@ -158,39 +165,39 @@ export default function SelectChainIdInputPanel({
   // console.log(destTokenList)
   // console.log(selectChainId)
   // console.log(destChainInfo)
-  useEffect(() => {
-    if (
-      account
-      && chainId
-      && bridgeConfig
-      && selectChainId
-      && !isNaN(selectChainId)
-    ) {
-      let token:any = ''
-      if (Number(chainId) === Number(selectChainId)) {
-        token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
-      } else {
-        token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
-      }
-      // console.log(token)
-      if (token) {
-        getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
-          // console.log(res)
-          if (res) {
-            setDestBalance(res)
-          } else {
-            setDestBalance('')
-          }
-        })
-      }
-    } else {
-      setDestBalance('')
-    }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
+  // useEffect(() => {
+  //   if (
+  //     account
+  //     && chainId
+  //     && bridgeConfig
+  //     && selectChainId
+  //     && !isNaN(selectChainId)
+  //   ) {
+  //     let token:any = ''
+  //     if (Number(chainId) === Number(selectChainId)) {
+  //       token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
+  //     } else {
+  //       token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
+  //     }
+  //     // console.log(token)
+  //     if (token) {
+  //       getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
+  //         // console.log(res)
+  //         if (res) {
+  //           setDestBalance(res)
+  //         } else {
+  //           setDestBalance('')
+  //         }
+  //       })
+  //     }
+  //   } else {
+  //     setDestBalance('')
+  //   }
+  // }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
 
-  useEffect(() => {
-    setDestBalance('')
-  }, [account, chainId, bridgeConfig, selectChainId])
+  // useEffect(() => {
+  //   setDestBalance('')
+  // }, [account, chainId, bridgeConfig, selectChainId])
 
   return (
     <>
@@ -208,7 +215,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {t('balanceTxt') + ': '}{destBalance ? formatDecimal(destBalance, 2) : '-'}
+                  {t('balanceTxt') + ': '}{selectedCurrencyBalance ? formatDecimal(selectedCurrencyBalance?.toSignificant(6), 2) : '-'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

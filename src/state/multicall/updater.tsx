@@ -10,6 +10,7 @@ import { useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import {
   Call,
+  // addUseChainId,
   errorFetchingMulticallResults,
   fetchingMulticallResults,
   parseCallKey,
@@ -147,21 +148,22 @@ export function outdatedListeningKeys(
   })
 }
 
-export default function Updater(): null {
+export default function Updater({type}: {type?:number}): null {
   const dispatch = useDispatch<AppDispatch>()
   const state = useSelector<AppState, AppState['multicall']>(state => state.multicall)
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100)
   const latestBlockNumber = useBlockNumber()
   const { chainId } = useActiveWeb3React()
-  const useChainId = state.useChainId ? state.useChainId : chainId
+  // const useChainId = state.useChainId ? state.useChainId : chainId
+  const useChainId = type ? state.useChainId : chainId
   const multicallContract = useMulticallContract()
   const multicallContract1 = useRpcMulticallContract(useChainId)
 
   // console.log(initChainId)
   // console.log(chainId)
   // console.log(useChainId)
-  console.log(state)
+  // console.log(state)
   const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] }>()
   // console.log(multicallContract1)
   // console.log(multicallContract)
@@ -213,7 +215,7 @@ export default function Updater(): null {
         console.log(chainId)
         // console.log(chunkedCalls)
         // console.log(chunkedCalls)
-        const { cancel, promise } = retry(() => chainId && state.useChainId && Number(state.useChainId) !== Number(chainId) ? fetchChunk1(multicallContract1, chunk, latestBlockNumber) : fetchChunk(multicallContract, chunk, latestBlockNumber), {
+        const { cancel, promise } = retry(() => chainId && useChainId && Number(useChainId) !== Number(chainId) ? fetchChunk1(multicallContract1, chunk, latestBlockNumber) : fetchChunk(multicallContract, chunk, latestBlockNumber), {
           n: Infinity,
           minWait: 2500,
           maxWait: 3500
@@ -231,7 +233,7 @@ export default function Updater(): null {
             // accumulates the length of all previous indices
             const firstCallKeyIndex = chunkedCalls.slice(0, index).reduce<number>((memo, curr) => memo + curr.length, 0)
             const lastCallKeyIndex = firstCallKeyIndex + returnData.length
-
+            // dispatch(addUseChainId({ chainId: chainId }))
             dispatch(
               updateMulticallResults({
                 chainId: useChainId,
