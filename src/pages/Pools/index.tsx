@@ -592,62 +592,68 @@ export default function SwapNative() {
             <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
           ) : ''
         }
-
-        <BottomGrouping>
-
-          {!account ? (
-              <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-            ) : (
-              inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                <ButtonConfirmed
-                  onClick={() => {
-                    onDelay()
-                    approveCallback().then(() => {
-                      onClear()
-                    })
-                  }}
-                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                  width="48%"
-                  altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                  // confirmed={approval === ApprovalState.APPROVED}
-                >
-                  {approval === ApprovalState.PENDING ? (
-                    <AutoRow gap="6px" justify="center">
-                      {t('Approving')} <Loader stroke="white" />
-                    </AutoRow>
-                  ) : approvalSubmitted ? (
-                    t('Approved')
+        {
+          config.isStopSystem ? (
+            <BottomGrouping>
+              <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
+            </BottomGrouping>
+          ) : (
+            <BottomGrouping>
+              {!account ? (
+                  <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+                ) : (
+                  inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                    <ButtonConfirmed
+                      onClick={() => {
+                        onDelay()
+                        approveCallback().then(() => {
+                          onClear()
+                        })
+                      }}
+                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                      width="48%"
+                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                      // confirmed={approval === ApprovalState.APPROVED}
+                    >
+                      {approval === ApprovalState.PENDING ? (
+                        <AutoRow gap="6px" justify="center">
+                          {t('Approving')} <Loader stroke="white" />
+                        </AutoRow>
+                      ) : approvalSubmitted ? (
+                        t('Approved')
+                      ) : (
+                        t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
+                      )}
+                    </ButtonConfirmed>
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
-                  )}
-                </ButtonConfirmed>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
-                  onDelay()
-                  if (openAdvance && Number(chainId) !== Number(selectChain)) {
-                    console.log(1)
-                    if (onWrap) onWrap().then(() => {
-                      onClear()
-                    })
-                  } else {
-                    console.log(2)
-                    if (isNativeToken) {
-                      if (onWrapNative) onWrapNative().then(() => {
-                        onClear()
-                      })
-                    } else {
-                      if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                        onClear()
-                      })
-                    }
-                  }
-                }}>
-                  {btnTxt}
-                </ButtonPrimary>
-              )
-            )
-          }
-        </BottomGrouping>
+                    <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
+                      onDelay()
+                      if (openAdvance && Number(chainId) !== Number(selectChain)) {
+                        console.log(1)
+                        if (onWrap) onWrap().then(() => {
+                          onClear()
+                        })
+                      } else {
+                        console.log(2)
+                        if (isNativeToken) {
+                          if (onWrapNative) onWrapNative().then(() => {
+                            onClear()
+                          })
+                        } else {
+                          if (onWrapUnderlying) onWrapUnderlying().then(() => {
+                            onClear()
+                          })
+                        }
+                      }
+                    }}>
+                      {btnTxt}
+                    </ButtonPrimary>
+                  )
+                )
+              }
+            </BottomGrouping>
+          )
+        }
 
       </AppBody>
     </>

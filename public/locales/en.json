@@ -327,5 +327,6 @@
   "nodestlr": "Dest Liquidity Insufficient",
   "destTS": "Dest Liquidity",
   "maticUSDCStakingTip": "Stake USDC earn ANY, APR:",
-  "router": "Router"
+  "router": "Router",
+  "stopSystem": "System maintenance"
 }
