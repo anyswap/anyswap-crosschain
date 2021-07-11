@@ -149,7 +149,7 @@ export function useFormatToken(
       || !symbol
     ) return undefined
     return new Token(
-      chainId,
+      Number(chainId),
       address,
       decimals,
       symbol,

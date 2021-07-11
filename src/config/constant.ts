@@ -28,6 +28,6 @@ export const INIT_NODE = ((type) => {
 
 export const timeout = 1000 * 60 * 30
 
-export const env = 'pro'
+export const env = 'dev'
 
 export const version = '0.1.2'

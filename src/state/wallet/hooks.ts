@@ -11,7 +11,8 @@ import { useSingleContractMultipleData, useMultipleContractSingleData } from '..
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
 export function useETHBalances(
-  uncheckedAddresses?: (string | undefined)[]
+  uncheckedAddresses?: (string | undefined)[],
+  chainId?: any
 ): { [address: string]: CurrencyAmount | undefined } {
   const multicallContract = useMulticallContract()
   const addresses: string[] = useMemo(
@@ -28,7 +29,9 @@ export function useETHBalances(
   const results = useSingleContractMultipleData(
     multicallContract,
     'getEthBalance',
-    addresses.map(address => [address])
+    addresses.map(address => [address]),
+    undefined,
+    chainId
   )
   // console.log(results)
   return useMemo(
@@ -230,7 +233,7 @@ export function useCurrencyBalances(
   const tokenBalances = useTokenBalances(account, tokens, chainId)
   // console.log(tokenBalances)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
-  const ethBalance = useETHBalances(containsETH ? [account] : [])
+  const ethBalance = useETHBalances(containsETH ? [account] : [], chainId)
 
   return useMemo(
     () =>
