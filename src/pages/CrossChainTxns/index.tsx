@@ -6,7 +6,7 @@ import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
-import Reminder from './reminder'
+import Reminder from '../CrossChain/reminder'
 
 import { useActiveWeb3React } from '../../hooks'
 import {useBridgeSwapNativeUnderlyingCallback, useBridgeSwapNativeCallback} from '../../hooks/useBridgeCallback'
@@ -273,9 +273,12 @@ export default function CrossChain() {
   if (parsedAmount) {
     console.log(v1Trade)
     console.log(v2Trade)
-    console.log(currencyBalances)
-    console.log(parsedAmount)
+    console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
+    console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
+    console.log(parsedAmount?.toSignificant(6))
     console.log(currencies)
+    // console.log(currencies?.INPUT?.toSignificant(6))
+    // console.log(currencies?.OUTPUT?.toSignificant(6))
     console.log(swapInputError)
   }
   

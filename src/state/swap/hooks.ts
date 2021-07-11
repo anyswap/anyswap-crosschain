@@ -172,8 +172,10 @@ export function useDerivedSwapInfo(chainId?:any): {
   // console.log(outputCurrency)
   const bestTradeExactIn = useTradeExactIn(inputChainId, isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(outputChainId, inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
-  // console.log(bestTradeExactIn)
-  // console.log(bestTradeExactOut)
+  // console.log(bestTradeExactIn?.inputAmount?.toSignificant(6))
+  // console.log(bestTradeExactIn?.outputAmount?.toSignificant(6))
+  // console.log(bestTradeExactOut?.inputAmount?.toSignificant(6))
+  // console.log(bestTradeExactOut?.outputAmount?.toSignificant(6))
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
   // console.log(v2Trade)
@@ -226,7 +228,9 @@ export function useDerivedSwapInfo(chainId?:any): {
   const [allowedSlippage] = useUserSlippageTolerance()
   // console.log(allowedSlippage)
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
-  
+  // console.log(slippageAdjustedAmounts)
+  // console.log(slippageAdjustedAmounts['INPUT']?.raw?.toString())
+  // console.log(slippageAdjustedAmounts['OUTPUT']?.raw?.toString())
   const slippageAdjustedAmountsV1 =
     v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage)
 
