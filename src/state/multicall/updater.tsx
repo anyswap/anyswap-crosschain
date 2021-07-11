@@ -212,7 +212,7 @@ export default function Updater({type}: {type?:number}): null {
         //   console.log('res1')
         //   console.log(res)
         // })
-        console.log(chainId)
+        // console.log(chainId)
         // console.log(chunkedCalls)
         // console.log(chunkedCalls)
         const { cancel, promise } = retry(() => chainId && useChainId && Number(useChainId) !== Number(chainId) ? fetchChunk1(multicallContract1, chunk, latestBlockNumber) : fetchChunk(multicallContract, chunk, latestBlockNumber), {

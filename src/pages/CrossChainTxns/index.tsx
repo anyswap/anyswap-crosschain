@@ -49,7 +49,7 @@ import {getParams} from '../../config/getUrlParams'
 // import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
 import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
-import {getPairs} from '../../utils/bridge/getRouterTxns'
+// import {getPairs} from '../../utils/bridge/getRouterTxns'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
@@ -259,27 +259,29 @@ export default function CrossChain() {
   )
 
   const {
-    v1Trade,
+    // v1Trade,
     v2Trade,
-    currencyBalances,
-    parsedAmount,
-    currencies,
-    inputError: swapInputError
+    // currencyBalances,
+    // parsedAmount,
+    // currencies,
+    // inputError: swapInputError
   } = useDerivedSwapInfo(selectChain)
 
   // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const {onSelectChainId} = useAddDestChainId()
   const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
-  if (parsedAmount) {
-    console.log(v1Trade)
-    console.log(v2Trade)
-    console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
-    console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
-    console.log(parsedAmount?.toSignificant(6))
-    console.log(currencies)
+  if (v2Trade) {
+    // console.log(v1Trade)
+    // console.log(v2Trade)
+    console.log(v2Trade?.inputAmount?.toSignificant(6))
+    console.log(v2Trade?.outputAmount?.toSignificant(6))
+    // console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
+    // console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
+    // console.log(parsedAmount?.toSignificant(6))
+    // console.log(currencies)
     // console.log(currencies?.INPUT?.toSignificant(6))
     // console.log(currencies?.OUTPUT?.toSignificant(6))
-    console.log(swapInputError)
+    // console.log(swapInputError)
   }
   
   const bridgeConfig = useMemo(() => {
@@ -347,7 +349,7 @@ export default function CrossChain() {
     return false
   }, [selectCurrency, selectChain])
 
-  const outputBridgeValue = useMemo(() => {
+  useEffect(() => {
     if (inputBridgeValue && destConfig) {
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
@@ -360,13 +362,47 @@ export default function CrossChain() {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
-        return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+        // console.log(value)
+        onUserInput(Field.INPUT, value.toString())
+        // return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+      } else {
+        // console.log(1)
+        onUserInput(Field.INPUT, '0')
+        // return ''
       }
-      return ''
     } else {
-      return ''
+      // console.log(2)
+      onUserInput(Field.INPUT, '0')
+      // return ''
     }
   }, [inputBridgeValue, destConfig, selectChain])
+
+  // const outputBridgeValue = useMemo(() => {
+  //   if (inputBridgeValue && destConfig) {
+  //     const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
+  //     let value = Number(inputBridgeValue) - fee
+  //     if (fee < Number(destConfig.MinimumSwapFee)) {
+  //       value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+  //     } else if (fee > destConfig.MaximumSwapFee) {
+  //       value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
+  //     }
+  //     if (!destConfig?.swapfeeon) {
+  //       value = Number(inputBridgeValue)
+  //     }
+  //     if (value && Number(value) && Number(value) > 0) {
+  //       console.log(value)
+  //       onUserInput(Field.INPUT, value.toString())
+  //       return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+  //     }
+  //     console.log(1)
+  //     onUserInput(Field.INPUT, '0')
+  //     return ''
+  //   } else {
+  //     console.log(2)
+  //     onUserInput(Field.INPUT, '0')
+  //     return ''
+  //   }
+  // }, [inputBridgeValue, destConfig, selectChain])
 
   const isWrapInputError = useMemo(() => {
     
@@ -522,11 +558,11 @@ export default function CrossChain() {
     }
   }, [selectCurrency])
 
-  useEffect(() => {
-    getPairs(selectChain, destConfig?.underlying?.address ?? destConfig?.address, selectDestCurrency?.address).then(res => {
-      console.log(res)
-    })
-  }, [destConfig, selectDestCurrency, selectChain])
+  // useEffect(() => {
+  //   getPairs(selectChain, destConfig?.underlying?.address ?? destConfig?.address, selectDestCurrency?.address).then(res => {
+  //     console.log(res)
+  //   })
+  // }, [destConfig, selectDestCurrency, selectChain])
 
   useEffect(() => {
     // onSelectChainId(selectChain)
@@ -662,7 +698,6 @@ export default function CrossChain() {
             value={inputBridgeValue}
             onUserInput={(value) => {
               // console.log(value)
-              onUserInput(Field.INPUT, value)
               setInputBridgeValue(value)
             }}
             onCurrencySelect={(inputCurrency) => {
@@ -721,7 +756,8 @@ export default function CrossChain() {
 
           <SelectChainIdInputPanel
             label={t('to')}
-            value={outputBridgeValue.toString()}
+            // value={outputBridgeValue.toString()}
+            value={v2Trade?.outputAmount?.toSignificant(6) ?? ''}
             onUserInput={(value) => {
               setInputBridgeValue(value)
             }}
