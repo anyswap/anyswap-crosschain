@@ -5,6 +5,8 @@ import styled from 'styled-components'
 const TitleBox = styled.div`
   ${({ theme }) => theme.flexBC}
   margin-bottom:1rem;
+  position:relative;
+  height: 38px;
 `
 const TitleTxt = styled.div`
   height: 38px;
@@ -13,9 +15,9 @@ const TitleTxt = styled.div`
   font-weight: 800;
   color: ${({ theme }) => theme.textColorBold};
   white-space: nowrap;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display:none;
-  `}
+  // ${({ theme }) => theme.mediaWidth.upToMedium`
+  //   display:none;
+  // `}
 `
 const TabLinkBox = styled.ul`
   ${({ theme }) => theme.flexSC}

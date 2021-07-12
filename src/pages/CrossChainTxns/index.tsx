@@ -19,7 +19,7 @@ import { AutoColumn } from '../../components/Column'
 import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import { AutoRow } from '../../components/Row'
 import Loader from '../../components/Loader'
-import AddressInputPanel from '../../components/AddressInputPanel'
+// import AddressInputPanel from '../../components/AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 import ModalContent from '../../components/Modal/ModalContent'
@@ -122,7 +122,10 @@ const ConfirmText = styled.div`
 `
 
 const SettingsBox = styled.div`
-  ${({ theme }) => theme.flexEC}
+  ${({ theme }) => theme.flexEC};
+  position:absolute;
+  top:0;
+  right:0;
   .set{
     width: 45px;
     height: 35px;
@@ -146,8 +149,8 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
-  const [recipient, setRecipient] = useState<any>(account ?? '')
-  const [swapType, setSwapType] = useState('swap')
+  // const [recipient, setRecipient] = useState<any>(account ?? '')
+  // const [swapType, setSwapType] = useState('swap')
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -283,7 +286,7 @@ export default function CrossChain() {
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
     formatCurrency?formatCurrency:undefined,
-    recipient,
+    account,
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
@@ -293,7 +296,7 @@ export default function CrossChain() {
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapNativeUnderlyingCallback(
     formatCurrency?formatCurrency:undefined,
-    recipient,
+    account,
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
@@ -471,7 +474,7 @@ export default function CrossChain() {
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
-      && isAddress(recipient)
+      // && isAddress(recipient)
       && destChain
     ) {
       if (
@@ -486,7 +489,8 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  // }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
     // console.log(destChain)
@@ -570,11 +574,11 @@ export default function CrossChain() {
     })
   }, [chainId, count])
 
-  useEffect(() => {
-    if (swapType == 'swap' && account) {
-      setRecipient(account)
-    }
-  }, [account, swapType])
+  // useEffect(() => {
+  //   if (swapType == 'swap' && account) {
+  //     setRecipient(account)
+  //   }
+  // }, [account, swapType])
 
   useEffect(() => {
     // console.log(selectCurrency)
@@ -707,38 +711,42 @@ export default function CrossChain() {
         <Title
           title={t('swap')} 
           
-          tabList={[
-            {
-              name: t('swap'),
-              onTabClick: () => {
-                setSwapType('swap')
-                if (account) {
-                  setRecipient(account)
-                }
-              },
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            },
-            {
-              name: t('send'),
-              onTabClick: () => {
-                setSwapType('send')
-                setRecipient('')
-              },
-              iconUrl: require('../../assets/images/icon/withdraw.svg'),
-              iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
-            }
-          ]}
+          // tabList={[
+          //   {
+          //     name: t('swap'),
+          //     onTabClick: () => {
+          //       setSwapType('swap')
+          //       if (account) {
+          //         setRecipient(account)
+          //       }
+          //     },
+          //     iconUrl: require('../../assets/images/icon/deposit.svg'),
+          //     iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          //   },
+          //   {
+          //     name: t('send'),
+          //     onTabClick: () => {
+          //       setSwapType('send')
+          //       setRecipient('')
+          //     },
+          //     iconUrl: require('../../assets/images/icon/withdraw.svg'),
+          //     iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+          //   }
+          // ]}
         >
-          
-        </Title>
-        
-        <AutoColumn gap={'sm'}>
           <SettingsBox>
             <div className="set">
               <Settings />
             </div>
           </SettingsBox>
+        </Title>
+        
+        <AutoColumn gap={'sm'}>
+          {/* <SettingsBox>
+            <div className="set">
+              <Settings />
+            </div>
+          </SettingsBox> */}
 
           <SelectCurrencyInputPanel
             label={t('From')}
@@ -823,9 +831,9 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />
-          {swapType == 'swap' ? '' : (
+          {/* {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
-          )}
+          )} */}
         </AutoColumn>
 
         <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} />

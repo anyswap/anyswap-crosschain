@@ -351,7 +351,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapNativeCallback(
   inputCurrency: Currency | undefined,
-  toAddress:  string | undefined,
+  toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
   deadline: number | undefined,
@@ -427,7 +427,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapNativeUnderlyingCallback(
   inputCurrency: Currency | undefined,
-  toAddress:  string | undefined,
+  toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
   deadline: number | undefined,

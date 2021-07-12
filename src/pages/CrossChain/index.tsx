@@ -570,11 +570,11 @@ export default function CrossChain() {
       </ModalContent>
       <AppBody>
         <Title
-          title={t('swap')} 
+          title={config.env === 'dev' ? t('router') : t('swap')}
           
           tabList={[
             {
-              name: t('swap'),
+              name: config.env === 'dev' ? t('router') : t('swap'),
               onTabClick: () => {
                 setSwapType('swap')
                 if (account) {
