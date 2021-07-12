@@ -1,14 +1,14 @@
-import {formatSwapTokenList} from './methods'
+import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const FSN_MAINNET = 'https://mainnet.anyswap.exchange'
-export const FSN_MAINNET1 = 'https://mainnet.anyswap.exchange'
 export const FSN_MAIN_CHAINID = 32659
+export const FSN_MAINNET = getLocalRPC(FSN_MAIN_CHAINID, 'https://mainnet.anyswap.exchange')
+export const FSN_MAINNET1 = 'https://mainnet.anyswap.exchange'
 export const FSN_MAIN_EXPLORER = 'https://fsnex.com'
 
 // export const FSN_TESTNET = 'https://testnet.anyswap.exchange'
-export const FSN_TESTNET = 'https://testnet.fsn.dev/api'
 export const FSN_TEST_CHAINID = 46688
+export const FSN_TESTNET = getLocalRPC(FSN_TEST_CHAINID, 'https://testnet.fsn.dev/api')
 export const FSN_TEST_EXPLORER = 'https://fsnex.com'
 
 export const tokenList = [

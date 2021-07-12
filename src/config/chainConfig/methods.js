@@ -1,3 +1,7 @@
+import {
+  USE_VERSION
+} from '../constant'
+
 export function formatSwapTokenList (name, tokenlist) {
   
   return {
@@ -8,4 +12,31 @@ export function formatSwapTokenList (name, tokenlist) {
     "tokens": tokenlist,
     "version": {"major": 0, "minor": 0, "patch": 1}
   }
+}
+
+const LOCAL_RPC = 'LOCAL_RPC'
+export function getLocalRPC (chainId, initRpc) {
+  const lStr = localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
+  if (lStr) {
+    const lObj = JSON.parse(lStr)
+    if (lObj[chainId]) {
+      return lObj[chainId]
+    } else {
+      return initRpc
+    }
+  } else {
+    return initRpc
+  }
+}
+
+export function setLocalRPC (chainId, initRpc) {
+  const lStr = localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
+  let lObj ={}
+  if (lStr) {
+    lObj = JSON.parse(lStr)
+    lObj[chainId] = initRpc
+  } else {
+    lObj[chainId] = initRpc
+  }
+  localStorage.setItem(USE_VERSION + '_' + LOCAL_RPC, JSON.stringify(lObj))
 }

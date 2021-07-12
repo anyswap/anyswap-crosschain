@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { Settings, CheckSquare } from 'react-feather'
 
 import { YellowCard } from '../Card'
 import TokenLogo from '../TokenLogo'
@@ -20,14 +21,20 @@ import {chainInfo} from '../../config/chainConfig'
 import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
 import {web3Fn} from '../../utils/tools/web3Utils'
 
+import {setLocalRPC} from '../../config/chainConfig/methods'
+
 export const WalletLogoBox = styled.div`
   width:100%;
   ${({theme}) => theme.flexBC}
 `
 
 export const WalletLogoBox2 = styled.div`
-width:100%;
-  ${({theme}) => theme.flexSC}
+  width:100%;
+  ${({theme}) => theme.flexBC}
+  .left {
+    ${({theme}) => theme.flexSC};
+    width: 100%;
+  }
 `
 
 export const IconWrapper = styled.div`
@@ -38,6 +45,7 @@ export const IconWrapper = styled.div`
   border: solid 0.0625rem rgba(0, 0, 0, 0.1);
   background:#fff;
   width:46px;
+  min-width:46px;
   height:46px;
   border-radius:100%;
   & > img,
@@ -51,6 +59,10 @@ export const OptionCardLeft = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   justify-content: center;
   height: 100%;
+  width:100%;
+`
+export const OptionCardLeft1 = styled(OptionCardLeft)`
+  display:none;
 `
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -200,39 +212,118 @@ export const NetworkCard = styled(YellowCard)`
   `};
 `
 
+const StyledMenuIcon = styled(Settings)`
+  height: 20px;
+  width: 20px;
+
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
+const CheckSquareIcon = styled(CheckSquare)`
+  height: 20px;
+  width: 20px;
+  display:none;
+
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
+const Input = styled.input`
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  width: 0;
+  height: 45px;
+  width:100%;
+  background-color: transparent;
+  border-bottom: 0.0625rem solid ${({theme}) => theme.inputBorder};
+
+  color: ${({ theme }) => theme.textColorBold};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Manrope';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: -0.0625rem;
+  padding: 8px 0.75rem;
+  ::placeholder {
+    color: ${({ theme }) => theme.placeholderGray};
+  }
+`
+
 export function Option (curChainId:any, selectChainId:any) {
   // const { chainId } = useActiveWeb3React()
   // console.log(item)
   // console.log(selectChain)
   const item = config.getCurChainInfo(curChainId)
+
+  // console.log(viewUrl)
   return (
     <>
       <WalletLogoBox>
         <WalletLogoBox2>
-          <IconWrapper>
-            {/* <img src={icon} alt={'Icon'} /> */}
-            <TokenLogo symbol={item?.networkLogo ?? item?.symbol} size={'46px'}></TokenLogo>
-          </IconWrapper>
-          <OptionCardLeft>
-            <HeaderText>
-              {' '}
-              {
-              (
-                curChainId
-                && selectChainId
-                && Number(curChainId) === Number(selectChainId)
-              ) ? (
-                <CircleWrapper>
-                  <GreenCircle>
-                    <div />
-                  </GreenCircle>
-                </CircleWrapper>
-              ) : (
-                ''
-              )}
-              {item.networkName}
-            </HeaderText>
-          </OptionCardLeft>
+          <div className="left">
+            <IconWrapper>
+              {/* <img src={icon} alt={'Icon'} /> */}
+              <TokenLogo symbol={item?.networkLogo ?? item?.symbol} size={'46px'}></TokenLogo>
+            </IconWrapper>
+            <OptionCardLeft id={'chain_list_name_' + curChainId}>
+              <HeaderText>
+                {' '}
+                {
+                (
+                  curChainId
+                  && selectChainId
+                  && Number(curChainId) === Number(selectChainId)
+                ) ? (
+                  <CircleWrapper>
+                    <GreenCircle>
+                      <div />
+                    </GreenCircle>
+                  </CircleWrapper>
+                ) : (
+                  ''
+                )}
+                {item.networkName}
+              </HeaderText>
+            </OptionCardLeft>
+            <OptionCardLeft1 id={'chain_list_url_' + curChainId} onClick={e => e.stopPropagation()}>
+              <Input value={item.nodeRpc} id={'chain_list_input_' + curChainId} onChange={() => {console.log(12)}}/>
+            </OptionCardLeft1>
+          </div>
+          <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
+            const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
+            const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
+            const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
+            const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
+            if (htmlNameNode) htmlNameNode.style.display = 'none'
+            if (htmlNameNode1) htmlNameNode1.style.display = 'none'
+            if (htmlUrlNode) htmlUrlNode.style.display = 'block'
+            if (htmlUrlNode1) htmlUrlNode1.style.display = 'block'
+            e.stopPropagation()
+          }}></StyledMenuIcon>
+          <CheckSquareIcon id={'chain_list_tick_' + curChainId} onClick={e => {
+            const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
+            const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
+            const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
+            const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
+            const htmlInput:any = document.getElementById('chain_list_input_' + curChainId)
+            if (htmlInput) {
+              console.log(htmlInput.value)
+              setLocalRPC(curChainId, htmlInput.value)
+            }
+            if (htmlNameNode) htmlNameNode.style.display = 'block'
+            if (htmlNameNode1) htmlNameNode1.style.display = 'block'
+            if (htmlUrlNode) htmlUrlNode.style.display = 'none'
+            if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
+            e.stopPropagation()
+          }}></CheckSquareIcon>
         </WalletLogoBox2>
       </WalletLogoBox>
     </>

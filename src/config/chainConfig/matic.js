@@ -1,10 +1,10 @@
-import {formatSwapTokenList} from './methods'
+import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
+export const MATIC_MAIN_CHAINID = 137
 // export const MATIC_MAINNET = 'https://rpc-mainnet.maticvigil.com'
 // export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? 'https://rpc-mainnet.maticvigil.com' : 'https://maticnode1.anyswap.exchange'
-export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? 'https://rpc-mainnet.matic.network' : 'https://maticnode1.anyswap.exchange'
-export const MATIC_MAIN_CHAINID = 137
+export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(MATIC_MAIN_CHAINID, 'https://rpc-mainnet.matic.network') : MATIC_MAIN_CHAINID(MATIC_MAIN_CHAINID, 'https://maticnode1.anyswap.exchange')
 // export const MATIC_MAIN_EXPLORER = 'https://explorer-mainnet.maticvigil.com'
 export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
 

@@ -1,8 +1,8 @@
-import {formatSwapTokenList} from './methods'
+import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const AVAX_MAINNET = 'https://api.avax.network/ext/bc/C/rpc'
 export const AVAX_MAIN_CHAINID = 43114
+export const AVAX_MAINNET = getLocalRPC(AVAX_MAIN_CHAINID, 'https://api.avax.network/ext/bc/C/rpc')
 export const AVAX_MAIN_EXPLORER = 'https://cchain.explorer.avax.network/'
 
 export const tokenList = [
