@@ -7,7 +7,7 @@ interface NetworkConnectorArguments {
   defaultChainId?: number
 }
 
-// taken from ethers.js, compatible interface with web3 provider
+// 来自ethers.js，与web3提供程序兼容的接口
 type AsyncSendable = {
   isMetaMask?: boolean
   host?: string
@@ -48,7 +48,8 @@ class MiniRpcProvider implements AsyncSendable {
     this.host = parsed.host
     this.path = parsed.pathname
     // how long to wait to batch calls
-    this.batchWaitTimeMs = batchWaitTimeMs ?? 10
+    this.batchWaitTimeMs = batchWaitTimeMs ?? 1
+    // console.log(this)
   }
 
   public readonly clearBatch = async () => {

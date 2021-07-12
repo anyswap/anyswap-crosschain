@@ -4,10 +4,14 @@ import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
 
-export function useBlockNumber(): number | undefined {
+export function useBlockNumber(initChainId?:any): number | undefined {
   const { chainId } = useActiveWeb3React()
-
-  return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
+  const useChainId = initChainId ? initChainId : chainId
+  // console.log(useChainId)
+  return useSelector((state: AppState) => { 
+    // console.log(state)
+    return state.application.blockNumber[useChainId ?? -1]
+  })
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
