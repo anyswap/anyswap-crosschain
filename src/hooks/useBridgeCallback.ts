@@ -354,6 +354,9 @@ export function useBridgeNativeCallback(
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
+  deadline: number | undefined,
+  outputAmount: string | undefined,
+  routerPath: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -367,7 +370,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -385,10 +388,10 @@ export function useBridgeNativeCallback(
                 
                 const txReceipt = await bridgeContract.anySwapOutExactTokensForNative(
                   `0x${inputAmount.raw.toString(16)}`,
-                  'minamount',
-                  [],
+                  outputAmount,
+                  routerPath,
                   toAddress,
-                  'deadline',
+                  deadline,
                   toChainID
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
@@ -427,6 +430,9 @@ export function useBridgeNativeCallback(
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
+  deadline: number | undefined,
+  outputAmount: string | undefined,
+  routerPath: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -440,7 +446,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -458,10 +464,10 @@ export function useBridgeNativeCallback(
                 
                 const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
                   `0x${inputAmount.raw.toString(16)}`,
-                  'minamount',
-                  [],
+                  outputAmount,
+                  routerPath,
                   toAddress,
-                  'deadline',
+                  deadline,
                   toChainID
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })

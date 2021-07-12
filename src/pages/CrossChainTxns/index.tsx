@@ -24,6 +24,7 @@ import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 import ModalContent from '../../components/Modal/ModalContent'
 import {selectNetwork} from '../../components/Header/SelectNetwork'
+import Settings from '../../components/Settings'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -40,6 +41,8 @@ import {
 //   useSwapState
 // } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/actions'
+import { useUserTransactionTTL } from '../../state/user/hooks'
+
 
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
@@ -116,6 +119,15 @@ const ConfirmText = styled.div`
   padding: 1.25rem 0;
   border-top: 0.0625rem solid rgba(0, 0, 0, 0.08);
   margin-top:1.25rem
+`
+
+const SettingsBox = styled.div`
+  ${({ theme }) => theme.flexEC}
+  .set{
+    width: 45px;
+    height: 35px;
+    float:right;
+  }
 `
 
 let intervalFN:any = ''
@@ -244,45 +256,72 @@ export default function CrossChain() {
     getSelectPool()
   }, [getSelectPool])
 
-  const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
-    formatCurrency?formatCurrency:undefined,
-    recipient,
-    inputBridgeValue,
-    selectChain
-  )
-
-  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapNativeUnderlyingCallback(
-    formatCurrency?formatCurrency:undefined,
-    recipient,
-    inputBridgeValue,
-    selectChain
-  )
-
+  const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
+  const [ttl] = useUserTransactionTTL()
+  
   const {
     // v1Trade,
     v2Trade,
     // currencyBalances,
     // parsedAmount,
     // currencies,
-    // inputError: swapInputError
+    inputError: swapInputError
   } = useDerivedSwapInfo(selectChain)
+  // console.log(ttl)
+  
+  const routerPath = useMemo(() => {
+    const arr:any = []
+    if (v2Trade?.route?.pairs) {
+      for (const obj of v2Trade?.route?.pairs) {
+        if (obj?.liquidityToken?.address) {
+          arr.push(obj?.liquidityToken?.address)
+        }
+      }
+    }
+    return arr
+  }, [v2Trade])
+
+  const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
+    formatCurrency?formatCurrency:undefined,
+    recipient,
+    v2Trade?.inputAmount?.toSignificant(6),
+    selectChain,
+    ttl,
+    v2Trade?.outputAmount?.toString(),
+    routerPath
+  )
+
+  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapNativeUnderlyingCallback(
+    formatCurrency?formatCurrency:undefined,
+    recipient,
+    v2Trade?.inputAmount?.toSignificant(6),
+    selectChain,
+    ttl,
+    v2Trade?.outputAmount?.toString(),
+    routerPath
+  )
+
 
   // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const {onSelectChainId} = useAddDestChainId()
-  const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
-  if (v2Trade) {
-    // console.log(v1Trade)
-    // console.log(v2Trade)
-    console.log(v2Trade?.inputAmount?.toSignificant(6))
-    console.log(v2Trade?.outputAmount?.toSignificant(6))
-    // console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
-    // console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
-    // console.log(parsedAmount?.toSignificant(6))
-    // console.log(currencies)
-    // console.log(currencies?.INPUT?.toSignificant(6))
-    // console.log(currencies?.OUTPUT?.toSignificant(6))
-    // console.log(swapInputError)
-  }
+  useEffect(() => {
+    if (v2Trade) {
+      // console.log(v1Trade)
+      console.log(v2Trade)
+      console.log(v2Trade?.inputAmount?.toSignificant(6))
+      console.log(v2Trade?.outputAmount?.toSignificant(6))
+      console.log(routerPath)
+      console.log(swapInputError)
+      // console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
+      // console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
+      // console.log(parsedAmount?.toSignificant(6))
+      // console.log(currencies)
+      // console.log(currencies?.INPUT?.toSignificant(6))
+      // console.log(currencies?.OUTPUT?.toSignificant(6))
+      // console.log(swapInputError)
+    }
+  }, [v2Trade])
+
   
   const bridgeConfig = useMemo(() => {
     if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
@@ -690,8 +729,16 @@ export default function CrossChain() {
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
             }
           ]}
-        ></Title>
+        >
+          
+        </Title>
+        
         <AutoColumn gap={'sm'}>
+          <SettingsBox>
+            <div className="set">
+              <Settings />
+            </div>
+          </SettingsBox>
 
           <SelectCurrencyInputPanel
             label={t('From')}

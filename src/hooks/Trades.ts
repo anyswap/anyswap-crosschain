@@ -103,7 +103,7 @@ export function useTradeExactIn(chainId: ChainId, currencyAmountIn?: CurrencyAmo
 
   // console.log(allowedPairs)
   // console.log(currencyAmountIn)
-  // console.log(currencyOut)
+  // console.log(allowedPairs)
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
       return (
