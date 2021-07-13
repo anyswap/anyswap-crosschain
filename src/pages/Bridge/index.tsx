@@ -104,6 +104,12 @@ const ConfirmText = styled.div`
 
 let intervalFN:any = ''
 
+export enum BridgeType {
+  deposit = 'deposit',
+  swapin = 'swapin',
+  swapout = 'swapout',
+}
+
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
@@ -118,7 +124,7 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
-  const [swapType, setSwapType] = useState('swapin')
+  const [swapType, setSwapType] = useState(BridgeType.swapin)
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -390,7 +396,8 @@ export default function CrossChain() {
     // console.log(swapType)
     if (chainId) {
       CurrentBridgeInfo(chainId).then((res:any) => {
-        // console.log(res)
+        console.log(res)
+        // console.log(swapType)
         if (res) {
           const list:any = {}
           let t1 = ''
@@ -552,7 +559,7 @@ export default function CrossChain() {
             {
               name: t('Deposited'),
               onTabClick: () => {
-                setSwapType('deposit')
+                setSwapType(BridgeType.deposit)
               },
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
@@ -560,7 +567,7 @@ export default function CrossChain() {
             {
               name: t('send'),
               onTabClick: () => {
-                setSwapType('swapin')
+                setSwapType(BridgeType.swapin)
               },
               iconUrl: require('../../assets/images/icon/send.svg'),
               iconActiveUrl: require('../../assets/images/icon/send-white.svg')
@@ -568,12 +575,18 @@ export default function CrossChain() {
             {
               name: t('redeem'),
               onTabClick: () => {
-                setSwapType('swapout')
+                setSwapType(BridgeType.swapout)
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
             }
           ]}
+          currentTab={(() => {
+            if (swapType === BridgeType.deposit) return 0
+            if (swapType === BridgeType.swapin) return 1
+            if (swapType === BridgeType.swapout) return 2
+            return 1
+          })()}
         ></Title>
         <AutoColumn gap={'sm'}>
 
@@ -658,9 +671,9 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />
-          {swapType == 'swapin' ? '' : (
+          {swapType === 'swapout' ? (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
-          )}
+          ): ''}
         </AutoColumn>
 
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}

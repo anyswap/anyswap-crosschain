@@ -43,6 +43,10 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: FSN_MAINNET,
+    nodeRpcList: [
+      'https://mainnet.anyswap.exchange',
+      'https://fsn.dev/api'
+    ],
     rpc1: FSN_MAINNET1,
     chainID: FSN_MAIN_CHAINID,
     lookHash: FSN_MAIN_EXPLORER + '/transaction/',
