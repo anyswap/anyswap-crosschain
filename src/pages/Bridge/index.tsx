@@ -124,7 +124,7 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
-  const [swapType, setSwapType] = useState(BridgeType.swapin)
+  const [swapType, setSwapType] = useState(BridgeType.deposit)
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -440,25 +440,26 @@ export default function CrossChain() {
     }
   }, [chainId, swapType, count, selectCurrency])
 
-  useEffect(() => {
-    if (chainId && !selectChain) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-    }
-  }, [chainId, selectChain])
-  useEffect(() => {
-    if (chainId) {
-      setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-    }
-  }, [chainId])
+  // useEffect(() => {
+  //   if (chainId && !selectChain) {
+  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+  //   }
+  // }, [chainId, selectChain])
+  // useEffect(() => {
+  //   if (chainId) {
+  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
+  //   }
+  // }, [chainId])
 
+  // console.log(selectChain)
   useEffect(() => {
-    // console.log(selectCurrency)
     if (selectCurrency) {
       const arr:any = []
       for (const c in selectCurrency?.destChains) {
-        if (Number(c) === Number(chainId)) continue
+        if (Number(c) === Number(chainId) && swapType !== BridgeType.deposit) continue
         arr.push(c)
       }
+      // console.log(arr)
       if (arr.length > 0) {
         for (const c of arr) {
           if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c)) continue
@@ -553,7 +554,7 @@ export default function CrossChain() {
       </ModalContent>
       <AppBody>
         <Title
-          title={t('send')} 
+          title={t('Deposited')} 
           
           tabList={[
             {
@@ -565,7 +566,7 @@ export default function CrossChain() {
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
             },
             {
-              name: t('send'),
+              name: t('bridgeAssets'),
               onTabClick: () => {
                 setSwapType(BridgeType.swapin)
               },
@@ -585,7 +586,7 @@ export default function CrossChain() {
             if (swapType === BridgeType.deposit) return 0
             if (swapType === BridgeType.swapin) return 1
             if (swapType === BridgeType.swapout) return 2
-            return 1
+            return 0
           })()}
         ></Title>
         <AutoColumn gap={'sm'}>
@@ -617,6 +618,7 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             allTokens={allTokens}
+            hideBalance={swapType === BridgeType.deposit}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (
