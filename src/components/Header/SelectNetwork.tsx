@@ -257,12 +257,45 @@ const Input = styled.input`
   }
 `
 
-export function Option (curChainId:any, selectChainId:any) {
+const Web3 = require('web3')
+
+function isConnect (rpc:string) {
+  return new Promise(resolve => {
+    if (!rpc || rpc.indexOf('https://') !== 0) {
+      resolve({
+        msg: 'Error',
+        error: "Failed to construct 'URL': Invalid URL"
+      })
+    } else {
+      const web3Fn = new Web3(new Web3.providers.HttpProvider(rpc))
+      web3Fn.eth.getBlock('latest').then((res:any) => {
+        console.log(res)
+        resolve({
+          msg: 'Success',
+          info: res
+        })
+      }).catch((err:any) => {
+        resolve({
+          msg: 'Error',
+          error: err.toString()
+        })
+      })
+    }
+  })
+}
+
+export function Option ({
+  curChainId,
+  selectChainId
+}: {
+  curChainId:any,
+  selectChainId:any
+}) {
   // const { chainId } = useActiveWeb3React()
   // console.log(item)
   // console.log(selectChain)
   const item = config.getCurChainInfo(curChainId)
-
+  const [viewUrl, setViewUrl] = useState<string>('')
   // console.log(viewUrl)
   return (
     <>
@@ -294,7 +327,13 @@ export function Option (curChainId:any, selectChainId:any) {
               </HeaderText>
             </OptionCardLeft>
             <OptionCardLeft1 id={'chain_list_url_' + curChainId} onClick={e => e.stopPropagation()}>
-              <Input value={item.nodeRpc} id={'chain_list_input_' + curChainId} onChange={() => {console.log(12)}}/>
+              <Input value={viewUrl} id={'chain_list_input_' + curChainId} onChange={(event:any) => {
+                // const htmlInput:any = document.getElementById('chain_list_input_' + curChainId)
+                // if (htmlInput) {
+                //   htmlInput.value = event.target.value
+                // }
+                setViewUrl(event.target.value)
+              }}/>
             </OptionCardLeft1>
           </div>
           <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
@@ -309,19 +348,28 @@ export function Option (curChainId:any, selectChainId:any) {
             e.stopPropagation()
           }}></StyledMenuIcon>
           <CheckSquareIcon id={'chain_list_tick_' + curChainId} onClick={e => {
-            const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
-            const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
-            const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
-            const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
-            const htmlInput:any = document.getElementById('chain_list_input_' + curChainId)
-            if (htmlInput) {
-              console.log(htmlInput.value)
-              setLocalRPC(curChainId, htmlInput.value)
-            }
-            if (htmlNameNode) htmlNameNode.style.display = 'block'
-            if (htmlNameNode1) htmlNameNode1.style.display = 'block'
-            if (htmlUrlNode) htmlUrlNode.style.display = 'none'
-            if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
+            // const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
+            // const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
+            // const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
+            // const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
+            // // const htmlInput:any = document.getElementById('chain_list_input_' + curChainId)
+            // // if (htmlInput) {
+            // //   console.log(htmlInput.value)
+            // //   // setViewUrl(htmlInput.value)
+            // // }
+            // setLocalRPC(curChainId, viewUrl)
+            // if (htmlNameNode) htmlNameNode.style.display = 'block'
+            // if (htmlNameNode1) htmlNameNode1.style.display = 'block'
+            // if (htmlUrlNode) htmlUrlNode.style.display = 'none'
+            // if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
+            isConnect(viewUrl).then((res:any) => {
+              if (res.msg === 'Success') {
+                setLocalRPC(curChainId, viewUrl)
+                history.go(0)
+              } else {
+                alert(res.error)
+              }
+            })
             e.stopPropagation()
           }}></CheckSquareIcon>
         </WalletLogoBox2>
@@ -431,7 +479,8 @@ export default function SelectNetwork () {
                   chainList && chainList.map((item:any, index:any) => {
                     return (
                       <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        {Option(item, chainId)}
+                        {/* {Option(item, chainId)} */}
+                        <Option curChainId={item} selectChainId={chainId}></Option>
                         {/* <img alt={''} src={AddIcon} /> */}
                       </OptionCardClickable>
                     )

@@ -335,7 +335,8 @@ export default function SelectChainIdInputPanel({
                         className={selectChainId && selectChainId === item ? 'active' : ''}
                         onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
-                        {Option(item, selectChainId)}
+                        {/* {Option(item, selectChainId)} */}
+                        <Option curChainId={item} selectChainId={chainId}></Option>
                       </OptionCardClickable>
                     )
                   })
