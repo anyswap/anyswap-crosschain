@@ -553,7 +553,6 @@ export default function CrossChain() {
               name: t('Deposited'),
               onTabClick: () => {
                 setSwapType('deposit')
-                // setRecipient('')
               },
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
@@ -562,7 +561,6 @@ export default function CrossChain() {
               name: t('send'),
               onTabClick: () => {
                 setSwapType('swapin')
-                // setRecipient('')
               },
               iconUrl: require('../../assets/images/icon/send.svg'),
               iconActiveUrl: require('../../assets/images/icon/send-white.svg')
@@ -571,9 +569,6 @@ export default function CrossChain() {
               name: t('redeem'),
               onTabClick: () => {
                 setSwapType('swapout')
-                // if (account) {
-                //   setRecipient(account)
-                // }
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')

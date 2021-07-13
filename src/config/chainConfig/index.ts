@@ -1,17 +1,17 @@
 import arbitrum, {ARBITRUM_MAIN_CHAINID} from './arbitrum'
-import avax from './avax'
+import avax, {AVAX_MAIN_CHAINID} from './avax'
 import bsc, {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './bsc'
 import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID} from './eth'
-import fsn from './fsn'
+import fsn, {FSN_MAIN_CHAINID} from './fsn'
 import ftm, {FTM_MAIN_CHAINID} from './ftm'
 import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
 import matic, {MATIC_MAIN_CHAINID} from './matic'
-import xdai from './xdai'
+import xdai, {XDAI_MAIN_CHAINID} from './xdai'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
 
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, env} from '../constant'
 
 interface ConFig {
   [key: string]: any
@@ -57,7 +57,18 @@ const useChain = {
   [VERSION.V3]: [
     ETH_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID
+  ],
+  ALL_MAIN: [
+    ARBITRUM_MAIN_CHAINID,
+    AVAX_MAIN_CHAINID,
+    BNB_MAIN_CHAINID,
+    ETH_MAIN_CHAINID,
+    FSN_MAIN_CHAINID,
+    FTM_MAIN_CHAINID,
+    HT_MAIN_CHAINID,
+    MATIC_MAIN_CHAINID,
+    XDAI_MAIN_CHAINID
   ]
 }
 
-export const spportChainArr = useChain[USE_VERSION]
+export const spportChainArr = env === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
