@@ -50,6 +50,7 @@ interface SelectCurrencyInputPanelProps {
   // currency?: Currency | null
   currency?: any // select token
   disableCurrencySelect?: boolean // disabled select
+  disableChainSelect?: boolean // disabled select
   disableInput?: boolean // disabled input
   hideBalance?: boolean // hide balance
   hideInput?: boolean // hide input
@@ -80,6 +81,7 @@ export default function SelectCurrencyInputPanel({
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
+  disableChainSelect = false,
   disableInput = false,
   hideBalance = false,
   hideInput = false,
@@ -282,7 +284,7 @@ export default function SelectCurrencyInputPanel({
               isViewNetwork ? (
                 <CurrencySelect
                   selected={true}
-                  onClick={() => {toggleNetworkModal()}}
+                  onClick={() => {disableChainSelect ? '' : toggleNetworkModal()}}
                   className="open-currency-select-button"
                 >
                   <Aligner>

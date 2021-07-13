@@ -470,7 +470,7 @@ export default function CrossChain() {
     }
   }, [setInputBridgeValue])
   // console.log(isUnderlying)
-  // console.log(selectCurrency)
+  // console.log(selectChainList)
   return (
     <>
       <ModalContent
@@ -596,6 +596,7 @@ export default function CrossChain() {
             }}
             currency={formatCurrency}
             disableCurrencySelect={false}
+            disableChainSelect={swapType === BridgeType.deposit}
             showMaxButton={true}
             isViewNetwork={true}
             onOpenModalView={(value) => {
@@ -662,6 +663,7 @@ export default function CrossChain() {
             intervalCount={intervalCount}
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
+            // isViewAllChain={swapType === BridgeType.deposit}
           />
           {swapType === 'swapout' ? (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
