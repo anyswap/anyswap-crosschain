@@ -328,5 +328,6 @@
   "destTS": "Dest Liquidity",
   "maticUSDCStakingTip": "Stake USDC earn ANY, APR:",
   "router": "Router",
-  "stopSystem": "System maintenance"
+  "stopSystem": "System maintenance",
+  "redeem": "Redeem"
 }

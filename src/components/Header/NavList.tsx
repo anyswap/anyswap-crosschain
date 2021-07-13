@@ -322,22 +322,24 @@ export default function NavList() {
         </StyledNavLink>
         {
           config.env === 'dev' ? (
-            <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-              <div className="icon">
-                <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
-              </div>
-              {t('swap')}
-            </StyledNavLink>
+            <>
+              <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+                <div className="icon">
+                  <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
+                  <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
+                </div>
+                {t('swap')}
+              </StyledNavLink>
+              <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
+                <div className="icon">
+                  <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
+                  <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
+                </div>
+                {t('bridge')}
+              </StyledNavLink>
+            </>
           ) : ''
         }
-        {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
-          <div className="icon">
-            <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
-          </div>
-          {t('bridge')}
-        </StyledNavLink> */}
         <StyledNavLink
           id={`pool-nav-link`}
           to={'/pool'}

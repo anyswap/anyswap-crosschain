@@ -99,8 +99,7 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
   const destConfig = bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
   const isSwapfeeon = destConfig?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
-  // console.log(selectChain)
-  // console.log(destConfig)
+
   return (
     <SubCurrencySelectBox>
       <dl className='list'>

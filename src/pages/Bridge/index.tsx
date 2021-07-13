@@ -5,10 +5,10 @@ import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
-import Reminder from './reminder'
+import Reminder from '../CrossChain/reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useBridgeCallback} from '../../hooks/useBridgeCallback'
+import {useCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -229,12 +229,13 @@ export default function CrossChain() {
     getSelectPool()
   }, [getSelectPool])
   
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    formatCurrency?formatCurrency:undefined,
-    selectCurrency?.address,
+  const { wrapType, execute: onWrap, inputError: wrapInputError } = useCrossBridgeCallback(
+    formatCurrency ? formatCurrency : undefined,
     recipient,
     inputBridgeValue,
-    selectChain
+    selectChain,
+    swapType,
+    selectCurrency?.address,
   )
 
   const bridgeConfig = useMemo(() => {
@@ -242,6 +243,13 @@ export default function CrossChain() {
     if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
     return ''
   }, [selectCurrency, allTokens])
+
+  const destConfig = useMemo(() => {
+    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
+      return bridgeConfig?.destChains[selectChain]
+    }
+    return false
+  }, [bridgeConfig, selectChain])
 
   const isNativeToken = useMemo(() => {
     if (
@@ -272,13 +280,13 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && bridgeConfig) {
-      const fee = Number(inputBridgeValue) * Number(bridgeConfig.SwapFeeRatePerMillion) / 100
+    if (inputBridgeValue && destConfig) {
+      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(bridgeConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MinimumSwapFee)
-      } else if (fee > bridgeConfig.MaximumSwapFee) {
-        value = Number(inputBridgeValue) - Number(bridgeConfig.MaximumSwapFee)
+      if (fee < Number(destConfig.MinimumSwapFee)) {
+        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      } else if (fee > destConfig.MaximumSwapFee) {
+        value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
       if (value && Number(value) && Number(value) > 0) {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
@@ -287,27 +295,22 @@ export default function CrossChain() {
     } else {
       return ''
     }
-  }, [inputBridgeValue, bridgeConfig])
+  }, [inputBridgeValue, destConfig])
 
   const isWrapInputError = useMemo(() => {
-    if (!selectCurrency?.underlying && !isNativeToken) {
-      if (wrapInputError) {
-        return wrapInputError
-      } else {
-        return false
-      }
+    if (wrapInputError) {
+      return wrapInputError
     } else {
       return false
     }
-    
   }, [isNativeToken, wrapInputError, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
     // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-    // console.log(destChain)
+    // console.log(isWrapInputError)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
@@ -315,8 +318,8 @@ export default function CrossChain() {
       && destChain
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
@@ -326,21 +329,22 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, bridgeConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
 
   const isInputError = useMemo(() => {
-    // console.log(destChain)
+    // console.log(isCrossBridge)
     if (
       account
-      && bridgeConfig
+      && destConfig
       && selectCurrency
       && inputBridgeValue
       && isCrossBridge
     ) {
       if (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
+        || isCrossBridge
       ) {
         return true
       } else {
@@ -349,7 +353,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, bridgeConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
 
   const btnTxt = useMemo(() => {
@@ -357,11 +361,11 @@ export default function CrossChain() {
     if (isWrapInputError && inputBridgeValue) {
       return isWrapInputError
     } else if (
-      bridgeConfig
+      destConfig
       && inputBridgeValue
       && (
-        Number(inputBridgeValue) < Number(bridgeConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(bridgeConfig.MaximumSwap)
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
       )
     ) {
       return t('ExceedLimit')
@@ -376,17 +380,17 @@ export default function CrossChain() {
   
   useEffect(() => {
     setSelectCurrency('')
-    if (swapType == 'swapin' && account) {
+    if (account) {
       setRecipient(account)
     }
   }, [account, swapType])
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
-    console.log(swapType)
+    // console.log(swapType)
     if (chainId) {
       CurrentBridgeInfo(chainId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res) {
           const list:any = {}
           let t1 = ''
@@ -469,7 +473,7 @@ export default function CrossChain() {
     }
   }, [setInputBridgeValue])
   // console.log(isUnderlying)
-  // console.log(isDestUnderlying)
+  // console.log(selectCurrency)
   return (
     <>
       <ModalContent
@@ -480,7 +484,7 @@ export default function CrossChain() {
         }}
       >
         <LogoBox>
-          <TokenLogo symbol={selectCurrency?.symbol} size={'1rem'}></TokenLogo>
+          <TokenLogo symbol={selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
         </LogoBox>
         <ConfirmContent>
           <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
@@ -542,16 +546,14 @@ export default function CrossChain() {
       </ModalContent>
       <AppBody>
         <Title
-          title={t('swap')} 
+          title={t('send')} 
           
           tabList={[
             {
-              name: t('swap'),
+              name: t('Deposited'),
               onTabClick: () => {
-                setSwapType('swapin')
-                if (account) {
-                  setRecipient(account)
-                }
+                setSwapType('deposit')
+                // setRecipient('')
               },
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
@@ -559,8 +561,19 @@ export default function CrossChain() {
             {
               name: t('send'),
               onTabClick: () => {
+                setSwapType('swapin')
+                // setRecipient('')
+              },
+              iconUrl: require('../../assets/images/icon/send.svg'),
+              iconActiveUrl: require('../../assets/images/icon/send-white.svg')
+            },
+            {
+              name: t('redeem'),
+              onTabClick: () => {
                 setSwapType('swapout')
-                setRecipient('')
+                // if (account) {
+                //   setRecipient(account)
+                // }
               },
               iconUrl: require('../../assets/images/icon/withdraw.svg'),
               iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
@@ -655,7 +668,8 @@ export default function CrossChain() {
           )}
         </AutoColumn>
 
-        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} />
+        {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
+        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
 
         <BottomGrouping>
           {!account ? (
