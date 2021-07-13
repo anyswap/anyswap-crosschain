@@ -245,7 +245,7 @@ export default function CrossChain() {
   )
 
   const bridgeConfig = useMemo(() => {
-    // console.log(selectCurrency)
+    // console.log(allTokens)
     if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
     return ''
   }, [selectCurrency, allTokens])
@@ -256,7 +256,7 @@ export default function CrossChain() {
     }
     return false
   }, [bridgeConfig, selectChain])
-
+  // console.log(bridgeConfig)
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
@@ -440,17 +440,6 @@ export default function CrossChain() {
     }
   }, [chainId, swapType, count, selectCurrency])
 
-  // useEffect(() => {
-  //   if (chainId && !selectChain) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId, selectChain])
-  // useEffect(() => {
-  //   if (chainId) {
-  //     setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
-  //   }
-  // }, [chainId])
-
   // console.log(selectChain)
   useEffect(() => {
     if (selectCurrency) {
@@ -619,6 +608,7 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             allTokens={allTokens}
             hideBalance={swapType === BridgeType.deposit}
+            customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

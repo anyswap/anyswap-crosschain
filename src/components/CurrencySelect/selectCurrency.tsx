@@ -41,33 +41,34 @@ const HeadterRightBox = styled.div`
 `
 
 interface SelectCurrencyInputPanelProps {
-  value: string
-  onUserInput: (value: string) => void
-  onMax: (value: any) => void
-  showMaxButton: boolean
-  label?: string
-  onCurrencySelect?: (currency: Currency) => void
+  value: string  // token amount
+  onUserInput: (value: string) => void // user input amount
+  onMax: (value: any) => void // input max token amount
+  showMaxButton: boolean // is view max function
+  label?: string 
+  onCurrencySelect?: (currency: Currency) => void // user select token
   // currency?: Currency | null
-  currency?: any
-  disableCurrencySelect?: boolean
-  disableInput?: boolean
-  hideBalance?: boolean
-  hideInput?: boolean
-  otherCurrency?: Currency | null
+  currency?: any // select token
+  disableCurrencySelect?: boolean // disabled select
+  disableInput?: boolean // disabled input
+  hideBalance?: boolean // hide balance
+  hideInput?: boolean // hide input
+  otherCurrency?: Currency | null //
   id: string
   showCommonBases?: boolean
-  customBalanceText?: string
-  inputType?: any
+  customBalanceText?: string 
+  inputType?: any // input type, object type, params:{swapType: 'withdraw' | 'deposit', ...{custom params}}
   // onlyUnderlying?: boolean
-  isViewModal?: boolean
-  onOpenModalView?: (value: any) => void
-  isViewNetwork?: boolean
-  isError?: boolean
-  isNativeToken?: boolean
-  isViewMode?: boolean
-  modeConent?: any
-  onChangeMode?: (value: any) => void
-  allTokens?: any
+  isViewModal?: boolean // 是否显示选择token弹框
+  onOpenModalView?: (value: any) => void // 触发打开弹框方法，同isViewModal一起使用
+  isViewNetwork?: boolean // 是否显示选择网络，若true，则在头部显示余额，否则余额显示在币种旁边
+  isError?: boolean // 是否输入错误
+  isNativeToken?: boolean // 是否为原生native代币
+  isViewMode?: boolean // 是否显示头部更多操作按钮
+  modeConent?: any // 更多操作按钮内容，同isViewMode一起使用
+  onChangeMode?: (value: any) => void // 更多操作按钮方法，同isViewMode一起使用
+  allTokens?: any // 所有token list
+  customChainId?: any // 显示自定义chainId
 }
 
 export default function SelectCurrencyInputPanel({
@@ -92,15 +93,17 @@ export default function SelectCurrencyInputPanel({
   isViewNetwork,
   isError,
   isNativeToken,
-  isViewMode,
+  isViewMode, 
   modeConent,
   onChangeMode,
-  allTokens = {}
+  allTokens = {},
+  customChainId
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   // const { chainId } = useActiveWeb3React()
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
+  const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
   const toggleNetworkModal = useToggleNetworkModal()
 
@@ -254,26 +257,18 @@ export default function SelectCurrencyInputPanel({
                 </TokenLogoBox>
                 <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                   <h3>
-                    {/* {inputType ? (
-                      inputType.type === 'INPUT' ? (
-                        inputType.swapType === 'deposit' ? '' : 'any'
-                      ) : (
-                        inputType.swapType === 'deposit' ? 'any' : ''
-                      )
-                    ) : ''} */}
                     {
                       (
                         currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : (
-                            inputType && inputType.swapType === 'deposit' ? config.getBaseCoin(currency?.symbol, chainId) : config.getBaseCoin(currency?.symbol, chainId)
+                            inputType && inputType.swapType === 'deposit' ? config.getBaseCoin(currency?.symbol, useChainId) : config.getBaseCoin(currency?.symbol, useChainId)
                           )
                       ) || t('selectToken')
                     }
-                    {/* {!inputType && chainId ? '-' + config.getCurChainInfo(chainId).suffix : ''} */}
                   </h3>
                   <p>
-                  {currency && currency.name ? config.getBaseCoin(currency.symbol, chainId, 1, currency.name) : ''}
+                  {currency && currency.name ? config.getBaseCoin(currency.symbol, useChainId, 1, currency.name) : ''}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (
@@ -292,10 +287,10 @@ export default function SelectCurrencyInputPanel({
                 >
                   <Aligner>
                     <TokenLogoBox>
-                      <TokenLogo symbol={config.getCurChainInfo(chainId)?.networkLogo ?? config.getCurChainInfo(chainId)?.symbol} size={'24px'} />
+                      <TokenLogo symbol={config.getCurChainInfo(useChainId)?.networkLogo ?? config.getCurChainInfo(useChainId)?.symbol} size={'24px'} />
                     </TokenLogoBox>
                     <StyledTokenName className="token-symbol-container">
-                      {config.getCurChainInfo(chainId).networkName}
+                      {config.getCurChainInfo(useChainId).networkName}
                     </StyledTokenName>
                     {!disableCurrencySelect && !!currency && (
                       <StyledDropDownBox>
