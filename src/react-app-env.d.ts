@@ -71,6 +71,8 @@ declare module 'jazzicon' {
 
 declare module 'fortmatic'
 
+declare module 'qrcode.react'
+
 declare module '@makerdao/multicall';
 
 interface Window {

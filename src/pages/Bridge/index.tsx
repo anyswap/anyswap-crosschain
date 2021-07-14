@@ -23,6 +23,7 @@ import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 import ModalContent from '../../components/Modal/ModalContent'
 import {selectNetwork} from '../../components/Header/SelectNetwork'
+import QRcode from '../../components/QRcode'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -100,6 +101,23 @@ const ConfirmText = styled.div`
   padding: 1.25rem 0;
   border-top: 0.0625rem solid rgba(0, 0, 0, 0.08);
   margin-top:1.25rem
+`
+
+const ListBox = styled.div`
+  width:100%;
+  margin-bottom: 30px;
+  .item{
+    width: 100%;
+    margin-bottom: 10px;
+    .label{
+      color: ${({ theme }) => theme.text1};
+      margin: 0;
+    }
+    .value {
+      color: ${({ theme }) => theme.textColorBold};
+      margin: 0;
+    }
+  }
 `
 
 let intervalFN:any = ''
@@ -497,7 +515,24 @@ export default function CrossChain() {
           setModalSpecOpen(false)
         }}
       >
-        123
+        <ListBox>
+          <div className="item">
+            <p className="label">Value:</p>
+            <p className="value">{inputBridgeValue}</p>
+          </div>
+          <div className="item">
+            <p className="label">Address:</p>
+            <p className="value">{p2pAddress}</p>
+          </div>
+          <div className="item">
+            <QRcode uri={p2pAddress} size={160}></QRcode>
+          </div>
+        </ListBox>
+        <BottomGrouping>
+          <ButtonLight onClick={() => {
+            setModalSpecOpen(false)
+          }}>{t('Confirm')}</ButtonLight>
+        </BottomGrouping>
       </ModalContent>
       <ModalContent
         isOpen={modalTipOpen}
