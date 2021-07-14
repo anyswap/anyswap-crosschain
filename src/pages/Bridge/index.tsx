@@ -333,11 +333,9 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [isNativeToken, wrapInputError, selectCurrency])
+  }, [wrapInputError, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
-    // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-    // console.log(isWrapInputError)
     if (
       account
       && destConfig
@@ -428,6 +426,7 @@ export default function CrossChain() {
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
     // console.log(swapType)
+    setAllTokens({})
     if (chainId) {
       CurrentBridgeInfo(chainId).then((res:any) => {
         console.log(res)
@@ -722,7 +721,7 @@ export default function CrossChain() {
             }}
             bridgeConfig={bridgeConfig}
             intervalCount={intervalCount}
-            isNativeToken={isNativeToken}
+            isNativeToken={false}
             selectChainList={selectChainList}
             // isViewAllChain={swapType === BridgeType.deposit}
           />
