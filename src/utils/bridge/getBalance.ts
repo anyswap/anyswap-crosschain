@@ -2,6 +2,7 @@ import { getContract, web3Fn } from '../tools/web3Utils'
 import {setLocalConfig, getLocalConfig, fromWei} from '../tools/tools'
 // import {isUnderlying} from './getBaseInfo'
 import config from '../../config'
+import { isAddress } from '..'
 const contract = getContract()
 
 const DESTBALANCE = 'DESTBALANCE'
@@ -19,7 +20,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
         resolve(fromWei(lObj.balance, dec))
       } else {
         web3Fn.setProvider(config.getCurChainInfo(chainID).nodeRpc)
-        if (isNativeToken) {
+        if (isNativeToken || !isAddress(token)) {
           web3Fn.eth.getBalance(account).then((res:any) => {
             // console.log(res)
             setLocalConfig(account, token, chainID, DESTBALANCE, {balance: res})
@@ -51,6 +52,8 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
 const SRCTOTALSUPPLY = 'SRCTOTALSUPPLY'
 function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undefined) {
   return new Promise(async(resolve) => {
+    // console.log(config.getCurChainInfo(chainId).nodeRpc)
+    // console.log(tokenList)
     web3Fn.setProvider(config.getCurChainInfo(chainId).nodeRpc)
     const batch = new web3Fn.BatchRequest()
     const len = tokenList.length
@@ -74,33 +77,50 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
           }
         }))
       }
-      contract.options.address = tokenObj.token
-      const tsData = contract.methods.totalSupply().encodeABI()
-      batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
-      // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
-        if (!list[tokenObj.token]) list[tokenObj.token] = {}
-        if (err) {
-          // console.log(err)
-          list[tokenObj.token].anyts = ''
-        } else {
-          list[tokenObj.token].anyts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
-        }
-        if ((i + 1) === len) {
-          resolve(list)
-        }
-      }))
 
-      if (account) {
-        const blData = contract.methods.balanceOf(account).encodeABI()
-        batch.add(web3Fn.eth.call.request({data: blData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+      if (isAddress(tokenObj.token)) {
+        contract.options.address = tokenObj.token
+        const tsData = contract.methods.totalSupply().encodeABI()
+        batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+        // batch.add(web3Fn.eth.call.request({data: tsData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
           if (!list[tokenObj.token]) list[tokenObj.token] = {}
           if (err) {
-            console.log(err)
-            list[tokenObj.token].balance = ''
+            // console.log(err)
+            list[tokenObj.token].anyts = ''
           } else {
-            list[tokenObj.token].balance = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+            list[tokenObj.token].anyts = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+          }
+          if ((i + 1) === len) {
+            resolve(list)
           }
         }))
+      }
+
+      if (account) {
+        if (isAddress(tokenObj.token)) {
+          const blData = contract.methods.balanceOf(account).encodeABI()
+          batch.add(web3Fn.eth.call.request({data: blData, to: tokenObj.token}, 'latest', (err:any, res:any) => {
+            if (!list[tokenObj.token]) list[tokenObj.token] = {}
+            if (err) {
+              console.log(err)
+              list[tokenObj.token].balance = ''
+            } else {
+              list[tokenObj.token].balance = fromWei(web3Fn.utils.hexToNumberString(res), tokenObj.dec)
+            }
+          }))
+        } else {
+          batch.add(web3Fn.eth.getBalance.request(account, 'latest', (err:any, res:any) => {
+          // batch.add(web3Fn.eth.getBalance(account, 'latest', (err:any, res:any) => {
+            if (!list[tokenObj.token]) list[tokenObj.token] = {}
+            // console.log(res)
+            if (err) {
+              console.log(err)
+              list[tokenObj.token].balance = ''
+            } else {
+              list[tokenObj.token].balance = fromWei(res, tokenObj.dec)
+            }
+          }))
+        }
       }
     }
     batch.execute()

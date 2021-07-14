@@ -86,7 +86,7 @@ interface ReminderType {
   selectChain: any
 }
 
-function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
+function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeType?:string) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   // console.log(selectChain)
@@ -99,7 +99,7 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
   const destConfig = bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
   const isSwapfeeon = destConfig?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
-
+  const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
@@ -107,16 +107,16 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any) {
           <img src={BulbIcon} alt='' />
           {t('Reminder')}:
         </dt>
-        <dd><i></i>{t('mintTip1', {
+        <dd><i></i>{t(tipType + '1' , {
           dMinFee: isSwapfeeon ? destConfig?.MinimumSwapFee : 0,
           coin: viewSymbol,
           dMaxFee: isSwapfeeon ? destConfig?.MaximumSwapFee : 0,
           dFee: isSwapfeeon ? Number(destConfig?.SwapFeeRatePerMillion) : 0
         })}</dd>
-        <dd><i></i>{t('mintTip2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
-        <dd><i></i>{t('mintTip3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
-        <dd><i></i>{t('mintTip4')}</dd>
-        <dd><i></i>{t('mintTip5', {
+        <dd><i></i>{t(tipType + '2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t(tipType + '3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
+        <dd><i></i>{t(tipType + '4')}</dd>
+        <dd><i></i>{t(tipType + '5', {
           depositBigValMoreTime: thousandBit(destConfig?.BigValueThreshold, 'no'),
           coin: viewSymbol,
         }) + (viewSymbol ? '' : '')}</dd>
@@ -131,8 +131,9 @@ export default function Reminder ({
   currency,
   selectChain
 }: ReminderType) {
+  // console.log(bridgeType)
   if (bridgeType) {
-    return CrossBridge(bridgeConfig, currency, selectChain)
+    return CrossBridge(bridgeConfig, currency, selectChain, bridgeType)
   }
   return (
     <></>

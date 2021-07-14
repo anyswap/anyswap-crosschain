@@ -47,7 +47,7 @@ export async function fetchChunk(
     console.debug(`Fetched results for old block number: ${resultsBlockNumber.toString()} vs. ${minBlockNumber}`)
     throw new RetryableError('Fetched for old block number')
   }
-  console.log({ results: returnData, blockNumber: resultsBlockNumber.toNumber() })
+  // console.log({ results: returnData, blockNumber: resultsBlockNumber.toNumber() })
   return { results: returnData, blockNumber: resultsBlockNumber.toNumber() }
 }
 
@@ -83,7 +83,7 @@ export async function fetchChunk(
     console.debug(`Fetched results for old block number: ${resultsBlockNumber.toString()} vs. ${minBlockNumber}`)
     throw new RetryableError('Fetched for old block number')
   }
-  console.log({ results: returnData, blockNumber: resultsBlockNumber })
+  // console.log({ results: returnData, blockNumber: resultsBlockNumber })
   return { results: returnData, blockNumber: resultsBlockNumber }
 }
 

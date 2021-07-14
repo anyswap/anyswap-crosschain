@@ -1,7 +1,7 @@
 import { Currency } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { tryParseAmount } from '../state/swap/hooks'
+import { tryParseAmount, tryParseAmount1 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
@@ -514,19 +514,24 @@ export function useBridgeNativeCallback(
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
+  const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const balance = inputCurrency ? tokenBalance : ethBalance
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
-  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    // if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !chainId || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-
+    // console.log(inputAmount?.raw?.toString())
+    // console.log(balance?.raw?.toString())
     return {
       wrapType: WrapType.WRAP,
       execute:

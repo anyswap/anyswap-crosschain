@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-import {CurrentBridgeInfo} from 'anyswapsdk'
+import {CurrentBridgeInfo, createAddress} from 'anyswapsdk'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
@@ -130,6 +130,7 @@ export default function CrossChain() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
+  const [modalSpecOpen, setModalSpecOpen] = useState(false)
 
   // const [bridgeConfig, setBridgeConfig] = useState<any>()
 
@@ -152,11 +153,16 @@ export default function CrossChain() {
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
-  // console.log(initBridgeToken)
+  // console.log(selectCurrency)
 
   const formatCurrency = useLocalToken(
-    selectCurrency && selectCurrency.underlying ?
-      {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying?.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
+    selectCurrency?.underlying ? {
+      ...selectCurrency,
+      address: selectCurrency.underlying.address,
+      name: selectCurrency.underlying.name,
+      symbol: selectCurrency.underlying?.symbol,
+      decimals: selectCurrency.underlying.decimals
+    } : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
@@ -175,6 +181,7 @@ export default function CrossChain() {
   function onClear () {
     setDelayAction(false)
     setModalTipOpen(false)
+    setModalSpecOpen(false)
     setInputBridgeValue('')
   }
 
@@ -234,15 +241,6 @@ export default function CrossChain() {
   useEffect(() => {
     getSelectPool()
   }, [getSelectPool])
-  
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useCrossBridgeCallback(
-    formatCurrency ? formatCurrency : undefined,
-    recipient,
-    inputBridgeValue,
-    selectChain,
-    swapType,
-    selectCurrency?.address,
-  )
 
   const bridgeConfig = useMemo(() => {
     // console.log(allTokens)
@@ -256,20 +254,28 @@ export default function CrossChain() {
     }
     return false
   }, [bridgeConfig, selectChain])
+  
+  const { wrapType, execute: onWrap, inputError: wrapInputError } = useCrossBridgeCallback(
+    formatCurrency ? formatCurrency : undefined,
+    swapType === BridgeType.swapin ? destConfig.DepositAddress : recipient,
+    inputBridgeValue,
+    selectChain,
+    swapType,
+    selectCurrency?.address,
+  )
   // console.log(bridgeConfig)
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
       && chainId
       && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).nativeToken
-      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+      && config.getCurChainInfo(chainId).symbol.toLowerCase() === selectCurrency.symbol.toLowerCase()
     ) {
       return true
     }
     return false
   }, [selectCurrency, chainId])
-
+  // console.log(isNativeToken)
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -319,7 +325,10 @@ export default function CrossChain() {
       && destConfig
       && selectCurrency
       && inputBridgeValue
-      && !isWrapInputError
+      && (
+        (!isWrapInputError && swapType !== BridgeType.deposit)
+        || (isWrapInputError && swapType === BridgeType.deposit)
+      )
       && isAddress(recipient)
       && destChain
     ) {
@@ -364,7 +373,7 @@ export default function CrossChain() {
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
-    if (isWrapInputError && inputBridgeValue) {
+    if (isWrapInputError && inputBridgeValue && swapType !== BridgeType.deposit) {
       return isWrapInputError
     } else if (
       destConfig
@@ -381,8 +390,15 @@ export default function CrossChain() {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue])
+  }, [t, isWrapInputError, inputBridgeValue, swapType])
 
+  const p2pAddress = useMemo(() => {
+    if (account && selectCurrency && destConfig && swapType === BridgeType.deposit) {
+      return createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+    }
+    return ''
+  }, [account, selectCurrency, destConfig])
+  // console.log(p2pAddress)
   
   useEffect(() => {
     setSelectCurrency('')
@@ -402,7 +418,8 @@ export default function CrossChain() {
           const list:any = {}
           let t1 = ''
           for (const token in res[swapType]) {
-            if (!isAddress(token)) continue
+            // console.log(token)
+            if (!isAddress(token) && token !== config.getCurChainInfo(chainId).symbol) continue
             const obj = res[swapType]
             list[token] = {
               ...obj[token],
@@ -474,6 +491,15 @@ export default function CrossChain() {
   return (
     <>
       <ModalContent
+        isOpen={modalSpecOpen}
+        title={'Cross-chain Router'}
+        onDismiss={() => {
+          setModalSpecOpen(false)
+        }}
+      >
+        123
+      </ModalContent>
+      <ModalContent
         isOpen={modalTipOpen}
         title={'Cross-chain Router'}
         onDismiss={() => {
@@ -529,7 +555,7 @@ export default function CrossChain() {
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
                     onDelay()
-                    if (onWrap) onWrap().then(() => {
+                    if (onWrap && swapType !== BridgeType.deposit) onWrap().then(() => {
                       onClear()
                     })
                   }}>
@@ -594,7 +620,7 @@ export default function CrossChain() {
             onMax={(value) => {
               handleMaxInput(value)
             }}
-            currency={formatCurrency}
+            currency={formatCurrency ? formatCurrency : selectCurrency}
             disableCurrencySelect={false}
             disableChainSelect={swapType === BridgeType.deposit}
             showMaxButton={true}
@@ -665,13 +691,16 @@ export default function CrossChain() {
             selectChainList={selectChainList}
             // isViewAllChain={swapType === BridgeType.deposit}
           />
-          {swapType === 'swapout' ? (
+          {swapType === BridgeType.swapout ? (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
           ): ''}
+          {
+            p2pAddress ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''
+          }
         </AutoColumn>
 
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
-        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+        <Reminder bridgeConfig={bridgeConfig} bridgeType={swapType} currency={selectCurrency} selectChain={selectChain}/>
 
         <BottomGrouping>
           {!account ? (
@@ -680,9 +709,11 @@ export default function CrossChain() {
               !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
                   onClick={() => {
-                    // onDelay()
-                    // approveCallback()
-                    setModalTipOpen(true)
+                    if (swapType !== BridgeType.deposit) {
+                      setModalTipOpen(true)
+                    } else {
+                      setModalSpecOpen(true)
+                    }
                   }}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                   width="48%"
@@ -701,25 +732,11 @@ export default function CrossChain() {
                 </ButtonConfirmed>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                // <ButtonPrimary disabled={delayAction} onClick={() => {
-                  // onDelay()
-                  // if (!selectCurrency || !selectCurrency.underlying) {
-                  //   if (onWrap) onWrap()
-                  // } else {
-                  //   // if (onWrapUnderlying) onWrapUnderlying()
-                  //   if (isNativeToken) {
-                  //     console.log(1)
-                  //     if (onWrapNative) onWrapNative()
-                  //   } else {
-                  //     console.log(2)
-                  //     if (onWrapUnderlying) onWrapUnderlying()
-                  //   }
-                  // }
-                  // setTimeout(() => {
-                  //   setInputBridgeValue('')
-                  // }, 1000 * 3)
-                  
-                  setModalTipOpen(true)
+                  if (swapType !== BridgeType.deposit) {
+                    setModalTipOpen(true)
+                  } else {
+                    setModalSpecOpen(true)
+                  }
                 }}>
                   {btnTxt}
                 </ButtonPrimary>

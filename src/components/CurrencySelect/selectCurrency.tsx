@@ -137,7 +137,7 @@ export default function SelectCurrencyInputPanel({
   }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance])
   // console.log(currency)
   // console.log(selectedETHBalance?.toSignificant(6))
-  // console.log(selectedCurrencyBalance?.toSignificant(6))
+  // console.log(useBalance?.toSignificant(6))
   const handleMax = useCallback(() => {
     if (useBalance) {
       onMax(useBalance?.toSignificant(6))

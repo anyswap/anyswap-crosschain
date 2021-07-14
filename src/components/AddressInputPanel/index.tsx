@@ -86,13 +86,15 @@ const Input = styled.input<{ error?: boolean }>`
 export default function AddressInputPanel({
   id,
   value,
-  onChange
+  onChange,
+  disabledInput = false
 }: {
   id?: string
   // the typed string value
   value: string
   // triggers whenever the typed value changes
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
+  disabledInput?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
@@ -103,12 +105,12 @@ export default function AddressInputPanel({
     event => {
       const input = event.target.value
       const withoutSpaces = input.replace(/\s+/g, '')
-      onChange(withoutSpaces)
+      if (onChange) onChange(withoutSpaces)
     },
     [onChange]
   )
 
-  const error = Boolean(value.length > 0 && !loading && !address)
+  const error =  Boolean(value.length > 0 && !loading && !address && !disabledInput)
 
   return (
     <InputPanel id={id}>
@@ -137,6 +139,7 @@ export default function AddressInputPanel({
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
               value={value}
+              disabled={disabledInput}
             />
           </AutoColumn>
         </InputContainer>

@@ -140,10 +140,11 @@ export default function SelectChainIdInputPanel({
       } else {
         token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
       }
-      // console.log(token)
+      console.log(bridgeConfig)
+      console.log(token)
       if (token) {
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
-          // console.log(res)
+          console.log(res)
           if (res) {
             setDestBalance(res)
           } else {

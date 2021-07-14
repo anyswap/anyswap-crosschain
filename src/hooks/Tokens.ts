@@ -98,6 +98,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 export function useLocalToken(currency?: any): Token | undefined | null {
   const { chainId } = useActiveWeb3React()
 
+  // const address = isAddress(currency?.address)
   const address = isAddress(currency?.address)
 
   const symbol = currency?.symbol
@@ -111,6 +112,7 @@ export function useLocalToken(currency?: any): Token | undefined | null {
   // console.log(currency)
   return useMemo(() => {
     if (!currency) return undefined
+    // if (!chainId || !address) return undefined
     if (!chainId || !address) return undefined
     // if (token) return token
     return new Token(
