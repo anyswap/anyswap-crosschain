@@ -15,8 +15,8 @@ export default function QRcode({
   uri = '',
   size
 }: {
-  uri: any
-  size: any
+  uri?: any
+  size?: any
 }) {
   const [isDark] = useDarkModeManager()
   return (
