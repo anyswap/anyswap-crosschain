@@ -29,6 +29,11 @@ const bridgeToken = {
     bridgeInitToken: '0x9610b01aaa57ec026001f7ec5cface51bfea0ba6',
     bridgeRouterToken: '0x4f3aff3a747fcade12598081e80c6605a8be192f',
     bridgeInitChain: '56',
+  },
+  [VERSION.V2_2]: {
+    bridgeInitToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
+    bridgeRouterToken: '0x4f3aff3a747fcade12598081e80c6605a8be192f',
+    bridgeInitChain: '56',
   }
 }
 

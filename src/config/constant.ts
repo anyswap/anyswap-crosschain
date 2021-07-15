@@ -7,11 +7,12 @@ export enum VERSION {
   V1 = 'UNDERLYING',
   V2 = 'STABLE',
   V2_1 = 'STABLEV2',
+  V2_2 = 'STABLEV3',
   V2_T1 = 'STABLE_TEST',
   V3 = 'ARB_DEV',
 }
 
-export const USE_VERSION = VERSION.V2_1
+export const USE_VERSION = VERSION.V2_2
 
 export const ENV_NODE_CONFIG = USE_VERSION + '_ENV_NODE_CONFIG'
 
@@ -30,4 +31,4 @@ export const timeout = 1000 * 60 * 30
 
 export const env = 'dev'
 
-export const version = '0.1.2'
+export const version = '0.1.3'
