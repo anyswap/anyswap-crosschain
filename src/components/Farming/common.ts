@@ -252,6 +252,7 @@ export function getBaseInfo (
               info: stateInfo[FARMTOKEN],
               timestamp: Date.now()
             }
+            // console.log(farmlist)
             resolve(farmlist[FARMTOKEN])
           })
         }

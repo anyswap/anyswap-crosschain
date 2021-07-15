@@ -239,9 +239,11 @@ export default function PoolLists ({
         getOutChainInfo(destList)
       } else {
         setPoolList([])
-        setTimeout(() => {
-          setCount(count + 1)
-        }, 1000)
+        if (count <= 5) {
+          setTimeout(() => {
+            setCount(count + 1)
+          }, 1000)
+        }
       }
     })
   }, [chainId, count, intervalCount])

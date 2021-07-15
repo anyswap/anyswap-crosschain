@@ -139,14 +139,8 @@ export default function App() {
               <Route exact strict path="/pool" component={PoolList} />
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
-              {
-                config.env === 'dev' ? (
-                  <>
-                    <Route exact strict path="/bridge" component={Bridge} />
-                    <Route exact strict path="/swap" component={CrossChainTxns} />
-                  </>
-                ) : ''
-              }
+              <Route exact strict path="/bridge" component={Bridge} />
+              <Route exact strict path="/swap" component={CrossChainTxns} />
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />
               <Route
@@ -166,6 +160,7 @@ export default function App() {
                 }}
               />
 
+              
               <Redirect to={{ pathname: '/swap' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>

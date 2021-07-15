@@ -11,7 +11,6 @@ import {getPrice} from '../../utils/tools/getPrice'
 import farmlist from '../../config/farmlist'
 
 const FARMTYPE = 'FTM'
-
 export default function FTMfaring({initialTrade}: {initialTrade?:string}) {
   const [price, setPrice] = useState()
   // console.log(initialTrade)

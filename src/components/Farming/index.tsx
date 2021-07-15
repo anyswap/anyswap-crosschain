@@ -642,6 +642,7 @@ export default function Farming ({
     setStakeAmount(amount)
   }
 
+  // console.log(LpList)
   function farmsList () {
     if (LpList && Object.keys(LpList).length <= 0 && initPairs.length > 0) {
       return (

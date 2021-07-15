@@ -409,6 +409,7 @@ export default function SwapNative() {
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+    setAllTokens({})
     getAllToken(chainId).then((res:any) => {
       console.log(res)
       if (res) {

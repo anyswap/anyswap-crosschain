@@ -541,6 +541,7 @@ export default function CrossChain() {
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+    setAllTokens({})
     getAllToken(chainId).then((res:any) => {
       console.log(res)
       if (res) {
@@ -567,9 +568,11 @@ export default function CrossChain() {
         // console.log(list)
         setAllTokens(list)
       } else {
-        setTimeout(() => {
-          setCount(count + 1)
-        }, 1000)
+        if (count <= 5) {
+          setTimeout(() => {
+            setCount(count + 1)
+          }, 1000)
+        }
       }
     })
   }, [chainId, count])
