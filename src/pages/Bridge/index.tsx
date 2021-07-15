@@ -280,8 +280,9 @@ export default function CrossChain() {
     selectChain,
     swapType,
     selectCurrency?.address,
+    selectCurrency?.pairid
   )
-  // console.log(bridgeConfig)
+  // console.log(selectCurrency)
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
@@ -447,7 +448,8 @@ export default function CrossChain() {
               "symbol": obj[token].symbol,
               "underlying": obj[token].underlying,
               "destChains": obj[token].destChains,
-              "logoUrl": obj[token].logoUrl
+              "logoUrl": obj[token].logoUrl,
+              "pairid": obj[token].pairid,
             }
             if (!selectCurrency || selectCurrency?.chainId !== chainId) {
               // console.log(t)

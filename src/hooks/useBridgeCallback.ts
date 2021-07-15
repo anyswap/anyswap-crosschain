@@ -509,6 +509,7 @@ export function useBridgeNativeCallback(
   toChainID: any,
   txnsType: string | undefined,
   inputToken: string | undefined,
+  pairid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -553,18 +554,22 @@ export function useBridgeNativeCallback(
                   token: inputToken,
                   destChain: toChainID
                 })
-                addTransaction(txReceipt?.info, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                // console.log(txReceipt)
+                const data:any = {hash: txReceipt?.info}
+                addTransaction(data, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.info && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.info?.toLowerCase(),
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    to: txnsType === 'swapin' ? account : toAddress?.toLowerCase(),
+                    symbol: inputCurrency?.symbol,
+                    version: txnsType,
+                    pairid: pairid
                   }
                   recordsTxns(data)
                 }

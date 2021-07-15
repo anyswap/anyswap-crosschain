@@ -24,6 +24,8 @@ interface RecordsTxnsProp {
   formatvalue: string,
   to: string,
   symbol: string | undefined,
+  version?: string | undefined,
+  pairid?: string | undefined,
 }
 export function recordsTxns ({
   hash,
@@ -33,25 +35,42 @@ export function recordsTxns ({
   value,
   formatvalue,
   to,
-  symbol
+  symbol,
+  version,
+  pairid
 }: RecordsTxnsProp) {
   return new Promise(resolve => {
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
+    const useVersion = version ? version : USE_VERSION
     postUrlData(url, {
       hash: hash,
       srcChainID: chainId,
       destChainID: selectChain,
-      token: config.getCurChainInfo(chainId).bridgeRouterToken,
+      token: version === USE_VERSION ? config.getCurChainInfo(chainId).bridgeRouterToken : '',
       from: account,
-      version: USE_VERSION,
+      version: useVersion,
       value: value,
       formatvalue: formatvalue,
       to: to,
-      symbol: symbol
+      symbol: symbol,
+      pairid: pairid
     }).then(res => {
       console.log(res)
       resolve(res)
     })
   })
 }
+
+// recordsTxns({
+//   hash: '0xc0a1123b0e95c5bfc32bfb7411852795d91d1e053762b1146af21e32232c2841',
+//   chainId: '56',
+//   selectChain: '128',
+//   account: '0xc03033d8b833ff7ca08bf2a58c9bc9d711257249',
+//   value: '50000000000000000',
+//   formatvalue: '0.05',
+//   to: '0xe09c98f97dafb1f954cea0ce550383e2bd0c8829',
+//   symbol: 'BNB',
+//   version: 'swapin',
+//   pairid: 'BNB'
+// })
