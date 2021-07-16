@@ -513,7 +513,6 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
   const { t } = useTranslation()
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -527,7 +526,10 @@ export function useBridgeNativeCallback(
   return useMemo(() => {
     // console.log(inputCurrency)
     // if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
-    if (!bridgeContract || !chainId || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(chainId)
+    // console.log(toAddress)
+    // console.log(toChainID)
+    if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -555,14 +557,14 @@ export function useBridgeNativeCallback(
                   destChain: toChainID
                 })
                 // console.log(txReceipt)
-                const data:any = {hash: txReceipt?.info}
-                addTransaction(data, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                const txData:any = {hash: txReceipt?.info}
+                addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.info && account) {
                   const data = {
                     hash: txReceipt.info?.toLowerCase(),
-                    chainId: chainId,
-                    selectChain: toChainID,
+                    chainId: txnsType === 'swapin' ? chainId : toChainID,
+                    selectChain: txnsType === 'swapin' ? toChainID : chainId,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
@@ -580,5 +582,5 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t])
 }

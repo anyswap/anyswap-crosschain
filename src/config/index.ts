@@ -94,7 +94,7 @@ const config: ConFig = {
   localDataDeadline: 1624700942896,
   farmUrl: '#/',
   explorerUrl: 'https://anyswap.net/explorer',
-  isStopSystem: 1,
+  isStopSystem: 0,
   getBaseCoin (value:any, chainId:any, type?: number, name?: string) {
     // console.log(value)
     if (
