@@ -188,7 +188,7 @@ export default function CrossChain() {
     } : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -196,7 +196,7 @@ export default function CrossChain() {
     }
   }, [approval, approvalSubmitted])
 
-  // console.log(selectCurrency)
+  console.log(selectCurrency)
 
   function onDelay () {
     setDelayAction(true)
@@ -573,7 +573,7 @@ export default function CrossChain() {
             {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
-                !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                !isNativeToken && selectCurrency && selectCurrency.underlying && selectCurrency.underlying.isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                   <ButtonConfirmed
                     onClick={() => {
                       onDelay()
@@ -751,7 +751,7 @@ export default function CrossChain() {
           {!account ? (
               <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
             ) : (
-              !isNativeToken && selectCurrency && selectCurrency.underlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+              !isNativeToken && selectCurrency && selectCurrency.underlying && selectCurrency.underlying.isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                 <ButtonConfirmed
                   onClick={() => {
                     if (swapType !== BridgeType.deposit) {
