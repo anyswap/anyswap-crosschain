@@ -43,11 +43,13 @@ export function recordsTxns ({
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
     const useVersion = version ? version : USE_VERSION
+    console.log(version)
+    console.log(USE_VERSION)
     postUrlData(url, {
       hash: hash,
       srcChainID: chainId,
       destChainID: selectChain,
-      token: version === USE_VERSION ? config.getCurChainInfo(chainId).bridgeRouterToken : '',
+      token: !version || version === USE_VERSION ? config.getCurChainInfo(chainId).bridgeRouterToken : '',
       from: account,
       version: useVersion,
       value: value,

@@ -140,7 +140,7 @@ export default function App() {
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
               <Route exact strict path="/bridge" component={Bridge} />
-              <Route exact strict path="/swap" component={CrossChainTxns} />
+              <Route exact strict path={config.env === 'dev' ? "/swap" : "/swap1"} component={CrossChainTxns} />
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />
               <Route

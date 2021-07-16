@@ -196,7 +196,7 @@ export default function CrossChain() {
     }
   }, [approval, approvalSubmitted])
 
-  console.log(selectCurrency)
+  // console.log(selectCurrency)
 
   function onDelay () {
     setDelayAction(true)
