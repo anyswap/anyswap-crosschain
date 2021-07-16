@@ -77,4 +77,5 @@ const useChain = {
   ]
 }
 
-export const spportChainArr = env === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+const envType:any = env
+export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]

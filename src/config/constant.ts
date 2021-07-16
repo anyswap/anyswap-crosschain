@@ -31,4 +31,4 @@ export const timeout = 1000 * 60 * 30
 
 export const env = 'dev'
 
-export const version = '0.1.3'
+export const version = '0.1.4'

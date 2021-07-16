@@ -137,12 +137,19 @@ export default function CrossChain() {
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
+  
+  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+
+  let initSwapType:any = getParams('bridgetype') ? getParams('bridgetype') : ''
+  initSwapType = initSwapType ? initSwapType.toLowerCase() : ''
+
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
-  const [swapType, setSwapType] = useState(BridgeType.deposit)
+  const [swapType, setSwapType] = useState(initSwapType ? initSwapType : BridgeType.deposit)
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -169,8 +176,6 @@ export default function CrossChain() {
     bl: ''
   })
 
-  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
   // console.log(selectCurrency)
 
   const formatCurrency = useLocalToken(
@@ -452,9 +457,13 @@ export default function CrossChain() {
               "pairid": obj[token].pairid,
             }
             if (!selectCurrency || selectCurrency?.chainId !== chainId) {
-              // console.log(t)
-              // console.log(token)
-              if (t && t === token) {
+              if (
+                t 
+                && (
+                  t === token
+                  || obj[token].symbol.toLowerCase() === t
+                )
+              ) {
                 setSelectCurrency(list[token])
               } else if (!t && !t1) {
                 t1 = token

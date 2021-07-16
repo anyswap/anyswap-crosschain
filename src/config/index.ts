@@ -53,7 +53,7 @@ const bridgeChain:ConFig = {
   [VERSION.V2_2]: {
     bridgeConfigToken: '0x9879aBDea01a879644185341F7aF7d8343556B7a',
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin(['']),
+    hiddenCoin: formatHiddenCoin(['MIM']),
     hiddenChain: [''],
   },
   [VERSION.V2_T1]: {

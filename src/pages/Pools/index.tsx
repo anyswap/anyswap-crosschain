@@ -87,7 +87,7 @@ export default function SwapNative() {
   })
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  initBridgeToken = initBridgeToken && isAddress(initBridgeToken) ? initBridgeToken.toLowerCase() : ''
+  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   
 
@@ -410,6 +410,7 @@ export default function SwapNative() {
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     setAllTokens({})
+    setSelectCurrency('')
     getAllToken(chainId).then((res:any) => {
       console.log(res)
       if (res) {
@@ -428,7 +429,11 @@ export default function SwapNative() {
             "logoUrl": res[token].list.logoUrl,
           }
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
-            if (t === token) {
+            if (
+              t === token
+              || list[token].symbol.toLowerCase() === t
+              || list[token]?.underlying?.symbol.toLowerCase() === t
+            ) {
               setSelectCurrency(list[token])
             }
           }
