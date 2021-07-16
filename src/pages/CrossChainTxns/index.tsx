@@ -563,8 +563,8 @@ export default function CrossChain() {
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
             if (
               t === token
-              || list[token].symbol.toLowerCase() === t
-              || list[token]?.underlying?.symbol.toLowerCase() === t
+              || list[token]?.symbol?.toLowerCase() === t
+              || list[token]?.underlying?.symbol?.toLowerCase() === t
             ) {
               setSelectCurrency(list[token])
             }
