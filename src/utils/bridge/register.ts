@@ -1,5 +1,7 @@
 import {getUrlData, postUrlData} from '../tools/axios'
-import {USE_VERSION} from '../../config/constant'
+import {USE_VERSION, timeout} from '../../config/constant'
+import {getLocalConfig} from '../tools/tools'
+import {CROSSCHAINBRIDGE} from './type'
 
 import config from '../../config'
 
@@ -76,3 +78,26 @@ export function recordsTxns ({
 //   version: 'swapin',
 //   pairid: 'BNB'
 // })
+// https://bridgeapi.anyswap.exchange/v2/register/account/chainId/symbol
+
+
+export function getP2PInfo (account:any, chainId:any, symbol:string, token:any) {
+  return new Promise(resolve => {
+    // console.log(hash)
+    const lData = getLocalConfig(account, token, chainId, CROSSCHAINBRIDGE, timeout, undefined)
+    if (lData) {
+      // console.log(lData)
+      resolve({p2pAddress: lData.p2pAddress})
+    } else {
+      const url = `https://bridgeapi.anyswap.exchange/v2/register/${account}/${chainId}/${symbol}`
+      getUrlData(url).then((res:any) => {
+        // console.log(res)
+        if (res.msg === 'Success') {
+          resolve({p2pAddress: res?.data?.P2shAddress ?? res?.data?.info?.P2shAddress})
+        } else {
+          resolve('')
+        }
+      })
+    }
+  })
+}

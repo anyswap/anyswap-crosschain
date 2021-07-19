@@ -84,6 +84,45 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
+
+export function addToken (address:string, symbol: string, decimals: number, logoUrl?:string) {
+  return new Promise(resolve => {
+    const { ethereum } = window
+    const ethereumFN:any = {
+      request: '',
+      ...ethereum
+    }
+    if (ethereumFN && ethereumFN.request) {
+      ethereumFN.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // 最初只支持ERC20，但最终支持更多
+          options: {
+            address: address, // 令牌所在的地址。
+            symbol: symbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: decimals, // The number of decimals in the token
+            image: logoUrl, // A string url of the token logo
+          },
+        },
+      }).then((res: any) => {
+        console.log(res)
+        resolve({
+          msg: 'Success'
+        })
+      }).catch((err: any) => {
+        console.log(err)
+        resolve({
+          msg: 'Error'
+        })
+      })
+    } else {
+      resolve({
+        msg: 'Error'
+      })
+    }
+  })
+}
+
 function CurrencyRow({
   currency,
   onSelect,
@@ -112,6 +151,8 @@ function CurrencyRow({
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(currency)
+  // console.log(chainId)
+  // console.log(account)
   return (
     <MenuItem
       style={style}
@@ -120,6 +161,9 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
+      {/* <div onClick={() => {
+        addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currency?.logoUrl)
+      }}>+</div> */}
       <TokenLogo symbol={currencyObj.symbol} logoUrl={currency?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>

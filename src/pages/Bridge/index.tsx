@@ -35,7 +35,9 @@ import {getParams} from '../../config/getUrlParams'
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 // import {getTokenConfig} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
-import {formatDecimal} from '../../utils/tools/tools'
+import {getP2PInfo} from '../../utils/bridge/register'
+import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
+import {formatDecimal, setLocalConfig} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
@@ -164,6 +166,7 @@ export default function CrossChain() {
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
   const [allTokens, setAllTokens] = useState<any>({})
+  const [p2pAddress, setP2pAddress] = useState<any>('')
 
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
@@ -414,13 +417,32 @@ export default function CrossChain() {
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue, swapType])
 
-  const p2pAddress = useMemo(() => {
-    if (account && selectCurrency && destConfig && swapType === BridgeType.deposit) {
-      return createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
-    }
-    return ''
-  }, [account, selectCurrency, destConfig])
+  // const p2pAddress = useMemo(() => {
+  //   // getP2PInfo(account, chainId, selectCurrency?.symbol)
+  //   if (account && selectCurrency && destConfig && swapType === BridgeType.deposit) {
+  //     return createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+  //   }
+  //   return ''
+  // }, [account, selectCurrency, destConfig])
   // console.log(p2pAddress)
+
+  useEffect(() => {
+    setP2pAddress('')
+    if (account && selectCurrency && destConfig && swapType === BridgeType.deposit && chainId) {
+      getP2PInfo(account, chainId, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+        // console.log(res)
+        // console.log(selectCurrency)
+        if (res?.p2pAddress) {
+          const localAddress = createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+          if (res?.p2pAddress === localAddress) {
+            // console.log(localAddress)
+            setP2pAddress(localAddress)
+            setLocalConfig(account, selectCurrency?.address, chainId, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+          }
+        }
+      })
+    }
+  }, [account, selectCurrency, destConfig, chainId])
   
   useEffect(() => {
     setSelectCurrency('')

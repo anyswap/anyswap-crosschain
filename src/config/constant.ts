@@ -21,6 +21,7 @@ export const INIT_NODE = ((type) => {
   if (type === VERSION.V1) return '56'
   if (type === VERSION.V2) return '1'
   if (type === VERSION.V2_1) return '1'
+  if (type === VERSION.V2_2) return '1'
   if (type === VERSION.V2_T1) return '97'
   if (type === VERSION.V3) return '1'
   return '1'
@@ -29,6 +30,6 @@ export const INIT_NODE = ((type) => {
 
 export const timeout = 1000 * 60 * 30
 
-export const env = 'pro'
+export const env = 'dev'
 
 export const version = '0.1.5'
