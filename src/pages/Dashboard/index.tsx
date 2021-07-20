@@ -258,8 +258,8 @@ export default function DashboardDtil() {
       return resArr
     }
     return []
-  }, [pagecount, allTokenArr])
-
+  }, [pagecount, allTokenArr, searchBalance])
+  // console.log(viewTokenList)
   const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
   // const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
   const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, viewTokenList)
@@ -394,7 +394,7 @@ export default function DashboardDtil() {
                 </tr>
               </DBThead>
               <DBTbody>
-                <tr>
+                {/* <tr>
                   <DBTd>
                     <TokenTableCoinBox>
                       <TokenTableLogo>
@@ -413,7 +413,7 @@ export default function DashboardDtil() {
                   <DBTd className="r">{ETHBalance ? '0.00' : '-'}</DBTd>
                   <DBTd className="r">{ETHBalance?.toSignificant(6) ? formatDecimal(ETHBalance?.toSignificant(6), 2) : '-'}</DBTd>
                   <DBTd className="c"></DBTd>
-                </tr>
+                </tr> */}
                 {tokenList.length > 0 ? (
                   tokenList.map((item:any, index:any) => {
                     if (
