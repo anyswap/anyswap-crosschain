@@ -366,7 +366,10 @@ export default function NavList() {
                 </div>
                 {t('pool')}
               </StyledNavLink>
-              <StyledNavLink id={`swap-nav-link`} to={'/farm'}>
+              <StyledNavLink
+                id={`swap-nav-link`}
+                to={'/farm'}
+              >
                 <div className="icon">
                   <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
                   <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
@@ -383,13 +386,6 @@ export default function NavList() {
           </div>
           {t('explorer')}
         </StyledNavLink1>
-        {/* <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
-          <div className="icon">
-            <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
-          </div>
-          {t('bridge')}
-        </StyledNavLink> */}
       </HeaderLinks>
       <Tabs>
         {/* <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
