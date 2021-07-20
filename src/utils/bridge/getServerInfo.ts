@@ -27,7 +27,7 @@ export function getAllChainIDs (chainId:any, version?:any) {
           if (res.msg === 'Success') {
             const arr:any = []
             for (const c of res.data) {
-              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenChain?.includes(c)) continue
+              if (config.getCurConfigInfo(version)?.hiddenChain?.includes(c)) continue
               arr.push(c)
             }
             setLocalConfig(BRIDGEALLCHAIN, BRIDGEALLCHAIN, chainId, BRIDGEALLCHAIN, {list: arr}, undefined, version)
@@ -59,7 +59,7 @@ function getTokenInfo(token:any, chainId:any, version?:any) {
           console.log(res)
           if (res.msg === 'Success' && res.data) {
             for (const t in res.data) {
-              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenCoin?.includes(res.data[t].symbol)) continue
+              if (config.getCurConfigInfo(version)?.hiddenCoin?.includes(res.data[t].symbol)) continue
               if (!isAddress(t)) continue
               setLocalConfig(BRIDGETOKENCONFIG, t, chainId, BRIDGETOKENCONFIG, {list: res.data[t]}, undefined, version)
             }

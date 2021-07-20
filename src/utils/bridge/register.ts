@@ -45,8 +45,8 @@ export function recordsTxns ({
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
     const useVersion = version ? version : USE_VERSION
-    console.log(version)
-    console.log(USE_VERSION)
+    // console.log(version)
+    // console.log(USE_VERSION)
     postUrlData(url, {
       hash: hash,
       srcChainID: chainId,
@@ -89,7 +89,7 @@ export function getP2PInfo (account:any, chainId:any, symbol:string, token:any) 
       // console.log(lData)
       resolve({p2pAddress: lData.p2pAddress})
     } else {
-      const url = `https://bridgeapi.anyswap.exchange/v2/register/${account}/${chainId}/${symbol}`
+      const url = `${config.bridgeApi}/v2/register/${account}/${chainId}/${symbol}`
       getUrlData(url).then((res:any) => {
         // console.log(res)
         if (res.msg === 'Success') {

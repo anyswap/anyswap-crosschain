@@ -32,7 +32,7 @@ export function useMulticall (chainId:any, call:any) {
 }
 
 export function getData (chainId:any) {
-  const token = config.getCurBridgeConfigInfo(chainId).bridgeConfigToken
+  const token = config.getCurConfigInfo().bridgeConfigToken
   const callArr = [
     {
       target: token,

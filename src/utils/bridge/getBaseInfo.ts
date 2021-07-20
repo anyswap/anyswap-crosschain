@@ -35,8 +35,8 @@ export function getAllChainIDs (chainId:any, version?:any) {
       if (lData) {
         resolve(lData.list)
       } else {
-        web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
-        routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken
+        web3Fn.setProvider(config.getCurChainInfo(config.getCurConfigInfo(version).bridgeInitDataChain).nodeRpc)
+        routerConfigContract.options.address = config.getCurConfigInfo(version).bridgeConfigToken
       
         routerConfigContract.methods.getAllChainIDs().call((err:any, res:any) => {
           if (err) {
@@ -45,7 +45,7 @@ export function getAllChainIDs (chainId:any, version?:any) {
           } else {
             const arr:any = []
             for (const c of res) {
-              if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenChain?.includes(c)) continue
+              if (config.getCurConfigInfo(version)?.hiddenChain?.includes(c)) continue
               arr.push(c)
             }
             // console.log(arr)
@@ -97,7 +97,7 @@ export function isUnderlying (token:any, chainId:any) {
 function getAllTokenConfig (list:Array<[]>, chainId:any, version?:any) {
   return new Promise(resolve => {
     // let callbackData:any = ''
-    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurConfigInfo(version).bridgeInitDataChain).nodeRpc)
     const batch = new web3Fn.BatchRequest()
 
     const tokenList:ObjType = {}
@@ -109,7 +109,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any, version?:any) {
       const tokenid:any = list[i]
       // console.log(tokenid)
       const gamtData = routerConfigContract.methods.getAllMultichainTokens(tokenid).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      batch.add(web3Fn.eth.call.request({data: gamtData, to: config.getCurConfigInfo(version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         if (err) {
           console.log(err)
         } else {
@@ -130,7 +130,7 @@ function getAllTokenConfig (list:Array<[]>, chainId:any, version?:any) {
       }))
 
       const gtcData = routerConfigContract.methods.getTokenConfig(tokenid, chainId).encodeABI()
-      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
+      batch.add(web3Fn.eth.call.request({data: gtcData, to: config.getCurConfigInfo(version).bridgeConfigToken}, 'latest', (err:any, res:any) => {
         // console.log(res)
         if (err) {
           console.log(err)
@@ -166,8 +166,8 @@ function getAllTokenConfig (list:Array<[]>, chainId:any, version?:any) {
 }
 function getAllTokenIDs (chainId:any, version?:any) {
   return new Promise(resolve => {
-    web3Fn.setProvider(config.getCurChainInfo(config.getCurBridgeConfigInfo(chainId, version).bridgeInitDataChain).nodeRpc)
-    routerConfigContract.options.address = config.getCurBridgeConfigInfo(chainId, version).bridgeConfigToken
+    web3Fn.setProvider(config.getCurChainInfo(config.getCurConfigInfo(version).bridgeInitDataChain).nodeRpc)
+    routerConfigContract.options.address = config.getCurConfigInfo(version).bridgeConfigToken
   
     routerConfigContract.methods.getAllTokenIDs().call((err:any, res:any) => {
       if (err) {
@@ -199,7 +199,7 @@ function getAllTokenIDs (chainId:any, version?:any) {
             if (!tokenInfo) {
               tokenInfo = await getTokenInfo(tokenstr, chainId)
             }
-            if (config.getCurBridgeConfigInfo(chainId, version)?.hiddenCoin?.includes(tokenInfo.symbol)) continue
+            if (config.getCurConfigInfo(version)?.hiddenCoin?.includes(tokenInfo.symbol)) continue
             // const tokenInfo = await getTokenInfo(tokenstr, chainId)
             const underlyingInfo = await isUnderlying(tokenstr, chainId)
             if (curTokenObj && curTokenIdObj) {

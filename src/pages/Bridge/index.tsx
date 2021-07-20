@@ -518,7 +518,7 @@ export default function CrossChain() {
       // console.log(arr)
       if (arr.length > 0) {
         for (const c of arr) {
-          if (config.getCurBridgeConfigInfo(chainId)?.hiddenChain?.includes(c)) continue
+          if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
           setSelectChain(c)
           break
         }
