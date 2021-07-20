@@ -18,6 +18,9 @@ import SearchIcon from '../../assets/images/icon/search.svg'
 import { ReactComponent as Dropup } from '../../assets/images/dropup-blue.svg'
 import { ReactComponent as Dropdown } from '../../assets/images/dropdown-blue.svg'
 
+import NextkIcon from '../../assets/images/icon/Next.svg'
+import PreviouskIcon from '../../assets/images/icon/Previous.svg'
+
 import config from '../../config'
 
 import {getAllToken} from '../../utils/bridge/getServerInfo'
@@ -58,6 +61,29 @@ export const ColoredDropdown = styled(WrappedDropdown)`
   }
 `
 
+const SelectHDPathPage = styled.div`
+  ${({ theme }) => theme.flexBC};
+  height: 34px;
+  object-fit: contain;
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.tipBg};
+  padding: 0 1.25rem;
+`
+const ArrowBox = styled.div`
+${({theme}) => theme.flexC}
+  font-family: 'Manrope';
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  color: ${({theme}) => theme.textColorBold};
+  cursor:pointer;
+`
+
+const pagesize = 18
+
 export default function DashboardDtil() {
   const { account, chainId } = useActiveWeb3React()
   // const { chainId } = useActiveWeb3React()
@@ -67,8 +93,12 @@ export default function DashboardDtil() {
 
   const [allTokenArr, setAllTokenArr] = useState<Array<string>>()
   const [allTokenList, setAllTokenList] = useState<any>()
+  const [pagecount, setPagecount] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
 
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+
+  // const totalCount:number = allTokenList ? allTokenList.length : 0
 
   const getAllTokens = useCallback(() => {
     const ulist:any = []
@@ -160,6 +190,7 @@ export default function DashboardDtil() {
       }
       // console.log(alist)
       // console.log(tlist)
+      setTotalCount(alist.length)
       setAllTokenList(tlist)
       setPoolArr(ulist)
       setAllTokenArr(alist)
@@ -218,8 +249,20 @@ export default function DashboardDtil() {
   const [searchBalance, setSearchBalance] = useState('')
   const [showMore, setShowMore] = useState(true)
 
+  const viewTokenList = useMemo(() => {
+    // console.log(pagecount)
+    const start = pagecount * pagesize
+    const end = start + pagesize
+    if (allTokenArr) {
+      const resArr = searchBalance ? allTokenArr : allTokenArr.slice(start, end)
+      return resArr
+    }
+    return []
+  }, [pagecount, allTokenArr])
+
   const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
-  const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
+  // const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
+  const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, viewTokenList)
   // console.log(allTokenArr)
   // console.log(uAllList)
   const formatUList = useMemo(() => {
@@ -246,7 +289,7 @@ export default function DashboardDtil() {
   const tokenList = useMemo(() => {
     const l:any = []
     if (account && !uListLoading && !uAllListLoading) {
-      for (const token in allTokenList) {
+      for (const token of viewTokenList) {
         let balance:any = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
         let underlyingBlance:any = ''
         let totalBlance:any = 0
@@ -276,7 +319,7 @@ export default function DashboardDtil() {
         })
       }
     } else {
-      for (const token in allTokenList) {
+      for (const token of viewTokenList) {
         l.push({
           ...allTokenList[token]
         })
@@ -289,7 +332,7 @@ export default function DashboardDtil() {
       return 0
     })
     return l
-  }, [formatUList, formatUAllList, allTokenList])
+  }, [formatUList, formatUAllList, viewTokenList, allTokenList])
   // console.log(tokenList)
   function searchBox() {
     return (
@@ -308,6 +351,28 @@ export default function DashboardDtil() {
       </>
     )
   }
+
+  function changePage (callback:any, pCount:any) {
+    
+    return (
+      <SelectHDPathPage>
+        <ArrowBox onClick={() => {
+          // console.log(pCount)
+          if (pCount >= 1) {
+            callback(pCount - 1)
+            setSearchBalance('')
+          }
+        }}><img alt={''} src={PreviouskIcon} style={{marginRight: '0.625rem'}}/>Previous</ArrowBox>
+        <ArrowBox onClick={() => {
+          if (totalCount && pCount < parseInt((totalCount / pagesize).toString())) {
+            callback(pCount + 1)
+            setSearchBalance('')
+          }
+        }}>Next<img alt={''} src={NextkIcon} style={{marginLeft: '0.625rem'}} /></ArrowBox>
+      </SelectHDPathPage>
+    )
+  }
+
   return (
     <>
       <AppBody>
@@ -427,6 +492,7 @@ export default function DashboardDtil() {
                 )}
               </DBTbody>
             </DBTables>
+            {showMore && totalCount > pagesize ? changePage(setPagecount, pagecount) : ''}
           </MyBalanceTokenBox>
           <MoreBtnBox
             onClick={() => {
