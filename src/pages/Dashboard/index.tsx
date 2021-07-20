@@ -167,6 +167,10 @@ export default function DashboardDtil() {
   }, [chainId])
 
   useEffect(() => {
+    
+    setAllTokenList([])
+    setPoolArr([])
+    setAllTokenArr([])
     getAllTokens()
     // getAllToken(chainId).then((res:any) => {
     //   // console.log(res)
