@@ -313,31 +313,37 @@ export default function NavList() {
           </div>
           {t('dashboard')}
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={config.env === 'dev' ? '/router' : '/swap'}>
-          <div className="icon">
-            <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
-          </div>
-          {config.env === 'dev' ? t('router') : t('swap')}
-        </StyledNavLink>
         {
-          config.env === 'dev' ? (
-            <>
-              <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-                <div className="icon">
-                  <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
-                  <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
-                </div>
-                {t('swap')}
-              </StyledNavLink>
-              <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
+          config.getCurConfigInfo().isOpenRouter ? (
+            <StyledNavLink id={`swap-nav-link`} to={config.env === 'dev' ? '/router' : '/swap'}>
+              <div className="icon">
+                <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
+              </div>
+              {config.env === 'dev' ? t('router') : t('swap')}
+            </StyledNavLink>
+          ) : ''
+        }
+        {
+          config.getCurConfigInfo().isOpenRouterTxns ? (
+            <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+              <div className="icon">
+                <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
+              </div>
+              {t('swap')}
+            </StyledNavLink>
+          ) : ''
+        }
+        {
+          config.getCurConfigInfo().isOpenBridge ? (
+            <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
                 <div className="icon">
                   <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
                   <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
                 </div>
                 {t('bridge')}
               </StyledNavLink>
-            </>
           ) : ''
         }
         <StyledNavLink

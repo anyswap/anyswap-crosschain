@@ -1,7 +1,10 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
+// import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+
+// import {CurrentBridgeInfo} from 'anyswapsdk'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -67,7 +70,103 @@ export default function DashboardDtil() {
 
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
+  // const getAllTokens = useCallback(() => {
+  //   const ulist:any = []
+  //   const alist:any = []
+  //   const tlist:any = {}
+  //   const anyToken = config.getCurChainInfo(chainId)?.anyToken
+  //   if (anyToken) {
+  //     tlist[anyToken] = {
+  //       "address": anyToken,
+  //       "chainId": chainId,
+  //       "decimals": 18,
+  //       "name": "Anyswap",
+  //       "symbol": "ANY",
+  //       "underlying": '',
+  //       "destChains": '',
+  //       "isView": 1
+  //     }
+  //     alist.push(anyToken)
+  //   }
+  //   const arr:any = []
+  //   const tObj:any = {}
+  //   if (config.getCurConfigInfo().isOpenRouter) {
+  //     arr.push(getAllToken(chainId))
+  //     tObj.router = 1
+  //   } else {
+  //     arr.push('')
+  //   }
+  //   if (config.getCurConfigInfo().isOpenBridge) {
+  //     arr.push(CurrentBridgeInfo(chainId))
+  //     tObj.bridge = 1
+  //   } else {
+  //     arr.push('')
+  //   }
+  //   Promise.all(arr).then((res:any) => {
+  //     console.log(res)
+  //     console.log(arr)
+  //     if (res[0]) {
+  //       for (const token in res[0]) {
+  //         if (!isAddress(token)) continue
+  //         if (anyToken === token) continue
+  //         const item = res[0][token].list
+  //         if (chainId?.toString !== item.chainId) continue
+  //         if (item.underlying) {
+  //           ulist.push(item.underlying.address)
+  //         }
+  //         tlist[token.toLowerCase()] = {
+  //           "address": token,
+  //           "chainId": chainId,
+  //           "decimals": item.decimals,
+  //           "name": item.name,
+  //           "symbol": item.symbol,
+  //           "underlying": item.underlying,
+  //           "destChains": item.destChains,
+  //           "logoUrl": item.logoUrl,
+  //           "type": "router"
+  //         }
+  //         alist.push(token)
+  //       }
+  //     }
+  //     if (res[1]) {
+  //       for (const type in res[1]) {
+  //         const list = res[1][type]
+  //         for (const token in list) {
+  //           if (!isAddress(token)) continue
+  //           if (anyToken === token) continue
+  //           const item = list[token]
+  //           // if (chainId?.toString !== item.chainId) continue
+  //           if (item.underlying) {
+  //             if (ulist.includes(item.underlying.address)) continue
+  //             ulist.push(item.underlying.address)
+  //           }
+  //           if (tlist[token.toLowerCase()]) continue
+  //           tlist[token.toLowerCase()] = {
+  //             "address": token,
+  //             "chainId": chainId,
+  //             "decimals": item.decimals,
+  //             "name": item.name,
+  //             "symbol": item.symbol,
+  //             "underlying": item.underlying,
+  //             "destChains": item.destChains,
+  //             "logoUrl": item.logoUrl,
+  //             "type": "bridge",
+  //             "bridgeType": type
+  //           }
+  //           alist.push(token)
+  //         }
+  //       }
+  //     }
+  //     console.log(alist)
+  //     console.log(tlist)
+  //     setAllTokenList(tlist)
+  //     setPoolArr(ulist)
+  //     setAllTokenArr(alist)
+  //   })
+  // }, [chainId])
+
   useEffect(() => {
+    // getAllTokens()
     getAllToken(chainId).then((res:any) => {
       // console.log(res)
       if (res) {
@@ -116,7 +215,8 @@ export default function DashboardDtil() {
 
   const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
   const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
-
+  // console.log(allTokenArr)
+  // console.log(uAllList)
   const formatUList = useMemo(() => {
     if (!uListLoading) {
       const obj:any = {}
@@ -236,6 +336,7 @@ export default function DashboardDtil() {
                               <TokenTableLogo>
                                 <TokenLogo
                                   symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}
+                                  logoUrl={item.logoUrl}
                                   size={'1.625rem'}
                                 ></TokenLogo>
                               </TokenTableLogo>
@@ -252,9 +353,20 @@ export default function DashboardDtil() {
                             {
                               item.isView ? '' : (
                                 <span style={{ display: 'inline-block' }}>
-                                  <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
+                                  {
+                                    item.type === 'router' ? (
+                                      <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
+                                        {t('swap')}
+                                      </TokenActionBtnSwap>
+                                    ) : (
+                                      <TokenActionBtnSwap to={'/bridge?bridgetoken=' + item?.address + '&bridgetype=' + item.bridgeType}>
+                                        {t('bridge')}
+                                      </TokenActionBtnSwap>
+                                    )
+                                  }
+                                  {/* <TokenActionBtnSwap to={(item.type === 'router' ? '/swap?bridgetoken=' : '/bridge?bridgetoken=') + item?.address}>
                                     {t('swap')}
-                                  </TokenActionBtnSwap>
+                                  </TokenActionBtnSwap> */}
                                 </span>
                               )
                             }

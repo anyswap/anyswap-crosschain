@@ -61,7 +61,7 @@ export default {
     isSwitch: 1,
     underlying: [],
     suffix: 'Fusion',
-    anyToken: '0xed0294dbd2a0e52a09c3f38a09f6e03de2c44fcf'
+    anyToken: '0x0c74199d22f732039e843366a236ff4f61986b32'
   },
   [FSN_TEST_CHAINID]: {
     oldAppName: 'Anyswap V1',
