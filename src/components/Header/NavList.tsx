@@ -346,31 +346,36 @@ export default function NavList() {
               </StyledNavLink>
           ) : ''
         }
-        <StyledNavLink
-          id={`pool-nav-link`}
-          to={'/pool'}
-          isActive={(match, { pathname }) =>
-            Boolean(match) ||
-            pathname.startsWith('/add') ||
-            pathname.startsWith('/remove') ||
-            pathname.startsWith('/create') ||
-            pathname.startsWith('/find')
-          }
-        >
-          <div className="icon">
-            <img src={require('../../assets/images/icon/pool.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/pool-purpl.svg')} className="on" alt="" />
-          </div>
-          {t('pool')}
-        </StyledNavLink>
-        
-        <StyledNavLink id={`swap-nav-link`} to={'/farm'}>
-          <div className="icon">
-            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
-          </div>
-          {t('farms')}
-        </StyledNavLink>
+        {
+          config.getCurConfigInfo().isOpenRouter ? (
+            <>
+              <StyledNavLink
+                id={`pool-nav-link`}
+                to={'/pool'}
+                isActive={(match, { pathname }) =>
+                  Boolean(match) ||
+                  pathname.startsWith('/add') ||
+                  pathname.startsWith('/remove') ||
+                  pathname.startsWith('/create') ||
+                  pathname.startsWith('/find')
+                }
+              >
+                <div className="icon">
+                  <img src={require('../../assets/images/icon/pool.svg')} className="off" alt="" />
+                  <img src={require('../../assets/images/icon/pool-purpl.svg')} className="on" alt="" />
+                </div>
+                {t('pool')}
+              </StyledNavLink>
+              <StyledNavLink id={`swap-nav-link`} to={'/farm'}>
+                <div className="icon">
+                  <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
+                  <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
+                </div>
+                {t('farms')}
+              </StyledNavLink>
+            </>
+          ) : ''
+        }
         <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
           <div className="icon">
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
