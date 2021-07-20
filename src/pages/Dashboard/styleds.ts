@@ -273,6 +273,10 @@ export const TokenActionBtn = styled(NavLink)`
 `
 export const TokenActionBtnSwap = styled(TokenActionBtn)`
   margin-right: 0.125rem;
+  &.disabled{
+    opacity: 0.5;
+    cursor: no-drop;
+  }
 `
 export const MoreBtnBox = styled.div`
   ${({ theme }) => theme.flexC};

@@ -447,7 +447,13 @@ export default function DashboardDtil() {
                           <DBTd className="r">{item.totalBlance || item.totalBlance === 0 ? formatDecimal(item.totalBlance, 2) : '-'}</DBTd>
                           <DBTd className="c">
                             {
-                              item.isView ? '' : (
+                              item.isView ? (
+                                <span style={{ display: 'inline-block' }}>
+                                  <TokenActionBtnSwap to={'/dashboard'} className="disabled">
+                                    {t('swap')}
+                                  </TokenActionBtnSwap>
+                                </span>
+                              ) : (
                                 <span style={{ display: 'inline-block' }}>
                                   {
                                     item.type === 'router' ? (
