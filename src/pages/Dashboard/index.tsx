@@ -492,7 +492,7 @@ export default function DashboardDtil() {
                 )}
               </DBTbody>
             </DBTables>
-            {showMore && totalCount > pagesize ? changePage(setPagecount, pagecount) : ''}
+            {showMore && totalCount > pagesize && !searchBalance ? changePage(setPagecount, pagecount) : ''}
           </MyBalanceTokenBox>
           <MoreBtnBox
             onClick={() => {
