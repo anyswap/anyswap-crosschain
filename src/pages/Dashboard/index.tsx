@@ -1,10 +1,10 @@
 
-import React, { useEffect, useMemo, useState } from 'react'
-// import React, { useCallback, useEffect, useMemo, useState } from 'react'
+// import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-// import {CurrentBridgeInfo} from 'anyswapsdk'
+import {CurrentBridgeInfo} from 'anyswapsdk'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -70,145 +70,146 @@ export default function DashboardDtil() {
 
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
-  // const getAllTokens = useCallback(() => {
-  //   const ulist:any = []
-  //   const alist:any = []
-  //   const tlist:any = {}
-  //   const anyToken = config.getCurChainInfo(chainId)?.anyToken
-  //   if (anyToken) {
-  //     tlist[anyToken] = {
-  //       "address": anyToken,
-  //       "chainId": chainId,
-  //       "decimals": 18,
-  //       "name": "Anyswap",
-  //       "symbol": "ANY",
-  //       "underlying": '',
-  //       "destChains": '',
-  //       "isView": 1
-  //     }
-  //     alist.push(anyToken)
-  //   }
-  //   const arr:any = []
-  //   const tObj:any = {}
-  //   if (config.getCurConfigInfo().isOpenRouter) {
-  //     arr.push(getAllToken(chainId))
-  //     tObj.router = 1
-  //   } else {
-  //     arr.push('')
-  //   }
-  //   if (config.getCurConfigInfo().isOpenBridge) {
-  //     arr.push(CurrentBridgeInfo(chainId))
-  //     tObj.bridge = 1
-  //   } else {
-  //     arr.push('')
-  //   }
-  //   Promise.all(arr).then((res:any) => {
-  //     console.log(res)
-  //     console.log(arr)
-  //     if (res[0]) {
-  //       for (const token in res[0]) {
-  //         if (!isAddress(token)) continue
-  //         if (anyToken === token) continue
-  //         const item = res[0][token].list
-  //         if (chainId?.toString !== item.chainId) continue
-  //         if (item.underlying) {
-  //           ulist.push(item.underlying.address)
-  //         }
-  //         tlist[token.toLowerCase()] = {
-  //           "address": token,
-  //           "chainId": chainId,
-  //           "decimals": item.decimals,
-  //           "name": item.name,
-  //           "symbol": item.symbol,
-  //           "underlying": item.underlying,
-  //           "destChains": item.destChains,
-  //           "logoUrl": item.logoUrl,
-  //           "type": "router"
-  //         }
-  //         alist.push(token)
-  //       }
-  //     }
-  //     if (res[1]) {
-  //       for (const type in res[1]) {
-  //         const list = res[1][type]
-  //         for (const token in list) {
-  //           if (!isAddress(token)) continue
-  //           if (anyToken === token) continue
-  //           const item = list[token]
-  //           // if (chainId?.toString !== item.chainId) continue
-  //           if (item.underlying) {
-  //             if (ulist.includes(item.underlying.address)) continue
-  //             ulist.push(item.underlying.address)
-  //           }
-  //           if (tlist[token.toLowerCase()]) continue
-  //           tlist[token.toLowerCase()] = {
-  //             "address": token,
-  //             "chainId": chainId,
-  //             "decimals": item.decimals,
-  //             "name": item.name,
-  //             "symbol": item.symbol,
-  //             "underlying": item.underlying,
-  //             "destChains": item.destChains,
-  //             "logoUrl": item.logoUrl,
-  //             "type": "bridge",
-  //             "bridgeType": type
-  //           }
-  //           alist.push(token)
-  //         }
-  //       }
-  //     }
-  //     console.log(alist)
-  //     console.log(tlist)
-  //     setAllTokenList(tlist)
-  //     setPoolArr(ulist)
-  //     setAllTokenArr(alist)
-  //   })
-  // }, [chainId])
-
-  useEffect(() => {
-    // getAllTokens()
-    getAllToken(chainId).then((res:any) => {
+  const getAllTokens = useCallback(() => {
+    const ulist:any = []
+    const alist:any = []
+    const tlist:any = {}
+    const anyToken = config.getCurChainInfo(chainId)?.anyToken
+    if (anyToken) {
+      tlist[anyToken] = {
+        "address": anyToken,
+        "chainId": chainId,
+        "decimals": 18,
+        "name": "Anyswap",
+        "symbol": "ANY",
+        "underlying": '',
+        "destChains": '',
+        "isView": 1
+      }
+      alist.push(anyToken)
+    }
+    const arr:any = []
+    const tObj:any = {}
+    if (config.getCurConfigInfo().isOpenRouter) {
+      arr.push(getAllToken(chainId))
+      tObj.router = 1
+    } else {
+      arr.push('')
+    }
+    if (config.getCurConfigInfo().isOpenBridge) {
+      arr.push(CurrentBridgeInfo(chainId))
+      tObj.bridge = 1
+    } else {
+      arr.push('')
+    }
+    Promise.all(arr).then((res:any) => {
       // console.log(res)
-      if (res) {
-        const ulist:any = []
-        const alist:any = []
-        const tlist:any = {}
-        const anyToken = config.getCurChainInfo(chainId)?.anyToken
-        if (anyToken) {
-          tlist[anyToken] = {
-            "address": anyToken,
-            "chainId": chainId,
-            "decimals": 18,
-            "name": "Anyswap",
-            "symbol": "ANY",
-            "underlying": '',
-            "destChains": '',
-            "isView": 1
-          }
-          alist.push(anyToken)
-        }
-        for (const token in res) {
+      // console.log(arr)
+      if (res[0]) {
+        for (const token in res[0]) {
           if (!isAddress(token)) continue
-          if (res[token].list.underlying) {
-            ulist.push(res[token].list.underlying.address)
+          if (anyToken === token) continue
+          const item = res[0][token].list
+          
+          if (chainId?.toString() !== item.chainId?.toString()) continue
+          if (item.underlying) {
+            ulist.push(item.underlying.address)
           }
           tlist[token.toLowerCase()] = {
             "address": token,
             "chainId": chainId,
-            "decimals": res[token].list.decimals,
-            "name": res[token].list.name,
-            "symbol": res[token].list.symbol,
-            "underlying": res[token].list.underlying,
-            "destChains": res[token].list.destChains,
+            "decimals": item.decimals,
+            "name": item.name,
+            "symbol": item.symbol,
+            "underlying": item.underlying,
+            "destChains": item.destChains,
+            "logoUrl": item.logoUrl,
+            "type": "router"
           }
           alist.push(token)
         }
-        setAllTokenList(tlist)
-        setPoolArr(ulist)
-        setAllTokenArr(alist)
       }
+      if (res[1]) {
+        for (const type in res[1]) {
+          const list = res[1][type]
+          for (const token in list) {
+            if (!isAddress(token)) continue
+            if (anyToken === token) continue
+            const item = list[token]
+            // if (chainId?.toString !== item.chainId) continue
+            if (item.underlying) {
+              if (ulist.includes(item.underlying.address)) continue
+              ulist.push(item.underlying.address)
+            }
+            if (tlist[token.toLowerCase()]) continue
+            tlist[token.toLowerCase()] = {
+              "address": token,
+              "chainId": chainId,
+              "decimals": item.decimals,
+              "name": item.name,
+              "symbol": item.symbol,
+              "underlying": item.underlying,
+              "destChains": item.destChains,
+              "logoUrl": item.logoUrl,
+              "type": "bridge",
+              "bridgeType": type
+            }
+            alist.push(token)
+          }
+        }
+      }
+      // console.log(alist)
+      // console.log(tlist)
+      setAllTokenList(tlist)
+      setPoolArr(ulist)
+      setAllTokenArr(alist)
     })
-  }, [])
+  }, [chainId])
+
+  useEffect(() => {
+    getAllTokens()
+    // getAllToken(chainId).then((res:any) => {
+    //   // console.log(res)
+    //   if (res) {
+    //     const ulist:any = []
+    //     const alist:any = []
+    //     const tlist:any = {}
+    //     const anyToken = config.getCurChainInfo(chainId)?.anyToken
+    //     if (anyToken) {
+    //       tlist[anyToken] = {
+    //         "address": anyToken,
+    //         "chainId": chainId,
+    //         "decimals": 18,
+    //         "name": "Anyswap",
+    //         "symbol": "ANY",
+    //         "underlying": '',
+    //         "destChains": '',
+    //         "isView": 1
+    //       }
+    //       alist.push(anyToken)
+    //     }
+    //     for (const token in res) {
+    //       if (!isAddress(token)) continue
+    //       if (res[token].list.underlying) {
+    //         ulist.push(res[token].list.underlying.address)
+    //       }
+    //       tlist[token.toLowerCase()] = {
+    //         "address": token,
+    //         "chainId": chainId,
+    //         "decimals": res[token].list.decimals,
+    //         "name": res[token].list.name,
+    //         "symbol": res[token].list.symbol,
+    //         "underlying": res[token].list.underlying,
+    //         "destChains": res[token].list.destChains,
+    //       }
+    //       alist.push(token)
+    //     }
+    //     setAllTokenList(tlist)
+    //     setPoolArr(ulist)
+    //     setAllTokenArr(alist)
+    //   }
+    // })
+  }, [chainId])
 
   const [searchBalance, setSearchBalance] = useState('')
   const [showMore, setShowMore] = useState(true)
@@ -277,6 +278,12 @@ export default function DashboardDtil() {
         })
       }
     }
+    l.sort((a:any, b:any) => {
+      if (!isNaN(a.totalBlance) && !isNaN(b.totalBlance) && Number(a.totalBlance) > Number(b.totalBlance)) {
+        return -1
+      }
+      return 0
+    })
     return l
   }, [formatUList, formatUAllList, allTokenList])
   // console.log(tokenList)
@@ -318,6 +325,26 @@ export default function DashboardDtil() {
                 </tr>
               </DBThead>
               <DBTbody>
+                <tr>
+                  <DBTd>
+                    <TokenTableCoinBox>
+                      <TokenTableLogo>
+                        <TokenLogo
+                          symbol={config.getCurChainInfo(chainId).symbol}
+                          size={'1.625rem'}
+                        ></TokenLogo>
+                      </TokenTableLogo>
+                      <TokenNameBox>
+                        <h3>{config.getBaseCoin(config.getCurChainInfo(chainId)?.symbol, chainId)}</h3>
+                        <p>{config.getBaseCoin(config.getCurChainInfo(chainId)?.name, chainId, 1)}</p>
+                      </TokenNameBox>
+                    </TokenTableCoinBox>
+                  </DBTd>
+                  <DBTd className="r">{ETHBalance?.toSignificant(6) ? formatDecimal(ETHBalance?.toSignificant(6), 2) : '-'}</DBTd>
+                  <DBTd className="r">{ETHBalance ? '0.00' : '-'}</DBTd>
+                  <DBTd className="r">{ETHBalance?.toSignificant(6) ? formatDecimal(ETHBalance?.toSignificant(6), 2) : '-'}</DBTd>
+                  <DBTd className="c"></DBTd>
+                </tr>
                 {tokenList.length > 0 ? (
                   tokenList.map((item:any, index:any) => {
                     if (
