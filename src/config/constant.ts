@@ -66,9 +66,9 @@ export const controlConfig:any = {
     hiddenCoin: formatHiddenCoin(['']),
     hiddenChain: [''],
     initNode: '1',
-    isOpenRouter: 0,
-    isOpenRouterTxns: env === 'dev' ? 0 : 0,
-    isOpenBridge: env === 'dev' ? 1 : 1,
+    isOpenRouter: 1,
+    isOpenRouterTxns: env === 'dev' ? 1 : 0,
+    isOpenBridge: env === 'dev' ? 1 : 0,
   },
   [VERSION.V2_T1]: {
     bridgeConfigToken: '0xe5137598331dfb329840a1a732babeda5dcbc962',
