@@ -106,7 +106,7 @@ export const UpperSection = styled.div`
   position: relative;
   width: 100%;
   font-family: 'Manrope';
-
+  overflow:auto;
   h5 {
     margin: 0;
     margin-bottom: 0.5rem;
@@ -156,10 +156,11 @@ export const ContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
   padding: 0px 0.625rem 0.625rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
+  overflow: auto;
 `
 export const NetWorkList = styled.div`
   width:100%;
-  overflow:auth;
+  overflow: auto;
 `
 
 export const InfoCard = styled.button`
@@ -478,7 +479,8 @@ export default function SelectNetwork () {
       <Modal
         isOpen={networkModalOpen}
         onDismiss={() => { toggleNetworkModal() }}
-        maxHeight={300}
+        maxHeight={80}
+        minHeight={80}
       >
         <Wrapper>
           <UpperSection>
