@@ -7,6 +7,7 @@ import ftm, {FTM_MAIN_CHAINID} from './ftm'
 import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
 import matic, {MATIC_MAIN_CHAINID} from './matic'
 import xdai, {XDAI_MAIN_CHAINID} from './xdai'
+import kcc, {KCC_MAIN_CHAINID} from './kcc'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -26,6 +27,7 @@ export const chainInfo:ConFig = {
   ...ht,
   ...matic,
   ...xdai,
+  ...kcc,
   ...ltc,
   ...btc,
   ...block
@@ -74,6 +76,7 @@ const useChain = {
     AVAX_MAIN_CHAINID,
     XDAI_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID,
+    KCC_MAIN_CHAINID
   ]
 }
 

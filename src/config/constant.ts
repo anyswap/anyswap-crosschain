@@ -12,7 +12,7 @@ export enum VERSION {
   V3 = 'ARB_DEV',
 }
 
-export const env = 'dev'
+export const env:any = 'dev'
 export const version = '0.1.5'
 export const timeout = 1000 * 60 * 30
 export const USE_VERSION = VERSION.V2_2
@@ -66,9 +66,9 @@ export const controlConfig:any = {
     hiddenCoin: formatHiddenCoin(['']),
     hiddenChain: [''],
     initNode: '1',
-    isOpenRouter: 1,
-    isOpenRouterTxns: env === 'dev' ? 1 : 0,
-    isOpenBridge: env === 'dev' ? 1 : 0,
+    isOpenRouter: 0,
+    isOpenRouterTxns: env === 'dev' ? 0 : 0,
+    isOpenBridge: env === 'dev' ? 1 : 1,
   },
   [VERSION.V2_T1]: {
     bridgeConfigToken: '0xe5137598331dfb329840a1a732babeda5dcbc962',

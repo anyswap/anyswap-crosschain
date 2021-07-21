@@ -161,7 +161,7 @@ export default function App() {
               />
 
               
-              <Redirect to={{ pathname: '/swap' }} /> 
+              <Redirect to={{ pathname: config.getCurConfigInfo().isOpenRouter ? '/swap' : '/bridge' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>
           </Web3ReactManager>
