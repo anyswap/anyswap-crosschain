@@ -268,18 +268,23 @@ export default function CrossChain() {
     // currencyBalances,
     // parsedAmount,
     // currencies,
-    inputError: swapInputError
+    // inputError: swapInputError
   } = useDerivedSwapInfo(selectChain)
   // console.log(ttl)
   
   const routerPath = useMemo(() => {
-    const arr:any = []
+    const arr:any = [selectCurrency?.address]
     if (v2Trade?.route?.pairs) {
-      for (const obj of v2Trade?.route?.pairs) {
-        if (obj?.liquidityToken?.address) {
-          arr.push(obj?.liquidityToken?.address)
+      for (const obj of v2Trade?.route?.path) {
+        if (obj?.address) {
+          arr.push(obj?.address)
         }
       }
+      // for (const obj of v2Trade?.route?.pairs) {
+      //   if (obj?.liquidityToken?.address) {
+      //     arr.push(obj?.liquidityToken?.address)
+      //   }
+      // }
     }
     return arr
   }, [v2Trade])
@@ -300,7 +305,7 @@ export default function CrossChain() {
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
-    v2Trade?.outputAmount?.toString(),
+    v2Trade?.outputAmount?.raw.toString(),
     routerPath
   )
 
@@ -308,19 +313,12 @@ export default function CrossChain() {
   // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const {onSelectChainId} = useAddDestChainId()
   useEffect(() => {
+    console.log(v2Trade)
     if (v2Trade) {
-      // console.log(v1Trade)
       console.log(v2Trade)
       console.log(v2Trade?.inputAmount?.toSignificant(6))
-      console.log(v2Trade?.outputAmount?.toSignificant(6))
+      console.log(v2Trade?.outputAmount?.raw.toString())
       console.log(routerPath)
-      console.log(swapInputError)
-      // console.log('currencyBalances.INPUT', currencyBalances?.INPUT?.toSignificant(6))
-      // console.log('currencyBalances.OUTPUT', currencyBalances?.OUTPUT?.toSignificant(6))
-      // console.log(parsedAmount?.toSignificant(6))
-      // console.log(currencies)
-      // console.log(currencies?.INPUT?.toSignificant(6))
-      // console.log(currencies?.OUTPUT?.toSignificant(6))
       // console.log(swapInputError)
     }
   }, [v2Trade])
@@ -350,7 +348,7 @@ export default function CrossChain() {
       destConfig?.underlying?.symbol ?? destConfig?.symbol,
       destConfig?.underlying?.name ?? destConfig?.name,
     )
-  }, [destConfig])
+  }, [destConfig, selectChain])
 
   useEffect(() => {
     onCurrencySelection(
@@ -361,7 +359,7 @@ export default function CrossChain() {
       selectDestCurrency?.symbol,
       selectDestCurrency?.name,
     )
-  }, [selectDestCurrency])
+  }, [selectDestCurrency, selectChain])
   
   const isNativeToken = useMemo(() => {
     if (
@@ -419,33 +417,6 @@ export default function CrossChain() {
     }
   }, [inputBridgeValue, destConfig, selectChain])
 
-  // const outputBridgeValue = useMemo(() => {
-  //   if (inputBridgeValue && destConfig) {
-  //     const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
-  //     let value = Number(inputBridgeValue) - fee
-  //     if (fee < Number(destConfig.MinimumSwapFee)) {
-  //       value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
-  //     } else if (fee > destConfig.MaximumSwapFee) {
-  //       value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
-  //     }
-  //     if (!destConfig?.swapfeeon) {
-  //       value = Number(inputBridgeValue)
-  //     }
-  //     if (value && Number(value) && Number(value) > 0) {
-  //       console.log(value)
-  //       onUserInput(Field.INPUT, value.toString())
-  //       return formatDecimal(value, Math.min(6, selectCurrency.decimals))
-  //     }
-  //     console.log(1)
-  //     onUserInput(Field.INPUT, '0')
-  //     return ''
-  //   } else {
-  //     console.log(2)
-  //     onUserInput(Field.INPUT, '0')
-  //     return ''
-  //   }
-  // }, [inputBridgeValue, destConfig, selectChain])
-
   const isWrapInputError = useMemo(() => {
     
     if (selectCurrency?.underlying && !isNativeToken) {
@@ -474,6 +445,7 @@ export default function CrossChain() {
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
+      && v2Trade?.outputAmount
       // && isAddress(recipient)
       && destChain
     ) {
@@ -515,7 +487,6 @@ export default function CrossChain() {
     }
   }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
-
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
     if (isWrapInputError && inputBridgeValue) {
@@ -536,8 +507,6 @@ export default function CrossChain() {
     }
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue])
-
-  
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
@@ -582,12 +551,6 @@ export default function CrossChain() {
     })
   }, [chainId, count])
 
-  // useEffect(() => {
-  //   if (swapType == 'swap' && account) {
-  //     setRecipient(account)
-  //   }
-  // }, [account, swapType])
-
   useEffect(() => {
     // console.log(selectCurrency)
     if (selectCurrency) {
@@ -609,18 +572,17 @@ export default function CrossChain() {
     }
   }, [selectCurrency])
 
-  // useEffect(() => {
-  //   getPairs(selectChain, destConfig?.underlying?.address ?? destConfig?.address, selectDestCurrency?.address).then(res => {
-  //     console.log(res)
-  //   })
-  // }, [destConfig, selectDestCurrency, selectChain])
-
   useEffect(() => {
     // onSelectChainId(selectChain)
+    setSelectDestCurrency('')
     if (selectChain) {
+      // setInputBridgeValue('')
+      // onUserInput(Field.INPUT, '0')
       // console.log(selectChain)
       const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens
       const initToken = config.getCurChainInfo(selectChain).swapInitToken
+      // console.log(arr)
+      // console.log(initToken)
       for (const obj of arr) {
         if (initToken && obj.address.toLowerCase() === initToken?.toLowerCase()) {
           // console.log(obj)

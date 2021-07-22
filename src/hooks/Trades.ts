@@ -57,6 +57,7 @@ function useAllCommonPairs(chainId?: ChainId, currencyA?: Currency, currencyB?: 
             .filter(([t0, t1]) => t0.address !== t1.address)
             .filter(([tokenA, tokenB]) => {
               if (!chainId) return true
+              // if (tokenA?.chainId !== tokenB?.chainId) return true
               // console.log(chainId)
               const customBases = CUSTOM_BASES[chainId]
               if (!customBases) return true

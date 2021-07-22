@@ -59,7 +59,7 @@ export default {
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6',
+    swapInitToken: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     multicalToken: '0x63B8310c5093ac917552931D8b15d5AB6945c0a6',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

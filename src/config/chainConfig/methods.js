@@ -3,13 +3,19 @@ import {
 } from '../constant'
 
 export function formatSwapTokenList (name, tokenlist) {
-  
+  const arr = []
+  for (const obj of tokenlist) {
+    arr.push({
+      ...obj,
+      address: obj.address.toLowerCase()
+    })
+  }
   return {
     "keywords": ["roll", "default", "social money", "personal tokens"],
     "logoURI": "",
     "name": name,
     "timestamp": "",
-    "tokens": tokenlist,
+    "tokens": arr,
     "version": {"major": 0, "minor": 0, "patch": 1}
   }
 }

@@ -450,7 +450,8 @@ export function useBridgeNativeCallback(
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-
+    // console.log(sufficientBalance)
+    // console.log(inputAmount)
     return {
       wrapType: WrapType.WRAP,
       execute:
@@ -461,13 +462,19 @@ export function useBridgeNativeCallback(
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
-                
-                const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
+                console.log(`0x${inputAmount.raw.toString(16)}`)
+                console.log(outputAmount)
+                console.log(routerPath)
+                console.log(toAddress)
+                console.log(parseInt((Date.now()/1000 + deadline).toString()))
+                console.log(toChainID)
+                // const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
+                const txReceipt = await bridgeContract.anySwapOutExactTokensForTokensUnderlying(
                   `0x${inputAmount.raw.toString(16)}`,
                   outputAmount,
                   routerPath,
                   toAddress,
-                  deadline,
+                  parseInt((Date.now()/1000 + deadline).toString()),
                   toChainID
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
