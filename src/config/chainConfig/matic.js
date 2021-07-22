@@ -8,7 +8,22 @@ export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRP
 // export const MATIC_MAIN_EXPLORER = 'https://explorer-mainnet.maticvigil.com'
 export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
 // console.log(MATIC_MAINNET)
-export const tokenList = []
+export const tokenList = [
+  {
+    "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+    "chainId": MATIC_MAIN_CHAINID,
+    "decimals": 8,
+    "name": "Wrapped BTC",
+    "symbol": "WBTC"
+  },
+  {
+    "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+    "chainId": MATIC_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Dai Stablecoin",
+    "symbol": "DAI"
+  },
+]
 
 export const testTokenList = []
 

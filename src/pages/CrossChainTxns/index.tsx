@@ -560,7 +560,7 @@ export default function CrossChain() {
             "destChains": res[token].list.destChains,
             "logoUrl": res[token].list.logoUrl,
           }
-          if (!selectCurrency || selectCurrency.chainId !== chainId) {
+          if (selectCurrency?.chainId !== chainId) {
             if (
               t === token
               || list[token]?.symbol?.toLowerCase() === t
@@ -617,11 +617,17 @@ export default function CrossChain() {
 
   useEffect(() => {
     // onSelectChainId(selectChain)
-    if (!selectDestCurrency && selectChain) {
+    if (selectChain) {
+      // console.log(selectChain)
       const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens
       const initToken = config.getCurChainInfo(selectChain).swapInitToken
       for (const obj of arr) {
-        if (obj.address.toLowerCase() === initToken?.toLowerCase()) {
+        if (initToken && obj.address.toLowerCase() === initToken?.toLowerCase()) {
+          // console.log(obj)
+          setSelectDestCurrency(obj)
+          break
+        } else if (!initToken) {
+          // console.log(obj)
           setSelectDestCurrency(obj)
           break
         }

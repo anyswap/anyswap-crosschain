@@ -28,12 +28,26 @@ export const BNB_TEST_EXPLORER = 'https://testnet.bscscan.com'
 
 export const tokenList = [
   {
-    "address": "0x66a79d23e58475d2738179ca52cd0b41d73f0bea",
+    "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
     "chainId": BNB_MAIN_CHAINID,
     "decimals": 18,
-    "name": "",
-    "symbol": ""
-  }
+    "name": "Binance-Peg Ethereum",
+    "symbol": "ETH"
+  },
+  {
+    "address": "0x4338665cbb7b2485a8855a139b75d5e34ab0db94",
+    "chainId": BNB_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Binance-Peg Litecoin",
+    "symbol": "LTC"
+  },
+  {
+    "address": "0x55d398326f99059ff775485246999027b3197955",
+    "chainId": BNB_MAIN_CHAINID,
+    "decimals": 18,
+    "name": "Binance-Peg BSC-USD",
+    "symbol": "USDT"
+  },
 ]
 export const testTokenList = [
 

@@ -27,7 +27,7 @@ export enum PairState {
 // let onlyOne:any = []
 export function usePairs(currencies: [Currency | undefined, Currency | undefined][], chainId?: ChainId): [PairState, Pair | null][] {
   // const { chainId } = useActiveWeb3React()
-
+  // console.log(currencies)
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => [
