@@ -5,6 +5,7 @@ export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
 
 export enum VERSION {
   V1 = 'UNDERLYING',
+  V1_1 = 'UNDERLYINGV2',
   V2 = 'STABLE',
   V2_1 = 'STABLEV2',
   V2_2 = 'STABLEV3',
@@ -12,10 +13,10 @@ export enum VERSION {
   V3 = 'ARB_DEV',
 }
 
-export const env:any = 'dev'
+export const env:any = 'pro'
 export const version = '0.1.5'
 export const timeout = 1000 * 60 * 30
-export const USE_VERSION = VERSION.V2_2
+export const USE_VERSION = VERSION.V1_1
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []
@@ -32,6 +33,16 @@ function formatHiddenCoin (list?:Array<any>) {
 export const controlConfig:any = {
   [VERSION.V1]: {
     bridgeConfigToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
+    bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin(['']),
+    hiddenChain: [''],
+    initNode: '56',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 0
+  },
+  [VERSION.V1_1]: {
+    bridgeConfigToken: '0xbCCFf1c6C1CA650F533D3dcc5F4722aaE6718337',
     bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin(['']),
     hiddenChain: [''],

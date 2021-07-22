@@ -30,10 +30,17 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
   // console.log(currencies)
   const tokens = useMemo(
     () =>
-      currencies.map(([currencyA, currencyB]) => [
+      currencies.map(([currencyA, currencyB]) => {
+        // console.log(currencyA)
+        // console.log(currencyB)
+        // if (currencyA?.chainId === currencyB?.chainId) {
+
+        // }
+        return [
         wrappedCurrency(currencyA, chainId),
         wrappedCurrency(currencyB, chainId)
-      ]),
+      ]
+    }),
     [chainId, currencies]
   )
   

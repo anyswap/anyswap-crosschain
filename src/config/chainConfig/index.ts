@@ -37,7 +37,10 @@ const useChain = {
   [VERSION.V1]: [
     ETH_MAIN_CHAINID,
     BNB_MAIN_CHAINID,
-    HT_MAIN_CHAINID,
+  ],
+  [VERSION.V1_1]: [
+    ETH_MAIN_CHAINID,
+    BNB_MAIN_CHAINID,
   ],
   [VERSION.V2]: [
     ETH_MAIN_CHAINID,

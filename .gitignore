@@ -15,6 +15,7 @@
 /anyswapExchange_test
 /arb
 /deploy
+/router
 *.zip
 
 # misc
