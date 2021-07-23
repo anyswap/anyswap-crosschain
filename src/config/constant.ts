@@ -13,7 +13,7 @@ export enum VERSION {
   V3 = 'ARB_DEV',
 }
 
-export const env:any = 'dev'
+export const env:any = 'pro'
 export const version = '0.1.5'
 export const timeout = 1000 * 60 * 30
 export const USE_VERSION = VERSION.V2_2

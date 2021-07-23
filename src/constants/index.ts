@@ -88,6 +88,9 @@ const WRAPPED_NATIVE_ONLY: ChainTokenList = {
   [ChainId.XDAIMAIN]: [WETH[ChainId.XDAIMAIN]],
   [ChainId.BNBMAIN]: [WETH[ChainId.BNBMAIN]],
   [ChainId.BNBTEST]: [WETH[ChainId.BNBTEST]],
+  [ChainId.OKEX]: [WETH[ChainId.OKEX]],
+  [ChainId.HARMONY]: [WETH[ChainId.HARMONY]],
+  [ChainId.AVALANCHE]: [WETH[ChainId.AVALANCHE]],
   // [ChainId.ARBITRUM]: [WETH[ChainId.ARBITRUM]],
   // [ChainId.AVALANCHE]: [WETH[ChainId.AVALANCHE]],
 }
@@ -132,13 +135,54 @@ export const MATIC: { [key: string]: Token } = {
   DRAX: new Token(ChainId.MATICMAIN, '0x1Ba3510A9ceEb72E5CdBa8bcdDe9647E1f20fB4b', 18, 'DRAX', 'Drax'),
 }
 
+
+export const OKEX: { [key: string]: Token } = {
+  DAI: new Token(ChainId.OKEX, '0x21cDE7E32a6CAF4742d00d44B07279e7596d26B9', 18, 'DAI', 'Dai Stablecoin'),
+  USDC: new Token(ChainId.OKEX, '0xc946DAf81b08146B1C7A8Da2A851Ddf2B3EAaf85', 18, 'USDC', 'USD Coin'),
+  USDT: new Token(ChainId.OKEX, '0x382bB369d343125BfB2117af9c149795C6C65C50', 18, 'USDT', 'Tether USD'),
+  WBTC: new Token(ChainId.OKEX, '0x506f731F7656e2FB34b587B912808f2a7aB640BD', 18, 'WBTC', 'Wrapped Bitcoin'),
+  WETH: new Token(ChainId.OKEX, '0xEF71CA2EE68F45B9Ad6F72fbdb33d707b872315C', 18, 'WETH', 'Wrapped Ether'),
+}
+
+export const HECO: { [key: string]: Token } = {
+  DAI: new Token(ChainId.HTMAIN, '0x3D760a45D0887DFD89A2F5385a236B29Cb46ED2a', 18, 'DAI', 'Dai Stablecoin'),
+  USDC: new Token(ChainId.HTMAIN, '0x9362Bbef4B8313A8Aa9f0c9808B80577Aa26B73B', 18, 'USDC', 'USD Coin'),
+  USDT: new Token(ChainId.HTMAIN, '0xa71EdC38d189767582C38A3145b5873052c3e47a', 18, 'USDT', 'Tether USD'),
+  WBTC: new Token(ChainId.HTMAIN, '0x66a79D23E58475D2738179Ca52cd0b41d73f0BEa', 18, 'WBTC', 'Wrapped Bitcoin'),
+  WETH: new Token(ChainId.HTMAIN, '0x64FF637fB478863B7468bc97D30a5bF3A428a1fD', 18, 'WETH', 'Wrapped Ether'),
+}
+
+export const HARMONY: { [key: string]: Token } = {
+  DAI: new Token(ChainId.HARMONY, '0xEf977d2f931C1978Db5F6747666fa1eACB0d0339', 18, 'DAI', 'Dai Stablecoin'),
+  USDC: new Token(ChainId.HARMONY, '0x985458E523dB3d53125813eD68c274899e9DfAb4', 6, 'USDC', 'USD Coin'),
+  USDT: new Token(ChainId.HARMONY, '0x3C2B8Be99c50593081EAA2A724F0B8285F5aba8f', 6, 'USDT', 'Tether USD'),
+  WBTC: new Token(ChainId.HARMONY, '0x3095c7557bCb296ccc6e363DE01b760bA031F2d9', 8, 'WBTC', 'Wrapped Bitcoin'),
+  WETH: new Token(ChainId.HARMONY, '0x6983D1E6DEf3690C4d616b13597A09e6193EA013', 18, 'WETH', 'Wrapped Ether'),
+}
+
+export const XDAI: { [key: string]: Token } = {
+  USDC: new Token(ChainId.XDAIMAIN, '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', 6, 'USDC', 'USD Coin'),
+  USDT: new Token(ChainId.XDAIMAIN, '0x4ECaBa5870353805a9F068101A40E0f32ed605C6', 6, 'USDT', 'Tether USD'),
+  WBTC: new Token(ChainId.XDAIMAIN, '0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252', 8, 'WBTC', 'Wrapped Bitcoin'),
+  WETH: new Token(ChainId.XDAIMAIN, '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1', 18, 'WETH', 'Wrapped Ether'),
+}
+
+export const AVALANCHE: { [key: string]: Token } = {
+  DAI: new Token(ChainId.AVALANCHE, '0xbA7dEebBFC5fA1100Fb055a87773e1E99Cd3507a', 18, 'DAI', 'Dai Stablecoin'),
+  USDT: new Token(ChainId.AVALANCHE, '0xde3A24028580884448a5397872046a019649b084', 6, 'USDT', 'Tether USD'),
+  WBTC: new Token(ChainId.AVALANCHE, '0x408D4cD0ADb7ceBd1F1A1C33A0Ba2098E1295bAB', 8, 'WBTC', 'Wrapped Bitcoin'),
+  WETH: new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'WETH', 'Wrapped Ether'),
+}
+
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WRAPPED_NATIVE_ONLY,
   [ChainId.MAINNET]: [...WRAPPED_NATIVE_ONLY[ChainId.MAINNET], DAI, USDC, USDT, COMP, MKR, WBTC, RUNE],
   [ChainId.FTMMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.FTMMAIN], FANTOM.DAI, FANTOM.USDC, FANTOM.WBTC, FANTOM.WETH],
   [ChainId.BNBMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.BNBMAIN], BSC.DAI, BSC.USD, BSC.USDC, BSC.USDT, BSC.BTCB],
-  [ChainId.MATICMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.MATICMAIN], MATIC.USDC, MATIC.WBTC, MATIC.DAI, MATIC.WETH, MATIC.USDT, MATIC.TEL, MATIC.SUSHI, MATIC.AAVE, MATIC.FRAX, MATIC.FXS, MATIC.DMAGIC, MATIC.DRAX]
+  [ChainId.MATICMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.MATICMAIN], MATIC.USDC, MATIC.WBTC, MATIC.DAI, MATIC.WETH, MATIC.USDT, MATIC.TEL, MATIC.SUSHI, MATIC.AAVE, MATIC.FRAX, MATIC.FXS, MATIC.DMAGIC, MATIC.DRAX],
+  [ChainId.HTMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.HTMAIN], HECO.USDC, HECO.DAI, HECO.USDT, HECO.WBTC, HECO.WETH],
+  [ChainId.XDAIMAIN]: [...WRAPPED_NATIVE_ONLY[ChainId.XDAIMAIN], XDAI.USDC, XDAI.USDT, XDAI.WBTC, XDAI.WETH],
 }
 
 

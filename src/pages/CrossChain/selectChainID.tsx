@@ -141,10 +141,13 @@ export default function SelectChainIdInputPanel({
         token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
       }
       // console.log(bridgeConfig)
+      // console.log(selectChainId)
       // console.log(token)
       if (token) {
-        getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
-          // console.log(res)
+        const isNT = (isNativeToken && Number(chainId) === Number(selectChainId)) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
+        console.log(isNT)
+        getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
+          console.log(res)
           if (res) {
             setDestBalance(res)
           } else {
@@ -238,7 +241,7 @@ export default function SelectChainIdInputPanel({
                     <p>
                       {
                         bridgeConfig ? (
-                          destChainInfo?.underlying ? config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(destChainInfo?.symbol, chainId, 1, destChainInfo?.name)
+                          destChainInfo?.underlying ? config.getBaseCoin(destChainInfo?.underlying?.symbol, selectChainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(destChainInfo?.symbol, selectChainId, 1, destChainInfo?.name)
                         ) : ''
                       }
                     </p>

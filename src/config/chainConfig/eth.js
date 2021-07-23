@@ -99,7 +99,8 @@ const bridgeToken = {
   [VERSION.V2_2]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
     bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
-    bridgeInitChain: '56'
+    bridgeInitChain: '56',
+    nativeToken: '0xb153fb3d196a8eb25522705560ac152eeec57901'
   },
   [VERSION.V2_T1]: {
     bridgeInitToken: '0xd4143e8db48a8f73afcdf13d7b3305f28da38116',
