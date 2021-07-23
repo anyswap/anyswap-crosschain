@@ -220,7 +220,7 @@ export default function SelectChainIdInputPanel({
                           '...' +
                           bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
                         : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
-                      {
+                      {/* {
                         bridgeConfig?.underlying?.symbol ? (
                           bridgeConfig?.underlying?.symbol.length > 20
                             ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
@@ -235,12 +235,28 @@ export default function SelectChainIdInputPanel({
                                 bridgeConfig?.symbol.slice(bridgeConfig?.symbol.length - 5, bridgeConfig?.symbol.length)
                               : config.getBaseCoin(bridgeConfig?.symbol, chainId)) : t('selectToken')
                         )
+                      } */}
+                      {
+                        destChainInfo?.underlying?.symbol ? (
+                          destChainInfo?.underlying?.symbol.length > 20
+                            ? destChainInfo?.underlying?.symbol.slice(0, 4) +
+                              '...' +
+                              destChainInfo?.underlying?.symbol.slice(destChainInfo?.underlying?.symbol.length - 5, destChainInfo?.underlying?.symbol.length)
+                            : config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId)
+                        ) : (
+                          destChainInfo?.symbol ? (
+                            destChainInfo?.symbol.length > 20
+                              ? destChainInfo?.symbol.slice(0, 4) +
+                                '...' +
+                                destChainInfo?.symbol.slice(destChainInfo?.symbol.length - 5, destChainInfo?.symbol.length)
+                              : config.getBaseCoin(destChainInfo?.symbol, chainId)) : t('selectToken')
+                        )
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {
-                        bridgeConfig ? (
+                        destChainInfo ? (
                           destChainInfo?.underlying ? config.getBaseCoin(destChainInfo?.underlying?.symbol, selectChainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(destChainInfo?.symbol, selectChainId, 1, destChainInfo?.name)
                         ) : ''
                       }

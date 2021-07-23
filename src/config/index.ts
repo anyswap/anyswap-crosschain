@@ -38,7 +38,7 @@ const config: ConFig = {
       value
       && (
         value === 'BASECURRENCY'
-        || value === 'W' + this.getCurChainInfo(chainId).symbol
+        || (value === 'W' + this.getCurChainInfo(chainId).symbol && this.getCurChainInfo(chainId).nativeToken)
       )
     ) {
       if (type) {
