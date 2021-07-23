@@ -483,7 +483,7 @@ export default function PoolLists ({
       </>
     )
   }
-
+  // console.log(poolList)
   return (
     <AppBody>
       <Title title={t('pool')}></Title>

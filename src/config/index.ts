@@ -46,9 +46,11 @@ const config: ConFig = {
       } else {
         return this.getCurChainInfo(chainId).symbol
       }
-    } else if (value && value === 'WETH') {
-      return 'W' + this.getCurChainInfo(chainId).symbol
-    } else {
+    } 
+    // else if (value && value === 'WETH') {
+    //   return 'W' + this.getCurChainInfo(chainId).symbol
+    // } 
+    else {
       if (type) {
         return name
       } else {
