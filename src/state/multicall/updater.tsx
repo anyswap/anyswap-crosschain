@@ -99,7 +99,7 @@ export function activeListeningKeys(
   if (!allListeners || !chainId) return {}
   const listeners = allListeners[chainId]
   if (!listeners) return {}
-
+  // console.log(listeners)
   return Object.keys(listeners).reduce<{ [callKey: string]: number }>((memo, callKey) => {
     const keyListeners = listeners[callKey]
 

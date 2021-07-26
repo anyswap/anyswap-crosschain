@@ -221,6 +221,39 @@ width:100%;
 padding: 20px;
 `
 
+const FarmStateBox = styled.div`
+  // width:100%;
+  position:absolute;
+  top:0;
+  right:0;
+  display:inline-block;
+  .list {
+    ${({ theme }) => theme.flexEC};
+    border-radius: 10px;
+    // width:100%;
+    border: solid 0.5px ${({ theme }) => theme.tipBorder};
+    background-color: ${({ theme }) => theme.tipBg};
+    font-size:14px;
+    line-height:21px;
+    overflow:hidden;
+    .item{
+      padding: 8px 12px;
+      cursor:pointer;
+      color: ${({ theme }) => theme.text1};
+      &.active {
+        // color: ${({ theme }) => theme.tipColor};
+        color: #fff;
+        background:${({ theme }) => theme.tipColor};
+        font-weight:bold;
+      }
+    }
+  }
+`
+const StayTuned = styled.div`
+  width:100%;
+  padding: 100px 0;
+  text-align: center;
+`
 // const Web3Fn = require('web3')
 
 const JUMPMODALTIP = USE_VERSION + 'JUMPMODALTIP'
@@ -239,6 +272,7 @@ export default function FarmsList () {
     type: ''
   })
   const [price, setPrice] = useState<number>()
+  const [farmState, setFarmState] = useState<string>('live')
 
   useEffect(() => {
     getPrice('ANY').then((res:any) => {
@@ -255,7 +289,7 @@ export default function FarmsList () {
           if (price) {
             getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
               // console.log(res)
-              resolve(res.lpArr[farmlist[key].lpToken].apy)
+              resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
             })
           }
         }
@@ -292,8 +326,41 @@ export default function FarmsList () {
       window.open(url)
     }
   }
+  const farmListLive:any = [
 
-  function farmItem (isDoubleLogo:any, isOutLink:any, url:any, title:any, info:any, coin1:any, coin2?:any, coin3?:any) {
+  ]
+  const farmListFinished:any = [
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: 'farm/ftm',
+      title: 'USDC Staking',
+      info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'USDC',
+      coin2: 'FTM',
+      coin3: ''
+    },
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: 'farm/matic',
+      title: 'USDC Staking',
+      info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'USDC',
+      coin2: 'MATIC',
+      coin3: ''
+    },
+  ]
+  function FarmItem ({
+    isDoubleLogo,
+    isOutLink,
+    url,
+    title,
+    info,
+    coin1,
+    coin2,
+    coin3
+  }: {isDoubleLogo:any, isOutLink:any, url:any, title:any, info:any, coin1:any, coin2?:any, coin3?:any}) {
     let coinLogo = isDoubleLogo ? (
       <DoubleLogo>
         <div className="logo left"><TokenLogo1 symbol={coin1} size='100%'/></div>
@@ -350,7 +417,7 @@ export default function FarmsList () {
     )
   }
 
-
+  
   return (
     <>
     <ModalContent
@@ -374,45 +441,54 @@ export default function FarmsList () {
       <AppBody>
         <Title
           title={t('farms')}
-        ></Title>
+        >
+          
+          <FarmStateBox>
+            <div className="list">
+              <div className={"item " + (farmState === 'live' ? 'active' : '')} onClick={() => (setFarmState('live'))}>{t('Live')}</div>
+              <div className={"item " + (farmState === 'finished' ? 'active' : '')} onClick={() => (setFarmState('finished'))}>{t('Finished')}</div>
+            </div>
+          </FarmStateBox>
+        </Title>
         <FarmListBox>
-          {/* {farmItem(1, 1, 'https://app.makiswap.com/farms', 'MAKI Farming', 'MAKI Farming', 'MAKI', 'HT')}
-          {farmItem(1, 1, 'https://swap.cometh.io/#/stake', 'MUST Farming', 'MUST Farming', 'MUST', 'MATIC')}
-          {farmItem(1, 1, 'https://openfi.land/zh/farms', 'PTT Farming', 'PTT Farming', 'PTT', 'HT')}
-          {farmItem(1, 1, 'https://spookyswap.finance/', 'BOO Farming', 'BOO Farming', 'BOO', 'FTM')}
-
-          {farmItem(1, 1, 'https://app.spiritswap.finance/#/farms', 'SPIRIT Farming', 'SPIRIT Farming', 'SPIRIT', 'FTM')}
-          {farmItem(1, 1, 'https://ellipsis.finance/fusdt', 'EPS Farming', 'Ellipsis Farming', 'EPS', 'BNB')}
-          {farmItem(1, 1, 'https://app.nerve.fi/pools', 'NRV Farming', 'Nerve Farming', 'NRV', 'BNB')}
-          {farmItem(1, 1, 'https://dashboard.modefi.io', 'MOD Farming', 'Modefi Farming', 'MOD', 'BNB')}
-          {farmItem(2, 1, 'https://popsicle.finance/popsicle-stand', 'ICE Farming', 'Popsicle Farming', 'ICE', 'FTM', 'BNB')}
-          {farmItem(1, 0, config.farmUrl + 'ftmfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (FTMFarmingAPY ? (Number(FTMFarmingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'FTM')}
-          {farmItem(1, 0, config.farmUrl + 'fsnfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (FSNMATICStakingAPY ? (Number(FSNMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'FSN')}
-          {farmItem(1, 1, 'https://htswap.io/rebase', 'SDC Farming', 'USD Rebase token Farming', 'SDC', 'HT')}
-          {farmItem(1, 1, 'http://heco.earndefi.finance/', 'EDC Farming', 'EarnDefiCoin Farming', 'EDC', 'HT')}
-          {farmItem(1, 0, config.farmUrl + 'bscfarming2', 'EDC ANY', (t('ANYHTStakingTip') + "<span class='pecent'>" + (BSCFarmingAPY ? (Number(BSCFarmingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'BNB')}
-          {farmItem(1, 1, 'https://htswap.io', 'HT Swap', t('htSwapTip'), 'HTC', 'HT')}
-          {farmItem(1, 0, config.farmUrl + 'htfarming', 'ANY Farming', (t('ANYHTStakingTip') + "<span class='pecent'>" + (HTMATICStakingAPY ? (Number(HTMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), 'ANY', 'HT')}
-          {farmItem(0, 0, config.farmUrl + 'bscfarming', 'CYC Farming', (t('BSCStakingTip') + "<span class='pecent'>" + (BSCMATICStakingAPY ? (Number(BSCMATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"), require('../../assets/images/icon/cycIcon.svg'))} */}
-          {farmItem(
-            1,
-            0,
-            'farm/ftm',
-            'USDC Staking',
-            (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-            'USDC',
-            'FTM'
-          )}
-          {/* {FTMStakingAPY ? '' : ''} */}
-          {farmItem(
-            1,
-            0,
-            'farm/matic',
-            'USDC Staking',
-            (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-            'USDC',
-            'MATIC'
-          )}
+          {
+            farmState === 'live' && farmListLive.length > 0 ? farmListLive.map((item:any, index:number) => {
+              return (
+                <FarmItem
+                  key={index}
+                  isDoubleLogo={item.isDoubleLogo}
+                  isOutLink={item.isOutLink}
+                  url={item.url}
+                  title={item.title}
+                  info={item.info}
+                  coin1={item.coin1}
+                  coin2={item.coin2}
+                  coin3={item.coin3}
+                ></FarmItem>
+              )
+            }) : (
+              farmState === 'live' ? (
+                <StayTuned>{t('StayTuned')}</StayTuned>
+              ) : ''
+            )
+          }
+          {
+            farmState === 'finished' && farmListFinished.map((item:any, index:number) => {
+              return (
+                <FarmItem
+                  key={index}
+                  isDoubleLogo={item.isDoubleLogo}
+                  isOutLink={item.isOutLink}
+                  url={item.url}
+                  title={item.title}
+                  info={item.info}
+                  coin1={item.coin1}
+                  coin2={item.coin2}
+                  coin3={item.coin3}
+                ></FarmItem>
+              )
+            })
+          }
         </FarmListBox>
       </AppBody>
     </>

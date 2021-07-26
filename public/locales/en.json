@@ -336,5 +336,8 @@
   "maticUSDCStakingTip": "Stake USDC earn ANY, APR:",
   "router": "Router",
   "stopSystem": "System maintenance",
-  "redeem": "Redeem"
+  "redeem": "Redeem",
+  "Live": "Live",
+  "Finished": "Finished",
+  "StayTuned": "Stay tuned!"
 }
