@@ -221,34 +221,34 @@ width:100%;
 padding: 20px;
 `
 
-const FarmStateBox = styled.div`
-  // width:100%;
-  position:absolute;
-  top:0;
-  right:0;
-  display:inline-block;
-  .list {
-    ${({ theme }) => theme.flexEC};
-    border-radius: 10px;
-    // width:100%;
-    border: solid 0.5px ${({ theme }) => theme.tipBorder};
-    background-color: ${({ theme }) => theme.tipBg};
-    font-size:14px;
-    line-height:21px;
-    overflow:hidden;
-    .item{
-      padding: 8px 12px;
-      cursor:pointer;
-      color: ${({ theme }) => theme.text1};
-      &.active {
-        // color: ${({ theme }) => theme.tipColor};
-        color: #fff;
-        background:${({ theme }) => theme.tipColor};
-        font-weight:bold;
-      }
-    }
-  }
-`
+// const FarmStateBox = styled.div`
+//   // width:100%;
+//   position:absolute;
+//   top:0;
+//   right:0;
+//   display:inline-block;
+//   .list {
+//     ${({ theme }) => theme.flexEC};
+//     border-radius: 10px;
+//     // width:100%;
+//     border: solid 0.5px ${({ theme }) => theme.tipBorder};
+//     background-color: ${({ theme }) => theme.tipBg};
+//     font-size:14px;
+//     line-height:21px;
+//     overflow:hidden;
+//     .item{
+//       padding: 8px 12px;
+//       cursor:pointer;
+//       color: ${({ theme }) => theme.text1};
+//       &.active {
+//         // color: ${({ theme }) => theme.tipColor};
+//         color: #fff;
+//         background:${({ theme }) => theme.tipColor};
+//         font-weight:bold;
+//       }
+//     }
+//   }
+// `
 const StayTuned = styled.div`
   width:100%;
   padding: 100px 0;
@@ -441,14 +441,33 @@ export default function FarmsList () {
       <AppBody>
         <Title
           title={t('farms')}
+          tabList={[
+            {
+              name: t('Live'),
+              onTabClick: () => {
+                setFarmState('live')
+              },
+              // iconUrl: require('../../assets/images/icon/deposit.svg'),
+              // iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+            },
+            {
+              name: t('Finished'),
+              onTabClick: () => {
+                setFarmState('finished')
+              },
+              // iconUrl: require('../../assets/images/icon/withdraw.svg'),
+              // iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+            }
+          ]}
+          isChangeTitle={1}
         >
           
-          <FarmStateBox>
+          {/* <FarmStateBox>
             <div className="list">
               <div className={"item " + (farmState === 'live' ? 'active' : '')} onClick={() => (setFarmState('live'))}>{t('Live')}</div>
               <div className={"item " + (farmState === 'finished' ? 'active' : '')} onClick={() => (setFarmState('finished'))}>{t('Finished')}</div>
             </div>
-          </FarmStateBox>
+          </FarmStateBox> */}
         </Title>
         <FarmListBox>
           {

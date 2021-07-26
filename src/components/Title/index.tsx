@@ -153,8 +153,8 @@ const StyledNavLink = styled(NavLink).attrs({
 interface TabList {
   name: string
   onTabClick: (val: any) => void
-  iconUrl: string
-  iconActiveUrl: string
+  iconUrl?: string
+  iconActiveUrl?: string
   regex?: any
   path?: any
 }
@@ -163,10 +163,11 @@ interface Title {
   tabList?: Array<TabList>,
   isNavLink?: boolean,
   currentTab?: any,
+  isChangeTitle?: any
   children?: any
 }
 
-export default function Title({ title, tabList = [] , isNavLink = false, currentTab, children}:Title) {
+export default function Title({ title, tabList = [] , isNavLink = false, currentTab, isChangeTitle, children}:Title) {
   const [tabIndex, setTabIndex] = useState(0)
   const [tabName, setTabName] = useState('')
   const pathname = window.location.pathname
@@ -183,9 +184,13 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
                 to={path}
                 isActive={(_, { pathname }) => Boolean(pathname.match(regex))}
               > 
-                <div className='icon'>
-                  <img alt={''} src={pathname.match(regex) ? iconActiveUrl : iconUrl}/>
-                </div>
+                {
+                  iconActiveUrl && iconUrl ? (
+                    <div className='icon'>
+                      <img alt={''} src={pathname.match(regex) ? iconActiveUrl : iconUrl}/>
+                    </div>
+                  ) : ''
+                }
                 {name}
               </StyledNavLink>
             ))}
@@ -211,13 +216,16 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
                   item.onTabClick(item.name)
                 }}
               >
-                <div className="icon">
-                  {
-                    !isNaN(currentTab) && Number(currentTab) === index ? <img alt={''} src={item.iconActiveUrl} /> :
-                    (tabIndex === index && isNaN(currentTab) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />)
-                  }
-                  {/* {tabIndex === index || (!isNaN(currentTab) && Number(currentTab) === index) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />} */}
-                </div>
+                {
+                  item.iconActiveUrl && item.iconUrl ? (
+                    <div className="icon">
+                      {
+                        !isNaN(currentTab) && Number(currentTab) === index ? <img alt={''} src={item.iconActiveUrl} /> :
+                        (tabIndex === index && isNaN(currentTab) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />)
+                      }
+                    </div>
+                    ) : ''
+                }
                 {item.name}
               </li>
             )
@@ -229,11 +237,21 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
   return (
     <>
       <TitleBox>
-        <TitleTxt>{
-        !isNaN(currentTab) ? tabList[currentTab].name : (tabName ? tabName : (isNavLink ? activeTabKey : title))
+        {
+          isChangeTitle ? (
+            <TitleTxt>
+              {title}
+              {children}
+            </TitleTxt>
+          ) : (
+            <TitleTxt>
+              {
+                !isNaN(currentTab) ? tabList[currentTab].name : (tabName ? tabName : (isNavLink ? activeTabKey : title))
+              }
+              {children}
+            </TitleTxt>
+          )
         }
-        {children}
-        </TitleTxt>
         {tabList.length > 0 ? tabListView() : ''}
       </TitleBox>
     </>
