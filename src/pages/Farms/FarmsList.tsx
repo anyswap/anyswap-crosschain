@@ -145,6 +145,8 @@ const StyledNavLink = styled(NavLink)`
     height:100%;
     padding: 22px 10px 0;
     border-radius: 10px;
+    position:relative;
+    overflow:hidden;
     .img {
       ${({ theme }) => theme.flexC};
       height:82px;
@@ -249,10 +251,32 @@ padding: 20px;
 //     }
 //   }
 // `
-const StayTuned = styled.div`
-  width:100%;
-  padding: 100px 0;
-  text-align: center;
+// const StayTuned = styled.div`
+//   width:100%;
+//   padding: 100px 0;
+//   text-align: center;
+// `
+
+const FarmStatus = styled.div`
+  width: 200px;
+  height: 30px;
+  line-height:30px;
+  // background: ${({ theme }) => theme.tipBg};
+  background: ${({ theme }) => theme.white};
+  position:absolute;
+  top:10px;
+  right: -70px;
+  transform: rotate( 45deg );
+  text-align:center;
+  font-size:14px;
+  color: ${({ theme }) => theme.primary1};
+  // color:#fff;
+  &.live {
+    opacity: 1;
+  }
+  &.finished {
+    opacity: 1;
+  }
 `
 // const Web3Fn = require('web3')
 
@@ -272,7 +296,7 @@ export default function FarmsList () {
     type: ''
   })
   const [price, setPrice] = useState<number>()
-  const [farmState, setFarmState] = useState<string>('live')
+  // const [farmState, setFarmState] = useState<string>('live')
 
   useEffect(() => {
     getPrice('ANY').then((res:any) => {
@@ -326,10 +350,7 @@ export default function FarmsList () {
       window.open(url)
     }
   }
-  const farmListLive:any = [
-
-  ]
-  const farmListFinished:any = [
+  const farmList:any = [
     {
       isDoubleLogo: 1,
       isOutLink: 0,
@@ -338,7 +359,8 @@ export default function FarmsList () {
       info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
       coin1: 'USDC',
       coin2: 'FTM',
-      coin3: ''
+      coin3: '',
+      status: 'finished'
     },
     {
       isDoubleLogo: 1,
@@ -348,7 +370,8 @@ export default function FarmsList () {
       info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
       coin1: 'USDC',
       coin2: 'MATIC',
-      coin3: ''
+      coin3: '',
+      status: 'finished'
     },
   ]
   function FarmItem ({
@@ -359,8 +382,9 @@ export default function FarmsList () {
     info,
     coin1,
     coin2,
-    coin3
-  }: {isDoubleLogo:any, isOutLink:any, url:any, title:any, info:any, coin1:any, coin2?:any, coin3?:any}) {
+    coin3,
+    status
+  }: {isDoubleLogo:any, isOutLink:any, url:any, title:any, info:any, coin1:any, coin2?:any, coin3?:any, status?:any}) {
     let coinLogo = isDoubleLogo ? (
       <DoubleLogo>
         <div className="logo left"><TokenLogo1 symbol={coin1} size='100%'/></div>
@@ -401,6 +425,7 @@ export default function FarmsList () {
               {coinLogo}
               {titleInfo}
             </div>
+            <FarmStatus>{status}</FarmStatus>
           </LinkBox>
         </FarmList>
       )
@@ -411,6 +436,12 @@ export default function FarmsList () {
           <div className='default'>
             {coinLogo}
             {titleInfo}
+            {
+              status === 'live' ? '' : (
+                <FarmStatus className='finished'>{t('Finished')}</FarmStatus> 
+              )
+            }
+            {/* <FarmStatus className={status === 'live' ? 'live' : 'finished'}>{status === 'live' ?  t('Live') :  t('Finished')}</FarmStatus> */}
           </div>
         </StyledNavLink>
       </FarmList>
@@ -441,25 +472,25 @@ export default function FarmsList () {
       <AppBody>
         <Title
           title={t('farms')}
-          tabList={[
-            {
-              name: t('Live'),
-              onTabClick: () => {
-                setFarmState('live')
-              },
-              // iconUrl: require('../../assets/images/icon/deposit.svg'),
-              // iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            },
-            {
-              name: t('Finished'),
-              onTabClick: () => {
-                setFarmState('finished')
-              },
-              // iconUrl: require('../../assets/images/icon/withdraw.svg'),
-              // iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
-            }
-          ]}
-          isChangeTitle={1}
+          // tabList={[
+          //   {
+          //     name: t('Live'),
+          //     onTabClick: () => {
+          //       setFarmState('live')
+          //     },
+          //     // iconUrl: require('../../assets/images/icon/deposit.svg'),
+          //     // iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          //   },
+          //   {
+          //     name: t('Finished'),
+          //     onTabClick: () => {
+          //       setFarmState('finished')
+          //     },
+          //     // iconUrl: require('../../assets/images/icon/withdraw.svg'),
+          //     // iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+          //   }
+          // ]}
+          // isChangeTitle={1}
         >
           
           {/* <FarmStateBox>
@@ -471,7 +502,7 @@ export default function FarmsList () {
         </Title>
         <FarmListBox>
           {
-            farmState === 'live' && farmListLive.length > 0 ? farmListLive.map((item:any, index:number) => {
+            farmList.map((item:any, index:number) => {
               return (
                 <FarmItem
                   key={index}
@@ -483,27 +514,7 @@ export default function FarmsList () {
                   coin1={item.coin1}
                   coin2={item.coin2}
                   coin3={item.coin3}
-                ></FarmItem>
-              )
-            }) : (
-              farmState === 'live' ? (
-                <StayTuned>{t('StayTuned')}</StayTuned>
-              ) : ''
-            )
-          }
-          {
-            farmState === 'finished' && farmListFinished.map((item:any, index:number) => {
-              return (
-                <FarmItem
-                  key={index}
-                  isDoubleLogo={item.isDoubleLogo}
-                  isOutLink={item.isOutLink}
-                  url={item.url}
-                  title={item.title}
-                  info={item.info}
-                  coin1={item.coin1}
-                  coin2={item.coin2}
-                  coin3={item.coin3}
+                  status={item.status}
                 ></FarmItem>
               )
             })
