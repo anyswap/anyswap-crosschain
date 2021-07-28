@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-import {CurrentBridgeInfo, createAddress} from 'anyswapsdk'
+import {GetTokenListByChainID, createAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
@@ -129,6 +129,7 @@ export enum BridgeType {
   swapin = 'swapin',
   swapout = 'swapout',
 }
+
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -456,7 +457,7 @@ export default function CrossChain() {
     // console.log(swapType)
     setAllTokens({})
     if (chainId) {
-      CurrentBridgeInfo(chainId).then((res:any) => {
+      GetTokenListByChainID({srcChainID: chainId}).then((res:any) => {
         console.log(res)
         // console.log(swapType)
         if (res) {

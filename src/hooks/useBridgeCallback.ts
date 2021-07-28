@@ -6,7 +6,7 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
-import {signSwapoutData, signSwapinData} from 'anyswapsdk'
+import {signSwapoutData, signSwapinData} from 'multichain-bridge'
 
 // import {registerSwap, recordsTxns} from '../utils/bridge/register'
 import {recordsTxns} from '../utils/bridge/register'

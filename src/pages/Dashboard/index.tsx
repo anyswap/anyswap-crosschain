@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import {CurrentBridgeInfo} from 'anyswapsdk'
+import {GetTokenListByChainID} from 'multichain-bridge'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -127,7 +127,7 @@ export default function DashboardDtil() {
       arr.push('')
     }
     if (config.getCurConfigInfo().isOpenBridge) {
-      arr.push(CurrentBridgeInfo(chainId))
+      arr.push(GetTokenListByChainID({srcChainID: chainId}))
       tObj.bridge = 1
     } else {
       arr.push('')
