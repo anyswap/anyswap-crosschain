@@ -35,6 +35,12 @@ const bridgeToken = {
     bridgeRouterToken: '',
     bridgeInitChain: '',
   },
+  [VERSION.V1_1]: {
+    bridgeInitToken: '0xdf00960e0adfea78ee29da7fcca17cfdddc0a4ca',
+    bridgeRouterToken: '0x6ff0609046a38d76bd40c5863b4d1a2dce687f73',
+    bridgeInitChain: '56',
+    nativeToken: ''
+  },
   [VERSION.V2]: {
     bridgeInitToken: '0x9610b01aaa57ec026001f7ec5cface51bfea0ba6',
     bridgeRouterToken: '0x4f3aff3a747fcade12598081e80c6605a8be192f',

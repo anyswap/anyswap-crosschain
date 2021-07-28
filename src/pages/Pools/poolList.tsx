@@ -525,6 +525,7 @@ export default function PoolLists ({
                           <TokenTableLogo>
                             <TokenLogo
                               symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}
+                              logoUrl={item.logoUrl}
                               size={'1.625rem'}
                             ></TokenLogo>
                           </TokenTableLogo>

@@ -11,6 +11,7 @@ export const fetchTokenList: Readonly<{
   rejected: createAction('lists/fetchTokenList/rejected')
 }
 
+export const getBridgeTokenList = createAction<{chainId: any, tokenList:any}>('lists/getBridgeTokenList')
 export const acceptListUpdate = createAction<string>('lists/acceptListUpdate')
 export const addList = createAction<string>('lists/addList')
 export const removeList = createAction<string>('lists/removeList')

@@ -16,7 +16,13 @@ const bridgeToken = {
     bridgeInitToken: '',
     bridgeRouterToken: '',
     bridgeInitChain: ''
-  }
+  },
+  [VERSION.V1_1]: {
+    bridgeInitToken: '0x165dbb08de0476271714952c3c1f068693bd60d7',
+    bridgeRouterToken: '0xe5cf1558a1470cb5c166c2e8651ed0f3c5fb8f42',
+    bridgeInitChain: '56',
+    nativeToken: ''
+  },
 }
 
 export default {
