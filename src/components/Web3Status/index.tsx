@@ -72,8 +72,6 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
     `}
 `
 
-// background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.primary1) : lighten(0.05, theme.bg2))};
-// border: 1px solid ${({ pending, theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg3))};
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
   background: ${({ pending, theme }) => (pending ? theme.primary1 : theme.primary1)};
   border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg3)};
