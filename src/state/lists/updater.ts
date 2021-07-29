@@ -2,7 +2,7 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
+import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { addPopup } from '../application/actions'
@@ -17,15 +17,12 @@ export default function Updater(): null {
   const isWindowVisible = useIsWindowVisible()
 
   const fetchList = useFetchListCallback()
-  const bridgeList = useFetchTokenListCallback()
-  // console.log(bridgeList)
   const fetchAllListsCallback = useCallback(() => {
     if (!isWindowVisible) return
     Object.keys(lists).forEach(url =>
       fetchList(url).catch(error => console.debug('interval list fetching error', error))
     )
-    bridgeList().catch(error => console.debug('interval list fetching error', error))
-  }, [fetchList, isWindowVisible, lists, bridgeList])
+  }, [fetchList, isWindowVisible, lists])
 
   // 每 10 分钟获取所有列表，但仅在我们初始化库之后
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
@@ -39,8 +36,7 @@ export default function Updater(): null {
         fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
       }
     })
-    bridgeList().catch(error => console.debug('list added fetching error', error))
-  }, [dispatch, fetchList, library, lists, bridgeList])
+  }, [dispatch, fetchList, library, lists])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

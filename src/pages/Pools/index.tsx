@@ -54,8 +54,6 @@ export default function SwapNative() {
   // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  // const selectedTokenList = useSelectedTokenList()
-  // const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
   const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
