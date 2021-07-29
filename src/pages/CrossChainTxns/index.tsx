@@ -269,6 +269,7 @@ export default function CrossChain() {
     // parsedAmount,
     // currencies,
     // inputError: swapInputError
+    outputAmount
   } = useDerivedSwapInfo(selectChain)
   // console.log(ttl)
   
@@ -295,7 +296,7 @@ export default function CrossChain() {
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
-    v2Trade?.outputAmount?.toString(),
+    outputAmount?.raw?.toString(),
     routerPath
   )
 
@@ -305,7 +306,7 @@ export default function CrossChain() {
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
-    v2Trade?.outputAmount?.raw.toString(),
+    outputAmount?.raw?.toString(),
     routerPath
   )
 
@@ -313,12 +314,13 @@ export default function CrossChain() {
   // const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   // const {onSelectChainId} = useAddDestChainId()
   useEffect(() => {
+    // console.log(v2Trade)
     console.log(v2Trade)
+    console.log(outputAmount ? outputAmount?.toSignificant(6) : '')
     if (v2Trade) {
-      console.log(v2Trade)
-      console.log(v2Trade?.inputAmount?.toSignificant(6))
-      console.log(v2Trade?.outputAmount?.raw.toString())
-      console.log(routerPath)
+      // console.log(v2Trade?.inputAmount?.toSignificant(6))
+      // console.log(outputAmount?.raw.toString())
+      // console.log(routerPath)
       // console.log(swapInputError)
     }
   }, [v2Trade])
@@ -788,7 +790,8 @@ export default function CrossChain() {
           <SelectChainIdInputPanel
             label={t('to')}
             // value={outputBridgeValue.toString()}
-            value={v2Trade?.outputAmount?.toSignificant(6) ?? ''}
+            value={outputAmount ? outputAmount?.toSignificant(6) : ''}
+            // value={v2Trade?.outputAmount?.toSignificant(6) ?? ''}
             onUserInput={(value) => {
               setInputBridgeValue(value)
             }}

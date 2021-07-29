@@ -461,16 +461,12 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                // console.log(bridgeContract)
-                // console.log(inputAmount.raw.toString(16))
-                // console.log(inputAmount.raw.toString())
-                // console.log(inputAmount?.toSignificant(6))
-                console.log(`0x${inputAmount.raw.toString(16)}`)
-                console.log(outputAmount)
-                console.log(routerPath)
-                console.log(toAddress)
-                console.log(parseInt((Date.now()/1000 + deadline).toString()))
-                console.log(toChainID)
+                // console.log(`0x${inputAmount.raw.toString(16)}`)
+                // console.log(outputAmount)
+                // console.log(routerPath)
+                // console.log(toAddress)
+                // console.log(parseInt((Date.now()/1000 + deadline).toString()))
+                // console.log(toChainID)
                 // const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
                 const txReceipt = await bridgeContract.anySwapOutExactTokensForTokensUnderlying(
                   `0x${inputAmount.raw.toString(16)}`,

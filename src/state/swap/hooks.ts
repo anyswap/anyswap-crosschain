@@ -146,6 +146,7 @@ export function useDerivedSwapInfo(chainId?:any): {
   v2Trade: Trade | undefined
   inputError?: string
   v1Trade: Trade | undefined
+  outputAmount: any
 } {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -247,7 +248,8 @@ export function useDerivedSwapInfo(chainId?:any): {
   // console.log(allowedSlippage)
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
   // console.log(slippageAdjustedAmounts)
-  // console.log(slippageAdjustedAmounts['INPUT']?.raw?.toString())
+  // console.log(slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT]?.raw?.toString() : '')
+  // console.log(slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.OUTPUT]?.raw?.toString() : '')
   // console.log(slippageAdjustedAmounts['OUTPUT']?.raw?.toString())
   const slippageAdjustedAmountsV1 =
     v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage)
@@ -274,7 +276,8 @@ export function useDerivedSwapInfo(chainId?:any): {
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
     inputError,
-    v1Trade
+    v1Trade,
+    outputAmount: slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.OUTPUT] : ''
   }
 }
 
