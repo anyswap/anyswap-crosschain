@@ -8,6 +8,7 @@ import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
 import matic, {MATIC_MAIN_CHAINID} from './matic'
 import xdai, {XDAI_MAIN_CHAINID} from './xdai'
 import kcc, {KCC_MAIN_CHAINID} from './kcc'
+import okt, {OKT_MAIN_CHAINID} from './okt'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -28,6 +29,7 @@ export const chainInfo:ConFig = {
   ...matic,
   ...xdai,
   ...kcc,
+  ...okt,
   ...ltc,
   ...btc,
   ...block
@@ -61,6 +63,7 @@ const useChain = {
     BNB_MAIN_CHAINID,
     FTM_MAIN_CHAINID,
     MATIC_MAIN_CHAINID,
+    OKT_MAIN_CHAINID
   ],
   [VERSION.V2_T1]: [
     ETH_TEST_CHAINID,
@@ -81,7 +84,8 @@ const useChain = {
     AVAX_MAIN_CHAINID,
     XDAI_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID,
-    KCC_MAIN_CHAINID
+    KCC_MAIN_CHAINID,
+    OKT_MAIN_CHAINID
   ]
 }
 
