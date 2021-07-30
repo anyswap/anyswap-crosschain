@@ -1,16 +1,19 @@
 import { chainInfo } from './chainConfig'
 import { isAddress } from '../utils'
 
-import {ARBITRUM_MAIN_CHAINID} from './chainConfig/arbitrum'
-import {AVAX_MAIN_CHAINID} from './chainConfig/avax'
-import {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './chainConfig/bsc'
-import {ETH_MAIN_CHAINID, ETH_TEST_CHAINID} from './chainConfig/eth'
-import {FSN_MAIN_CHAINID, FSN_TEST_CHAINID} from './chainConfig/fsn'
+// import {ARBITRUM_MAIN_CHAINID} from './chainConfig/arbitrum'
+// import {AVAX_MAIN_CHAINID} from './chainConfig/avax'
+import {BNB_MAIN_CHAINID} from './chainConfig/bsc'
+import {ETH_MAIN_CHAINID} from './chainConfig/eth'
+import {FSN_MAIN_CHAINID} from './chainConfig/fsn'
 import {FTM_MAIN_CHAINID} from './chainConfig/ftm'
-import {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './chainConfig/ht'
-import {MATIC_MAIN_CHAINID} from './chainConfig/matic'
-import {XDAI_MAIN_CHAINID} from './chainConfig/xdai'
-import {KCC_MAIN_CHAINID} from './chainConfig/kcc'
+import {HT_MAIN_CHAINID} from './chainConfig/ht'
+
+// import {selectNetwork} from '../components/Header/SelectNetwork'
+// import {MATIC_MAIN_CHAINID} from './chainConfig/matic'
+// import {XDAI_MAIN_CHAINID} from './chainConfig/xdai'
+// import {KCC_MAIN_CHAINID} from './chainConfig/kcc'
+// import {OKT_MAIN_CHAINID} from './chainConfig/okt'
 
 export function getParams(param: any) {
   const str = window.location.href.indexOf('?') ? window.location.href.split('?')[1] : ''
@@ -47,40 +50,69 @@ export function getInitBridgeChain(destChainID: any, bridgeToken: any) {
   return nc
 }
 
+function selectNetwork (chainID:any) {
+  return new Promise(resolve => {
+    const { ethereum } = window
+    const ethereumFN:any = {
+      request: '',
+      ...ethereum
+    }
+    if (ethereumFN && ethereumFN.request) {
+      const data = {
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0x' + Number(chainID).toString(16), // A 0x-prefixed hexadecimal string
+            chainName: chainInfo[chainID].networkName,
+            nativeCurrency: {
+              name: chainInfo[chainID].name,
+              symbol: chainInfo[chainID].symbol, // 2-6 characters long
+              decimals: 18,
+            },
+            rpcUrls: [chainInfo[chainID].nodeRpc],
+            blockExplorerUrls: chainInfo[chainID].nodeRpcList ? chainInfo[chainID].nodeRpcList : [chainInfo[chainID].explorer],
+            iconUrls: null // Currently ignored.
+          }
+        ],
+      }
+      // console.log(data)
+      ethereumFN.request(data).then((res: any) => {
+        console.log(res)
+        localStorage.setItem('ENV_NODE_CONFIG', chainInfo[chainID].label)
+        // history.go(0)
+        resolve({
+          msg: 'Success'
+        })
+      }).catch((err: any) => {
+        console.log(err)
+        resolve({
+          msg: 'Error'
+        })
+      })
+    } else {
+      resolve({
+        msg: 'Error'
+      })
+    }
+  })
+}
 
 function getParamNode(type: any, INIT_NODE: any) {
   type = type?.toString()?.toLowerCase()
-  if (type === 'fusion' || type === 'fsn' || type.toString() === FSN_MAIN_CHAINID) {
-    return chainInfo[FSN_MAIN_CHAINID].label
-  } else if (type === 'fusiontestnet' || type === 'fsntestnet' || type.toString() === FSN_TEST_CHAINID) {
-    return chainInfo[FSN_TEST_CHAINID].label
-  } else if (type === 'bsc' || type.toString() === BNB_MAIN_CHAINID) {
-    return chainInfo[BNB_MAIN_CHAINID].label
-  } else if (type === 'bsctestnet' || type.toString() === BNB_TEST_CHAINID) {
-    return chainInfo[BNB_TEST_CHAINID].label
-  } else if (type === 'fantom' || type === 'ftm' || type.toString() === FTM_MAIN_CHAINID) {
-    return chainInfo[FTM_MAIN_CHAINID].label
-  } else if (type === 'eth' || type.toString() === ETH_MAIN_CHAINID) {
-    return chainInfo[ETH_MAIN_CHAINID].label
-  } else if (type === 'ethtestnet' || type.toString() === ETH_TEST_CHAINID) {
-    return chainInfo[ETH_TEST_CHAINID].label
-  } else if (type === 'huobi' || type === 'ht' || type.toString() === HT_MAIN_CHAINID) {
-    return chainInfo[HT_MAIN_CHAINID].label
-  } else if (type === 'huobitestnet' || type === 'httestnet' || type.toString() === HT_TEST_CHAINID) {
-    return chainInfo[HT_TEST_CHAINID].label
-  } else if (type === 'polygon' || type === 'matic' || type.toString() === MATIC_MAIN_CHAINID) {
-    return chainInfo[MATIC_MAIN_CHAINID].label
-  } else if (type === 'xdai' || type.toString() === XDAI_MAIN_CHAINID) {
-    return chainInfo[XDAI_MAIN_CHAINID].label
-  } else if (type === 'avalanche' || type === 'avax' || type.toString() === AVAX_MAIN_CHAINID) {
-    return chainInfo[AVAX_MAIN_CHAINID].label
-  } else if (type === 'arbitrum' || type.toString() === ARBITRUM_MAIN_CHAINID) {
-    return chainInfo[ARBITRUM_MAIN_CHAINID].label
-  } else if (type === 'kcc' || type.toString() === KCC_MAIN_CHAINID) {
-    return chainInfo[KCC_MAIN_CHAINID].label
-  } else {
-    return INIT_NODE
+  let labelStr = INIT_NODE
+  for (const key in chainInfo) {
+    // console.log(key)
+    if (
+      type === key
+      || type === chainInfo[key].symbol.toLowerCase()
+      || type === chainInfo[key].name.toLowerCase()
+    ) {
+      labelStr = chainInfo[key].label
+      break
+    }
   }
+  selectNetwork(labelStr)
+  return labelStr
 }
 
 function getNode(type: any, INIT_NODE: any) {
