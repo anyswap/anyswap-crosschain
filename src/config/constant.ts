@@ -82,8 +82,8 @@ export const controlConfig:any = {
     hiddenChain: [''],
     initNode: '1',
     isOpenRouter: 1,
-    isOpenRouterTxns: env === 'dev' ? 1 : 0,
-    isOpenBridge: env === 'dev' ? 1 : 0,
+    isOpenRouterTxns: env === 'dev' ? 1 : 1,
+    isOpenBridge: env === 'dev' ? 0 : 0,
   },
   [VERSION.V2_T1]: {
     bridgeConfigToken: '0xe5137598331dfb329840a1a732babeda5dcbc962',
@@ -112,4 +112,4 @@ export const ENV_NODE_CONFIG = USE_VERSION + '_ENV_NODE_CONFIG'
 
 export const INIT_NODE = controlConfig[USE_VERSION].initNode
 
-
+export const BASECURRENCY = 'BASECURRENCY'

@@ -9,7 +9,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from '../CrossChain/reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useBridgeSwapNativeUnderlyingCallback, useBridgeSwapNativeCallback} from '../../hooks/useBridgeCallback'
+import {useBridgeSwapUnderlyingCallback, useBridgeSwapNativeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -46,6 +46,7 @@ import { useUserTransactionTTL } from '../../state/user/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/getUrlParams'
+import {BASECURRENCY} from '../../config/constant'
 
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
@@ -290,6 +291,26 @@ export default function CrossChain() {
     return arr
   }, [v2Trade])
 
+  const isNativeToken = useMemo(() => {
+    if (
+      selectCurrency
+      && chainId
+      && config.getCurChainInfo(chainId)
+      && config.getCurChainInfo(chainId).nativeToken
+      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency, chainId])
+
+  const isUnderlying = useMemo(() => {
+    if (selectCurrency && selectCurrency?.underlying) {
+      return true
+    }
+    return false
+  }, [selectCurrency, selectChain])
+
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
     formatCurrency?formatCurrency:undefined,
     account,
@@ -297,17 +318,19 @@ export default function CrossChain() {
     selectChain,
     ttl,
     outputAmount?.raw?.toString(),
-    routerPath
+    routerPath,
+    isUnderlying
   )
 
-  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapNativeUnderlyingCallback(
+  const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapUnderlyingCallback(
     formatCurrency?formatCurrency:undefined,
     account,
     v2Trade?.inputAmount?.toSignificant(6),
     selectChain,
     ttl,
     outputAmount?.raw?.toString(),
-    routerPath
+    routerPath,
+    isUnderlying
   )
 
 
@@ -315,8 +338,8 @@ export default function CrossChain() {
   // const {onSelectChainId} = useAddDestChainId()
   useEffect(() => {
     // console.log(v2Trade)
-    console.log(v2Trade)
-    console.log(outputAmount ? outputAmount?.toSignificant(6) : '')
+    // console.log(v2Trade)
+    // console.log(outputAmount ? outputAmount?.toSignificant(6) : '')
     if (v2Trade) {
       // console.log(v2Trade?.inputAmount?.toSignificant(6))
       // console.log(outputAmount?.raw.toString())
@@ -342,13 +365,21 @@ export default function CrossChain() {
   // console.log(bridgeConfig)
   
   useEffect(() => {
+    // onCurrencySelection(
+    //   Field.INPUT,
+    //   destConfig?.underlying?.address ?? destConfig?.address,
+    //   selectChain,
+    //   destConfig?.underlying?.decimals ?? destConfig?.decimals,
+    //   destConfig?.underlying?.symbol ?? destConfig?.symbol,
+    //   destConfig?.underlying?.name ?? destConfig?.name,
+    // )
     onCurrencySelection(
       Field.INPUT,
-      destConfig?.underlying?.address ?? destConfig?.address,
+      destConfig?.address,
       selectChain,
-      destConfig?.underlying?.decimals ?? destConfig?.decimals,
-      destConfig?.underlying?.symbol ?? destConfig?.symbol,
-      destConfig?.underlying?.name ?? destConfig?.name,
+      destConfig?.decimals,
+      destConfig?.symbol,
+      destConfig?.name,
     )
   }, [destConfig, selectChain])
 
@@ -363,25 +394,7 @@ export default function CrossChain() {
     )
   }, [selectDestCurrency, selectChain])
   
-  const isNativeToken = useMemo(() => {
-    if (
-      selectCurrency
-      && chainId
-      && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).nativeToken
-      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
-    ) {
-      return true
-    }
-    return false
-  }, [selectCurrency, chainId])
-
-  const isUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
-    }
-    return false
-  }, [selectCurrency, selectChain])
+  
 
   
   const isDestUnderlying = useMemo(() => {
@@ -667,7 +680,7 @@ export default function CrossChain() {
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
                     onDelay()
-                    if (isNativeToken) {
+                    if (selectDestCurrency?.symbol === BASECURRENCY) {
                       if (onWrapNative) onWrapNative().then(() => {
                         onClear()
                       })

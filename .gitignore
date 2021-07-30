@@ -16,6 +16,7 @@
 /arb
 /deploy
 /router
+/sushi
 *.zip
 
 # misc

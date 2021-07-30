@@ -191,8 +191,10 @@ export function useDerivedSwapInfo(chainId?:any): {
   // console.log(outputCurrency)
   const bestTradeExactIn = useTradeExactIn(inputChainId, isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(outputChainId, inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
+  // console.log(bestTradeExactIn)
   // console.log(bestTradeExactIn?.inputAmount?.toSignificant(6))
   // console.log(bestTradeExactIn?.outputAmount?.toSignificant(6))
+  // console.log(bestTradeExactOut)
   // console.log(bestTradeExactOut?.inputAmount?.toSignificant(6))
   // console.log(bestTradeExactOut?.outputAmount?.toSignificant(6))
 

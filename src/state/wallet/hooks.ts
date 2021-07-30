@@ -33,6 +33,7 @@ export function useETHBalances(
     undefined,
     chainId
   )
+  // console.log(chainId)
   // console.log(results)
   return useMemo(
     () =>

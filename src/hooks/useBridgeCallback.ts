@@ -359,7 +359,8 @@ export function useBridgeNativeCallback(
   toChainID: string | undefined,
   deadline: number | undefined,
   outputAmount: string | undefined,
-  routerPath: any
+  routerPath: any,
+  isUnderlying: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -384,12 +385,17 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                // console.log(bridgeContract)
-                // console.log(inputAmount.raw.toString(16))
-                // console.log(inputAmount.raw.toString())
-                // console.log(inputAmount?.toSignificant(6))
-                
-                const txReceipt = await bridgeContract.anySwapOutExactTokensForNative(
+                console.log(`0x${inputAmount.raw.toString(16)}`)
+                console.log(inputAmount.raw.toString())
+                console.log(outputAmount)
+                console.log(routerPath)
+                console.log(toAddress)
+                console.log(parseInt((Date.now()/1000 + deadline).toString()))
+                console.log(toChainID)
+                const txType = isUnderlying ? 'anySwapOutExactTokensForNativeUnderlying' : 'anySwapOutExactTokensForNative'
+                console.log(txType)
+                // const txReceipt = await bridgeContract.anySwapOutExactTokensForNative(
+                const txReceipt = await bridgeContract[txType](
                   `0x${inputAmount.raw.toString(16)}`,
                   outputAmount,
                   routerPath,
@@ -428,14 +434,15 @@ export function useBridgeNativeCallback(
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
  */
- export function useBridgeSwapNativeUnderlyingCallback(
+ export function useBridgeSwapUnderlyingCallback(
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
   deadline: number | undefined,
   outputAmount: string | undefined,
-  routerPath: any
+  routerPath: any,
+  isUnderlying: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -466,9 +473,10 @@ export function useBridgeNativeCallback(
                 // console.log(routerPath)
                 // console.log(toAddress)
                 // console.log(parseInt((Date.now()/1000 + deadline).toString()))
-                // console.log(toChainID)
+                console.log(toChainID)
                 // const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
-                const txReceipt = await bridgeContract.anySwapOutExactTokensForTokensUnderlying(
+                const txType = isUnderlying ? 'anySwapOutExactTokensForTokensUnderlying' : 'anySwapOutExactTokensForTokens'
+                const txReceipt = await bridgeContract[txType](
                   `0x${inputAmount.raw.toString(16)}`,
                   outputAmount,
                   routerPath,

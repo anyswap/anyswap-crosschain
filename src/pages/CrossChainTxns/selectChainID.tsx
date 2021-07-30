@@ -24,9 +24,11 @@ import { TYPE, CloseIcon } from '../../theme'
 
 import {formatDecimal} from '../../utils/tools/tools'
 
+// import {useCurrencyBalance, useETHBalances} from '../../state/wallet/hooks'
 import {useCurrencyBalance} from '../../state/wallet/hooks'
 
 import config from '../../config'
+import {BASECURRENCY} from '../../config/constant'
 
 import {
   InputRow,
@@ -100,8 +102,9 @@ export default function SelectChainIdInputPanel({
 
   const formatCurrency = useFormatCurrency(selectChainId, selectDestCurrency?.address, selectDestCurrency?.decimals, selectDestCurrency?.name, selectDestCurrency?.symbol)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, formatCurrency ?? undefined, selectChainId)
-  // console.log(formatCurrency)
-  // console.log(selectedCurrencyBalance?.toSignificant(6))
+  // const selectedETHBalance = useETHBalances(account ? [account] : [], selectChainId)?.[account ?? '']
+  // console.log(selectedETHBalance)
+  // console.log(selectedETHBalance?.toSignificant(6))
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
@@ -142,18 +145,6 @@ export default function SelectChainIdInputPanel({
     [onChainSelect]
   )
 
-  // const destChainInfo = useMemo(() => {
-  //   // console.log(bridgeConfig)
-  //   if (bridgeConfig) {
-  //     if (Number(selectChainId) === Number(chainId)) {
-  //       return bridgeConfig
-  //     } else {
-  //       return bridgeConfig?.destChains[selectChainId]
-  //     }
-  //   }
-  //   return false
-  // }, [bridgeConfig, selectChainId, chainId])
-
   const destTokenList = useMemo(() => {
     // console.log(selectChainId)
     const arr = config.getCurChainInfo(selectChainId)?.tokenList?.tokens
@@ -162,43 +153,6 @@ export default function SelectChainIdInputPanel({
     }
     return []
   }, [bridgeConfig, selectChainId])
-  // console.log(destTokenList)
-  // console.log(selectChainId)
-  // console.log(destChainInfo)
-  // useEffect(() => {
-  //   if (
-  //     account
-  //     && chainId
-  //     && bridgeConfig
-  //     && selectChainId
-  //     && !isNaN(selectChainId)
-  //   ) {
-  //     let token:any = ''
-  //     if (Number(chainId) === Number(selectChainId)) {
-  //       token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
-  //     } else {
-  //       token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
-  //     }
-  //     // console.log(token)
-  //     if (token) {
-  //       getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNativeToken).then(res => {
-  //         // console.log(res)
-  //         if (res) {
-  //           setDestBalance(res)
-  //         } else {
-  //           setDestBalance('')
-  //         }
-  //       })
-  //     }
-  //   } else {
-  //     setDestBalance('')
-  //   }
-  // }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
-
-  // useEffect(() => {
-  //   setDestBalance('')
-  // }, [account, chainId, bridgeConfig, selectChainId])
-
   return (
     <>
       <InputPanel id={id}>
@@ -244,29 +198,24 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={selectDestCurrency?.symbol} size={'24px'} />
+                    <TokenLogo symbol={selectDestCurrency?.symbol === BASECURRENCY ? (config.getCurChainInfo(selectChainId)?.networkLogo ?? config.getCurChainInfo(selectChainId)?.symbol) : selectDestCurrency?.symbol} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>
-                      {/* {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
-                        ? bridgeConfig.symbol.slice(0, 4) +
-                          '...' +
-                          bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                        : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
                       {
-                        selectDestCurrency?.symbol ? (
+                        selectDestCurrency?.symbol && selectDestCurrency?.symbol !== BASECURRENCY ? (
                           selectDestCurrency?.symbol.length > 20
                             ? selectDestCurrency?.symbol.slice(0, 4) +
                               '...' +
                               selectDestCurrency?.symbol.slice(selectDestCurrency?.symbol.length - 5, selectDestCurrency?.symbol.length)
                             : config.getBaseCoin(selectDestCurrency?.symbol, chainId)
-                        ) : t('selectToken')
+                        ) : (selectDestCurrency?.symbol === BASECURRENCY ? config.getCurChainInfo(selectChainId)?.symbol : t('selectToken'))
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {
-                        selectDestCurrency?.symbol ? config.getBaseCoin(selectDestCurrency?.symbol, chainId, 1, selectDestCurrency?.name) : ''
+                        selectDestCurrency?.symbol && selectDestCurrency?.symbol !== BASECURRENCY ? config.getBaseCoin(selectDestCurrency?.symbol, chainId, 1, selectDestCurrency?.name) : (selectDestCurrency?.symbol === BASECURRENCY ? config.getCurChainInfo(selectChainId)?.name : '')
                       }
                     </p>
                   </StyledTokenName>
@@ -378,10 +327,10 @@ export default function SelectChainIdInputPanel({
                       selected={item?.address === selectDestCurrency?.address}
                       key={index}
                     >
-                      <TokenLogo symbol={item.symbol} size={'24px'}></TokenLogo>
+                      <TokenLogo symbol={item.symbol === BASECURRENCY ? config.getCurChainInfo(selectChainId)?.symbol : item.symbol} size={'24px'}></TokenLogo>
                       <Column>
                         <Text title={item.name} fontWeight={500}>
-                          {config.getBaseCoin(item.symbol, chainId)}
+                          {item.symbol === BASECURRENCY ? config.getCurChainInfo(selectChainId)?.symbol : config.getBaseCoin(item.symbol, chainId) }
                         </Text>
                       </Column>
                       {/* <TokenTags currency={item} /> */}
