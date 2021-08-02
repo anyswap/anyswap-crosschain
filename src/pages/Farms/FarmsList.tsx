@@ -361,11 +361,11 @@ export default function FarmsList () {
       isOutLink: 0,
       url: 'farm/bsc',
       title: 'ANY Staking',
-      info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
       coin1: 'ANY',
       coin2: 'BNB',
       coin3: '',
-      status: 'live'
+      status: Date.now() > 1630748022953 ? 'finished' : 'live'
     },
     {
       isDoubleLogo: 1,
