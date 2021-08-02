@@ -333,7 +333,6 @@
   "ExceedLimit": "Exceed limit",
   "nodestlr": "Dest Liquidity Insufficient",
   "destTS": "Dest Liquidity",
-  "maticUSDCStakingTip": "Stake USDC earn ANY, APR:",
   "StakingTip": "Stake {{symbol}}, APR:",
   "router": "Router",
   "stopSystem": "System maintenance",

@@ -332,7 +332,6 @@
   "ExceedLimit": "超出限制",
   "nodestlr": "目标链流动性不足",
   "destTS": "目标链流动性",
-  "maticUSDCStakingTip": "存USDC挖矿 年化收益率",
   "StakingTip": "存{{symbol}}挖矿 年化收益率",
   "router": "路由",
   "stopSystem": "暂停操作，系统维护",
