@@ -11,9 +11,8 @@ import {getPrice} from '../../utils/tools/getPrice'
 import farmlist from '../../config/farmlist'
 
 const FARMTYPE = 'FTM'
-export default function FTMfaring({initialTrade}: {initialTrade?:string}) {
+export default function FarmingComponent() {
   const [price, setPrice] = useState()
-  // console.log(initialTrade)
   useEffect(() => {
     getPrice('ANY').then((res:any) => {
       // console.log(res)
@@ -25,8 +24,6 @@ export default function FTMfaring({initialTrade}: {initialTrade?:string}) {
       <AppBody>
         <Title title='Stake LP tokens to earn ANY'></Title>
         <Farming
-          // initLpToken = {initLpToken}
-          initialTrade = {initialTrade}
           CHAINID = {farmlist[FARMTYPE].chainId}
           FARMTOKEN = {farmlist[FARMTYPE].farmToken}
           FARMURL = {config.farmUrl + 'farm/ftm'}

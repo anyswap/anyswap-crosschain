@@ -288,6 +288,7 @@ export default function FarmsList () {
 
   const [MATICStakingAPY, setMATICStakingAPY] = useState()
   const [FTMStakingAPY, setFTMStakingAPY] = useState()
+  const [BSCStakingAPY, setBSCStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -295,44 +296,48 @@ export default function FarmsList () {
     url: '',
     type: ''
   })
-  const [price, setPrice] = useState<number>()
-  // const [farmState, setFarmState] = useState<string>('live')
-
-  useEffect(() => {
-    getPrice('ANY').then((res:any) => {
-      // console.log(res)
-      setPrice(res)
-    })
-  }, [])
-
-  function getFarmAPY (key:string) {
+  
+  function getFarmAPY (key:string, price:any) {
     return new Promise(resolve => {
-      getAllToken(farmlist[key].chainId, VERSION.V2_1).then((res:any) => {
-        // console.log(farmlist[key])
-        if (res) {
-          if (price) {
-            getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
-              // console.log(res)
-              resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
-            })
-          }
+      if (farmlist[key].lpTokenIno) {
+        if (price) {
+          getBaseInfo(farmlist[key].lpTokenIno, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
+            // console.log(res)
+            resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
+          })
         }
-      })
+      } else {
+        getAllToken(farmlist[key].chainId, VERSION.V2_1).then((res:any) => {
+          // console.log(farmlist[key])
+          if (res) {
+            if (price) {
+              getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
+                // console.log(res)
+                resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
+              })
+            }
+          }
+        })
+      }
     })
   }
 
   useEffect(() => {
-    // console.log(price)
-    if (price) {
-      getFarmAPY('MATIC').then((res:any) => {
+    getPrice('ANY').then((res:any) => {
+      getFarmAPY('MATIC', res).then((res:any) => {
         setMATICStakingAPY(res)
       })
 
-      getFarmAPY('FTM').then((res:any) => {
+      getFarmAPY('FTM', res).then((res:any) => {
         setFTMStakingAPY(res)
       })
-    }
-  }, [price])
+    })
+    getPrice('DEP').then((res:any) => {
+      getFarmAPY('BSC', res).then((res:any) => {
+        setBSCStakingAPY(res)
+      })
+    })
+  }, [])
 
 
   function openThirdWeb (url:any, type:any) {
@@ -351,6 +356,17 @@ export default function FarmsList () {
     }
   }
   const farmList:any = [
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: 'farm/bsc',
+      title: 'ANY Staking',
+      info: (t('maticUSDCStakingTip') + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'ANY',
+      coin2: 'BNB',
+      coin3: '',
+      status: 'live'
+    },
     {
       isDoubleLogo: 1,
       isOutLink: 0,

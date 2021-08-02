@@ -17,6 +17,7 @@ import CrossChainTxns from './CrossChainTxns'
 
 import MATICfarming from './Farms/MATICfarming'
 import FTMfarming from './Farms/FTMfarming'
+import BSCfarming from './Farms/BSCfarming'
 import FarmList from './Farms/FarmsList'
 
 import config from '../config'
@@ -143,22 +144,10 @@ export default function App() {
               <Route exact strict path={config.env === 'dev' ? "/swap" : "/swap1"} component={CrossChainTxns} />
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />
-              <Route
-                path={"/farm/matic/:lpToken"}
-                render={({ match }) => {
-                  console.log(match)
-                  return <MATICfarming initialTrade={match.params.lpToken} />
-                }}
-              />
 
               <Route exact strict path="/farm/ftm" component={FTMfarming} />
-              <Route
-                path={"/farm/ftm/:lpToken"}
-                render={({ match }) => {
-                  console.log(match)
-                  return <FTMfarming initialTrade={match.params.lpToken} />
-                }}
-              />
+
+              <Route exact strict path="/farm/bsc" component={BSCfarming} />
 
               
               <Redirect to={{ pathname: config.getCurConfigInfo().isOpenRouter ? '/swap' : '/bridge' }} /> 

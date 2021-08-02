@@ -1,7 +1,7 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import config from '../../config/index'
 import {USE_VERSION} from '../../config/constant'
-console.log(config)
+// console.log(config)
 export function formatWeb3Str (str:string, len = 64) {
   // console.log(str)
   str = str.indexOf('0x') === 0 ? str.substr(2) : str

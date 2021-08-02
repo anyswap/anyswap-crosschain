@@ -34,9 +34,6 @@ import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 import {getBaseInfo} from './common'
 
-// getBaseInfo([], '137', '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49', '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249', 41143, 2.3).then((res:any) => {
-//   console.log(res)
-// })
 
 const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -343,35 +340,32 @@ const BackBox = styled.div`
   display:inline-block;
 `
 
-// const Web3Fn = require('web3')
-
-// const BASEMARKET = 100
-// let onlyOne = 0
-
 interface FarmProps {
-  initialTrade?:any,
   FARMTOKEN?:any,
   FARMURL?:any,
   initPairs?:any,
   poolCoin?:any,
+  poolCoinLogoUrl?:any,
   CHAINID?:any,
   blockNumber?:any,
   BASEMARKET?:any,
   price?:any,
   version?:any,
+  initLpList?:any,
 }
 
 export default function Farming ({
-  initialTrade,
   FARMTOKEN,
   FARMURL,
   initPairs = [],
   poolCoin,
+  poolCoinLogoUrl,
   CHAINID,
   blockNumber = 28800,
   BASEMARKET = 100,
   price,
-  version
+  version,
+  initLpList
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -521,23 +515,35 @@ export default function Farming ({
   }, [account, exchangeAddress, LpList, MMContract, MMErcContract, CHAINID, chainId])
 
   useEffect(() => {
-    getAllToken(CHAINID, version).then((res:any) => {
-      // console.log(res)
-      if (res) {
-        // getBaseInfo(res)
-        // console.log(price)
-        if (price) {
-          getBaseInfo(res, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
-            console.log(res)
-            setLpList(res.lpArr)
-            // getStakingInfo()
-          })
-        }
+    if (initLpList) {
+      if (price) {
+        getBaseInfo(initLpList, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
+          console.log(res)
+          setLpList(res.lpArr)
+          // getStakingInfo()
+        })
+      } else {
+        setTimeout(() => {
+          setInterverTime(InterverTime + 1)
+        }, 1000 * 10)
       }
-      setTimeout(() => {
-        setInterverTime(InterverTime + 1)
-      }, 1000 * 10)
-    })
+    } else {
+      getAllToken(CHAINID, version).then((res:any) => {
+        console.log(res)
+        if (res) {
+          if (price) {
+            getBaseInfo(res, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
+              console.log(res)
+              setLpList(res.lpArr)
+              // getStakingInfo()
+            })
+          }
+        }
+        setTimeout(() => {
+          setInterverTime(InterverTime + 1)
+        }, 1000 * 10)
+      })
+    }
   }, [CHAINID, InterverTime, price, account])
 
   function backInit () {
@@ -863,7 +869,7 @@ export default function Farming ({
         <StakingBox>
           <StakingList>
             <li className='item'>
-              <div className='pic'><img src={require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /></div>
+              <div className='pic'><img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /></div>
               <div className='info'>
                 <h3>{prd}</h3>
                 <p>

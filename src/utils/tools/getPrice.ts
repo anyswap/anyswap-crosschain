@@ -79,6 +79,8 @@ export const getPrice = (coin:string) => {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=fantom'
     } else if (coin === 'ANY') {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=anyswap'
+    } else if (coin === 'DEP') {
+      url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=deapcoin'
     }
     // console.log(url)
     getApiData(url, coin + '_PRICE', 1000 * 60 * 60).then((res:any) => {

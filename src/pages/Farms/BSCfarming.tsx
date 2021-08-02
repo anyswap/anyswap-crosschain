@@ -10,13 +10,12 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const FARMTYPE = 'MATIC'
-
+const BSC = 'BSC'
 export default function FarmingComponent() {
   const [price, setPrice] = useState()
   useEffect(() => {
-    getPrice('ANY').then((res:any) => {
-      // console.log(res)
+    getPrice('DEP').then((res:any) => {
+      console.log(res)
       setPrice(res)
     })
   }, [])
@@ -25,14 +24,16 @@ export default function FarmingComponent() {
       <AppBody>
         <Title title='Stake LP tokens to earn ANY'></Title>
         <Farming
-          CHAINID = {farmlist[FARMTYPE].chainId}
-          FARMTOKEN = {farmlist[FARMTYPE].farmToken}
-          FARMURL = {config.farmUrl + 'farm/matic'}
+          CHAINID = {farmlist[BSC].chainId}
+          FARMTOKEN = {farmlist[BSC].farmToken}
+          FARMURL = {config.farmUrl + 'farm/bsc'}
           // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
-          poolCoin = 'ANY'
-          blockNumber = {farmlist[FARMTYPE].blockNumber}
+          poolCoin = 'DEP'
+          poolCoinLogoUrl={'https://assets.coingecko.com/coins/images/10970/small/DEAPcoin_01.png'}
+          blockNumber = {farmlist[BSC].blockNumber}
           price={price}
-          version={VERSION.V2_1}
+          version={VERSION.V2_2}
+          initLpList={farmlist[BSC].lpTokenIno}
         />
       </AppBody>
     </>
