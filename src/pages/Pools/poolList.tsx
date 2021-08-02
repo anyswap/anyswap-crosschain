@@ -7,7 +7,7 @@ import { useActiveWeb3React } from '../../hooks'
 import TokenLogo from '../../components/TokenLogo'
 import Title from '../../components/Title'
 import { ButtonLight } from '../../components/Button'
-import {selectNetwork} from '../../components/Header/SelectNetwork'
+// import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
 
@@ -38,6 +38,7 @@ import {
 } from '../Dashboard'
 
 import config from '../../config'
+import {selectNetwork} from '../../config/tools/methods'
 import { isAddress } from '@ethersproject/address'
 
 const BalanceTxt = styled.div`

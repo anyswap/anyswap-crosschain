@@ -23,7 +23,6 @@ import Loader from '../../components/Loader'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 import ModalContent from '../../components/Modal/ModalContent'
-import {selectNetwork} from '../../components/Header/SelectNetwork'
 import Settings from '../../components/Settings'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
@@ -45,7 +44,8 @@ import { useUserTransactionTTL } from '../../state/user/hooks'
 
 
 import config from '../../config'
-import {getParams} from '../../config/getUrlParams'
+import {getParams} from '../../config/tools/getUrlParams'
+import {selectNetwork} from '../../config/tools/methods'
 import {BASECURRENCY} from '../../config/constant'
 
 

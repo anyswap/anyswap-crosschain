@@ -22,7 +22,6 @@ import AddressInputPanel from '../../components/AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
 import ModalContent from '../../components/Modal/ModalContent'
-import {selectNetwork} from '../../components/Header/SelectNetwork'
 import QRcode from '../../components/QRcode'
 
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
@@ -30,7 +29,8 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 
 import config from '../../config'
-import {getParams} from '../../config/getUrlParams'
+import {getParams} from '../../config/tools/getUrlParams'
+import {selectNetwork} from '../../config/tools/methods'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 // import {getTokenConfig} from '../../utils/bridge/getServerInfo'

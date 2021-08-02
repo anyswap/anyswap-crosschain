@@ -28,7 +28,7 @@ import { tryParseAmount } from '../../state/swap/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
 import config from '../../config'
-import {getParams} from '../../config/getUrlParams'
+import {getParams} from '../../config/tools/getUrlParams'
 
 import AppBody from '../AppBody'
 

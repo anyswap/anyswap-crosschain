@@ -1,19 +1,15 @@
-import { chainInfo } from './chainConfig'
-import { isAddress } from '../utils'
+import { chainInfo } from '../chainConfig'
+import { isAddress } from '../../utils'
 
 // import {ARBITRUM_MAIN_CHAINID} from './chainConfig/arbitrum'
 // import {AVAX_MAIN_CHAINID} from './chainConfig/avax'
-import {BNB_MAIN_CHAINID} from './chainConfig/bsc'
-import {ETH_MAIN_CHAINID} from './chainConfig/eth'
-import {FSN_MAIN_CHAINID} from './chainConfig/fsn'
-import {FTM_MAIN_CHAINID} from './chainConfig/ftm'
-import {HT_MAIN_CHAINID} from './chainConfig/ht'
+import {BNB_MAIN_CHAINID} from '../chainConfig/bsc'
+import {ETH_MAIN_CHAINID} from '../chainConfig/eth'
+import {FSN_MAIN_CHAINID} from '../chainConfig/fsn'
+import {FTM_MAIN_CHAINID} from '../chainConfig/ftm'
+import {HT_MAIN_CHAINID} from '../chainConfig/ht'
 
-// import {selectNetwork} from '../components/Header/SelectNetwork'
-// import {MATIC_MAIN_CHAINID} from './chainConfig/matic'
-// import {XDAI_MAIN_CHAINID} from './chainConfig/xdai'
-// import {KCC_MAIN_CHAINID} from './chainConfig/kcc'
-// import {OKT_MAIN_CHAINID} from './chainConfig/okt'
+import {selectNetwork} from './methods'
 
 export function getParams(param: any) {
   const str = window.location.href.indexOf('?') ? window.location.href.split('?')[1] : ''
@@ -48,53 +44,6 @@ export function getInitBridgeChain(destChainID: any, bridgeToken: any) {
   }
 
   return nc
-}
-
-function selectNetwork (chainID:any) {
-  return new Promise(resolve => {
-    const { ethereum } = window
-    const ethereumFN:any = {
-      request: '',
-      ...ethereum
-    }
-    if (ethereumFN && ethereumFN.request) {
-      const data = {
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: '0x' + Number(chainID).toString(16), // A 0x-prefixed hexadecimal string
-            chainName: chainInfo[chainID].networkName,
-            nativeCurrency: {
-              name: chainInfo[chainID].name,
-              symbol: chainInfo[chainID].symbol, // 2-6 characters long
-              decimals: 18,
-            },
-            rpcUrls: [chainInfo[chainID].nodeRpc],
-            blockExplorerUrls: chainInfo[chainID].nodeRpcList ? chainInfo[chainID].nodeRpcList : [chainInfo[chainID].explorer],
-            iconUrls: null // Currently ignored.
-          }
-        ],
-      }
-      // console.log(data)
-      ethereumFN.request(data).then((res: any) => {
-        console.log(res)
-        localStorage.setItem('ENV_NODE_CONFIG', chainInfo[chainID].label)
-        // history.go(0)
-        resolve({
-          msg: 'Success'
-        })
-      }).catch((err: any) => {
-        console.log(err)
-        resolve({
-          msg: 'Error'
-        })
-      })
-    } else {
-      resolve({
-        msg: 'Error'
-      })
-    }
-  })
 }
 
 function getParamNode(type: any, INIT_NODE: any) {

@@ -22,9 +22,11 @@ import {chainInfo, spportChainArr} from '../../config/chainConfig'
 // import {spportChainArr} from '../../config/chainConfig'
 // import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
 // import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
-import {web3Fn} from '../../utils/tools/web3Utils'
+// import {web3Fn} from '../../utils/tools/web3Utils'
 
 import {setLocalRPC} from '../../config/chainConfig/methods'
+
+import {selectNetwork} from '../../config/tools/methods'
 
 export const WalletLogoBox = styled.div`
   width:100%;
@@ -392,51 +394,6 @@ export function Option ({
       </WalletLogoBox>
     </>
   )
-}
-
-export function selectNetwork (chainID:any) {
-  return new Promise(resolve => {
-    const { ethereum } = window
-    const ethereumFN:any = {
-      request: '',
-      ...ethereum
-    }
-    if (ethereumFN && ethereumFN.request) {
-      ethereumFN.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: web3Fn.utils.toHex(chainID), // A 0x-prefixed hexadecimal string
-            chainName: config.getCurChainInfo(chainID).networkName,
-            nativeCurrency: {
-              name: config.getCurChainInfo(chainID).name,
-              symbol: config.getCurChainInfo(chainID).symbol, // 2-6 characters long
-              decimals: 18,
-            },
-            rpcUrls: [config.getCurChainInfo(chainID).nodeRpc],
-            blockExplorerUrls: config.getCurChainInfo(chainID).nodeRpcList ? config.getCurChainInfo(chainID).nodeRpcList : [config.getCurChainInfo(chainID).explorer],
-            iconUrls: null // Currently ignored.
-          }
-        ],
-      }).then((res: any) => {
-        console.log(res)
-        localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(chainID).label)
-        // history.go(0)
-        resolve({
-          msg: 'Success'
-        })
-      }).catch((err: any) => {
-        console.log(err)
-        resolve({
-          msg: 'Error'
-        })
-      })
-    } else {
-      resolve({
-        msg: 'Error'
-      })
-    }
-  })
 }
 
 export default function SelectNetwork () {

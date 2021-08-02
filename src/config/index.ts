@@ -9,7 +9,7 @@ import {
   controlConfig
 } from './constant'
 
-import {getNetwork, getInitBridgeChain} from './getUrlParams'
+import {getNetwork, getInitBridgeChain} from './tools/getUrlParams'
  
 interface ConFig {
   [key: string]: any
