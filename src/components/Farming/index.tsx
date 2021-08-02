@@ -522,11 +522,10 @@ export default function Farming ({
           setLpList(res.lpArr)
           // getStakingInfo()
         })
-      } else {
-        setTimeout(() => {
-          setInterverTime(InterverTime + 1)
-        }, 1000 * 10)
       }
+      setTimeout(() => {
+        setInterverTime(InterverTime + 1)
+      }, 1000 * 10)
     } else {
       getAllToken(CHAINID, version).then((res:any) => {
         console.log(res)
