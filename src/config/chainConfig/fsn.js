@@ -30,9 +30,6 @@ const bridgeToken = {
 
 export default {
   [FSN_MAIN_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + FSN_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -64,9 +61,6 @@ export default {
     anyToken: '0x0c74199d22f732039e843366a236ff4f61986b32'
   },
   [FSN_TEST_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + FSN_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     bridgeInitToken: '',

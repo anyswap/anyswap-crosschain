@@ -117,9 +117,6 @@ const bridgeToken = {
 
 export default {
   [ETH_MAIN_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ETH_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -145,9 +142,6 @@ export default {
     anyToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6'
   },
   [ETH_TEST_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],

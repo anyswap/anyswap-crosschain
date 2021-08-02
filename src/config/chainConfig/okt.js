@@ -26,9 +26,6 @@ const bridgeToken = {
 
 export default {
   [OKT_MAIN_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + OKT_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

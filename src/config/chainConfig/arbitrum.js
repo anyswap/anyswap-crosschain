@@ -30,9 +30,6 @@ const bridgeToken = {
 export default {
   
   [ARBITRUM_MAIN_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ARBITRUM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -59,9 +56,6 @@ export default {
     anyToken: ''
   },
   [ARBITRUM_TEST_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + ARBITRUM_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

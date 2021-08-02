@@ -90,9 +90,6 @@ const bridgeToken = {
 
 export default {
   [BNB_MAIN_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + BNB_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -132,9 +129,6 @@ export default {
     anyToken: '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa'
   },
   [BNB_TEST_CHAINID]: {
-    oldAppName: 'Anyswap V1',
-    appName: 'HTswap LP',
-    baseCurrency: 'ANY',
     tokenListUrl: tokenListUrl + BNB_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
