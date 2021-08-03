@@ -22,7 +22,7 @@ export default function FarmingComponent() {
   return (
     <>
       <AppBody>
-        <Title title='Stake LP tokens to earn ANY'></Title>
+        <Title title='Stake ANY tokens to earn DEP'></Title>
         <Farming
           CHAINID = {farmlist[BSC].chainId}
           FARMTOKEN = {farmlist[BSC].farmToken}

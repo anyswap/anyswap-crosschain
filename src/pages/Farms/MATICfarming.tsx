@@ -33,6 +33,7 @@ export default function FarmingComponent() {
           blockNumber = {farmlist[FARMTYPE].blockNumber}
           price={price}
           version={VERSION.V2_1}
+          stakeType={'LP'}
         />
       </AppBody>
     </>

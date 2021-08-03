@@ -17,6 +17,7 @@
 /deploy
 /router
 /sushi
+/oec
 *.zip
 
 # misc

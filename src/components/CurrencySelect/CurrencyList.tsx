@@ -1,12 +1,13 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'anyswap-sdk'
+// import { Currency, CurrencyAmount, ETHER, Token } from 'anyswap-sdk'
 import React, { CSSProperties, useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useLocalToken } from '../../hooks/Tokens'
+// import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -84,45 +85,6 @@ function TokenTags({ currency }: { currency: Currency }) {
   )
 }
 
-
-export function addToken (address:string, symbol: string, decimals: number, logoUrl?:string) {
-  return new Promise(resolve => {
-    const { ethereum } = window
-    const ethereumFN:any = {
-      request: '',
-      ...ethereum
-    }
-    if (ethereumFN && ethereumFN.request) {
-      ethereumFN.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20', // 最初只支持ERC20，但最终支持更多
-          options: {
-            address: address, // 令牌所在的地址。
-            symbol: symbol, // A ticker symbol or shorthand, up to 5 chars.
-            decimals: decimals, // The number of decimals in the token
-            image: logoUrl, // A string url of the token logo
-          },
-        },
-      }).then((res: any) => {
-        console.log(res)
-        resolve({
-          msg: 'Success'
-        })
-      }).catch((err: any) => {
-        console.log(err)
-        resolve({
-          msg: 'Error'
-        })
-      })
-    } else {
-      resolve({
-        msg: 'Error'
-      })
-    }
-  })
-}
-
 function CurrencyRow({
   currency,
   onSelect,
@@ -144,15 +106,18 @@ function CurrencyRow({
     address: currency.underlying ? currency.underlying.address : currency?.address,
     decimals: currency.decimals,
     symbol: currency.underlying ? currency.underlying.symbol : currency.symbol,
-    name: currency.name ? currency.underlying.name : currency.name,
+    name: currency?.underlying?.name ? currency.underlying.name : currency.name,
   }
-  const currencies = useLocalToken(currencyObj)
+  // const currencies = useLocalToken(currencyObj)
   const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currency?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
-  const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
-  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(currency)
+  const balance = ''
+  const ETHBalance = ''
+  // const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
+  // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(chainId)
-  // console.log(account)
+  // console.log(currency)
+  // console.log(isSelected)
   return (
     <MenuItem
       style={style}
@@ -161,13 +126,11 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
-      {/* <div onClick={() => {
-        addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currency?.logoUrl)
-      }}>+</div> */}
       <TokenLogo symbol={currencyObj.symbol} logoUrl={currency?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
           {config.getBaseCoin(currencyObj.symbol, chainId)}
+          <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text>
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
@@ -204,17 +167,18 @@ export default function BridgeCurrencyList({
   showETH: boolean
 }) {
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
-  
+  // console.log(selectedCurrency)
   return (
     <>
       <ListBox style={{height: height}}>
         {
           itemData.map((item, index) => {
             const currency: Currency = item
-            const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
+            // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
             const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
+            const isSelected = Boolean(selectedCurrency?.address?.toLowerCase() === currency?.address?.toLowerCase())
+            // const otherSelected = Boolean(selectedCurrency?.address?.toLowerCase() === currency?.address?.toLowerCase())
             const handleSelect = () => onCurrencySelect(currency)
-            // console.log(currency)
             return (
               <CurrencyRow
                 style={{margin:'auto'}}

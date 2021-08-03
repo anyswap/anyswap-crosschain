@@ -80,7 +80,7 @@ export const controlConfig:any = {
     bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin(['']),
     hiddenChain: [''],
-    initNode: '1',
+    initNode: env === 'dev' ? '56' : '1',
     isOpenRouter: 1,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: env === 'dev' ? 1 : 0,

@@ -9,6 +9,7 @@ import matic, {MATIC_MAIN_CHAINID} from './matic'
 import xdai, {XDAI_MAIN_CHAINID} from './xdai'
 import kcc, {KCC_MAIN_CHAINID} from './kcc'
 import okt, {OKT_MAIN_CHAINID} from './okt'
+import one, {ONE_MAIN_CHAINID} from './one'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -30,6 +31,7 @@ export const chainInfo:ConFig = {
   ...xdai,
   ...kcc,
   ...okt,
+  ...one,
   ...ltc,
   ...btc,
   ...block
@@ -89,7 +91,8 @@ const useChain = {
     XDAI_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID,
     KCC_MAIN_CHAINID,
-    OKT_MAIN_CHAINID
+    OKT_MAIN_CHAINID,
+    ONE_MAIN_CHAINID
   ]
 }
 

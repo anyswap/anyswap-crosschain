@@ -352,6 +352,7 @@ interface FarmProps {
   price?:any,
   version?:any,
   initLpList?:any,
+  stakeType?:any,
 }
 
 export default function Farming ({
@@ -365,7 +366,8 @@ export default function Farming ({
   BASEMARKET = 100,
   price,
   version,
-  initLpList
+  initLpList,
+  stakeType
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -669,7 +671,7 @@ export default function Farming ({
                   <FarmInfo>
                     <div className="item">
                       <span className="left">Deposit</span>
-                      <span className="right">{item} - {config.getCurChainInfo(CHAINID).symbol} LP</span>
+                      <span className="right">{item} - {config.getCurChainInfo(CHAINID).symbol} {stakeType}</span>
                     </div>
                     <div className="item">
                       <span className="left">APR</span>
@@ -722,7 +724,7 @@ export default function Farming ({
                     <FarmInfo>
                       <div className="item">
                         <span className="left">Deposit</span>
-                        <span className="right">{item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} LP</span>
+                        <span className="right">{item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} {stakeType}</span>
                       </div>
                       <div className="item">
                         <span className="left">APR</span>
@@ -893,7 +895,7 @@ export default function Farming ({
               </DoubleLogo>
               <div className='info'>
                 <h3>{userInfo && Number(userInfo) > 0 && dec? fromWei(userInfo, dec, 6) : '0.00'}</h3>
-                <p>{curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} LP {t('Staked')}</p>
+                <p>{curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} {stakeType} {t('Staked')}</p>
               </div>
               <div className='btn'>
                 {btnView}
@@ -941,7 +943,7 @@ export default function Farming ({
               <MaxBox onClick={() => {onMax()}}>Max</MaxBox>
             </InputRow>
             <AmountView>
-              {amountView} {LpList && LpList[exchangeAddress] && LpList[exchangeAddress]?.tokenObj && LpList[exchangeAddress]?.tokenObj?.symbol ? LpList[exchangeAddress].tokenObj.symbol : ''} LP Token
+              {amountView} {LpList && LpList[exchangeAddress] && LpList[exchangeAddress]?.tokenObj && LpList[exchangeAddress]?.tokenObj?.symbol ? LpList[exchangeAddress].tokenObj.symbol : ''} {stakeType} Token
               
             </AmountView>
             <Button1 style={{height: '45px',width: '150px'}} disabled={stakeDisabled} onClick={() => {
