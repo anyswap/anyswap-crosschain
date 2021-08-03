@@ -74,6 +74,10 @@ const useChain = {
     ETH_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID
   ],
+  OKT: [
+    BNB_MAIN_CHAINID,
+    OKT_MAIN_CHAINID
+  ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
     BNB_MAIN_CHAINID,
@@ -90,4 +94,4 @@ const useChain = {
 }
 
 const envType:any = env
-export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+export const spportChainArr = envType === 'dev' ? useChain['OKT'] : useChain[USE_VERSION]

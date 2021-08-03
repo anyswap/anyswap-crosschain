@@ -203,47 +203,6 @@ export default function DashboardDtil() {
     setPoolArr([])
     setAllTokenArr([])
     getAllTokens()
-    // getAllToken(chainId).then((res:any) => {
-    //   // console.log(res)
-    //   if (res) {
-    //     const ulist:any = []
-    //     const alist:any = []
-    //     const tlist:any = {}
-    //     const anyToken = config.getCurChainInfo(chainId)?.anyToken
-    //     if (anyToken) {
-    //       tlist[anyToken] = {
-    //         "address": anyToken,
-    //         "chainId": chainId,
-    //         "decimals": 18,
-    //         "name": "Anyswap",
-    //         "symbol": "ANY",
-    //         "underlying": '',
-    //         "destChains": '',
-    //         "isView": 1
-    //       }
-    //       alist.push(anyToken)
-    //     }
-    //     for (const token in res) {
-    //       if (!isAddress(token)) continue
-    //       if (res[token].list.underlying) {
-    //         ulist.push(res[token].list.underlying.address)
-    //       }
-    //       tlist[token.toLowerCase()] = {
-    //         "address": token,
-    //         "chainId": chainId,
-    //         "decimals": res[token].list.decimals,
-    //         "name": res[token].list.name,
-    //         "symbol": res[token].list.symbol,
-    //         "underlying": res[token].list.underlying,
-    //         "destChains": res[token].list.destChains,
-    //       }
-    //       alist.push(token)
-    //     }
-    //     setAllTokenList(tlist)
-    //     setPoolArr(ulist)
-    //     setAllTokenArr(alist)
-    //   }
-    // })
   }, [chainId])
 
   const [searchBalance, setSearchBalance] = useState('')
