@@ -325,6 +325,32 @@ export default function CrossChain() {
     }
     return false
   }, [bridgeConfig, selectChain])
+
+  const isUnderlying = useMemo(() => {
+    if (selectCurrency && selectCurrency?.underlying) {
+      return true
+    }
+    return false
+  }, [selectCurrency, selectChain])
+
+  const isDestUnderlying = useMemo(() => {
+    if (destConfig?.underlying) {
+      return true
+    }
+    return false
+  }, [destConfig])
+  
+  const isNativeToken = useMemo(() => {
+    if (
+      selectCurrency
+      && chainId
+      && config.getCurChainInfo(chainId)
+      && config.getCurChainInfo(chainId).symbol.toLowerCase() === selectCurrency.symbol.toLowerCase()
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency, chainId])
   // console.log(selectCurrency)
   // console.log(destConfig)
   
@@ -338,32 +364,7 @@ export default function CrossChain() {
     destConfig?.pairid
   )
   // console.log(selectCurrency)
-  const isNativeToken = useMemo(() => {
-    if (
-      selectCurrency
-      && chainId
-      && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).symbol.toLowerCase() === selectCurrency.symbol.toLowerCase()
-    ) {
-      return true
-    }
-    return false
-  }, [selectCurrency, chainId])
   // console.log(isNativeToken)
-  const isUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
-    }
-    return false
-  }, [selectCurrency, selectChain])
-
-  
-  const isDestUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChains[selectChain]?.underlying) {
-      return true
-    }
-    return false
-  }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
@@ -384,7 +385,7 @@ export default function CrossChain() {
   }, [inputBridgeValue, destConfig])
 
   const isWrapInputError = useMemo(() => {
-    if (wrapInputError) {
+    if (wrapInputError && swapType !== BridgeType.deposit) {
       return wrapInputError
     } else {
       return false
@@ -392,20 +393,13 @@ export default function CrossChain() {
   }, [wrapInputError, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
-    console.log(destConfig)
-    console.log(swapType)
-    // console.log(swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : recipient)
     const isAddr = swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : isAddress( recipient, selectChain)
-    // console.log(Boolean(isAddr))
     if (
       account
       && destConfig
       && selectCurrency
       && inputBridgeValue
-      && (
-        (!isWrapInputError && swapType !== BridgeType.deposit)
-        || (isWrapInputError && swapType === BridgeType.deposit)
-      )
+      && !isWrapInputError
       && Boolean(isAddr)
       && destChain
     ) {
@@ -424,7 +418,7 @@ export default function CrossChain() {
   }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress])
 
   const isInputError = useMemo(() => {
-    console.log(isCrossBridge)
+    // console.log(isCrossBridge)
     if (
       account
       && destConfig
