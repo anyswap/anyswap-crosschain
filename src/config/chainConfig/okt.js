@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const OKT_MAIN_CHAINID = 66
 export const OKT_MAINNET = getLocalRPC(OKT_MAIN_CHAINID, 'https://exchainrpc.okex.org')
-export const OKT_MAIN_EXPLORER = 'https://www.oklink.com/eth'
+export const OKT_MAIN_EXPLORER = 'https://www.oklink.com/okexchain'
 
 export const tokenList = []
 export const testTokenList = []

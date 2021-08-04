@@ -172,7 +172,7 @@ export default function DashboardDtil() {
               ulist.push(item.underlying.address)
             }
             if (tlist[token.toLowerCase()]) continue
-            // if (!['Binance', 'BUSDToken', 'BabyDogeCoin'].includes(item.name)) continue
+            if (config.getCurConfigInfo().showCoin.length > 0 && !config.getCurConfigInfo().showCoin.includes(item.name)) continue
             tlist[token.toLowerCase()] = {
               "address": token,
               "chainId": chainId,

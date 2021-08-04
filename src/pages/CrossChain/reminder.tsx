@@ -100,6 +100,7 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
   const isSwapfeeon = destConfig?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.underlying?.symbol ?? currency?.symbol, chainId)
   const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'
+  const dFee = bridgeType === 'bridgeAssets' ? Number(destConfig?.SwapFeeRatePerMillion) : Number(destConfig?.SwapFeeRatePerMillion) * 100
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
@@ -111,7 +112,7 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
           dMinFee: isSwapfeeon ? destConfig?.MinimumSwapFee : 0,
           coin: viewSymbol,
           dMaxFee: isSwapfeeon ? destConfig?.MaximumSwapFee : 0,
-          dFee: isSwapfeeon ? Number(destConfig?.SwapFeeRatePerMillion) : 0
+          dFee: isSwapfeeon ? dFee : 0
         })}</dd>
         <dd><i></i>{t(tipType + '2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t(tipType + '3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>

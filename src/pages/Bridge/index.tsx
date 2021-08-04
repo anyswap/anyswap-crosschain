@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
+// import {GetTokenListByChainID, createAddress, isAddress, getProvider} from 'multichain-bridge'
 import {GetTokenListByChainID, createAddress, isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
@@ -41,6 +42,13 @@ import {formatDecimal, setLocalConfig} from '../../utils/tools/tools'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
+
+// const provider = getProvider()
+// provider.send('eth_requestAccounts', []).then((res:any) => {
+//   console.log(provider)
+//   console.log(provider.network)
+//   console.log(res)
+// })
 
 const LiquidityView = styled.div`
   ${({theme}) => theme.flexSC};
@@ -269,7 +277,7 @@ export default function CrossChain() {
 
   useEffect(() => {
     setSelectCurrency('')
-  }, [swapType])
+  }, [swapType, chainId])
 
   const useTolenList = useMemo(() => {
     
@@ -281,7 +289,7 @@ export default function CrossChain() {
         // console.log(token)
         const obj = allTokens[swapType]
         if (!isAddress(token, chainId) && token !== config.getCurChainInfo(chainId).symbol) continue
-        // if (!['Binance', 'BUSDToken', 'BabyDogeCoin'].includes(obj[token].name)) continue
+        if (config.getCurConfigInfo().showCoin.length > 0 && !config.getCurConfigInfo().showCoin.includes(obj[token].name)) continue
         list[token] = {
           ...obj[token],
           "address": token,
@@ -486,7 +494,7 @@ export default function CrossChain() {
     if (account && destConfig?.type === 'swapin' && swapType !== BridgeType.deposit) {
       setRecipient(account)
     } else {
-      setRecipient('')
+      setRecipient(account)
     }
   }, [account, destConfig, swapType])
 
@@ -515,8 +523,10 @@ export default function CrossChain() {
   useEffect(() => {
     if (selectCurrency) {
       const arr:any = []
+      
       for (const c in selectCurrency?.destChains) {
         if (Number(c) === Number(chainId) && swapType !== BridgeType.deposit) continue
+        if (config.getCurConfigInfo().showChain.length > 0 && !config.getCurConfigInfo().showChain.includes(Number(c))) continue
         arr.push(c)
       }
       // console.log(arr)
@@ -659,14 +669,14 @@ export default function CrossChain() {
             //   iconUrl: require('../../assets/images/icon/withdraw.svg'),
             //   iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
             // },
-            {
-              name: t('Deposited'),
-              onTabClick: () => {
-                setSwapType(BridgeType.deposit)
-              },
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            },
+            // {
+            //   name: t('Deposited'),
+            //   onTabClick: () => {
+            //     setSwapType(BridgeType.deposit)
+            //   },
+            //   iconUrl: require('../../assets/images/icon/deposit.svg'),
+            //   iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+            // },
           ]}
           currentTab={(() => {
             // if (swapType === BridgeType.swapin) return 0
@@ -763,7 +773,9 @@ export default function CrossChain() {
             // isViewAllChain={swapType === BridgeType.deposit}
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' ? (
-            <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
+            <>
+              {/* <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} /> */}
+            </>
           ): ''}
           {
             p2pAddress ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''

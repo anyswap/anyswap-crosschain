@@ -76,7 +76,21 @@ const useChain = {
     ETH_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID
   ],
-  OKT: [
+  [VERSION.V4]: [
+    ETH_MAIN_CHAINID,
+    BNB_MAIN_CHAINID,
+    FSN_MAIN_CHAINID,
+    FTM_MAIN_CHAINID,
+    MATIC_MAIN_CHAINID,
+    HT_MAIN_CHAINID,
+    AVAX_MAIN_CHAINID,
+    XDAI_MAIN_CHAINID,
+    ARBITRUM_MAIN_CHAINID,
+    KCC_MAIN_CHAINID,
+    OKT_MAIN_CHAINID,
+    ONE_MAIN_CHAINID
+  ],
+  [VERSION.V4_OKT]: [
     BNB_MAIN_CHAINID,
     OKT_MAIN_CHAINID
   ],
@@ -97,4 +111,4 @@ const useChain = {
 }
 
 const envType:any = env
-export const spportChainArr = envType === 'dev' ? useChain['OKT'] : useChain[USE_VERSION]
+export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]

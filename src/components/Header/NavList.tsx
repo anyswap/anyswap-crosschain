@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
 
 import config from '../../config'
 
@@ -300,7 +300,7 @@ const Link = styled(ExternalLink)`
 
 // console.log(config)
 export default function NavList() {
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
 
   return (
@@ -402,14 +402,14 @@ export default function NavList() {
           </div>
           {t('ANYToken')}
         </MenuItem>
-        <MenuItem id="link" href="">
+        <MenuItem id="link" href="https://anyswap.net/">
           <div className="icon">
             <img src={require('../../assets/images/icon/network.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/network-purpl.svg')} className="on" alt="" />
           </div>
           {t('Network')}
         </MenuItem>
-        <MenuItem id="link" href={config.getCurChainInfo(chainId).document}>
+        <MenuItem id="link" href="https://anyswap-faq.readthedocs.io/en/latest/index.html">
           <div className="icon">
             <img src={require('../../assets/images/icon/documents.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/documents-purpl.svg')} className="on" alt="" />
