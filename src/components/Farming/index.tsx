@@ -27,7 +27,7 @@ import { CloseIcon } from '../../theme'
 
 import config from '../../config'
 // import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
-import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
+import {fromWei, toWei} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
 
@@ -577,16 +577,20 @@ export default function Farming ({
     setTimeout(() => {
       setBtnDelayDisabled(0)
     }, 3000)
-    let amount = toWei(formatDecimal(stakeAmount, dec - 1), dec)
-    console.log(amount.toString())
-    MMContract.deposit(LpList[exchangeAddress].index, amount).then((res:any) => {
-      console.log(res)
-      addTransaction(res, { summary: `Stake ${stakeAmount} ${LpList[exchangeAddress]?.tokenObj?.symbol}` })
-      backInit()
-    }).catch((err:any) => {
-      console.log(err)
-      backInit()
-    })
+    try {
+      let amount = toWei(stakeAmount, dec)
+      console.log(amount.toString())
+      MMContract.deposit(LpList[exchangeAddress].index, amount).then((res:any) => {
+        console.log(res)
+        addTransaction(res, { summary: `Stake ${stakeAmount} ${LpList[exchangeAddress]?.tokenObj?.symbol}` })
+        backInit()
+      }).catch((err:any) => {
+        console.log(err)
+        backInit()
+      })
+    } catch (error) {
+      alert(error.toString())
+    }
   }
 
   function withdraw (amount?:any) {
@@ -607,18 +611,22 @@ export default function Farming ({
     setTimeout(() => {
       setBtnDelayDisabled(0)
     }, 3000)
-    
-    amount = amount || amount === 0 ? amount : toWei(formatDecimal(stakeAmount, dec), dec)
-    // console.log(amount.toString())
-    
-    MMContract.withdraw(LpList[exchangeAddress].index, amount.toString()).then((res:any) => {
-      console.log(res)
-      addTransaction(res, { summary: `Stake ${stakeAmount} ${LpList[exchangeAddress]?.tokenObj?.symbol}` })
-      backInit()
-    }).catch((err:any) => {
-      console.log(err)
-      backInit()
-    })
+    try {
+      
+      amount = amount || amount === 0 ? amount : toWei(stakeAmount, dec)
+      // console.log(amount.toString())
+      
+      MMContract.withdraw(LpList[exchangeAddress].index, amount.toString()).then((res:any) => {
+        console.log(res)
+        addTransaction(res, { summary: `Stake ${stakeAmount} ${LpList[exchangeAddress]?.tokenObj?.symbol}` })
+        backInit()
+      }).catch((err:any) => {
+        console.log(err)
+        backInit()
+      })
+    } catch (error) {
+      alert(error.toString())
+    }
   }
 
   function approve () {
