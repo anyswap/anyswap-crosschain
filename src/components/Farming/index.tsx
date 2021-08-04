@@ -5,6 +5,7 @@ import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { Text } from 'rebass'
 import { ethers } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
 // import { transparentize } from 'polished'
 import { useFarmContract, useTokenContract } from '../../hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
@@ -576,7 +577,7 @@ export default function Farming ({
     setTimeout(() => {
       setBtnDelayDisabled(0)
     }, 3000)
-    let amount = toWei(formatDecimal(stakeAmount, dec), dec)
+    let amount = toWei(formatDecimal(stakeAmount, dec - 1), dec)
     console.log(amount.toString())
     MMContract.deposit(LpList[exchangeAddress].index, amount).then((res:any) => {
       console.log(res)
@@ -642,12 +643,14 @@ export default function Farming ({
   }
 
   function onMax () {
+    // console.log(balance)
     let amount = ''
     if (stakingType === 'deposit') {
-      amount = fromWei(balance, dec, dec)
+      amount = formatUnits(balance, dec)
     } else {
-      amount = fromWei(userInfo, dec, dec)
+      amount = formatUnits(userInfo, dec)
     }
+    // console.log(formatDecimal(amount, dec))
     setStakeAmount(amount)
   }
 
