@@ -385,15 +385,15 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                console.log(`0x${inputAmount.raw.toString(16)}`)
-                console.log(inputAmount.raw.toString())
-                console.log(outputAmount)
-                console.log(routerPath)
-                console.log(toAddress)
-                console.log(parseInt((Date.now()/1000 + deadline).toString()))
-                console.log(toChainID)
+                // console.log(`0x${inputAmount.raw.toString(16)}`)
+                // console.log(inputAmount.raw.toString())
+                // console.log(outputAmount)
+                // console.log(routerPath)
+                // console.log(toAddress)
+                // console.log(parseInt((Date.now()/1000 + deadline).toString()))
+                // console.log(toChainID)
                 const txType = isUnderlying ? 'anySwapOutExactTokensForNativeUnderlying' : 'anySwapOutExactTokensForNative'
-                console.log(txType)
+                // console.log(txType)
                 // const txReceipt = await bridgeContract.anySwapOutExactTokensForNative(
                 const txReceipt = await bridgeContract[txType](
                   `0x${inputAmount.raw.toString(16)}`,
@@ -473,7 +473,7 @@ export function useBridgeNativeCallback(
                 // console.log(routerPath)
                 // console.log(toAddress)
                 // console.log(parseInt((Date.now()/1000 + deadline).toString()))
-                console.log(toChainID)
+                // console.log(toChainID)
                 // const txReceipt = await bridgeContract.anySwapOutExactTokensForNativeUnderlying(
                 const txType = isUnderlying ? 'anySwapOutExactTokensForTokensUnderlying' : 'anySwapOutExactTokensForTokens'
                 const txReceipt = await bridgeContract[txType](
@@ -523,7 +523,7 @@ export function useBridgeNativeCallback(
   toChainID: any,
   txnsType: string | undefined,
   inputToken: string | undefined,
-  pairid: string | undefined,
+  // pairid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -555,7 +555,7 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                // console.log(bridgeContract)
+                console.log(txnsType)
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
@@ -563,32 +563,33 @@ export function useBridgeNativeCallback(
                 const txReceipt:any = txnsType === 'swapin' ? await signSwapinData({
                   value: `0x${inputAmount.raw.toString(16)}`,
                   address: toAddress,
-                  token: inputToken
+                  token: inputToken,
+                  destChain: toChainID
                 }) : await signSwapoutData({
                   value: `0x${inputAmount.raw.toString(16)}`,
                   address: toAddress,
                   token: inputToken,
                   destChain: toChainID
                 })
-                // console.log(txReceipt)
+                console.log(txReceipt)
                 const txData:any = {hash: txReceipt?.info}
                 addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.info && account) {
-                  const data = {
-                    hash: txReceipt.info?.toLowerCase(),
-                    chainId: txnsType === 'swapin' ? chainId : toChainID,
-                    selectChain: txnsType === 'swapin' ? toChainID : chainId,
-                    account: account?.toLowerCase(),
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: txnsType === 'swapin' ? account : toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol,
-                    version: txnsType,
-                    pairid: pairid
-                  }
-                  recordsTxns(data)
-                }
+                // if (txReceipt?.info && account) {
+                //   const data = {
+                //     hash: txReceipt.info?.toLowerCase(),
+                //     chainId: txnsType === 'swapin' ? chainId : toChainID,
+                //     selectChain: txnsType === 'swapin' ? toChainID : chainId,
+                //     account: account?.toLowerCase(),
+                //     value: inputAmount.raw.toString(),
+                //     formatvalue: inputAmount?.toSignificant(6),
+                //     to: txnsType === 'swapin' ? account : toAddress?.toLowerCase(),
+                //     symbol: inputCurrency?.symbol,
+                //     version: txnsType,
+                //     pairid: pairid
+                //   }
+                //   recordsTxns(data)
+                // }
               } catch (error) {
                 console.log('Could not swapout', error)
               }

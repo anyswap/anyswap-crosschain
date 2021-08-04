@@ -369,7 +369,7 @@ export default function CrossChain() {
     selectChain,
     destConfig?.type,
     selectCurrency?.address,
-    destConfig?.pairid
+    // destConfig?.pairid
   )
   // console.log(selectCurrency)
   // console.log(isNativeToken)
@@ -669,14 +669,14 @@ export default function CrossChain() {
             //   iconUrl: require('../../assets/images/icon/withdraw.svg'),
             //   iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
             // },
-            // {
-            //   name: t('Deposited'),
-            //   onTabClick: () => {
-            //     setSwapType(BridgeType.deposit)
-            //   },
-            //   iconUrl: require('../../assets/images/icon/deposit.svg'),
-            //   iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            // },
+            {
+              name: t('Deposited'),
+              onTabClick: () => {
+                setSwapType(BridgeType.deposit)
+              },
+              iconUrl: require('../../assets/images/icon/deposit.svg'),
+              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+            },
           ]}
           currentTab={(() => {
             // if (swapType === BridgeType.swapin) return 0

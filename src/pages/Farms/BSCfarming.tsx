@@ -13,10 +13,15 @@ import farmlist from '../../config/farmlist'
 const BSC = 'BSC'
 export default function FarmingComponent() {
   const [price, setPrice] = useState()
+  const [LPprice, setLPPrice] = useState()
   useEffect(() => {
     getPrice('DEP').then((res:any) => {
       console.log(res)
       setPrice(res)
+    })
+    getPrice('ANY').then((res:any) => {
+      console.log(res)
+      setLPPrice(res)
     })
   }, [])
   return (
@@ -34,6 +39,7 @@ export default function FarmingComponent() {
           price={price}
           version={VERSION.V2_2}
           initLpList={farmlist[BSC].lpTokenIno}
+          LPprice={LPprice}
         />
       </AppBody>
     </>
