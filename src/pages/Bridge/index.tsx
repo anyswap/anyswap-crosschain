@@ -289,7 +289,6 @@ export default function CrossChain() {
         // console.log(token)
         const obj = allTokens[swapType]
         if (!isAddress(token, chainId) && token !== config.getCurChainInfo(chainId).symbol) continue
-        if (config.getCurConfigInfo().showCoin.length > 0 && !config.getCurConfigInfo().showCoin.includes(obj[token].name)) continue
         list[token] = {
           ...obj[token],
           "address": token,
@@ -502,7 +501,7 @@ export default function CrossChain() {
     
     setAllTokens({})
     if (chainId) {
-      GetTokenListByChainID({srcChainID: chainId}).then((res:any) => {
+      GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain}).then((res:any) => {
         console.log(res)
         if (res) {
           setAllTokens(res)
@@ -526,7 +525,7 @@ export default function CrossChain() {
       
       for (const c in selectCurrency?.destChains) {
         if (Number(c) === Number(chainId) && swapType !== BridgeType.deposit) continue
-        if (config.getCurConfigInfo().showChain.length > 0 && !config.getCurConfigInfo().showChain.includes(Number(c))) continue
+        if (config.getCurConfigInfo().showChain.length > 0 && !config.getCurConfigInfo().showChain.includes(c)) continue
         arr.push(c)
       }
       // console.log(arr)

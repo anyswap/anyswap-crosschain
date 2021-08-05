@@ -27,7 +27,7 @@ import { CloseIcon } from '../../theme'
 
 import config from '../../config'
 // import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
-import {fromWei, toWei} from '../../utils/tools/tools'
+import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
 
@@ -862,7 +862,7 @@ export default function Farming ({
               <div className='content'>
                 <h2 className='title'>{t('TotalStaking')}</h2>
                 <h3 className='num'>
-                  <p>{curLpObj.lpBalance ? Number(fromWei(curLpObj.lpBalance, dec, 6)).toFixed(2) : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
+                  <p>{curLpObj.lpBalance ? fromWei(curLpObj.lpBalance, dec, 2) : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
                   {/* <p>{pbaObj.ba ? fromWei(pbaObj.ba, 18, 6) : '0.00'} {config.getCurChainInfo(CHAINID).symbol}</p> */}
                 </h3>
               </div>
@@ -870,9 +870,9 @@ export default function Farming ({
             <StakingLi>
               {/* <h2 className='title'>Total ANY Supply</h2> */}
               <div className='content'>
-                <h2 className='title'>{t('MyStaking')}({pbaObj.pecent ? pbaObj.pecent.toFixed(2) : '0.00'} %)</h2>
+                <h2 className='title'>{t('MyStaking')}({pbaObj.pecent ? formatDecimal(pbaObj.pecent, 2) : '0.00'} %)</h2>
                 <h3 className='num'>
-                  <p>{pbaObj.utb ? pbaObj.utb : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
+                  <p>{pbaObj.utb ? formatDecimal(pbaObj.utb, 2) : '0.00'} {(curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : '')}</p>
                   {/* <p>{pbaObj.ubb ? fromWei(pbaObj.ubb, 18, 6) : '0.00'} {config.getCurChainInfo(CHAINID).symbol}</p> */}
                   {/* {pbaObj.ubb ? 
                 (thousandBit(amountFormatter(pbaObj.utb), 2) + '-' + thousandBit(amountFormatter(pbaObj.ubb), 2))

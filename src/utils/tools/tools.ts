@@ -149,37 +149,20 @@ export function thousandBit (num:any, dec:any = 8) {
     return num
 }
 
-// export function formatDecimal(num:any, decimal:number) {
-//   if (isNaN(num)) {
-//     return num
-//   }
-//   const minnum = 1 / Math.pow(10, decimal)
-//   // console.log(decimal)
-//   // console.log(minnum)
-//   if (!num || Number(num) <= 0) {
-//     return '0.00'
-//   }
-//   if (Number(num) < minnum) {
-//     return '<' + minnum
-//   }
-//   // num = (num * 10000).toFixed(decimal) / 10000
-//   num = num.toString()
-//   const index = num.indexOf('.')
-//   if (index !== -1) {
-//       num = num.substring(0, decimal + index + 1)
-//   } else {
-//       num = num.substring(0)
-//   }
-//   return Number(parseFloat(num).toFixed(decimal))
-// }
-
-export function formatDecimal(n:any, decimal:any) {
-  if (isNaN(n)) {
-    return n
+export function formatDecimal(num:any, decimal:number) {
+  if (isNaN(num)) {
+    return num
   }
-  // let num:any = (n * 10000).toFixed(decimal) / 10000
-  let num:any = n * 10000
-  num = num.toFixed(decimal) / 10000
+  const minnum = 1 / Math.pow(10, decimal)
+  // console.log(decimal)
+  // console.log(minnum)
+  if (!num || Number(num) <= 0) {
+    return '0.00'
+  }
+  if (Number(num) < minnum) {
+    return '<' + minnum
+  }
+  // num = (num * 10000).toFixed(decimal) / 10000
   num = num.toString()
   const index = num.indexOf('.')
   if (index !== -1) {
@@ -189,6 +172,23 @@ export function formatDecimal(n:any, decimal:any) {
   }
   return Number(parseFloat(num).toFixed(decimal))
 }
+
+// export function formatDecimal(n:any, decimal:any) {
+//   if (isNaN(n)) {
+//     return n
+//   }
+//   // let num:any = (n * 10000).toFixed(decimal) / 10000
+//   let num:any = n * 10000
+//   num = num.toFixed(decimal) / 10000
+//   num = num.toString()
+//   const index = num.indexOf('.')
+//   if (index !== -1) {
+//       num = num.substring(0, decimal + index + 1)
+//   } else {
+//       num = num.substring(0)
+//   }
+//   return Number(parseFloat(num).toFixed(decimal))
+// }
 
 export function formatNum (num:any) {
   if (isNaN(num)) {
