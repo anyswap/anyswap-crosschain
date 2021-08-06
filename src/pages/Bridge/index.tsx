@@ -43,6 +43,8 @@ import {formatDecimal, setLocalConfig} from '../../utils/tools/tools'
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
 
+import ConnectTerraModal from './ConnectTerraModal'
+
 // const provider = getProvider()
 // provider.send('eth_requestAccounts', []).then((res:any) => {
 //   console.log(provider)
@@ -583,14 +585,83 @@ export default function CrossChain() {
       setInputBridgeValue('')
     }
   }, [setInputBridgeValue])
-  // console.log(isUnderlying)
-  // console.log(selectChainList)
+
+  function ButtonView (type:any) {
+    let buttonNode:any = ''
+    const onClickFn = (label:any) => {
+      if (label === 'INIT') {
+        if (swapType !== BridgeType.deposit) {
+          setModalTipOpen(true)
+        } else {
+          setModalSpecOpen(true)
+        }
+      } else if (label === 'APPROVE') {
+        onDelay()
+        approveCallback().then(() => {
+          onClear()
+        })
+      } else if (label === 'SWAP') {
+        onDelay()
+        if (onWrap && swapType !== BridgeType.deposit) onWrap().then(() => {
+          onClear()
+        })
+        if (onTerraWrap && swapType === BridgeType.deposit && wrapTerraType === WrapType.WRAP) onTerraWrap().then(() => {
+          onClear()
+        })
+      }
+    }
+    if (!account) {
+      buttonNode = <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+    } else if (
+      !isNativeToken
+      && selectCurrency
+      && selectCurrency.underlying
+      && selectCurrency.underlying.isApprove
+      && inputBridgeValue
+      && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)
+    ) {
+      buttonNode = <ButtonConfirmed
+        onClick={() => {
+          onClickFn(type === 'INIT' ? 'INIT' : 'APPROVE')
+        }}
+        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+        width="48%"
+        altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+        // confirmed={approval === ApprovalState.APPROVED}
+      >
+        {approval === ApprovalState.PENDING ? (
+          <AutoRow gap="6px" justify="center">
+            {t('Approving')} <Loader stroke="white" />
+          </AutoRow>
+        ) : approvalSubmitted ? (
+          t('Approved')
+        ) : (
+          t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
+        )}
+      </ButtonConfirmed>
+    } else if (
+      swapType === BridgeType.deposit
+      && selectCurrency?.specChainId === 'TERRA'
+      && wrapTerraType === WrapType.NOCONNECT
+    ) {
+      buttonNode = <ConnectTerraModal />
+    } else {
+      buttonNode = <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+        onClickFn(type === 'INIT' ? 'INIT' : 'SWAP')
+      }}>
+        {btnTxt}
+      </ButtonPrimary>
+    }
+    return (
+      <BottomGrouping>
+        {buttonNode}
+      </BottomGrouping>
+    )
+  }
+  
   return (
     <>
     
-      {/* <ButtonLight onClick={() => {
-        if (onTerraWrap) onTerraWrap()
-      }}>test</ButtonLight> */}
       <ModalContent
         isOpen={modalSpecOpen}
         title={'Cross-chain Router'}
@@ -642,50 +713,7 @@ export default function CrossChain() {
               </ConfirmText>
             ) : ''
           }
-          <BottomGrouping>
-            {!account ? (
-                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-              ) : (
-                !isNativeToken && selectCurrency && selectCurrency.underlying && selectCurrency.underlying.isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                  <ButtonConfirmed
-                    onClick={() => {
-                      onDelay()
-                      approveCallback().then(() => {
-                        onClear()
-                      })
-                    }}
-                    disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                    width="48%"
-                    altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                    // confirmed={approval === ApprovalState.APPROVED}
-                  >
-                    {approval === ApprovalState.PENDING ? (
-                      <AutoRow gap="6px" justify="center">
-                        {t('Approving')} <Loader stroke="white" />
-                      </AutoRow>
-                    ) : approvalSubmitted ? (
-                      t('Approved')
-                    ) : (
-                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
-                    )}
-                  </ButtonConfirmed>
-                ) : (
-                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  // <ButtonPrimary disabled={delayAction} onClick={() => {
-                    onDelay()
-                    if (onWrap && swapType !== BridgeType.deposit) onWrap().then(() => {
-                      onClear()
-                    })
-                    if (onTerraWrap && swapType === BridgeType.deposit && wrapTerraType === WrapType.WRAP) onTerraWrap().then(() => {
-                      onClear()
-                    })
-                  }}>
-                    {t('Confirm')}
-                  </ButtonPrimary>
-                )
-              )
-            }
-          </BottomGrouping>
+          {ButtonView('SWAP')}
         </ConfirmContent>
       </ModalContent>
       <AppBody>
@@ -798,49 +826,7 @@ export default function CrossChain() {
 
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
         <Reminder bridgeConfig={bridgeConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
-
-        <BottomGrouping>
-          {!account ? (
-              <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-            ) : (
-              !isNativeToken && selectCurrency && selectCurrency.underlying && selectCurrency.underlying.isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                <ButtonConfirmed
-                  onClick={() => {
-                    if (swapType !== BridgeType.deposit) {
-                      setModalTipOpen(true)
-                    } else {
-                      setModalSpecOpen(true)
-                    }
-                  }}
-                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                  width="48%"
-                  altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                  // confirmed={approval === ApprovalState.APPROVED}
-                >
-                  {approval === ApprovalState.PENDING ? (
-                    <AutoRow gap="6px" justify="center">
-                      {t('Approving')} <Loader stroke="white" />
-                    </AutoRow>
-                  ) : approvalSubmitted ? (
-                    t('Approved')
-                  ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol, chainId)
-                  )}
-                </ButtonConfirmed>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  if (swapType !== BridgeType.deposit) {
-                    setModalTipOpen(true)
-                  } else {
-                    setModalSpecOpen(true)
-                  }
-                }}>
-                  {btnTxt}
-                </ButtonPrimary>
-              )
-            )
-          }
-        </BottomGrouping>
+        {ButtonView('INIT')}
       </AppBody>
     </>
   )

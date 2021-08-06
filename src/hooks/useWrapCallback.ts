@@ -2,5 +2,6 @@
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
-  UNWRAP
+  UNWRAP,
+  NOCONNECT
 }
