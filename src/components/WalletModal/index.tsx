@@ -128,7 +128,8 @@ export default function WalletModal({
 }) {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error, chainId } = useWeb3React()
-
+// console.log(active)
+// console.log(connector)
   const { t } = useTranslation()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
@@ -167,19 +168,6 @@ export default function WalletModal({
   }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
 
   const tryActivation = async (connector: AbstractConnector | undefined) => {
-    // let name = ''
-    // Object.keys(SUPPORTED_WALLETS).map(key => {
-    //   if (connector === SUPPORTED_WALLETS[key].connector) {
-    //     return (name = SUPPORTED_WALLETS[key].name)
-    //   }
-    //   return true
-    // })
-    // log selected wallet
-    // ReactGA.event({
-    //   category: 'Wallet',
-    //   action: 'Change Wallet',
-    //   label: name
-    // })
     setPendingWallet(connector) // set wallet for pending view
     setWalletView(WALLET_VIEWS.PENDING)
 
@@ -258,6 +246,13 @@ export default function WalletModal({
       }
 
       // return rest of options
+      // const isActive = window?.ethereum?.isMetaMask && option.name === 'Metamask' && option.connector === connector ? 
+      let isActive = false
+      if (window?.ethereum?.isMetaMask && option.name === 'MetaMask') {
+        if (option.connector === connector) isActive = true
+      } else if (!window?.ethereum?.isMetaMask && window?.okexchain?.isOKExWallet && option.name === 'OKEx') {
+        if (option.connector === connector) isActive = true
+      }
       return (
         !isMobile &&
         !option.mobileOnly && (
@@ -269,7 +264,8 @@ export default function WalletModal({
                 : !option.href && tryActivation(option.connector)
             }}
             key={key}
-            active={option.connector === connector}
+            // active={option.connector === connector}
+            active={isActive}
             color={option.color}
             link={option.href}
             header={option.name}

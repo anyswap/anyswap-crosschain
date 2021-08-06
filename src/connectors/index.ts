@@ -34,3 +34,7 @@ export function getNetworkLibrary(): Web3Provider {
 export const injected = new InjectedConnector({
   supportedChainIds: [...spportChainArr]
 })
+
+// export const Okinjected = new InjectedConnector({
+//   supportedChainIds: [...spportChainArr]
+// })

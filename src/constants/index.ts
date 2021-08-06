@@ -40,6 +40,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#E8831D'
   },
+  OKEXCHAIN: {
+    connector: injected,
+    name: 'OKEx',
+    iconName: 'OKT.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D'
+  },
 }
 
 export const NetworkContextName = 'NETWORK'

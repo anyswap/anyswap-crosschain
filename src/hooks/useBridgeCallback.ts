@@ -17,7 +17,8 @@ import config from '../config'
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
-  UNWRAP
+  UNWRAP,
+  NOCONNECT
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
@@ -591,11 +592,11 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   pairid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType;onConnect?: undefined | (() => Promise<void>); execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
-  const { post } = useWallet()
+  const { post, connect } = useWallet()
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -604,6 +605,7 @@ export function useBridgeNativeCallback(
 
 
   const sendTx = useCallback(() => {
+    console.log(connectedWallet)
     if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType) return
     const send = new MsgSend(
       connectedWallet.walletAddress,
@@ -623,29 +625,35 @@ export function useBridgeNativeCallback(
     // console.log(inputAmount?.raw?.toString())
     // console.log(balance?.raw?.toString())
     return {
-      wrapType: WrapType.WRAP,
+      wrapType: !connectedWallet ? WrapType.NOCONNECT : WrapType.WRAP,
+      onConnect: async () => {
+        connect(ConnectType.CHROME_EXTENSION)
+      },
       execute:
         inputAmount
           ? async () => {
               try {
+                console.log(12)
                 const txReceipt:any = await sendTx()
                 console.log(txReceipt)
-                const txData:any = {hash: txReceipt?.result?.txhash}
-                addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                if (txReceipt?.info && account) {
-                  const data = {
-                    hash: txData.hash?.toLowerCase(),
-                    chainId: chainId,
-                    selectChain: toChainID,
-                    account: connectedWallet?.walletAddress,
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: account,
-                    symbol: inputCurrency?.symbol,
-                    version: 'swapin',
-                    pairid: pairid
+                if (txReceipt) {
+                  const txData:any = {hash: txReceipt?.result?.txhash}
+                  addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                  if (txReceipt?.info && account) {
+                    const data = {
+                      hash: txData.hash?.toLowerCase(),
+                      chainId: chainId,
+                      selectChain: toChainID,
+                      account: connectedWallet?.walletAddress,
+                      value: inputAmount.raw.toString(),
+                      formatvalue: inputAmount?.toSignificant(6),
+                      to: account,
+                      symbol: inputCurrency?.symbol,
+                      version: 'swapin',
+                      pairid: pairid
+                    }
+                    recordsTxns(data)
                   }
-                  recordsTxns(data)
                 }
               } catch (error) {
                 console.log('Could not swapout', error)

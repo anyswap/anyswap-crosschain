@@ -81,6 +81,7 @@ interface Window {
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void
   }
+  okexchain:any
   web3?: {}
 }
 

@@ -9,7 +9,7 @@ import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from '../CrossChain/reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useCrossBridgeCallback} from '../../hooks/useBridgeCallback'
+import {useCrossBridgeCallback, useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -358,6 +358,30 @@ export default function CrossChain() {
     }
     return false
   }, [selectCurrency, chainId])
+
+  const TitleList = useMemo(() => {
+    const arr = [
+      {
+        name: t('bridge'),
+        onTabClick: () => {
+          setSwapType(BridgeType.bridge)
+        },
+        iconUrl: require('../../assets/images/icon/send.svg'),
+        iconActiveUrl: require('../../assets/images/icon/send-white.svg')
+      }
+    ]
+    if (allTokens?.deposit && Object.keys(allTokens?.deposit).length > 0) {
+      arr.push({
+        name: t('Deposited'),
+        onTabClick: () => {
+          setSwapType(BridgeType.deposit)
+        },
+        iconUrl: require('../../assets/images/icon/deposit.svg'),
+        iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+      })
+    }
+    return arr
+  }, [allTokens])
   // console.log(selectCurrency)
   // console.log(destConfig)
   
@@ -370,9 +394,19 @@ export default function CrossChain() {
     selectCurrency?.address,
     // destConfig?.pairid
   )
+  const { wrapType: wrapTerraType, execute: onTerraWrap } = useTerraCrossBridgeCallback(
+    formatCurrency ? formatCurrency : undefined,
+    destConfig.DepositAddress,
+    inputBridgeValue,
+    selectChain,
+    selectCurrency?.address,
+    destConfig?.pairid
+  )
+  
   // console.log(selectCurrency)
   // console.log(isNativeToken)
-
+  // console.log(wrapTerraType)
+  // console.log(wrapTerraInputError)
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
@@ -553,6 +587,10 @@ export default function CrossChain() {
   // console.log(selectChainList)
   return (
     <>
+    
+      {/* <ButtonLight onClick={() => {
+        if (onTerraWrap) onTerraWrap()
+      }}>test</ButtonLight> */}
       <ModalContent
         isOpen={modalSpecOpen}
         title={'Cross-chain Router'}
@@ -638,6 +676,9 @@ export default function CrossChain() {
                     if (onWrap && swapType !== BridgeType.deposit) onWrap().then(() => {
                       onClear()
                     })
+                    if (onTerraWrap && swapType === BridgeType.deposit && wrapTerraType === WrapType.WRAP) onTerraWrap().then(() => {
+                      onClear()
+                    })
                   }}>
                     {t('Confirm')}
                   </ButtonPrimary>
@@ -650,33 +691,7 @@ export default function CrossChain() {
       <AppBody>
         <Title
           title={t('bridge')} 
-          
-          tabList={[
-            {
-              name: t('bridge'),
-              onTabClick: () => {
-                setSwapType(BridgeType.bridge)
-              },
-              iconUrl: require('../../assets/images/icon/send.svg'),
-              iconActiveUrl: require('../../assets/images/icon/send-white.svg')
-            },
-            // {
-            //   name: t('redeem'),
-            //   onTabClick: () => {
-            //     setSwapType(BridgeType.swapout)
-            //   },
-            //   iconUrl: require('../../assets/images/icon/withdraw.svg'),
-            //   iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
-            // },
-            {
-              name: t('Deposited'),
-              onTabClick: () => {
-                setSwapType(BridgeType.deposit)
-              },
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            },
-          ]}
+          tabList={TitleList}
           currentTab={(() => {
             // if (swapType === BridgeType.swapin) return 0
             if (swapType === BridgeType.bridge) return 0

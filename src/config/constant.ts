@@ -23,8 +23,8 @@ export const timeout = 1000 * 60 * 30
 
 // export const USE_VERSION = VERSION.V1_1
 // export const USE_VERSION = VERSION.V2_2
-export const USE_VERSION = VERSION.V4
-// export const USE_VERSION = VERSION.V4_OKT
+// export const USE_VERSION = VERSION.V4
+export const USE_VERSION = VERSION.V4_OKT
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []
