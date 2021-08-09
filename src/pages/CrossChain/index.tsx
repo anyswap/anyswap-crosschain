@@ -36,7 +36,7 @@ import {selectNetwork} from '../../config/tools/methods'
 // import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
 import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
-import {formatDecimal} from '../../utils/tools/tools'
+import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
@@ -307,7 +307,8 @@ export default function CrossChain() {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
-        return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+        // return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+        return thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
       }
       return ''
     } else {

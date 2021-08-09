@@ -93,8 +93,6 @@ export default function SelectChainIdInputPanel({
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
-  // const { chainId } = useActiveWeb3React()
-  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const [modalOpen, setModalOpen] = useState(false)
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])

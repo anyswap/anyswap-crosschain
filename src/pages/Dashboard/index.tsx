@@ -86,8 +86,6 @@ const pagesize = 18
 
 export default function DashboardDtil() {
   const { account, chainId } = useActiveWeb3React()
-  // const { chainId } = useActiveWeb3React()
-  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   const [poolArr, setPoolArr] = useState<Array<string>>()
 

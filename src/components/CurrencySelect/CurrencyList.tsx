@@ -99,7 +99,6 @@ function CurrencyRow({
   style: CSSProperties
 }) {
   const { account, chainId } = useActiveWeb3React()
-  // const { account } = useActiveWeb3React()
   // const { t } = useTranslation()
   const key = currencyKey(currency)
   const currencyObj = {

@@ -307,9 +307,6 @@ export function Option ({
   curChainId:any,
   selectChainId:any
 }) {
-  // const { chainId } = useActiveWeb3React()
-  // console.log(item)
-  // console.log(selectChain)
   const item = config.getCurChainInfo(curChainId)
   const [viewUrl, setViewUrl] = useState<string>(item.nodeRpc)
   const [viewLoading, setViewLoading] = useState<boolean>(false)

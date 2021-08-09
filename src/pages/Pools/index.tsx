@@ -50,8 +50,6 @@ let intervalFN:any
 export default function SwapNative() {
   const { account, chainId } = useActiveWeb3React()
   const history = createBrowserHistory()
-  // const { chainId } = useActiveWeb3React()
-  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()

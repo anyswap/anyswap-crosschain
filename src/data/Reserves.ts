@@ -4,9 +4,6 @@ import { TokenAmount, Pair, Currency, ChainId } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
-// import { useActiveWeb3React } from '../hooks'
-// import v2Factory from '../constants/abis/v2_factory.json'
-// import { useMultipleContractSingleData, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useMultipleContractSingleData } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
@@ -26,8 +23,7 @@ export enum PairState {
 }
 // let onlyOne:any = []
 export function usePairs(currencies: [Currency | undefined, Currency | undefined][], chainId?: ChainId): [PairState, Pair | null][] {
-  // const { chainId } = useActiveWeb3React()
-  // console.log(currencies)
+
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => {

@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
-// import { useActiveWeb3React } from '../../hooks'
 
 import config from '../../config'
 
@@ -300,7 +299,6 @@ const Link = styled(ExternalLink)`
 
 // console.log(config)
 export default function NavList() {
-  // const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
 
   return (

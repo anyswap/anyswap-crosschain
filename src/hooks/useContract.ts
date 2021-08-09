@@ -52,22 +52,7 @@ export function useRpcContract(address: string | undefined, ABI: any, withSigner
   }, [address, ABI, withSignerIfPossible, chainId])
 }
 
-// function useMoreContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-//   const { account } = useActiveWeb3React()
-//   const library = ''
-//   console.log(library)
-//   return useMemo(() => {
-//     if (!address || !ABI || !library) return null
-//     try {
-//       return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
-//     } catch (error) {
-//       console.error('Failed to get contract', error)
-//       return null
-//     }
-//   }, [address, ABI, library, withSignerIfPossible, account])
-// }
 export function useV1FactoryContract(): Contract | null {
-  // const { chainId } = useActiveWeb3React()
   return useContract(config.v1FactoryToken ? config.v1FactoryToken : undefined, V1_FACTORY_ABI, false)
 }
 

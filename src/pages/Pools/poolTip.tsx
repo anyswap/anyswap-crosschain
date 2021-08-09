@@ -56,8 +56,6 @@ export default function PoolTip ({
   destChain: any
   swapType: any
 }) {
-  // const { account, chainId } = useActiveWeb3React()
-  // const { account } = useActiveWeb3React()
   const { chainId } = useActiveWeb3React()
   // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()

@@ -103,7 +103,6 @@ export default function SelectCurrencyInputPanel({
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
-  // const { chainId } = useActiveWeb3React()
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)

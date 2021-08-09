@@ -38,7 +38,7 @@ import {selectNetwork} from '../../config/tools/methods'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
-import {formatDecimal, setLocalConfig} from '../../utils/tools/tools'
+import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
@@ -419,7 +419,7 @@ export default function CrossChain() {
         value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
       if (value && Number(value) && Number(value) > 0) {
-        return formatDecimal(value, Math.min(6, selectCurrency.decimals))
+        return thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
       }
       return ''
     } else {

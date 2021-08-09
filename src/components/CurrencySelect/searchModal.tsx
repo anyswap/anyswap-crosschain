@@ -18,7 +18,6 @@ import { CloseIcon } from '../../theme'
 import { isAddress } from '../../utils'
 
 import { useToken } from '../../hooks/Tokens'
-// import { useActiveWeb3React } from '../../hooks'
 
 import CurrencyList from './CurrencyList'
 
@@ -44,7 +43,6 @@ export default function SearchModal ({
   allTokens = {}
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-  // const { chainId } = useActiveWeb3React()
 
   const tokenComparator = useTokenComparator(true)
 
