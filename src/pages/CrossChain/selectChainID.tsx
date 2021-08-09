@@ -82,7 +82,7 @@ export default function SelectChainIdInputPanel({
   const { chainId, account } = useActiveWeb3React()
   const [modalOpen, setModalOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
-  const [destBalance, setDestBalance] = useState<any>()
+  const [destBalance, setDestBalance] = useState<any>('')
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -145,7 +145,7 @@ export default function SelectChainIdInputPanel({
         const isNT = (isNativeToken && Number(chainId) === Number(selectChainId)) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
-          // console.log(res)
+          console.log(res)
           if (res) {
             setDestBalance(res)
           } else {
@@ -178,7 +178,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {t('balanceTxt') + ': '}{destBalance ? formatDecimal(destBalance, 2) : '-'}
+                  {t('balanceTxt') + ': '}{destBalance !== '' ? formatDecimal(destBalance, 2) : '-'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

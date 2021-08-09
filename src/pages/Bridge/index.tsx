@@ -138,6 +138,11 @@ export enum BridgeType {
   bridge = 'bridge',
 }
 
+export enum SelectListType {
+  INPUT = 'INPUT',
+  OUTPUT = 'OUTPUT',
+}
+
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -176,6 +181,7 @@ export default function CrossChain() {
 
   const [allTokens, setAllTokens] = useState<any>({})
   const [p2pAddress, setP2pAddress] = useState<any>('')
+  const [selectCurrencyType, setSelectCurrencyType] = useState<any>(SelectListType.INPUT)
 
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
@@ -272,26 +278,28 @@ export default function CrossChain() {
     }
   }, [selectCurrency, chainId, account, selectChain, intervalCount])
 
+  // const oldSymbol = useRef()
 
   useEffect(() => {
     getSelectPool()
   }, [getSelectPool])
 
-  useEffect(() => {
-    setSelectCurrency('')
-  }, [swapType, chainId])
-
+  // useEffect(() => {
+  //   // oldSymbol.current = selectCurrency?.symbol
+  //   history.
+  // }, [selectCurrency])
+  // console.log(oldSymbol)
   const useTolenList = useMemo(() => {
     
     if (allTokens && swapType && chainId) {
-      const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
+      const urlParams = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
       const list:any = {}
-      let t1 = ''
+      let isUseToken = 0
       for (const token in allTokens[swapType]) {
         // console.log(token)
         const obj = allTokens[swapType]
         if (!isAddress(token, chainId) && token !== config.getCurChainInfo(chainId).symbol) continue
-        list[token] = {
+        const tokenObj = {
           ...obj[token],
           "address": token,
           "chainId": chainId,
@@ -303,25 +311,38 @@ export default function CrossChain() {
           "logoUrl": obj[token].logoUrl,
           "specChainId": swapType === BridgeType.deposit ? obj[token].chainId : ''
         }
-        if (!selectCurrency || selectCurrency?.chainId !== chainId) {
+        if ( selectCurrencyType === SelectListType.OUTPUT ) {
+          if (obj[token].destChains[selectChain]) {
+            list[token] = tokenObj
+          } else {
+            continue
+          }
+        } else {
+          list[token] = tokenObj
+        }
+        if (!selectCurrency && selectCurrency?.chainId !== chainId) {
+          // console.log(111111111111111)
+          // console.log(oldSymbol)
+          // console.log(list[token].symbol.toLowerCase())
+          // console.log(222222222222222)
           if (
-            t 
+            urlParams 
             && (
-              t === token
-              || obj[token].symbol.toLowerCase() === t
+              urlParams === token
+              || list[token].symbol.toLowerCase() === urlParams
             )
           ) {
             setSelectCurrency(list[token])
-          } else if (!t && !t1) {
-            t1 = token
-            setSelectCurrency(list[t1])
+          } else if (!urlParams && !isUseToken) {
+            isUseToken = 1
+            setSelectCurrency(list[token])
           }
         }
       }
       return list
     }
     return {}
-  }, [allTokens, swapType, chainId, selectCurrency])
+  }, [allTokens, swapType, chainId, selectCurrencyType, selectChain])
 
   const bridgeConfig = useMemo(() => {
     if (selectCurrency?.address && useTolenList[selectCurrency?.address]) return useTolenList[selectCurrency?.address]
@@ -334,7 +355,8 @@ export default function CrossChain() {
     }
     return false
   }, [bridgeConfig, selectChain])
-
+  // console.log(selectCurrency)
+  // console.log(bridgeConfig)
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -525,7 +547,6 @@ export default function CrossChain() {
   }, [account, selectCurrency, destConfig, chainId])
   
   useEffect(() => {
-    // setSelectCurrency('')
     if (account && destConfig?.type === 'swapin' && swapType !== BridgeType.deposit) {
       setRecipient(account)
     } else {
@@ -565,13 +586,13 @@ export default function CrossChain() {
         arr.push(c)
       }
       // console.log(arr)
-      if (arr.length > 0) {
+      if (arr.length > 0 && !arr.includes(selectChain)) {
         for (const c of arr) {
           if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
           setSelectChain(c)
           break
         }
-      } else {
+      } else if (!selectChain) {
         setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
       }
       setSelectChainList(arr)
@@ -750,6 +771,7 @@ export default function CrossChain() {
             isViewNetwork={true}
             onOpenModalView={(value) => {
               console.log(value)
+              setSelectCurrencyType(SelectListType.INPUT)
               setModalOpen(value)
             }}
             isViewModal={modalOpen}
@@ -806,6 +828,7 @@ export default function CrossChain() {
             id="selectChainID"
             onOpenModalView={(value) => {
               console.log(value)
+              setSelectCurrencyType(SelectListType.OUTPUT)
               setModalOpen(value)
             }}
             bridgeConfig={bridgeConfig}
