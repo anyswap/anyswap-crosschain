@@ -289,6 +289,7 @@ export default function FarmsList () {
   const [MATICStakingAPY, setMATICStakingAPY] = useState()
   const [FTMStakingAPY, setFTMStakingAPY] = useState()
   const [BSCStakingAPY, setBSCStakingAPY] = useState()
+  const [BSCHEROStakingAPY, setBSCHEROStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -337,6 +338,11 @@ export default function FarmsList () {
         setBSCStakingAPY(res)
       })
     })
+    getPrice('HERO').then((res:any) => {
+      getFarmAPY('BSC_HERO', res).then((res:any) => {
+        setBSCHEROStakingAPY(res)
+      })
+    })
   }, [])
 
 
@@ -356,6 +362,17 @@ export default function FarmsList () {
     }
   }
   const farmList:any = [
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: '/farm/bsc/hero',
+      title: 'HERO Staking',
+      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCHEROStakingAPY ? (Number(BSCHEROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
+      coin2: 'BNB',
+      coin3: '',
+      status: 'live'
+    },
     {
       isDoubleLogo: 1,
       isOutLink: 0,
@@ -403,9 +420,9 @@ export default function FarmsList () {
   }: {isDoubleLogo:any, isOutLink:any, url:any, title:any, info:any, coin1:any, coin2?:any, coin3?:any, status?:any}) {
     let coinLogo = isDoubleLogo ? (
       <DoubleLogo>
-        <div className="logo left"><TokenLogo1 symbol={coin1} size='100%'/></div>
+        <div className="logo left"><TokenLogo1 symbol={coin1} logoUrl={coin1.indexOf('http') === 0 ? coin1 : ''} size='100%'/></div>
         <span className="add">+</span>
-        <div className="logo right"><TokenLogo1 symbol={coin2} size='100%'/></div>
+        <div className="logo right"><TokenLogo1 symbol={coin2} logoUrl={coin2.indexOf('http') === 0 ? coin2 : ''} size='100%'/></div>
       </DoubleLogo>
     ) : (
       <div className='img'><img src={coin1} alt={title}/></div>
@@ -414,17 +431,17 @@ export default function FarmsList () {
       coinLogo = <div className='img'><img src={coin1} alt={title}/></div>
     } else if (isDoubleLogo === 1) {
       coinLogo = <DoubleLogo>
-        <div className="logo left"><TokenLogo1 symbol={coin1} size='100%'/></div>
+        <div className="logo left"><TokenLogo1 symbol={coin1} logoUrl={coin1.indexOf('http') === 0 ? coin1 : ''} size='100%'/></div>
         <span className="add">+</span>
-        <div className="logo right"><TokenLogo1 symbol={coin2} size='100%'/></div>
+        <div className="logo right"><TokenLogo1 symbol={coin2} logoUrl={coin2.indexOf('http') === 0 ? coin2 : ''} size='100%'/></div>
       </DoubleLogo>
     } else if (isDoubleLogo === 2) {
       coinLogo = <DoubleLogo>
-        <div className="logo left"><TokenLogo1 symbol={coin1} size='100%'/></div>
+        <div className="logo left"><TokenLogo1 symbol={coin1} logoUrl={coin1.indexOf('http') === 0 ? coin1 : ''} size='100%'/></div>
         <span className="add">+</span>
-        <div className="logo right"><TokenLogo1 symbol={coin2} size='100%'/></div>
+        <div className="logo right"><TokenLogo1 symbol={coin2} logoUrl={coin2.indexOf('http') === 0 ? coin2 : ''} size='100%'/></div>
         <span className="add">+</span>
-        <div className="logo right"><TokenLogo1 symbol={coin3} size='100%'/></div>
+        <div className="logo right"><TokenLogo1 symbol={coin3} logoUrl={coin3.indexOf('http') === 0 ? coin3 : ''} size='100%'/></div>
       </DoubleLogo>
     }
     const titleInfo = <div className='info'>

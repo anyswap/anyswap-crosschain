@@ -87,7 +87,8 @@ export default function AddressInputPanel({
   id,
   value,
   onChange,
-  disabledInput = false
+  disabledInput = false,
+  isValid = true
 }: {
   id?: string
   // the typed string value
@@ -95,6 +96,7 @@ export default function AddressInputPanel({
   // triggers whenever the typed value changes
   onChange?: (value: string) => void
   disabledInput?: boolean
+  isValid?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
@@ -110,7 +112,7 @@ export default function AddressInputPanel({
     [onChange]
   )
 
-  const error =  Boolean(value.length > 0 && !loading && !address && !disabledInput)
+  const error =  isValid && Boolean(value.length > 0 && !loading && !address && !disabledInput)
 
   return (
     <InputPanel id={id}>

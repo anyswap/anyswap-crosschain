@@ -298,8 +298,10 @@ export default function CrossChain() {
   }, [getSelectPool])
 
   useEffect(() => {
-    if (selectCurrency?.symbol) {
+    if (selectCurrency?.symbol && swapType === BridgeType.bridge) {
       sessionStorage.setItem(SelectBridgeCurrencyLabel, selectCurrency?.symbol)
+    } else if (selectCurrency?.symbol && swapType !== BridgeType.bridge) {
+      sessionStorage.setItem(SelectBridgeCurrencyLabel, '')
     }
   }, [selectCurrency])
   // useEffect(() => {
@@ -331,7 +333,7 @@ export default function CrossChain() {
           "logoUrl": obj[token].logoUrl,
           "specChainId": swapType === BridgeType.deposit ? obj[token].chainId : ''
         }
-        if ( selectCurrencyType === SelectListType.OUTPUT ) {
+        if ( selectCurrencyType === SelectListType.OUTPUT && swapType !== BridgeType.deposit) {
           if (obj[token].destChains[selectChain]) {
             list[token] = tokenObj
           } else {
@@ -340,7 +342,10 @@ export default function CrossChain() {
         } else {
           list[token] = tokenObj
         }
-        if (!selectCurrency && selectCurrency?.chainId !== chainId) {
+        if (
+          !selectCurrency 
+          || selectCurrency?.chainId !== chainId
+        ) {
           if (
             urlParams 
             && (
@@ -356,6 +361,8 @@ export default function CrossChain() {
           }
         }
       }
+      // console.log(selectCurrency)
+      // console.log(list)
       return list
     }
     return {}
@@ -408,9 +415,14 @@ export default function CrossChain() {
   const TitleList = useMemo(() => {
     const arr = [
       {
-        name: t('bridge'),
+        // name: t('bridge'),
+        name: 'EVM',
         onTabClick: () => {
-          setSwapType(BridgeType.bridge)
+          if (swapType !== BridgeType.bridge) {
+            sessionStorage.setItem(SelectBridgeCurrencyLabel, '')
+            setSelectCurrency('')
+            setSwapType(BridgeType.bridge)
+          }
         },
         iconUrl: require('../../assets/images/icon/send.svg'),
         iconActiveUrl: require('../../assets/images/icon/send-white.svg')
@@ -418,18 +430,23 @@ export default function CrossChain() {
     ]
     if (allTokens?.deposit && Object.keys(allTokens?.deposit).length > 0) {
       arr.push({
-        name: t('Deposited'),
+        // name: t('Deposited'),
+        name: 'BTC',
         onTabClick: () => {
-          setSwapType(BridgeType.deposit)
+          if (swapType !== BridgeType.deposit) {
+            sessionStorage.setItem(SelectBridgeCurrencyLabel, '')
+            setSelectCurrency('')
+            setSwapType(BridgeType.deposit)
+          }
         },
         iconUrl: require('../../assets/images/icon/deposit.svg'),
         iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
       })
     }
     return arr
-  }, [allTokens])
+  }, [allTokens, swapType])
   // console.log(selectCurrency)
-  // console.log(destConfig)
+  // console.log(swapType)
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
@@ -477,7 +494,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [wrapInputError, selectCurrency])
+  }, [wrapInputError, selectCurrency, swapType])
 
   const isCrossBridge = useMemo(() => {
     const isAddr = swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : isAddress( recipient, selectChain)
@@ -572,15 +589,19 @@ export default function CrossChain() {
         }
       })
     }
-  }, [account, selectCurrency, destConfig, chainId])
+  }, [account, selectCurrency, destConfig, chainId, swapType])
   
   useEffect(() => {
-    if (account && destConfig?.type === 'swapin' && swapType !== BridgeType.deposit) {
-      setRecipient(account)
+    if (account && swapType !== BridgeType.deposit) {
+      if (destConfig?.type === 'swapin' || !isNaN(selectChain)) {
+        setRecipient(account)
+      } else {
+        setRecipient('')
+      }
     } else {
-      setRecipient(account)
+      setRecipient('')
     }
-  }, [account, destConfig, swapType])
+  }, [account, destConfig, swapType, selectChain])
 
   useEffect(() => {
     
@@ -626,7 +647,7 @@ export default function CrossChain() {
       }
       setSelectChainList(arr)
     }
-  }, [selectCurrency])
+  }, [selectCurrency, swapType])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -869,7 +890,7 @@ export default function CrossChain() {
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' ? (
             <>
-              {/* <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} /> */}
+              <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
             </>
           ): ''}
           {
