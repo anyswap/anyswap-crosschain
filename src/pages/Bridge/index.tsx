@@ -158,8 +158,9 @@ export default function CrossChain() {
 
   const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
-  const localSelectChain = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
-  // console.log(initBridgeToken)
+  const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
+  // console.log(localSelectChain)
+  // console.log(chainId)
   let initBridgeToken:any = urlParams ? urlParams : localParams
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
@@ -168,7 +169,7 @@ export default function CrossChain() {
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
-  const [selectChain, setSelectChain] = useState<any>(localSelectChain)
+  const [selectChain, setSelectChain] = useState<any>(localSelectChain === chainId ? '' : localSelectChain)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState(initSwapType ? initSwapType : BridgeType.bridge)
@@ -311,7 +312,6 @@ export default function CrossChain() {
   // }, [selectChain])
   // console.log(oldSymbol)
   const useTolenList = useMemo(() => {
-    
     if (allTokens && swapType && chainId) {
       const urlParams = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
       // console.log(urlParams)
@@ -369,23 +369,29 @@ export default function CrossChain() {
   }, [allTokens, swapType, chainId, selectCurrencyType, selectChain])
 
   const bridgeConfig = useMemo(() => {
+    // console.log(useTolenList)
+    // console.log(selectCurrency)
+    // console.log(selectChain)
     if (selectCurrency?.address && useTolenList[selectCurrency?.address]) return useTolenList[selectCurrency?.address]
     return ''
   }, [selectCurrency, useTolenList])
 
   const destConfig = useMemo(() => {
+    // console.log(bridgeConfig)
+    // console.log(selectChain)
     if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
       return bridgeConfig?.destChains[selectChain]
     }
     return false
   }, [bridgeConfig, selectChain])
-  // console.log(selectCurrency)
-  // console.log(selectChain)
-  // console.log(localSelectChain)
-  // useEffect(() => {
-  //   setSelectChain(localSelectChain)
-  // }, [localSelectChain])
-  // console.log(bridgeConfig)
+
+  
+  useEffect(() => {
+    if ((selectCurrency && chainId !== selectCurrency?.chainId) || (!bridgeConfig && selectCurrency)) {
+      history.go(0)
+    }
+  }, [chainId, bridgeConfig])
+  
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -466,10 +472,7 @@ export default function CrossChain() {
     destConfig?.pairid
   )
   
-  // console.log(selectCurrency)
-  // console.log(isNativeToken)
-  // console.log(wrapTerraType)
-  // console.log(wrapTerraInputError)
+  
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
@@ -635,6 +638,8 @@ export default function CrossChain() {
         arr.push(c)
       }
       // console.log(arr)
+      // console.log(selectCurrency)
+      // console.log(selectChain)
       if (arr.length > 0 && !arr.includes(selectChain)) {
         for (const c of arr) {
           if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
@@ -647,8 +652,8 @@ export default function CrossChain() {
       }
       setSelectChainList(arr)
     }
-  }, [selectCurrency, swapType])
-
+  }, [selectCurrency, swapType, chainId, selectChain])
+  // console.log(selectChain)
   const handleMaxInput = useCallback((value) => {
     if (value) {
       setInputBridgeValue(value)
