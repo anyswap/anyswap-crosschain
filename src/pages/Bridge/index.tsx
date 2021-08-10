@@ -4,6 +4,7 @@ import {GetTokenListByChainID, createAddress, isAddress} from 'multichain-bridge
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
+// import { createBrowserHistory } from 'history'
 
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from '../CrossChain/reminder'
@@ -143,6 +144,8 @@ export enum SelectListType {
   OUTPUT = 'OUTPUT',
 }
 
+const SelectBridgeCurrencyLabel = 'SelectBridgeCurrencyLabel'
+const SelectBridgeChainIdLabel = 'SelectBridgeChainIdLabel'
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -153,8 +156,11 @@ export default function CrossChain() {
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
-  
-  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
+  const localSelectChain = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
+  // console.log(initBridgeToken)
+  let initBridgeToken:any = urlParams ? urlParams : localParams
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   let initSwapType:any = getParams('bridgetype') ? getParams('bridgetype') : ''
@@ -162,7 +168,7 @@ export default function CrossChain() {
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
-  const [selectChain, setSelectChain] = useState<any>()
+  const [selectChain, setSelectChain] = useState<any>(localSelectChain)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState(initSwapType ? initSwapType : BridgeType.bridge)
@@ -194,7 +200,7 @@ export default function CrossChain() {
     bl: ''
   })
 
-  // console.log(selectCurrency)
+  // console.log(selectChain)
 
   const formatCurrency = useLocalToken(
     selectCurrency?.underlying ? {
@@ -229,8 +235,15 @@ export default function CrossChain() {
   function changeNetwork (chainID:any) {
     selectNetwork(chainID).then((res: any) => {
       console.log(res)
+      
       if (res.msg === 'Error') {
         alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      } else {
+        if (selectCurrency?.chainId) {
+          sessionStorage.setItem(SelectBridgeChainIdLabel, selectCurrency.chainId)
+          history.go(0)
+          // setSelectChain(selectCurrency.chainId)
+        }
       }
     })
   }
@@ -284,15 +297,22 @@ export default function CrossChain() {
     getSelectPool()
   }, [getSelectPool])
 
+  useEffect(() => {
+    if (selectCurrency?.symbol) {
+      sessionStorage.setItem(SelectBridgeCurrencyLabel, selectCurrency?.symbol)
+    }
+  }, [selectCurrency])
   // useEffect(() => {
-  //   // oldSymbol.current = selectCurrency?.symbol
-  //   history.
-  // }, [selectCurrency])
+  //   if (selectChain) {
+  //     sessionStorage.setItem(SelectBridgeChainIdLabel, selectChain)
+  //   }
+  // }, [selectChain])
   // console.log(oldSymbol)
   const useTolenList = useMemo(() => {
     
     if (allTokens && swapType && chainId) {
       const urlParams = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
+      // console.log(urlParams)
       const list:any = {}
       let isUseToken = 0
       for (const token in allTokens[swapType]) {
@@ -321,14 +341,11 @@ export default function CrossChain() {
           list[token] = tokenObj
         }
         if (!selectCurrency && selectCurrency?.chainId !== chainId) {
-          // console.log(111111111111111)
-          // console.log(oldSymbol)
-          // console.log(list[token].symbol.toLowerCase())
-          // console.log(222222222222222)
           if (
             urlParams 
             && (
               urlParams === token
+              || list[token].name.toLowerCase() === urlParams
               || list[token].symbol.toLowerCase() === urlParams
             )
           ) {
@@ -356,6 +373,11 @@ export default function CrossChain() {
     return false
   }, [bridgeConfig, selectChain])
   // console.log(selectCurrency)
+  // console.log(selectChain)
+  // console.log(localSelectChain)
+  // useEffect(() => {
+  //   setSelectChain(localSelectChain)
+  // }, [localSelectChain])
   // console.log(bridgeConfig)
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
@@ -528,6 +550,12 @@ export default function CrossChain() {
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue, swapType])
 
+  // useEffect(() => {
+  //   if (!chainId) {
+  //     history.go(0)
+  //   }
+  // }, [chainId])
+
   useEffect(() => {
     setP2pAddress('')
     if (account && selectCurrency && destConfig && swapType === BridgeType.deposit && chainId) {
@@ -589,6 +617,7 @@ export default function CrossChain() {
       if (arr.length > 0 && !arr.includes(selectChain)) {
         for (const c of arr) {
           if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+          // console.log(c)
           setSelectChain(c)
           break
         }
@@ -809,6 +838,7 @@ export default function CrossChain() {
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
               // toggleNetworkModal()
+              
               changeNetwork(selectChain)
             }}>
               <ArrowDown size="16" color={theme.text2} />

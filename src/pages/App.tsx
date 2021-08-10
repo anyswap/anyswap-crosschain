@@ -18,6 +18,7 @@ import CrossChainTxns from './CrossChainTxns'
 import MATICfarming from './Farms/MATICfarming'
 import FTMfarming from './Farms/FTMfarming'
 import BSCfarming from './Farms/BSCfarming'
+import BSCfarmingHERO from './Farms/BSCfarming HERO'
 import FarmList from './Farms/FarmsList'
 
 import config from '../config'
@@ -148,6 +149,7 @@ export default function App() {
               <Route exact strict path="/farm/ftm" component={FTMfarming} />
 
               <Route exact strict path="/farm/bsc" component={BSCfarming} />
+              <Route exact strict path="/farm/bsc/hero" component={BSCfarmingHERO} />
 
               
               <Redirect to={{ pathname: config.getCurConfigInfo().isOpenRouter ? '/swap' : '/bridge' }} /> 

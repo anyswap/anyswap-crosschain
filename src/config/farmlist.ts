@@ -5,6 +5,18 @@ import { BNB_MAIN_CHAINID } from './chainConfig/bsc'
 interface FarmConfig {
   [key: string]: any
 }
+
+const BSC_ANY_TOKEN = '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa'
+const BSC_ANY = {
+  [BSC_ANY_TOKEN]: {
+    list: {
+      symbol: "ANY",
+      name: "Anyswap",
+      decimals: 18
+    }
+  }
+}
+
 const config: FarmConfig = {
   'MATIC': {
     chainId: MATIC_MAIN_CHAINID,
@@ -21,17 +33,16 @@ const config: FarmConfig = {
   'BSC': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0x411f3e09c66b30e7facfec45cd823b2e19dfad2d',
-    lpToken: '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa',
+    lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: {
-      '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa': {
-        list: {
-          symbol: "ANY",
-          name: "Anyswap",
-          decimals: 18
-        }
-      }
-    }
+    lpTokenIno: BSC_ANY
+  },
+  'BSC_HERO': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0x5e430f88d1be82eb3ef92b6ff06125168fd5dcf2',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY
   },
 }
 export default config
