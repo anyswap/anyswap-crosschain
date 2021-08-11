@@ -448,7 +448,7 @@ export default function NavList() {
               <img src={require('../../assets/images/icon/github-white.png')} className="on" alt="" />
             </div>
           </Link>
-          <Link id="link" href="https://coinmarketcap.com/exchanges/anyswap">
+          <Link id="link" href="https://coinmarketcap.com/currencies/anyswap/">
             <div className="icon">
               <img src={require('../../assets/images/icon/coinmarketcap.png')} className="off" alt="" />
               <img src={require('../../assets/images/icon/coinmarketcap-white.png')} className="on" alt="" />

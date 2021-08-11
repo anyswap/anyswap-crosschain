@@ -72,6 +72,9 @@ export function colors(darkMode: boolean): Colors {
     tipBorder: darkMode ? '#2b314f' : '#b398f9',
     tipColor: darkMode ? white : '#734be2',
 
+    lightPuroleBg: darkMode ? '#2b314f' : 'rgb(246, 244, 255)',
+    viewMoreBtn: darkMode ? '#2b314f' : '#f9fafb',
+
     selectedBg: darkMode ? '#2b314f' : '#ecf6ff',
     selectedHoverBg: darkMode ? '#252b49' : '#deefff',
 

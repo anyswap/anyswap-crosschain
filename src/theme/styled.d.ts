@@ -37,6 +37,9 @@ export interface Colors {
   tipBg: Color
   tipBorder: Color
   tipColor: Color
+  
+  lightPuroleBg: Color
+  viewMoreBtn: Color
 
   selectedBg: Color
   selectedHoverBg: Color

@@ -66,7 +66,7 @@ const SelectHDPathPage = styled.div`
   height: 34px;
   object-fit: contain;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.tipBg};
+  background: ${({theme}) => theme.viewMoreBtn};
   padding: 0 1.25rem;
 `
 const ArrowBox = styled.div`

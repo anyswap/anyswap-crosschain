@@ -79,6 +79,7 @@ const TabLinkBox = styled.ul`
       font-weight: bold;
       .icon {
         background: #734be2;
+        color:#fff;
       }
     }
     @media screen and (max-width: 960px) {
@@ -141,6 +142,7 @@ const StyledNavLink = styled(NavLink).attrs({
     font-weight: bold;
     .icon {
       background: #734be2;
+      color:#fff;
     }
   }
   @media screen and (max-width: 960px) {
@@ -157,6 +159,7 @@ interface TabList {
   iconActiveUrl?: string
   regex?: any
   path?: any
+  iconTxt?: any
 }
 interface Title {
   title?: string
@@ -224,7 +227,13 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
                         (tabIndex === index && isNaN(currentTab) ? <img alt={''} src={item.iconActiveUrl} /> : <img alt={''} src={item.iconUrl} />)
                       }
                     </div>
-                    ) : ''
+                    ) : (
+                      item.iconTxt ? (
+                        <div className={"icon" }>
+                          {item.iconTxt}
+                        </div>
+                      ) : ''
+                    )
                 }
                 {item.name}
               </li>

@@ -5,6 +5,9 @@ import styled from 'styled-components'
 
 import Logo from '../../assets/svg/logo.svg'
 import LogoDark from '../../assets/svg/logo_white.svg'
+import IconDay from '../../assets/images/icon/day.svg'
+import IconNight from '../../assets/images/icon/night.svg'
+
 import { useActiveWeb3React } from '../../hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -15,6 +18,8 @@ import Web3Status from '../Web3Status'
 import SelectNetwork from './SelectNetwork'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
+
+
 
 
 const HeaderFrame = styled.div`
@@ -129,12 +134,27 @@ const UniIcon = styled.div`
   //   transform: rotate(-5deg);
   // }
 `
+
+const StyleDarkToggle = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  margin-left: 15px;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.lightPuroleBg};
+  @media screen and (max-width: 960px) {
+    margin-left: 5px;
+  }
+`
+
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const [isDark] = useDarkModeManager()
+  const [isDark, toggleDarkMode] = useDarkModeManager()
 
   return (
     <HeaderFrame>
@@ -156,6 +176,21 @@ export default function Header() {
             ) : null}
             <Web3Status />
           </AccountElement>
+          <StyleDarkToggle
+            onClick={() => {
+              toggleDarkMode()
+            }}
+          >
+            {
+              isDark ? (
+
+                <img src={IconDay} alt="" />
+              ) : (
+
+                <img src={IconNight} alt="" />
+              )
+            }
+          </StyleDarkToggle>
         </HeaderElement>
       </HeaderControls>
     </HeaderFrame>

@@ -205,9 +205,12 @@ export const HideSmall = styled.span`
 `
 
 export const NetworkCard = styled(YellowCard)`
+  ${({ theme }) => theme.flexC};
   border-radius: 12px;
   padding: 8px 12px;
   white-space:nowrap;
+  min-width: 160px;
+  color: ${({ theme }) => theme.textColorBold};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
     margin-right: 0.5rem;
@@ -416,17 +419,6 @@ export default function SelectNetwork () {
     }
     setMetamaskNetwork(item)
   }
-  // const [chainList, setChainList] = useState<Array<any>>([])
-
-  // useEffect(() => {
-    
-  //   getAllChainIDs(chainId).then((res:any) => {
-  //     // console.log(res)
-  //     setChainList(res)
-  //   })
-  // }, [chainId])
-
-  
 
   function changeNetwork () {
     return (
@@ -467,7 +459,12 @@ export default function SelectNetwork () {
   return (
     <>
       {changeNetwork()}
-      <HideSmall onClick={() => toggleNetworkModal()}>{<NetworkCard title={config.getCurChainInfo(chainId).networkName}>{config.getCurChainInfo(chainId).networkName}</NetworkCard>}</HideSmall>
+      <HideSmall onClick={() => toggleNetworkModal()}>
+        {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
+          <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
+          {config.getCurChainInfo(chainId).networkName}
+        </NetworkCard>}
+      </HideSmall>
     </>
   )
 }

@@ -317,6 +317,7 @@ export default function CrossChain() {
       // console.log(urlParams)
       const list:any = {}
       let isUseToken = 0
+      let initToken = ''
       for (const token in allTokens[swapType]) {
         // console.log(token)
         const obj = allTokens[swapType]
@@ -342,6 +343,9 @@ export default function CrossChain() {
         } else {
           list[token] = tokenObj
         }
+        if (!initToken) {
+          initToken = token
+        }
         if (
           !selectCurrency 
           || selectCurrency?.chainId !== chainId
@@ -360,6 +364,9 @@ export default function CrossChain() {
             setSelectCurrency(list[token])
           }
         }
+      }
+      if (!selectCurrency) {
+        setSelectCurrency(list[initToken])
       }
       // console.log(selectCurrency)
       // console.log(list)
@@ -430,8 +437,7 @@ export default function CrossChain() {
             setSwapType(BridgeType.bridge)
           }
         },
-        iconUrl: require('../../assets/images/icon/send.svg'),
-        iconActiveUrl: require('../../assets/images/icon/send-white.svg')
+        iconTxt: 'E'
       }
     ]
     if (allTokens?.deposit && Object.keys(allTokens?.deposit).length > 0) {
@@ -445,8 +451,7 @@ export default function CrossChain() {
             setSwapType(BridgeType.deposit)
           }
         },
-        iconUrl: require('../../assets/images/icon/deposit.svg'),
-        iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+        iconTxt: 'B'
       })
     }
     return arr

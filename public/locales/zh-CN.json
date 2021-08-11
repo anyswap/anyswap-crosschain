@@ -229,7 +229,7 @@
   "toleranceExplanation": "降低这个限制可以降低你的先发制人的风险。然而，这使得你的交易更有可能由于正常的价格变动而失败。",
   "tokenSearchPlaceholder": "搜索名称或粘贴地址",
   "dashboard": "资产",
-  "bridge": "充提",
+  "bridge": "跨链桥",
   "Markets": "行情",
   "ANYToken": "治理",
   "Network": "网络",
