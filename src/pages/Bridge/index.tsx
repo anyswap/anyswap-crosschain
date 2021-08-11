@@ -147,6 +147,18 @@ export enum SelectListType {
 const SelectBridgeCurrencyLabel = 'SelectBridgeCurrencyLabel'
 const SelectBridgeChainIdLabel = 'SelectBridgeChainIdLabel'
 
+function getInitToken () {
+  const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
+  let initBridgeToken:any = urlParams ? urlParams : localParams
+  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+  if (initBridgeToken) {
+    return initBridgeToken
+  } else {
+    return false
+  }
+}
+
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
@@ -156,13 +168,14 @@ export default function CrossChain() {
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
-  const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
+  // const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  // const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
   // console.log(localSelectChain)
   // console.log(chainId)
-  let initBridgeToken:any = urlParams ? urlParams : localParams
-  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+  // let initBridgeToken:any = urlParams ? urlParams : localParams
+  // initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+  const initBridgeToken = getInitToken()
 
   let initSwapType:any = getParams('bridgetype') ? getParams('bridgetype') : ''
   initSwapType = initSwapType ? initSwapType.toLowerCase() : ''
