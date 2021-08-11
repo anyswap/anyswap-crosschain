@@ -51,6 +51,7 @@ const TabLinkBox = styled.ul`
       border-radius: 100%;
       margin-right: 0.625rem;
       padding: 6px;
+      font-size: 16px;
       img {
         display: block;
         width: 100%;
@@ -118,6 +119,7 @@ const StyledNavLink = styled(NavLink).attrs({
     background:#f5f5f5;
     border-radius:100%;
     margin-right:0.625rem;
+    font-size: 16px;
   }
   &:first-child {
     border-top-left-radius: 6px;
