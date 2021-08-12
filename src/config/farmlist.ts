@@ -44,5 +44,12 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY
   },
+  'BSC_TRO': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0xf47a640ff9745b5591edd446cb02ed6d096c99bd',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY
+  },
 }
 export default config

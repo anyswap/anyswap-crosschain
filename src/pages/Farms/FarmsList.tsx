@@ -290,6 +290,7 @@ export default function FarmsList () {
   const [FTMStakingAPY, setFTMStakingAPY] = useState()
   const [BSCStakingAPY, setBSCStakingAPY] = useState()
   const [BSCHEROStakingAPY, setBSCHEROStakingAPY] = useState()
+  const [BSCTROStakingAPY, setBSCTROStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -343,6 +344,9 @@ export default function FarmsList () {
         setBSCHEROStakingAPY(res)
       })
     })
+    getFarmAPY('BSC_TRO', '0.015').then((res:any) => {
+      setBSCTROStakingAPY(res)
+    })
   }, [])
 
 
@@ -362,6 +366,17 @@ export default function FarmsList () {
     }
   }
   const farmList:any = [
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: '/farm/bsc/tro',
+      title: 'TRO Staking',
+      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'TRO',
+      coin2: 'BNB',
+      coin3: '',
+      status: 'live'
+    },
     {
       isDoubleLogo: 1,
       isOutLink: 0,
