@@ -1,6 +1,7 @@
 import { ChainId, JSBI, Percent, Token, WETH } from 'anyswap-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
+// import { injected, terra } from '../connectors'
 import { injected } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -48,6 +49,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#E8831D'
   },
+  // TERRA: {
+  //   connector: terra,
+  //   name: 'Terra',
+  //   iconName: 'TERRA.png',
+  //   description: 'Easy-to-use browser extension.',
+  //   href: null,
+  //   color: '#E8831D'
+  // },
 }
 
 export const NetworkContextName = 'NETWORK'

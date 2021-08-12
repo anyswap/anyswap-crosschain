@@ -23,18 +23,19 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   const { t } = useTranslation()
   const { active } = useWeb3React()
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName)
-
-  // try to eagerly connect to an injected provider, if it exists and has granted access already
+  // console.log(active)
+  // console.log(networkActive)
+  // 尝试急切地连接到注入的提供者（如果它存在并且已经授予访问权限）
   const triedEager = useEagerConnect()
 
-  // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
+  // 在急切地尝试注入后，如果网络连接从未处于活动状态或处于错误状态，请激活itd
   useEffect(() => {
     if (triedEager && !networkActive && !networkError && !active) {
       activateNetwork(network)
     }
   }, [triedEager, networkActive, networkError, activateNetwork, active])
 
-  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
+  // 当没有连接帐户时，对注入的提供程序（如果存在）上的登录（广义地说）作出反应
   useInactiveListener(!triedEager)
 
   // handle delayed loader state

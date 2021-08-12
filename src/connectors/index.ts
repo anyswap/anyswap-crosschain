@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
 
 import { NetworkConnector } from './NetworkConnector'
+import { TerraConnector } from './TerraConnector'
 
 import {spportChainArr} from '../config/chainConfig'
 import config from '../config'
@@ -21,6 +22,12 @@ if (typeof NETWORK_URL === 'undefined') {
 }
 
 export const network = new NetworkConnector({
+  // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
+  defaultChainId: NETWORK_CHAIN_ID,
+  urls: { ...spportChain }
+})
+
+export const terra = new TerraConnector({
   // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
   defaultChainId: NETWORK_CHAIN_ID,
   urls: { ...spportChain }

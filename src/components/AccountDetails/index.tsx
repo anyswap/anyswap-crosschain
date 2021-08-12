@@ -13,7 +13,7 @@ import Transaction from './Transaction'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { getEtherscanLink } from '../../utils'
-import { injected } from '../../connectors'
+import { injected, terra } from '../../connectors'
 import Identicon from '../Identicon'
 import { ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
@@ -239,6 +239,12 @@ export default function AccountDetails({
 
   function getStatusIcon() {
     if (connector === injected) {
+      return (
+        <IconWrapper size={16}>
+          <Identicon />
+        </IconWrapper>
+      )
+    } else if (connector === terra) {
       return (
         <IconWrapper size={16}>
           <Identicon />

@@ -46,8 +46,7 @@ export function useEagerConnect() {
 }
 
 /**
- * Use for network and injected - logs user in
- * and out after checking what network theyre on
+ * 用于网络和注入-在检查用户所在的网络后，将用户登录和注销
  */
 export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
