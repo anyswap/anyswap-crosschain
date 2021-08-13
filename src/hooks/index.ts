@@ -14,7 +14,7 @@ export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & 
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const { activate, active } = useWeb3ReactCore() // 特别是使用useWeb3ReactCore，因为这个钩子的作用
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function useEagerConnect() {
  * 用于网络和注入-在检查用户所在的网络后，将用户登录和注销
  */
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+  const { active, error, activate } = useWeb3ReactCore() // 特别是使用useWeb3React，因为这个钩子的作用
 
   useEffect(() => {
     const { ethereum } = window

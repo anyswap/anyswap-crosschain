@@ -88,6 +88,7 @@ const TokenList = styled.div`
   `}
 `
 
+
 const TokenActionBtn1 = styled(ButtonLight)`
   ${({ theme }) => theme.flexC};
   font-family: 'Manrope';
@@ -171,6 +172,11 @@ const MoreView = styled.div`
     color: #ccc;
   }
 `
+
+const FlexSC = styled.div`
+${({ theme }) => theme.flexSC};
+`
+
 let intervalFN:any
 
 export default function PoolLists ({
@@ -494,7 +500,7 @@ export default function PoolLists ({
           <DBThead>
             <tr>
               <DBTh className="l">{t('tokens')}</DBTh>
-              <DBTh className="c hideSmall">{t('supportChain')}</DBTh>
+              <DBTh className="l hideSmall">{t('supportChain')}</DBTh>
               <DBTh className="r">{t('lr')}</DBTh>
               <DBTh className="c">{t('details')}</DBTh>
             </tr>
@@ -536,8 +542,8 @@ export default function PoolLists ({
                           </TokenNameBox>
                         </TokenTableCoinBox>
                       </DBTd>
-                      <DBTd className="c hideSmall">
-                        <Flex>
+                      <DBTd className="l hideSmall">
+                        <FlexSC>
                           <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
                             <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
                           </ChainLogoBox>
@@ -559,7 +565,7 @@ export default function PoolLists ({
                               </>
                             ) : ''
                           }
-                        </Flex>
+                        </FlexSC>
                       </DBTd>
                       {viewTd(item, index, chainId)}
                       <DBTd className="c" width={'180'}>

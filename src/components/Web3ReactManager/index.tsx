@@ -50,12 +50,12 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
     }
   }, [])
 
-  // on page load, do nothing until we've tried to connect to the injected connector
+  // 在页面加载时，在尝试连接到注入的连接器之前，不要执行任何操作
   if (!triedEager) {
     return null
   }
 
-  // if the account context isn't active, and there's an error on the network context, it's an irrecoverable error
+  // 如果帐户上下文未处于活动状态，并且网络上下文中存在错误，则这是一个无法恢复的错误
   if (!active && networkError) {
     return (
       <MessageWrapper>
@@ -64,7 +64,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
     )
   }
 
-  // if neither context is active, spin
+  // 如果两个上下文都不活动，请旋转
   if (!active && !networkActive) {
     return showLoader ? (
       <MessageWrapper>
