@@ -13,7 +13,8 @@ import farmlist from '../../config/farmlist'
 import {USE_VERSION} from '../../config/constant'
 import {VERSION} from '../../config/constant'
 
-import { Button } from '../../theme'
+// import { Button } from '../../theme'
+import { ButtonConfirmed } from '../../components/Button'
 
 
 import {getPrice} from '../../utils/tools/getPrice'
@@ -355,8 +356,8 @@ export default function FarmsList () {
     // console.log(isJump)
     if (!Number(isJump)) {
       setJumpTip({
-        title: t('htSwapTitle'),
-        content: t('htSwapContent'),
+        title: t('farmLinkTitle'),
+        content: t('farmLinkTip'),
         url: url,
         type: type
       })
@@ -368,12 +369,12 @@ export default function FarmsList () {
   const farmList:any = [
     {
       isDoubleLogo: 1,
-      isOutLink: 0,
-      url: '/farm/bsc/tro',
-      title: 'TRO Staking',
-      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'TRO',
-      coin2: 'BNB',
+      isOutLink: 1,
+      url: 'https://yel.finance/',
+      title: 'YEL Farming',
+      info: 'YEL Farming',
+      coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
+      coin2: 'FTM',
       coin3: '',
       status: 'live'
     },
@@ -398,6 +399,17 @@ export default function FarmsList () {
       coin2: 'BNB',
       coin3: '',
       status: Date.now() > 1630748022953 ? 'finished' : 'live'
+    },
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: '/farm/bsc/tro',
+      title: 'TRO Staking',
+      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'TRO',
+      coin2: 'BNB',
+      coin3: '',
+      status: 'finished'
     },
     {
       isDoubleLogo: 1,
@@ -473,7 +485,11 @@ export default function FarmsList () {
               {coinLogo}
               {titleInfo}
             </div>
-            <FarmStatus>{status}</FarmStatus>
+            {
+              status === 'live' ? '' : (
+                <FarmStatus className='finished'>{t('Finished')}</FarmStatus> 
+              )
+            }
           </LinkBox>
         </FarmList>
       )
@@ -510,11 +526,11 @@ export default function FarmsList () {
           {JumpTip.content}
         </JumpTipBox>
         <Flex>
-          <Button style={{height: '45px', maxWidth: '200px'}} onClick={() => {
+          <ButtonConfirmed style={{height: '45px', maxWidth: '200px'}} onClick={() => {
             setTipModal(false)
             localStorage.setItem(JUMPMODALTIP + JumpTip.type, '1')
             window.open(JumpTip.url)
-          }}>{t('confirm')}</Button>
+          }}>{t('Confirm')}</ButtonConfirmed>
         </Flex>
       </ModalContent>
       <AppBody>

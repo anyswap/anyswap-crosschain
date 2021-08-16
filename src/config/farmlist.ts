@@ -51,5 +51,20 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY
   },
+  'ETH_TEST': {
+    chainId: '4',
+    farmToken: '0x0bd19f6447cd676255C7C7B00428462B3dA67e3a',
+    lpToken: '0x7f30b414a814a6326d38535ca8eb7b9a62bceae2',
+    blockNumber: 28800,
+    lpTokenIno: {
+      '0x7f30b414a814a6326d38535ca8eb7b9a62bceae2': {
+        list: {
+          symbol: "ANY",
+          name: "Anyswap",
+          decimals: 18
+        }
+      }
+    }
+  },
 }
 export default config

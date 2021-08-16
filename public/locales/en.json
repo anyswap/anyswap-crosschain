@@ -339,5 +339,7 @@
   "redeem": "Redeem",
   "Live": "Live",
   "Finished": "Finished",
-  "StayTuned": "Stay tuned!"
+  "StayTuned": "Stay tuned!",
+  "farmLinkTitle": "You will be redirected to Third Party DApp",
+  "farmLinkTip": "Note: You will be redirected to a third party DApp. Please go through the User Agreement and Privacy Policy of the third party DApp carefully. DApp will resume full responsiblity for all actions and usage on the DApp."
 }
