@@ -1,6 +1,7 @@
 import { Token, TokenAmount } from 'anyswap-sdk'
 import { useMemo } from 'react'
-import { useAllTokenBalances } from '../../state/wallet/hooks'
+// import { useAllTokenBalances } from '../../state/wallet/hooks'
+import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 // compare two token amounts with highest one coming first
 function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
@@ -37,9 +38,9 @@ function getTokenComparator(balances: {
   }
 }
 
-export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const balances = useAllTokenBalances()
-  // console.log(balances)
+export function useTokenComparator(key?: string | undefined, chainId?:any, inverted?: boolean): (tokenA: Token, tokenB: Token) => number {
+  const balances = useBridgeAllTokenBalances(key, chainId)
+  console.log(balances)
   const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
   return useMemo(() => {
     if (inverted) {

@@ -26,6 +26,19 @@ export class WrappedTokenInfo extends Token {
   }
 }
 
+export class WrappedBridgeTokenInfo extends Token {
+  public readonly tokenInfo: any
+  // public readonly tags: TagInfo[]
+  constructor(tokenInfo: any) {
+    super(tokenInfo.chainId, tokenInfo?.underlying?.address ?? tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+    this.tokenInfo = tokenInfo
+    // this.tags = tags
+  }
+  public get logoURI(): string | undefined {
+    return this.tokenInfo.logoURI
+  }
+}
+
 export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>
 
 /**
@@ -84,6 +97,16 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
   return map
 }
 
+export function listsToTokenMap(list:any): TokenAddressMap {
+
+  // console.log(list)
+  const map:any = {}
+  for (const t in list) {
+    map[t] = new WrappedBridgeTokenInfo(list[t])
+  }
+  return map
+}
+
 export function useTokenList(url: string | undefined): TokenAddressMap {
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
   // console.log(lists)
@@ -100,11 +123,33 @@ export function useTokenList(url: string | undefined): TokenAddressMap {
   }, [lists, url])
 }
 
+export function useBridgeTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
+  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
+  // console.log(lists)
+  return useMemo(() => {
+    if (!key || !chainId) return EMPTY_LIST
+    const current = lists[key][chainId]?.tokenList
+    // console.log(current)
+    if (!current) return EMPTY_LIST
+    try {
+      return listsToTokenMap(current)
+      // return current
+    } catch (error) {
+      console.error('Could not show token list due to error', error)
+      return EMPTY_LIST
+    }
+  }, [lists, key])
+}
+// useBridgeTokenList()
 export function useSelectedListUrl(): string | undefined {
   // return useSelector<AppState, AppState['lists']['selectedListUrl']>(state => {
   //   return state.lists.selectedListUrl
   // })
   return config.tokenListUrl
+}
+
+export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
+  return useBridgeTokenList(key, chainId)
 }
 
 export function useSelectedTokenList(): TokenAddressMap {

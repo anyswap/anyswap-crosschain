@@ -14,6 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {formatDecimal} from '../../utils/tools/tools'
+import { useBridgeSelectedTokenList } from '../../state/lists/hooks'
 
 import {
   InputRow,
@@ -69,6 +70,7 @@ interface SelectCurrencyInputPanelProps {
   onChangeMode?: (value: any) => void // 更多操作按钮方法，同isViewMode一起使用
   allTokens?: any // 所有token list
   customChainId?: any // 显示自定义chainId
+  bridgeKey?: any // router为：'routerTokenList' ，bridge为：'bridgeTokenList'
 }
 
 export default function SelectCurrencyInputPanel({
@@ -98,10 +100,12 @@ export default function SelectCurrencyInputPanel({
   modeConent,
   onChangeMode,
   allTokens = {},
-  customChainId
+  customChainId,
+  bridgeKey
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
+  const allTokensList:any = useBridgeSelectedTokenList(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
@@ -110,6 +114,7 @@ export default function SelectCurrencyInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
 
   const handleDismissSearch = useCallback(() => {
+    console.log(allTokens)
     setModalOpen(false)
     if (onOpenModalView) {
       onOpenModalView(false)
@@ -151,23 +156,19 @@ export default function SelectCurrencyInputPanel({
   }, [isViewModal])
 
   const logoUrl = useMemo(() => {
-    if (allTokens && currency?.address) {
-      for (const t in allTokens) {
+    if (allTokensList && currency?.address) {
+      for (const t in allTokensList) {
         if (
           t === currency?.address?.toLowerCase()
-          || allTokens[t]?.underlying?.address === currency?.address?.toLowerCase()
+          || allTokensList[t]?.tokenInfo?.underlying?.address === currency?.address?.toLowerCase()
         ) {
-          return allTokens[t]?.logoUrl
+          return allTokensList[t]?.tokenInfo?.logoUrl
         }
       }
     }
     return ''
-  }, [allTokens, currency])
+  }, [allTokensList, currency])
 
-  // console.log( logoUrl)
-  // console.log( currency)
-  // console.log( currency?.address?.toLowerCase())
-  // console.log( allTokens[currency?.underlying?.address?.toLowerCase() ?? currency?.address?.toLowerCase()]?.logoUrl)
   return (
     <InputPanel id={id} className={isError ? 'error' : ''}>
       <Container hideInput={hideInput}>
@@ -331,7 +332,9 @@ export default function SelectCurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           // onlyUnderlying={onlyUnderlying}
-          allTokens={allTokens}
+          allTokens={allTokensList}
+          chainId={chainId}
+          bridgeKey={bridgeKey}
         />
       )}
     </InputPanel>

@@ -2,21 +2,30 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useFetchListCallback } from '../../hooks/useFetchListCallback'
+import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { addPopup } from '../application/actions'
 import { AppDispatch, AppState } from '../index'
 import { acceptListUpdate } from './actions'
 
+// import config from '../../config'
+
 export default function Updater(): null {
-  const { library } = useActiveWeb3React()
+  const { library, chainId } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+
+  
 
   const isWindowVisible = useIsWindowVisible()
 
   const fetchList = useFetchListCallback()
+  const fetchTokenList = useFetchTokenListCallback()
+
+  // console.log(fetchTokenList)
+  // console.log(lists)
+
   const fetchAllListsCallback = useCallback(() => {
     if (!isWindowVisible) return
     Object.keys(lists).forEach(url =>
@@ -24,8 +33,15 @@ export default function Updater(): null {
     )
   }, [fetchList, isWindowVisible, lists])
 
+  const fetchAllTokenListsCallback = useCallback(() => {
+    if (chainId) {
+      fetchTokenList().catch(error => console.debug('interval list fetching error', error))
+    }
+  }, [fetchTokenList, chainId])
+
   // 每 10 分钟获取所有列表，但仅在我们初始化库之后
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
+  useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
@@ -37,6 +53,10 @@ export default function Updater(): null {
       }
     })
   }, [dispatch, fetchList, library, lists])
+
+  useEffect(() => {
+    fetchAllTokenListsCallback()
+  }, [dispatch, fetchTokenList, chainId])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

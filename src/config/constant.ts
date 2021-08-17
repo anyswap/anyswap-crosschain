@@ -1,5 +1,6 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
+// export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 
@@ -10,6 +11,7 @@ export enum VERSION {
   V2_1 = 'STABLEV2',
   V2_2 = 'STABLEV3',
   V2_T1 = 'STABLE_TEST',
+  V2_T2 = 'TEST',
   V3 = 'ARB_DEV',
   V4 = 'BRIDGE',
   V4_OKT = 'BRIDGE_OKT',
@@ -25,6 +27,7 @@ export const timeout = 1000 * 60 * 30
 export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
+// export const USE_VERSION = VERSION.V2_T2
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []
@@ -102,6 +105,18 @@ export const controlConfig:any = {
   [VERSION.V2_T1]: {
     bridgeConfigToken: '0xe5137598331dfb329840a1a732babeda5dcbc962',
     bridgeInitDataChain: '256',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '97',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 0
+  },
+  [VERSION.V2_T2]: {
+    bridgeConfigToken: '0x8ca2ecbce34c322fcea6db912d9dbfd2dda5920d',
+    bridgeInitDataChain: '4',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],

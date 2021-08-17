@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList } from './actions'
 
 import config from '../../config'
 
@@ -19,6 +19,7 @@ export interface ListsState {
   // this contains the default list of lists from the last time the updateVersion was called, i.e. the app was reloaded
   readonly lastInitializedDefaultListOfLists?: string[]
   readonly selectedListUrl: string | undefined
+  readonly routerTokenList: any
 }
 
 type ListState = ListsState['byUrl'][string]
@@ -41,10 +42,14 @@ const initialState: ListsState = {
     }, {})
   },
   selectedListUrl: DEFAULT_TOKEN_LIST_URL,
+  routerTokenList: {},
 }
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(routerTokenList, (state, { payload: { chainId, tokenList } }) => {
+      state.routerTokenList[chainId] = {tokenList, timestamp: Date.now()}
+    })
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
         current: null,

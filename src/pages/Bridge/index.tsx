@@ -846,6 +846,7 @@ export default function CrossChain() {
             allTokens={useTolenList}
             hideBalance={swapType === BridgeType.deposit}
             customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
+            bridgeKey={'bridgeTokenList'}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

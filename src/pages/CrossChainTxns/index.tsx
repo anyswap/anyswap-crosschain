@@ -760,6 +760,7 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             allTokens={allTokens}
+            bridgeKey={'routerTokenList'}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

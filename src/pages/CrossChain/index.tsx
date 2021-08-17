@@ -27,6 +27,8 @@ import ModalContent from '../../components/Modal/ModalContent'
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
+import { useBridgeTokenList } from '../../state/lists/hooks'
+import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -114,6 +116,13 @@ export default function CrossChain() {
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+
+  const testlist = useBridgeTokenList('routerTokenList', chainId)
+  const testlist1 = useBridgeAllTokenBalances('routerTokenList', chainId)
+  useEffect(() => {
+    console.log(testlist)
+    console.log(testlist1)
+  }, [testlist, testlist1])
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
@@ -628,6 +637,7 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             allTokens={allTokens}
+            bridgeKey={'routerTokenList'}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

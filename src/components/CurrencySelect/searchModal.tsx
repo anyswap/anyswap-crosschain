@@ -18,7 +18,7 @@ import { CloseIcon } from '../../theme'
 import { isAddress } from '../../utils'
 
 import { useToken } from '../../hooks/Tokens'
-
+// import { useBridgeSelectedTokenList } from '../../state/lists/hooks'
 import CurrencyList from './CurrencyList'
 
 // import {getAllToken} from '../../utils/bridge/getServerInfo'
@@ -31,6 +31,8 @@ interface CurrencySearchModalProps {
   otherSelectedCurrency?: Currency | null
   // onlyUnderlying?: boolean
   allTokens?: any
+  chainId?: any
+  bridgeKey?: any
 }
 
 export default function SearchModal ({
@@ -40,11 +42,14 @@ export default function SearchModal ({
   selectedCurrency,
   otherSelectedCurrency,
   // onlyUnderlying,
-  allTokens = {}
+  allTokens = {},
+  chainId,
+  bridgeKey
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-
-  const tokenComparator = useTokenComparator(true)
+  // const allTokensList:any = useBridgeSelectedTokenList(bridgeKey, chainId)
+  // console.log(allTokens)
+  const tokenComparator = useTokenComparator(bridgeKey, chainId, true)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
 
@@ -58,7 +63,7 @@ export default function SearchModal ({
   const tokenList = useMemo(() => {
     const arr:any = []
     for (const token in allTokens) {
-      arr.push(allTokens[token])
+      arr.push(allTokens[token].tokenInfo)
     }
     return arr
   }, [allTokens])
@@ -71,7 +76,7 @@ export default function SearchModal ({
   const filteredSortedTokens: Token[] = useMemo(() => {
     // console.log(searchToken)
     if (searchToken) return [searchToken]
-    // console.log(filteredTokens)
+    console.log(filteredTokens)
     const sorted = filteredTokens.sort(tokenComparator)
     // console.log(sorted)
     const symbolMatch = searchQuery

@@ -5,9 +5,9 @@ import { Text } from 'rebass'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
-// import { useLocalToken } from '../../hooks/Tokens'
+import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -107,16 +107,17 @@ function CurrencyRow({
     symbol: currency.underlying ? currency.underlying.symbol : currency.symbol,
     name: currency?.underlying?.name ? currency.underlying.name : currency.name,
   }
-  // const currencies = useLocalToken(currencyObj)
+  const currencies = useLocalToken(currencyObj)
   const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currency?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
   // console.log(currency)
-  const balance = ''
-  const ETHBalance = ''
-  // const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined)
-  // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  // const balance = ''
+  // const ETHBalance = ''
+  const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
+  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(chainId)
   // console.log(currency)
-  // console.log(isSelected)
+  // console.log(balance?.toSignificant(6))
+  // console.log(ETHBalance?.toSignificant(6))
   return (
     <MenuItem
       style={style}

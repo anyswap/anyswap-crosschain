@@ -1,4 +1,4 @@
-import arbitrum, {ARBITRUM_MAIN_CHAINID} from './arbitrum'
+import arbitrum, {ARBITRUM_MAIN_CHAINID, ARBITRUM_TEST_CHAINID} from './arbitrum'
 import avax, {AVAX_MAIN_CHAINID} from './avax'
 import bsc, {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './bsc'
 import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID} from './eth'
@@ -10,6 +10,8 @@ import xdai, {XDAI_MAIN_CHAINID} from './xdai'
 import kcc, {KCC_MAIN_CHAINID} from './kcc'
 import okt, {OKT_MAIN_CHAINID} from './okt'
 import one, {ONE_MAIN_CHAINID} from './one'
+import omgx, {OMGX_TEST_CHAINID} from './omgx'
+import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -34,7 +36,9 @@ export const chainInfo:ConFig = {
   ...one,
   ...ltc,
   ...btc,
-  ...block
+  ...block,
+  ...omgx,
+  ...optimism
 }
 
 const useChain = {
@@ -72,6 +76,12 @@ const useChain = {
     ETH_TEST_CHAINID,
     BNB_TEST_CHAINID,
     HT_TEST_CHAINID,
+  ],
+  [VERSION.V2_T2]: [
+    ETH_TEST_CHAINID,
+    ARBITRUM_TEST_CHAINID,
+    OMGX_TEST_CHAINID,
+    OPTIMISM_TEST_CHAINID
   ],
   [VERSION.V3]: [
     ETH_MAIN_CHAINID,

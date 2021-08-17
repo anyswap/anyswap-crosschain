@@ -542,6 +542,7 @@ export default function SwapNative() {
             }}
             isNativeToken={isNativeToken}
             allTokens={allTokens}
+            bridgeKey={'routerTokenList'}
           />
           {
             openAdvance ? (
