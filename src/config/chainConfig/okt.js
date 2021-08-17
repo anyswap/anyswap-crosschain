@@ -13,12 +13,10 @@ const symbol = 'OKT'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: '',
   },
   [VERSION.V2_2]: {
     bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',
-    bridgeRouterToken: '0xf390830df829cf22c53c8840554b98eafc5dcbc2',
     bridgeInitChain: '56',
     nativeToken: ''
   },

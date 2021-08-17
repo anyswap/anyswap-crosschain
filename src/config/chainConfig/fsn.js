@@ -23,7 +23,6 @@ const symbol = 'FSN'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: ''
   }
 }
@@ -64,7 +63,6 @@ export default {
     tokenListUrl: tokenListUrl + FSN_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: '',
     swapRouterToken: '',
     swapInitToken: '',

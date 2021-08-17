@@ -28,6 +28,7 @@ interface RecordsTxnsProp {
   symbol: string | undefined,
   version?: string | undefined,
   pairid?: string | undefined,
+  routerToken?: string | undefined,
 }
 export function recordsTxns ({
   hash,
@@ -39,7 +40,8 @@ export function recordsTxns ({
   to,
   symbol,
   version,
-  pairid
+  pairid,
+  routerToken
 }: RecordsTxnsProp) {
   return new Promise(resolve => {
     // console.log(hash)
@@ -51,7 +53,7 @@ export function recordsTxns ({
       hash: hash,
       srcChainID: chainId,
       destChainID: selectChain,
-      token: !version || version === USE_VERSION ? config.getCurChainInfo(chainId).bridgeRouterToken : '',
+      token: routerToken ? routerToken : '',
       from: account,
       version: useVersion,
       value: value,

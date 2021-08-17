@@ -107,6 +107,7 @@ export default function SwapNative() {
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     selectCurrency?.address,
     account ?? undefined,
@@ -123,6 +124,7 @@ export default function SwapNative() {
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
+    selectCurrency?.routerToken,
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     selectCurrency?.address,
     inputBridgeValue,
@@ -415,14 +417,6 @@ export default function SwapNative() {
           if (!isAddress(token)) continue
           list[token] = {
             ...res[token].list,
-            "address": token,
-            "chainId": chainId,
-            "decimals": res[token].list.decimals,
-            "name": res[token].list.name,
-            "symbol": res[token].list.symbol,
-            "underlying": res[token].list.underlying,
-            "destChains": res[token].list.destChains,
-            "logoUrl": res[token].list.logoUrl,
           }
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
             if (

@@ -228,7 +228,7 @@ export function useMultipleContractSingleData(
   chainId?: any
 ): CallState[] {
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
-  // console.log(fragment)
+  // console.log(callInputs)
   const callData: string | undefined = useMemo(
     () =>
       fragment && isValidMethodArgs(callInputs)

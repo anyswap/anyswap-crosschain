@@ -106,6 +106,14 @@ export function useLocalToken(currency?: any): Token | undefined | null {
   const decimals = currency?.decimals
   const underlying = currency?.underlying
 
+  const ContractVersion = currency?.ContractVersion
+  const destChains = currency?.destChains
+  const logoUrl = currency?.logoUrl
+  const price = currency?.price
+  const tokenid = currency?.tokenid
+  const version = currency?.version
+  const routerToken = currency?.routerToken
+
   // const token = address && name ? undefined : useToken(address ? address : undefined)
   // console.log(token)
   // console.log(address)
@@ -121,7 +129,14 @@ export function useLocalToken(currency?: any): Token | undefined | null {
       decimals,
       symbol,
       name,
-      underlying
+      underlying,
+      ContractVersion,
+      destChains,
+      logoUrl,
+      price,
+      tokenid,
+      version,
+      routerToken,
     )
   }, [
     address,
@@ -129,7 +144,14 @@ export function useLocalToken(currency?: any): Token | undefined | null {
     symbol,
     decimals,
     name,
-    underlying
+    underlying,
+    ContractVersion,
+    destChains,
+    logoUrl,
+    price,
+    tokenid,
+    version,
+    routerToken,
   ])
 }
 

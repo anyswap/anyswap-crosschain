@@ -186,7 +186,7 @@ export default function CrossChain() {
       {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying?.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.routerToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -312,6 +312,7 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
     v2Trade?.inputAmount?.toSignificant(6),
@@ -323,6 +324,7 @@ export default function CrossChain() {
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapUnderlyingCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
     v2Trade?.inputAmount?.toSignificant(6),
@@ -535,14 +537,6 @@ export default function CrossChain() {
           if (!isAddress(token)) continue
           list[token] = {
             ...res[token].list,
-            "address": token,
-            "chainId": chainId,
-            "decimals": res[token].list.decimals,
-            "name": res[token].list.name,
-            "symbol": res[token].list.symbol,
-            "underlying": res[token].list.underlying,
-            "destChains": res[token].list.destChains,
-            "logoUrl": res[token].list.logoUrl,
           }
           if (selectCurrency?.chainId !== chainId) {
             if (

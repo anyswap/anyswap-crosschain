@@ -153,7 +153,7 @@ export default function CrossChain() {
       {...selectCurrency, address: selectCurrency.underlying.address, name: selectCurrency.underlying.name, symbol: selectCurrency.underlying?.symbol, decimals: selectCurrency.underlying.decimals} : selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, config.getCurChainInfo(chainId).bridgeRouterToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.routerToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -228,6 +228,7 @@ export default function CrossChain() {
   }, [getSelectPool])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     selectCurrency?.address,
     recipient,
@@ -236,6 +237,7 @@ export default function CrossChain() {
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     selectCurrency?.address,
     recipient,
@@ -244,6 +246,7 @@ export default function CrossChain() {
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
+    selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
     selectCurrency?.address,
     recipient,
@@ -427,14 +430,6 @@ export default function CrossChain() {
           if (!isAddress(token)) continue
           list[token] = {
             ...res[token].list,
-            "address": token,
-            "chainId": chainId,
-            "decimals": res[token].list.decimals,
-            "name": res[token].list.name,
-            "symbol": res[token].list.symbol,
-            "underlying": res[token].list.underlying,
-            "destChains": res[token].list.destChains,
-            "logoUrl": res[token].list.logoUrl,
           }
           if (!selectCurrency || selectCurrency.chainId !== chainId) {
             if (
@@ -465,7 +460,7 @@ export default function CrossChain() {
   }, [account, swapType])
 
   useEffect(() => {
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {

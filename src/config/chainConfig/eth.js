@@ -78,38 +78,31 @@ const symbol = 'ETH'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
-    bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '56'
   },
   [VERSION.V1_1]: {
     bridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
-    bridgeRouterToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '56'
   },
   [VERSION.V2]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
-    bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
     bridgeInitChain: '56'
   },
   [VERSION.V2_1]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
-    bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
     bridgeInitChain: '56'
   },
   [VERSION.V2_2]: {
     bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
-    bridgeRouterToken: '0x6b7a87899490ece95443e979ca9485cbe7e71522',
     bridgeInitChain: '56',
     nativeToken: ''
   },
   [VERSION.V2_T1]: {
     bridgeInitToken: '0xd4143e8db48a8f73afcdf13d7b3305f28da38116',
-    bridgeRouterToken: '0x750bfe8490175c2a9a9387b19aa2aae2d75db638',
     bridgeInitChain: '97'
   },
   [VERSION.V3]: {
     bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',
-    bridgeRouterToken: '0xdc42728b0ea910349ed3c6e1c9dc06b5fb591f98',
     bridgeInitChain: '42161',
     nativeToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa'
   },

@@ -14,7 +14,6 @@ const symbol = 'BLOCK'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: ''
   }
 }

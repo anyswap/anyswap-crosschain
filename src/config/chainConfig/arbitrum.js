@@ -16,12 +16,10 @@ const symbol = 'ETH'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: ''
   },
   [VERSION.V3]: {
     bridgeInitToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5',
-    bridgeRouterToken: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c',
     bridgeInitChain: '1',
     nativeToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5'
   },

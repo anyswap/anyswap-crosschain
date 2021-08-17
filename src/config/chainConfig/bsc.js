@@ -58,32 +58,26 @@ const symbol = 'BNB'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '0xb12c13e66ade1f72f71834f2fc5082db8c091358',
-    bridgeRouterToken: '0xabd380327fe66724ffda91a87c772fb8d00be488',
     bridgeInitChain: '1'
   },
   [VERSION.V1_1]: {
     bridgeInitToken: '0xb12c13e66ade1f72f71834f2fc5082db8c091358',
-    bridgeRouterToken: '0xabd380327fe66724ffda91a87c772fb8d00be488',
     bridgeInitChain: '1'
   },
   [VERSION.V2]: {
     bridgeInitToken: '0xaeddc4a469ace97e90c605e3f52eb89620e305c0',
-    bridgeRouterToken: '0xd1c5966f9f5ee6881ff6b261bbeda45972b1b5f3',
     bridgeInitChain: '137'
   },
   [VERSION.V2_1]: {
     bridgeInitToken: '0xaeddc4a469ace97e90c605e3f52eb89620e305c0',
-    bridgeRouterToken: '0xd1c5966f9f5ee6881ff6b261bbeda45972b1b5f3',
     bridgeInitChain: '137'
   },
   [VERSION.V2_2]: {
     bridgeInitToken: '0x8965349fb649a33a30cbfda057d8ec2c48abe2a2',
-    bridgeRouterToken: '0xd1c5966f9f5ee6881ff6b261bbeda45972b1b5f3',
     bridgeInitChain: '137'
   },
   [VERSION.V2_T1]: {
     bridgeInitToken: '0x6fd2b7fc5db32a133a6824e1117d0f290ba43abc',
-    bridgeRouterToken: '0x76a0182cd55ed477c54d747b88314b8687a04c4c',
     bridgeInitChain: '4'
   },
 }

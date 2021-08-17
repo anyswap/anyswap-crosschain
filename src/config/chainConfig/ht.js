@@ -146,12 +146,10 @@ const symbol = 'HT'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: '',
   },
   [VERSION.V2_T1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
     bridgeInitChain: '97'
   },
 }

@@ -14,7 +14,6 @@ const symbol = 'BTC'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: ''
   }
 }

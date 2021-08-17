@@ -337,14 +337,6 @@ export default function CrossChain() {
         if (!isAddress(token, chainId) && token !== config.getCurChainInfo(chainId).symbol) continue
         const tokenObj = {
           ...obj[token],
-          "address": token,
-          "chainId": chainId,
-          "decimals": obj[token].decimals,
-          "name": obj[token].name,
-          "symbol": obj[token].symbol,
-          "underlying": obj[token].underlying,
-          "destChains": obj[token].destChains,
-          "logoUrl": obj[token].logoUrl,
           "specChainId": swapType === BridgeType.deposit ? obj[token].chainId : ''
         }
         if ( selectCurrencyType === SelectListType.OUTPUT && swapType !== BridgeType.deposit) {

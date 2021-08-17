@@ -10,7 +10,6 @@ import {signSwapoutData, signSwapinData} from 'multichain-bridge'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { MsgSend } from '@terra-money/terra.js';
 
-// import {registerSwap, recordsTxns} from '../utils/bridge/register'
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
 
@@ -29,6 +28,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
  * @param typedValue 用户输入值
  */
 export function useBridgeCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
@@ -37,7 +37,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance?.raw.toString(16))
@@ -77,7 +77,8 @@ export function useBridgeCallback(
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken
                   }
                   recordsTxns(data)
                 }
@@ -99,6 +100,7 @@ export function useBridgeCallback(
  * @param typedValue 用户输入值
  */
  export function useBridgeUnderlyingCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
@@ -107,7 +109,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -150,7 +152,8 @@ export function useBridgeCallback(
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken
                   }
                   recordsTxns(data)
                 }
@@ -173,6 +176,7 @@ export function useBridgeCallback(
  * @param typedValue 用户输入值
  */
 export function useBridgeNativeCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
@@ -181,7 +185,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(balance)
@@ -221,7 +225,8 @@ export function useBridgeNativeCallback(
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken
                   }
                   recordsTxns(data)
                 }
@@ -295,6 +300,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useSwapNativeCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   inputToken: string | undefined,
   typedValue: string | undefined,
@@ -302,7 +308,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -356,6 +362,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useBridgeSwapNativeCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
@@ -367,7 +374,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -417,7 +424,8 @@ export function useBridgeNativeCallback(
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken
                   }
                   recordsTxns(data)
                 }
@@ -438,6 +446,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useBridgeSwapUnderlyingCallback(
+  routerToken: string | undefined,
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
@@ -449,7 +458,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract()
+  const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -498,7 +507,8 @@ export function useBridgeNativeCallback(
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
-                    symbol: inputCurrency?.symbol
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken
                   }
                   recordsTxns(data)
                 }
@@ -650,7 +660,7 @@ export function useBridgeNativeCallback(
                       to: account,
                       symbol: inputCurrency?.symbol,
                       version: 'swapin',
-                      pairid: pairid
+                      pairid: pairid,
                     }
                     recordsTxns(data)
                   }

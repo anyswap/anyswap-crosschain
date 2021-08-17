@@ -12,7 +12,6 @@ import { TYPE } from '../../theme'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
-// import { useToken } from '../../hooks/Tokens'
 import config from '../../config'
 import {formatDecimal} from '../../utils/tools/tools'
 

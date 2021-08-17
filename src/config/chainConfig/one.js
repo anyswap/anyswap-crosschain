@@ -13,7 +13,6 @@ const symbol = 'ONE'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeRouterToken: '',
     bridgeInitChain: '',
   }
 }

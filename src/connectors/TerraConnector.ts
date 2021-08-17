@@ -92,7 +92,7 @@ class MiniRpcProvider implements AsyncSendable {
         resolve,
         reject,
         request: { method }
-      } = byKey[result.id]
+      }:any = byKey[result.id]
       if (resolve && reject) {
         if ('error' in result) {
           reject(new RequestError(result?.error?.message, result?.error?.code, result?.error?.data))
@@ -167,7 +167,7 @@ export class TerraConnector extends AbstractConnector {
   public async activate(): Promise<ConnectorUpdate> {
     // return { provider: this.providers[this.currentChainId], chainId: this.currentChainId, account: null }
     console.log(12)
-    return { provider: '', chainId: '0', account: '123456789' }
+    return { provider: '', chainId: '0', account: '0x0000000000000000000000000000000000000000' }
   }
 
   public async getProvider(): Promise<MiniRpcProvider> {
