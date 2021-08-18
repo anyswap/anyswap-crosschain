@@ -120,8 +120,8 @@ export default function CrossChain() {
   const testlist = useBridgeTokenList('routerTokenList', chainId)
   const testlist1 = useBridgeAllTokenBalances('routerTokenList', chainId)
   useEffect(() => {
-    console.log(testlist)
-    console.log(testlist1)
+    // console.log(testlist)
+    // console.log(testlist1)
   }, [testlist, testlist1])
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')

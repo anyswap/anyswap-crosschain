@@ -36,8 +36,6 @@ export function useETHBalances(
     undefined,
     chainId
   )
-  // console.log(chainId)
-  // console.log(results)
   return useMemo(
     () =>
       addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
@@ -63,7 +61,7 @@ export function useTokenBalancesWithLoadingIndicator(
   )
 
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
-  // console.log(tokens)
+  // console.log(chainId)
   // console.log(validatedTokenAddresses)
   const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address], undefined, chainId)
   // console.log(validatedTokenAddresses)
@@ -234,7 +232,7 @@ export function useCurrencyBalances(
   const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
     currencies
   ])
-
+  // console.log(tokens)
   const tokenBalances = useTokenBalances(account, tokens, chainId)
   // console.log(tokenBalances)
   // const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])

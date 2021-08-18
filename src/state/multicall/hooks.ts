@@ -90,8 +90,12 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions, in
   useEffect(() => {
     onSelectChainId(useChainId)
   }, [useChainId])
+  // console.log(chainId)
+  // console.log(useChainId)
   // console.log(calls)
-  // update listeners when there is an actual change that persists for at least 100ms
+  // console.log(serializedCallKeys)
+  // console.log(options)
+  // 当实际更改持续至少100毫秒时更新侦听器
   useEffect(() => {
     // console.log(chainId)
     const callKeys: string[] = JSON.parse(serializedCallKeys)
@@ -209,7 +213,6 @@ export function useSingleContractMultipleData(
         : [],
     [callInputs, contract, fragment]
   )
-
   const results = useCallsData(calls, options, chainId)
 
   const latestBlockNumber = useBlockNumber()
@@ -261,9 +264,6 @@ export function useMultipleContractSingleData(
   // if (methodName === 'getReserves') {
   //   console.log(methodName)
   //   console.log(addresses)
-  //   console.log(calls)
-  //   console.log(options)
-  //   console.log(results)
   // }
   const latestBlockNumber = useBlockNumber()
 

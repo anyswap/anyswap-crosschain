@@ -15,8 +15,8 @@ for (const chainID of spportChainArr) {
   if (isNaN(Number(chainID))) continue
   spportChain[chainID] = config.chainInfo[chainID].nodeRpc
 }
-console.log(spportChainArr)
-console.log(spportChain)
+// console.log(spportChainArr)
+// console.log(spportChain)
 export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 
 if (typeof NETWORK_URL === 'undefined') {

@@ -9,7 +9,9 @@ export function useBlockNumber(initChainId?:any): number | undefined {
   const useChainId = initChainId ? initChainId : chainId
   // console.log(useChainId)
   return useSelector((state: AppState) => { 
-    // console.log(state)
+    // console.log(useChainId)
+    // console.log(state.application.blockNumber)
+    // console.log(state.application.blockNumber[useChainId ?? -1])
     return state.application.blockNumber[useChainId ?? -1]
   })
 }
