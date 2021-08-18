@@ -46,7 +46,7 @@ export default function SearchModal ({
   bridgeKey
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-  const tokenComparator = useTokenComparator(bridgeKey, chainId, true)
+  const tokenComparator = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
 
@@ -73,7 +73,7 @@ export default function SearchModal ({
   const filteredSortedTokens: Token[] = useMemo(() => {
     // console.log(searchToken)
     if (searchToken) return [searchToken]
-    console.log(filteredTokens)
+    // console.log(filteredTokens)
     const sorted = filteredTokens.sort(tokenComparator)
     // console.log(sorted)
     const symbolMatch = searchQuery

@@ -48,7 +48,7 @@ const bridgeToken = {
     bridgeInitChain: '56',
   },
   [VERSION.V2_2]: {
-    bridgeInitToken: '0xd69b31c3225728cc57ddaf9be532a4ee1620be51',
+    bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     bridgeInitChain: '56',
   }
 }

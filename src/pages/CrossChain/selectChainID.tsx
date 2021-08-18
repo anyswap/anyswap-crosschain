@@ -134,9 +134,9 @@ export default function SelectChainIdInputPanel({
     ) {
       let token:any = ''
       if (Number(chainId) === Number(selectChainId)) {
-        token = bridgeConfig?.underlying?.address ? bridgeConfig?.underlying?.address : bridgeConfig?.address
+        token = bridgeConfig?.address
       } else {
-        token = destChainInfo?.underlying?.address ? destChainInfo?.underlying?.address : destChainInfo?.address
+        token = destChainInfo?.address
       }
       // console.log(bridgeConfig)
       // console.log(selectChainId)
@@ -209,54 +209,24 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={bridgeConfig?.underlying?.symbol ?? bridgeConfig?.symbol} logoUrl={bridgeConfig?.logoUrl} size={'24px'} />
+                    <TokenLogo symbol={bridgeConfig?.symbol} logoUrl={bridgeConfig?.logoUrl} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>
-                      {/* {(bridgeConfig && bridgeConfig.symbol && bridgeConfig.symbol.length > 20
-                        ? bridgeConfig.symbol.slice(0, 4) +
-                          '...' +
-                          bridgeConfig.symbol.slice(bridgeConfig.symbol.length - 5, bridgeConfig.symbol.length)
-                        : config.getBaseCoin(bridgeConfig?.symbol)) || t('selectToken')} */}
-                      {/* {
-                        bridgeConfig?.underlying?.symbol ? (
-                          bridgeConfig?.underlying?.symbol.length > 20
-                            ? bridgeConfig?.underlying?.symbol.slice(0, 4) +
-                              '...' +
-                              bridgeConfig?.underlying?.symbol.slice(bridgeConfig?.underlying?.symbol.length - 5, bridgeConfig?.underlying?.symbol.length)
-                            : config.getBaseCoin(bridgeConfig?.underlying?.symbol, chainId)
-                        ) : (
-                          bridgeConfig?.symbol ? (
-                            bridgeConfig?.symbol.length > 20
-                              ? bridgeConfig?.symbol.slice(0, 4) +
-                                '...' +
-                                bridgeConfig?.symbol.slice(bridgeConfig?.symbol.length - 5, bridgeConfig?.symbol.length)
-                              : config.getBaseCoin(bridgeConfig?.symbol, chainId)) : t('selectToken')
-                        )
-                      } */}
                       {
-                        destChainInfo?.underlying?.symbol ? (
-                          destChainInfo?.underlying?.symbol.length > 20
-                            ? destChainInfo?.underlying?.symbol.slice(0, 4) +
+                        destChainInfo?.symbol ? (
+                          destChainInfo?.symbol.length > 20
+                            ? destChainInfo?.symbol.slice(0, 4) +
                               '...' +
-                              destChainInfo?.underlying?.symbol.slice(destChainInfo?.underlying?.symbol.length - 5, destChainInfo?.underlying?.symbol.length)
-                            : config.getBaseCoin(destChainInfo?.underlying?.symbol, chainId)
-                        ) : (
-                          destChainInfo?.symbol ? (
-                            destChainInfo?.symbol.length > 20
-                              ? destChainInfo?.symbol.slice(0, 4) +
-                                '...' +
-                                destChainInfo?.symbol.slice(destChainInfo?.symbol.length - 5, destChainInfo?.symbol.length)
-                              : config.getBaseCoin(destChainInfo?.symbol, chainId)) : t('selectToken')
-                        )
+                              destChainInfo?.symbol.slice(destChainInfo?.symbol.length - 5, destChainInfo?.symbol.length)
+                            : config.getBaseCoin(destChainInfo?.symbol, chainId)
+                        ) : t('selectToken')
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {
-                        destChainInfo ? (
-                          destChainInfo?.underlying ? config.getBaseCoin(destChainInfo?.underlying?.symbol, selectChainId, 1, destChainInfo?.underlying?.name) : config.getBaseCoin(destChainInfo?.symbol, selectChainId, 1, destChainInfo?.name)
-                        ) : ''
+                        destChainInfo ? config.getBaseCoin(destChainInfo?.symbol, selectChainId, 1, destChainInfo?.name) : ''
                       }
                     </p>
                   </StyledTokenName>

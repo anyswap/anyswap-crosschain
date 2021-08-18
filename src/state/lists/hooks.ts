@@ -30,7 +30,7 @@ export class WrappedBridgeTokenInfo extends Token {
   public readonly tokenInfo: any
   // public readonly tags: TagInfo[]
   constructor(tokenInfo: any) {
-    super(tokenInfo.chainId, tokenInfo?.underlying?.address ?? tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
     this.tokenInfo = tokenInfo
     // this.tags = tags
   }

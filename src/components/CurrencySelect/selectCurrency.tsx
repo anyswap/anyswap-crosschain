@@ -119,8 +119,8 @@ export default function SelectCurrencyInputPanel({
   // console.log(allTokens)
   //   console.log(allTokensList)
   const handleDismissSearch = useCallback(() => {
-    console.log(allTokens)
-    console.log(allTokensList)
+    // console.log(allTokens)
+    // console.log(allTokensList)
     setModalOpen(false)
     if (onOpenModalView) {
       onOpenModalView(false)

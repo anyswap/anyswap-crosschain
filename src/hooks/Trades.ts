@@ -22,21 +22,7 @@ function useAllCommonPairs(chainId?: ChainId, currencyA?: Currency, currencyB?: 
       ),
     [bases]
   )
-  // console.log(tokenA)
-  // console.log(tokenB)
-  // if (tokenA && tokenB) {
-
-  //   console.log([
-  //     // 直接对
-  //     [tokenA, tokenB],
-  //     // token A against all bases
-  //     ...bases.map((base): [Token, Token] => [tokenA, base]),
-  //     // token B against all bases
-  //     ...bases.map((base): [Token, Token] => [tokenB, base]),
-  //     // each base against all bases
-  //     ...basePairs
-  //   ])
-  // }
+  
   const allPairCombinations: [Token, Token][] = useMemo(
     () =>
       tokenA && tokenB

@@ -100,16 +100,11 @@ function CurrencyRow({
 }) {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
-  const key = currencyKey(currency)
-  const currencyObj = {
-    address: currency.underlying ? currency.underlying.address : currency?.address,
-    decimals: currency.decimals,
-    symbol: currency.underlying ? currency.underlying.symbol : currency.symbol,
-    name: currency?.underlying?.name ? currency.underlying.name : currency.name,
-  }
+  const currencyObj = currency
+  const key = currencyKey(currencyObj)
   const currencies = useLocalToken(currencyObj)
-  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currency?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
-  // console.log(currency)
+  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currencyObj?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
+  // console.log(currencyObj)
   // const balance = ''
   // const ETHBalance = ''
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
@@ -126,7 +121,7 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
-      <TokenLogo symbol={currencyObj.symbol} logoUrl={currency?.logoUrl} size={'24px'}></TokenLogo>
+      <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
           {config.getBaseCoin(currencyObj.symbol, chainId)}
