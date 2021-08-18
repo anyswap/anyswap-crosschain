@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
 
-import { useBridgeSelectedTokenList } from '../lists/hooks'
+import { useBridgeTokenList } from '../lists/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
@@ -273,7 +273,7 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
 // mimics useAllBalances
 export function useBridgeAllTokenBalances(key?: string | undefined, chainId?:any): { [tokenAddress: string]: TokenAmount | undefined } {
   const { account } = useActiveWeb3React()
-  const allTokens = useBridgeSelectedTokenList(key, chainId)
+  const allTokens = useBridgeTokenList(key, chainId)
   // console.log(allTokens)
   const allTokensArray:any = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   // console.log(allTokensArray)

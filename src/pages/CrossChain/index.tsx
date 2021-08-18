@@ -108,21 +108,24 @@ const ConfirmText = styled.div`
 
 let intervalFN:any = ''
 
+const BRIDGETYPE = 'routerTokenList'
+
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const allTokensList = useBridgeTokenList(BRIDGETYPE, chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
-
-  const testlist = useBridgeTokenList('routerTokenList', chainId)
-  const testlist1 = useBridgeAllTokenBalances('routerTokenList', chainId)
+  
+  const testlist1 = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   useEffect(() => {
+    console.log(allTokensList)
     // console.log(testlist)
     // console.log(testlist1)
-  }, [testlist, testlist1])
+  }, [allTokensList, testlist1])
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
@@ -637,7 +640,7 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             allTokens={allTokens}
-            bridgeKey={'routerTokenList'}
+            bridgeKey={BRIDGETYPE}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

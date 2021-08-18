@@ -1,6 +1,6 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
-export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
-// export const bridgeApi = 'https://l2api.anyswap.exchange'
+// export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
+export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 
@@ -24,10 +24,10 @@ export const version = '0.1.6'
 export const timeout = 1000 * 60 * 30
 
 // export const USE_VERSION = VERSION.V1_1
-export const USE_VERSION = VERSION.V2_2
+// export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
-// export const USE_VERSION = VERSION.V2_T2
+export const USE_VERSION = VERSION.V2_T2
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []

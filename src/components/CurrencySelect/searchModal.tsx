@@ -18,7 +18,6 @@ import { CloseIcon } from '../../theme'
 import { isAddress } from '../../utils'
 
 import { useToken } from '../../hooks/Tokens'
-// import { useBridgeSelectedTokenList } from '../../state/lists/hooks'
 import CurrencyList from './CurrencyList'
 
 // import {getAllToken} from '../../utils/bridge/getServerInfo'
@@ -47,8 +46,6 @@ export default function SearchModal ({
   bridgeKey
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-  // const allTokensList:any = useBridgeSelectedTokenList(bridgeKey, chainId)
-  // console.log(allTokens)
   const tokenComparator = useTokenComparator(bridgeKey, chainId, true)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -63,7 +60,7 @@ export default function SearchModal ({
   const tokenList = useMemo(() => {
     const arr:any = []
     for (const token in allTokens) {
-      arr.push(allTokens[token].tokenInfo)
+      arr.push(allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token])
     }
     return arr
   }, [allTokens])

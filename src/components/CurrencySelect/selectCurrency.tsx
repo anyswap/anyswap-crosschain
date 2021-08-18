@@ -14,7 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {formatDecimal} from '../../utils/tools/tools'
-import { useBridgeSelectedTokenList } from '../../state/lists/hooks'
+import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import {
   InputRow,
@@ -105,7 +105,7 @@ export default function SelectCurrencyInputPanel({
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
-  const allTokensList:any = useBridgeSelectedTokenList(bridgeKey, chainId)
+  const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
@@ -113,8 +113,14 @@ export default function SelectCurrencyInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
 
+  const useTokenList = config.env === 'dev' ? allTokensList : allTokens
+  // const useTokenList = allTokens
+  // console.log(useTokenList)
+  // console.log(allTokens)
+  //   console.log(allTokensList)
   const handleDismissSearch = useCallback(() => {
     console.log(allTokens)
+    console.log(allTokensList)
     setModalOpen(false)
     if (onOpenModalView) {
       onOpenModalView(false)
@@ -156,18 +162,18 @@ export default function SelectCurrencyInputPanel({
   }, [isViewModal])
 
   const logoUrl = useMemo(() => {
-    if (allTokensList && currency?.address) {
-      for (const t in allTokensList) {
+    if (useTokenList && currency?.address) {
+      for (const t in useTokenList) {
         if (
           t === currency?.address?.toLowerCase()
-          || allTokensList[t]?.tokenInfo?.underlying?.address === currency?.address?.toLowerCase()
+          || useTokenList[t]?.tokenInfo?.underlying?.address === currency?.address?.toLowerCase()
         ) {
-          return allTokensList[t]?.tokenInfo?.logoUrl
+          return useTokenList[t]?.tokenInfo?.logoUrl
         }
       }
     }
     return ''
-  }, [allTokensList, currency])
+  }, [useTokenList, currency])
 
   return (
     <InputPanel id={id} className={isError ? 'error' : ''}>
@@ -332,7 +338,7 @@ export default function SelectCurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           // onlyUnderlying={onlyUnderlying}
-          allTokens={allTokensList}
+          allTokens={useTokenList}
           chainId={chainId}
           bridgeKey={bridgeKey}
         />
