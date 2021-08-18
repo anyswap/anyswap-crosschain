@@ -3,9 +3,10 @@ import { ChainId } from 'anyswap-sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, routerTokenList } from '../state/lists/actions'
+import { fetchTokenList, routerTokenList, bridgeTokenList } from '../state/lists/actions'
 import { AppState } from '../state'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
@@ -67,11 +68,8 @@ export function useFetchTokenListCallback(): () => Promise<any> {
   // console.log(lists)
   return useCallback(
     async () => {
-      // const requestId = nanoid()
-      // dispatch(routerTokenList({ requestId, url: listUrl }))
       if (!chainId) return
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
-        // dispatch(routerTokenList({ chainId, tokenList:curList.tokenList }))
         return
       } else {
         const url = `${config.bridgeApi}/v3/serverinfo?chainId=${chainId}&version=all`
@@ -81,6 +79,10 @@ export function useFetchTokenListCallback(): () => Promise<any> {
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data
+              // const sortObj = {
+              //   stable: {},
+              //   underlying: {}
+              // }
               for (const version in tList) {
                 for (const token in tList[version]) {
                   list[token] = tList[version][token]
@@ -91,11 +93,51 @@ export function useFetchTokenListCallback(): () => Promise<any> {
             return list
           })
           .catch(error => {
-            // console.log(error)
             console.debug(`Failed to get list at url `, error)
-            // dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
-            // throw error
             dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
+            return {}
+          })
+      }
+    },
+    [dispatch, chainId]
+  )
+}
+
+export function useFetchTokenList1Callback(): () => Promise<any> {
+  const { chainId } = useActiveWeb3React()
+  const dispatch = useDispatch<AppDispatch>()
+  const lists = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
+  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+  return useCallback(
+    async () => {
+      if (!chainId) return
+      if (
+        lists
+        && curList?.timestamp
+        && (Date.now() - curList?.timestamp) <= timeout
+        && curList?.tokenList
+        && Object.keys(curList?.tokenList).length > 0
+      ) {
+        return
+      } else {
+        return GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain})
+          .then((tokenList:any) => {
+            console.log(tokenList)
+            // const list:any = {}
+            // if (tokenList.msg === 'Success' && tokenList.data) {
+            //   const tList = tokenList.data
+            //   for (const version in tList) {
+            //     for (const token in tList[version]) {
+            //       list[token] = tList[version][token]
+            //     }
+            //   }
+            // }
+            dispatch(bridgeTokenList({ chainId, tokenList: tokenList }))
+            return tokenList
+          })
+          .catch(error => {
+            console.debug(`Failed to get list at url `, error)
+            // dispatch(bridgeTokenList({ chainId, tokenList: curList.tokenList }))
             return {}
           })
       }

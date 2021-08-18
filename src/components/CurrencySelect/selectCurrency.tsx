@@ -113,7 +113,7 @@ export default function SelectCurrencyInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
 
-  const useTokenList = config.env === 'dev' ? allTokensList : allTokens
+  const useTokenList = Object.keys(allTokens).length > 0 ? allTokens : allTokensList
   // const useTokenList = allTokens
   // console.log(useTokenList)
   // console.log(allTokens)

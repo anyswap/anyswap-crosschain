@@ -400,7 +400,7 @@ export default function CrossChain() {
   
   useEffect(() => {
     if ((selectCurrency && chainId !== selectCurrency?.chainId) || (!bridgeConfig && selectCurrency)) {
-      history.go(0)
+      // history.go(0)
     }
   }, [chainId, bridgeConfig])
   

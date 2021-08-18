@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -10,10 +10,10 @@ import { ButtonLight } from '../../components/Button'
 // import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
-
+import { useBridgeTokenList } from '../../state/lists/hooks'
 import AppBody from '../AppBody'
 
-import {getAllToken} from '../../utils/bridge/getServerInfo'
+// import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getGroupTotalsupply} from '../../utils/bridge/getBalance'
 import {thousandBit} from '../../utils/tools/tools'
 
@@ -178,18 +178,19 @@ ${({ theme }) => theme.flexSC};
 `
 
 let intervalFN:any
-
+const BRIDGETYPE = 'routerTokenList'
 export default function PoolLists ({
 
 }) {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
+  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
-  const [count, setCount] = useState<number>(0)
+  // const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
 
@@ -209,52 +210,135 @@ export default function PoolLists ({
   }
 
   useEffect(() => {
-    getAllToken(chainId).then((res:any) => {
-      // console.log(res)
-      if (res) {
-        // const list:any = []
-        const destList:any = {}
-        const allToken = []
-        for (const token in res) {
-          if (!isAddress(token)) continue
-          const tObj = res[token].list
-          if (chainId) {
-            if (!destList[chainId]) destList[chainId] = []
-            destList[chainId].push({
-              token: token,
-              dec: tObj.decimals,
-              underlying: tObj?.underlying?.address
-            })
-          }
-          for (const chainID in tObj.destChains) {
-            if (Number(chainID) === Number(chainId)) continue
-            if (!destList[chainID]) destList[chainID] = []
-            destList[chainID].push({
-              token: tObj.destChains[chainID].address,
-              dec: tObj.destChains[chainID].decimals,
-              underlying: tObj.destChains[chainID]?.underlying?.address
-            })
-            // console.log(chainID)
-          }
-          allToken.push({
-            ...tObj,
-            token: token
+    if (allTokensList) {
+      // const list:any = []
+      const destList:any = {}
+      const allToken = []
+      for (const token in allTokensList) {
+        if (!isAddress(token)) continue
+        const tObj = allTokensList[token].tokenInfo
+        if (chainId) {
+          if (!destList[chainId]) destList[chainId] = []
+          destList[chainId].push({
+            token: tObj?.underlying?.address ? tObj?.underlying?.address : token,
+            dec: tObj.decimals,
+            underlying: tObj?.underlying?.address ? token : ''
           })
         }
-        // console.log(destList)
-        setPoolList(allToken)
-        getOutChainInfo(destList)
-      } else {
-        setPoolList([])
-        if (count <= 5) {
-          setTimeout(() => {
-            setCount(count + 1)
-          }, 1000)
+        for (const chainID in tObj.destChains) {
+          if (Number(chainID) === Number(chainId)) continue
+          if (!destList[chainID]) destList[chainID] = []
+          destList[chainID].push({
+            token: tObj.destChains[chainID]?.underlying?.address ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
+            dec: tObj.destChains[chainID].decimals,
+            underlying: tObj.destChains[chainID]?.underlying?.address ? tObj.destChains[chainID].address : ''
+          })
+          // console.log(chainID)
         }
+        allToken.push({
+          ...tObj,
+          token: token
+        })
       }
+      // console.log(destList)
+      setPoolList(allToken)
+      getOutChainInfo(destList)
+    }
+    // getAllToken(chainId).then((res:any) => {
+    //   // console.log(res)
+    //   if (res) {
+    //     // const list:any = []
+    //     const destList:any = {}
+    //     const allToken = []
+    //     for (const token in res) {
+    //       if (!isAddress(token)) continue
+    //       const tObj = res[token].list
+    //       if (chainId) {
+    //         if (!destList[chainId]) destList[chainId] = []
+    //         destList[chainId].push({
+    //           token: token,
+    //           dec: tObj.decimals,
+    //           underlying: tObj?.underlying?.address
+    //         })
+    //       }
+    //       for (const chainID in tObj.destChains) {
+    //         if (Number(chainID) === Number(chainId)) continue
+    //         if (!destList[chainID]) destList[chainID] = []
+    //         destList[chainID].push({
+    //           token: tObj.destChains[chainID].address,
+    //           dec: tObj.destChains[chainID].decimals,
+    //           underlying: tObj.destChains[chainID]?.underlying?.address
+    //         })
+    //         // console.log(chainID)
+    //       }
+    //       allToken.push({
+    //         ...tObj,
+    //         token: token
+    //       })
+    //     }
+    //     // console.log(destList)
+    //     setPoolList(allToken)
+    //     getOutChainInfo(destList)
+    //   } else {
+    //     setPoolList([])
+    //     if (count <= 5) {
+    //       setTimeout(() => {
+    //         setCount(count + 1)
+    //       }, 1000)
+    //     }
+    //   }
+    // })
+  }, [chainId, allTokensList, intervalCount])
+
+  const tokenList = useMemo(() => {
+    // console.log(poolData)
+    // console.log(poolList)
+    const arr = []
+    if (poolData && poolList) {
+      for (const obj of poolList) {
+        const objExtend:any = {
+          ...obj,
+          ts: '',
+          bl: '',
+          destChains: {},
+          totalV: 0
+        }
+        const c1 = objExtend.chainId
+        const t1 = objExtend.underlying ? objExtend.underlying.address : objExtend.address
+        objExtend.ts = poolData[c1][t1].ts ? poolData[c1][t1].ts : 0
+        objExtend.bl = poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
+        objExtend.totalV += objExtend.ts
+        for (const objChild in obj.destChains) {
+          const c2 = objChild
+          const t2 = obj.destChains[c2].underlying ? obj.destChains[c2].underlying.address : obj.destChains[c2].address
+          const dObj = {
+            ...obj.destChains[c2],
+            ts: '',
+            bl: ''
+          }
+          dObj.ts = poolData[c2][t2].ts ? poolData[c2][t2].ts : 0
+          dObj.bl = poolData[c2][t2].balance ? poolData[c2][t2].balance : 0
+          objExtend.totalV += dObj.ts
+          objExtend.destChains[c2] = dObj
+        }
+        arr.push(objExtend)
+      }
+    }
+    arr.sort((a:any, b:any) => {
+      // console.log(a.totalV)
+      // console.log(b.totalV)
+      if (Number(a.totalV) >= Number(b.totalV)) {
+        return -1
+      }
+      return 0
     })
-  }, [chainId, count, intervalCount])
+    return arr
+  }, [poolData, poolList])
   
+  useEffect(() => {
+    console.log(tokenList)
+  }, [tokenList])
+
   function changeNetwork (chainID:any) {
     selectNetwork(chainID).then((res: any) => {
       // console.log(res)
@@ -264,34 +348,35 @@ export default function PoolLists ({
     })
   }
 
-  function viewTd (item:any, index:number, c?:any) {
+  function viewTd (item:any) {
     
-    let ts = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].ts ? Number(poolData[c][item.address].ts) : 0
+    // const token = item?.underlying?.address ? item?.underlying?.address : item.address
+    // let ts = c && poolData && poolData[c] && token && poolData[c][token] && poolData[c][token].ts ? Number(poolData[c][token].ts) : 0
 
-    for (const chainID in poolList[index].destChains) {
-      if (Number(chainID) === Number(chainId)) continue
-      // console.log(item)
-      const token = item.destChains[chainID]?.address
-      const ts1 = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? Number(poolData[chainID][token].ts) : 0
-      ts += ts1
-      // bl += bl1
-    }
+    // for (const chainID in poolList[index].destChains) {
+    //   if (Number(chainID) === Number(chainId)) continue
+    //   // console.log(item)
+    //   const token = item.destChains[chainID]?.underlying?.address ? item.destChains[chainID]?.underlying?.address : item.destChains[chainID]?.address
+    //   const ts1 = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? Number(poolData[chainID][token].ts) : 0
+    //   ts += ts1
+    //   // bl += bl1
+    // }
     return (
       <>
         <DBTd className='r'>
           <BalanceTxt>
-            <p className='p1'>{thousandBit(ts, 2)}</p>
+            <p className='p1'>{thousandBit(item.totalV, 2)}</p>
           </BalanceTxt>
         </DBTd>
       </>
     )
   }
-  function viewTd2 (item:any, index:number, c?:any) {
+  function viewTd2 (item:any, c?:any) {
     // console.log(item)
     let listView:any = ''
     if (c) {
-      const ts = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].ts ? poolData[c][item.address].ts : '0.00'
-      const bl = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].balance ? poolData[c][item.address].balance : '0.00'
+      const ts = item.ts ? item.ts : '0.00'
+      const bl = item.bl ? item.bl : '0.00'
       // console.log(ts)
       listView = <TokenList className='l'>
           <div className="chain">
@@ -334,12 +419,13 @@ export default function PoolLists ({
       <>
         {listView}
         {
-          Object.keys(poolList[index].destChains).map((chainID:any, indexs:any) => {
+          item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
             if (Number(chainID) === Number(chainId)) return ''
-            const token = item.destChains[chainID]?.address
-            const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
+            // const token = item.destChains[chainID]?.address
+            // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
+            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
             // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
-            const bl = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].balance ? poolData[chainID][token].balance : '0.00'
+            const bl = item.destChains[chainID].bl ? item.destChains[chainID].bl : '0.00'
 
             return (
               <TokenList className='l' key={indexs}>
@@ -386,11 +472,11 @@ export default function PoolLists ({
     )
   }
 
-  function viewCard2 (item:any, index: number, c?:any) {
+  function viewCard2 (item:any, c?:any) {
     let listView:any = ''
     if (c) {
-      const ts = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].ts ? poolData[c][item.address].ts : '0.00'
-      const bl = c && poolData && poolData[c] && item.address && poolData[c][item.address] && poolData[c][item.address].balance ? poolData[c][item.address].balance : '0.00'
+      const ts = item.ts ? item.ts : '0.00'
+      const bl = item.bl ? item.bl : '0.00'
       // console.log(ts)
       listView = <ChainCardList className='l'>
           <div className="chain">
@@ -439,11 +525,13 @@ export default function PoolLists ({
       <>
         {listView}
         {
-          Object.keys(poolList[index].destChains).map((chainID:any, indexs:any) => {
+          item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
             if (Number(chainID) === Number(chainId)) return ''
-            const token = item.destChains[chainID]?.address
-            const ts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? poolData[chainID][token].ts : '0.00'
-            const bl = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].balance ? poolData[chainID][token].balance : '0.00'
+            // const token = item.destChains[chainID]?.address
+            // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
+            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
+            // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
+            const bl = item.destChains[chainID].bl ? item.destChains[chainID].bl : '0.00'
             return (
               <ChainCardList className='l' key={indexs}>
                 <div className="chain">
@@ -506,8 +594,8 @@ export default function PoolLists ({
             </tr>
           </DBThead>
           {
-            poolList && poolList.length > 0 ? (
-              poolList.map((item:any, index:any) => {
+            tokenList && tokenList.length > 0 ? (
+              tokenList.map((item:any, index:any) => {
                 return (
                   <DBTbody key={index}>
                     <tr onClick={() => {
@@ -531,14 +619,14 @@ export default function PoolLists ({
                         <TokenTableCoinBox>
                           <TokenTableLogo>
                             <TokenLogo
-                              symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}
+                              symbol={config.getBaseCoin(item?.symbol, chainId)}
                               logoUrl={item.logoUrl}
                               size={'1.625rem'}
                             ></TokenLogo>
                           </TokenTableLogo>
                           <TokenNameBox>
-                            <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}</h3>
-                            <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, chainId, 1)}</p>
+                            <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
+                            <p>{config.getBaseCoin(item?.name, chainId, 1)}</p>
                           </TokenNameBox>
                         </TokenTableCoinBox>
                       </DBTd>
@@ -567,7 +655,7 @@ export default function PoolLists ({
                           }
                         </FlexSC>
                       </DBTd>
-                      {viewTd(item, index, chainId)}
+                      {viewTd(item)}
                       <DBTd className="c" width={'180'}>
                         <Flex>
                           <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
@@ -577,8 +665,8 @@ export default function PoolLists ({
                     </tr>
                     <tr id={'chain_list_' + index} style={{display: 'none'}}>
                       <DBTd colSpan={4}>
-                        {viewTd2(item, index, chainId)}
-                        {viewCard2(item, index, chainId)}
+                        {viewTd2(item, chainId)}
+                        {viewCard2(item, chainId)}
                       </DBTd>
                     </tr>
                   </DBTbody>

@@ -26,6 +26,7 @@ import Title from '../../components/Title'
 
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -36,7 +37,7 @@ import PoolTip from './poolTip'
 
 // import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
 // import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
-import {getAllToken} from '../../utils/bridge/getServerInfo'
+// import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -44,7 +45,7 @@ import {formatDecimal} from '../../utils/tools/tools'
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from '../CrossChain/reminder'
 
-
+const BRIDGETYPE = 'routerTokenList'
 // let onlyFirst = 0
 let intervalFN:any
 export default function SwapNative() {
@@ -53,6 +54,7 @@ export default function SwapNative() {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
 
   const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
 
@@ -60,10 +62,9 @@ export default function SwapNative() {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
-  // const [bridgeConfig, setBridgeConfig] = useState<any>()
   const [openAdvance, setOpenAdvance] = useState<any>(urlSwapType === 'deposit' ? false : true)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
-  const [count, setCount] = useState<number>(0)
+  // const [count, setCount] = useState<number>(0)
   const [poolInfo, setPoolInfo] = useState<any>()
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -74,7 +75,7 @@ export default function SwapNative() {
 
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
-  const [allTokens, setAllTokens] = useState<any>({})
+  // const [allTokens, setAllTokens] = useState<any>({})
 
   const [destChain, setDestChain] = useState<any>({
     chain: '',
@@ -139,17 +140,17 @@ export default function SwapNative() {
     setInputBridgeValue('')
   }
 
-  const bridgeConfig = useMemo(() => {
-    if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
-    return ''
-  }, [selectCurrency, allTokens])
+  // const bridgeConfig = useMemo(() => {
+  //   if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
+  //   return ''
+  // }, [selectCurrency, allTokens])
 
   const destConfig = useMemo(() => {
-    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
-      return bridgeConfig?.destChains[selectChain]
+    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
+      return selectCurrency?.destChains[selectChain]
     }
     return false
-  }, [bridgeConfig, selectChain])
+  }, [selectCurrency, selectChain])
 
   const isNativeToken = useMemo(() => {
     if (
@@ -407,41 +408,60 @@ export default function SwapNative() {
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-    setAllTokens({})
+    // setAllTokens({})
     setSelectCurrency('')
-    getAllToken(chainId).then((res:any) => {
-      console.log(res)
-      if (res) {
-        const list:any = []
-        for (const token in res) {
-          if (!isAddress(token)) continue
-          list[token] = {
-            ...res[token].list,
-          }
-          if (!selectCurrency || selectCurrency.chainId !== chainId) {
-            if (
-              t === token
-              || list[token]?.symbol?.toLowerCase() === t
-              || list[token]?.underlying?.symbol?.toLowerCase() === t
-            ) {
-              setSelectCurrency(list[token])
-            }
-          }
-        }
-        // console.log(list)
-        setAllTokens(list)
-      } else {
-        if (count >= 2) {
-          history.push(window.location.pathname + '#/pool/add')
-          setCount(count + 1)
-        } else {
-          setTimeout(() => {
-            setCount(count + 1)
-          }, 100)
+    const list:any = {}
+    for (const token in allTokensList) {
+      if (!isAddress(token)) continue
+      list[token] = {
+        ...allTokensList[token].tokenInfo,
+      }
+      if (!selectCurrency || selectCurrency.chainId !== chainId) {
+        if (
+          t === token
+          || list[token]?.symbol?.toLowerCase() === t
+          || list[token]?.underlying?.symbol?.toLowerCase() === t
+        ) {
+          setSelectCurrency(list[token])
         }
       }
-    })
-  }, [chainId, count])
+    }
+    if (!selectCurrency) {
+      history.push(window.location.pathname + '#/pool/add')
+    }
+    // getAllToken(chainId).then((res:any) => {
+    //   console.log(res)
+    //   if (res) {
+    //     const list:any = []
+    //     for (const token in res) {
+    //       if (!isAddress(token)) continue
+    //       list[token] = {
+    //         ...res[token].list,
+    //       }
+    //       if (!selectCurrency || selectCurrency.chainId !== chainId) {
+    //         if (
+    //           t === token
+    //           || list[token]?.symbol?.toLowerCase() === t
+    //           || list[token]?.underlying?.symbol?.toLowerCase() === t
+    //         ) {
+    //           setSelectCurrency(list[token])
+    //         }
+    //       }
+    //     }
+    //     // console.log(list)
+    //     // setAllTokens(list)
+    //   } else {
+    //     if (count >= 2) {
+    //       history.push(window.location.pathname + '#/pool/add')
+    //       setCount(count + 1)
+    //     } else {
+    //       setTimeout(() => {
+    //         setCount(count + 1)
+    //       }, 100)
+    //     }
+    //   }
+    // })
+  }, [chainId, allTokensList])
 
   useEffect(() => {
     if (selectCurrency) {
@@ -541,7 +561,7 @@ export default function SwapNative() {
               setOpenAdvance(value)
             }}
             isNativeToken={isNativeToken}
-            allTokens={allTokens}
+            // allTokens={allTokens}
             bridgeKey={'routerTokenList'}
           />
           {
@@ -567,7 +587,7 @@ export default function SwapNative() {
                     console.log(value)
                     setModalOpen(value)
                   }}
-                  bridgeConfig={bridgeConfig}
+                  bridgeConfig={selectCurrency}
                   intervalCount={intervalCount}
                   isViewAllChain={true}
                   selectChainList={selectChainList}
@@ -586,7 +606,7 @@ export default function SwapNative() {
         
         {
           openAdvance && Number(chainId) !== Number(selectChain) ? (
-            <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+            <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
           ) : ''
         }
         {

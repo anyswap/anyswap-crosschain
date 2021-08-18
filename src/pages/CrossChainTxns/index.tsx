@@ -166,7 +166,7 @@ export default function CrossChain() {
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  const [allTokens, setAllTokens] = useState<any>({})
+  // const [allTokens, setAllTokens] = useState<any>({})
 
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
@@ -203,17 +203,17 @@ export default function CrossChain() {
     return false
   }, [selectCurrency, selectChain])
   
-  const bridgeConfig = useMemo(() => {
-    if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
-    return ''
-  }, [selectCurrency, allTokens])
+  // const bridgeConfig = useMemo(() => {
+  //   if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
+  //   return ''
+  // }, [selectCurrency, allTokens])
 
   const destConfig = useMemo(() => {
-    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
-      return bridgeConfig?.destChains[selectChain]
+    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
+      return selectCurrency?.destChains[selectChain]
     }
     return false
-  }, [bridgeConfig, selectChain])
+  }, [selectCurrency, selectChain])
 
   const formatCurrency = useLocalToken(selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
@@ -516,7 +516,7 @@ export default function CrossChain() {
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-    setAllTokens({})
+    // setAllTokens({})
     setSelectCurrency('')
     const list:any = {}
     for (const token in allTokensList) {
@@ -535,7 +535,7 @@ export default function CrossChain() {
       }
     }
     // console.log(list)
-    setAllTokens(list)
+    // setAllTokens(list)
     // getAllToken(chainId).then((res:any) => {
     //   console.log(res)
     //   if (res) {
@@ -744,7 +744,7 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
-            allTokens={allTokens}
+            // allTokens={allTokens}
             bridgeKey={'routerTokenList'}
           />
           {
@@ -798,7 +798,7 @@ export default function CrossChain() {
             selectChainId={selectChain}
             selectDestCurrency={selectDestCurrency}
             id="selectChainID"
-            bridgeConfig={bridgeConfig}
+            bridgeConfig={selectCurrency}
             // intervalCount={intervalCount}
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
@@ -808,7 +808,7 @@ export default function CrossChain() {
           )} */}
         </AutoColumn>
 
-        <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} />
+        <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} />
 
         <BottomGrouping>
           {!account ? (

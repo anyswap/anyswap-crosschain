@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList } from './actions'
 
 import config from '../../config'
 
@@ -20,6 +20,7 @@ export interface ListsState {
   readonly lastInitializedDefaultListOfLists?: string[]
   readonly selectedListUrl: string | undefined
   readonly routerTokenList: any
+  readonly bridgeTokenList: any
 }
 
 type ListState = ListsState['byUrl'][string]
@@ -43,11 +44,16 @@ const initialState: ListsState = {
   },
   selectedListUrl: DEFAULT_TOKEN_LIST_URL,
   routerTokenList: {},
+  bridgeTokenList: {}
 }
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(bridgeTokenList, (state, { payload: { chainId, tokenList } }) => {
+      state.bridgeTokenList[chainId] = {tokenList, timestamp: Date.now()}
+    })
     .addCase(routerTokenList, (state, { payload: { chainId, tokenList } }) => {
+      // console.log(state)
       state.routerTokenList[chainId] = {tokenList, timestamp: Date.now()}
     })
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
@@ -61,34 +67,6 @@ export default createReducer(initialState, builder =>
     })
     // .addCase(fetchTokenList.fulfilled, (state, { payload: { requestId, tokenList, url } }) => {
     .addCase(fetchTokenList.fulfilled, (state, { payload: { tokenList, url } }) => {
-      // const current = state.byUrl[url]?.current
-      // const loadingRequestId = state.byUrl[url]?.loadingRequestId
-
-      // 如果更新不起作用，则无操作
-      // if (current) {
-      //   const upgradeType = getVersionUpgrade(current.version, tokenList.version)
-      //   if (upgradeType === VersionUpgrade.NONE) return
-      //   if (loadingRequestId === null || loadingRequestId === requestId) {
-      //     state.byUrl[url] = {
-      //       ...state.byUrl[url],
-      //       loadingRequestId: null,
-      //       error: null,
-      //       current: current,
-      //       pendingUpdate: tokenList
-      //     }
-      //   }
-      // } else {
-      //   state.byUrl[url] = {
-      //     ...state.byUrl[url],
-      //     loadingRequestId: null,
-      //     error: null,
-      //     current: tokenList,
-      //     pendingUpdate: null
-      //   }
-      // }
-      // console.log(tokenList)
-      // console.log(config.tokenList)
-      
       if (tokenList && tokenList.tokens && tokenList.tokens.length > 0) {
         // tokenList.tokens.unshift(...config.tokenList.tokens)
         const tlArr:Array<string> = []

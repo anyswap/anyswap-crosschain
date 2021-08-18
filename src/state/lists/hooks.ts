@@ -128,7 +128,7 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): Toke
   // console.log(lists)
   return useMemo(() => {
     if (!key || !chainId) return EMPTY_LIST
-    const current = lists[key][chainId]?.tokenList
+    const current = lists[key]?.[chainId]?.tokenList
     // console.log(current)
     if (!current) return EMPTY_LIST
     try {
