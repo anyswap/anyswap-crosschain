@@ -162,13 +162,16 @@ export default function SelectCurrencyInputPanel({
   }, [isViewModal])
 
   const logoUrl = useMemo(() => {
+    // console.log(currency)
     if (useTokenList && currency?.address) {
       for (const t in useTokenList) {
         if (
           t === currency?.address?.toLowerCase()
-          || useTokenList[t]?.tokenInfo?.underlying?.address === currency?.address?.toLowerCase()
+          || useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
+          || useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
         ) {
-          return useTokenList[t]?.tokenInfo?.logoUrl
+          // console.log(useTokenList[t])
+          return useTokenList[t]?.tokenInfo?.logoUrl ?? useTokenList[t]?.logoUrl
         }
       }
     }

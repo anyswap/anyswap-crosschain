@@ -313,7 +313,21 @@ export default function NavList() {
         </StyledNavLink>
         {
           config.getCurConfigInfo().isOpenRouter ? (
-            <StyledNavLink id={`swap-nav-link`} to={config.env === 'dev' ? '/router' : '/swap'}>
+            <StyledNavLink
+              id={`swap-nav-link`}
+              to={config.env === 'dev' ? '/router' : '/swap'}
+              
+              isActive={(match, { pathname }) =>
+                Boolean(match)
+                || pathname.startsWith('/router')
+                || pathname.startsWith('/pool')
+                || pathname.startsWith('/swap')
+                || pathname.startsWith('/add')
+                || pathname.startsWith('/remove')
+                || pathname.startsWith('/create')
+                || pathname.startsWith('/find')
+              }
+            >
               <div className="icon">
                 <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
                 <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
@@ -344,7 +358,7 @@ export default function NavList() {
               </StyledNavLink>
           ) : ''
         }
-        {
+        {/* {
           config.getCurConfigInfo().isOpenRouter ? (
             <>
               <StyledNavLink
@@ -376,7 +390,7 @@ export default function NavList() {
               </StyledNavLink>
             </>
           ) : ''
-        }
+        } */}
         <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
           <div className="icon">
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />

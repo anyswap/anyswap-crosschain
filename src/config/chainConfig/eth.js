@@ -106,6 +106,11 @@ const bridgeToken = {
     bridgeInitChain: '421611',
     nativeToken: '0x5fcb9de282af6122ce3518cde28b7089c9f97b26'
   },
+  [VERSION.V2_T3]: {
+    bridgeInitToken: '0xecb6d48e04d1df057e398b98ac8b3833eb3839ec',
+    bridgeInitChain: '421611',
+    nativeToken: '0xecb6d48e04d1df057e398b98ac8b3833eb3839ec'
+  },
   [VERSION.V3]: {
     bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',
     bridgeInitChain: '42161',

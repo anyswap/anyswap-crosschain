@@ -4,7 +4,7 @@ import { createBrowserHistory } from 'history'
 // import { TokenAmount } from 'anyswap-sdk'
 import { ArrowDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 
@@ -44,6 +44,12 @@ import {formatDecimal} from '../../utils/tools/tools'
 
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from '../CrossChain/reminder'
+
+const BackBox = styled.div`
+  cursor:pointer;
+  display:inline-block;
+  margin-bottom: 10px;
+`
 
 const BRIDGETYPE = 'routerTokenList'
 // let onlyFirst = 0
@@ -86,31 +92,54 @@ export default function SwapNative() {
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
-  
+  const isUnderlying = useMemo(() => {
+    if (selectCurrency?.underlying) {
+      return true
+    }
+    return false
+  }, [selectCurrency])
 
   const underlyingToken =  useMemo(() => {
-    if (selectCurrency && selectCurrency.underlying) {
+    if (isUnderlying) {
+      return {
+        address: selectCurrency.address,
+        name: selectCurrency.name,
+        symbol: selectCurrency.symbol,
+        decimals: selectCurrency.decimals
+      }
+    }
+    return
+  }, [selectCurrency, isUnderlying])
+  const anyToken =  useMemo(() => {
+    if (isUnderlying) {
       return {
         address: selectCurrency.underlying.address,
         name: selectCurrency.underlying.name,
         symbol: selectCurrency.underlying.symbol,
-        decimals: selectCurrency.underlying.decimals
+        decimals: selectCurrency.underlying.decimals,
+        underlying: {
+          address: selectCurrency.address,
+          name: selectCurrency.name,
+          symbol: selectCurrency.symbol,
+          decimals: selectCurrency.decimals
+        }
       }
     }
-    return
-  }, [selectCurrency])
+    return selectCurrency
+  }, [selectCurrency, isUnderlying])
   // console.log(selectCurrency)
-  const anyCurrency = useLocalToken(selectCurrency ?? undefined)
+  const anyCurrency = useLocalToken(anyToken ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
   // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
   const formatCurrency = useLocalToken(selectCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
-
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, anyToken?.address)
+  // console.log(approval)
+  // console.log(ApprovalState)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     selectCurrency?.routerToken,
     formatCurrency?formatCurrency:undefined,
-    selectCurrency?.address,
+    anyToken?.address,
     account ?? undefined,
     inputBridgeValue,
     selectChain
@@ -119,7 +148,7 @@ export default function SwapNative() {
     // console.log(wrapInputError)
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
-    selectCurrency?.address,
+    anyToken?.address,
     inputBridgeValue,
     swapType
   )
@@ -127,7 +156,7 @@ export default function SwapNative() {
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
     selectCurrency?.routerToken,
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
-    selectCurrency?.address,
+    anyToken?.address,
     inputBridgeValue,
     swapType
   )
@@ -372,29 +401,33 @@ export default function SwapNative() {
   async function getAllOutBalance (account:any) {
     const token = selectCurrency.address
     // console.log(selectCurrency)
+    const curAnyToken = isUnderlying ? selectCurrency?.underlying?.address : token
+    const curUnlToekn = isUnderlying ? token : ''
     const obj:any = await getNodeTotalsupply(
-      token,
+      curAnyToken,
       chainId,
       selectCurrency.decimals,
       account,
-      selectCurrency?.underlying?.address
+      curUnlToekn
     )
     const dObj = Number(chainId) === Number(selectChain) ? selectCurrency : selectCurrency?.destChains[selectChain]
+    const destAnyToken = dObj?.underlying?.address ? dObj?.underlying?.address : dObj?.address
+    const destUnlToken = dObj?.underlying?.address ? dObj?.address : ''
     const DC:any = openAdvance ? await getNodeTotalsupply(
-      dObj?.address,
+      destAnyToken,
       selectChain,
       dObj?.decimals,
       account,
-      dObj?.underlying?.address
+      destUnlToken
     ) : ''
-    const ts = obj[token].ts
-    const anyts = obj[token].anyts
-    const bl = obj[token].balance
+    const ts = obj[curAnyToken].ts
+    const anyts = obj[curAnyToken].anyts
+    const bl = obj[curAnyToken].balance
     if (DC) {
       setDestChain({
         chain: selectChain,
-        ts: selectCurrency?.underlying ? DC[dObj.address]?.ts : DC[dObj.address]?.anyts,
-        bl: DC[dObj.address]?.balance
+        ts: dObj?.underlying ? DC[destAnyToken]?.ts : DC[destAnyToken]?.anyts,
+        bl: DC[destAnyToken]?.balance
       })
     }
     return {
@@ -427,10 +460,10 @@ export default function SwapNative() {
       }
     }
     if (!selectCurrency) {
-      history.push(window.location.pathname + '#/pool/add')
+      history.replace(window.location.pathname + '#/pool/add')
     }
     // getAllToken(chainId).then((res:any) => {
-    //   console.log(res)
+      // console.log(history)
     //   if (res) {
     //     const list:any = []
     //     for (const token in res) {
@@ -530,6 +563,11 @@ export default function SwapNative() {
           ]}
           currentTab={swapType === 'deposit' ? 0 : 1}
         ></Title>
+        <BackBox onClick={() => {
+          history.go(-1)
+        }}>
+          &lt;Back
+        </BackBox>
         <AutoColumn gap={'md'}>
 
           <SelectCurrencyInputPanel

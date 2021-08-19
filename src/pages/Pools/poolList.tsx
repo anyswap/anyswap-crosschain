@@ -294,7 +294,7 @@ export default function PoolLists ({
     // console.log(poolData)
     // console.log(poolList)
     const arr = []
-    if (poolData && poolList) {
+    if (poolList) {
       for (const obj of poolList) {
         const objExtend:any = {
           ...obj,
@@ -305,8 +305,8 @@ export default function PoolLists ({
         }
         const c1 = objExtend.chainId
         const t1 = objExtend.underlying ? objExtend.underlying.address : objExtend.address
-        objExtend.ts = poolData[c1][t1].ts ? poolData[c1][t1].ts : 0
-        objExtend.bl = poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
+        objExtend.ts = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].ts ? poolData[c1][t1].ts : 0
+        objExtend.bl = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
         objExtend.totalV += objExtend.ts
         for (const objChild in obj.destChains) {
           const c2 = objChild
@@ -316,8 +316,8 @@ export default function PoolLists ({
             ts: '',
             bl: ''
           }
-          dObj.ts = poolData[c2][t2].ts ? poolData[c2][t2].ts : 0
-          dObj.bl = poolData[c2][t2].balance ? poolData[c2][t2].balance : 0
+          dObj.ts = poolData && poolData[c2] && poolData[c2][t2] && poolData[c2][t2].ts ? poolData[c2][t2].ts : 0
+          dObj.bl = poolData && poolData[c2] && poolData[c2][t2] && poolData[c2][t2].balance ? poolData[c2][t2].balance : 0
           objExtend.totalV += dObj.ts
           objExtend.destChains[c2] = dObj
         }
@@ -335,9 +335,6 @@ export default function PoolLists ({
     return arr
   }, [poolData, poolList])
   
-  useEffect(() => {
-    console.log(tokenList)
-  }, [tokenList])
 
   function changeNetwork (chainID:any) {
     selectNetwork(chainID).then((res: any) => {
@@ -581,7 +578,27 @@ export default function PoolLists ({
   // console.log(poolList)
   return (
     <AppBody>
-      <Title title={t('pool')}></Title>
+      {/* <Title title={t('pool')}></Title> */}
+      <Title
+        title={t('pool')}
+        isNavLink={true}
+        tabList={[
+          {
+            name: config.env === 'dev' ? t('router') : t('swap'),
+            path: config.env === 'dev' ? '/router' : '/swap',
+            regex: config.env === 'dev' ? /\/router/ : /\/swap/,
+            iconUrl: require('../../assets/images/icon/deposit.svg'),
+            iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          },
+          {
+            name: t('pool'),
+            path: '/pool',
+            regex: /\/pool/,
+            iconUrl: require('../../assets/images/icon/pool.svg'),
+            iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
+          }
+        ]}
+      ></Title>
 
       <MyBalanceBox>
         <DBTables>

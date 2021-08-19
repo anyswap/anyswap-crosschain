@@ -156,7 +156,7 @@ const StyledNavLink = styled(NavLink).attrs({
 
 interface TabList {
   name: string
-  onTabClick: (val: any) => void
+  onTabClick?: (val: any) => void
   iconUrl?: string
   iconActiveUrl?: string
   regex?: any
@@ -175,7 +175,7 @@ interface Title {
 export default function Title({ title, tabList = [] , isNavLink = false, currentTab, isChangeTitle, children}:Title) {
   const [tabIndex, setTabIndex] = useState(0)
   const [tabName, setTabName] = useState('')
-  const pathname = window.location.pathname
+  const pathname = window.location.hash
   const activeTabKey = tabList.length > 0 ? tabList[tabList.findIndex(({ regex }) => pathname.match(regex))].name : ''
   
   function tabListView() {
@@ -218,7 +218,7 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
                 onClick={() => {
                   setTabIndex(index)
                   setTabName(item.name)
-                  item.onTabClick(item.name)
+                  if (item?.onTabClick) item?.onTabClick(item.name)
                 }}
               >
                 {

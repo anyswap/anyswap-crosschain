@@ -514,6 +514,7 @@ export default function CrossChain() {
     } else {
       setInputBridgeValue('')
     }
+    setSwapType('send')
   }, [setInputBridgeValue])
   // console.log(isUnderlying)
   // console.log(isDestUnderlying)
@@ -604,26 +605,21 @@ export default function CrossChain() {
         <Title
           title={config.env === 'dev' ? t('router') : t('swap')}
           
+          isNavLink={true}
           tabList={[
             {
               name: config.env === 'dev' ? t('router') : t('swap'),
-              onTabClick: () => {
-                setSwapType('swap')
-                if (account) {
-                  setRecipient(account)
-                }
-              },
+              path: config.env === 'dev' ? '/router' : '/swap',
+              regex: config.env === 'dev' ? /\/router/ : /\/swap/,
               iconUrl: require('../../assets/images/icon/deposit.svg'),
               iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
             },
             {
-              name: t('send'),
-              onTabClick: () => {
-                setSwapType('send')
-                setRecipient('')
-              },
-              iconUrl: require('../../assets/images/icon/withdraw.svg'),
-              iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+              name: t('pool'),
+              path: '/pool',
+              regex: /\/pool/,
+              iconUrl: require('../../assets/images/icon/pool.svg'),
+              iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
             }
           ]}
         ></Title>
@@ -655,6 +651,18 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
+            isViewMode={true}
+            modeConent={{txt: swapType === 'send' ? t('swap') : t('send'), isFlag: swapType === 'send'}}
+            onChangeMode={(value) => {
+              if (value) {
+                setSwapType('send')
+              } else {
+                setSwapType('swap')
+                if (account) {
+                  setRecipient(account)
+                }
+              }
+            }}
             // allTokens={allTokens}
             bridgeKey={BRIDGETYPE}
           />
