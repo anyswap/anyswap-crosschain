@@ -93,7 +93,7 @@ const bridgeToken = {
     bridgeInitChain: '56'
   },
   [VERSION.V2_2]: {
-    bridgeInitToken: '0x7ea2be2df7ba6e54b1a9c70676f668455e329d29',
+    bridgeInitToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     bridgeInitChain: '56',
     nativeToken: ''
   },
