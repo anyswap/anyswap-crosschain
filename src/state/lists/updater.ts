@@ -2,8 +2,8 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-// import { useFetchListCallback, useFetchTokenListCallback, useFetchTokenList1Callback } from '../../hooks/useFetchListCallback'
-import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
+import { useFetchListCallback, useFetchTokenListCallback, useFetchTokenList1Callback } from '../../hooks/useFetchListCallback'
+// import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { addPopup } from '../application/actions'
@@ -23,7 +23,7 @@ export default function Updater(): null {
 
   const fetchList = useFetchListCallback()
   const fetchTokenList = useFetchTokenListCallback()
-  // const fetchTokenList1 = useFetchTokenList1Callback()
+  const fetchTokenList1 = useFetchTokenList1Callback()
 
   // console.log(fetchTokenList)
   // console.log(lists)
@@ -41,16 +41,16 @@ export default function Updater(): null {
     }
   }, [fetchTokenList, chainId])
 
-  // const fetchAllTokenLists1Callback = useCallback(() => {
-  //   if (chainId) {
-  //     fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
-  //   }
-  // }, [fetchTokenList1, chainId])
+  const fetchAllTokenLists1Callback = useCallback(() => {
+    if (chainId) {
+      fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
+    }
+  }, [fetchTokenList1, chainId])
 
   // 每 10 分钟获取所有列表，但仅在我们初始化库之后
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
   useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
-  // useInterval(fetchAllTokenLists1Callback, library ? 1000 * 60 * 10 : null)
+  useInterval(fetchAllTokenLists1Callback, library ? 1000 * 60 * 10 : null)
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
@@ -67,9 +67,9 @@ export default function Updater(): null {
     fetchAllTokenListsCallback()
   }, [dispatch, fetchTokenList, chainId])
 
-  // useEffect(() => {
-  //   fetchAllTokenLists1Callback()
-  // }, [dispatch, fetchTokenList1, chainId])
+  useEffect(() => {
+    fetchAllTokenLists1Callback()
+  }, [dispatch, fetchTokenList1, chainId])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

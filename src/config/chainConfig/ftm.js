@@ -2,10 +2,11 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION, BASECURRENCY} from '../constant'
 
 export const FTM_MAIN_CHAINID = 250
-// export const FTM_MAINNET = 'https://rpc.fantom.network'
-// export const FTM_MAINNET = 'https://rpc2.fantom.network'
-export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(FTM_MAIN_CHAINID, 'https://rpc2.fantom.network') : getLocalRPC(FTM_MAIN_CHAINID, 'https://ftmnode1.anyswap.exchange')
-// export const FTM_MAINNET = 'https://rpcapi.fantom.network'
+// const useNode = 'https://rpc.fantom.network'
+// const useNode = 'https://rpc2.fantom.network'
+const useNode = 'https://rpc3.fantom.network'
+// const useNode = 'https://rpcapi.fantom.network'
+export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(FTM_MAIN_CHAINID, useNode) : getLocalRPC(FTM_MAIN_CHAINID, 'https://ftmnode1.anyswap.exchange')
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
 export const tokenList = [

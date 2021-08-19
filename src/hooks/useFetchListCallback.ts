@@ -72,7 +72,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
-        const url = `${config.bridgeApi}/v3/serverinfo?chainId=${chainId}&version=all`
+        const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=all`
         return getUrlData(url)
           .then((tokenList:any) => {
             // console.log(tokenList)
@@ -123,22 +123,8 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
         return GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain})
           .then((tokenList:any) => {
             console.log(tokenList)
-            // const list:any = {}
-            // if (tokenList.msg === 'Success' && tokenList.data) {
-            //   const tList = tokenList.data
-            //   for (const version in tList) {
-            //     for (const token in tList[version]) {
-            //       list[token] = tList[version][token]
-            //     }
-            //   }
-            // }
-            dispatch(bridgeTokenList({ chainId, tokenList: tokenList }))
+            dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
             return tokenList
-          })
-          .catch(error => {
-            console.debug(`Failed to get list at url `, error)
-            // dispatch(bridgeTokenList({ chainId, tokenList: curList.tokenList }))
-            return {}
           })
       }
     },

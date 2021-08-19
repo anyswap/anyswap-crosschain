@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from '../index'
 import config from '../../config'
+import { isAddress } from 'ethers/lib/utils'
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
@@ -123,6 +124,7 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   // console.log(list)
   const map:any = {}
   for (const t in list) {
+    if(!isAddress(t)) continue
     map[t] = new WrappedBridgeTokenInfo(list[t])
   }
   return map

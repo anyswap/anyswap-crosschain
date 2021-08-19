@@ -217,21 +217,23 @@ export default function PoolLists ({
       for (const token in allTokensList) {
         if (!isAddress(token)) continue
         const tObj = allTokensList[token].tokenInfo
-        if (chainId) {
-          if (!destList[chainId]) destList[chainId] = []
-          destList[chainId].push({
-            token: tObj?.underlying?.address ? tObj?.underlying?.address : token,
+        if (tObj.chainId) {
+          // console.log(tObj)
+          if (!destList[tObj.chainId]) destList[tObj.chainId] = []
+          const curData = {
+            token: tObj?.underlying ? tObj?.underlying?.address : token,
             dec: tObj.decimals,
-            underlying: tObj?.underlying?.address ? token : ''
-          })
+            underlying: tObj?.underlying ? token : ''
+          }
+          destList[tObj.chainId].push(curData)
         }
         for (const chainID in tObj.destChains) {
-          if (Number(chainID) === Number(chainId)) continue
+          if (Number(chainID) === Number(tObj.chainId)) continue
           if (!destList[chainID]) destList[chainID] = []
           destList[chainID].push({
-            token: tObj.destChains[chainID]?.underlying?.address ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
+            token: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
             dec: tObj.destChains[chainID].decimals,
-            underlying: tObj.destChains[chainID]?.underlying?.address ? tObj.destChains[chainID].address : ''
+            underlying: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID].address : ''
           })
           // console.log(chainID)
         }
@@ -244,50 +246,6 @@ export default function PoolLists ({
       setPoolList(allToken)
       getOutChainInfo(destList)
     }
-    // getAllToken(chainId).then((res:any) => {
-    //   // console.log(res)
-    //   if (res) {
-    //     // const list:any = []
-    //     const destList:any = {}
-    //     const allToken = []
-    //     for (const token in res) {
-    //       if (!isAddress(token)) continue
-    //       const tObj = res[token].list
-    //       if (chainId) {
-    //         if (!destList[chainId]) destList[chainId] = []
-    //         destList[chainId].push({
-    //           token: token,
-    //           dec: tObj.decimals,
-    //           underlying: tObj?.underlying?.address
-    //         })
-    //       }
-    //       for (const chainID in tObj.destChains) {
-    //         if (Number(chainID) === Number(chainId)) continue
-    //         if (!destList[chainID]) destList[chainID] = []
-    //         destList[chainID].push({
-    //           token: tObj.destChains[chainID].address,
-    //           dec: tObj.destChains[chainID].decimals,
-    //           underlying: tObj.destChains[chainID]?.underlying?.address
-    //         })
-    //         // console.log(chainID)
-    //       }
-    //       allToken.push({
-    //         ...tObj,
-    //         token: token
-    //       })
-    //     }
-    //     // console.log(destList)
-    //     setPoolList(allToken)
-    //     getOutChainInfo(destList)
-    //   } else {
-    //     setPoolList([])
-    //     if (count <= 5) {
-    //       setTimeout(() => {
-    //         setCount(count + 1)
-    //       }, 1000)
-    //     }
-    //   }
-    // })
   }, [chainId, allTokensList, intervalCount])
 
   const tokenList = useMemo(() => {
@@ -332,6 +290,7 @@ export default function PoolLists ({
       }
       return 0
     })
+    // console.log(arr)
     return arr
   }, [poolData, poolList])
   
@@ -347,17 +306,6 @@ export default function PoolLists ({
 
   function viewTd (item:any) {
     
-    // const token = item?.underlying?.address ? item?.underlying?.address : item.address
-    // let ts = c && poolData && poolData[c] && token && poolData[c][token] && poolData[c][token].ts ? Number(poolData[c][token].ts) : 0
-
-    // for (const chainID in poolList[index].destChains) {
-    //   if (Number(chainID) === Number(chainId)) continue
-    //   // console.log(item)
-    //   const token = item.destChains[chainID]?.underlying?.address ? item.destChains[chainID]?.underlying?.address : item.destChains[chainID]?.address
-    //   const ts1 = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].ts ? Number(poolData[chainID][token].ts) : 0
-    //   ts += ts1
-    //   // bl += bl1
-    // }
     return (
       <>
         <DBTd className='r'>
