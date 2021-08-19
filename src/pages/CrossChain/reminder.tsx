@@ -96,7 +96,7 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
       <></>
     )
   }
-  const destConfig = bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
+  const destConfig = bridgeConfig && bridgeConfig?.destChains && bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
   const isSwapfeeon = destConfig?.swapfeeon ? true : false
   const viewSymbol = config.getBaseCoin(currency?.symbol, chainId)
   const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'

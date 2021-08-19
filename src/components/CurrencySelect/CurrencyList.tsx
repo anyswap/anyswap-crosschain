@@ -7,7 +7,8 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -108,11 +109,12 @@ function CurrencyRow({
   // const balance = ''
   // const ETHBalance = ''
   const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
-  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(chainId)
-  // console.log(currency)
+  // console.log(currency.symbol + '1111111111')
   // console.log(balance?.toSignificant(6))
-  // console.log(ETHBalance?.toSignificant(6))
+  // // console.log(ETHBalance?.toSignificant(6))
+  // console.log(currency.symbol + '222222222')
   return (
     <MenuItem
       style={style}
@@ -129,7 +131,7 @@ function CurrencyRow({
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
-      {
+      {/* {
         isNativeToken ? (
           <RowFixed style={{ justifySelf: 'flex-end' }}>
             {ETHBalance ? <Balance balance={ETHBalance} /> : account ? <Loader /> : null}
@@ -139,7 +141,10 @@ function CurrencyRow({
             {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
           </RowFixed>
         )
-      }
+      } */}
+      <RowFixed style={{ justifySelf: 'flex-end' }}>
+        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+      </RowFixed>
     </MenuItem>
   )
 }

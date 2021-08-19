@@ -28,10 +28,31 @@ export class WrappedTokenInfo extends Token {
 
 export class WrappedBridgeTokenInfo extends Token {
   public readonly tokenInfo: any
+  public readonly ContractVersion: any
+  public readonly destChains: any
+  public readonly logoUrl: any
+  public readonly price: any
+  public readonly tokenid: any
+  public readonly version: any
+  public readonly routerToken: any
   // public readonly tags: TagInfo[]
   constructor(tokenInfo: any) {
-    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+    super(
+      tokenInfo.chainId,
+      tokenInfo.address,
+      tokenInfo.decimals,
+      tokenInfo.symbol,
+      tokenInfo.name,
+      tokenInfo.underlying,
+    )
     this.tokenInfo = tokenInfo
+    this.ContractVersion = tokenInfo.ContractVersion
+    this.destChains = tokenInfo.destChains
+    this.logoUrl = tokenInfo.logoUrl
+    this.price = tokenInfo.price
+    this.tokenid = tokenInfo.tokenid
+    this.version = tokenInfo.version
+    this.routerToken = tokenInfo.routerToken
     // this.tags = tags
   }
   public get logoURI(): string | undefined {

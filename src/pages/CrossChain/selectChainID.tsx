@@ -116,7 +116,11 @@ export default function SelectChainIdInputPanel({
       if (Number(selectChainId) === Number(chainId)) {
         return bridgeConfig
       } else {
-        return bridgeConfig?.destChains[selectChainId]
+        if (bridgeConfig?.destChains && bridgeConfig?.destChains[selectChainId]) {
+          return bridgeConfig?.destChains[selectChainId]
+        } else {
+          return false
+        }
       }
     }
     return false

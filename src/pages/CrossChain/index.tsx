@@ -119,11 +119,6 @@ export default function CrossChain() {
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
-  useEffect(() => {
-    console.log(allTokensList)
-    // console.log(testlist)
-    // console.log(testlist1)
-  }, [])
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
@@ -166,7 +161,7 @@ export default function CrossChain() {
   // }, [selectCurrency, allTokens])
 
   const destConfig = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
+    if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }
     return false
@@ -178,6 +173,7 @@ export default function CrossChain() {
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
+      && selectCurrency.address
       && chainId
       && config.getCurChainInfo(chainId)
       && config.getCurChainInfo(chainId).nativeToken
@@ -197,7 +193,7 @@ export default function CrossChain() {
 
   
   const isDestUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChains[selectChain]?.underlying) {
+    if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain] && selectCurrency?.destChains[selectChain]?.underlying) {
       return true
     }
     return false
@@ -243,8 +239,8 @@ export default function CrossChain() {
         account,
         selectCurrency?.address
       )
-      console.log(CC)
-      console.log(selectCurrency)
+      // console.log(CC)
+      // console.log(selectCurrency)
       if (CC) {
         setCurChain({
           chain: chainId,
