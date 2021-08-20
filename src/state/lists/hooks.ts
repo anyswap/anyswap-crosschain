@@ -63,6 +63,17 @@ export class WrappedBridgeTokenInfo extends Token {
   }
 }
 
+export class WrappedAllTokenInfo extends Token {
+  public readonly tokenInfo: TokenInfo
+  constructor(tokenInfo: TokenInfo) {
+    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+    this.tokenInfo = tokenInfo
+  }
+  public get logoURI(): string | undefined {
+    return this.tokenInfo.logoURI
+  }
+}
+
 export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>
 
 /**
@@ -132,6 +143,31 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   return map
 }
 
+export function allListsToTokenMap(rlist:any, blist:any): TokenAddressMap {
+
+  // console.log(list)
+  const map:any = {}
+  for (const t in rlist) {
+    if(!isAddress(t)) continue
+    if (rlist[t].underlying) {
+      map[rlist[t].underlying.address] = new WrappedAllTokenInfo(rlist[t].underlying)
+    }
+    map[t] = new WrappedAllTokenInfo(rlist[t])
+  }
+  // console.log(map)
+  // console.log(rlist)
+  // console.log(blist)
+  for (const t in blist) {
+    if(!isAddress(t) || map[t]) continue
+    if (blist[t].underlying) {
+      map[blist[t].underlying.address] = new WrappedAllTokenInfo(blist[t].underlying)
+    }
+    map[t] = new WrappedAllTokenInfo(blist[t])
+  }
+  // console.log(map)
+  return map
+}
+
 export function useTokenList(url: string | undefined): TokenAddressMap {
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
   // console.log(lists)
@@ -163,8 +199,29 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): Toke
       console.error('Could not show token list due to error', error)
       return EMPTY_LIST
     }
-  }, [lists, key])
+  }, [lists, key, chainId])
 }
+
+export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
+  const routerLists:any = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
+  const bridgeLists:any = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
+  // console.log(lists)
+  return useMemo(() => {
+    if (!chainId) return EMPTY_LIST
+    const rcurrent = routerLists[chainId]?.tokenList
+    const bcurrent = bridgeLists[chainId]?.tokenList
+    // console.log(current)
+    if (!rcurrent || !bcurrent) return EMPTY_LIST
+    try {
+      return allListsToTokenMap(rcurrent, bcurrent)
+      // return current
+    } catch (error) {
+      console.error('Could not show token list due to error', error)
+      return EMPTY_LIST
+    }
+  }, [routerLists, bridgeLists, chainId])
+}
+
 // useBridgeTokenList()
 export function useSelectedListUrl(): string | undefined {
   // return useSelector<AppState, AppState['lists']['selectedListUrl']>(state => {

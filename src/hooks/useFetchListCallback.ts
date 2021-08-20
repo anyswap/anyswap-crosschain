@@ -74,7 +74,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=all`
         return getUrlData(url)
           .then((tokenList:any) => {
-            // console.log(tokenList)
+            console.log(tokenList)
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data

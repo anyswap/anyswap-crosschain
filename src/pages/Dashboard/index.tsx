@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next'
 import {GetTokenListByChainID} from 'multichain-bridge'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useETHBalances } from '../../state/wallet/hooks'
-import { useTokenBalancesList } from '../../state/wallet/hooks'
+// import { useETHBalances, useTokenBalancesList, useBridgeAllTokenBalances } from '../../state/wallet/hooks'
+import { useETHBalances, useBridgeAllTokensBalances } from '../../state/wallet/hooks'
+import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import TokenLogo from '../../components/TokenLogo'
 import AppBody from '../AppBody'
@@ -23,8 +24,9 @@ import PreviouskIcon from '../../assets/images/icon/Previous.svg'
 
 import config from '../../config'
 
-import {getAllToken} from '../../utils/bridge/getServerInfo'
-import {fromWei, formatDecimal} from '../../utils/tools/tools'
+// import {getAllToken} from '../../utils/bridge/getServerInfo'
+// import {fromWei, formatDecimal} from '../../utils/tools/tools'
+import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
 import {
@@ -84,10 +86,18 @@ ${({theme}) => theme.flexC}
 
 const pagesize = 18
 
+const ROUTER_BRIDGE_TYPE = 'routerTokenList'
+
 export default function DashboardDtil() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const [poolArr, setPoolArr] = useState<Array<string>>()
+
+  const allTokensList:any = useBridgeTokenList(ROUTER_BRIDGE_TYPE, chainId)
+  const allBalances = useBridgeAllTokensBalances(chainId)
+  // console.log(allBalances['0x04068DA6C83AFCFA0e13ba15A6696662335D5B75']?.toSignificant(6))
+  // console.log(allBalances['0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605']?.toSignificant(6))
+
+  // const [poolArr, setPoolArr] = useState<Array<string>>()
 
   const [allTokenArr, setAllTokenArr] = useState<Array<string>>()
   const [allTokenList, setAllTokenList] = useState<any>()
@@ -102,10 +112,10 @@ export default function DashboardDtil() {
     const ulist:any = []
     const alist:any = []
     const tlist:any = {}
-    const anyToken = config.getCurChainInfo(chainId)?.anyToken
-    if (anyToken) {
-      tlist[anyToken] = {
-        "address": anyToken,
+    const ANY_TOKEN = config.getCurChainInfo(chainId)?.anyToken
+    if (ANY_TOKEN) {
+      tlist[ANY_TOKEN] = {
+        "address": ANY_TOKEN,
         "chainId": chainId,
         "decimals": 18,
         "name": "Anyswap",
@@ -114,35 +124,42 @@ export default function DashboardDtil() {
         "destChains": '',
         "isView": 1
       }
-      alist.push(anyToken)
+      alist.push(ANY_TOKEN)
     }
     const arr:any = []
-    const tObj:any = {}
-    if (config.getCurConfigInfo().isOpenRouter) {
-      arr.push(getAllToken(chainId))
-      tObj.router = 1
-    } else {
-      arr.push('')
-    }
+    // if (config.getCurConfigInfo().isOpenRouter) {
+    //   arr.push(getAllToken(chainId))
+    // } else {
+    //   arr.push('')
+    // }
     if (config.getCurConfigInfo().isOpenBridge) {
       arr.push(GetTokenListByChainID({srcChainID: chainId}))
-      tObj.bridge = 1
     } else {
       arr.push('')
     }
     Promise.all(arr).then((res:any) => {
-      // console.log(res)
-      // console.log(arr)
-      if (res[0]) {
-        for (const token in res[0]) {
+      console.log(res)
+      console.log(allTokensList)
+      if (allTokensList && Object.keys(allTokensList).length > 0) {
+        console.log(111)
+        for (const token in allTokensList) {
           if (!isAddress(token)) continue
-          if (anyToken === token) continue
-          const item = res[0][token].list
+          if (ANY_TOKEN === token) continue
+          const item = allTokensList[token].tokenInfo
           
           if (chainId?.toString() !== item.chainId?.toString()) continue
+          let anyToken = ''
+          let uldToken = ''
           if (item.underlying) {
-            ulist.push(item.underlying.address)
+            anyToken = item.underlying.address
+            uldToken = item.address
+          } else {
+            anyToken = item.address
           }
+          if (uldToken) {
+            ulist.push(anyToken)
+          }
+          alist.push(token)
           tlist[token.toLowerCase()] = {
             "address": token,
             "chainId": chainId,
@@ -154,15 +171,14 @@ export default function DashboardDtil() {
             "logoUrl": item.logoUrl,
             "type": "router"
           }
-          alist.push(token)
         }
       }
-      if (res[1]) {
-        for (const type in res[1]) {
-          const list = res[1][type]
+      if (res[0]) {
+        for (const type in res[0]) {
+          const list = res[0][type]
           for (const token in list) {
             if (!isAddress(token)) continue
-            if (anyToken === token) continue
+            if (ANY_TOKEN === token) continue
             const item = list[token]
             // if (chainId?.toString !== item.chainId) continue
             if (item.underlying) {
@@ -191,20 +207,19 @@ export default function DashboardDtil() {
       // console.log(tlist)
       setTotalCount(alist.length)
       setAllTokenList(tlist)
-      setPoolArr(ulist)
+      // setPoolArr(ulist)
       setAllTokenArr(alist)
     })
-  }, [chainId])
+  }, [chainId, allTokensList])
 
   useEffect(() => {
-    
     setAllTokenList([])
-    setPoolArr([])
+    // setPoolArr([])
     setAllTokenArr([])
     getAllTokens()
   }, [chainId])
 
-  const [searchBalance, setSearchBalance] = useState('')
+  const [searchContent, setSearchContent] = useState('')
   const [showMore, setShowMore] = useState(true)
 
   const viewTokenList = useMemo(() => {
@@ -212,63 +227,44 @@ export default function DashboardDtil() {
     const start = pagecount * pagesize
     const end = start + pagesize
     if (allTokenArr) {
-      const resArr = searchBalance ? allTokenArr : allTokenArr.slice(start, end)
+      const resArr = searchContent ? allTokenArr : allTokenArr.slice(start, end)
       return resArr
     }
     return []
-  }, [pagecount, allTokenArr, searchBalance])
-  // console.log(viewTokenList)
-  const [uList, uListLoading] = useTokenBalancesList(account ?? undefined, poolArr)
-  // const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, allTokenArr)
-  const [uAllList, uAllListLoading] = useTokenBalancesList(account ?? undefined, viewTokenList)
-  // console.log(allTokenArr)
-  // console.log(uAllList)
-  const formatUList = useMemo(() => {
-    if (!uListLoading) {
-      const obj:any = {}
-      for (const token in uList) {
-        obj[token.toLowerCase()] = uList[token]
-      }
-      return obj
-    }
-    return ''
-  }, [uList, uListLoading])
-
-  const formatUAllList = useMemo(() => {
-    if (!uAllListLoading) {
-      const obj:any = {}
-      for (const token in uAllList) {
-        obj[token.toLowerCase()] = uAllList[token]
-      }
-      return obj
-    }
-    return ''
-  }, [uAllList, uAllListLoading])
+  }, [pagecount, allTokenArr, searchContent])
+  
   const tokenList = useMemo(() => {
     const l:any = []
-    if (account && !uListLoading && !uAllListLoading) {
+    if (account) {
+      // console.log(viewTokenList)
       for (const token of viewTokenList) {
-        let balance:any = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
+        const anyToken = allTokenList[token]?.underlying ? allTokenList[token]?.underlying?.address?.toLowerCase() : allTokenList[token]?.address?.toLowerCase()
+        const undToken = allTokenList[token]?.underlying ? allTokenList[token]?.address?.toLowerCase() : ''
+        let balance:any = allBalances && allBalances[anyToken] ? allBalances[anyToken]?.toSignificant(6) : ''
+        
         let underlyingBlance:any = ''
         let totalBlance:any = 0
-        if (allTokenList[token]?.underlying) {
-          balance = formatUList && formatUList[allTokenList[token]?.underlying?.address?.toLowerCase()] ? formatUList[allTokenList[token]?.underlying?.address?.toLowerCase()] : ''
-          underlyingBlance = formatUAllList && formatUAllList[token] ? formatUAllList[token] : ''
+        if (undToken) {
+          balance = allBalances && allBalances[undToken] ? allBalances[undToken]?.toSignificant(6) : ''
+          underlyingBlance = allBalances && allBalances[anyToken] ? allBalances[anyToken]?.toSignificant(6) : ''
         }
-        const dec = allTokenList[token].decimals
-        if (ETHBalance && config.getCurChainInfo(chainId)?.nativeToken &&  token.toLowerCase() === config.getCurChainInfo(chainId).nativeToken.toLowerCase()) {
+        if (
+          ETHBalance
+          && config.getCurChainInfo(chainId)?.nativeToken
+          && token.toLowerCase() === config.getCurChainInfo(chainId).nativeToken.toLowerCase()
+        ) {
           balance = ETHBalance ? formatDecimal(ETHBalance.toSignificant(6), 2) : '0'
-        } else {
-          balance = balance ? fromWei(balance, dec) : '0'
         }
-        underlyingBlance = underlyingBlance ? fromWei(underlyingBlance, dec) : '0'
         if (balance && underlyingBlance) {
           totalBlance = Number(balance) + Number(underlyingBlance)
         } else if (balance) {
           totalBlance = balance
         } else if (underlyingBlance) {
           totalBlance = underlyingBlance
+        } else {
+          totalBlance = ''
         }
+        
         l.push({
           ...allTokenList[token],
           balance: balance,
@@ -290,7 +286,7 @@ export default function DashboardDtil() {
       return 0
     })
     return l
-  }, [formatUList, formatUAllList, viewTokenList, allTokenList])
+  }, [viewTokenList, allTokenList, allBalances])
   // console.log(tokenList)
   function searchBox() {
     return (
@@ -302,7 +298,7 @@ export default function DashboardDtil() {
           <SearchInput
             placeholder={t('searchToken')}
             onChange={(e: any) => {
-              setSearchBalance(e.target.value)
+              setSearchContent(e.target.value)
             }}
           ></SearchInput>
         </SearchBox>
@@ -318,13 +314,13 @@ export default function DashboardDtil() {
           // console.log(pCount)
           if (pCount >= 1) {
             callback(pCount - 1)
-            setSearchBalance('')
+            setSearchContent('')
           }
         }}><img alt={''} src={PreviouskIcon} style={{marginRight: '0.625rem'}}/>Previous</ArrowBox>
         <ArrowBox onClick={() => {
           if (totalCount && pCount < parseInt((totalCount / pagesize).toString())) {
             callback(pCount + 1)
-            setSearchBalance('')
+            setSearchContent('')
           }
         }}>Next<img alt={''} src={NextkIcon} style={{marginLeft: '0.625rem'}} /></ArrowBox>
       </SelectHDPathPage>
@@ -375,13 +371,13 @@ export default function DashboardDtil() {
                 {tokenList.length > 0 ? (
                   tokenList.map((item:any, index:any) => {
                     if (
-                      !searchBalance
-                      || (item?.name && item?.name.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
-                      || (item?.symbol && item?.symbol.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
-                      || (item?.address && item?.address.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
-                      || (item?.underlying?.address && item?.underlying?.address.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
-                      || (item?.underlying?.symbol && item?.underlying?.symbol.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
-                      || (item?.underlying?.name && item?.underlying?.name.toLowerCase().indexOf(searchBalance.toLowerCase()) !== -1)
+                      !searchContent
+                      || (item?.name && item?.name.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
+                      || (item?.symbol && item?.symbol.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
+                      || (item?.address && item?.address.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
+                      || (item?.underlying?.address && item?.underlying?.address.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
+                      || (item?.underlying?.symbol && item?.underlying?.symbol.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
+                      || (item?.underlying?.name && item?.underlying?.name.toLowerCase().indexOf(searchContent.toLowerCase()) !== -1)
                     ) {
                       return (
                         <tr key={index}>
@@ -389,14 +385,14 @@ export default function DashboardDtil() {
                             <TokenTableCoinBox>
                               <TokenTableLogo>
                                 <TokenLogo
-                                  symbol={config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}
+                                  symbol={config.getBaseCoin(item?.symbol, chainId)}
                                   logoUrl={item.logoUrl}
                                   size={'1.625rem'}
                                 ></TokenLogo>
                               </TokenTableLogo>
                               <TokenNameBox>
-                                <h3>{config.getBaseCoin(item?.underlying?.symbol ? item?.underlying?.symbol : item?.symbol, chainId)}</h3>
-                                <p>{config.getBaseCoin(item?.underlying?.name ? item?.underlying?.name : item?.name, chainId, 1)}</p>
+                                <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
+                                <p>{config.getBaseCoin(item?.name, chainId, 1)}</p>
                               </TokenNameBox>
                             </TokenTableCoinBox>
                           </DBTd>
@@ -456,7 +452,7 @@ export default function DashboardDtil() {
                 )}
               </DBTbody>
             </DBTables>
-            {showMore && totalCount > pagesize && !searchBalance ? changePage(setPagecount, pagecount) : ''}
+            {showMore && totalCount > pagesize && !searchContent ? changePage(setPagecount, pagecount) : ''}
           </MyBalanceTokenBox>
           <MoreBtnBox
             onClick={() => {
