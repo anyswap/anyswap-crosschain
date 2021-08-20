@@ -14,7 +14,6 @@ import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
 import {timeout} from '../config/constant'
-// import {getAllToken} from '../utils/bridge/getServerInfo'
 import {getUrlData} from '../utils/tools/axios'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {

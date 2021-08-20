@@ -50,10 +50,6 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import {BASECURRENCY} from '../../config/constant'
 
-
-// import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-// import {getTokenConfig, getAllToken} from '../../utils/bridge/getServerInfo'
-// import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 // import {getPairs} from '../../utils/bridge/getRouterTxns'
 import {formatDecimal} from '../../utils/tools/tools'
@@ -536,37 +532,6 @@ export default function CrossChain() {
         }
       }
     }
-    // console.log(list)
-    // setAllTokens(list)
-    // getAllToken(chainId).then((res:any) => {
-    //   console.log(res)
-    //   if (res) {
-    //     const list:any = []
-    //     for (const token in res) {
-    //       if (!isAddress(token)) continue
-    //       list[token] = {
-    //         ...res[token].list,
-    //       }
-    //       if (selectCurrency?.chainId !== chainId) {
-    //         if (
-    //           t === token
-    //           || list[token]?.symbol?.toLowerCase() === t
-    //           || list[token]?.underlying?.symbol?.toLowerCase() === t
-    //         ) {
-    //           setSelectCurrency(list[token])
-    //         }
-    //       }
-    //     }
-    //     // console.log(list)
-    //     setAllTokens(list)
-    //   } else {
-    //     if (count <= 5) {
-    //       setTimeout(() => {
-    //         setCount(count + 1)
-    //       }, 1000)
-    //     }
-    //   }
-    // })
   }, [chainId, allTokensList])
 
   useEffect(() => {

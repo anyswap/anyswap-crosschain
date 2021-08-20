@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Farming from '../../components/Farming'
 // import { getQueryParam } from '../../utils'
 import config from '../../config'
-import {VERSION} from '../../config/constant'
+// import {VERSION} from '../../config/constant'
 import Title from '../../components/Title'
 import AppBody from '../AppBody'
 
@@ -10,7 +10,7 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const BSC_HERO = 'BSC_HERO'
+const FARM_KEY = 'BSC_HERO'
 export default function FarmingComponent() {
   const [price, setPrice] = useState()
   const [LPprice, setLPPrice] = useState()
@@ -29,16 +29,15 @@ export default function FarmingComponent() {
       <AppBody>
         <Title title='Stake ANY tokens to earn HERO'></Title>
         <Farming
-          CHAINID = {farmlist[BSC_HERO].chainId}
-          FARMTOKEN = {farmlist[BSC_HERO].farmToken}
+          CHAINID = {farmlist[FARM_KEY].chainId}
+          FARMTOKEN = {farmlist[FARM_KEY].farmToken}
           FARMURL = {config.farmUrl + 'farm/bsc/hero'}
           // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
           poolCoin = 'HERO'
           poolCoinLogoUrl={'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png'}
-          blockNumber = {farmlist[BSC_HERO].blockNumber}
+          blockNumber = {farmlist[FARM_KEY].blockNumber}
           price={price}
-          version={VERSION.V2_2}
-          initLpList={farmlist[BSC_HERO].lpTokenIno}
+          initLpList={farmlist[FARM_KEY].lpTokenIno}
           LPprice={LPprice}
         />
       </AppBody>

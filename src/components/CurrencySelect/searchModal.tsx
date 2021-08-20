@@ -20,8 +20,6 @@ import { isAddress } from '../../utils'
 import { useToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
-// import {getAllToken} from '../../utils/bridge/getServerInfo'
-
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void

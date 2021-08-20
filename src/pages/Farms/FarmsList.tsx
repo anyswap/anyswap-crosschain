@@ -11,14 +11,12 @@ import {getBaseInfo} from '../../components/Farming/common'
 // import config from '../../config'
 import farmlist from '../../config/farmlist'
 import {USE_VERSION} from '../../config/constant'
-import {VERSION} from '../../config/constant'
 
 // import { Button } from '../../theme'
 import { ButtonConfirmed } from '../../components/Button'
 
 
 import {getPrice} from '../../utils/tools/getPrice'
-import {getAllToken} from '../../utils/bridge/getServerInfo'
 
 import AppBody from '../AppBody'
 
@@ -309,18 +307,6 @@ export default function FarmsList () {
             resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
           })
         }
-      } else {
-        getAllToken(farmlist[key].chainId, VERSION.V2_1).then((res:any) => {
-          // console.log(farmlist[key])
-          if (res) {
-            if (price) {
-              getBaseInfo(res, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
-                // console.log(res)
-                resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
-              })
-            }
-          }
-        })
       }
     })
   }

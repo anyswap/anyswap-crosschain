@@ -31,8 +31,6 @@ import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
 
-import {getAllToken} from '../../utils/bridge/getServerInfo'
-
 import {getBaseInfo} from './common'
 
 
@@ -351,7 +349,7 @@ interface FarmProps {
   blockNumber?:any,
   BASEMARKET?:any,
   price?:any,
-  version?:any,
+  // version?:any,
   initLpList?:any,
   stakeType?:any,
   LPprice?:any,
@@ -367,7 +365,7 @@ export default function Farming ({
   blockNumber = 28800,
   BASEMARKET = 100,
   price,
-  version,
+  // version,
   initLpList,
   stakeType,
   LPprice
@@ -531,22 +529,6 @@ export default function Farming ({
       setTimeout(() => {
         setInterverTime(InterverTime + 1)
       }, 1000 * 10)
-    } else {
-      getAllToken(CHAINID, version).then((res:any) => {
-        console.log(res)
-        if (res) {
-          if (price) {
-            getBaseInfo(res, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
-              console.log(res)
-              setLpList(res.lpArr)
-              // getStakingInfo()
-            })
-          }
-        }
-        setTimeout(() => {
-          setInterverTime(InterverTime + 1)
-        }, 1000 * 10)
-      })
     }
   }, [CHAINID, InterverTime, price, account])
 

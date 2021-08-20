@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Farming from '../../components/Farming'
 // import { getQueryParam } from '../../utils'
 import config from '../../config'
-import {VERSION} from '../../config/constant'
+// import {VERSION} from '../../config/constant'
 import Title from '../../components/Title'
 import AppBody from '../AppBody'
 
@@ -10,7 +10,7 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const BSC_TRO = 'BSC_TRO'
+const FARM_KEY = 'BSC_TRO'
 export default function FarmingComponent() {
   // const [price, setPrice] = useState()
   const [LPprice, setLPPrice] = useState()
@@ -29,16 +29,15 @@ export default function FarmingComponent() {
       <AppBody>
         <Title title='Stake ANY tokens to earn TRO'></Title>
         <Farming
-          CHAINID = {farmlist[BSC_TRO].chainId}
-          FARMTOKEN = {farmlist[BSC_TRO].farmToken}
+          CHAINID = {farmlist[FARM_KEY].chainId}
+          FARMTOKEN = {farmlist[FARM_KEY].farmToken}
           FARMURL = {config.farmUrl + 'farm/bsc/tro'}
           // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
           poolCoin = 'TRO'
           poolCoinLogoUrl={require('../../assets/images/coin/source/TRO.png')}
-          blockNumber = {farmlist[BSC_TRO].blockNumber}
+          blockNumber = {farmlist[FARM_KEY].blockNumber}
           price={0.015}
-          version={VERSION.V2_2}
-          initLpList={farmlist[BSC_TRO].lpTokenIno}
+          initLpList={farmlist[FARM_KEY].lpTokenIno}
           LPprice={LPprice}
         />
       </AppBody>
