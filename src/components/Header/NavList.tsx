@@ -332,7 +332,8 @@ export default function NavList() {
                 <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
                 <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
               </div>
-              {config.env === 'dev' ? t('router') : t('swap')}
+              {/* {config.env === 'dev' ? t('router') : t('swap')} */}
+              {t('router')}
             </StyledNavLink>
           ) : ''
         }
@@ -358,6 +359,16 @@ export default function NavList() {
               </StyledNavLink>
           ) : ''
         }
+        <StyledNavLink
+          id={`swap-nav-link`}
+          to={'/farm'}
+        >
+          <div className="icon">
+            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
+          </div>
+          {t('farms')}
+        </StyledNavLink>
         {/* {
           config.getCurConfigInfo().isOpenRouter ? (
             <>
