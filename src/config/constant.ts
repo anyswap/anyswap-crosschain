@@ -21,7 +21,7 @@ export enum VERSION {
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.6'
+export const version = '0.1.7'
 export const timeout = 1000 * 60 * 30
 
 // export const USE_VERSION = VERSION.V1_1
@@ -29,6 +29,19 @@ export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
 // export const USE_VERSION = VERSION.V2_T3
+
+function initVersion (version:any, configVersion:any) {
+  const VERSION = version + '_VERSION'
+  const curVersion = localStorage.getItem(VERSION)
+  if (curVersion && curVersion !== configVersion) {
+    sessionStorage.clear()
+    localStorage.clear()
+    localStorage.setItem(VERSION, configVersion)
+  } else if (!curVersion) {
+    localStorage.setItem(VERSION, configVersion)
+  }
+}
+initVersion(USE_VERSION, version)
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []

@@ -81,6 +81,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
               const tList = tokenList.data
               for (const version in tList) {
                 for (const token in tList[version]) {
+                  if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
                   list[token] = {
                     ...tList[version][token],
                     sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
