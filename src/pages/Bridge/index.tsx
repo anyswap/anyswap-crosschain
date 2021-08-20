@@ -35,8 +35,6 @@ import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
-// import {getTokenConfig} from '../../utils/bridge/getBaseInfo'
-// import {getTokenConfig} from '../../utils/bridge/getServerInfo'
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'

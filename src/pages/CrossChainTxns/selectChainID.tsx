@@ -48,9 +48,6 @@ import {
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
-// import {getNodeBalance} from '../../utils/bridge/getBalance'
-
-
 interface SelectChainIdInputPanel {
   value: string
   onUserInput: (value: string) => void

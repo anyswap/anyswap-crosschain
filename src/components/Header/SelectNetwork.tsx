@@ -19,10 +19,6 @@ import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 import config from '../../config'
 import {chainInfo, spportChainArr} from '../../config/chainConfig'
-// import {spportChainArr} from '../../config/chainConfig'
-// import {getAllChainIDs} from '../../utils/bridge/getBaseInfo'
-// import {getAllChainIDs} from '../../utils/bridge/getServerInfo'
-// import {web3Fn} from '../../utils/tools/web3Utils'
 
 import {setLocalRPC} from '../../config/chainConfig/methods'
 

@@ -51,7 +51,6 @@ import {selectNetwork} from '../../config/tools/methods'
 import {BASECURRENCY} from '../../config/constant'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
-// import {getPairs} from '../../utils/bridge/getRouterTxns'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
