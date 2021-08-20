@@ -15,7 +15,7 @@ import AppBody from '../AppBody'
 
 // import {getAllToken} from '../../utils/bridge/getServerInfo'
 import {getGroupTotalsupply} from '../../utils/bridge/getBalance'
-import {thousandBit} from '../../utils/tools/tools'
+import {thousandBit, bigToSmallSort} from '../../utils/tools/tools'
 
 import {
   DBTables,
@@ -252,6 +252,8 @@ export default function PoolLists ({
     // console.log(poolData)
     // console.log(poolList)
     const arr = []
+    const list:any = {}
+    const sortArr:any = []
     if (poolList) {
       for (const obj of poolList) {
         const objExtend:any = {
@@ -279,20 +281,20 @@ export default function PoolLists ({
           objExtend.totalV += dObj.ts
           objExtend.destChains[c2] = dObj
         }
-        arr.push(objExtend)
+        if (!list[obj.sort]) list[obj.sort] = []
+        if (!sortArr.includes(obj.sort)) sortArr.push(obj.sort)
+        list[obj.sort].push(objExtend)
+        
+        // arr.push(objExtend)
       }
     }
-    arr.sort((a:any, b:any) => {
-      // console.log(a.totalV)
-      // console.log(b.totalV)
-      if (Number(a.totalV) >= Number(b.totalV)) {
-        return -1
-      }
-      return 0
-    })
+    sortArr.sort()
+    for (const k of sortArr) {
+      arr.push(...list[k].sort(bigToSmallSort(['totalV'])))
+    }
     // console.log(arr)
     return arr
-  }, [poolData, poolList])
+  }, [poolData, poolList, bigToSmallSort])
   
 
   function changeNetwork (chainID:any) {

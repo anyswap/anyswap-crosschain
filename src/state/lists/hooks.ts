@@ -36,6 +36,7 @@ export class WrappedBridgeTokenInfo extends Token {
   public readonly tokenid: any
   public readonly version: any
   public readonly routerToken: any
+  public readonly sort: any
   // public readonly tags: TagInfo[]
   constructor(tokenInfo: any) {
     super(
@@ -54,6 +55,7 @@ export class WrappedBridgeTokenInfo extends Token {
     this.tokenid = tokenInfo.tokenid
     this.version = tokenInfo.version
     this.routerToken = tokenInfo.routerToken
+    this.sort = tokenInfo.sort
     // this.tags = tags
   }
   public get logoURI(): string | undefined {

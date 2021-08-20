@@ -79,13 +79,12 @@ export function useFetchTokenListCallback(): () => Promise<any> {
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data
-              // const sortObj = {
-              //   stable: {},
-              //   underlying: {}
-              // }
               for (const version in tList) {
                 for (const token in tList[version]) {
-                  list[token] = tList[version][token]
+                  list[token] = {
+                    ...tList[version][token],
+                    sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+                  }
                 }
               }
             }

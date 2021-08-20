@@ -614,7 +614,7 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             isViewMode={true}
-            modeConent={{txt: swapType === 'send' ? t('swap') : t('send'), isFlag: swapType === 'send'}}
+            modeConent={{txt: swapType === 'send' ? t('Simple') : t('Advance'), isFlag: swapType === 'send'}}
             onChangeMode={(value) => {
               if (value) {
                 setSwapType('send')

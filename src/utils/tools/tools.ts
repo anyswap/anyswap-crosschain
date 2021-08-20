@@ -226,3 +226,30 @@ export function toWei (value:any, decimals:number) {
   }
   return parseUnits(value.toString(), decimals)
 }
+
+export function bigToSmallSort (propertyArray:any) {
+  const levelCount = propertyArray.length
+
+  return function (item1:any, item2:any) {
+    let level = 0;
+    const sorting:any = function () {
+      const propertyName = propertyArray[level];
+      level++;
+
+      const itemCell1 = item1[propertyName],
+          itemCell2 = item2[propertyName];
+      if (itemCell1 < itemCell2) {
+          return 1; //从小到大排序
+      } else if (itemCell1 > itemCell2) {
+          return -1;
+      } else if (itemCell1 === itemCell2) {
+        if (level === levelCount) {
+            return 0;
+        } else {
+            return sorting();
+        }
+      }
+    };
+    return sorting();
+  };
+}
