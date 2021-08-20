@@ -122,7 +122,7 @@ function CurrencyRow({
       return ETHBalance
     }
     return
-  }, [allBalances, isNativeToken])
+  }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance])
   return (
     <MenuItem
       style={style}
@@ -176,15 +176,34 @@ export default function BridgeCurrencyList({
   showETH: boolean
   allBalances?: any
 }) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(selectedCurrency)
+  const htmlNodes = useMemo(() => {
+    const arr = []
+    let ethNode:any = ''
+    for (const obj of itemData) {
+      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
+      if (
+        isNativeToken
+        || obj?.address === config.getCurChainInfo(chainId)?.symbol
+      ) {
+        ethNode = obj
+        continue
+      }
+      arr.push(obj)
+    }
+    if (ethNode) {
+      arr.unshift(ethNode)
+    }
+    return arr
+  }, [itemData, chainId])
   return (
     <>
       <ListBox style={{height: height}}>
         {
-          itemData.map((item, index) => {
+          htmlNodes.map((item, index) => {
             const currency: Currency = item
             // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
             const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
