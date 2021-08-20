@@ -28,6 +28,7 @@ import ModalContent from '../../components/Modal/ModalContent'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
+import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -116,6 +117,7 @@ export default function CrossChain() {
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
+  const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -154,11 +156,6 @@ export default function CrossChain() {
   // console.log(selectCurrency)
 
   
-    // console.log(wrapInputError)
-  // const bridgeConfig = useMemo(() => {
-  //   if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
-  //   return ''
-  // }, [selectCurrency, allTokens])
 
   const destConfig = useMemo(() => {
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
@@ -444,37 +441,6 @@ export default function CrossChain() {
         }
       }
     }
-    // console.log(list)
-    // setAllTokens(list)
-    // getAllToken(chainId).then((res:any) => {
-    //   console.log(res)
-    //   if (res) {
-    //     const list:any = {}
-    //     for (const token in res) {
-    //       if (!isAddress(token)) continue
-    //       list[token] = {
-    //         ...res[token].list,
-    //       }
-    //       if (!selectCurrency || selectCurrency.chainId !== chainId) {
-    //         if (
-    //           t === token
-    //           || list[token]?.symbol?.toLowerCase() === t
-    //           || list[token]?.underlying?.symbol?.toLowerCase() === t
-    //         ) {
-    //           setSelectCurrency(list[token])
-    //         }
-    //       }
-    //     }
-    //     // console.log(list)
-    //     setAllTokens(list)
-    //   } else {
-    //     if (count <= 5) {
-    //       setTimeout(() => {
-    //         setCount(count + 1)
-    //       }, 1000)
-    //     }
-    //   }
-    // })
   }, [chainId, allTokensList])
 
   useEffect(() => {
@@ -661,6 +627,7 @@ export default function CrossChain() {
             }}
             // allTokens={allTokens}
             bridgeKey={BRIDGETYPE}
+            allBalances={allBalances}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

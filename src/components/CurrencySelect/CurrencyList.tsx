@@ -8,7 +8,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 // import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -91,30 +91,38 @@ function CurrencyRow({
   onSelect,
   isSelected,
   otherSelected,
-  style
+  style,
+  allBalances,
+  ETHBalance
 }: {
   currency: any
   onSelect: () => void
   isSelected: boolean
   otherSelected: boolean
   style: CSSProperties
+  allBalances?: any
+  ETHBalance?: any
 }) {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
   const currencyObj = currency
   const key = currencyKey(currencyObj)
   const currencies = useLocalToken(currencyObj)
-  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currencyObj?.address === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
+  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
   // console.log(currencyObj)
   // const balance = ''
   // const ETHBalance = ''
-  const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
+  // const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
   // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  // console.log(chainId)
-  // console.log(currency.symbol + '1111111111')
-  // console.log(balance?.toSignificant(6))
-  // // console.log(ETHBalance?.toSignificant(6))
-  // console.log(currency.symbol + '222222222')
+  const balance = useMemo(() => {
+    // console.log(currencyObj)
+    if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()]) {
+      return allBalances[currencies?.address.toLowerCase()]
+    } else if (isNativeToken || currencyObj.address === config.getCurChainInfo(chainId)?.symbol) {
+      return ETHBalance
+    }
+    return
+  }, [allBalances, isNativeToken])
   return (
     <MenuItem
       style={style}
@@ -156,7 +164,8 @@ export default function BridgeCurrencyList({
   onCurrencySelect,
   otherCurrency,
   // fixedListRef,
-  showETH
+  showETH,
+  allBalances
 }: {
   height: number
   currencies: Currency[]
@@ -165,8 +174,11 @@ export default function BridgeCurrencyList({
   otherCurrency?: Currency | null
   // fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
+  allBalances?: any
 }) {
+  const { account } = useActiveWeb3React()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
+  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(selectedCurrency)
   return (
     <>
@@ -177,7 +189,6 @@ export default function BridgeCurrencyList({
             // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
             const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
             const isSelected = Boolean(selectedCurrency?.address?.toLowerCase() === currency?.address?.toLowerCase())
-            // const otherSelected = Boolean(selectedCurrency?.address?.toLowerCase() === currency?.address?.toLowerCase())
             const handleSelect = () => onCurrencySelect(currency)
             return (
               <CurrencyRow
@@ -187,6 +198,8 @@ export default function BridgeCurrencyList({
                 onSelect={handleSelect}
                 otherSelected={otherSelected}
                 key={index}
+                allBalances={allBalances}
+                ETHBalance={ETHBalance}
               />
             )
           })

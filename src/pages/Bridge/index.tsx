@@ -29,6 +29,7 @@ import QRcode from '../../components/QRcode'
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
+import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -159,6 +160,8 @@ function getInitToken () {
   }
 }
 
+const BRIDGETYPE = 'bridgeTokenList'
+
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
@@ -167,14 +170,9 @@ export default function CrossChain() {
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
-
-  // const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  // const localParams = sessionStorage.getItem(SelectBridgeCurrencyLabel) ? sessionStorage.getItem(SelectBridgeCurrencyLabel) : ''
+  const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
+  // console.log(balances)
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
-  // console.log(localSelectChain)
-  // console.log(chainId)
-  // let initBridgeToken:any = urlParams ? urlParams : localParams
-  // initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
   const initBridgeToken = getInitToken()
 
   let initSwapType:any = getParams('bridgetype') ? getParams('bridgetype') : ''
@@ -847,6 +845,7 @@ export default function CrossChain() {
             hideBalance={swapType === BridgeType.deposit}
             customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
             bridgeKey={'bridgeTokenList'}
+            allBalances={allBalances}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

@@ -71,6 +71,8 @@ interface SelectCurrencyInputPanelProps {
   allTokens?: any // 所有token list
   customChainId?: any // 显示自定义chainId
   bridgeKey?: any // router为：'routerTokenList' ，bridge为：'bridgeTokenList'
+  allBalances?: any // all token balance
+  showETH?: any // showETH
 }
 
 export default function SelectCurrencyInputPanel({
@@ -101,7 +103,9 @@ export default function SelectCurrencyInputPanel({
   onChangeMode,
   allTokens = {},
   customChainId,
-  bridgeKey
+  bridgeKey,
+  allBalances,
+  showETH
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -344,6 +348,8 @@ export default function SelectCurrencyInputPanel({
           allTokens={useTokenList}
           chainId={chainId}
           bridgeKey={bridgeKey}
+          allBalances={allBalances}
+          showETH={showETH}
         />
       )}
     </InputPanel>

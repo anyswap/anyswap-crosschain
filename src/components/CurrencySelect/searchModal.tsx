@@ -32,6 +32,8 @@ interface CurrencySearchModalProps {
   allTokens?: any
   chainId?: any
   bridgeKey?: any
+  allBalances?: any
+  showETH?: any
 }
 
 export default function SearchModal ({
@@ -43,7 +45,9 @@ export default function SearchModal ({
   // onlyUnderlying,
   allTokens = {},
   chainId,
-  bridgeKey
+  bridgeKey,
+  allBalances,
+  showETH
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
   const tokenComparator = useTokenComparator(bridgeKey, chainId, false)
@@ -158,11 +162,12 @@ export default function SearchModal ({
               <>
                 <CurrencyList
                   height={height}
-                  showETH={false}
+                  showETH={showETH}
                   currencies={filteredSortedTokens}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
+                  allBalances={allBalances}
                   // fixedListRef={fixedList}
                 />
               </>
