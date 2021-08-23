@@ -30,7 +30,7 @@ export default {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '',
+    multicalToken: '0xd8e95abcce8901cc2640d2ff4444c85506fb829d',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',

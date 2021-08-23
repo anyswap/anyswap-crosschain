@@ -174,34 +174,34 @@ export default function DashboardDtil() {
         }
       }
       if (res[0]) {
-        for (const type in res[0]) {
-          const list = res[0][type]
-          for (const token in list) {
-            if (!isAddress(token)) continue
-            if (ANY_TOKEN === token) continue
-            const item = list[token]
-            // if (chainId?.toString !== item.chainId) continue
-            if (item.underlying) {
-              if (ulist.includes(item.underlying.address)) continue
-              ulist.push(item.underlying.address)
-            }
-            if (tlist[token.toLowerCase()]) continue
-            if (config.getCurConfigInfo().showCoin.length > 0 && !config.getCurConfigInfo().showCoin.includes(item.name)) continue
-            tlist[token.toLowerCase()] = {
-              "address": token,
-              "chainId": chainId,
-              "decimals": item.decimals,
-              "name": item.name,
-              "symbol": item.symbol,
-              "underlying": item.underlying,
-              "destChains": item.destChains,
-              "logoUrl": item.logoUrl,
-              "type": "bridge",
-              "bridgeType": type
-            }
-            alist.push(token)
+        const list = res[0].bridge
+        for (const token in list) {
+          if (!isAddress(token)) continue
+          if (ANY_TOKEN === token) continue
+          const item = list[token]
+          // if (chainId?.toString !== item.chainId) continue
+          if (item.underlying) {
+            if (ulist.includes(item.underlying.address)) continue
+            ulist.push(item.underlying.address)
           }
+          if (tlist[token.toLowerCase()]) continue
+          if (config.getCurConfigInfo().showCoin.length > 0 && !config.getCurConfigInfo().showCoin.includes(item.name)) continue
+          tlist[token.toLowerCase()] = {
+            "address": token,
+            "chainId": chainId,
+            "decimals": item.decimals,
+            "name": item.name,
+            "symbol": item.symbol,
+            "underlying": item.underlying,
+            "destChains": item.destChains,
+            "logoUrl": item.logoUrl,
+            "type": "bridge",
+            "bridgeType": "bridge"
+          }
+          alist.push(token)
         }
+        // for (const type in res[0]) {
+        // }
       }
       // console.log(alist)
       // console.log(tlist)
