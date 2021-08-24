@@ -93,9 +93,11 @@ background:none;
 const Button1 = styled(Button)`
   ${({theme}) => theme.flexC};
   background: ${({ theme }) => theme.primary1};
+  color:#fff;
   white-space:nowrap;
   :disabled {
-    opacity: 0.3;
+    opacity: 0.5;
+    color:#fff;
   }
 `
 
