@@ -94,7 +94,7 @@ export default function DashboardDtil() {
 
   const allTokensList:any = useBridgeTokenList(ROUTER_BRIDGE_TYPE, chainId)
   const allBalances = useBridgeAllTokensBalances(chainId)
-  // console.log(allBalances['0x04068DA6C83AFCFA0e13ba15A6696662335D5B75']?.toSignificant(6))
+  // console.log(allBalances)
   // console.log(allBalances['0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605']?.toSignificant(6))
 
   // const [poolArr, setPoolArr] = useState<Array<string>>()
@@ -138,10 +138,10 @@ export default function DashboardDtil() {
       arr.push('')
     }
     Promise.all(arr).then((res:any) => {
-      console.log(res)
-      console.log(allTokensList)
+      // console.log(res)
+      // console.log(allTokensList)
       if (allTokensList && Object.keys(allTokensList).length > 0) {
-        console.log(111)
+        // console.log(111)
         for (const token in allTokensList) {
           if (!isAddress(token)) continue
           if (ANY_TOKEN === token) continue

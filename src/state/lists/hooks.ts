@@ -143,10 +143,19 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   return map
 }
 
-export function allListsToTokenMap(rlist:any, blist:any): TokenAddressMap {
+export function allListsToTokenMap(rlist:any, blist:any, chainId:any): TokenAddressMap {
 
   // console.log(list)
   const map:any = {}
+  if (config.getCurChainInfo(chainId).anyToken) {
+    map[config.getCurChainInfo(chainId).anyToken] = new WrappedAllTokenInfo({
+      chainId: chainId,
+      address: config.getCurChainInfo(chainId).anyToken,
+      symbol: "ANY",
+      name: "Anyswap",
+      decimals: 18
+    })
+  }
   for (const t in rlist) {
     if(!isAddress(t)) continue
     if (rlist[t].underlying) {
@@ -211,9 +220,9 @@ export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
     const rcurrent = routerLists[chainId]?.tokenList
     const bcurrent = bridgeLists[chainId]?.tokenList
     // console.log(current)
-    if (!rcurrent || !bcurrent) return EMPTY_LIST
+    if (!rcurrent && !bcurrent) return EMPTY_LIST
     try {
-      return allListsToTokenMap(rcurrent, bcurrent)
+      return allListsToTokenMap(rcurrent, bcurrent, chainId)
       // return current
     } catch (error) {
       console.error('Could not show token list due to error', error)
