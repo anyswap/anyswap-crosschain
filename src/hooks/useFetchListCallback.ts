@@ -13,7 +13,7 @@ import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
-import {timeout} from '../config/constant'
+import {timeout, USE_VERSION, VERSION} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
@@ -71,18 +71,30 @@ export function useFetchTokenListCallback(): () => Promise<any> {
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
-        const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=all`
+        const UV:any = USE_VERSION
+        const version:any = UV === VERSION.V5 ? 'all' : USE_VERSION
+        const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=${version}`
         return getUrlData(url)
           .then((tokenList:any) => {
             console.log(tokenList)
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data
-              for (const version in tList) {
-                for (const token in tList[version]) {
-                  if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
+              if (version === 'all') {
+                for (const version in tList) {
+                  for (const token in tList[version]) {
+                    if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
+                    list[token] = {
+                      ...tList[version][token],
+                      sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+                    }
+                  }
+                }
+              } else {
+                for (const token in tList) {
+                  // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
                   list[token] = {
-                    ...tList[version][token],
+                    ...tList[token],
                     sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
                   }
                 }
@@ -109,7 +121,7 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
   return useCallback(
     async () => {
-      if (!chainId) return
+      if (!chainId || !config.getCurConfigInfo().isOpenBridge) return
       if (
         lists
         && curList?.timestamp

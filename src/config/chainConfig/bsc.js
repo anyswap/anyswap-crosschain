@@ -80,6 +80,10 @@ const bridgeToken = {
     bridgeInitToken: '0x6fd2b7fc5db32a133a6824e1117d0f290ba43abc',
     bridgeInitChain: '4'
   },
+  [VERSION.V5]: {
+    bridgeInitToken: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+    bridgeInitChain: '137'
+  },
 }
 
 export default {

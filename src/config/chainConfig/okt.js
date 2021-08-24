@@ -20,6 +20,11 @@ const bridgeToken = {
     bridgeInitChain: '56',
     nativeToken: ''
   },
+  [VERSION.V5]: {
+    bridgeInitToken: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
+    bridgeInitChain: '56',
+    nativeToken: ''
+  },
 }
 
 export default {

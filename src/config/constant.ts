@@ -16,6 +16,7 @@ export enum VERSION {
   V3 = 'ARB_DEV',
   V4 = 'BRIDGE',
   V4_OKT = 'BRIDGE_OKT',
+  V5 = 'ALL',
 }
 
 export const env:any = 'pro'
@@ -29,6 +30,7 @@ export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
 // export const USE_VERSION = VERSION.V2_T3
+// export const USE_VERSION = VERSION.V5
 
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_VERSION'
@@ -109,7 +111,7 @@ export const controlConfig:any = {
     initNode: env === 'dev' ? '56' : '1',
     isOpenRouter: 1,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
-    isOpenBridge: env === 'dev' ? 1 : 1,
+    isOpenBridge: env === 'dev' ? 1 : 0,
   },
   [VERSION.V2_T1]: {
     bridgeInitDataChain: '256',
@@ -176,7 +178,18 @@ export const controlConfig:any = {
     isOpenRouter: 0,
     isOpenRouterTxns: 0,
     isOpenBridge: 1
-  }
+  },
+  [VERSION.V5]: {
+    bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 1,
+  },
 }
 
 

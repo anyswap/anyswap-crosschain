@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useMemo, useCallback } from 're
 // import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
-import { ArrowDown } from 'react-feather'
+import { ArrowDown, Plus } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -564,8 +564,8 @@ export default function CrossChain() {
         <Title
           title={config.env === 'dev' ? t('router') : t('swap')}
           
-          isNavLink={true}
-          tabList={[
+          isNavLink={config.getCurConfigInfo().isOpenBridge ? true : false}
+          tabList={config.getCurConfigInfo().isOpenBridge ? [
             {
               name: config.env === 'dev' ? t('router') : t('swap'),
               path: config.env === 'dev' ? '/router' : '/swap',
@@ -580,7 +580,7 @@ export default function CrossChain() {
               iconUrl: require('../../assets/images/icon/pool.svg'),
               iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
             }
-          ]}
+          ] : []}
         ></Title>
         <AutoColumn gap={'sm'}>
 
@@ -610,7 +610,7 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
-            isViewMode={true}
+            isViewMode={false}
             modeConent={{txt: swapType === 'send' ? t('Simple') : t('Advance'), isFlag: swapType === 'send'}}
             onChangeMode={(value) => {
               if (value) {
@@ -650,12 +650,24 @@ export default function CrossChain() {
             ) : ''
           }
 
-          <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+          <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
               // toggleNetworkModal()
               changeNetwork(selectChain)
             }}>
               <ArrowDown size="16" color={theme.text2} />
+            </ArrowWrapper>
+            <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
+              if (swapType === 'swap') {
+                setSwapType('send')
+              } else {
+                setSwapType('swap')
+                if (account) {
+                  setRecipient(account)
+                }
+              }
+            }}>
+              <Plus size="16" color={theme.text2} />
             </ArrowWrapper>
           </AutoRow>
 

@@ -101,6 +101,8 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
   const viewSymbol = config.getBaseCoin(currency?.symbol, chainId)
   const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'
   const dFee = bridgeType === 'bridgeAssets' ? Number(destConfig?.SwapFeeRatePerMillion) : Number(destConfig?.SwapFeeRatePerMillion) * 100
+  // console.log(bridgeConfig)
+  // console.log(destConfig)
   return (
     <SubCurrencySelectBox>
       <dl className='list'>

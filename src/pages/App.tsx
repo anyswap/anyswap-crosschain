@@ -20,6 +20,7 @@ import FTMfarming from './Farms/FTMfarming'
 import BSCfarming from './Farms/BSCfarming'
 import BSCfarmingHERO from './Farms/BSCfarming_HERO'
 import BSCfarmingTRO from './Farms/BSCfarming_TRO'
+import BSCfarmingPLAY from './Farms/BSCfarming_PLAY'
 import ETHtestfarming from './Farms/ETH_test_farming'
 import FarmList from './Farms/FarmsList'
 
@@ -153,6 +154,7 @@ export default function App() {
               <Route exact strict path="/farm/bsc" component={BSCfarming} />
               <Route exact strict path="/farm/bsc/hero" component={BSCfarmingHERO} />
               <Route exact strict path="/farm/bsc/tro" component={BSCfarmingTRO} />
+              <Route exact strict path="/farm/bsc/polyplay" component={BSCfarmingPLAY} />
               <Route exact strict path="/farm/eth/test" component={ETHtestfarming} />
 
               

@@ -106,6 +106,7 @@ declare module 'styled-components' {
     shadow1: string
     shadow2: string
     contentShadow: string
+    tableShadow: string
 
     // media queries
     mediaWidth: {

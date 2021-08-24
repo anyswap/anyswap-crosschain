@@ -289,6 +289,7 @@ export default function FarmsList () {
   const [FTMStakingAPY, setFTMStakingAPY] = useState()
   const [BSCStakingAPY, setBSCStakingAPY] = useState()
   const [BSCHEROStakingAPY, setBSCHEROStakingAPY] = useState()
+  const [BSCPLAYStakingAPY, setBSCPLAYStakingAPY] = useState()
   const [BSCTROStakingAPY, setBSCTROStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
@@ -334,6 +335,11 @@ export default function FarmsList () {
     getFarmAPY('BSC_TRO', '0.015').then((res:any) => {
       setBSCTROStakingAPY(res)
     })
+    getPrice('PLAY').then((res:any) => {
+      getFarmAPY('BSC_PLAY', res).then((res:any) => {
+        setBSCPLAYStakingAPY(res)
+      })
+    })
   }, [])
 
 
@@ -353,6 +359,17 @@ export default function FarmsList () {
     }
   }
   const farmList:any = [
+    {
+      isDoubleLogo: 1,
+      isOutLink: 0,
+      url: '/farm/bsc/polyplay',
+      title: 'PLAY Staking',
+      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPLAYStakingAPY ? (Number(BSCPLAYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+      coin1: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
+      coin2: 'BNB',
+      coin3: '',
+      status: 'live'
+    },
     {
       isDoubleLogo: 1,
       isOutLink: 1,

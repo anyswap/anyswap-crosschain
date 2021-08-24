@@ -320,20 +320,25 @@ export default function NavList() {
               isActive={(match, { pathname }) =>
                 Boolean(match)
                 || pathname.startsWith('/router')
-                || pathname.startsWith('/pool')
                 || pathname.startsWith('/swap')
-                || pathname.startsWith('/add')
-                || pathname.startsWith('/remove')
-                || pathname.startsWith('/create')
-                || pathname.startsWith('/find')
+                || (
+                  config.getCurConfigInfo().isOpenBridge
+                  && (
+                      pathname.startsWith('/pool')
+                    || pathname.startsWith('/add')
+                    || pathname.startsWith('/remove')
+                    || pathname.startsWith('/create')
+                    || pathname.startsWith('/find')
+                  )
+                )
               }
             >
               <div className="icon">
                 <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
                 <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
               </div>
-              {/* {config.env === 'dev' ? t('router') : t('swap')} */}
-              {t('router')}
+              {config.env === 'dev' ? t('router') : t('swap')}
+              {/* {t('router')} */}
             </StyledNavLink>
           ) : ''
         }
@@ -357,7 +362,25 @@ export default function NavList() {
                 </div>
                 {t('bridge')}
               </StyledNavLink>
-          ) : ''
+          ) : (
+            <StyledNavLink
+              id={`pool-nav-link`}
+              to={'/pool'}
+              isActive={(match, { pathname }) =>
+                Boolean(match) ||
+                pathname.startsWith('/add') ||
+                pathname.startsWith('/remove') ||
+                pathname.startsWith('/create') ||
+                pathname.startsWith('/find')
+              }
+            >
+              <div className="icon">
+                <img src={require('../../assets/images/icon/pool.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/pool-purpl.svg')} className="on" alt="" />
+              </div>
+              {t('pool')}
+            </StyledNavLink>
+          )
         }
         <StyledNavLink
           id={`swap-nav-link`}

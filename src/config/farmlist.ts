@@ -69,6 +69,13 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY
   },
+  'BSC_PLAY': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0xdb12c7e30dc2a2c421724d07c7a09147bd9f61bb',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY
+  },
   'ETH_TEST': {
     chainId: '4',
     farmToken: '0x0bd19f6447cd676255C7C7B00428462B3dA67e3a',

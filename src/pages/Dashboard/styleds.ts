@@ -157,8 +157,8 @@ export const DBTbody = styled.tbody`
   margin-bottom: 0.625rem;
   font-size: 12px;
   tr {
-    // margin-bottom: 10px;
-    box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+    // box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+    box-shadow: ${({ theme }) => theme.tableShadow};
   }
   @media screen and (max-width: 960px) {
     padding: 1rem 5px;

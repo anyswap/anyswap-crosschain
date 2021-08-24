@@ -340,7 +340,7 @@ export default function DashboardDtil() {
             <DBTables>
               <DBThead>
                 <tr>
-                  <DBTh className="c">{t('Coins')}</DBTh>
+                  <DBTh className="l">{t('Coins')}</DBTh>
                   <DBTh className="r">{t('balances')}</DBTh>
                   <DBTh className="r">{t('lr')}</DBTh>
                   <DBTh className="r">{t('TotalBalance')}</DBTh>

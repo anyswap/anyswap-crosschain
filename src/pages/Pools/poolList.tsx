@@ -530,8 +530,8 @@ export default function PoolLists ({
       {/* <Title title={t('pool')}></Title> */}
       <Title
         title={t('pool')}
-        isNavLink={true}
-        tabList={[
+        isNavLink={config.getCurConfigInfo().isOpenBridge ? true : false}
+        tabList={config.getCurConfigInfo().isOpenBridge ? [
           {
             name: config.env === 'dev' ? t('router') : t('swap'),
             path: config.env === 'dev' ? '/router' : '/swap',
@@ -546,7 +546,7 @@ export default function PoolLists ({
             iconUrl: require('../../assets/images/icon/pool.svg'),
             iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
           }
-        ]}
+        ] : []}
       ></Title>
 
       <MyBalanceBox>
