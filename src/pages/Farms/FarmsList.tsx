@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
@@ -342,7 +342,7 @@ export default function FarmsList () {
     })
   }, [])
 
-
+  // console.log(BSCPLAYStakingAPY)
   function openThirdWeb (url:any, type:any) {
     const isJump = localStorage.getItem(JUMPMODALTIP + type)
     // console.log(isJump)
@@ -358,85 +358,166 @@ export default function FarmsList () {
       window.open(url)
     }
   }
-  const farmList:any = [
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: '/farm/bsc/polyplay',
-      title: 'PLAY Staking',
-      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPLAYStakingAPY ? (Number(BSCPLAYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
-      coin2: 'BNB',
-      coin3: '',
-      status: 'live'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 1,
-      url: 'https://yel.finance/',
-      title: 'YEL Farming',
-      info: 'YEL Farming',
-      coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
-      coin2: 'FTM',
-      coin3: '',
-      status: 'live'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: '/farm/bsc/hero',
-      title: 'HERO Staking',
-      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCHEROStakingAPY ? (Number(BSCHEROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
-      coin2: 'BNB',
-      coin3: '',
-      status: 'live'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: 'farm/bsc',
-      title: 'DEP Staking',
-      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'DEP',
-      coin2: 'BNB',
-      coin3: '',
-      status: Date.now() > 1630748022953 ? 'finished' : 'live'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: '/farm/bsc/tro',
-      title: 'TRO Staking',
-      info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'TRO',
-      coin2: 'BNB',
-      coin3: '',
-      status: 'finished'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: 'farm/ftm',
-      title: 'USDC Staking',
-      info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'USDC',
-      coin2: 'FTM',
-      coin3: '',
-      status: 'finished'
-    },
-    {
-      isDoubleLogo: 1,
-      isOutLink: 0,
-      url: 'farm/matic',
-      title: 'USDC Staking',
-      info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-      coin1: 'USDC',
-      coin2: 'MATIC',
-      coin3: '',
-      status: 'finished'
-    },
-  ]
+  const farmList = useMemo(() => {
+    return [
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/farm/bsc/polyplay',
+        title: 'PLAY Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPLAYStakingAPY ? (Number(BSCPLAYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCPLAYStakingAPY !== 'undefined' && Number(BSCPLAYStakingAPY) === 0 && Date.now() > 1629885600000  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 1,
+        url: 'https://yel.finance/',
+        title: 'YEL Farming',
+        info: 'YEL Farming',
+        coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
+        coin2: 'FTM',
+        coin3: '',
+        status: 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/farm/bsc/hero',
+        title: 'HERO Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCHEROStakingAPY ? (Number(BSCHEROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCHEROStakingAPY !== 'undefined' && Number(BSCHEROStakingAPY) === 0  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: 'farm/bsc',
+        title: 'DEP Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'DEP',
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCStakingAPY !== 'undefined' && Number(BSCStakingAPY) === 0  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/farm/bsc/tro',
+        title: 'TRO Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'TRO',
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCTROStakingAPY !== 'undefined' && Number(BSCTROStakingAPY) === 0  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: 'farm/ftm',
+        title: 'USDC Staking',
+        info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'USDC',
+        coin2: 'FTM',
+        coin3: '',
+        status: typeof FTMStakingAPY !== 'undefined' && Number(FTMStakingAPY) === 0  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: 'farm/matic',
+        title: 'USDC Staking',
+        info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'USDC',
+        coin2: 'MATIC',
+        coin3: '',
+        status: typeof MATICStakingAPY !== 'undefined' && Number(MATICStakingAPY) === 0  ? 'finished' : 'live'
+      },
+    ]
+  }, [MATICStakingAPY, FTMStakingAPY, BSCStakingAPY, BSCHEROStakingAPY, BSCPLAYStakingAPY, BSCTROStakingAPY])
+  // const farmList:any = [
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: '/farm/bsc/polyplay',
+  //     title: 'PLAY Staking',
+  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPLAYStakingAPY ? (Number(BSCPLAYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
+  //     coin2: 'BNB',
+  //     coin3: '',
+  //     status: typeof BSCPLAYStakingAPY !== 'undefined' && Number(BSCPLAYStakingAPY) === 0 && Date.now() > 1629885600000  ? 'finished' : 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 1,
+  //     url: 'https://yel.finance/',
+  //     title: 'YEL Farming',
+  //     info: 'YEL Farming',
+  //     coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
+  //     coin2: 'FTM',
+  //     coin3: '',
+  //     status: 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: '/farm/bsc/hero',
+  //     title: 'HERO Staking',
+  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCHEROStakingAPY ? (Number(BSCHEROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
+  //     coin2: 'BNB',
+  //     coin3: '',
+  //     status: typeof BSCHEROStakingAPY !== 'undefined' && Number(BSCHEROStakingAPY) === 0  ? 'finished' : 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: 'farm/bsc',
+  //     title: 'DEP Staking',
+  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'DEP',
+  //     coin2: 'BNB',
+  //     coin3: '',
+  //     status: typeof BSCStakingAPY !== 'undefined' && Number(BSCStakingAPY) === 0  ? 'finished' : 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: '/farm/bsc/tro',
+  //     title: 'TRO Staking',
+  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'TRO',
+  //     coin2: 'BNB',
+  //     coin3: '',
+  //     status: typeof BSCTROStakingAPY !== 'undefined' && Number(BSCTROStakingAPY) === 0  ? 'finished' : 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: 'farm/ftm',
+  //     title: 'USDC Staking',
+  //     info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'USDC',
+  //     coin2: 'FTM',
+  //     coin3: '',
+  //     status: typeof FTMStakingAPY !== 'undefined' && Number(FTMStakingAPY) === 0  ? 'finished' : 'live'
+  //   },
+  //   {
+  //     isDoubleLogo: 1,
+  //     isOutLink: 0,
+  //     url: 'farm/matic',
+  //     title: 'USDC Staking',
+  //     info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+  //     coin1: 'USDC',
+  //     coin2: 'MATIC',
+  //     coin3: '',
+  //     status: typeof MATICStakingAPY !== 'undefined' && Number(MATICStakingAPY) === 0  ? 'finished' : 'live'
+  //   },
+  // ]
   function FarmItem ({
     isDoubleLogo,
     isOutLink,
