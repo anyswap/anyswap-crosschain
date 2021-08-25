@@ -257,7 +257,7 @@ export function useBridgeNativeCallback(
   const bridgeContract = useSwapUnderlyingContract(inputToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
-  // console.log(balance)
+  // console.log(balance?.raw.toString())
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
@@ -265,10 +265,10 @@ export function useBridgeNativeCallback(
   return useMemo(() => {
     // console.log(inputCurrency)
     if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
-    // console.log(typedValue)
+    // console.log(inputAmount?.raw.toString())
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-
+    // console.log(sufficientBalance)
     return {
       wrapType: WrapType.WRAP,
       execute:

@@ -130,27 +130,31 @@ export default function SwapNative() {
   const anyCurrency = useLocalToken(anyToken ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
   // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
-  const formatCurrency = useLocalToken(selectCurrency)
+  // const formatCurrency = useLocalToken(selectCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, anyToken?.address)
   // console.log(approval)
   // console.log(ApprovalState)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     selectCurrency?.routerToken,
-    formatCurrency?formatCurrency:undefined,
+    anyCurrency?anyCurrency:undefined,
     anyToken?.address,
     account ?? undefined,
     inputBridgeValue,
     selectChain
   )
     // console.log(wrapType)
-    // console.log(wrapInputError)
+    // console.log('wrapInputError', wrapInputError)
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     anyToken?.address,
     inputBridgeValue,
     swapType
   )
+  // console.log(swapType)
+  // console.log(swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined))
+  // console.log(anyCurrency)
+  // console.log('wrapInputErrorUnderlying',wrapInputErrorUnderlying)
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
     selectCurrency?.routerToken,
@@ -159,6 +163,7 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType
   )
+  // console.log('wrapInputErrorNative',wrapInputErrorNative)
 
   function onDelay () {
     setDelayAction(true)
@@ -231,7 +236,7 @@ export default function SwapNative() {
         }
       }
     }
-  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative])
+  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType])
 
   const isCrossBridge = useMemo(() => {
     // console.log(isWrapInputError)
@@ -257,7 +262,7 @@ export default function SwapNative() {
           && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
           && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
         ) {
-          // console.log(14)
+          console.log(14)
           return false
         } else if (
           openAdvance
@@ -265,20 +270,20 @@ export default function SwapNative() {
           && Number(chainId) === Number(selectChain)
           && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
-          // console.log(15)
+          console.log(15)
           return false
         } else {
-          // console.log(16)
+          console.log(16)
           return true
         }
       } else {
-        // console.log(13)
+        console.log(13)
         return true
       }
     } else {
       return true
     }
-  }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError])
+  }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError, openAdvance, chainId, selectChain, destConfig])
 
   const isInputError = useMemo(() => {
     // console.log(destConfig)
