@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useMemo, useCallback } from 're
 // import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
-import { ArrowDown, Plus } from 'react-feather'
+import { ArrowDown, Plus, Minus } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -671,7 +671,11 @@ export default function CrossChain() {
                 }
               }
             }}>
-              <Plus size="16" color={theme.text2} />
+              {
+                swapType === 'swap' ? <Plus size="16" color={theme.text2} /> : <Minus size="16" color={theme.text2} />
+              }
+              {/* <Plus size="16" color={theme.text2} />
+              <Minus size="16" color={theme.text2} /> */}
             </ArrowWrapper>
           </AutoRow>
 
