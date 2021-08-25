@@ -224,6 +224,10 @@ export default function CrossChain() {
     })
   }
 
+  useEffect(() => {
+    setDestChain('')
+  }, [selectChain])
+
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
       const CC:any = await getNodeTotalsupply(

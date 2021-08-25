@@ -401,7 +401,9 @@ export default function SwapNative() {
       return '(' + n.toFixed(2) + '%)'
     }
   }
-
+  useEffect(() => {
+    setDestChain('')
+  }, [selectChain])
   async function getAllOutBalance (account:any) {
     const token = selectCurrency.address
     // console.log(selectCurrency)
