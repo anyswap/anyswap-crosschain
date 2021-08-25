@@ -97,6 +97,7 @@ export const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
+  // height:100%;
   background-color: ${({ theme }) => theme.contentBg};
 `
 
@@ -137,6 +138,9 @@ export const CloseColor = styled(Close)`
 `
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
+  // position:absolute;
+  // top:0;
+  // left:0;
   padding: 1.5rem 1.5rem;
   font-weight: 500;
   color: ${props => (props.color === 'blue' ? ({ theme }) => theme.royalBlue : 'inherit')};
@@ -151,6 +155,8 @@ export const HoverText = styled.div`
 `
 export const ContentWrapper = styled.div`
   width: 100%;
+  height: 78%;
+  overflow:auto;
   background-color: ${({ theme }) => theme.contentBg};
   padding: 0px 0.625rem 0.625rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
