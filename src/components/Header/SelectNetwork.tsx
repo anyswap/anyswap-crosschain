@@ -155,7 +155,7 @@ export const HoverText = styled.div`
 `
 export const ContentWrapper = styled.div`
   width: 100%;
-  height: 80%;
+  // height: 90%;
   overflow:auto;
   background-color: ${({ theme }) => theme.contentBg};
   padding: 0px 0.625rem 0.625rem;
