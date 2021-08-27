@@ -267,7 +267,7 @@ export default function SelectChainIdInputPanel({
               {
                   chainList && chainList.map((item:any, index:any) => {
                     if (
-                      (Number(chainId) === Number(item) && !isViewAllChain)
+                      (chainId?.toString() === item?.toString() && !isViewAllChain)
                       || (config.getCurConfigInfo()?.hiddenChain?.includes(item))
                     ) {
                       return ''

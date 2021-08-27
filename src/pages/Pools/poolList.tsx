@@ -227,7 +227,7 @@ export default function PoolLists ({
           destList[tObj.chainId].push(curData)
         }
         for (const chainID in tObj.destChains) {
-          if (Number(chainID) === Number(tObj.chainId)) continue
+          if (chainID?.toString() === tObj.chainId?.toString()) continue
           if (!destList[chainID]) destList[chainID] = []
           destList[chainID].push({
             token: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
@@ -366,7 +366,7 @@ export default function PoolLists ({
         {listView}
         {
           item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (Number(chainID) === Number(chainId)) return ''
+            if (chainID?.toString() === chainId?.toString()) return ''
             // const token = item.destChains[chainID]?.address
             // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
             const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
@@ -472,7 +472,7 @@ export default function PoolLists ({
         {listView}
         {
           item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (Number(chainID) === Number(chainId)) return ''
+            if (chainID?.toString() === chainId?.toString()) return ''
             // const token = item.destChains[chainID]?.address
             // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
             const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'

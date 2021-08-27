@@ -256,8 +256,8 @@ export default function CrossChain() {
         account,
         selectCurrency?.address
       )
-      console.log(CC)
-      console.log(selectCurrency)
+      // console.log(CC)
+      // console.log(selectCurrency)
       if (CC) {
         setCurChain({
           chain: chainId,
@@ -516,7 +516,7 @@ export default function CrossChain() {
   }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, wrapTypeNative, wrapTypeUnderlying, isDestUnderlying])
 
   useEffect(() => {
-    const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+    const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
     setSelectCurrency('')
     const list:any = {}
@@ -525,7 +525,7 @@ export default function CrossChain() {
       list[token] = {
         ...allTokensList[token].tokenInfo,
       }
-      if (!selectCurrency || selectCurrency.chainId !== chainId) {
+      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
         if (
           t === token
           || list[token]?.symbol?.toLowerCase() === t
@@ -542,7 +542,7 @@ export default function CrossChain() {
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
-        if (Number(c) === Number(chainId)) continue
+        if (c?.toString() === chainId?.toString()) continue
         arr.push(c)
       }
       if (arr.length > 0) {

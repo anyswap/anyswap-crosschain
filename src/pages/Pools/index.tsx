@@ -257,27 +257,27 @@ export default function SwapNative() {
         if (
           openAdvance
           && destChain
-          && Number(chainId) !== Number(selectChain)
+          && chainId?.toString() !== selectChain?.toString()
           && Number(destChain.ts) >= Number(inputBridgeValue)
           && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
           && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
         ) {
-          console.log(14)
+          // console.log(14)
           return false
         } else if (
           openAdvance
           && poolInfo
-          && Number(chainId) === Number(selectChain)
+          && chainId?.toString() !== selectChain?.toString()
           && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
-          console.log(15)
+          // console.log(15)
           return false
         } else {
-          console.log(16)
+          // console.log(16)
           return true
         }
       } else {
-        console.log(13)
+        // console.log(13)
         return true
       }
     } else {
@@ -351,7 +351,7 @@ export default function SwapNative() {
   }, [t, swapType, wrapType, wrapTypeUnderlying, isWrapInputError, inputBridgeValue])
 
   const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && destConfig && Number(chainId) !== Number(selectChain)) {
+    if (inputBridgeValue && destConfig && chainId?.toString() !== selectChain?.toString()) {
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
       if (fee < Number(destConfig.MinimumSwapFee)) {
@@ -359,7 +359,7 @@ export default function SwapNative() {
       } else if (fee > destConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       }
-      if (Number(chainId) === Number(selectChain) || !destConfig?.swapfeeon) {
+      if (chainId?.toString() === selectChain?.toString() || !destConfig?.swapfeeon) {
         value = Number(inputBridgeValue)
       }
       
@@ -367,7 +367,7 @@ export default function SwapNative() {
         return formatDecimal(value, Math.min(6, selectCurrency.decimals))
       }
       return ''
-    } else if (inputBridgeValue && !destConfig && Number(chainId) === Number(selectChain)) {
+    } else if (inputBridgeValue && !destConfig && chainId?.toString() === selectChain?.toString()) {
       return formatDecimal(inputBridgeValue, Math.min(6, selectCurrency.decimals))
     } else {
       return ''
@@ -381,13 +381,11 @@ export default function SwapNative() {
   }, [approval, approvalSubmitted])
   useEffect(() => {
     if (chainId && !selectChain) {
-      // setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
       setSelectChain(chainId)
     }
   }, [chainId, selectChain])
   useEffect(() => {
     if (chainId) {
-      // setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
       setSelectChain(chainId)
     }
   }, [chainId])
@@ -416,7 +414,7 @@ export default function SwapNative() {
       account,
       curUnlToekn
     )
-    const dObj = Number(chainId) === Number(selectChain) ? selectCurrency : selectCurrency?.destChains[selectChain]
+    const dObj = chainId?.toString() === selectChain?.toString() ? selectCurrency : selectCurrency?.destChains[selectChain]
     const destAnyToken = dObj?.underlying?.address ? dObj?.underlying?.address : dObj?.address
     const destUnlToken = dObj?.underlying?.address ? dObj?.address : ''
     const DC:any = openAdvance ? await getNodeTotalsupply(
@@ -446,7 +444,7 @@ export default function SwapNative() {
   }
 
   useEffect(() => {
-    const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+    const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
     setSelectCurrency('')
     const list:any = {}
@@ -455,7 +453,7 @@ export default function SwapNative() {
       list[token] = {
         ...allTokensList[token].tokenInfo,
       }
-      if (!selectCurrency || selectCurrency.chainId !== chainId) {
+      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
         if (
           t === token
           || list[token]?.symbol?.toLowerCase() === t
@@ -619,7 +617,7 @@ export default function SwapNative() {
         />
         
         {
-          openAdvance && Number(chainId) !== Number(selectChain) ? (
+          openAdvance && chainId?.toString() !== selectChain?.toString() ? (
             <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
           ) : ''
         }
@@ -659,7 +657,7 @@ export default function SwapNative() {
                   ) : (
                     <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
                       onDelay()
-                      if (openAdvance && Number(chainId) !== Number(selectChain)) {
+                      if (openAdvance && chainId?.toString() !== selectChain?.toString()) {
                         console.log(1)
                         if (onWrap) onWrap().then(() => {
                           onClear()

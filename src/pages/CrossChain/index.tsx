@@ -103,7 +103,13 @@ const ConfirmText = styled.div`
   margin-top:1.25rem
 `
 
+const FlexEC = styled.div`
+  ${({ theme }) => theme.flexEC};
+`
+
 let intervalFN:any = ''
+
+
 
 const BRIDGETYPE = 'routerTokenList'
 
@@ -423,16 +429,17 @@ export default function CrossChain() {
   
 
   useEffect(() => {
-    const t = selectCurrency && selectCurrency.chainId === chainId ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
+    const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
-    setSelectCurrency('')
+    // setSelectCurrency('')
     const list:any = {}
     for (const token in allTokensList) {
       if (!isAddress(token)) continue
       list[token] = {
         ...allTokensList[token].tokenInfo,
       }
-      if (!selectCurrency || selectCurrency.chainId !== chainId) {
+      console.log(selectCurrency)
+      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
         if (
           t === token
           || list[token]?.symbol?.toLowerCase() === t
@@ -451,11 +458,11 @@ export default function CrossChain() {
   }, [account, swapType])
 
   useEffect(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
-        if (Number(c) === Number(chainId)) continue
+        if (c?.toString() === chainId?.toString()) continue
         arr.push(c)
       }
       if (arr.length > 0) {
@@ -654,14 +661,14 @@ export default function CrossChain() {
             ) : ''
           }
 
-          <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
+          <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
               // toggleNetworkModal()
               changeNetwork(selectChain)
             }}>
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>
-            <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
+            <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0, fontSize: '14px', lineHeight:'14px'}} onClick={() => {
               if (swapType === 'swap') {
                 setSwapType('send')
               } else {
@@ -672,7 +679,15 @@ export default function CrossChain() {
               }
             }}>
               {
-                swapType === 'swap' ? <Plus size="16" color={theme.text2} /> : <Minus size="16" color={theme.text2} />
+                swapType === 'swap' ? (
+                  <FlexEC>
+                    <Plus size="16" color={theme.text2} /> {t('send')}
+                  </FlexEC>
+                ) : (
+                  <FlexEC>
+                    <Minus size="16" color={theme.text2} /> {t('swap')}
+                  </FlexEC>
+                )
               }
               {/* <Plus size="16" color={theme.text2} />
               <Minus size="16" color={theme.text2} /> */}

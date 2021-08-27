@@ -113,7 +113,7 @@ export default function SelectChainIdInputPanel({
   const destChainInfo = useMemo(() => {
     // console.log(bridgeConfig)
     if (bridgeConfig) {
-      if (Number(selectChainId) === Number(chainId)) {
+      if (selectChainId?.toString() === chainId?.toString()) {
         return bridgeConfig
       } else {
         if (bridgeConfig?.destChains && bridgeConfig?.destChains[selectChainId]) {
@@ -137,7 +137,7 @@ export default function SelectChainIdInputPanel({
       && !isNaN(selectChainId)
     ) {
       let token:any = ''
-      if (Number(chainId) === Number(selectChainId)) {
+      if (chainId?.toString() === selectChainId?.toString()) {
         token = bridgeConfig?.address
       } else {
         token = destChainInfo?.address
@@ -146,7 +146,7 @@ export default function SelectChainIdInputPanel({
       // console.log(selectChainId)
       // console.log(token)
       if (token) {
-        const isNT = (isNativeToken && Number(chainId) === Number(selectChainId)) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
+        const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
           console.log(res)
@@ -287,7 +287,7 @@ export default function SelectChainIdInputPanel({
               {
                   chainList && chainList.map((item:any, index:any) => {
                     if (
-                      (Number(chainId) === Number(item) && !isViewAllChain)
+                      (chainId?.toString() === item?.toString() && !isViewAllChain)
                       || (config.getCurConfigInfo()?.hiddenChain?.includes(item))
                     ) {
                       return ''

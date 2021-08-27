@@ -76,7 +76,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=${version}`
         return getUrlData(url)
           .then((tokenList:any) => {
-            console.log(tokenList)
+            // console.log(tokenList)
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data
@@ -133,7 +133,7 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
       } else {
         return GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain})
           .then((tokenList:any) => {
-            console.log(tokenList)
+            // console.log(tokenList)
             dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
             return tokenList
           })

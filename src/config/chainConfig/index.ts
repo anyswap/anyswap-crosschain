@@ -15,6 +15,7 @@ import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
+import colx from './colx'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -38,7 +39,8 @@ export const chainInfo:ConFig = {
   ...btc,
   ...block,
   ...omgx,
-  ...optimism
+  ...optimism,
+  ...colx
 }
 
 const useChain = {
