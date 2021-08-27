@@ -438,7 +438,7 @@ export default function CrossChain() {
       list[token] = {
         ...allTokensList[token].tokenInfo,
       }
-      console.log(selectCurrency)
+      // console.log(selectCurrency)
       if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
         if (
           t === token
@@ -484,7 +484,7 @@ export default function CrossChain() {
     } else {
       setInputBridgeValue('')
     }
-    setSwapType('send')
+    // setSwapType('send')
   }, [setInputBridgeValue])
   // console.log(isUnderlying)
   // console.log(isDestUnderlying)
@@ -621,18 +621,18 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
-            isViewMode={false}
-            modeConent={{txt: swapType === 'send' ? t('Simple') : t('Advance'), isFlag: swapType === 'send'}}
-            onChangeMode={(value) => {
-              if (value) {
-                setSwapType('send')
-              } else {
-                setSwapType('swap')
-                if (account) {
-                  setRecipient(account)
-                }
-              }
-            }}
+            // isViewMode={false}
+            // modeConent={{txt: swapType === 'send' ? t('Simple') : t('Advance'), isFlag: swapType === 'send'}}
+            // onChangeMode={(value) => {
+            //   if (value) {
+            //     setSwapType('send')
+            //   } else {
+            //     setSwapType('swap')
+            //     if (account) {
+            //       setRecipient(account)
+            //     }
+            //   }
+            // }}
             // allTokens={allTokens}
             bridgeKey={BRIDGETYPE}
             allBalances={allBalances}
@@ -668,7 +668,7 @@ export default function CrossChain() {
             }}>
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>
-            <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0, fontSize: '14px', lineHeight:'14px'}} onClick={() => {
+            <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
               if (swapType === 'swap') {
                 setSwapType('send')
               } else {
@@ -681,11 +681,11 @@ export default function CrossChain() {
               {
                 swapType === 'swap' ? (
                   <FlexEC>
-                    <Plus size="16" color={theme.text2} /> {t('send')}
+                    <Plus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('send')}</span>
                   </FlexEC>
                 ) : (
                   <FlexEC>
-                    <Minus size="16" color={theme.text2} /> {t('swap')}
+                    <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('swap')}</span>
                   </FlexEC>
                 )
               }
