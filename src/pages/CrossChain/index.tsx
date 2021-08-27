@@ -689,7 +689,7 @@ export default function CrossChain() {
                   </FlexEC>
                 ) : (
                   <FlexEC>
-                    <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('swap')}</span>
+                    <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('send')}</span>
                   </FlexEC>
                 )
               }
