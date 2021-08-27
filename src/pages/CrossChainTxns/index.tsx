@@ -454,7 +454,10 @@ export default function CrossChain() {
       && !isWrapInputError
       && v2Trade?.outputAmount
       // && isAddress(recipient)
-      && destChain
+      && (
+        (isDestUnderlying && destChain)
+        || (!isDestUnderlying && !destChain)
+      )
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)

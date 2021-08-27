@@ -232,7 +232,7 @@ export default function CrossChain() {
 
   useEffect(() => {
     setDestChain('')
-  }, [selectChain])
+  }, [selectChain, selectCurrency])
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
@@ -357,6 +357,7 @@ export default function CrossChain() {
 
   const isCrossBridge = useMemo(() => {
     // console.log(!wrapInputErrorUnderlying && !isNativeToken)
+    // console.log(destConfig)
     // console.log(destChain)
     if (
       account
@@ -365,7 +366,10 @@ export default function CrossChain() {
       && inputBridgeValue
       && !isWrapInputError
       && isAddress(recipient)
-      && destChain
+      && (
+        (isDestUnderlying && destChain)
+        || (!isDestUnderlying && !destChain)
+      )
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
