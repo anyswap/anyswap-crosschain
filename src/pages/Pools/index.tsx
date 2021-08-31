@@ -247,12 +247,15 @@ export default function SwapNative() {
       && Number(inputBridgeValue) > 0
       && !isWrapInputError
     ) {
+      // console.log(10)
       if (
         swapType === 'deposit'
         && Number(inputBridgeValue) > 0
       ) {
+        // console.log(11)
         return false
       } else if (swapType !== 'deposit') {
+        // console.log(12)
         // console.log(poolInfo)
         if (
           openAdvance
@@ -267,7 +270,7 @@ export default function SwapNative() {
         } else if (
           openAdvance
           && poolInfo
-          && chainId?.toString() !== selectChain?.toString()
+          && chainId?.toString() === selectChain?.toString()
           && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
         ) {
           // console.log(15)
@@ -446,14 +449,18 @@ export default function SwapNative() {
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
-    setSelectCurrency('')
+    // setSelectCurrency('')
     const list:any = {}
     for (const token in allTokensList) {
       if (!isAddress(token)) continue
       list[token] = {
         ...allTokensList[token].tokenInfo,
       }
-      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
+      // console.log(selectCurrency)
+      if (
+        !selectCurrency
+        || selectCurrency.chainId?.toString() !== chainId?.toString()
+      ) {
         if (
           t === token
           || list[token]?.symbol?.toLowerCase() === t
