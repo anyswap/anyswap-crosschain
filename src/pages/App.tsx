@@ -139,13 +139,13 @@ export default function App() {
             <Switch>
               {/* <Route exact strict path="/bridge" component={Bridge} /> */}
               <Route exact strict path="/dashboard" component={Dashboard} />
-              <Route exact strict path={config.env === 'dev' ? "/router" : "/swap"} component={CrossChain} />
+              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={CrossChain} />
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
               <Route exact strict path="/pool" component={PoolList} />
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
               <Route exact strict path="/bridge" component={Bridge} />
-              <Route exact strict path={config.env === 'dev' ? "/swap" : "/swap1"} component={CrossChainTxns} />
+              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
 
               <Route exact strict path="/farm/matic" component={MATICfarming} />
 

@@ -315,7 +315,7 @@ export default function NavList() {
           config.getCurConfigInfo().isOpenRouter ? (
             <StyledNavLink
               id={`swap-nav-link`}
-              to={config.env === 'dev' ? '/router' : '/swap'}
+              to={config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap'}
               
               isActive={(match, { pathname }) =>
                 Boolean(match)
@@ -337,7 +337,7 @@ export default function NavList() {
                 <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
                 <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
               </div>
-              {config.env === 'dev' ? t('router') : t('swap')}
+              {config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap')}
               {/* {t('router')} */}
             </StyledNavLink>
           ) : ''
