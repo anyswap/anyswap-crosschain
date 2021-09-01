@@ -193,20 +193,21 @@ export function useTokenList(url: string | undefined): TokenAddressMap {
   }, [lists, url])
 }
 
-export function useBridgeTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
+export function useBridgeTokenList(key?: string | undefined, chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
   // console.log(lists)
+  const init = {}
   return useMemo(() => {
-    if (!key || !chainId) return EMPTY_LIST
+    if (!key || !chainId) return init
     const current = lists[key]?.[chainId]?.tokenList
     // console.log(current)
-    if (!current) return EMPTY_LIST
+    if (!current) return init
     try {
       return listsToTokenMap(current)
       // return current
     } catch (error) {
       console.error('Could not show token list due to error', error)
-      return EMPTY_LIST
+      return init
     }
   }, [lists, key, chainId])
 }
