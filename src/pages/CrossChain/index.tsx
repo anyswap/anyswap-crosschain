@@ -436,22 +436,29 @@ export default function CrossChain() {
     const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
     // setSelectCurrency('')
+    // console.log(chainId)
+    // console.log(selectCurrency)
+    // console.log(allTokensList)
     const list:any = {}
-    for (const token in allTokensList) {
-      if (!isAddress(token)) continue
-      list[token] = {
-        ...allTokensList[token].tokenInfo,
-      }
-      // console.log(selectCurrency)
-      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
-        if (
-          t === token
-          || list[token]?.symbol?.toLowerCase() === t
-          || list[token]?.underlying?.symbol?.toLowerCase() === t
-        ) {
-          setSelectCurrency(list[token])
+    if (Object.keys(allTokensList).length > 0) {
+      for (const token in allTokensList) {
+        if (!isAddress(token)) continue
+        list[token] = {
+          ...allTokensList[token].tokenInfo,
+        }
+        // console.log(selectCurrency)
+        if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
+          if (
+            t === token
+            || list[token]?.symbol?.toLowerCase() === t
+            || list[token]?.underlying?.symbol?.toLowerCase() === t
+          ) {
+            setSelectCurrency(list[token])
+          }
         }
       }
+    } else {
+      setSelectCurrency('')
     }
   }, [chainId, allTokensList])
 
