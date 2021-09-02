@@ -148,9 +148,17 @@ const bridgeToken = {
     bridgeInitToken: '',
     bridgeInitChain: '',
   },
+  [VERSION.V1_1]: {
+    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitChain: '66',
+  },
   [VERSION.V2_T1]: {
     bridgeInitToken: '',
     bridgeInitChain: '97'
+  },
+  [VERSION.V5]: {
+    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitChain: '66',
   },
 }
 

@@ -521,7 +521,7 @@ export default function CrossChain() {
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
     // setAllTokens({})
-    setSelectCurrency('')
+    // setSelectCurrency('')
     const list:any = {}
     for (const token in allTokensList) {
       if (!isAddress(token)) continue

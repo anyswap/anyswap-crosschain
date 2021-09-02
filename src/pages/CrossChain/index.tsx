@@ -437,7 +437,7 @@ export default function CrossChain() {
     // setAllTokens({})
     // setSelectCurrency('')
     // console.log(chainId)
-    // console.log(selectCurrency)
+    // console.log(t)
     // console.log(allTokensList)
     const list:any = {}
     if (Object.keys(allTokensList).length > 0) {
@@ -455,6 +455,9 @@ export default function CrossChain() {
           ) {
             setSelectCurrency(list[token])
           }
+          //  else if (!selectCurrency) {
+          //   setSelectCurrency(list[token])
+          // }
         }
       }
     } else {

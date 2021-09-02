@@ -94,7 +94,7 @@ export default function DashboardDtil() {
 
   const allTokensList:any = useBridgeTokenList(ROUTER_BRIDGE_TYPE, chainId)
   const allBalances = useBridgeAllTokensBalances(chainId)
-  // console.log(allBalances)
+  // console.log(allTokensList)
   // console.log(allBalances['0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605']?.toSignificant(6))
 
   // const [poolArr, setPoolArr] = useState<Array<string>>()
@@ -231,7 +231,7 @@ export default function DashboardDtil() {
       return resArr
     }
     return []
-  }, [pagecount, allTokenArr, searchContent])
+  }, [pagecount, allTokenArr, searchContent, allTokenList])
   
   const tokenList = useMemo(() => {
     const l:any = []
@@ -411,8 +411,8 @@ export default function DashboardDtil() {
                                 <span style={{ display: 'inline-block' }}>
                                   {
                                     item.type === 'router' ? (
-                                      <TokenActionBtnSwap to={'/swap?bridgetoken=' + item?.address}>
-                                        {t('swap')}
+                                      <TokenActionBtnSwap to={config.getCurConfigInfo().isOpenBridge ? '/router?bridgetoken=' + item?.address : '/swap?bridgetoken=' + item?.address}>
+                                        {config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap')}
                                       </TokenActionBtnSwap>
                                     ) : (
                                       <TokenActionBtnSwap to={'/bridge?bridgetoken=' + item?.address + '&bridgetype=' + item.bridgeType}>
