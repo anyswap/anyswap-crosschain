@@ -11,9 +11,9 @@ export const testTokenList = []
 const symbol = 'OKT'
 
 const bridgeToken = {
-  [VERSION.V1]: {
-    bridgeInitToken: '',
-    bridgeInitChain: '',
+  [VERSION.V1_1]: {
+    bridgeInitToken: '0xfdfbc559953557f5442eee7c4ba4aedc1156cae3',
+    bridgeInitChain: '128',
   },
   [VERSION.V2_2]: {
     bridgeInitToken: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
