@@ -443,7 +443,11 @@ export default function SelectNetwork () {
                 {
                   spportChainArr && spportChainArr.map((item:any, index:any) => {
                     return (
-                      <OptionCardClickable key={index} className={config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                      <OptionCardClickable key={index} className={
+                        chainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                      {/* <OptionCardClickable key={index} className={
+                         config.getCurChainInfo(chainId).symbol === chainInfo[item].symbol
+                         && chainInfo[item].type === config.getCurChainInfo(chainId).type ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}> */}
                         {/* {Option(item, chainId)} */}
                         <Option curChainId={item} selectChainId={chainId}></Option>
                         {/* <img alt={''} src={AddIcon} /> */}

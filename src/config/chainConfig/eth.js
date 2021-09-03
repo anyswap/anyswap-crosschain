@@ -112,14 +112,19 @@ const bridgeToken = {
     nativeToken: '0xecb6d48e04d1df057e398b98ac8b3833eb3839ec'
   },
   [VERSION.V3]: {
-    bridgeInitToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa',
+    bridgeInitToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     bridgeInitChain: '42161',
-    nativeToken: '0x0dcb0cb0120d355cde1ce56040be57add0185baa'
+    nativeToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+  },
+  [VERSION.V3_1]: {
+    bridgeInitToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    bridgeInitChain: '42161',
+    nativeToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   },
   [VERSION.V5]: {
     bridgeInitToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     bridgeInitChain: '56',
-    nativeToken: ''
+    nativeToken: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   },
 }
 

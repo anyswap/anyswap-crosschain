@@ -19,6 +19,11 @@ const bridgeToken = {
     bridgeInitChain: '1',
     nativeToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5'
   },
+  [VERSION.V3_1]: {
+    bridgeInitToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    bridgeInitChain: '1',
+    nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61'
+  },
   [VERSION.V2_T2]: {
     bridgeInitToken: '0x218c3c3d49d0e7b37aff0d8bb079de36ae61a4c0',
     bridgeInitChain: '4',
@@ -28,6 +33,11 @@ const bridgeToken = {
     bridgeInitToken: '0x338726dd694db9e2230ec2bb8624a2d7f566c96d',
     bridgeInitChain: '4',
     nativeToken: '0x338726dd694db9e2230ec2bb8624a2d7f566c96d'
+  },
+  [VERSION.V5]: {
+    bridgeInitToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    bridgeInitChain: '1',
+    nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61'
   },
 }
 

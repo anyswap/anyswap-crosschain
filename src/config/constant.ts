@@ -14,6 +14,7 @@ export enum VERSION {
   V2_T2 = 'TEST',
   V2_T3 = 'TESTV2',
   V3 = 'ARB_DEV',
+  V3_1 = 'ARB',
   V4 = 'BRIDGE',
   V4_OKT = 'BRIDGE_OKT',
   V5 = 'ALL',
@@ -22,15 +23,16 @@ export enum VERSION {
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.9'
+export const version = '0.1.20'
 export const timeout = 1000 * 60 * 30
 
-export const USE_VERSION = VERSION.V1_1
+// export const USE_VERSION = VERSION.V1_1
+// export const USE_VERSION = VERSION.V3_1
 // export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
 // export const USE_VERSION = VERSION.V2_T3
-// export const USE_VERSION = VERSION.V5
+export const USE_VERSION = VERSION.V5
 
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_VERSION'
@@ -147,6 +149,17 @@ export const controlConfig:any = {
     isOpenBridge: 0
   },
   [VERSION.V3]: {
+    bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 0
+  },
+  [VERSION.V3_1]: {
     bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
