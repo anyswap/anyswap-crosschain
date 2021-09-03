@@ -24,7 +24,13 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeInitChain: ''
-  }
+  },
+  [VERSION.V5]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '56',
+    nativeToken: '',
+    crossBridgeInitToken: 'FSN'
+  },
 }
 
 export default {

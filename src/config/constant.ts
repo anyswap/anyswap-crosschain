@@ -28,11 +28,11 @@ export const timeout = 1000 * 60 * 30
 
 // export const USE_VERSION = VERSION.V1_1
 // export const USE_VERSION = VERSION.V3_1
-// export const USE_VERSION = VERSION.V2_2
+export const USE_VERSION = VERSION.V2_2
 // export const USE_VERSION = VERSION.V4
 // export const USE_VERSION = VERSION.V4_OKT
 // export const USE_VERSION = VERSION.V2_T3
-export const USE_VERSION = VERSION.V5
+// export const USE_VERSION = VERSION.V5
 
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_VERSION'

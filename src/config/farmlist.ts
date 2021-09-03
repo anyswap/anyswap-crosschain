@@ -76,6 +76,13 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY
   },
+  'BSC_BACON': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0xfd14d755a3a3358aec08d0979ecf369b4a387039',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY
+  },
   'ETH_TEST': {
     chainId: '4',
     farmToken: '0x0bd19f6447cd676255C7C7B00428462B3dA67e3a',

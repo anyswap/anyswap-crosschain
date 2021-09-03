@@ -695,16 +695,14 @@ export default function CrossChain() {
               {
                 swapType === 'swap' ? (
                   <FlexEC>
-                    <Plus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('send')}</span>
+                    <Plus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
                   </FlexEC>
                 ) : (
                   <FlexEC>
-                    <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('send')}</span>
+                    <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
                   </FlexEC>
                 )
               }
-              {/* <Plus size="16" color={theme.text2} />
-              <Minus size="16" color={theme.text2} /> */}
             </ArrowWrapper>
           </AutoRow>
 

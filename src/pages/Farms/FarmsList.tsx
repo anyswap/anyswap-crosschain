@@ -290,6 +290,7 @@ export default function FarmsList () {
   const [BSCStakingAPY, setBSCStakingAPY] = useState()
   const [BSCHEROStakingAPY, setBSCHEROStakingAPY] = useState()
   const [BSCPLAYStakingAPY, setBSCPLAYStakingAPY] = useState()
+  const [BSCBACONStakingAPY, setBSCBACONStakingAPY] = useState()
   const [BSCTROStakingAPY, setBSCTROStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
@@ -340,6 +341,11 @@ export default function FarmsList () {
         setBSCPLAYStakingAPY(res)
       })
     })
+    getPrice('BACON').then((res:any) => {
+      getFarmAPY('BSC_BACON', res).then((res:any) => {
+        setBSCBACONStakingAPY(res)
+      })
+    })
   }, [])
 
   // console.log(BSCPLAYStakingAPY)
@@ -360,6 +366,17 @@ export default function FarmsList () {
   }
   const farmList = useMemo(() => {
     return [
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/farm/bsc/bacon',
+        title: 'BACON Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCBACONStakingAPY ? (Number(BSCBACONStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'https://assets.coingecko.com/coins/images/18059/small/xDV_bhdA_400x400.jpg',
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCBACONStakingAPY !== 'undefined' && Number(BSCBACONStakingAPY) === 0 && Date.now() > 1630663200000  ? 'finished' : 'live'
+      },
       {
         isDoubleLogo: 1,
         isOutLink: 0,

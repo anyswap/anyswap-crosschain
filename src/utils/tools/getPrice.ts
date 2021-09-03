@@ -85,6 +85,8 @@ export const getPrice = (coin:string) => {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=hero'
     } else if (coin === 'PLAY') {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=polyplay'
+    } else if (coin === 'BACON') {
+      url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bacondao'
     }
     // console.log(url)
     getApiData(url, coin + '_PRICE', 1000 * 60 * 60).then((res:any) => {

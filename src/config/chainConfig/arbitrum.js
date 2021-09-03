@@ -37,7 +37,8 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
     bridgeInitChain: '1',
-    nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61'
+    nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    crossBridgeInitToken: ''
   },
 }
 

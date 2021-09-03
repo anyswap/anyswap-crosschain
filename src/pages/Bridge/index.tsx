@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useMemo, useCallback } from 're
 import {GetTokenListByChainID, createAddress, isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
-import { ArrowDown } from 'react-feather'
+import { ArrowDown, Plus, Minus } from 'react-feather'
 // import { createBrowserHistory } from 'history'
 
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
@@ -131,6 +131,10 @@ const ListBox = styled.div`
   }
 `
 
+const FlexEC = styled.div`
+  ${({ theme }) => theme.flexEC};
+`
+
 let intervalFN:any = ''
 
 export enum BridgeType {
@@ -181,6 +185,7 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>(localSelectChain?.toString() === chainId?.toString() ? '' : localSelectChain)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
+  const [viewRrecipient, setViewRecipient] = useState<any>(false)
   const [swapType, setSwapType] = useState(initSwapType ? initSwapType : BridgeType.bridge)
   const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
@@ -259,13 +264,14 @@ export default function CrossChain() {
   }
 
   const getSelectPool = useCallback(async() => {
+    // console.log(selectCurrency)
     if (selectCurrency && chainId) {
       const CC:any = await getNodeTotalsupply(
         selectCurrency?.address,
         chainId,
         selectCurrency?.decimals,
         account,
-        selectCurrency?.underlying?.address
+        selectCurrency?.underlying?.address ? selectCurrency?.address : selectCurrency?.underlying?.address
       )
       // console.log(CC)
       // console.log(selectCurrency)
@@ -322,17 +328,24 @@ export default function CrossChain() {
   // console.log(oldSymbol)
   const useTolenList = useMemo(() => {
     if (allTokens && swapType && chainId) {
-      const urlParams = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
+      const urlParams = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).crossBridgeInitToken?.toLowerCase())
       // console.log(urlParams)
+      // console.log(allTokens)
       const list:any = {}
       let isUseToken = 0
-      let initToken = ''
+      // let initToken = ''
+      let useToken
       for (const token in allTokens[swapType]) {
         // console.log(token)
         const obj = allTokens[swapType]
         if (!isAddress(token, chainId) && token !== config.getCurChainInfo(chainId).symbol) continue
         const tokenObj = {
           ...obj[token],
+          // address: obj[token].underlying ? obj[token].underlying.address : obj[token].address,
+          // underlying: obj[token].underlying ? {
+          //   ...obj[token].underlying,
+          //   address: obj[token].address
+          // } : false,
           "specChainId": swapType === BridgeType.deposit ? obj[token].chainId : ''
         }
         if ( selectCurrencyType === SelectListType.OUTPUT && swapType !== BridgeType.deposit) {
@@ -344,9 +357,6 @@ export default function CrossChain() {
         } else {
           list[token] = tokenObj
         }
-        if (!initToken) {
-          initToken = token
-        }
         if (
           !selectCurrency 
           || selectCurrency?.chainId?.toString() !== chainId?.toString()
@@ -354,23 +364,24 @@ export default function CrossChain() {
           if (
             urlParams 
             && (
-              urlParams === token
+              urlParams === token.toLowerCase()
               || list[token].name.toLowerCase() === urlParams
               || list[token].symbol.toLowerCase() === urlParams
             )
           ) {
-            setSelectCurrency(list[token])
+            useToken = token
           } else if (!urlParams && !isUseToken) {
             isUseToken = 1
-            setSelectCurrency(list[token])
+            useToken = token
           }
         }
       }
-      if (!selectCurrency) {
-        setSelectCurrency(list[initToken])
+      if (!useToken) {
+        useToken = config.getCurChainInfo(chainId).crossBridgeInitToken
       }
-      // console.log(selectCurrency)
-      // console.log(list)
+      if (!selectCurrency) {
+        setSelectCurrency(list[useToken])
+      }
       return list
     }
     return {}
@@ -614,8 +625,8 @@ export default function CrossChain() {
 
   useEffect(() => {
     
-    setAllTokens({})
     if (chainId) {
+      setAllTokens({})
       GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain}).then((res:any) => {
         console.log(res)
         if (res) {
@@ -740,7 +751,7 @@ export default function CrossChain() {
       </BottomGrouping>
     )
   }
-  
+  // console.log(destConfig)
   return (
     <>
     
@@ -825,7 +836,8 @@ export default function CrossChain() {
             onMax={(value) => {
               handleMaxInput(value)
             }}
-            currency={formatCurrency ? formatCurrency : selectCurrency}
+            // currency={formatCurrency ? formatCurrency : selectCurrency}
+            currency={selectCurrency}
             disableCurrencySelect={false}
             disableChainSelect={swapType === BridgeType.deposit}
             showMaxButton={true}
@@ -869,7 +881,7 @@ export default function CrossChain() {
             ) : ''
           }
 
-          <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+          {/* <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
               // toggleNetworkModal()
               
@@ -877,6 +889,47 @@ export default function CrossChain() {
             }}>
               <ArrowDown size="16" color={theme.text2} />
             </ArrowWrapper>
+          </AutoRow> */}
+          <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+            <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
+              // toggleNetworkModal()
+              changeNetwork(selectChain)
+            }}>
+              <ArrowDown size="16" color={theme.text2} />
+            </ArrowWrapper>
+            {
+              account && swapType !== BridgeType.deposit && destConfig?.type === 'swapout' && !isNaN(selectChain) ? (
+                <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
+                  if (isNaN(selectChain)) {
+                    setRecipient('')
+                    if (viewRrecipient) {
+                      setViewRecipient(false)
+                    } else {
+                      setViewRecipient(true)
+                    }
+                  } else {
+                    setRecipient(account)
+                    if (viewRrecipient) {
+                      setViewRecipient(false)
+                    } else {
+                      setViewRecipient(true)
+                    }
+                  }
+                }}>
+                  {
+                    viewRrecipient ? (
+                      <FlexEC>
+                        <Plus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
+                      </FlexEC>
+                    ) : (
+                      <FlexEC>
+                        <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
+                      </FlexEC>
+                    )
+                  }
+                </ArrowWrapper>
+              ) : ''
+            }
           </AutoRow>
 
           <SelectChainIdInputPanel
@@ -901,7 +954,7 @@ export default function CrossChain() {
             selectChainList={selectChainList}
             // isViewAllChain={swapType === BridgeType.deposit}
           />
-          {swapType === BridgeType.bridge && destConfig?.type === 'swapout' ? (
+          {swapType === BridgeType.bridge && destConfig?.type === 'swapout' && (viewRrecipient || isNaN(selectChain)) ? (
             <>
               <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
             </>

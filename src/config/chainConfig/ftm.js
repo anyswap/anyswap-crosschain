@@ -48,6 +48,7 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     bridgeInitChain: '137',
+    crossBridgeInitToken: 'FTM'
   }
 }
 
