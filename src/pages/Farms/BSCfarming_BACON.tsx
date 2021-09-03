@@ -12,14 +12,14 @@ import farmlist from '../../config/farmlist'
 
 const FARM_KEY = 'BSC_BACON'
 export default function FarmingComponent() {
-  // const [price, setPrice] = useState()
+  const [price, setPrice] = useState()
   const [LPprice, setLPPrice] = useState()
   useEffect(() => {
-    // getPrice('HERO').then((res:any) => {
-    //   console.log(res)
-    //   setPrice(res)
-    // })
     getPrice('BACON').then((res:any) => {
+      console.log(res)
+      setPrice(res)
+    })
+    getPrice('ANY').then((res:any) => {
       console.log(res)
       setLPPrice(res)
     })
@@ -36,7 +36,7 @@ export default function FarmingComponent() {
           poolCoin = 'BACON'
           poolCoinLogoUrl={'https://assets.coingecko.com/coins/images/18059/small/xDV_bhdA_400x400.jpg'}
           blockNumber = {farmlist[FARM_KEY].blockNumber}
-          price={0.015}
+          price={price}
           initLpList={farmlist[FARM_KEY].lpTokenIno}
           LPprice={LPprice}
         />

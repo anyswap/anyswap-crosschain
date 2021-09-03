@@ -12,6 +12,7 @@ import okt, {OKT_MAIN_CHAINID} from './okt'
 import one, {ONE_MAIN_CHAINID} from './one'
 import omgx, {OMGX_TEST_CHAINID} from './omgx'
 import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
+import movr, {MOVR_MAIN_CHAINID} from './movr'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -40,7 +41,8 @@ export const chainInfo:ConFig = {
   ...block,
   ...omgx,
   ...optimism,
-  ...colx
+  ...colx,
+  ...movr
 }
 
 const useChain = {
@@ -131,7 +133,8 @@ const useChain = {
     ARBITRUM_MAIN_CHAINID,
     KCC_MAIN_CHAINID,
     OKT_MAIN_CHAINID,
-    ONE_MAIN_CHAINID
+    ONE_MAIN_CHAINID,
+    MOVR_MAIN_CHAINID
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
@@ -145,7 +148,8 @@ const useChain = {
     ARBITRUM_MAIN_CHAINID,
     KCC_MAIN_CHAINID,
     OKT_MAIN_CHAINID,
-    ONE_MAIN_CHAINID
+    ONE_MAIN_CHAINID,
+    MOVR_MAIN_CHAINID
   ]
 }
 
