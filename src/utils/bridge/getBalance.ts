@@ -19,6 +19,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       if (lObj && lObj.balance) {
         resolve(fromWei(lObj.balance, dec))
       } else {
+        // console.log('token', token)
         web3Fn.setProvider(config.getCurChainInfo(chainID).nodeRpc)
         if (isNativeToken || !isAddress(token)) {
           web3Fn.eth.getBalance(account).then((res:any) => {
