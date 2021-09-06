@@ -398,7 +398,8 @@ export default function CrossChain() {
       // console.log(!isNaN(selectChain))
       if (!isNaN(selectChain)) {
         DC = await getNodeBalance(
-          tokenA?.underlying?.address,
+          // tokenA?.underlying?.address,
+          selectCurrency?.destChains[selectChain]?.DepositAddress,
           selectCurrency.symbol,
           destChain,
           dec,
@@ -409,7 +410,7 @@ export default function CrossChain() {
       // console.log(curChain)
       // console.log(destChain)
       // console.log(CC)
-      // console.log(selectCurrency)
+      console.log(selectCurrency)
       if (CC) {
         if (isUnderlying) {
           setCurChain({

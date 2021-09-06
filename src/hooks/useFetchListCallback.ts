@@ -82,6 +82,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
               const tList = tokenList.data
               if (version === 'all') {
                 for (const version in tList) {
+                  if (version.indexOf('ARB') !== -1) continue
                   for (const token in tList[version]) {
                     if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
                     list[token] = {
