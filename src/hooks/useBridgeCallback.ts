@@ -536,8 +536,6 @@ export function useBridgeNativeCallback(
   toChainID: any,
   txnsType: string | undefined,
   inputToken: string | undefined,
-  // pairid: string | undefined,
-// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()

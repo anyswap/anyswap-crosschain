@@ -295,7 +295,7 @@ export default function CrossChain() {
   
   useEffect(() => {
     if ((selectCurrency && chainId?.toString() !== selectCurrency?.chainId?.toString()) || (!bridgeConfig && selectCurrency)) {
-      // history.go(0)
+      history.go(0)
     }
   }, [chainId, bridgeConfig])
   
@@ -329,19 +329,21 @@ export default function CrossChain() {
 
   // console.log(selectChain)
 
-  // const formatCurrency = useLocalToken(
-  //   selectCurrency?.underlying ? {
-  //     ...selectCurrency,
-  //     address: selectCurrency.underlying.address,
-  //     name: selectCurrency.underlying.name,
-  //     symbol: selectCurrency.underlying?.symbol,
-  //     decimals: selectCurrency.underlying.decimals
-  //   } : selectCurrency)
+  const formatCurrency0 = useLocalToken(
+    selectCurrency?.underlying ? {
+      ...selectCurrency,
+      address: selectCurrency.underlying.address,
+      name: selectCurrency.underlying.name,
+      symbol: selectCurrency.underlying?.symbol,
+      decimals: selectCurrency.underlying.decimals
+    } : selectCurrency)
   const formatCurrency = useLocalToken(selectCurrency)
-  // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
+  // const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency0 ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
-
+  // const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.address)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, formatCurrency0?.address)
+// console.log(ApprovalState)
+// console.log(approval)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -511,7 +513,7 @@ export default function CrossChain() {
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    selectCurrency?.address,
+    isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     // destConfig?.pairid
   )
   const { wrapType: wrapTerraType, execute: onTerraWrap } = useTerraCrossBridgeCallback(
@@ -870,7 +872,6 @@ export default function CrossChain() {
             onMax={(value) => {
               handleMaxInput(value)
             }}
-            // currency={formatCurrency ? formatCurrency : selectCurrency}
             currency={formatCurrency ? formatCurrency : selectCurrency}
             disableCurrencySelect={false}
             disableChainSelect={swapType === BridgeType.deposit}
