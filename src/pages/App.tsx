@@ -160,7 +160,7 @@ export default function App() {
               <Route exact strict path="/farm/eth/test" component={ETHtestfarming} />
 
               
-              <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap' }} /> 
+              <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? (config.getCurConfigInfo().isOpenRouter ? '/router' : '/bridge') : '/swap' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>
           </Web3ReactManager>
