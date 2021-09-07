@@ -28,7 +28,7 @@ import ModalContent from '../../components/Modal/ModalContent'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
-import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
+// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -120,7 +120,7 @@ export default function CrossChain() {
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   // const history = createBrowserHistory()
-  const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
+  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -648,7 +648,7 @@ export default function CrossChain() {
             // }}
             // allTokens={allTokens}
             bridgeKey={BRIDGETYPE}
-            allBalances={allBalances}
+            // allBalances={allBalances}
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (

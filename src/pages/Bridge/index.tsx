@@ -29,7 +29,7 @@ import QRcode from '../../components/QRcode'
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
+// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -162,7 +162,7 @@ function getInitToken () {
   }
 }
 
-const BRIDGETYPE = 'bridgeTokenList'
+// const BRIDGETYPE = 'bridgeTokenList'
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -172,7 +172,7 @@ export default function CrossChain() {
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
-  const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
+  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   // console.log(balances)
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
   const initBridgeToken = getInitToken()
@@ -890,7 +890,7 @@ export default function CrossChain() {
             hideBalance={swapType === BridgeType.deposit}
             customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
             bridgeKey={'bridgeTokenList'}
-            allBalances={allBalances}
+            // allBalances={allBalances}
           />
           {
             account && chainId && (isUnderlying || isDestUnderlying) ? (

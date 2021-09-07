@@ -51,6 +51,7 @@ export default function SearchModal ({
   const tokenComparator = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [intervalCount, setIntervalCount] = useState<any>(0)
 
 
   const inputRef = useRef<HTMLInputElement>()
@@ -83,13 +84,22 @@ export default function SearchModal ({
       .split(/\s+/)
       .filter(s => s.length > 0)
     if (symbolMatch.length > 1) return sorted
-    return [
+    const arr = [
       ...(searchToken ? [searchToken] : []),
       // 首先对任何完全匹配的符号进行排序
       ...sorted.filter(token => token.symbol?.toLowerCase() === symbolMatch[0]),
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
-  }, [searchQuery, searchToken, tokenComparator, filteredTokens])
+    // console.log(arr)
+    setTimeout(() => {
+      setIntervalCount(1)
+    }, 1000)
+    if (arr.length > 10 && intervalCount === 0) {
+      return arr.splice(0, 10)
+    } else {
+      return arr
+    }
+  }, [searchQuery, searchToken, tokenComparator, filteredTokens, intervalCount])
 
   useEffect(() => {
     if (isOpen) setSearchQuery('')
@@ -132,6 +142,7 @@ export default function SearchModal ({
     [filteredSortedTokens, handleCurrencySelect, searchQuery]
   )
     // console.log(filteredSortedTokens)
+  // console.log(isOpen)
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={80} minHeight={80}>
       <Column style={{ width: '100%', flex: '1 1' }}>

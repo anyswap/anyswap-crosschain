@@ -7,8 +7,8 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
-import { useETHBalances } from '../../state/wallet/hooks'
+import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+// import { useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -112,7 +112,7 @@ function CurrencyRow({
   // console.log(currencyObj)
   // const balance = ''
   // const ETHBalance = ''
-  // const balance = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
+  const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
   // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = useMemo(() => {
     // console.log(currencyObj)
@@ -121,8 +121,8 @@ function CurrencyRow({
     } else if (isNativeToken || currencyObj.address === config.getCurChainInfo(chainId)?.symbol) {
       return ETHBalance
     }
-    return
-  }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance])
+    return balance1
+  }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance, balance1])
   return (
     <MenuItem
       style={style}
