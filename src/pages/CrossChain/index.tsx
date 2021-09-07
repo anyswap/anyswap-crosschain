@@ -320,7 +320,6 @@ export default function CrossChain() {
         value = Number(inputBridgeValue)
       }
       if (value && Number(value) && Number(value) > 0) {
-        // return formatDecimal(value, Math.min(6, selectCurrency.decimals))
         return thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
       }
       return ''
@@ -659,7 +658,7 @@ export default function CrossChain() {
                   curChain && isUnderlying ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? formatDecimal(curChain.ts, 2) : '0.00'}</span>
+                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? thousandBit(curChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''
                 }
@@ -667,7 +666,7 @@ export default function CrossChain() {
                   destChain && isDestUnderlying ? (
                     <div className='item'>
                       <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? formatDecimal(destChain.ts, 2) : '0.00'}</span>
+                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? thousandBit(destChain.ts, 2) : '0.00'}</span>
                     </div>
                   ) : ''
                 }

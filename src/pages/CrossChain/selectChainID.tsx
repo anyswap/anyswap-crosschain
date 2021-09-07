@@ -20,7 +20,7 @@ import {
 
 import { TYPE, CloseIcon } from '../../theme'
 
-import {formatDecimal} from '../../utils/tools/tools'
+import {thousandBit} from '../../utils/tools/tools'
 
 import config from '../../config'
 
@@ -182,7 +182,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {t('balanceTxt') + ': '}{destBalance !== '' ? formatDecimal(destBalance, 2) : '-'}
+                  {t('balanceTxt') + ': '}{destBalance !== '' ? thousandBit(destBalance, 2) : '-'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

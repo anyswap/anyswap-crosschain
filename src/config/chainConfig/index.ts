@@ -123,6 +123,7 @@ const useChain = {
   ],
   [VERSION.V4_MOVR]: [
     ETH_MAIN_CHAINID,
+    BNB_MAIN_CHAINID,
     MOVR_MAIN_CHAINID
   ],
   [VERSION.V5]: [

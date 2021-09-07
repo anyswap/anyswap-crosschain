@@ -13,7 +13,7 @@ import { TYPE } from '../../theme'
 import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
-import {formatDecimal} from '../../utils/tools/tools'
+import {thousandBit} from '../../utils/tools/tools'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import {
@@ -220,7 +220,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance.toSignificant(6), 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </>
@@ -233,7 +233,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance && account
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + formatDecimal(useBalance.toSignificant(6), 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance.toSignificant(6), 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </HideSmallBox>
@@ -323,7 +323,7 @@ export default function SelectCurrencyInputPanel({
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && useBalance
-                              ? (customBalanceText ?? '') + formatDecimal(useBalance.toSignificant(6), 2)
+                              ? (customBalanceText ?? '') + thousandBit(useBalance.toSignificant(6), 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>
