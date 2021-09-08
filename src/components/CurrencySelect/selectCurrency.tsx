@@ -279,13 +279,16 @@ export default function SelectCurrencyInputPanel({
                         currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : (
+                            bridgeKey === 'bridgeTokenList' ? 
+                            currency?.symbol
+                            :
                             inputType && inputType.swapType === 'deposit' ? config.getBaseCoin(currency?.symbol, useChainId) : config.getBaseCoin(currency?.symbol, useChainId)
                           )
                       ) || t('selectToken')
                     }
                   </h3>
                   <p>
-                  {currency && currency.name ? config.getBaseCoin(currency.symbol, useChainId, 1, currency.name) : ''}
+                  {currency && currency.name && bridgeKey !== 'bridgeTokenList' ? config.getBaseCoin(currency.symbol, useChainId, 1, currency.name) : currency?.name}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (

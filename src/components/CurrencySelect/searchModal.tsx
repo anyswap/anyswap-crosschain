@@ -177,6 +177,7 @@ export default function SearchModal ({
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
                   allBalances={allBalances}
+                  bridgeKey={bridgeKey}
                   // fixedListRef={fixedList}
                 />
               </>

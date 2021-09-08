@@ -93,7 +93,8 @@ function CurrencyRow({
   otherSelected,
   style,
   allBalances,
-  ETHBalance
+  ETHBalance,
+  bridgeKey
 }: {
   currency: any
   onSelect: () => void
@@ -102,13 +103,17 @@ function CurrencyRow({
   style: CSSProperties
   allBalances?: any
   ETHBalance?: any
+  bridgeKey?: any
 }) {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
   const currencyObj = currency
   const key = currencyKey(currencyObj)
   const currencies = useLocalToken(currencyObj)
-  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
+  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken
+  && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
+  && bridgeKey !== 'bridgeTokenList'
+   ? true : false
   // console.log(currencyObj)
   // const balance = ''
   // const ETHBalance = ''
@@ -119,7 +124,10 @@ function CurrencyRow({
     // console.log(currencyObj)
     if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()]) {
       return allBalances[currencies?.address.toLowerCase()]
-    } else if (isNativeToken || currencyObj.address === config.getCurChainInfo(chainId)?.symbol) {
+    } else if (
+      isNativeToken
+      || currencyObj.address === config.getCurChainInfo(chainId)?.symbol
+    ) {
       return ETHBalance
     }
     return balance1
@@ -135,7 +143,7 @@ function CurrencyRow({
       <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
-          {config.getBaseCoin(currencyObj.symbol, chainId)}
+          {isNativeToken ? config.getBaseCoin(currencyObj.symbol, chainId) : currencyObj.symbol}
           <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text>
         </Text>
       </Column>
@@ -166,7 +174,8 @@ export default function BridgeCurrencyList({
   otherCurrency,
   // fixedListRef,
   showETH,
-  allBalances
+  allBalances,
+  bridgeKey
 }: {
   height: number
   currencies: Currency[]
@@ -176,6 +185,7 @@ export default function BridgeCurrencyList({
   // fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
   allBalances?: any
+  bridgeKey?: any
 }) {
   const { account, chainId } = useActiveWeb3React()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
@@ -185,7 +195,7 @@ export default function BridgeCurrencyList({
     const arr = []
     let ethNode:any = ''
     for (const obj of itemData) {
-      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() ? true : false
+      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() && bridgeKey !== 'bridgeTokenList' ? true : false
       if (
         isNativeToken
         || obj?.address === config.getCurChainInfo(chainId)?.symbol
@@ -220,6 +230,7 @@ export default function BridgeCurrencyList({
                 key={index}
                 allBalances={allBalances}
                 ETHBalance={ETHBalance}
+                bridgeKey={bridgeKey}
               />
             )
           })

@@ -316,14 +316,6 @@ export default function CrossChain() {
   }, [destConfig])
   
   const isNativeToken = useMemo(() => {
-    if (
-      selectCurrency
-      && chainId
-      && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).symbol.toLowerCase() === selectCurrency.symbol.toLowerCase()
-    ) {
-      return true
-    }
     return false
   }, [selectCurrency, chainId])
 
