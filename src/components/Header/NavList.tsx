@@ -425,7 +425,7 @@ export default function NavList() {
             </>
           ) : ''
         } */}
-        <StyledNavLink1 id="link" href="https://anyswap.net/explorer">
+        <StyledNavLink1 id="link" href="https://anyswap.net">
           <div className="icon">
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
             <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
@@ -448,7 +448,7 @@ export default function NavList() {
           </div>
           {t('ANYToken')}
         </MenuItem>
-        <MenuItem id="link" href="https://anyswap.net/">
+        <MenuItem id="link" href="https://anyswap.net/network">
           <div className="icon">
             <img src={require('../../assets/images/icon/network.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/network-purpl.svg')} className="on" alt="" />

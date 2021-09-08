@@ -2,7 +2,6 @@
 import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-
 import Logo from '../../assets/svg/logo.svg'
 import LogoDark from '../../assets/svg/logo_white.svg'
 import IconDay from '../../assets/images/icon/day.svg'
@@ -11,6 +10,8 @@ import IconNight from '../../assets/images/icon/night.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
+
+import { ExternalLink } from '../../theme'
 
 // import Row, { RowFixed } from '../Row'
 import { RowFixed } from '../Row'
@@ -149,6 +150,16 @@ const StyleDarkToggle = styled.div`
   }
 `
 
+const VersionLinkBox = styled(ExternalLink)`
+  ${({theme}) => theme.flexSC}
+  text-decoration: none;
+  color: rgb(115, 75, 226);
+  line-height: 26px;
+  margin-top: 17px;
+  font-size: 18px;
+  font-weight:bold;
+`
+
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
@@ -164,6 +175,9 @@ export default function Header() {
             <img height={'42px'} src={isDark ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
+        <VersionLinkBox href='https://v1.anyswap.exchange'>
+          V1↗
+        </VersionLinkBox>
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
