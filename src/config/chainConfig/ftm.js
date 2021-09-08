@@ -83,6 +83,6 @@ export default {
     label: FTM_MAIN_CHAINID,
     isSwitch: 1,
     suffix: 'FRC20',
-    anyToken: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83'
+    anyToken: '0xddcb3ffd12750b45d32e084887fdf1aabab34239'
   },
 }

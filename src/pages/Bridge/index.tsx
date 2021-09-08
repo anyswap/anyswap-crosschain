@@ -217,12 +217,12 @@ export default function CrossChain() {
 
   const useTolenList = useMemo(() => {
     if (allTokens && swapType && chainId) {
+      const initToken:any = {}
       const urlParams = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).crossBridgeInitToken?.toLowerCase())
       // console.log(urlParams)
       // console.log(allTokens)
       const list:any = {}
       let isUseToken = 0
-      // let initToken = ''
       let useToken
       for (const token in allTokens[swapType]) {
         // console.log(token)
@@ -264,9 +264,22 @@ export default function CrossChain() {
             useToken = token
           }
         }
+        if (['btc', 'ltc', 'block'].includes(list[token].symbol.toLowerCase())) {
+          initToken[list[token].symbol.toLowerCase()] = token
+        }
       }
       if (!useToken) {
-        useToken = config.getCurChainInfo(chainId).crossBridgeInitToken
+        if (swapType === BridgeType.deposit) {
+          if (initToken['btc']) {
+            useToken = initToken['btc']
+          } else if (initToken['ltc']) {
+            useToken = initToken['ltc']
+          } else if (initToken['block']) {
+            useToken = initToken['block']
+          }
+        } else {
+          useToken = config.getCurChainInfo(chainId).crossBridgeInitToken
+        }
       }
       if (!selectCurrency) {
         // console.log(useToken)
@@ -277,7 +290,7 @@ export default function CrossChain() {
     }
     return {}
   }, [allTokens, swapType, chainId, selectCurrencyType, selectChain])
-  // console.log(selectCurrency)
+  console.log(selectCurrency)
   const bridgeConfig = useMemo(() => {
     if (selectCurrency?.address && useTolenList[selectCurrency?.address]) return useTolenList[selectCurrency?.address]
     return ''
@@ -294,10 +307,16 @@ export default function CrossChain() {
 
   
   useEffect(() => {
-    if ((selectCurrency && chainId?.toString() !== selectCurrency?.chainId?.toString()) || (!bridgeConfig && selectCurrency)) {
+    if (
+      (
+          (selectCurrency && chainId?.toString() !== selectCurrency?.chainId?.toString())
+        || (!bridgeConfig && selectCurrency)
+      )
+      && swapType !== BridgeType.deposit
+    ) {
       history.go(0)
     }
-  }, [chainId, bridgeConfig])
+  }, [chainId, bridgeConfig, swapType])
   
   const isUnderlying = useMemo(() => {
     if (

@@ -144,7 +144,15 @@ export default function DashboardDtil() {
         // console.log(111)
         for (const token in allTokensList) {
           if (!isAddress(token)) continue
-          if (ANY_TOKEN === token) continue
+          if (ANY_TOKEN?.toLowerCase() === token?.toLowerCase()) {
+            // console.log('router')
+            tlist[ANY_TOKEN] = {
+              ...tlist[ANY_TOKEN],
+              "isView": 0,
+              "type": "router"
+            }
+            continue
+          }
           const item = allTokensList[token].tokenInfo
           
           if (chainId?.toString() !== item.chainId?.toString()) continue
@@ -177,7 +185,16 @@ export default function DashboardDtil() {
         const list = res[0].bridge
         for (const token in list) {
           if (!isAddress(token)) continue
-          if (ANY_TOKEN === token) continue
+          if (ANY_TOKEN?.toLowerCase() === token?.toLowerCase()) {
+            // console.log('bridge')
+            tlist[ANY_TOKEN] = {
+              ...tlist[ANY_TOKEN],
+              "isView": 0,
+              "type": "bridge",
+              "bridgeType": "bridge"
+            }
+            continue
+          }
           const item = list[token]
           // if (chainId?.toString !== item.chainId) continue
           if (item.underlying) {
@@ -404,7 +421,7 @@ export default function DashboardDtil() {
                               item.isView ? (
                                 <span style={{ display: 'inline-block' }}>
                                   <TokenActionBtnSwap to={'/dashboard'} className="disabled">
-                                    {t('swap')}
+                                    {t('swap')}---{item.isView}
                                   </TokenActionBtnSwap>
                                 </span>
                               ) : (
