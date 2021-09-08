@@ -14,6 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {thousandBit} from '../../utils/tools/tools'
+// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import {
@@ -110,6 +111,7 @@ export default function SelectCurrencyInputPanel({
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
+  // const allBalances:any = useBridgeAllTokenBalances(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)

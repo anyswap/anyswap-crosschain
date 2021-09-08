@@ -162,7 +162,7 @@ function getInitToken () {
   }
 }
 
-// const BRIDGETYPE = 'bridgeTokenList'
+const BRIDGETYPE = 'bridgeTokenList'
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -889,7 +889,7 @@ export default function CrossChain() {
             allTokens={useTolenList}
             hideBalance={swapType === BridgeType.deposit}
             customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
-            bridgeKey={'bridgeTokenList'}
+            bridgeKey={BRIDGETYPE}
             // allBalances={allBalances}
           />
           {

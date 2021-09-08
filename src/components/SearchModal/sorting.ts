@@ -47,15 +47,27 @@ function getTokenComparator(balances: {
   }
 }
 
-export function useTokenComparator(key?: string | undefined, chainId?:any, inverted?: boolean): (tokenA: Token, tokenB: Token) => number {
+// export function useTokenComparator(key?: string | undefined, chainId?:any, inverted?: boolean): (tokenA: Token, tokenB: Token) => number {
+export function useTokenComparator(key?: string | undefined, chainId?:any, inverted?: boolean): any {
   const balances = useBridgeAllTokenBalances(key, chainId)
   // console.log(balances)
   const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
-  return useMemo(() => {
+  const tokenComparator = useMemo(() => {
     if (inverted) {
       return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
     } else {
       return comparator
     }
   }, [inverted, comparator])
+  return {
+    tokenComparator,
+    balances
+  }
+  // return useMemo(() => {
+  //   if (inverted) {
+  //     return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
+  //   } else {
+  //     return comparator
+  //   }
+  // }, [inverted, comparator])
 }

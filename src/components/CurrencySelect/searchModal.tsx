@@ -44,11 +44,11 @@ export default function SearchModal ({
   allTokens = {},
   chainId,
   bridgeKey,
-  allBalances,
+  // allBalances,
   showETH
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
-  const tokenComparator = useTokenComparator(bridgeKey, chainId, false)
+  const {tokenComparator, balances: allBalances} = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [intervalCount, setIntervalCount] = useState<any>(0)
@@ -94,8 +94,8 @@ export default function SearchModal ({
     setTimeout(() => {
       setIntervalCount(1)
     }, 1000)
-    if (arr.length > 10 && intervalCount === 0) {
-      return arr.splice(0, 10)
+    if (arr.length > 50 && intervalCount === 0) {
+      return arr.splice(0, 50)
     } else {
       return arr
     }
