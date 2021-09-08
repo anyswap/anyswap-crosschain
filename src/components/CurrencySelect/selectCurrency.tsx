@@ -36,6 +36,7 @@ import {
 } from './styleds'
 
 import SearchModal from './searchModal'
+import { isAddress } from '../../utils'
 
 const HeadterRightBox = styled.div`
 
@@ -139,7 +140,7 @@ export default function SelectCurrencyInputPanel({
   const useBalance = useMemo(() => {
     if (selectedCurrencyBalance && !isNativeToken) {
       return selectedCurrencyBalance
-    } else if (isNativeToken) {
+    } else if (isNativeToken || !isAddress(currency?.address)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
         return selectedCurrencyBalance
       } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
