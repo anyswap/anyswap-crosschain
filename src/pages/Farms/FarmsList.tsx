@@ -342,7 +342,7 @@ export default function FarmsList () {
         isDoubleLogo: 1,
         isOutLink: 0,
         url: '/' + farmlist['BSC_KABY'].url,
-        title: farmlist['BSC_KABY'].key + 'Staking',
+        title: farmlist['BSC_KABY'].key + ' Staking',
         info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCKABYStakingAPY ? (Number(BSCKABYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
         coin1: farmlist['BSC_KABY'].logoUrl,
         coin2: 'BNB',
