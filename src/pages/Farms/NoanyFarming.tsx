@@ -10,8 +10,13 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const FARM_KEY = 'FTM'
-export default function FarmingComponent() {
+interface FarmProp {
+  farmkey:any
+}
+
+export default function FarmingComponent({
+  farmkey
+}: FarmProp) {
   const [price, setPrice] = useState()
   useEffect(() => {
     getPrice('ANY').then((res:any) => {
@@ -22,17 +27,16 @@ export default function FarmingComponent() {
   return (
     <>
       <AppBody>
-        <Title title='Stake LP tokens to earn ANY'></Title>
+        <Title title={'Stake LP tokens to earn ' + farmlist[farmkey].key}></Title>
         <Farming
-          CHAINID = {farmlist[FARM_KEY].chainId}
-          FARMTOKEN = {farmlist[FARM_KEY].farmToken}
-          FARMURL = {config.farmUrl + 'farm/ftm'}
-          // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
-          poolCoin = 'ANY'
-          poolCoinLogoUrl={'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png'}
-          blockNumber = {farmlist[FARM_KEY].blockNumber}
+          CHAINID = {farmlist[farmkey].chainId}
+          FARMTOKEN = {farmlist[farmkey].farmToken}
+          FARMURL = {config.farmUrl + farmlist[farmkey].url}
+          poolCoin = {farmlist[farmkey].key}
+          poolCoinLogoUrl={farmlist[farmkey].logoUrl}
+          blockNumber = {farmlist[farmkey].blockNumber}
           price={price}
-          initLpList={farmlist[FARM_KEY].lpTokenIno}
+          initLpList={farmlist[farmkey].lpTokenIno}
           stakeType={'LP'}
         />
       </AppBody>

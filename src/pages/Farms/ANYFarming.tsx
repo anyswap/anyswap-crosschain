@@ -10,12 +10,19 @@ import {getPrice} from '../../utils/tools/getPrice'
 
 import farmlist from '../../config/farmlist'
 
-const FARM_KEY = 'BSC'
-export default function FarmingComponent() {
+interface FarmProp {
+  farmkey:any
+}
+
+export default function FarmingComponent({
+  farmkey
+}: FarmProp) {
+  // console.log(farmkey)
+  if (!farmkey) return <></>
   const [price, setPrice] = useState()
   const [LPprice, setLPPrice] = useState()
   useEffect(() => {
-    getPrice('DEP').then((res:any) => {
+    getPrice(farmlist[farmkey].key).then((res:any) => {
       console.log(res)
       setPrice(res)
     })
@@ -27,17 +34,16 @@ export default function FarmingComponent() {
   return (
     <>
       <AppBody>
-        <Title title='Stake ANY tokens to earn DEP'></Title>
+        <Title title={'Stake ANY tokens to earn ' + farmlist[farmkey].key}></Title>
         <Farming
-          CHAINID = {farmlist[FARM_KEY].chainId}
-          FARMTOKEN = {farmlist[FARM_KEY].farmToken}
-          FARMURL = {config.farmUrl + 'farm/bsc'}
-          // initPairs = {['ANY', 'anyBTC', 'anyETH', 'anyUSDT', 'anyBNB', 'anyFSN']}
-          poolCoin = 'DEP'
-          poolCoinLogoUrl={'https://assets.coingecko.com/coins/images/10970/small/DEAPcoin_01.png'}
-          blockNumber = {farmlist[FARM_KEY].blockNumber}
+          CHAINID = {farmlist[farmkey].chainId}
+          FARMTOKEN = {farmlist[farmkey].farmToken}
+          FARMURL = {config.farmUrl + farmlist[farmkey].url}
+          poolCoin = {farmlist[farmkey].key}
+          poolCoinLogoUrl={farmlist[farmkey].logoUrl}
+          blockNumber = {farmlist[farmkey].blockNumber}
           price={price}
-          initLpList={farmlist[FARM_KEY].lpTokenIno}
+          initLpList={farmlist[farmkey].lpTokenIno}
           LPprice={LPprice}
         />
       </AppBody>

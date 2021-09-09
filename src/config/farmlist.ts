@@ -31,7 +31,11 @@ const config: FarmConfig = {
           decimals: 6
         }
       }
-    }
+    },
+    url: 'farm/matic',
+    logoUrl: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+    key: 'ANY',
+    farmtype: 'noany'
   },
   'FTM': {
     chainId: FTM_MAIN_CHAINID,
@@ -46,42 +50,77 @@ const config: FarmConfig = {
           decimals: 6
         }
       }
-    }
+    },
+    url: 'farm/ftm',
+    logoUrl: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+    key: 'ANY',
+    farmtype: 'noany'
   },
   'BSC': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0x411f3e09c66b30e7facfec45cd823b2e19dfad2d',
     lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: BSC_ANY
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc',
+    logoUrl: 'https://assets.coingecko.com/coins/images/10970/small/DEAPcoin_01.png',
+    key: 'DEP',
+    farmtype: 'any'
   },
   'BSC_HERO': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0x5e430f88d1be82eb3ef92b6ff06125168fd5dcf2',
     lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: BSC_ANY
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/hero',
+    logoUrl: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
+    key: 'HERO',
+    farmtype: 'any'
   },
   'BSC_TRO': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0xf47a640ff9745b5591edd446cb02ed6d096c99bd',
     lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: BSC_ANY
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/hero',
+    logoUrl: require('../assets/images/coin/source/TRO.png'),
+    key: 'HERO',
+    farmtype: 'any'
   },
   'BSC_PLAY': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0xdb12c7e30dc2a2c421724d07c7a09147bd9f61bb',
     lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: BSC_ANY
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/polyplay',
+    logoUrl: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
+    key: 'PLAY',
+    farmtype: 'any'
   },
   'BSC_BACON': {
     chainId: BNB_MAIN_CHAINID,
     farmToken: '0xfd14d755a3a3358aec08d0979ecf369b4a387039',
     lpToken: BSC_ANY_TOKEN,
     blockNumber: 28800,
-    lpTokenIno: BSC_ANY
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/bacon',
+    logoUrl: 'https://assets.coingecko.com/coins/images/18059/small/xDV_bhdA_400x400.jpg',
+    key: 'BACON',
+    farmtype: 'any'
+  },
+  'BSC_KABY': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0x5157629E486b36f5862d163C119c4E86506cA15e',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/kaby',
+    logoUrl: 'https://assets.coingecko.com/coins/images/18090/small/URPKhnop_400x400.jpg',
+    key: 'KABY',
+    farmtype: 'any'
   },
   'ETH_TEST': {
     chainId: '4',
@@ -96,7 +135,11 @@ const config: FarmConfig = {
           decimals: 18
         }
       }
-    }
+    },
+    url: '/farm/eth/test',
+    logoUrl: 'https://assets.coingecko.com/coins/images/18090/small/URPKhnop_400x400.jpg',
+    key: 'ANY',
+    farmtype: 'noany'
   },
 }
 export default config

@@ -15,18 +15,22 @@ import PoolList from './Pools/poolList'
 import Bridge from './Bridge'
 import CrossChainTxns from './CrossChainTxns'
 
-import MATICfarming from './Farms/MATICfarming'
-import FTMfarming from './Farms/FTMfarming'
-import BSCfarming from './Farms/BSCfarming'
-import BSCfarmingHERO from './Farms/BSCfarming_HERO'
-import BSCfarmingTRO from './Farms/BSCfarming_TRO'
-import BSCfarmingPLAY from './Farms/BSCfarming_PLAY'
-import BSCfarmingBACON from './Farms/BSCfarming_BACON'
-import ETHtestfarming from './Farms/ETH_test_farming'
+// import MATICfarming from './Farms/MATICfarming'
+// import FTMfarming from './Farms/FTMfarming'
+// import BSCfarming from './Farms/BSCfarming'
+// import BSCfarmingHERO from './Farms/BSCfarming_HERO'
+// import BSCfarmingTRO from './Farms/BSCfarming_TRO'
+// import BSCfarmingPLAY from './Farms/BSCfarming_PLAY'
+// import BSCfarmingBACON from './Farms/BSCfarming_BACON'
+// import BSCfarmingKABY from './Farms/BSCfarming_KABY'
+import ANYFarming from './Farms/ANYFarming'
+import NoanyFarming from './Farms/NoanyFarming'
+// import ETHtestfarming from './Farms/ETH_test_farming'
 import FarmList from './Farms/FarmsList'
 
 import config from '../config'
-
+import farmlist from '../config/farmlist'
+// console.log(ANYFarming)
 const AppWrapper = styled.div`
   // display: flex;
   // flex-flow: column;
@@ -148,7 +152,7 @@ export default function App() {
               <Route exact strict path="/bridge" component={Bridge} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
 
-              <Route exact strict path="/farm/matic" component={MATICfarming} />
+              {/* <Route exact strict path="/farm/matic" component={MATICfarming} />
 
               <Route exact strict path="/farm/ftm" component={FTMfarming} />
 
@@ -157,7 +161,21 @@ export default function App() {
               <Route exact strict path="/farm/bsc/tro" component={BSCfarmingTRO} />
               <Route exact strict path="/farm/bsc/polyplay" component={BSCfarmingPLAY} />
               <Route exact strict path="/farm/bsc/bacon" component={BSCfarmingBACON} />
-              <Route exact strict path="/farm/eth/test" component={ETHtestfarming} />
+              <Route exact strict path={'/' + farmlist['BSC_KABY'].url} component={() => <ANYFarming farmkey={'BSC_KABY'} />} />
+              <Route exact strict path="/farm/eth/test" component={ETHtestfarming} /> */}
+
+              {
+                Object.keys(farmlist).map((key, index) => {
+                  if (farmlist[key].farmtype === 'noany') {
+                    return (
+                      <Route exact strict path={'/' + farmlist[key].url} component={() => <NoanyFarming farmkey={key} />} key={index} />
+                    )
+                  }
+                  return (
+                    <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
+                  )
+                })
+              }
 
               
               <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? (config.getCurConfigInfo().isOpenRouter ? '/router' : '/bridge') : '/swap' }} /> 

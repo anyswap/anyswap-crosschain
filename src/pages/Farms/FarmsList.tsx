@@ -222,40 +222,6 @@ width:100%;
 padding: 20px;
 `
 
-// const FarmStateBox = styled.div`
-//   // width:100%;
-//   position:absolute;
-//   top:0;
-//   right:0;
-//   display:inline-block;
-//   .list {
-//     ${({ theme }) => theme.flexEC};
-//     border-radius: 10px;
-//     // width:100%;
-//     border: solid 0.5px ${({ theme }) => theme.tipBorder};
-//     background-color: ${({ theme }) => theme.tipBg};
-//     font-size:14px;
-//     line-height:21px;
-//     overflow:hidden;
-//     .item{
-//       padding: 8px 12px;
-//       cursor:pointer;
-//       color: ${({ theme }) => theme.text1};
-//       &.active {
-//         // color: ${({ theme }) => theme.tipColor};
-//         color: #fff;
-//         background:${({ theme }) => theme.tipColor};
-//         font-weight:bold;
-//       }
-//     }
-//   }
-// `
-// const StayTuned = styled.div`
-//   width:100%;
-//   padding: 100px 0;
-//   text-align: center;
-// `
-
 const FarmStatus = styled.div`
   width: 200px;
   height: 30px;
@@ -292,6 +258,7 @@ export default function FarmsList () {
   const [BSCPLAYStakingAPY, setBSCPLAYStakingAPY] = useState()
   const [BSCBACONStakingAPY, setBSCBACONStakingAPY] = useState()
   const [BSCTROStakingAPY, setBSCTROStakingAPY] = useState()
+  const [BSCKABYStakingAPY, setBSCKABYStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -346,6 +313,11 @@ export default function FarmsList () {
         setBSCBACONStakingAPY(res)
       })
     })
+    getPrice('KABY').then((res:any) => {
+      getFarmAPY('BSC_KABY', res).then((res:any) => {
+        setBSCKABYStakingAPY(res)
+      })
+    })
   }, [])
 
   // console.log(BSCPLAYStakingAPY)
@@ -366,6 +338,17 @@ export default function FarmsList () {
   }
   const farmList = useMemo(() => {
     return [
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/' + farmlist['BSC_KABY'].url,
+        title: farmlist['BSC_KABY'].key + 'Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCKABYStakingAPY ? (Number(BSCKABYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: farmlist['BSC_KABY'].logoUrl,
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCKABYStakingAPY !== 'undefined' && Number(BSCKABYStakingAPY) === 0 && Date.now() > new Date('2021-09-10 18:00').getTime()  ? 'finished' : 'live'
+      },
       {
         isDoubleLogo: 1,
         isOutLink: 0,
@@ -456,85 +439,7 @@ export default function FarmsList () {
       },
     ]
   }, [MATICStakingAPY, FTMStakingAPY, BSCStakingAPY, BSCHEROStakingAPY, BSCPLAYStakingAPY, BSCTROStakingAPY])
-  // const farmList:any = [
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: '/farm/bsc/polyplay',
-  //     title: 'PLAY Staking',
-  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPLAYStakingAPY ? (Number(BSCPLAYStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'https://assets.coingecko.com/coins/images/17314/small/09ee5fe7-7f9c-4e77-8872-d9053ac2a936.png',
-  //     coin2: 'BNB',
-  //     coin3: '',
-  //     status: typeof BSCPLAYStakingAPY !== 'undefined' && Number(BSCPLAYStakingAPY) === 0 && Date.now() > 1629885600000  ? 'finished' : 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 1,
-  //     url: 'https://yel.finance/',
-  //     title: 'YEL Farming',
-  //     info: 'YEL Farming',
-  //     coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
-  //     coin2: 'FTM',
-  //     coin3: '',
-  //     status: 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: '/farm/bsc/hero',
-  //     title: 'HERO Staking',
-  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCHEROStakingAPY ? (Number(BSCHEROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'https://assets.coingecko.com/coins/images/16245/small/HERO-200.png',
-  //     coin2: 'BNB',
-  //     coin3: '',
-  //     status: typeof BSCHEROStakingAPY !== 'undefined' && Number(BSCHEROStakingAPY) === 0  ? 'finished' : 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: 'farm/bsc',
-  //     title: 'DEP Staking',
-  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCStakingAPY ? (Number(BSCStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'DEP',
-  //     coin2: 'BNB',
-  //     coin3: '',
-  //     status: typeof BSCStakingAPY !== 'undefined' && Number(BSCStakingAPY) === 0  ? 'finished' : 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: '/farm/bsc/tro',
-  //     title: 'TRO Staking',
-  //     info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCTROStakingAPY ? (Number(BSCTROStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'TRO',
-  //     coin2: 'BNB',
-  //     coin3: '',
-  //     status: typeof BSCTROStakingAPY !== 'undefined' && Number(BSCTROStakingAPY) === 0  ? 'finished' : 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: 'farm/ftm',
-  //     title: 'USDC Staking',
-  //     info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (FTMStakingAPY ? (Number(FTMStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'USDC',
-  //     coin2: 'FTM',
-  //     coin3: '',
-  //     status: typeof FTMStakingAPY !== 'undefined' && Number(FTMStakingAPY) === 0  ? 'finished' : 'live'
-  //   },
-  //   {
-  //     isDoubleLogo: 1,
-  //     isOutLink: 0,
-  //     url: 'farm/matic',
-  //     title: 'USDC Staking',
-  //     info: (t('StakingTip', {symbol: 'USDC'}) + "<span class='pecent'>" + (MATICStakingAPY ? (Number(MATICStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-  //     coin1: 'USDC',
-  //     coin2: 'MATIC',
-  //     coin3: '',
-  //     status: typeof MATICStakingAPY !== 'undefined' && Number(MATICStakingAPY) === 0  ? 'finished' : 'live'
-  //   },
-  // ]
+  
   function FarmItem ({
     isDoubleLogo,
     isOutLink,
@@ -637,33 +542,7 @@ export default function FarmsList () {
       <AppBody>
         <Title
           title={t('farms')}
-          // tabList={[
-          //   {
-          //     name: t('Live'),
-          //     onTabClick: () => {
-          //       setFarmState('live')
-          //     },
-          //     // iconUrl: require('../../assets/images/icon/deposit.svg'),
-          //     // iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-          //   },
-          //   {
-          //     name: t('Finished'),
-          //     onTabClick: () => {
-          //       setFarmState('finished')
-          //     },
-          //     // iconUrl: require('../../assets/images/icon/withdraw.svg'),
-          //     // iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
-          //   }
-          // ]}
-          // isChangeTitle={1}
         >
-          
-          {/* <FarmStateBox>
-            <div className="list">
-              <div className={"item " + (farmState === 'live' ? 'active' : '')} onClick={() => (setFarmState('live'))}>{t('Live')}</div>
-              <div className={"item " + (farmState === 'finished' ? 'active' : '')} onClick={() => (setFarmState('finished'))}>{t('Finished')}</div>
-            </div>
-          </FarmStateBox> */}
         </Title>
         <FarmListBox>
           {
