@@ -8,10 +8,12 @@ import {GetTokenListByChainID} from 'multichain-bridge'
 
 import { useActiveWeb3React } from '../../hooks'
 // import { useETHBalances, useTokenBalancesList, useBridgeAllTokenBalances } from '../../state/wallet/hooks'
-import { useETHBalances, useBridgeAllTokensBalances } from '../../state/wallet/hooks'
+// import { useETHBalances, useBridgeAllTokensBalances } from '../../state/wallet/hooks'
+import { useETHBalances } from '../../state/wallet/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import TokenLogo from '../../components/TokenLogo'
+import { useTokenComparator } from '../../components/SearchModal/sorting'
 import AppBody from '../AppBody'
 import Title from '../../components/Title'
 
@@ -93,7 +95,9 @@ export default function DashboardDtil() {
   const { t } = useTranslation()
 
   const allTokensList:any = useBridgeTokenList(ROUTER_BRIDGE_TYPE, chainId)
-  const allBalances = useBridgeAllTokensBalances(chainId)
+  // const allBalances = useBridgeAllTokensBalances(chainId)
+  const {balances: allBridgeBalances} = useTokenComparator('bridgeTokenList', chainId, false)
+  const {balances: allRouterBalances} = useTokenComparator('routerTokenList', chainId, false)
   // console.log(allTokensList)
   // console.log(allBalances['0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605']?.toSignificant(6))
 
@@ -107,6 +111,21 @@ export default function DashboardDtil() {
   const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
   // const totalCount:number = allTokenList ? allTokenList.length : 0
+
+  const allBalances = useMemo(() => {
+    // const obj:any = {}
+    return {
+      ...allBridgeBalances,
+      ...allRouterBalances
+    }
+    // if (allBridgeBalances && allRouterBalances) {
+    //   return {
+    //     ...allBridgeBalances
+    //   }
+    // } else if () {
+
+    // }
+  }, [allBridgeBalances, allRouterBalances])
 
   const getAllTokens = useCallback(() => {
     const ulist:any = []
