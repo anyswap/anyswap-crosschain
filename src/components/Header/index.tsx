@@ -166,7 +166,7 @@ export default function Header() {
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark, toggleDarkMode] = useDarkModeManager()
-
+  // console.log(userEthBalance)
   return (
     <HeaderFrame>
       <HeaderRow>

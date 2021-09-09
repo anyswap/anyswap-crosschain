@@ -36,6 +36,7 @@ export function useETHBalances(
     undefined,
     chainId
   )
+  // console.log(results)
   return useMemo(
     () =>
       addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
