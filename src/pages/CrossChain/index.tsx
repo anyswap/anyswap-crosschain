@@ -158,7 +158,7 @@ export default function CrossChain() {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
   // console.log(selectCurrency)
 
-  
+  // const version = selectCurrency?.version
 
   const destConfig = useMemo(() => {
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
@@ -167,7 +167,7 @@ export default function CrossChain() {
     return false
   }, [selectCurrency, selectChain])
 
-  // console.log(destConfig)
+  // console.log(selectCurrency)
   // console.log(bridgeConfig)
   
   const isNativeToken = useMemo(() => {

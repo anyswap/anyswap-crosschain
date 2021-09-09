@@ -78,7 +78,8 @@ export function useBridgeCallback(
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
-                    routerToken: routerToken
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
                   }
                   recordsTxns(data)
                 }
@@ -153,7 +154,8 @@ export function useBridgeCallback(
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
-                    routerToken: routerToken
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
                   }
                   recordsTxns(data)
                 }
@@ -226,7 +228,8 @@ export function useBridgeNativeCallback(
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
-                    routerToken: routerToken
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
                   }
                   recordsTxns(data)
                 }
@@ -425,7 +428,8 @@ export function useBridgeNativeCallback(
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
-                    routerToken: routerToken
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
                   }
                   recordsTxns(data)
                 }
@@ -508,7 +512,8 @@ export function useBridgeNativeCallback(
                     formatvalue: inputAmount?.toSignificant(6),
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
-                    routerToken: routerToken
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
                   }
                   recordsTxns(data)
                 }
