@@ -290,7 +290,7 @@ export default function CrossChain() {
     }
     return {}
   }, [allTokens, swapType, chainId, selectCurrencyType, selectChain])
-  console.log(selectCurrency)
+  // console.log(selectCurrency)
   const bridgeConfig = useMemo(() => {
     if (selectCurrency?.address && useTolenList[selectCurrency?.address]) return useTolenList[selectCurrency?.address]
     return ''
@@ -423,7 +423,7 @@ export default function CrossChain() {
       // console.log(curChain)
       // console.log(destChain)
       // console.log(CC)
-      console.log(selectCurrency)
+      // console.log(selectCurrency)
       if (CC) {
         if (isUnderlying) {
           setCurChain({
@@ -539,7 +539,9 @@ export default function CrossChain() {
   
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
-      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
+      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion)
+      // console.log(destConfig)
+      // console.log(fee)
       let value = Number(inputBridgeValue) - fee
       if (fee < Number(destConfig.MinimumSwapFee)) {
         value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
