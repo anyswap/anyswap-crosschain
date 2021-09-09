@@ -27,15 +27,39 @@ export const env:any = 'pro'
 export const version = '0.1.20'
 export const timeout = 1000 * 60 * 30
 
-// export const USE_VERSION = VERSION.V1_1
-// export const USE_VERSION = VERSION.V3_1
-// export const USE_VERSION = VERSION.V2_2
-// export const USE_VERSION = VERSION.V4
-// export const USE_VERSION = VERSION.V4_OKT
-export const USE_VERSION = VERSION.V4_MOVR
-// export const USE_VERSION = VERSION.V2_T3
-// export const USE_VERSION = VERSION.V5
+// export const INIT_VERSION = VERSION.V1_1
+// export const INIT_VERSION = VERSION.V3_1
+// export const INIT_VERSION = VERSION.V2_2
+// export const INIT_VERSION = VERSION.V4_OKT
+// const INIT_VERSION = VERSION.V4_MOVR
+export const INIT_VERSION = VERSION.V5
 
+function getUrlVersion (init:any) {
+  const url = window.location.href
+  let version:any
+  if (url.indexOf('https://stable.anyswap.exchange') === 0) {
+    version = VERSION.V2_2
+  } else if (url.indexOf('https://router.anyswap.exchange') === 0) {
+    version = VERSION.V1_1
+  } else if (url.indexOf('https://oec.anyswap.exchange') === 0) {
+    version = VERSION.V4_OKT
+  } else if (url.indexOf('https://movr.anyswap.exchange') === 0) {
+    version = VERSION.V4_MOVR
+  } else if (
+    url.indexOf('https://app.anyswap.exchange') === 0
+    || url.indexOf('https://deploy.anyswap.exchange') === 0
+    || url.indexOf('https://anyswap.exchange') === 0
+  ) {
+    version = VERSION.V5
+  } else if (url.indexOf('https://arb.anyswap.exchange') === 0) {
+    version = VERSION.V3_1
+  } else {
+    version = init
+  }
+  return version
+}
+export const USE_VERSION:any = getUrlVersion(INIT_VERSION)
+// console.log(USE_VERSION)
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_VERSION'
   const curVersion = localStorage.getItem(VERSION)

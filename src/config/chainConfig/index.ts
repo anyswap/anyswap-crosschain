@@ -45,7 +45,7 @@ export const chainInfo:ConFig = {
   ...movr
 }
 
-const useChain = {
+const useChain:any = {
   [VERSION.V1]: [
     ETH_MAIN_CHAINID,
     BNB_MAIN_CHAINID,
