@@ -59,6 +59,7 @@ import TokenLogo from '../../components/TokenLogo'
 
 const LiquidityView = styled.div`
   ${({theme}) => theme.flexSC};
+  flex-wrap: wrap;
   border: solid 0.5px ${({ theme }) => theme.tipBorder};
   background-color: ${({ theme }) => theme.tipBg};
   border-radius: 0.5625rem;
