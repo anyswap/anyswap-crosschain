@@ -19,6 +19,7 @@ export enum VERSION {
   V4_OKT = 'BRIDGE_OKT',
   V4_MOVR = 'BRIDGE_MOVR',
   V5 = 'ALL',
+  V6 = 'NFT_TEST',
 }
 
 export const env:any = 'pro'
@@ -32,7 +33,8 @@ export const timeout = 1000 * 60 * 30
 // export const INIT_VERSION = VERSION.V2_2
 // export const INIT_VERSION = VERSION.V4_OKT
 // const INIT_VERSION = VERSION.V4_MOVR
-export const INIT_VERSION = VERSION.V5
+// export const INIT_VERSION = VERSION.V5
+export const INIT_VERSION = VERSION.V6
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -231,6 +233,17 @@ export const controlConfig:any = {
   },
   [VERSION.V5]: {
     bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 1,
+  },
+  [VERSION.V6]: {
+    bridgeInitDataChain: '4',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],

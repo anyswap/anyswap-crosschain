@@ -17,6 +17,9 @@ import { useActiveWeb3React } from './index'
 import RouterSwapAction from '../constants/abis/bridge/RouterSwapAction.json'
 import RouterAction from '../constants/abis/bridge/RouterAction.json'
 
+import NFT from '../constants/abis/bridge/nft.json'
+import NFT721 from '../constants/abis/bridge/erc721.json'
+
 import config from '../config/index'
 
 const Web3 = require('web3')
@@ -71,6 +74,14 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
 
 export function useBridgeContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(routerToken ? routerToken : undefined, RouterSwapAction, withSignerIfPossible)
+}
+
+export function useNFTContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(routerToken ? routerToken : undefined, NFT, withSignerIfPossible)
+}
+
+export function useNFT721Contract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(routerToken ? routerToken : undefined, NFT721, withSignerIfPossible)
 }
 
 export function useSwapUnderlyingContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {

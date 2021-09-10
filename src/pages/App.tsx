@@ -14,15 +14,8 @@ import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import Bridge from './Bridge'
 import CrossChainTxns from './CrossChainTxns'
+import CrossNFT from './CroseNFT'
 
-// import MATICfarming from './Farms/MATICfarming'
-// import FTMfarming from './Farms/FTMfarming'
-// import BSCfarming from './Farms/BSCfarming'
-// import BSCfarmingHERO from './Farms/BSCfarming_HERO'
-// import BSCfarmingTRO from './Farms/BSCfarming_TRO'
-// import BSCfarmingPLAY from './Farms/BSCfarming_PLAY'
-// import BSCfarmingBACON from './Farms/BSCfarming_BACON'
-// import BSCfarmingKABY from './Farms/BSCfarming_KABY'
 import ANYFarming from './Farms/ANYFarming'
 import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
@@ -150,19 +143,8 @@ export default function App() {
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
               <Route exact strict path="/bridge" component={Bridge} />
+              <Route exact strict path="/nft" component={CrossNFT} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
-
-              {/* <Route exact strict path="/farm/matic" component={MATICfarming} />
-
-              <Route exact strict path="/farm/ftm" component={FTMfarming} />
-
-              <Route exact strict path="/farm/bsc" component={BSCfarming} />
-              <Route exact strict path="/farm/bsc/hero" component={BSCfarmingHERO} />
-              <Route exact strict path="/farm/bsc/tro" component={BSCfarmingTRO} />
-              <Route exact strict path="/farm/bsc/polyplay" component={BSCfarmingPLAY} />
-              <Route exact strict path="/farm/bsc/bacon" component={BSCfarmingBACON} />
-              <Route exact strict path={'/' + farmlist['BSC_KABY'].url} component={() => <ANYFarming farmkey={'BSC_KABY'} />} />
-              <Route exact strict path="/farm/eth/test" component={ETHtestfarming} /> */}
 
               {
                 Object.keys(farmlist).map((key, index) => {
