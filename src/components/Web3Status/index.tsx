@@ -5,6 +5,7 @@ import React, { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { css } from 'styled-components'
+import { isMobile } from 'react-device-detect'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
@@ -144,8 +145,13 @@ function Web3StatusInner() {
             <Text>{pending?.length} {t('Pending')}</Text> <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <>
-            <Text>{ENSName || shortenAddress(account)}</Text>
+          <>{
+            isMobile ? (
+              <Text>{ENSName || shortenAddress(account, 2)}</Text>
+            ) : (
+              <Text>{ENSName || shortenAddress(account)}</Text>
+            )
+          }
           </>
         )}
         {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}

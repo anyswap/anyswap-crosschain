@@ -62,7 +62,8 @@ const HeaderControls = styled.div`
     justify-self: center;
     width: 100%;
     max-width: 960px;
-    padding: 1rem;
+    // padding: 1rem;
+    padding: 0rem;
     z-index: 99;
     border-radius: 12px 12px 0 0;
     background-color: ${({ theme }) => theme.bg1};
@@ -120,6 +121,7 @@ const Title = styled.a`
   height: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     justify-self: center;
+    margin-right: 2px;
   `};
   :hover {
     cursor: pointer;
@@ -129,11 +131,14 @@ const Title = styled.a`
 const UniIcon = styled.div`
   ${({ theme }) => theme.flexSC};
   height: 100%;
-  // padding: 10px 0;
-  // transition: transform 0.3s ease;
-  // :hover {
-  //   transform: rotate(-5deg);
-  // }
+  img {
+    height:42px
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    img {
+      height:36px
+    }
+  `};
 `
 
 const StyleDarkToggle = styled.div`
@@ -172,7 +177,7 @@ export default function Header() {
       <HeaderRow>
         <Title href="/" target="__blank">
           <UniIcon>
-            <img height={'42px'} src={isDark ? LogoDark : Logo} alt="logo" />
+            <img src={isDark ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
         <VersionLinkBox href='https://v1.anyswap.exchange'>
