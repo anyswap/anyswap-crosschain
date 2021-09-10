@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useMemo, useCallback } from 're
 // import { TokenAmount } from 'anyswap-sdk'
 // import { createBrowserHistory } from 'history'
 import { useTranslation } from 'react-i18next'
-import styled, { ThemeContext } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
@@ -40,77 +40,17 @@ import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
+import LiquidityPool from '../../components/LiquidityPool'
 
-const LiquidityView = styled.div`
-  ${({theme}) => theme.flexSC};
-  flex-wrap: wrap;
-  border: solid 0.5px ${({ theme }) => theme.tipBorder};
-  background-color: ${({ theme }) => theme.tipBg};
-  border-radius: 0.5625rem;
-  padding: 8px 16px;
-  color: ${({ theme }) => theme.tipColor};
-  font-size: 12px;
-  white-space:nowrap;
-  .item {
-    ${({theme}) => theme.flexBC};
-    margin-right: 10px;
-    margin-left: 10px;
-    .cont {
-      margin-left: 10px;
-      color: ${({ theme }) => theme.tipColor};
-      font-size: 12px;
-    }
-  }
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    padding: 8px 12px;
-  `};
-`
-
-const LogoBox = styled.div`
-  ${({ theme }) => theme.flexC};
-  width: 46px;
-  height: 46px;
-  object-fit: contain;
-  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
-  border: solid 0.5px rgba(0, 0, 0, 0.1);
-  border-radius:100%;
-  margin: auto;
-
-  img{
-    height: 24px;
-    width: 24px;
-    display:block;
-  }
-`
-const ConfirmContent = styled.div`
-  width: 100%;
-`
-const TxnsInfoText = styled.div`
-  font-family: 'Manrope';
-  font-size: 22px;
-  text-align: center;
-  color: ${({ theme }) => theme.textColorBold};
-  margin-top: 1rem;
-`
-const ConfirmText = styled.div`
-  width: 100%;
-  font-family: 'Manrope';
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-align: center;
-  color: #734be2;
-  padding: 1.25rem 0;
-  border-top: 0.0625rem solid rgba(0, 0, 0, 0.08);
-  margin-top:1.25rem
-`
-
-const FlexEC = styled.div`
-  ${({ theme }) => theme.flexEC};
-`
+import {
+  LogoBox,
+  ConfirmContent,
+  TxnsInfoText,
+  ConfirmText,
+  FlexEC
+} from '../styled'
 
 let intervalFN:any = ''
-
-
 
 const BRIDGETYPE = 'routerTokenList'
 
@@ -653,25 +593,12 @@ export default function CrossChain() {
           />
           {
             account && chainId && isUnderlying && isDestUnderlying ? (
-              <LiquidityView>
-                {t('pool') + ': '}
-                {
-                  curChain && isUnderlying ? (
-                    <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(curChain.chain).name}:{curChain.ts ? thousandBit(curChain.ts, 2) : '0.00'}</span>
-                    </div>
-                  ) : ''
-                }
-                {
-                  destChain && isDestUnderlying ? (
-                    <div className='item'>
-                      <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'}></TokenLogo>
-                      <span className='cont'>{config.getCurChainInfo(destChain.chain).name}:{destChain.ts ? thousandBit(destChain.ts, 2) : '0.00'}</span>
-                    </div>
-                  ) : ''
-                }
-              </LiquidityView>
+              <LiquidityPool
+                curChain={curChain}
+                destChain={destChain}
+                isUnderlying={isUnderlying}
+                isDestUnderlying={isDestUnderlying}
+              />
             ) : ''
           }
 
