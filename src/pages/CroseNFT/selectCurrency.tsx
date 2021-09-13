@@ -47,6 +47,7 @@ export default function SelectCurrencyPanel ({
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
   // console.log(selectCurrency)
+  // console.log(tokenlist[selectCurrency])
   // console.log(selectTokenId)
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
@@ -74,7 +75,7 @@ export default function SelectCurrencyPanel ({
     <>
       <ModalContent
         isOpen={modalCurrencyOpen}
-        title={t('selectNetwork')}
+        title={t('selectToken')}
         onDismiss={() => {
           setModalCurrencyOpen(false)
         }}
@@ -106,7 +107,7 @@ export default function SelectCurrencyPanel ({
 
       <ModalContent
         isOpen={modalTokenidOpen}
-        title={t('selectNetwork')}
+        title={t('selectTokenId')}
         onDismiss={() => {
           setModalTokenidOpen(false)
         }}
@@ -140,6 +141,7 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalCurrencyOpen(true)
         }}>
+          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'24px'}></TokenLogo>
           {
             selectCurrency ? (
               tokenlist[selectCurrency]?.name
@@ -152,6 +154,7 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalTokenidOpen(true)
         }}>
+          <TokenLogo symbol={tokenidList[selectTokenId]?.name} logoUrl={tokenidList[selectTokenId]?.logoUrl} size={'24px'}></TokenLogo>
           {
             selectTokenId ? (
               tokenidList[selectTokenId]?.name

@@ -33,24 +33,24 @@ export function useApproveCallback(
 
   const contract = useNFT721Contract(inputToken)
   const pendingApproval = useHasPendingApproval(inputToken, spender)
-  console.log(pendingApproval)
+  // console.log(pendingApproval)
   // check the current approval status
 
   useEffect(() => {
     if (contract && tokenid) {
       contract.getApproved(tokenid).then((res:any) => {
-        // console.log(res)
+        console.log(res)
         if (ZERO_ADDRESS === res) {
-          setApproved('')
+          setApproved(1)
         } else {
           setApproved(res)
         }
       }).catch((err:any) => {
         console.log(err)
-        setApproved('')
+        setApproved(0)
       })
     } else {
-      setApproved('')
+      setApproved(0)
     }
   }, [contract, tokenid])
   // console.log(approved)
@@ -58,6 +58,7 @@ export function useApproveCallback(
     if (!spender) return ApprovalState.UNKNOWN
     // we might not have enough data to know whether or not we need to approve
     if (!contract || !approved) return ApprovalState.UNKNOWN
+    if (approved === 1) return ApprovalState.NOT_APPROVED
 
     // amountToApprove will be defined if currentAllowance is
     return contract || !approved || approved?.toLowerCase() !== spender?.toLowerCase() ? (pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED) : ApprovalState.APPROVED

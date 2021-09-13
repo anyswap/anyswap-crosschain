@@ -14,17 +14,17 @@
       "tokenidList": {
         "7001": {
           "name": "7001",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/XNkCu-KCKgLnCJK1uKb-RuJlY9TP6EqJ3pQuWxU83R10vjx1so7t7iHPL4JlFt2eeCymmqwhCjH_RwzASlz-YXKI=w286",
           "uri": ""
         },
         "7002": {
           "name": "7002",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/0dxLWLeTjKOo4emuFtU-vP412rEw3PNsLxXae7Y7lldEZ5mtu3YRbbpYcfbqk1w3y75nVz13Z8jS0jUXKnFY_zZk=w286",
           "uri": ""
         },
         "7003": {
           "name": "7003",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/dFCcQzfTQ7Pcay5ZWH0ZNXcmg-8wQO55biCqaSMw0e-DJggtXDRfBQdzHGG2rCSNqyD0EEEj4KDYjKnQzdqE531V=w286",
           "uri": ""
         }
       },
@@ -33,7 +33,9 @@
       "routerToken" : "0x5F69b7Ab8F7cAb199a310Fd5A27B43Fef44ddcC0", 
       "symbol" : "thing", 
       "tokenid" : "thing", 
-      "version" : "NFT"
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/w-YsPhz-Gjm6xUL2ojJFHwqwTyPEYTU5Jlmiwu18_51f66f2_QoBf66jM77b2lFghuWg5RNOum_HPOE1AdEArKuP=w600",
+      "nfttype": "erc1155"
     },
     "0x6362496bef53458b20548a35a2101214ee2be3e0": {
       "chainId" : "4", 
@@ -49,17 +51,17 @@
       "tokenidList": {
         "7001": {
           "name": "7001",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/XNkCu-KCKgLnCJK1uKb-RuJlY9TP6EqJ3pQuWxU83R10vjx1so7t7iHPL4JlFt2eeCymmqwhCjH_RwzASlz-YXKI=w286",
           "uri": ""
         },
         "7002": {
           "name": "7002",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/0dxLWLeTjKOo4emuFtU-vP412rEw3PNsLxXae7Y7lldEZ5mtu3YRbbpYcfbqk1w3y75nVz13Z8jS0jUXKnFY_zZk=w286",
           "uri": ""
         },
         "7003": {
           "name": "7003",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/dFCcQzfTQ7Pcay5ZWH0ZNXcmg-8wQO55biCqaSMw0e-DJggtXDRfBQdzHGG2rCSNqyD0EEEj4KDYjKnQzdqE531V=w286",
           "uri": ""
         }
       },
@@ -68,7 +70,9 @@
       "routerToken" : "0x5F69b7Ab8F7cAb199a310Fd5A27B43Fef44ddcC0", 
       "symbol" : "Artwork", 
       "tokenid" : "Artwork", 
-      "version" : "NFT"
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/-mmm0FgZHOLyvvRDYo7fQK9o1SakLPLzKyN6z2iwWzByPVNy3GPly_vPRCUQbt7DI3n_5m8dnsLm1ZmHyNXdD491BA=w286",
+      "nfttype": "erc721"
     }
   },
   "250": {
@@ -86,17 +90,17 @@
       "tokenidList": {
         "7001": {
           "name": "7001",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/XNkCu-KCKgLnCJK1uKb-RuJlY9TP6EqJ3pQuWxU83R10vjx1so7t7iHPL4JlFt2eeCymmqwhCjH_RwzASlz-YXKI=w286",
           "uri": ""
         },
         "7002": {
           "name": "7002",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/0dxLWLeTjKOo4emuFtU-vP412rEw3PNsLxXae7Y7lldEZ5mtu3YRbbpYcfbqk1w3y75nVz13Z8jS0jUXKnFY_zZk=w286",
           "uri": ""
         },
         "7003": {
           "name": "7003",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/dFCcQzfTQ7Pcay5ZWH0ZNXcmg-8wQO55biCqaSMw0e-DJggtXDRfBQdzHGG2rCSNqyD0EEEj4KDYjKnQzdqE531V=w286",
           "uri": ""
         }
       },
@@ -105,7 +109,9 @@
       "routerToken" : "0x63D3F3b271dBbd43A788687B86D516Fe185D2509", 
       "symbol" : "thing", 
       "tokenid" : "thing", 
-      "version" : "NFT"
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/w-YsPhz-Gjm6xUL2ojJFHwqwTyPEYTU5Jlmiwu18_51f66f2_QoBf66jM77b2lFghuWg5RNOum_HPOE1AdEArKuP=w600",
+      "nfttype": "erc1155"
     },
     "0x937e077abaea52d3abf879c9b9d3f2ebd15baa21": {
       "chainId" : "250", 
@@ -121,17 +127,17 @@
       "tokenidList": {
         "7001": {
           "name": "7001",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/XNkCu-KCKgLnCJK1uKb-RuJlY9TP6EqJ3pQuWxU83R10vjx1so7t7iHPL4JlFt2eeCymmqwhCjH_RwzASlz-YXKI=w286",
           "uri": ""
         },
         "7002": {
           "name": "7002",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/0dxLWLeTjKOo4emuFtU-vP412rEw3PNsLxXae7Y7lldEZ5mtu3YRbbpYcfbqk1w3y75nVz13Z8jS0jUXKnFY_zZk=w286",
           "uri": ""
         },
         "7003": {
           "name": "7003",
-          "logo": "",
+          "logoUrl": "https://lh3.googleusercontent.com/dFCcQzfTQ7Pcay5ZWH0ZNXcmg-8wQO55biCqaSMw0e-DJggtXDRfBQdzHGG2rCSNqyD0EEEj4KDYjKnQzdqE531V=w286",
           "uri": ""
         }
       },
@@ -140,7 +146,9 @@
       "routerToken" : "0x63D3F3b271dBbd43A788687B86D516Fe185D2509", 
       "symbol" : "Artwork", 
       "tokenid" : "Artwork", 
-      "version" : "NFT"
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/-mmm0FgZHOLyvvRDYo7fQK9o1SakLPLzKyN6z2iwWzByPVNy3GPly_vPRCUQbt7DI3n_5m8dnsLm1ZmHyNXdD491BA=w286",
+      "nfttype": "erc721"
     }
   }
 }

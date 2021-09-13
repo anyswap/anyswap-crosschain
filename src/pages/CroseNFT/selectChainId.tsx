@@ -18,16 +18,21 @@ interface SelectChainIDProps {
   selectChainId?: any
   chainList?: Array<any>
   onChainSelect?: (selectChainId: any) => void
+  label?: string
 }
 
 const SelectChainBox = styled.div`
+  width: 100px;
+`
+
+const SelectChainContent = styled.div`
+  width: 100%;
   ${({ theme }) => theme.flexC};
   flex-wrap: wrap;
-  width: 100px;
   height: 120px;
   padding: 10px;
   border-radius: 20px;
-  border: 1px solid #ddd;
+  // border: 1px solid #ddd;
   cursor:pointer;
   .txt {
     width: 100%;
@@ -35,11 +40,17 @@ const SelectChainBox = styled.div`
   }
 `
 
+const LabelTxt = styled.div`
+  margin-bottom: 10px;
+  text-align: center;
+`
+
 export default function SelectChainIDPanel ({
   id,
   selectChainId,
   chainList = [],
-  onChainSelect
+  onChainSelect,
+  label
 }: SelectChainIDProps) {
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -85,8 +96,17 @@ export default function SelectChainIDPanel ({
         id={id}
         onClick={() => setModalOpen(true)}
       >
-        <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
-        <p className="txt">{config.getCurChainInfo(selectChainId).symbol}</p>
+        {
+          label ? (
+            <LabelTxt>
+              {label}
+            </LabelTxt>
+          ) : ''
+        }
+        <SelectChainContent>
+          <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
+          <p className="txt">{config.getCurChainInfo(selectChainId).symbol}</p>
+        </SelectChainContent>
       </SelectChainBox>
     </>
   )

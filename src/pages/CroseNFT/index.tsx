@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
 
-import {useNFT721Callback} from '../../hooks/useNFTCallback'
+import {useNFT721Callback, WrapType} from '../../hooks/useNFTCallback'
 import {useApproveCallback, ApprovalState} from '../../hooks/useNFTApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
 
@@ -35,6 +35,17 @@ const FlexWrapBox = styled.div`
   width: 100%;
   max-width: 360px;
   margin:auto;
+`
+
+const FeeBox = styled.div`
+  width: 100%;
+  object-fit: contain;
+  border-radius: 0.5625rem;
+  border: solid 0.5px ${({ theme }) => theme.tipBorder};
+  background-color: ${({ theme }) => theme.tipBg};
+  padding: 1rem 1.25rem;
+  margin-top: 0.625rem;
+  color: ${({ theme }) => theme.tipColor};
 `
 
 const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
@@ -155,12 +166,23 @@ export default function CroseNFT () {
     }
   }, [approval, approvalSubmitted])
 
-  useEffect(() => {
-    console.log(wrapType)
-    console.log(wrapInputError)
-    console.log(approval)
-    console.log(NFT_DATA)
-  }, [wrapType, wrapInputError, approval])
+  const isWrapInputError = useMemo(() => {
+    if (wrapInputError) {
+      return wrapInputError
+    }
+    return
+  }, [wrapInputError])
+
+  const btnTxt = useMemo(() => {
+    // console.log(isWrapInputError)
+    if (isWrapInputError && inputValue) {
+      return isWrapInputError
+    }  else if (wrapType === WrapType.WRAP) {
+      return t('swap')
+    }
+    return t('swap')
+  }, [t, isWrapInputError, inputValue, wrapType, ])
+
   return (
     <>
       <AppBody>
@@ -175,6 +197,7 @@ export default function CroseNFT () {
               // setSelectChainId(value)
               setMetamaskNetwork(value)
             }}
+            label={'From Chain'}
           />
           <ArrowRight />
           <SelectChainIDPanel
@@ -183,6 +206,7 @@ export default function CroseNFT () {
             onChainSelect={(value) => {
               setSelectChainId(value)
             }}
+            label={'To Chain'}
           />
 
           <SelectCurrencyPanel
@@ -204,6 +228,9 @@ export default function CroseNFT () {
             }}
             style={{marginRight: '0'}}
           />
+          <FeeBox>
+            {t('fee')}0.2{config.getCurChainInfo(chainId).symbol}
+          </FeeBox>
         </FlexWrapBox>
         
 
@@ -223,14 +250,14 @@ export default function CroseNFT () {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
+                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol
                   )}
                 </ButtonConfirmed>
               ) : (
                 <ButtonConfirmed onClick={() => {
                   if (onWrap) onWrap()
                 }}>
-                  {t('swap')}
+                  {btnTxt}
                 </ButtonConfirmed>
               )
             )

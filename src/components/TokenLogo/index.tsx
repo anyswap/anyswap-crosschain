@@ -53,7 +53,7 @@ export default function TokenLogo({
   logoUrl,
   ...rest
 }: {
-  symbol: any
+  symbol?: any
   size?: any
   style?: React.CSSProperties
   logoUrl?: any
@@ -84,7 +84,7 @@ export default function TokenLogo({
   } else {
     path = initPath
   }
-  // console.log(symbol)
+  // console.log(logoUrl)
   // console.log(path)
   return <Image {...rest} alt={symbol} src={path} size={size} style={style} />
 }
