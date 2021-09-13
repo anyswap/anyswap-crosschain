@@ -111,10 +111,10 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
           {t('Reminder')}:
         </dt>
         <dd><i></i>{t(tipType + '1' , {
-          dMinFee: isSwapfeeon ? destConfig?.MinimumSwapFee : 0,
+          dMinFee: isSwapfeeon ? thousandBit(destConfig?.MinimumSwapFee, 'no') : 0,
           coin: viewSymbol,
-          dMaxFee: isSwapfeeon ? destConfig?.MaximumSwapFee : 0,
-          dFee: isSwapfeeon ? dFee : 0
+          dMaxFee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
+          dFee: isSwapfeeon ? thousandBit(dFee, 'no') : 0
         })}</dd>
         <dd><i></i>{t(tipType + '2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t(tipType + '3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>

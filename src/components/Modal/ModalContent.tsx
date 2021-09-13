@@ -13,7 +13,6 @@ import { CloseIcon } from '../../theme'
 
 const ContentWrapper = styled.div`
   width: 100%;
-  padding: 2rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
 `
 
@@ -25,6 +24,7 @@ interface ModalProps {
   minHeight?: number | false
   maxHeight?: number
   initialFocusRef?: React.RefObject<any>
+  padding?: any
   children?: React.ReactNode
 }
 
@@ -36,6 +36,7 @@ export default function ModalContent({
   minHeight = false,
   maxHeight = 90,
   initialFocusRef,
+  padding,
   children
 }: ModalProps) {
   return (
@@ -59,7 +60,7 @@ export default function ModalContent({
           </PaddedColumn>
           <Separator />
           <div style={{ flex: '1' }}>
-            <ContentWrapper>
+            <ContentWrapper style={{padding: (padding ? padding : '2rem')}}>
               {children}
             </ContentWrapper>
           </div>

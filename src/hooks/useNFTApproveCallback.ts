@@ -1,12 +1,14 @@
 // import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 // import { TokenAmount, CurrencyAmount, ETHER } from 'anyswap-sdk'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 // import { useTokenAllowance } from '../data/Allowances'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { useNFT721Contract } from './useContract'
 import { useActiveWeb3React } from './index'
+
+import {ZERO_ADDRESS} from '../constants'
 
 import config from '../config'
 
@@ -26,32 +28,40 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   // const { account, chainId } = useActiveWeb3React()
   const { chainId } = useActiveWeb3React()
-  // console.log(spender)
-  // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
+  
+  const [approved, setApproved] = useState<any>()
+
   const contract = useNFT721Contract(inputToken)
-  const pendingApproval = useHasPendingApproval(spender, spender)
-  // console.log(currentAllowance)
+  const pendingApproval = useHasPendingApproval(inputToken, spender)
+  console.log(pendingApproval)
   // check the current approval status
 
-  const approved = useMemo(() => {
-    if (tokenid && contract) {
-      return contract.getApproved(tokenid)
+  useEffect(() => {
+    if (contract && tokenid) {
+      contract.getApproved(tokenid).then((res:any) => {
+        // console.log(res)
+        if (ZERO_ADDRESS === res) {
+          setApproved('')
+        } else {
+          setApproved(res)
+        }
+      }).catch((err:any) => {
+        console.log(err)
+        setApproved('')
+      })
+    } else {
+      setApproved('')
     }
-    return ''
   }, [contract, tokenid])
-  console.log(approved)
+  // console.log(approved)
   const approvalState: ApprovalState = useMemo(() => {
     if (!spender) return ApprovalState.UNKNOWN
     // we might not have enough data to know whether or not we need to approve
-    if (!contract) return ApprovalState.UNKNOWN
+    if (!contract || !approved) return ApprovalState.UNKNOWN
 
     // amountToApprove will be defined if currentAllowance is
-    return contract
-      ? pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED
-  }, [contract, pendingApproval, spender])
+    return contract || !approved || approved?.toLowerCase() !== spender?.toLowerCase() ? (pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED) : ApprovalState.APPROVED
+  }, [contract, pendingApproval, spender, approved])
 
   const addTransaction = useTransactionAdder()
 

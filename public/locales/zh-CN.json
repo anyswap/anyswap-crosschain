@@ -19,6 +19,7 @@
   "unlock": "解锁",
   "pending": "处理中",
   "selectToken": "选择通证",
+  "selectTokenId": "选择ID",
   "selectTokenTip": "通过搜索令牌的名称或符号或在下面粘贴其地址来查找令牌。",
   "searchOrPaste": "搜索通证或粘贴地址",
   "searchOrPasteMobile": "名称、符号或地址",
@@ -341,5 +342,6 @@
   "Finished": "已结束",
   "StayTuned": "敬请期待！",
   "farmLinkTitle": "将跳转至第三方DApp",
-  "farmLinkTip": "提示：您所访问的页面将跳转至第三方DApp.您在第三方DApp的行为将适用该DAPP的用户协议和隐私政策，由第三方直接并单独向您承担责任。"
+  "farmLinkTip": "提示：您所访问的页面将跳转至第三方DApp.您在第三方DApp的行为将适用该DAPP的用户协议和隐私政策，由第三方直接并单独向您承担责任。",
+  "nftrouter": "NFT 路由"
 }

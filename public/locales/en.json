@@ -19,6 +19,7 @@
   "unlock": "Unlock",
   "pending": "Pending",
   "selectToken": "Select a token",
+  "selectTokenId": "Select ID",
   "selectTokenTip": "Find a token by searching for its name or symbol or by pasting its address below.",
   "searchOrPaste": "Search Token Name, Symbol, or Address",
   "searchOrPasteMobile": "Name, Symbol, or Address",
@@ -342,5 +343,6 @@
   "Finished": "Finished",
   "StayTuned": "Stay tuned!",
   "farmLinkTitle": "You will be redirected to Third Party DApp",
-  "farmLinkTip": "Note: You will be redirected to a third party DApp. Please go through the User Agreement and Privacy Policy of the third party DApp carefully. DApp will resume full responsiblity for all actions and usage on the DApp."
+  "farmLinkTip": "Note: You will be redirected to a third party DApp. Please go through the User Agreement and Privacy Policy of the third party DApp carefully. DApp will resume full responsiblity for all actions and usage on the DApp.",
+  "nftrouter": "NFT Router"
 }
