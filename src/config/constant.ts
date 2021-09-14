@@ -1,6 +1,6 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
-export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
-// export const bridgeApi = 'https://l2api.anyswap.exchange'
+// export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
+export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 
@@ -248,9 +248,10 @@ export const controlConfig:any = {
     showCoin: [],
     showChain: [],
     initNode: '1',
-    isOpenRouter: 1,
+    isOpenRouter: 0,
     isOpenRouterTxns: 0,
-    isOpenBridge: 1,
+    isOpenBridge: 0,
+    isOpenNFT: 1,
   },
 }
 

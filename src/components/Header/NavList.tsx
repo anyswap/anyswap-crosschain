@@ -356,45 +356,14 @@ export default function NavList() {
         {
           config.getCurConfigInfo().isOpenBridge ? (
             <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
-                <div className="icon">
-                  <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
-                  <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
-                </div>
-                {t('bridge')}
-              </StyledNavLink>
-          ) : (
-            <StyledNavLink
-              id={`pool-nav-link`}
-              to={'/pool'}
-              isActive={(match, { pathname }) =>
-                Boolean(match) ||
-                pathname.startsWith('/add') ||
-                pathname.startsWith('/remove') ||
-                pathname.startsWith('/create') ||
-                pathname.startsWith('/find')
-              }
-            >
               <div className="icon">
-                <img src={require('../../assets/images/icon/pool.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/pool-purpl.svg')} className="on" alt="" />
+                <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
               </div>
-              {t('pool')}
+              {t('bridge')}
             </StyledNavLink>
-          )
-        }
-        <StyledNavLink
-          id={`swap-nav-link`}
-          to={'/farm'}
-        >
-          <div className="icon">
-            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
-          </div>
-          {t('farms')}
-        </StyledNavLink>
-        {/* {
-          config.getCurConfigInfo().isOpenRouter ? (
-            <>
+          ) : (
+            config.getCurConfigInfo().isOpenRouter ? (
               <StyledNavLink
                 id={`pool-nav-link`}
                 to={'/pool'}
@@ -412,19 +381,30 @@ export default function NavList() {
                 </div>
                 {t('pool')}
               </StyledNavLink>
-              <StyledNavLink
-                id={`swap-nav-link`}
-                to={'/farm'}
-              >
-                <div className="icon">
-                  <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
-                  <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
-                </div>
-                {t('farms')}
-              </StyledNavLink>
-            </>
+            ) : ''
+          )
+        }
+        {
+          config.getCurConfigInfo().isOpenNFT ? (
+            <StyledNavLink id={`bridge-nav-link`} to={'/nft'}>
+              <div className="icon">
+                <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
+              </div>
+              {t('nftrouter')}
+            </StyledNavLink>
           ) : ''
-        } */}
+        }
+        <StyledNavLink
+          id={`swap-nav-link`}
+          to={'/farm'}
+        >
+          <div className="icon">
+            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
+          </div>
+          {t('farms')}
+        </StyledNavLink>
         <StyledNavLink1 id="link" href="https://anyswap.net">
           <div className="icon">
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
