@@ -82,7 +82,10 @@ export default function SelectChainIDPanel ({
               <OptionCardClickable
                 key={index}
                 className={selectChainId && selectChainId === item ? 'active' : ''}
-                onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
+                onClick={() => {
+                  setModalOpen(false)
+                  return (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))
+                }}
               >
                 {/* {Option(item, selectChainId)} */}
                 <Option curChainId={item} selectChainId={chainId}></Option>
@@ -105,7 +108,7 @@ export default function SelectChainIDPanel ({
         }
         <SelectChainContent>
           <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
-          <p className="txt">{config.getCurChainInfo(selectChainId).symbol}</p>
+          <p className="txt">{config.getCurChainInfo(selectChainId).name}</p>
         </SelectChainContent>
       </SelectChainBox>
     </>

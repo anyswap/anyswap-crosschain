@@ -6,6 +6,7 @@ import {ArrowRight} from 'react-feather'
 import {useNFT721Callback, WrapType} from '../../hooks/useNFTCallback'
 import {useApproveCallback, ApprovalState} from '../../hooks/useNFTApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
+// import { useNFT721Contract } from '../../hooks/useContract'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
 
@@ -18,11 +19,13 @@ import Loader from '../../components/Loader'
 
 import AppBody from '../AppBody'
 import SelectChainIDPanel from './selectChainId'
-import SelectCurrencyPanel from './selectCurrency'
+import SelectCurrencyPanel, {TokenidLogo} from './selectCurrency'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+
+import {fromWei} from '../../utils/tools/tools'
 
 import NFT_DATA from './nftdata.json'
 
@@ -74,6 +77,8 @@ export default function CroseNFT () {
   const [selectTokenId, setSelectTokenId] = useState<any>()
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
+  // const [tokenidUri, setTokenidUri] = useState<any>()
+
   const initBridgeToken = getInitToken()
 
   // const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
@@ -88,7 +93,7 @@ export default function CroseNFT () {
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
       const list = nftData[chainId]
-      const urlParams = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : '')
+      const urlParams = (selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : 'Loot'))?.toLowerCase()
       let isUseToken = 0
       let useToken
       for (const t in list) {
@@ -142,16 +147,18 @@ export default function CroseNFT () {
     return arr
   }, [tokenList, selectCurrency])
 
+  // const contract721 = useNFT721Contract(selectCurrency)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
     routerToken,
-    {symbol: 'NFT'},
+    {symbol: 'NFT', version: tokenList[selectCurrency]?.version},
     selectCurrency,
     account,
     selectTokenId,
-    selectChainId
+    selectChainId,
+    tokenList[selectCurrency]?.fee
   )
   const [approval, approveCallback] = useApproveCallback(selectCurrency, routerToken, selectTokenId)
-
+    // console.log(tokenidUri)
   function setMetamaskNetwork (item:any) {
     selectNetwork(item).then((res:any) => {
       if (res.msg === 'Error') {
@@ -172,6 +179,19 @@ export default function CroseNFT () {
     }
     return
   }, [wrapInputError])
+
+  const isCrossBridge = useMemo(() => {
+    if (
+      account
+      && selectCurrency
+      && !isWrapInputError
+      && selectTokenId
+    ) {
+      return false
+    } else {
+      return true
+    }
+  }, [selectCurrency, account, isWrapInputError, selectTokenId])
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
@@ -220,17 +240,29 @@ export default function CroseNFT () {
               setSelectTokenId(value)
             }}
           />
-
-          <Input
-            value={inputValue}
-            onUserInput={(value) => {
-              setInputValue(value)
-            }}
-            style={{marginRight: '0'}}
-          />
-          <FeeBox>
-            {t('fee')}0.2{config.getCurChainInfo(chainId).symbol}
-          </FeeBox>
+          {
+            tokenList[selectCurrency]?.nfttype === 'erc1155' ? (
+              <Input
+                value={inputValue}
+                onUserInput={(value) => {
+                  setInputValue(value)
+                }}
+                style={{marginRight: '0'}}
+              />
+            ) : ''
+          }
+          {
+            tokenList[selectCurrency]?.fee && false ? (
+              <FeeBox>
+                {t('fee')}{fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
+              </FeeBox>
+            ) : ''
+          }
+          {
+            selectCurrency && selectTokenId ? (
+              <TokenidLogo size="100%" selectCurrency={selectCurrency} selectTokenId={selectTokenId} type="1" />
+            ) : ''
+          }
         </FlexWrapBox>
         
 
@@ -250,11 +282,11 @@ export default function CroseNFT () {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol
+                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol + ' ' + selectTokenId
                   )}
                 </ButtonConfirmed>
               ) : (
-                <ButtonConfirmed onClick={() => {
+                <ButtonConfirmed disabled={isCrossBridge} onClick={() => {
                   if (onWrap) onWrap()
                 }}>
                   {btnTxt}

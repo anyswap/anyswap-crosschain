@@ -49,7 +49,6 @@ function getUrlVersion (init:any) {
     version = VERSION.V4_MOVR
   } else if (
     url.indexOf('https://app.anyswap.exchange') === 0
-    || url.indexOf('https://deploy.anyswap.exchange') === 0
     || url.indexOf('https://anyswap.exchange') === 0
   ) {
     version = VERSION.V5

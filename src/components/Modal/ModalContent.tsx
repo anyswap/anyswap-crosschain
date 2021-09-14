@@ -14,6 +14,7 @@ import { CloseIcon } from '../../theme'
 const ContentWrapper = styled.div`
   width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
+  overflow:auto;
 `
 
 interface ModalProps {
@@ -59,7 +60,7 @@ export default function ModalContent({
             </RowBetween>
           </PaddedColumn>
           <Separator />
-          <div style={{ flex: '1' }}>
+          <div style={{ flex: '1', overflow:'auto' }}>
             <ContentWrapper style={{padding: (padding ? padding : '2rem')}}>
               {children}
             </ContentWrapper>

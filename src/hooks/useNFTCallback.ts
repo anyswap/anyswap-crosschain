@@ -1,13 +1,13 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 // import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 // import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
-import { useNFTContract } from './useContract'
+import { useNFTContract, useNFT721Contract } from './useContract'
 
-// import {recordsTxns} from '../utils/bridge/register'
+import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
 
 export enum WrapType {
@@ -31,20 +31,46 @@ export function useNFT721Callback(
   toAddress:  any,
   tokenid: string | undefined,
   toChainID: string | undefined,
+  fee: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useNFTContract(routerToken)
+
+  const [nftBalance, setNftBalance] = useState<any>()
+  
+
+  const contract = useNFTContract(routerToken)
+
+  const contract721 = useNFT721Contract(inputToken)
+
   const { t } = useTranslation()
   
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const addTransaction = useTransactionAdder()
+
+  useEffect(() => {
+    if (contract721 && tokenid) {
+      contract721.ownerOf(tokenid).then((res:any) => {
+        console.log(res)
+        if (res) {
+          setNftBalance(res)
+        } else {
+          setNftBalance('')
+        }
+      }).catch((err:any) => {
+        console.log(err)
+        setNftBalance('')
+      })
+    } else {
+      setNftBalance('')
+    }
+  }, [contract721, tokenid])
+
   return useMemo(() => {
     
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
-    // console.log(typedValue)
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !(nftBalance?.toLowerCase() === account?.toLowerCase())) return NOT_APPLICABLE
 
-    const sufficientBalance = ethBalance
+    const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
 
     return {
       wrapType: WrapType.WRAP,
@@ -54,32 +80,32 @@ export function useNFT721Callback(
               try {
                 console.log(111)
                 // console.log(inputAmount.raw.toString(16))
-                const txReceipt = await bridgeContract.nft721SwapOut(
+                const txReceipt = await contract.nft721SwapOut(
                   ...[
                     inputToken,
                     toAddress,
                     tokenid,
                     toChainID
                   ],
-                  {value: '0x2386f26fc10000'}
+                  {value: fee}
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge ${tokenid} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
-                // if (txReceipt?.hash && account) {
-                //   const data = {
-                //     hash: txReceipt.hash?.toLowerCase(),
-                //     chainId: chainId,
-                //     selectChain: toChainID,
-                //     account: account?.toLowerCase(),
-                //     value: inputAmount.raw.toString(),
-                //     formatvalue: inputAmount?.toSignificant(6),
-                //     to: toAddress?.toLowerCase(),
-                //     symbol: inputCurrency?.symbol,
-                //     routerToken: routerToken,
-                //     version: inputCurrency?.version
-                //   }
-                //   recordsTxns(data)
-                // }
+                if (txReceipt?.hash && account) {
+                  const data = {
+                    hash: txReceipt.hash?.toLowerCase(),
+                    chainId: chainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: '',
+                    formatvalue: '',
+                    to: toAddress?.toLowerCase(),
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken,
+                    version: inputCurrency?.version
+                  }
+                  recordsTxns(data)
+                }
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -87,5 +113,5 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, ethBalance, addTransaction, t, inputToken, toAddress, toChainID, tokenid])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, inputToken, toAddress, toChainID, tokenid, nftBalance, account])
 }

@@ -32,8 +32,9 @@ export function useApproveCallback(
   const [approved, setApproved] = useState<any>()
 
   const contract = useNFT721Contract(inputToken)
-  const pendingApproval = useHasPendingApproval(inputToken, spender)
+  const pendingApproval = useHasPendingApproval(spender, spender)
   // console.log(pendingApproval)
+  // console.log(approved)
   // check the current approval status
 
   useEffect(() => {
@@ -61,11 +62,14 @@ export function useApproveCallback(
     if (approved === 1) return ApprovalState.NOT_APPROVED
 
     // amountToApprove will be defined if currentAllowance is
+    if (approved?.toLowerCase() === spender?.toLowerCase()) {
+      return ApprovalState.APPROVED
+    }
     return contract || !approved || approved?.toLowerCase() !== spender?.toLowerCase() ? (pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED) : ApprovalState.APPROVED
   }, [contract, pendingApproval, spender, approved])
 
   const addTransaction = useTransactionAdder()
-
+  // console.log(approvalState)
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily')

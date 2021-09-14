@@ -179,7 +179,7 @@ export default {
     lookBlock: ETH_TEST_EXPLORER + '/block/',
     explorer: ETH_TEST_EXPLORER,
     symbol: symbol,
-    name: 'Ethereum',
+    name: 'Rinkeby',
     networkName: 'ETH rinkeby',
     type: 'test',
     label: ETH_TEST_CHAINID,

@@ -80,8 +80,8 @@ export function useNFTContract(routerToken?:any, withSignerIfPossible?: boolean)
   return useContract(routerToken ? routerToken : undefined, NFT, withSignerIfPossible)
 }
 
-export function useNFT721Contract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(routerToken ? routerToken : undefined, NFT721, withSignerIfPossible)
+export function useNFT721Contract(tokenAddress?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress ? tokenAddress : undefined, NFT721, withSignerIfPossible)
 }
 
 export function useSwapUnderlyingContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {

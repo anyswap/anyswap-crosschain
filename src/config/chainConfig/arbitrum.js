@@ -35,11 +35,17 @@ const bridgeToken = {
     nativeToken: '0x338726dd694db9e2230ec2bb8624a2d7f566c96d'
   },
   [VERSION.V5]: {
-    bridgeInitToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    bridgeInitToken: '0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a',
     bridgeInitChain: '1',
-    nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+    nativeToken: '',
     crossBridgeInitToken: ''
   },
+  // [VERSION.V5]: {
+  //   bridgeInitToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+  //   bridgeInitChain: '1',
+  //   nativeToken: '0x765277eebeca2e31912c9946eae1021199b39c61',
+  //   crossBridgeInitToken: ''
+  // },
 }
 
 export default {

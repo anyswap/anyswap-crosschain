@@ -620,7 +620,7 @@ export function useBridgeNativeCallback(
   const sendTx = useCallback(() => {
     console.log(connectedWallet)
     if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType) return
-    const send = new MsgSend(
+    const send:any = new MsgSend(
       connectedWallet.walletAddress,
       toAddress,
       { uluna: 	inputAmount.raw.toString() }

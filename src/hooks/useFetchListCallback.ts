@@ -72,7 +72,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         return
       } else {
         const UV:any = USE_VERSION
-        const version:any = UV === VERSION.V5 ? 'all' : USE_VERSION
+        const version:any = [VERSION.V5, VERSION.V6].includes(UV) ? 'all' : USE_VERSION
         const url = `${config.bridgeApi}/v3/serverinfoV2?chainId=${chainId}&version=${version}`
         return getUrlData(url)
           .then((tokenList:any) => {

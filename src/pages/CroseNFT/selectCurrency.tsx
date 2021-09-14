@@ -1,18 +1,23 @@
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ChevronDown} from 'react-feather'
 import { Text } from 'rebass'
+import axios from 'axios'
 
 import ModalContent from '../../components/Modal/ModalContent'
 import Column from '../../components/Column'
 import { MenuItem } from '../../components/SearchModal/styleds'
 import TokenLogo from '../../components/TokenLogo'
 
+import { useActiveWeb3React } from '../../hooks'
+import { useNFT721Contract } from '../../hooks/useContract'
+
 interface SelectCurrencyProps {
   tokenlist?: any
   selectCurrency?: any
   selectTokenId?: any
+  tokenidUri?: any
   onSelectCurrency?: (value: any) => void
   onSelectTokenId?: (value: any) => void
 }
@@ -34,6 +39,57 @@ const SelectCurrencyView = styled.div`
   }
 `
 
+export function TokenidLogo ({
+  size,
+  selectCurrency,
+  selectTokenId,
+  type
+}: {
+  size?:any
+  selectCurrency?:any
+  selectTokenId?:any
+  type?:any
+}) {
+  const [logo, setLogo] = useState<any>()
+
+  const contract721 = useNFT721Contract(selectCurrency)
+
+  useEffect(() => {
+    try {
+      if (contract721 && selectTokenId) {
+        contract721.tokenURI(selectTokenId).then((tokenidUri:any) => {
+          // console.log(tokenidUri)
+          if (tokenidUri) {
+            axios.get(tokenidUri).then(res => {
+              // console.log(res)
+              if (res?.data?.image) {
+                setLogo(res?.data?.image)
+              } else {
+                setLogo('')
+              }
+            })
+          } else {
+            setLogo('')
+          }
+        }).catch((err:any) => {
+          console.log(err)
+          setLogo('')
+        })
+      } else {
+        setLogo('')
+      }
+      
+    } catch (error) {
+      setLogo('')
+    }
+  }, [selectTokenId])
+  if (type) {
+    return <img src={logo} />
+  }
+  return (
+    <TokenLogo logoUrl={logo} size={size}></TokenLogo>
+  )
+}
 
 export default function SelectCurrencyPanel ({
   tokenlist = {},
@@ -43,12 +99,35 @@ export default function SelectCurrencyPanel ({
   onSelectTokenId
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
-
+  const { account } = useActiveWeb3React()
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
-  // console.log(selectCurrency)
-  // console.log(tokenlist[selectCurrency])
-  // console.log(selectTokenId)
+  const [tokenidList, setTokenidList] = useState<any>()
+
+  const contract721 = useNFT721Contract(selectCurrency)
+  
+  useEffect(() => {
+    if (contract721 && account) {
+      contract721.balanceOf(account).then(async(res:any) => {
+        // console.log(res?.toNumber())
+        const count = res?.toNumber()
+        if (count) {
+          const arr = []
+          for (let i = 0; i < count; i++) {
+            const n = await contract721.tokenOfOwnerByIndex(account, i.toString())
+            if (n?._isBigNumber) {
+              arr.push(n?.toNumber())
+            }
+          }
+          setTokenidList(arr)
+          console.log(arr)
+        }
+      }).catch((err:any) => {
+        console.log(err)
+      })
+    }
+  }, [contract721, account])
+  // console.log(tokenidLogo)
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
     if (onSelectCurrency) {
@@ -65,12 +144,18 @@ export default function SelectCurrencyPanel ({
     }
   }, [onSelectTokenId, setModalTokenidOpen])
 
-  const tokenidList = useMemo(() => {
-    if (tokenlist && tokenlist[selectCurrency]) {
-      return tokenlist[selectCurrency].tokenidList
-    }
-    return {}
-  }, [tokenlist, selectCurrency])
+  // const tokenidList = useMemo(() => {
+  //   // if (tokenlist && tokenlist[selectCurrency]) {
+  //   //   return tokenlist[selectCurrency].tokenidList
+  //   // }
+  //   const list:any = {}
+  //   for (let i = 1; i <= 800; i++) {
+  //     list[i] = {
+  //       name: i
+  //     }
+  //   }
+  //   return list
+  // }, [tokenlist, selectCurrency])
   return (
     <>
       <ModalContent
@@ -114,8 +199,9 @@ export default function SelectCurrencyPanel ({
         padding={'0rem'}
       >
         {
-          Object.keys(tokenidList).map((item:any, index) => {
-            const isSelected = item === selectCurrency
+          // Object.keys(tokenidList).map((item:any, index) => {
+            tokenidList && tokenidList.map((item:any, index:any) => {
+            const isSelected = item === selectTokenId
             return (
               <MenuItem
                 className={`token-item-${index}`}
@@ -124,11 +210,12 @@ export default function SelectCurrencyPanel ({
                 key={index}
                 // selected={otherSelected}
               >
-                <TokenLogo symbol={tokenidList[item].symbol} logoUrl={tokenidList[item]?.logoUrl} size={'24px'}></TokenLogo>
+                {/* <TokenLogo symbol={tokenidList[item].symbol} logoUrl={tokenidList[item]?.logoUrl} size={'24px'}></TokenLogo> */}
+                {/* <TokenidLogo size="24px" selectCurrency={selectCurrency} selectTokenId={item} /> */}
                 <Column>
-                  <Text title={tokenidList[item].name} fontWeight={500}>
-                    {tokenidList[item].symbol}
-                    <Text fontSize={'10px'}>{tokenidList[item].name ? tokenidList[item].name : ''}</Text>
+                  <Text title={item} fontWeight={500}>
+                    {item}
+                    {/* <Text fontSize={'10px'}>{item ? item : ''}</Text> */}
                   </Text>
                 </Column>
               </MenuItem>
@@ -141,7 +228,7 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalCurrencyOpen(true)
         }}>
-          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'24px'}></TokenLogo>
+          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'30px'}></TokenLogo>
           {
             selectCurrency ? (
               tokenlist[selectCurrency]?.name
@@ -154,10 +241,11 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalTokenidOpen(true)
         }}>
-          <TokenLogo symbol={tokenidList[selectTokenId]?.name} logoUrl={tokenidList[selectTokenId]?.logoUrl} size={'24px'}></TokenLogo>
+          {/* <TokenLogo logoUrl={tokenidList[selectTokenId]?.logoUrl ?? tokenidLogo} size={'24px'}></TokenLogo> */}
+          <TokenidLogo size="30px" selectCurrency={selectCurrency} selectTokenId={selectTokenId} />
           {
             selectTokenId ? (
-              tokenidList[selectTokenId]?.name
+              selectTokenId
             ) : (
               <p className="txt">{t('selectTokenId')}</p>
             )

@@ -116,6 +116,7 @@
     "@babel/core": "7.9.0",
     "@makerdao/multicall": "^0.12.0",
     "@svgr/webpack": "4.3.3",
+    "@terra-money/terra.js": "^2.0.5",
     "@terra-money/wallet-provider": "^1.2.4",
     "anyswap-sdk": "^3.0.11",
     "axios": "^0.21.1",
