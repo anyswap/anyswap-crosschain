@@ -95,24 +95,44 @@ export default function SelectChainIDPanel ({
           })
         }
       </ModalContent>
-
-      <SelectChainBox
-        id={id}
-        onClick={() => setModalOpen(true)}
-      >
-        {
-          label ? (
-            <LabelTxt>
-              {label}
-              {config.getCurChainInfo(selectChainId).name}
-            </LabelTxt>
-          ) : ''
-        }
-        <SelectChainContent>
-          <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
-          {/* <p className="txt">{config.getCurChainInfo(selectChainId).name}</p> */}
-        </SelectChainContent>
-      </SelectChainBox>
+      {
+        selectChainId ? (
+          <SelectChainBox
+            id={id}
+            onClick={() => setModalOpen(true)}
+          >
+            {
+              label ? (
+                <LabelTxt>
+                  {label}
+                  {config.getCurChainInfo(selectChainId).name}
+                </LabelTxt>
+              ) : ''
+            }
+            <SelectChainContent>
+              <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
+              {/* <p className="txt">{config.getCurChainInfo(selectChainId).name}</p> */}
+            </SelectChainContent>
+          </SelectChainBox>
+        ) : (
+          <SelectChainBox
+            id={id}
+            onClick={() => setModalOpen(true)}
+          >
+            {
+              label ? (
+                <LabelTxt>
+                  {label}
+                  {t('selectNetwork')}
+                </LabelTxt>
+              ) : ''
+            }
+            <SelectChainContent>
+              <TokenLogo symbol={''} size={'50px'}></TokenLogo>
+            </SelectChainContent>
+          </SelectChainBox>
+        )
+      }
     </>
   )
 }

@@ -91,14 +91,26 @@ export default function CroseNFT () {
   //   '250'
   // )
 
+  // useEffect(() => {
+  //   setSelectCurrency('')
+  // }, [chainId])
+
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
       const list = nftData[chainId]
-      const urlParams = (selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : 'Loot'))?.toLowerCase()
+      // console.log(list)
+      // console.log(selectCurrency)
+      // console.log(list[selectCurrency])
+      const urlParams = (selectCurrency && list[selectCurrency] && list[selectCurrency]?.chainId?.toString() === chainId?.toString() ? selectCurrency : (initBridgeToken ? initBridgeToken : 'Loot'))?.toLowerCase()
+      // console.log(urlParams)
       let isUseToken = 0
       let useToken
       for (const t in list) {
-        if (!selectCurrency && urlParams) {
+        if (
+          (!selectCurrency && urlParams)
+          || !list[selectCurrency]
+          || list[selectCurrency].chainId?.toString() !== chainId?.toString()
+        ) {
           if (
             t?.toLowerCase() === urlParams
             || list[t]?.symbol?.toLowerCase() === urlParams
@@ -114,7 +126,11 @@ export default function CroseNFT () {
         }
       }
       // console.log(useToken)
-      if (!selectCurrency) {
+      if (
+        !selectCurrency
+        || !list[selectCurrency]
+        || list[selectCurrency].chainId?.toString() !== chainId?.toString()
+      ) {
         setSelectCurrency(useToken)
       }
       return nftData[chainId]
@@ -141,13 +157,17 @@ export default function CroseNFT () {
           useChain = c
         }
       }
-      if (!selectChainId) {
+      if (
+        !selectChainId
+        || selectChainId?.toString() === chainId?.toString()
+        || !SUPPORT_CHAIN.includes(selectChainId?.toString())
+      ) {
         setSelectChainId(useChain)
       }
     }
     return arr
-  }, [tokenList, selectCurrency])
-
+  }, [tokenList, selectCurrency, chainId])
+  // console.log(selectChainId)
   // const contract721 = useNFT721Contract(selectCurrency)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
     routerToken,

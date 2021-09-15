@@ -99,7 +99,7 @@ export default function SelectCurrencyPanel ({
   onSelectTokenId
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
   const [tokenidList, setTokenidList] = useState<any>()
@@ -121,12 +121,17 @@ export default function SelectCurrencyPanel ({
           }
           setTokenidList(arr)
           console.log(arr)
+        } else {
+          setTokenidList([])
         }
       }).catch((err:any) => {
         console.log(err)
+        setTokenidList([])
       })
+    } else {
+      setTokenidList([])
     }
-  }, [contract721, account])
+  }, [contract721, account, chainId])
   // console.log(tokenidLogo)
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
