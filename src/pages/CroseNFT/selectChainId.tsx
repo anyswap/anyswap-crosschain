@@ -29,7 +29,7 @@ const SelectChainContent = styled.div`
   width: 100%;
   ${({ theme }) => theme.flexC};
   flex-wrap: wrap;
-  height: 120px;
+  height: 100px;
   padding: 10px;
   border-radius: 20px;
   // border: 1px solid #ddd;
@@ -41,8 +41,9 @@ const SelectChainContent = styled.div`
 `
 
 const LabelTxt = styled.div`
-  margin-bottom: 10px;
+  // margin-bottom: 10px;
   text-align: center;
+  white-space:nowrap;
 `
 
 export default function SelectChainIDPanel ({
