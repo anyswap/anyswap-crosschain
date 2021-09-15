@@ -112,7 +112,7 @@ export function useApproveCallback(
         console.debug('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, spender, contract, addTransaction])
+  }, [approvalState, spender, contract, addTransaction, tokenid])
 
   return [approvalState, approve]
 }

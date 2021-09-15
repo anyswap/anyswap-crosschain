@@ -91,9 +91,9 @@ export default function CroseNFT () {
   //   '250'
   // )
 
-  // useEffect(() => {
-  //   setSelectCurrency('')
-  // }, [chainId])
+  useEffect(() => {
+    setSelectTokenId('')
+  }, [chainId])
 
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
@@ -326,6 +326,7 @@ export default function CroseNFT () {
                 <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {
                   onDelay()
                   if (onWrap) onWrap().then(() => {
+                    setSelectTokenId('')
                     onClear()
                   }).catch(() => {
                     onClear()
