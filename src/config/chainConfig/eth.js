@@ -11,6 +11,10 @@ export const ETH_TEST_CHAINID = 4
 export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
+export const ETH_TEST1_CHAINID = 5
+export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
+export const ETH_TEST1_EXPLORER = 'https://goerli.etherscan.io'
+
 export const tokenList = [
   {
     "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
@@ -183,6 +187,31 @@ export default {
     networkName: 'ETH rinkeby',
     type: 'test',
     label: ETH_TEST_CHAINID,
+    isSwitch: 1,
+    suffix: 'ERC20'
+  },
+  [ETH_TEST1_CHAINID]: {
+    tokenListUrl: tokenListUrl + ETH_TEST1_CHAINID,
+    tokenList: formatSwapTokenList(symbol, testTokenList),
+    ...bridgeToken[USE_VERSION],
+    crossBridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
+    swapRouterToken: '',
+    swapInitToken: '',
+    multicalToken: '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    timelock: '',
+    nodeRpc: ETH_TEST1NET,
+    chainID: ETH_TEST1_CHAINID,
+    lookHash: ETH_TEST1_EXPLORER + '/tx/',
+    lookAddr: ETH_TEST1_EXPLORER + '/address/',
+    lookBlock: ETH_TEST1_EXPLORER + '/block/',
+    explorer: ETH_TEST1_EXPLORER,
+    symbol: symbol,
+    name: 'Goerli',
+    networkName: 'ETH Goerli',
+    type: 'test',
+    label: ETH_TEST1_CHAINID,
     isSwitch: 1,
     suffix: 'ERC20'
   },
