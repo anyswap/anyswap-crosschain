@@ -150,7 +150,7 @@ export default function CroseNFT () {
   // const contract721 = useNFT721Contract(selectCurrency)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
     routerToken,
-    {symbol: 'NFT', version: tokenList[selectCurrency]?.version},
+    {symbol: tokenList[selectCurrency]?.symbol, version: tokenList[selectCurrency]?.version},
     selectCurrency,
     account,
     selectTokenId,
