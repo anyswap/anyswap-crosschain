@@ -24,7 +24,7 @@ export function useApproveCallback(
   // routerToken?: any,
   inputToken?: any,
   spender?: any,
-  tokenid?: string,
+  tokenid?: any,
 ): [ApprovalState, () => Promise<void>] {
   // const { account, chainId } = useActiveWeb3React()
   const { chainId } = useActiveWeb3React()
@@ -32,15 +32,16 @@ export function useApproveCallback(
   const [approved, setApproved] = useState<any>()
 
   const contract = useNFT721Contract(inputToken)
-  const pendingApproval = useHasPendingApproval(spender, spender)
+  const pendingApproval = useHasPendingApproval(tokenid, spender)
   // console.log(pendingApproval)
   // console.log(approved)
+  // console.log(spender)
   // check the current approval status
 
   useEffect(() => {
     if (contract && tokenid) {
       contract.getApproved(tokenid).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (ZERO_ADDRESS === res) {
           setApproved(1)
         } else {
@@ -53,7 +54,7 @@ export function useApproveCallback(
     } else {
       setApproved(0)
     }
-  }, [contract, tokenid])
+  }, [contract, tokenid, pendingApproval])
   // console.log(approved)
   const approvalState: ApprovalState = useMemo(() => {
     if (!spender) return ApprovalState.UNKNOWN
@@ -104,7 +105,7 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction(response, {
           summary: 'Approve ' + config.getBaseCoin(tokenid, chainId),
-          approval: { tokenAddress: spender, spender: spender }
+          approval: { tokenAddress: tokenid, spender: spender }
         })
       })
       .catch((error: Error) => {

@@ -103,12 +103,13 @@ export default function SelectChainIDPanel ({
           label ? (
             <LabelTxt>
               {label}
+              {config.getCurChainInfo(selectChainId).name}
             </LabelTxt>
           ) : ''
         }
         <SelectChainContent>
           <TokenLogo symbol={config.getCurChainInfo(selectChainId).networkLogo ?? config.getCurChainInfo(selectChainId).symbol} size={'50px'}></TokenLogo>
-          <p className="txt">{config.getCurChainInfo(selectChainId).name}</p>
+          {/* <p className="txt">{config.getCurChainInfo(selectChainId).name}</p> */}
         </SelectChainContent>
       </SelectChainBox>
     </>

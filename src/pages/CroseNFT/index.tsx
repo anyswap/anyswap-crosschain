@@ -217,16 +217,16 @@ export default function CroseNFT () {
               // setSelectChainId(value)
               setMetamaskNetwork(value)
             }}
-            label={'From Chain'}
+            label={'From '}
           />
-          <ArrowRight />
+          <ArrowRight style={{marginTop: '30px'}} />
           <SelectChainIDPanel
             chainList={destChainId}
             selectChainId={selectChainId}
             onChainSelect={(value) => {
               setSelectChainId(value)
             }}
-            label={'To Chain'}
+            label={'To '}
           />
 
           <SelectCurrencyPanel

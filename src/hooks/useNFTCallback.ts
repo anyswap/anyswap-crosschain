@@ -51,7 +51,7 @@ export function useNFT721Callback(
   useEffect(() => {
     if (contract721 && tokenid) {
       contract721.ownerOf(tokenid).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res) {
           setNftBalance(res)
         } else {

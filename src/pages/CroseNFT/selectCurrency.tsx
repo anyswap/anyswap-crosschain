@@ -32,7 +32,7 @@ const SelectCurrencyBox = styled.div`
 `
 const SelectCurrencyView = styled.div`
   ${({ theme }) => theme.flexBC};
-  width:40%;
+  width:48%;
   cursor:pointer;
   .txt {
     margin:0;
@@ -228,7 +228,7 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalCurrencyOpen(true)
         }}>
-          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'30px'}></TokenLogo>
+          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'46px'}></TokenLogo>
           {
             selectCurrency ? (
               tokenlist[selectCurrency]?.name
@@ -242,7 +242,7 @@ export default function SelectCurrencyPanel ({
           setModalTokenidOpen(true)
         }}>
           {/* <TokenLogo logoUrl={tokenidList[selectTokenId]?.logoUrl ?? tokenidLogo} size={'24px'}></TokenLogo> */}
-          <TokenidLogo size="30px" selectCurrency={selectCurrency} selectTokenId={selectTokenId} />
+          <TokenidLogo size="46px" selectCurrency={selectCurrency} selectTokenId={selectTokenId} />
           {
             selectTokenId ? (
               selectTokenId
