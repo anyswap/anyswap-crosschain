@@ -54,6 +54,8 @@ function getUrlVersion (init:any) {
     version = VERSION.V5
   } else if (url.indexOf('https://arb.anyswap.exchange') === 0) {
     version = VERSION.V3_1
+  } else if (url.indexOf('https://nft.anyswap.exchange') === 0) {
+    version = VERSION.V6
   } else {
     version = init
   }

@@ -76,6 +76,7 @@ export default function CroseNFT () {
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectTokenId, setSelectTokenId] = useState<any>()
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const [delayAction, setDelayAction] = useState<boolean>(false)
 
   // const [tokenidUri, setTokenidUri] = useState<any>()
 
@@ -165,6 +166,13 @@ export default function CroseNFT () {
         alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(item).networkName}))
       }
     })
+  }
+
+  function onDelay () {
+    setDelayAction(true)
+  }
+  function onClear () {
+    setDelayAction(false)
   }
 
   useEffect(() => {
@@ -272,9 +280,17 @@ export default function CroseNFT () {
               <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
             ) : (
               approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING ? (
-                <ButtonConfirmed onClick={() => {
-                  if (approveCallback) approveCallback()
-                }}>
+                <ButtonConfirmed
+                  onClick={() => {
+                    onDelay()
+                    if (approveCallback) approveCallback().then(() => {
+                      onClear()
+                    }).catch(() => {
+                      onClear()
+                    })
+                  }}
+                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                >
                   {approval === ApprovalState.PENDING ? (
                     <AutoRow gap="6px" justify="center">
                       {t('Approving')} <Loader stroke="white" />
@@ -286,8 +302,13 @@ export default function CroseNFT () {
                   )}
                 </ButtonConfirmed>
               ) : (
-                <ButtonConfirmed disabled={isCrossBridge} onClick={() => {
-                  if (onWrap) onWrap()
+                <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {
+                  onDelay()
+                  if (onWrap) onWrap().then(() => {
+                    onClear()
+                  }).catch(() => {
+                    onClear()
+                  })
                 }}>
                   {btnTxt}
                 </ButtonConfirmed>
