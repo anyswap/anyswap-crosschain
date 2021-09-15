@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react'
+// import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import styled from 'styled-components'
-import { useTranslation } from 'react-i18next'
+// import styled from 'styled-components'
+// import { useTranslation } from 'react-i18next'
 
 import { network } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { NetworkContextName } from '../../constants'
-import Loader from '../Loader'
+// import Loader from '../Loader'
 
-const MessageWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20rem;
-`
+// const MessageWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   height: 20rem;
+// `
 
-const Message = styled.h2`
-  color: ${({ theme }) => theme.secondary1};
-`
+// const Message = styled.h2`
+//   color: ${({ theme }) => theme.secondary1};
+// `
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { active } = useWeb3React()
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName)
   // console.log(active)
@@ -39,16 +40,16 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   useInactiveListener(!triedEager)
 
   // handle delayed loader state
-  const [showLoader, setShowLoader] = useState(false)
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowLoader(true)
-    }, 600)
+  // const [showLoader, setShowLoader] = useState(false)
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setShowLoader(true)
+  //   }, 600)
 
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [])
+  //   return () => {
+  //     clearTimeout(timeout)
+  //   }
+  // }, [])
 
   // 在页面加载时，在尝试连接到注入的连接器之前，不要执行任何操作
   if (!triedEager) {
@@ -56,22 +57,24 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   }
 
   // 如果帐户上下文未处于活动状态，并且网络上下文中存在错误，则这是一个无法恢复的错误
-  if (!active && networkError) {
-    return (
-      <MessageWrapper>
-        <Message>{t('unknownError')}</Message>
-      </MessageWrapper>
-    )
-  }
+  // if (!active && networkError) {
+  //   return (
+  //     <MessageWrapper>
+  //       <Message>{t('unknownError')}</Message>
+  //     </MessageWrapper>
+  //   )
+  // }
 
   // 如果两个上下文都不活动，请旋转
-  if (!active && !networkActive) {
-    return showLoader ? (
-      <MessageWrapper>
-        <Loader />
-      </MessageWrapper>
-    ) : null
-  }
+  // if (!active && !networkActive) {
+  //   return showLoader ? (
+  //     <MessageWrapper>
+  //       <Loader />
+  //     </MessageWrapper>
+  //   ) : null
+  // }
 
-  return children
+  return (
+    <>{children}</>
+    )
 }

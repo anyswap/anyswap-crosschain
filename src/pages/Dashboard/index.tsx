@@ -440,7 +440,7 @@ export default function DashboardDtil() {
                               item.isView ? (
                                 <span style={{ display: 'inline-block' }}>
                                   <TokenActionBtnSwap to={'/dashboard'} className="disabled">
-                                    {t('swap')}---{item.isView}
+                                    {t('swap')}
                                   </TokenActionBtnSwap>
                                 </span>
                               ) : (

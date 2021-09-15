@@ -67,18 +67,28 @@ export function recordsTxns ({
     })
   })
 }
-
+// hash: 0x380da576e0d50d4d78ad21952417dfd4d7aaf3c2034cf31541c35b941522ec96
+// srcChainID: 250
+// destChainID: 56
+// token: 0x1ccca1ce62c62f7be95d4a67722a8fdbed6eecb4
+// from: 0xc03033d8b833ff7ca08bf2a58c9bc9d711257249
+// version: STABLEV3
+// value: 12000000
+// formatvalue: 12
+// to: 0xc03033d8b833ff7ca08bf2a58c9bc9d711257249
+// symbol: USDC
 // recordsTxns({
-//   hash: '0xc0a1123b0e95c5bfc32bfb7411852795d91d1e053762b1146af21e32232c2841',
-//   chainId: '56',
-//   selectChain: '128',
+//   hash: '0x380da576e0d50d4d78ad21952417dfd4d7aaf3c2034cf31541c35b941522ec96',
+//   chainId: '250',
+//   selectChain: '56',
 //   account: '0xc03033d8b833ff7ca08bf2a58c9bc9d711257249',
-//   value: '50000000000000000',
-//   formatvalue: '0.05',
+//   value: '12000000',
+//   formatvalue: '12',
 //   to: '0xe09c98f97dafb1f954cea0ce550383e2bd0c8829',
-//   symbol: 'BNB',
-//   version: 'swapin',
-//   pairid: 'BNB'
+//   symbol: 'USDC',
+//   version: 'STABLEV3',
+//   pairid: 'USDC',
+//   routerToken: '0x1ccca1ce62c62f7be95d4a67722a8fdbed6eecb4'
 // })
 // https://bridgeapi.anyswap.exchange/v2/register/account/chainId/symbol
 
