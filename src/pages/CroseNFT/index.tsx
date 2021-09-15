@@ -213,13 +213,14 @@ export default function CroseNFT () {
       account
       && selectCurrency
       && !isWrapInputError
+      && selectChainId
       && selectTokenId
     ) {
       return false
     } else {
       return true
     }
-  }, [selectCurrency, account, isWrapInputError, selectTokenId])
+  }, [selectCurrency, account, isWrapInputError, selectTokenId, selectChainId])
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
