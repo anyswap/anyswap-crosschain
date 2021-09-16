@@ -46,17 +46,19 @@ const FeeBox = styled.div`
   border-radius: 0.5625rem;
   border: solid 0.5px ${({ theme }) => theme.tipBorder};
   background-color: ${({ theme }) => theme.tipBg};
-  padding: 1rem 1.25rem;
-  margin-top: 0.625rem;
+  padding: 0.8rem 1rem;
+  margin: 5px 0;
+  font-size: 12px;
   color: ${({ theme }) => theme.tipColor};
 `
 
-const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
+// const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
 
 function getInitToken () {
   const urlParams = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  const localParams = sessionStorage.getItem(SelectNFTTokenLabel) ? sessionStorage.getItem(SelectNFTTokenLabel) : ''
-  let initBridgeToken:any = urlParams ? urlParams : localParams
+  // const localParams = sessionStorage.getItem(SelectNFTTokenLabel) ? sessionStorage.getItem(SelectNFTTokenLabel) : ''
+  // let initBridgeToken:any = urlParams ? urlParams : localParams
+  let initBridgeToken:any = urlParams ? urlParams : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
   if (initBridgeToken) {
     return initBridgeToken
@@ -281,15 +283,15 @@ export default function CroseNFT () {
             ) : ''
           }
           {
-            tokenList[selectCurrency]?.fee && false ? (
-              <FeeBox>
-                {t('fee')}{fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
-              </FeeBox>
+            selectCurrency && selectTokenId ? (
+              <TokenidLogo size="100%" selectCurrency={selectCurrency} selectTokenId={selectTokenId} type="1" />
             ) : ''
           }
           {
-            selectCurrency && selectTokenId ? (
-              <TokenidLogo size="100%" selectCurrency={selectCurrency} selectTokenId={selectTokenId} type="1" />
+            tokenList[selectCurrency]?.fee ? (
+              <FeeBox>
+                {t('fee')}{fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
+              </FeeBox>
             ) : ''
           }
         </FlexWrapBox>

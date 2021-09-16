@@ -149,18 +149,6 @@ export default function SelectCurrencyPanel ({
     }
   }, [onSelectTokenId, setModalTokenidOpen])
 
-  // const tokenidList = useMemo(() => {
-  //   // if (tokenlist && tokenlist[selectCurrency]) {
-  //   //   return tokenlist[selectCurrency].tokenidList
-  //   // }
-  //   const list:any = {}
-  //   for (let i = 1; i <= 800; i++) {
-  //     list[i] = {
-  //       name: i
-  //     }
-  //   }
-  //   return list
-  // }, [tokenlist, selectCurrency])
   return (
     <>
       <ModalContent
