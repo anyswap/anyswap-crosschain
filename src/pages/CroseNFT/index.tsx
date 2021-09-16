@@ -82,6 +82,10 @@ export default function CroseNFT () {
 
   const initBridgeToken = getInitToken()
 
+  useEffect(() => {
+    setSelectTokenId('')
+  }, [chainId])
+
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
       const list = nftData[chainId]

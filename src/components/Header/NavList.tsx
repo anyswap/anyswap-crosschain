@@ -220,7 +220,7 @@ const MenuItem = styled(ExternalLink)`
   }
 `
 const OutLink = styled.div`
-  padding-left: 44px;
+  padding-left: 30px;
   margin-top: 78px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: none;
