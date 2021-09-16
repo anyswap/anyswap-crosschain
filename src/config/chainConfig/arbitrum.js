@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const ARBITRUM_MAIN_CHAINID = 42161
 export const ARBITRUM_MAINNET = getLocalRPC(ARBITRUM_MAIN_CHAINID, 'https://arb-mainnet.g.alchemy.com/v2/u04Uw5dp98OohbK6fylEVaEd2OD2Rxaj')
-export const ARBITRUM_MAIN_EXPLORER = 'https://mainnet-arb-explorer.netlify.app'
+export const ARBITRUM_MAIN_EXPLORER = 'https://arbiscan.io/'
 
 export const ARBITRUM_TEST_CHAINID = 421611
 export const ARBITRUM_TESTNET = getLocalRPC(ARBITRUM_TEST_CHAINID, 'https://rinkeby.arbitrum.io/rpc')
