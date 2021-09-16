@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { JSBI } from 'anyswap-sdk'
+import axios from 'axios'
 import { useTranslation } from 'react-i18next'
 // import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -21,6 +22,111 @@ export enum WrapType {
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
+
+export const TokenidImage:any = {}
+
+
+export function getImage (chainId: any, selectCurrency: any, list: any) {
+  // const { chainId } = useActiveWeb3React()
+  const multicallContract = useMulticallContract()
+  const contract721 = useNFT721Contract(selectCurrency)
+
+  const [imageList, setImageList] = useState<any>()
+  const [tokenidList, setTokenidList] = useState<any>()
+
+  if (!TokenidImage[chainId]) TokenidImage[chainId] = {}
+  const methodName = 'tokenURI'
+  const fragment:any = useMemo(() => contract721?.interface?.getFunction(methodName), [contract721, methodName])
+
+  const noTokenidImg = useMemo(() => {
+    if (list && list.length > 0 && chainId && TokenidImage[chainId]) {
+      const arr = []
+      for (let i = 0; i < list.length; i++) {
+        if (!TokenidImage[chainId][list[i]]) {
+          arr.push(list[i])
+        }
+      }
+      return arr
+    } else if (list && list.length > 0 && chainId && !TokenidImage[chainId]) {
+      return list
+    }
+    return []
+  }, [TokenidImage, chainId, list])
+
+  const calls = useMemo(
+    () => {
+      const arr:any = []
+      if (noTokenidImg && contract721 && fragment) {
+        for (let i = 0; i < noTokenidImg.length; i++) {
+          arr.push({
+            address: selectCurrency,
+            callData: contract721?.interface?.encodeFunctionData(fragment, [noTokenidImg[i]])
+          })
+        }
+      }
+      return arr
+    },
+    [contract721, noTokenidImg, fragment]
+  )
+
+  // const getUriData = useCallback((imageList) => {
+  useEffect(() => {
+    if (imageList) {
+      const arr:any = []
+      for (const obj of imageList) {
+        arr.push(axios.get(obj.uri))
+      }
+      if (arr.length > 0) {
+        axios.all(arr).then((res:any) => {
+          // console.log(res)
+          for (let i = 0; i < noTokenidImg.length; i++) {
+            TokenidImage[chainId][noTokenidImg[i]] = {
+              ...imageList[i],
+              ...res[i].data
+            }
+          }
+          const tList:any = {}
+          for (let i = 0; i < list.length; i++) {
+            tList[list[i]] = TokenidImage[chainId][list[i]]
+          }
+          setTokenidList(tList)
+          // console.log(TokenidImage)
+        }).catch((err:any) => {
+          console.log(err)
+        })
+      }
+    }
+  }, [imageList, noTokenidImg])
+  
+  useEffect(() => {
+    // const getTokenidList = useCallback(() => {
+    if (multicallContract && calls.length > 0) {
+      multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
+        const arr = []
+        for (let i = 0; i < noTokenidImg.length; i++) {
+          const obj = res.returnData[i]
+          arr.push({uri: contract721?.interface?.decodeFunctionResult(fragment, obj)[0], tokenid: noTokenidImg[i]})
+        }
+        // console.log(arr)
+        setImageList(arr)
+        // getUriData(arr)
+      }).catch((err:any) => {
+        console.log(err)
+        setImageList('')
+      })
+    } else {
+      setImageList('')
+    }
+  }, [multicallContract, calls, noTokenidImg])
+
+  return useMemo(() => {
+    return {
+      tokeidInfoList: tokenidList
+    }
+  }, [tokenidList])
+}
+
+
 export function useNFT721GetTokenidListCallback(
   selectCurrency: any
 ) {
@@ -30,7 +136,9 @@ export function useNFT721GetTokenidListCallback(
 
   const [index, setIndex] = useState<any>()
   const [tokenidList, setTokenidList] = useState<any>()
-  
+
+  const {tokeidInfoList} = getImage(chainId, selectCurrency, tokenidList)
+  // console.log(tokeidInfoList)
   const methodName = 'tokenOfOwnerByIndex'
   const fragment = useMemo(() => contract721?.interface?.getFunction(methodName), [contract721, methodName])
   const calls = useMemo(
@@ -102,7 +210,7 @@ export function useNFT721GetTokenidListCallback(
   }, [account, chainId, library, getTokenidList])
 
   return {
-    tokenidList: tokenidList
+    tokenidList: tokeidInfoList
   }
 }
 

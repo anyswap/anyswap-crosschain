@@ -169,7 +169,7 @@ export default function SelectCurrencyPanel ({
       >
         {
           // Object.keys(tokenidList).map((item:any, index) => {
-            tokenidList && tokenidList.map((item:any, index:any) => {
+            tokenidList && Object.keys(tokenidList).sort().map((item:any, index:any) => {
             const isSelected = item === selectTokenId
             return (
               <MenuItem
@@ -179,7 +179,7 @@ export default function SelectCurrencyPanel ({
                 key={index}
                 // selected={otherSelected}
               >
-                {/* <TokenLogo symbol={tokenidList[item].symbol} logoUrl={tokenidList[item]?.logoUrl} size={'24px'}></TokenLogo> */}
+                <TokenLogo logoUrl={tokenidList[item]?.image} size={'24px'}></TokenLogo>
                 {/* <TokenidLogo size="24px" selectCurrency={selectCurrency} selectTokenId={item} /> */}
                 <Column>
                   <Text title={item} fontWeight={500}>
@@ -210,8 +210,8 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalTokenidOpen(true)
         }}>
-          {/* <TokenLogo logoUrl={tokenidList[selectTokenId]?.logoUrl ?? tokenidLogo} size={'24px'}></TokenLogo> */}
-          <TokenidLogo size="46px" selectCurrency={selectCurrency} selectTokenId={selectTokenId} />
+          <TokenLogo logoUrl={selectTokenId && tokenidList[selectTokenId]?.image} size={'46px'}></TokenLogo>
+          {/* <TokenidLogo size="46px" selectCurrency={selectCurrency} selectTokenId={selectTokenId} /> */}
           {
             selectTokenId ? (
               selectTokenId
