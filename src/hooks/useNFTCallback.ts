@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { JSBI } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 // import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 // import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
-import { useNFTContract, useNFT721Contract } from './useContract'
+import { useNFTContract, useNFT721Contract, useMulticallContract } from './useContract'
+// import { useNFTContract, useNFT721Contract } from './useContract'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
@@ -18,6 +20,92 @@ export enum WrapType {
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
+
+export function useNFT721GetTokenidListCallback(
+  selectCurrency: any
+) {
+  const { chainId, account, library } = useActiveWeb3React()
+  const multicallContract = useMulticallContract()
+  const contract721 = useNFT721Contract(selectCurrency)
+
+  const [index, setIndex] = useState<any>()
+  const [tokenidList, setTokenidList] = useState<any>()
+  
+  const methodName = 'tokenOfOwnerByIndex'
+  const fragment = useMemo(() => contract721?.interface?.getFunction(methodName), [contract721, methodName])
+  const calls = useMemo(
+    () => {
+      const arr:any = []
+      if (index && contract721 && fragment) {
+        for (let i = 0; i < index; i++) {
+          arr.push({
+            address: selectCurrency,
+            callData: contract721?.interface?.encodeFunctionData(fragment, [account, i])
+          })
+        }
+      }
+      return arr
+    },
+    [contract721, index, fragment]
+  )
+  
+  useEffect(() => {
+  // const getTokenidList = useCallback(() => {
+    if (multicallContract && calls.length > 0) {
+      multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
+        const arr = []
+        for (const obj of res.returnData) {
+          arr.push(JSBI.BigInt(obj.toString()).toString())
+        }
+        setTokenidList(arr.sort())
+      }).catch((err:any) => {
+        console.log(err)
+        setTokenidList([])
+      })
+    } else {
+      setTokenidList([])
+    }
+  }, [multicallContract, calls])
+
+  // useEffect(() => {
+    const getTokenidList = useCallback(() => {
+    if (contract721 && account && chainId) {
+      contract721.balanceOf(account).then(async(res:any) => {
+        console.log(res?.toNumber())
+        const count = res?.toNumber()
+        if (count) {
+          setIndex(count)
+        } else {
+          setIndex('')
+        }
+      }).catch((err:any) => {
+        console.log(err)
+        setIndex('')
+      })
+    } else {
+      setIndex('')
+    }
+  }, [contract721, account, chainId, library])
+
+  useEffect(() => {
+    if (!library || !chainId) return undefined
+
+    library
+      .getBlockNumber()
+      .then(getTokenidList)
+      .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
+    
+    library.on('block', getTokenidList)
+    return () => {
+      library.removeListener('block', getTokenidList)
+    }
+  }, [account, chainId, library, getTokenidList])
+
+  return {
+    tokenidList: tokenidList
+  }
+}
+
 /**
  * 跨链any token
  * 给定选定的输入和输出货币，返回一个wrap回调

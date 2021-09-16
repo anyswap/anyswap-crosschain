@@ -33,8 +33,8 @@ export async function fetchChunk(
 ): Promise<{ results: string[]; blockNumber: number }> {
   console.debug('Fetching chunk', multicallContract, chunk, minBlockNumber)
   let resultsBlockNumber, returnData
-  // console.log(multicallContract)
-  // console.log('multicallContract')
+  // console.log(chunk)
+  // console.log('chunk')
   try {
     ;[resultsBlockNumber, returnData] = await multicallContract.aggregate(chunk.map(obj => [obj.address, obj.callData]))
     // console.log('multicallContract1')
@@ -197,7 +197,7 @@ export default function Updater({type}: {type?:number}): null {
     if (cancellations.current?.blockNumber !== latestBlockNumber) {
       cancellations.current?.cancellations?.forEach(c => c())
     }
-    // console.log(cancellations)
+    // console.log(calls)
     dispatch(
       fetchingMulticallResults({
         calls,

@@ -10,8 +10,9 @@ import Column from '../../components/Column'
 import { MenuItem } from '../../components/SearchModal/styleds'
 import TokenLogo from '../../components/TokenLogo'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
 import { useNFT721Contract } from '../../hooks/useContract'
+import {useNFT721GetTokenidListCallback} from '../../hooks/useNFTCallback'
 
 interface SelectCurrencyProps {
   tokenlist?: any
@@ -99,40 +100,15 @@ export default function SelectCurrencyPanel ({
   onSelectTokenId
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  // const { account, chainId } = useActiveWeb3React()
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
-  const [tokenidList, setTokenidList] = useState<any>()
+  // const [tokenidList, setTokenidList] = useState<any>()
 
-  const contract721 = useNFT721Contract(selectCurrency)
+  // const contract721 = useNFT721Contract(selectCurrency)
+
+  const {tokenidList} = useNFT721GetTokenidListCallback(selectCurrency)
   
-  useEffect(() => {
-    if (contract721 && account) {
-      contract721.balanceOf(account).then(async(res:any) => {
-        // console.log(res?.toNumber())
-        const count = res?.toNumber()
-        if (count) {
-          const arr = []
-          for (let i = 0; i < count; i++) {
-            const n = await contract721.tokenOfOwnerByIndex(account, i.toString())
-            if (n?._isBigNumber) {
-              arr.push(n?.toNumber())
-            }
-          }
-          setTokenidList(arr.sort())
-          console.log(arr)
-        } else {
-          setTokenidList([])
-        }
-      }).catch((err:any) => {
-        console.log(err)
-        setTokenidList([])
-      })
-    } else {
-      setTokenidList([])
-    }
-  }, [contract721, account, chainId])
-  // console.log(tokenidLogo)
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
     if (onSelectCurrency) {

@@ -80,22 +80,7 @@ export default function CroseNFT () {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  // const [tokenidUri, setTokenidUri] = useState<any>()
-
   const initBridgeToken = getInitToken()
-
-  // const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
-  //   '0x5F69b7Ab8F7cAb199a310Fd5A27B43Fef44ddcC0',
-  //   {symbol: 'NFT'},
-  //   '0x9bd3fac4d9b051ef7ca9786aa0ef5a7e0558d44c',
-  //   '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249',
-  //   '7003',
-  //   '250'
-  // )
-
-  useEffect(() => {
-    setSelectTokenId('')
-  }, [chainId])
 
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
@@ -154,22 +139,24 @@ export default function CroseNFT () {
       let isUseToken = 0
       for (const c in tokenList[selectCurrency].destChains) {
         arr.push(c)
-        if (!selectChainId && !isUseToken) {
+        if (
+          (!selectChainId || !useChain)
+          && !isUseToken
+        ) {
           isUseToken = 1
           useChain = c
         }
       }
+      
       if (
         !selectChainId
         || selectChainId?.toString() === chainId?.toString()
-        || !SUPPORT_CHAIN.includes(selectChainId?.toString())
       ) {
         setSelectChainId(useChain)
       }
     }
     return arr
   }, [tokenList, selectCurrency, chainId])
-  // console.log(selectChainId)
   // const contract721 = useNFT721Contract(selectCurrency)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
     routerToken,
@@ -290,7 +277,7 @@ export default function CroseNFT () {
           {
             tokenList[selectCurrency]?.fee ? (
               <FeeBox>
-                {t('fee')}: {fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
+                {t('fee')}: {fromWei(tokenList[selectCurrency]?.fee, 18)} {config.getCurChainInfo(chainId).symbol}
               </FeeBox>
             ) : ''
           }
