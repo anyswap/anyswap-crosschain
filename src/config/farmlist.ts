@@ -122,6 +122,18 @@ const config: FarmConfig = {
     key: 'KABY',
     farmtype: 'any'
   },
+  'BSC_PTLKX': {
+    chainId: BNB_MAIN_CHAINID,
+    farmToken: '0x8C77057C3343B7DCC97CA21dA274730396162a98',
+    lpToken: BSC_ANY_TOKEN,
+    blockNumber: 28800,
+    lpTokenIno: BSC_ANY,
+    url: 'farm/bsc/ptlkx',
+    logoUrl: 'https://www.dropbox.com/s/2ccqica0hf1gxiv/BATICON120x120.png',
+    key: 'PTLKX',
+    farmtype: 'any',
+    price: 0.00588118
+  },
   'ETH_TEST': {
     chainId: '4',
     farmToken: '0x0bd19f6447cd676255C7C7B00428462B3dA67e3a',

@@ -259,6 +259,7 @@ export default function FarmsList () {
   const [BSCBACONStakingAPY, setBSCBACONStakingAPY] = useState()
   const [BSCTROStakingAPY, setBSCTROStakingAPY] = useState()
   const [BSCKABYStakingAPY, setBSCKABYStakingAPY] = useState()
+  const [BSCPTLKXStakingAPY, setBSCPTLKXStakingAPY] = useState()
   const [TipModal, setTipModal] = useState(false)
   const [JumpTip, setJumpTip] = useState({
     title: '',
@@ -318,6 +319,9 @@ export default function FarmsList () {
         setBSCKABYStakingAPY(res)
       })
     })
+    getFarmAPY('BSC_PTLKX', farmlist['BSC_PTLKX'].price).then((res:any) => {
+      setBSCPTLKXStakingAPY(res)
+    })
   }, [])
 
   // console.log(BSCPLAYStakingAPY)
@@ -338,6 +342,17 @@ export default function FarmsList () {
   }
   const farmList = useMemo(() => {
     return [
+      {
+        isDoubleLogo: 1,
+        isOutLink: 0,
+        url: '/' + farmlist['BSC_PTLKX'].url,
+        title: farmlist['BSC_PTLKX'].key + ' Staking',
+        info: (t('StakingTip', {symbol: 'ANY'}) + "<span class='pecent'>" + (BSCPTLKXStakingAPY ? (Number(BSCPTLKXStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: farmlist['BSC_PTLKX'].logoUrl,
+        coin2: 'BNB',
+        coin3: '',
+        status: typeof BSCPTLKXStakingAPY !== 'undefined' && Number(BSCPTLKXStakingAPY) === 0 && Date.now() > new Date('2021-09-17 18:00').getTime()  ? 'finished' : 'live'
+      },
       {
         isDoubleLogo: 1,
         isOutLink: 0,

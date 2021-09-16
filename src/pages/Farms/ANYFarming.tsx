@@ -22,10 +22,15 @@ export default function FarmingComponent({
   const [price, setPrice] = useState()
   const [LPprice, setLPPrice] = useState()
   useEffect(() => {
-    getPrice(farmlist[farmkey].key).then((res:any) => {
-      console.log(res)
-      setPrice(res)
-    })
+    
+    if (farmlist[farmkey].price) {
+      setPrice(farmlist[farmkey].price)
+    } else {
+      getPrice(farmlist[farmkey].key).then((res:any) => {
+        console.log(res)
+        setPrice(res)
+      })
+    }
     getPrice('ANY').then((res:any) => {
       console.log(res)
       setLPPrice(res)
