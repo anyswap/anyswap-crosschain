@@ -528,6 +528,7 @@ export default function CrossChain() {
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || ((isUnderlying || isDestUnderlying) && Number(inputBridgeValue) > Number(destChain.ts))
         || isCrossBridge
+        || isWrapInputError
       ) {
         return true
       } else {
@@ -536,7 +537,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isUnderlying, isDestUnderlying])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isUnderlying, isDestUnderlying, isWrapInputError])
 
 
   const btnTxt = useMemo(() => {

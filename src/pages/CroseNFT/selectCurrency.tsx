@@ -119,7 +119,7 @@ export default function SelectCurrencyPanel ({
               arr.push(n?.toNumber())
             }
           }
-          setTokenidList(arr)
+          setTokenidList(arr.sort())
           console.log(arr)
         } else {
           setTokenidList([])

@@ -290,7 +290,7 @@ export default function CroseNFT () {
           {
             tokenList[selectCurrency]?.fee ? (
               <FeeBox>
-                {t('fee')}{fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
+                {t('fee')}: {fromWei(tokenList[selectCurrency]?.fee, 18)}{config.getCurChainInfo(chainId).symbol}
               </FeeBox>
             ) : ''
           }
