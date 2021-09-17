@@ -6,25 +6,26 @@ export interface BurnState {
 }
 
 const initialState: BurnState = {
-  nftlist: {}
+  nftlist: {},
 }
 
 export default createReducer<BurnState>(initialState, builder =>
-  builder.addCase(nftlist, (state, { payload: { chainId, account, nftlist } }) => {
-    // console.log()
-    if (!chainId || !account) return {...state}
-    return {
-      ...state,
-      nftlist: {
-        ...state.nftlist,
-        [chainId]: {
-          ...(state.nftlist[chainId] ? state.nftlist[chainId] : {}),
-          [account]: {
-            ...(state.nftlist[chainId] && state.nftlist[chainId][account] ? state.nftlist[chainId][account] : {}),
-            ...nftlist
+  builder
+    .addCase(nftlist, (state, { payload: { chainId, account, nftlist } }) => {
+      // console.log()
+      if (!chainId || !account) return {...state}
+      return {
+        ...state,
+        nftlist: {
+          ...state.nftlist,
+          [chainId]: {
+            ...(state.nftlist[chainId] ? state.nftlist[chainId] : {}),
+            [account]: {
+              ...(state.nftlist[chainId] && state.nftlist[chainId][account] ? state.nftlist[chainId][account] : {}),
+              ...nftlist
+            }
           }
         }
       }
-    }
-  })
+    })
 )

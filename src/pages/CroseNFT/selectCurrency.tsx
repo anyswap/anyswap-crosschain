@@ -11,7 +11,8 @@ import TokenLogo from '../../components/TokenLogo'
 
 // import {useNFT721GetTokenidListCallback, useNFT721GetAllTokenidListCallback} from '../../hooks/useNFTCallback'
 // import {useNFT721GetTokenidListCallback} from '../../hooks/useNFTCallback'
-import {useNFT721GetAllTokenidListCallback, useNftState} from '../../state/nft/hooks'
+// import {useNFT721GetAllTokenidListCallback, useNftState} from '../../state/nft/hooks'
+import {useNFT721GetAllTokenidListCallback} from '../../state/nft/hooks'
 
 interface SelectCurrencyProps {
   tokenlist?: any
@@ -48,12 +49,13 @@ export default function SelectCurrencyPanel ({
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
   // const { chainId } = useActiveWeb3React()
-  useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
+  // useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
 
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
 
-  const tokenidInfo:any = useNftState()
+  // const tokenidInfo:any = useNftState()
+  const tokenidInfo:any = useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
   // console.log(tokenidInfo)
 
   const tokenidList = useMemo(() => {
