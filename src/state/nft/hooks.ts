@@ -176,10 +176,8 @@ export function useNFT721GetAllTokenidListCallback(
         // console.log(list)
         setTokenidArr(arr)
         dispatch(nftlist({ chainId, account, nftlist: list }))
-        // setTokenidList(arr.sort())
       }).catch((err:any) => {
         console.log(err)
-        // setTokenidList([])
       })
     }
   }, [multicallContract, calls, account, chainId])
@@ -223,5 +221,19 @@ export function useNFT721GetAllTokenidListCallback(
     }
   }, [account, chainId, library, getTokenidList, tokenList])
 
-  return tokenidInfo
+  // return tokenidInfo
+  return useMemo(() => {
+    const list:any = {}
+    if (tokenidArr) {
+      for (const obj of tokenidArr) {
+        list[obj.token] = {
+          ...(list[obj.token] ? list[obj.token] : {}),
+          [obj.tokenid]: {
+            ...(tokenidInfo[obj.token] && tokenidInfo[obj.token][obj.tokenid] ? tokenidInfo[obj.token][obj.tokenid] : {})
+          }
+        }
+      }
+    }
+    return list
+  }, [tokenidArr, tokenidInfo])
 }
