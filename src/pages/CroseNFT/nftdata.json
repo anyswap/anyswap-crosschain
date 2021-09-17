@@ -19,6 +19,26 @@
       "version" : "NFT",
       "logoUrl" : "https://avatars.githubusercontent.com/u/89961031?s=200&v=4",
       "nfttype": "erc721"
+    },
+    "0x6362496bef53458b20548a35a2101214ee2be3e0": {
+      "chainId" : "4", 
+      "decimals" : 0, 
+      "destChains" : {
+          "250" : {
+              "name" : "Artwork", 
+              "symbol" : "Artwork", 
+              "decimals" : 0, 
+              "address" : "0x937e077abaea52d3abf879c9b9d3f2ebd15baa21"
+          }
+      }, 
+      "fee" : "2000000000000000", 
+      "name" : "Artwork", 
+      "routerToken" : "0x5F69b7Ab8F7cAb199a310Fd5A27B43Fef44ddcC0", 
+      "symbol" : "Artwork", 
+      "tokenid" : "Artwork", 
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/-mmm0FgZHOLyvvRDYo7fQK9o1SakLPLzKyN6z2iwWzByPVNy3GPly_vPRCUQbt7DI3n_5m8dnsLm1ZmHyNXdD491BA=w286",
+      "nfttype": "erc721"
     }
   },
   "250": {
@@ -40,6 +60,26 @@
       "tokenid" : "loot", 
       "version" : "NFT",
       "logoUrl" : "https://avatars.githubusercontent.com/u/89961031?s=200&v=4",
+      "nfttype": "erc721"
+    },
+    "0x937e077abaea52d3abf879c9b9d3f2ebd15baa21": {
+      "chainId" : "250", 
+      "decimals" : 0, 
+      "destChains" : {
+          "4" : {
+              "name" : "Artwork", 
+              "symbol" : "Artwork", 
+              "decimals" : 0, 
+              "address" : "0x6362496bef53458b20548a35a2101214ee2be3e0"
+          }
+      }, 
+      "fee" : "10000000000000000", 
+      "name" : "Artwork", 
+      "routerToken" : "0x63D3F3b271dBbd43A788687B86D516Fe185D2509", 
+      "symbol" : "Artwork", 
+      "tokenid" : "Artwork", 
+      "version" : "NFT",
+      "logoUrl" : "https://lh3.googleusercontent.com/-mmm0FgZHOLyvvRDYo7fQK9o1SakLPLzKyN6z2iwWzByPVNy3GPly_vPRCUQbt7DI3n_5m8dnsLm1ZmHyNXdD491BA=w286",
       "nfttype": "erc721"
     }
   }

@@ -84,7 +84,7 @@ export default function CroseNFT () {
 
   useEffect(() => {
     setSelectTokenId('')
-  }, [chainId])
+  }, [chainId, selectCurrency])
 
   const tokenList = useMemo(() => {
     if (nftData && chainId && nftData[chainId]) {
@@ -155,6 +155,7 @@ export default function CroseNFT () {
       if (
         !selectChainId
         || selectChainId?.toString() === chainId?.toString()
+        || !arr.includes(selectChainId)
       ) {
         setSelectChainId(useChain)
       }
@@ -295,7 +296,7 @@ export default function CroseNFT () {
             !account ? (
               <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
             ) : (
-              approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING ? (
+              (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) && selectTokenId?.tokenid ? (
                 <ButtonConfirmed
                   onClick={() => {
                     onDelay()

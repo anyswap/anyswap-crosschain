@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ChevronDown} from 'react-feather'
@@ -9,7 +9,9 @@ import Column from '../../components/Column'
 import { MenuItem } from '../../components/SearchModal/styleds'
 import TokenLogo from '../../components/TokenLogo'
 
-import {useNFT721GetTokenidListCallback} from '../../hooks/useNFTCallback'
+// import {useNFT721GetTokenidListCallback, useNFT721GetAllTokenidListCallback} from '../../hooks/useNFTCallback'
+// import {useNFT721GetTokenidListCallback} from '../../hooks/useNFTCallback'
+import {useNFT721GetAllTokenidListCallback, useNftState} from '../../state/nft/hooks'
 
 interface SelectCurrencyProps {
   tokenlist?: any
@@ -45,12 +47,30 @@ export default function SelectCurrencyPanel ({
   onSelectTokenId
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
-  // const { account, chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
+
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
 
-  const {tokenidList} = useNFT721GetTokenidListCallback(selectCurrency)
-  
+  const tokenidInfo:any = useNftState()
+  // console.log(tokenidInfo)
+
+  const tokenidList = useMemo(() => {
+    const arr:any = []
+    if (tokenidInfo[selectCurrency]) {
+      const list = Object.keys(tokenidInfo[selectCurrency]).sort()
+      for (const tid of list) {
+        arr.push({
+          ...tokenidInfo[selectCurrency][tid],
+          tokenid: tid
+        })
+      }
+    }
+    // console.log(arr)
+    return arr
+  }, [tokenidInfo, selectCurrency])
+
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
     if (onSelectCurrency) {
@@ -92,7 +112,7 @@ export default function SelectCurrencyPanel ({
                 <Column>
                   <Text title={tokenlist[item].name} fontWeight={500}>
                     {tokenlist[item].symbol}
-                    <Text fontSize={'10px'}>{tokenlist[item].name ? tokenlist[item].name : ''}</Text>
+                    <Text fontSize={'10px'}>{tokenlist[item].name ? tokenlist[item].name : item}</Text>
                   </Text>
                 </Column>
               </MenuItem>
@@ -110,21 +130,21 @@ export default function SelectCurrencyPanel ({
         padding={'0rem'}
       >
         {
-          // Object.keys(tokenidList).map((item:any, index) => {
-            tokenidList && Object.keys(tokenidList).sort().map((item:any, index:any) => {
-            const isSelected = item === selectTokenId?.tokenid
+          tokenidList.map((item:any, index:any) => {
+            // tokenidList && Object.keys(tokenidList).sort().map((item:any, index:any) => {
+            const isSelected = item.tokenid === selectTokenId?.tokenid
             return (
               <MenuItem
                 className={`token-item-${index}`}
-                onClick={() => (isSelected ? null : handleSelectTokenid(tokenidList[item]))}
+                onClick={() => (isSelected ? null : handleSelectTokenid(item))}
                 disabled={isSelected}
                 key={index}
                 // selected={otherSelected}
               >
-                <TokenLogo logoUrl={tokenidList[item]?.image} size={'24px'}></TokenLogo>
+                <TokenLogo logoUrl={item?.image} size={'24px'}></TokenLogo>
                 <Column>
-                  <Text title={item} fontWeight={500}>
-                    {tokenidList[item].name}
+                  <Text title={item.tokenid} fontWeight={500}>
+                    {item?.name ? item.name : item.tokenid}
                     {/* <Text fontSize={'10px'}>{item ? tokenidList[item].name : ''}</Text> */}
                   </Text>
                 </Column>
