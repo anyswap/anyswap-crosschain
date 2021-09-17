@@ -19,7 +19,7 @@ import Loader from '../../components/Loader'
 
 import AppBody from '../AppBody'
 import SelectChainIDPanel from './selectChainId'
-import SelectCurrencyPanel, {TokenidLogo} from './selectCurrency'
+import SelectCurrencyPanel from './selectCurrency'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -167,11 +167,11 @@ export default function CroseNFT () {
     {symbol: tokenList[selectCurrency]?.symbol, version: tokenList[selectCurrency]?.version},
     selectCurrency,
     account,
-    selectTokenId,
+    selectTokenId?.tokenid,
     selectChainId,
     tokenList[selectCurrency]?.fee
   )
-  const [approval, approveCallback] = useApproveCallback(selectCurrency, routerToken, selectTokenId)
+  const [approval, approveCallback] = useApproveCallback(selectCurrency, routerToken, selectTokenId?.tokenid)
     // console.log(tokenidUri)
   function setMetamaskNetwork (item:any) {
     selectNetwork(item).then((res:any) => {
@@ -275,7 +275,9 @@ export default function CroseNFT () {
           }
           {
             selectCurrency && selectTokenId ? (
-              <TokenidLogo size="100%" selectCurrency={selectCurrency} selectTokenId={selectTokenId} type="1" />
+              <>
+                <img src={selectTokenId?.image} />
+              </>
             ) : ''
           }
           {
@@ -312,7 +314,7 @@ export default function CroseNFT () {
                   ) : approvalSubmitted ? (
                     t('Approved')
                   ) : (
-                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol + ' ' + selectTokenId
+                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol + ' ' + selectTokenId?.tokenid
                   )}
                 </ButtonConfirmed>
               ) : (

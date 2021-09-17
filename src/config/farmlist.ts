@@ -129,7 +129,7 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY,
     url: 'farm/bsc/ptlkx',
-    logoUrl: 'https://www.dropbox.com/s/2ccqica0hf1gxiv/BATICON120x120.png',
+    logoUrl: 'https://i.imgur.com/3TBo92F.png',
     key: 'PTLKX',
     farmtype: 'any',
     price: 0.00588118

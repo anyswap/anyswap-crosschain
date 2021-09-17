@@ -27,7 +27,7 @@ export const TokenidImage:any = {}
 
 
 export function getImage (chainId: any, selectCurrency: any, list: any) {
-  // const { chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const multicallContract = useMulticallContract()
   const contract721 = useNFT721Contract(selectCurrency)
 
@@ -120,10 +120,11 @@ export function getImage (chainId: any, selectCurrency: any, list: any) {
   }, [multicallContract, calls, noTokenidImg])
 
   return useMemo(() => {
+    if (!chainId || !account) return {}
     return {
       tokeidInfoList: tokenidList
     }
-  }, [tokenidList])
+  }, [tokenidList, chainId, account])
 }
 
 
