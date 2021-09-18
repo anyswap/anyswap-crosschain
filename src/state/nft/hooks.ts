@@ -10,6 +10,10 @@ import { useMulticallContract } from '../../hooks/useContract'
 // import { useNFTContract, useNFT721Contract } from './useContract'
 import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
 
+export enum ERC_TYPE {
+  erc1155,
+  erc721
+}
 
 export function useNftState(): any {
   const { chainId, account } = useActiveWeb3React()
@@ -193,7 +197,7 @@ export function useNFT721GetAllTokenidListCallback(
     if (callBLData && multicallContract) {
       const cList:any = []
       for (const ad in tokenList) {
-        if (tokenList[ad].nfttype === 'erc1155') continue
+        if (tokenList[ad].nfttype === ERC_TYPE.erc1155) continue
         cList.push({
           address: ad
         })

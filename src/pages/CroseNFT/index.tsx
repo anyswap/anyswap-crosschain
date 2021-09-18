@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
+import { JSBI } from 'anyswap-sdk'
 
 import {useNFT721Callback, WrapType} from '../../hooks/useNFTCallback'
 import {useApproveCallback, ApprovalState} from '../../hooks/useNFTApproveCallback'
@@ -9,6 +10,7 @@ import { useActiveWeb3React } from '../../hooks'
 // import { useNFT721Contract } from '../../hooks/useContract'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
+import {ERC_TYPE} from '../../state/nft/hooks'
 
 import { BottomGrouping } from '../../components/swap/styleds'
 import { ButtonLight, ButtonConfirmed } from '../../components/Button'
@@ -66,6 +68,7 @@ function getInitToken () {
     return false
   }
 }
+
 
 export default function CroseNFT () {
   const { account, chainId } = useActiveWeb3React()
@@ -128,6 +131,19 @@ export default function CroseNFT () {
     }
     return {}
   }, [nftData, chainId])
+  
+  const fee = useMemo(() => {
+    if (selectCurrency && tokenList && tokenList[selectCurrency]) {
+      const feePerTransaction = JSBI.BigInt(tokenList[selectCurrency].fee.feePerTransaction)
+      const feePerUnitInBatch = JSBI.BigInt(tokenList[selectCurrency].fee.feePerUnitInBatch)
+      if (tokenList[selectCurrency].nfttype === ERC_TYPE.erc1155) {
+        return JSBI.add(feePerTransaction, feePerUnitInBatch)?.toString()
+      } else {
+        return feePerTransaction?.toString()
+      }
+    }
+    return 
+  }, [selectCurrency, tokenList])
 
   const routerToken = useMemo(() => {
     if (tokenList && tokenList[selectCurrency]) {
@@ -170,7 +186,7 @@ export default function CroseNFT () {
     account,
     selectTokenId?.tokenid,
     selectChainId,
-    tokenList[selectCurrency]?.fee
+    fee
   )
   const [approval, approveCallback] = useApproveCallback(selectCurrency, routerToken, selectTokenId?.tokenid)
     // console.log(tokenidUri)
@@ -286,9 +302,9 @@ export default function CroseNFT () {
             ) : ''
           }
           {
-            tokenList[selectCurrency]?.fee ? (
+            fee ? (
               <FeeBox>
-                {t('fee')}: {fromWei(tokenList[selectCurrency]?.fee, 18)} {config.getCurChainInfo(chainId).symbol}
+                {t('fee')}: {fromWei(fee, 18)} {config.getCurChainInfo(chainId).symbol}
               </FeeBox>
             ) : ''
           }

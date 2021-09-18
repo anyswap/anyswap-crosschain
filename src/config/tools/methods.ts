@@ -28,6 +28,7 @@ export function selectNetwork (chainID:any) {
       }
       // console.log(data)
       ethereumFN.request(data).then((res: any) => {
+        console.log(chainID)
         console.log(res)
         localStorage.setItem('ENV_NODE_CONFIG', chainInfo[chainID].label)
         // history.go(0)
