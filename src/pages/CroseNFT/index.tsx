@@ -189,11 +189,11 @@ export default function CroseNFT () {
     setDelayAction(false)
   }
 
-  useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
-    }
-  }, [approval, approvalSubmitted])
+  // useEffect(() => {
+  //   if (approval === ApprovalState.PENDING) {
+  //     setApprovalSubmitted(true)
+  //   }
+  // }, [approval, approvalSubmitted])
 
   const isWrapInputError = useMemo(() => {
     if (wrapInputError) {
@@ -203,6 +203,10 @@ export default function CroseNFT () {
   }, [wrapInputError])
 
   const isCrossBridge = useMemo(() => {
+    
+    // console.log(approval)
+    // console.log(ApprovalState)
+    // console.log(isWrapInputError)
     if (
       account
       && selectCurrency
@@ -218,7 +222,7 @@ export default function CroseNFT () {
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
-    if (isWrapInputError && inputValue) {
+    if (isWrapInputError) {
       return isWrapInputError
     }  else if (wrapType === WrapType.WRAP) {
       return t('swap')
@@ -301,6 +305,7 @@ export default function CroseNFT () {
                   onClick={() => {
                     onDelay()
                     if (approveCallback) approveCallback().then(() => {
+                      setApprovalSubmitted(true)
                       onClear()
                     }).catch(() => {
                       onClear()
@@ -308,15 +313,11 @@ export default function CroseNFT () {
                   }}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                 >
-                  {approval === ApprovalState.PENDING ? (
+                  {approval === ApprovalState.PENDING || approvalSubmitted ? (
                     <AutoRow gap="6px" justify="center">
                       {t('Approving')} <Loader stroke="white" />
                     </AutoRow>
-                  ) : approvalSubmitted ? (
-                    t('Approved')
-                  ) : (
-                    t('Approve') + ' ' + tokenList[selectCurrency]?.symbol + ' ' + selectTokenId?.tokenid
-                  )}
+                  ) : t('Approve') + ' ' + tokenList[selectCurrency]?.symbol + ' ' + selectTokenId?.tokenid}
                 </ButtonConfirmed>
               ) : (
                 <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {

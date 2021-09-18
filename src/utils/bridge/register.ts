@@ -30,6 +30,7 @@ interface RecordsTxnsProp {
   pairid?: string | undefined,
   routerToken?: string | undefined,
 }
+const registerList:any = {}
 export function recordsTxns ({
   hash,
   chainId,
@@ -49,7 +50,7 @@ export function recordsTxns ({
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)
-    postUrlData(url, {
+    const data = {
       hash: hash,
       srcChainID: chainId,
       destChainID: selectChain,
@@ -61,8 +62,35 @@ export function recordsTxns ({
       to: to,
       symbol: symbol,
       pairid: pairid
-    }).then(res => {
+    }
+    if (!registerList[hash]) {
+      registerList[hash] = {
+        hash,
+        chainId,
+        selectChain,
+        account,
+        value,
+        formatvalue,
+        to,
+        symbol,
+        version,
+        pairid,
+        routerToken,
+        isRegister: 0,
+        timestamp: Date.now()
+      }
+    }
+    postUrlData(url, data).then((res:any) => {
       console.log(res)
+      if (res.msg === 'Success' || res.data === 'Error') {
+        registerList[hash].isRegister = 1
+      } else {
+        if ((Date.now() - registerList[hash].timestamp) <= 3000) {
+          setTimeout(() => {
+            recordsTxns(registerList[hash])
+          }, 1000)
+        }
+      }
       resolve(res)
     })
   })
