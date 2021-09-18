@@ -193,6 +193,7 @@ export function useNFT721GetAllTokenidListCallback(
     if (callBLData && multicallContract) {
       const cList:any = []
       for (const ad in tokenList) {
+        if (tokenList[ad].nfttype === 'erc1155') continue
         cList.push({
           address: ad
         })
@@ -237,3 +238,12 @@ export function useNFT721GetAllTokenidListCallback(
     return list
   }, [tokenidArr, tokenidInfo])
 }
+
+// export function useNFT1155GetAllTokenidListCallback(
+//   tokenList: any
+// ) {
+//   // const { chainId, account, library } = useActiveWeb3React()
+//   // const multicallContract = useMulticallContract()
+//   // const dispatch = useDispatch<AppDispatch>()
+
+// }

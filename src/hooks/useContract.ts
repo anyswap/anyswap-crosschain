@@ -19,6 +19,7 @@ import RouterAction from '../constants/abis/bridge/RouterAction.json'
 
 import NFT from '../constants/abis/bridge/nft.json'
 import NFT721 from '../constants/abis/bridge/erc721.json'
+import NFT1155 from '../constants/abis/bridge/erc1155.json'
 
 import config from '../config/index'
 
@@ -82,6 +83,10 @@ export function useNFTContract(routerToken?:any, withSignerIfPossible?: boolean)
 
 export function useNFT721Contract(tokenAddress?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress ? tokenAddress : undefined, NFT721, withSignerIfPossible)
+}
+
+export function useNFT1155Contract(tokenAddress?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress ? tokenAddress : undefined, NFT1155, withSignerIfPossible)
 }
 
 export function useSwapUnderlyingContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
