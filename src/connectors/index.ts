@@ -4,18 +4,21 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from './NetworkConnector'
 import { TerraConnector } from './TerraConnector'
 
-import {spportChainArr} from '../config/chainConfig'
+// import {spportChainArr} from '../config/chainConfig'
 import config from '../config'
 
 const NETWORK_URL = config.nodeRpc
 
 const spportChain:any = {}
-// for (const chainID in config.chainInfo) {
-for (const chainID of spportChainArr) {
+const spportChainArr:any = []
+for (const chainID in config.chainInfo) {
+// for (const chainID of spportChainArr) {
   if (isNaN(Number(chainID))) continue
-  spportChain[chainID] = config.chainInfo[chainID].nodeRpc
+  if (chainID && config.chainInfo[chainID]?.nodeRpc) {
+    spportChainArr.push(chainID)
+    spportChain[chainID] = config.chainInfo[chainID].nodeRpc
+  }
 }
-// console.log(spportChainArr)
 // console.log(spportChain)
 export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 
@@ -43,7 +46,3 @@ export function getNetworkLibrary(): Web3Provider {
 export const injected = new InjectedConnector({
   supportedChainIds: [...spportChainArr]
 })
-
-// export const Okinjected = new InjectedConnector({
-//   supportedChainIds: [...spportChainArr]
-// })

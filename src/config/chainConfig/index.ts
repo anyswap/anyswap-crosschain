@@ -78,6 +78,7 @@ const useChain:any = {
     OKT_MAIN_CHAINID,
     AVAX_MAIN_CHAINID,
     ARBITRUM_MAIN_CHAINID,
+    MOVR_MAIN_CHAINID,
   ],
   [VERSION.V2_T1]: [
     ETH_TEST_CHAINID,

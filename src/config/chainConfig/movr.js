@@ -15,6 +15,10 @@ const bridgeToken = {
     bridgeInitToken: '',
     bridgeInitChain: '',
   },
+  [VERSION.V2_2]: {
+    bridgeInitToken: '0x0cae51e1032e8461f4806e26332c030e34de3adb',
+    bridgeInitChain: '56'
+  },
   [VERSION.V4_MOVR]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
@@ -22,7 +26,7 @@ const bridgeToken = {
     crossBridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c'
   },
   [VERSION.V5]: {
-    bridgeInitToken: '',
+    bridgeInitToken: '0x0cae51e1032e8461f4806e26332c030e34de3adb',
     bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c'
