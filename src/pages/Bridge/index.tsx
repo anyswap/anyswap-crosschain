@@ -287,11 +287,13 @@ export default function CrossChain() {
   function onDelay () {
     setDelayAction(true)
   }
-  function onClear () {
+  function onClear (type?:any) {
     setDelayAction(false)
     setModalTipOpen(false)
     setModalSpecOpen(false)
-    setInputBridgeValue('')
+    if (!type) {
+      setInputBridgeValue('')
+    }
   }
 
   function changeNetwork (chainID:any) {
@@ -665,7 +667,7 @@ export default function CrossChain() {
       } else if (label === 'APPROVE') {
         onDelay()
         approveCallback().then(() => {
-          onClear()
+          onClear(1)
         })
       } else if (label === 'SWAP') {
         onDelay()

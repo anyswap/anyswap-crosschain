@@ -36,7 +36,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
           contract.options.address = token
           const data = contract.methods.balanceOf(account).encodeABI()
           useWeb3(chainID, 'eth', 'call', [{data, to: token}]).then((res:any) => {
-            console.log(res)
+            // console.log(res)
             if (res && res.toString().indexOf('Error: Returned error') === -1) {
               try {
                 const bl = ERC20_INTERFACE?.decodeFunctionResult('balanceOf', res)?.toString()
@@ -118,7 +118,7 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
     }
     
     useBatchWeb3(chainId, arr).then((res:any) => {
-      console.log(res)
+      // console.log(res)
       try {
         for (let i = 0, len = arr.length; i < len; i++) {
           if (res[i].result) {

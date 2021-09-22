@@ -156,10 +156,12 @@ export default function CrossChain() {
   function onDelay () {
     setDelayAction(true)
   }
-  function onClear () {
+  function onClear (type?:any) {
     setDelayAction(false)
     setModalTipOpen(false)
-    setInputBridgeValue('')
+    if (!type) {
+      setInputBridgeValue('')
+    }
   }
 
   function changeNetwork (chainID:any) {
@@ -491,7 +493,7 @@ export default function CrossChain() {
                     onClick={() => {
                       onDelay()
                       approveCallback().then(() => {
-                        onClear()
+                        onClear(1)
                       })
                     }}
                     disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}

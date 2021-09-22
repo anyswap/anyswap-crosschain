@@ -168,9 +168,11 @@ export default function SwapNative() {
   function onDelay () {
     setDelayAction(true)
   }
-  function onClear () {
+  function onClear (type?:any) {
     setDelayAction(false)
-    setInputBridgeValue('')
+    if (!type) {
+      setInputBridgeValue('')
+    }
   }
 
   // const bridgeConfig = useMemo(() => {
@@ -643,7 +645,7 @@ export default function SwapNative() {
                       onClick={() => {
                         onDelay()
                         approveCallback().then(() => {
-                          onClear()
+                          onClear(1)
                         })
                       }}
                       disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
