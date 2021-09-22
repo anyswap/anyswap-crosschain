@@ -20,7 +20,7 @@ function timeoutWeb3 () {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve('timeout')
-    }, [1000 * 10])
+    }, [1000 * 30])
   })
 }
 
