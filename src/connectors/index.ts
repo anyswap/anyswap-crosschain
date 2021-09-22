@@ -15,10 +15,11 @@ for (const chainID in config.chainInfo) {
 // for (const chainID of spportChainArr) {
   if (isNaN(Number(chainID))) continue
   if (chainID && config.chainInfo[chainID]?.nodeRpc) {
-    spportChainArr.push(chainID)
+    spportChainArr.push(Number(chainID))
     spportChain[chainID] = config.chainInfo[chainID].nodeRpc
   }
 }
+// console.log(spportChainArr)
 // console.log(spportChain)
 export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 
