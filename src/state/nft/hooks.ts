@@ -11,8 +11,8 @@ import { useMulticallContract } from '../../hooks/useContract'
 import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
 
 export enum ERC_TYPE {
-  erc1155,
-  erc721
+  erc1155 = 'erc1155',
+  erc721 = 'erc721'
 }
 
 export function useNftState(): any {

@@ -181,7 +181,9 @@ export default {
     timelock: '',
     nodeRpc: ETH_TESTNET,
     nodeRpcList: [
-      ETH_TESTNET
+      ETH_TESTNET,
+      'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd',
+      'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0'
     ],
     chainID: ETH_TEST_CHAINID,
     lookHash: ETH_TEST_EXPLORER + '/tx/',
