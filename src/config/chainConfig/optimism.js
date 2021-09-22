@@ -44,6 +44,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: OPTIMISM_MAINNET,
+    nodeRpcList: [
+      OPTIMISM_MAINNET,
+    ],
     chainID: OPTIMISM_MAIN_CHAINID,
     lookHash: OPTIMISM_MAIN_EXPLORER + '/tx/',
     lookAddr: OPTIMISM_MAIN_EXPLORER + '/address/',

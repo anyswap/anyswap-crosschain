@@ -152,6 +152,9 @@ export default {
     v2FactoryToken: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
     timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: ETH_MAINNET,
+    nodeRpcList: [
+      ETH_MAINNET
+    ],
     chainID: ETH_MAIN_CHAINID,
     lookHash: ETH_MAIN_EXPLORER + '/tx/',
     lookAddr: ETH_MAIN_EXPLORER + '/address/',
@@ -177,6 +180,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ETH_TESTNET,
+    nodeRpcList: [
+      ETH_TESTNET
+    ],
     chainID: ETH_TEST_CHAINID,
     lookHash: ETH_TEST_EXPLORER + '/tx/',
     lookAddr: ETH_TEST_EXPLORER + '/address/',

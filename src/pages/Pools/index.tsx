@@ -36,7 +36,7 @@ import AppBody from '../AppBody'
 
 import PoolTip from './poolTip'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
+import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
 

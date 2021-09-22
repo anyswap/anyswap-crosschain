@@ -44,6 +44,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: OMGX_MAINNET,
+    nodeRpcList: [
+      OMGX_MAINNET,
+    ],
     chainID: OMGX_MAIN_CHAINID,
     lookHash: OMGX_MAIN_EXPLORER + '/tx/',
     lookAddr: OMGX_MAIN_EXPLORER + '/address/',
@@ -70,6 +73,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: OMGX_TESTNET,
+    nodeRpcList: [
+      OMGX_TESTNET,
+    ],
     chainID: OMGX_TEST_CHAINID,
     lookHash: OMGX_TEST_EXPLORER + '/tx/',
     lookAddr: OMGX_TEST_EXPLORER + '/address/',

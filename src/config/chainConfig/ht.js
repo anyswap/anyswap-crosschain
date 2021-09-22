@@ -176,6 +176,9 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '',
     nodeRpc: HT_MAINNET,
+    nodeRpcList: [
+      HT_MAINNET,
+    ],
     chainID: HT_MAIN_CHAINID,
     lookHash: HT_MAIN_EXPLORER + '/tx/',
     lookAddr: HT_MAIN_EXPLORER + '/address/',
@@ -201,6 +204,9 @@ export default {
     v2FactoryToken: '0x2302c14f2928bb9b68053320309b84db3702f89f',
     timelock: '',
     nodeRpc: HT_TESTNET,
+    nodeRpcList: [
+      HT_TESTNET,
+    ],
     chainID: HT_TEST_CHAINID,
     lookHash: HT_TEST_EXPLORER + '/tx/',
     lookAddr: HT_TEST_EXPLORER + '/address/',

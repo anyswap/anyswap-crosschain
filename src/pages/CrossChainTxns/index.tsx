@@ -50,7 +50,7 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import {BASECURRENCY} from '../../config/constant'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
+import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 

@@ -62,6 +62,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ARBITRUM_MAINNET,
+    nodeRpcList: [
+      ARBITRUM_MAINNET
+    ],
     chainID: ARBITRUM_MAIN_CHAINID,
     lookHash: ARBITRUM_MAIN_EXPLORER + '/tx/',
     lookAddr: ARBITRUM_MAIN_EXPLORER + '/address/',
@@ -88,6 +91,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ARBITRUM_TESTNET,
+    nodeRpcList: [
+      ARBITRUM_TESTNET
+    ],
     chainID: ARBITRUM_TEST_CHAINID,
     lookHash: ARBITRUM_TEST_EXPLORER + '/tx/',
     lookAddr: ARBITRUM_TEST_EXPLORER + '/address/',

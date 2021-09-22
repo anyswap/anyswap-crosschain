@@ -34,7 +34,7 @@ import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalance'
+import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 
@@ -177,6 +177,7 @@ export default function CrossChain() {
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
+      
       const CC:any = await getNodeTotalsupply(
         selectCurrency?.underlying?.address,
         chainId,
@@ -193,6 +194,7 @@ export default function CrossChain() {
           bl: CC[selectCurrency?.address]?.balance
         })
       }
+      
       const DC:any = await getNodeTotalsupply(
         selectCurrency?.destChains[selectChain]?.underlying?.address,
         selectChain,
@@ -200,6 +202,7 @@ export default function CrossChain() {
         account,
         selectCurrency?.destChains[selectChain]?.address
       )
+      // console.log(DC)
       if (DC) {
         setDestChain({
           chain: selectChain,

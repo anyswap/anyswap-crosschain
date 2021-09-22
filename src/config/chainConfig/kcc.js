@@ -36,6 +36,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: KCC_MAINNET,
+    nodeRpcList: [
+      KCC_MAINNET,
+    ],
     chainID: KCC_MAIN_CHAINID,
     lookHash: KCC_MAIN_EXPLORER + '/tx/',
     lookAddr: KCC_MAIN_EXPLORER + '/address/',

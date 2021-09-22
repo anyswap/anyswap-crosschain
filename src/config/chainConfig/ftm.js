@@ -66,6 +66,7 @@ export default {
     timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: FTM_MAINNET,
     nodeRpcList: [
+      FTM_MAINNET,
       'https://rpc.fantom.network',
       'https://rpc2.fantom.network',
       'https://rpc3.fantom.network',

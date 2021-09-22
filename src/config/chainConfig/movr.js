@@ -46,6 +46,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: MOVR_MAINNET,
+    nodeRpcList: [
+      MOVR_MAINNET,
+    ],
     chainID: MOVR_MAIN_CHAINID,
     lookHash: MOVR_MAIN_EXPLORER + '/tx/',
     lookAddr: MOVR_MAIN_EXPLORER + '/address/',

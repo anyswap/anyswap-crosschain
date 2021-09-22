@@ -7,9 +7,8 @@ import { updateBlockNumber } from './actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../index'
 
-import config from '../../config'
+import { useWeb3 } from '../../utils/tools/web3UtilsV2'
 
-const Web3 = require('web3')
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
@@ -62,9 +61,7 @@ export default function Updater(): null {
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
 
     if (destChainId) {
-      const web3Fn = new Web3(new Web3.providers.HttpProvider(config.getCurChainInfo(destChainId).nodeRpc))
-      web3Fn.eth.getBlockNumber().then((res:any) => {
-        // console.log(res)
+      useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res:any) => {
         dispatch(updateBlockNumber({ chainId: destChainId, blockNumber: res }))
       })
     }

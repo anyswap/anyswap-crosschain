@@ -47,7 +47,6 @@ export function useRpcContract(address: string | undefined, ABI: any, withSigner
     if (!address || !ABI || !chainId) return null
     const web3Fn = new Web3(new Web3.providers.HttpProvider(config.getCurChainInfo(chainId).nodeRpc))
     try {
-      // return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
       return new web3Fn.eth.Contract(ABI, address)
     } catch (error) {
       console.error('Failed to get contract', error)

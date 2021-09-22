@@ -41,6 +41,9 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: OKT_MAINNET,
+    nodeRpcList: [
+      OKT_MAINNET,
+    ],
     chainID: OKT_MAIN_CHAINID,
     lookHash: OKT_MAIN_EXPLORER + '/tx/',
     lookAddr: OKT_MAIN_EXPLORER + '/address/',

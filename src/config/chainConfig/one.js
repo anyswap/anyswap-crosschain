@@ -36,6 +36,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ONE_MAINNET,
+    nodeRpcList: [
+      ONE_MAINNET,
+    ],
     chainID: ONE_MAIN_CHAINID,
     lookHash: ONE_MAIN_EXPLORER + '/tx/',
     lookAddr: ONE_MAIN_EXPLORER + '/address/',

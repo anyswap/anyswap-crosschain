@@ -72,6 +72,7 @@ export default {
     timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: MATIC_MAINNET,
     nodeRpcList: [
+      MATIC_MAINNET,
       'https://rpc-mainnet.matic.network',
       'https://matic-mainnet.chainstacklabs.com',
       'https://rpc-mainnet.maticvigil.com',

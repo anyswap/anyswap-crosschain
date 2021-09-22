@@ -41,6 +41,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: AVAX_MAINNET,
+    nodeRpcList: [
+      AVAX_MAINNET
+    ],
     chainID: AVAX_MAIN_CHAINID,
     lookHash: AVAX_MAIN_EXPLORER + '/tx/',
     lookAddr: AVAX_MAIN_EXPLORER + '/address/',

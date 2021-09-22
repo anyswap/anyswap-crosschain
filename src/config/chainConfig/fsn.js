@@ -47,6 +47,7 @@ export default {
     timelock: '',
     nodeRpc: FSN_MAINNET,
     nodeRpcList: [
+      FSN_MAINNET,
       'https://mainnet.anyswap.exchange',
       'https://fsn.dev/api'
     ],
@@ -78,6 +79,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: FSN_TESTNET,
+    nodeRpcList: [
+      FSN_TESTNET,
+    ],
     chainID: FSN_TEST_CHAINID,
     lookHash: FSN_TEST_EXPLORER + '/transaction/',
     lookAddr: FSN_TEST_EXPLORER + '/address/',
