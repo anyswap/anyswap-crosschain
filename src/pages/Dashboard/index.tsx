@@ -26,8 +26,6 @@ import PreviouskIcon from '../../assets/images/icon/Previous.svg'
 
 import config from '../../config'
 
-// import {getAllToken} from '../../utils/bridge/getServerInfo'
-// import {fromWei, formatDecimal} from '../../utils/tools/tools'
 import {formatDecimal} from '../../utils/tools/tools'
 import { isAddress } from '../../utils'
 

@@ -383,14 +383,6 @@ export default function Farming ({
 
   const history = createBrowserHistory()
   // history.push(window.location.pathname + '')
-  
-  // const web3Fn = new Web3Fn(new Web3Fn.providers.HttpProvider(config.getCurChainInfo(CHAINID).nodeRpc))
-  // function formatNum (str:any) {
-  //   // console.log(str)
-  //   // console.log(web3Fn.utils.hexToNumberString(str))
-  //   return web3Fn.utils.hexToNumberString(str)
-  // }
-
   const [LpList, setLpList] = useState<any>()
   
   const [stakingType, setStakingType] = useState<any>()
@@ -416,9 +408,6 @@ export default function Farming ({
 
   const [InterverTime, setInterverTime] = useState<any>(0)
   // const [CYCMarket, setCYCMarket] = useState<any>()
-
-  // const web3Contract = new web3Fn.eth.Contract(MasterChef, FARMTOKEN)
-  // const web3ErcContract = new web3Fn.eth.Contract(ERC20_ABI)
 
   const MMContract = useFarmContract(FARMTOKEN)
 
