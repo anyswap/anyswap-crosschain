@@ -29,7 +29,7 @@ import {selectNetwork} from '../../config/tools/methods'
 
 import {fromWei} from '../../utils/tools/tools'
 
-import NFT_DATA from './nftdata.json'
+import NFT_DATA from './nftdata.js'
 
 const SUPPORT_CHAIN = ['4', '250']
 const nftData = NFT_DATA as any
