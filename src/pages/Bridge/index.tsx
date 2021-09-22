@@ -35,7 +35,7 @@ import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
-import {getNodeBalance} from '../../utils/bridge/getBalance'
+import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'

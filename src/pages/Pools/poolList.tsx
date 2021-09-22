@@ -13,7 +13,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 import AppBody from '../AppBody'
 
-import {getGroupTotalsupply} from '../../utils/bridge/getBalance'
+import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
 import {thousandBit, bigToSmallSort} from '../../utils/tools/tools'
 
 import {

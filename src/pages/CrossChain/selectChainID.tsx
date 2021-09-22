@@ -42,8 +42,7 @@ import {
   // HideSmallBox
 } from '../../components/CurrencySelect/styleds'
 
-// import {getNodeBalance} from '../../utils/bridge/getBalance'
-import {getNodeBalance as getNodeBalanceV2} from '../../utils/bridge/getBalanceV2'
+import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 
 
 interface SelectChainIdInputPanel {
@@ -149,9 +148,7 @@ export default function SelectChainIdInputPanel({
       if (token) {
         const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)
-        // getNodeBalanceV2(account, token, selectChainId, destChainInfo?.decimals, isNT)
-        // getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
-        getNodeBalanceV2(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
+        getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
           console.log(res)
           if (res) {
             setDestBalance(res)
