@@ -9,6 +9,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 // import { useNFTContract, useNFT721Contract } from './useContract'
 import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
+import ERC1155_INTERFACE from '../../constants/abis/bridge/erc1155'
 
 export enum ERC_TYPE {
   erc1155 = 'erc1155',
@@ -243,11 +244,73 @@ export function useNFT721GetAllTokenidListCallback(
   }, [tokenidArr, tokenidInfo])
 }
 
-// export function useNFT1155GetAllTokenidListCallback(
-//   tokenList: any
-// ) {
-//   // const { chainId, account, library } = useActiveWeb3React()
-//   // const multicallContract = useMulticallContract()
-//   // const dispatch = useDispatch<AppDispatch>()
+export function useNFT1155GetAllTokenidListCallback(
+  tokenlist: any
+) {
+  const { chainId, account, library } = useActiveWeb3React()
+  // const contract = useNFT1155Contract(selectCurrency)
+  const multicallContract = useMulticallContract()
+  const [tokenidInfo1155, setTokenidInfo1155] = useState<any>()
+  // const dispatch = useDispatch<AppDispatch>()
 
-// }
+  const callBLData: any = useMemo( () => {
+    const arr:any = []
+    if (ERC1155_INTERFACE && account && tokenlist) {
+      for (const token in tokenlist) {
+        if (tokenlist[token].nfttype === ERC_TYPE.erc1155) {
+          const list = tokenlist[token].tokenidList
+          for (const tokenid in list) {
+            // console.log(tokenid)
+            arr.push({
+              address: token,
+              tokenid,
+              callData: ERC721_INTERFACE?.encodeFunctionData(ERC1155_INTERFACE.getFunction('balanceOf'), [account, tokenid])
+            })
+          }
+        }
+      }
+    }
+    return arr
+  }, [ERC1155_INTERFACE, account, tokenlist])
+
+  const getTokenidList = useCallback(() => {
+    if (multicallContract && callBLData && callBLData.length > 0) {
+      multicallContract.aggregate(callBLData.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
+        // console.log(res)
+        // for (const obj of res.returnData) {
+        const len = res.returnData.length
+        const list:any = {}
+        for (let i = 0; i < len; i++) {
+          const obj = callBLData[i]
+          if (!list[obj.address]) list[obj.address] = {}
+          list[obj.address][obj.tokenid] = {
+            ...tokenlist[obj.address].tokenidList[obj.tokenid],
+            balance: JSBI.BigInt(res.returnData[i]).toString()
+          }
+        }
+        // console.log(list)
+        setTokenidInfo1155(list)
+      }).catch((err:any) => {
+        console.log(err)
+        setTokenidInfo1155({})
+      })
+    }
+  }, [multicallContract, callBLData])
+
+  useEffect(() => {
+    if (!library || !chainId) return undefined
+    console.log(tokenlist)
+    // getTokenidList()
+    library
+      .getBlockNumber()
+      .then(getTokenidList)
+      .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
+    
+    library.on('block', getTokenidList)
+    return () => {
+      library.removeListener('block', getTokenidList)
+    }
+  }, [library, getTokenidList])
+
+  return tokenidInfo1155
+}

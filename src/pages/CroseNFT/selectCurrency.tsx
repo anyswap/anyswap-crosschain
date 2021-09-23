@@ -9,10 +9,9 @@ import Column from '../../components/Column'
 import { MenuItem } from '../../components/SearchModal/styleds'
 import TokenLogo from '../../components/TokenLogo'
 
-// import {useNFT721GetTokenidListCallback, useNFT721GetAllTokenidListCallback} from '../../hooks/useNFTCallback'
-// import {useNFT721GetTokenidListCallback} from '../../hooks/useNFTCallback'
-// import {useNFT721GetAllTokenidListCallback, useNftState} from '../../state/nft/hooks'
-import {useNFT721GetAllTokenidListCallback} from '../../state/nft/hooks'
+import { useActiveWeb3React } from '../../hooks'
+import {useNFT721GetAllTokenidListCallback, useNFT1155GetAllTokenidListCallback, ERC_TYPE} from '../../state/nft/hooks'
+// import {useNFT721GetAllTokenidListCallback, useNFT1155GetAllTokenidListCallback} from '../../state/nft/hooks'
 
 interface SelectCurrencyProps {
   tokenlist?: any
@@ -40,6 +39,11 @@ const SelectCurrencyView = styled.div`
   }
 `
 
+const BalanceTxt = styled.div`
+  width: 100%;
+  font-size: 14px;
+`
+
 export default function SelectCurrencyPanel ({
   tokenlist = {},
   selectCurrency,
@@ -48,30 +52,52 @@ export default function SelectCurrencyPanel ({
   onSelectTokenId
 }: SelectCurrencyProps) {
   const { t } = useTranslation()
-  // const { chainId } = useActiveWeb3React()
-  // useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
-
+  const { account } = useActiveWeb3React()
   const [modalCurrencyOpen, setModalCurrencyOpen] = useState(false)
   const [modalTokenidOpen, setModalTokenidOpen] = useState(false)
 
-  // const tokenidInfo:any = useNftState()
-  const tokenidInfo:any = useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
-  // console.log(tokenidInfo)
+  const tokenidInfo721:any = useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
+  const tokenidInfo1155:any = useNFT1155GetAllTokenidListCallback(tokenlist ? tokenlist : {})
 
   const tokenidList = useMemo(() => {
     const arr:any = []
-    if (tokenidInfo[selectCurrency]) {
-      const list = Object.keys(tokenidInfo[selectCurrency]).sort()
+    const token = selectCurrency?.address
+    if (tokenidInfo721[token]) {
+      const list = Object.keys(tokenidInfo721[token]).sort()
       for (const tid of list) {
         arr.push({
-          ...tokenidInfo[selectCurrency][tid],
+          ...tokenidInfo721[token][tid],
+          tokenid: tid
+        })
+      }
+    } else if (tokenidInfo1155 && tokenidInfo1155[token]) {
+      const list = Object.keys(tokenidInfo1155[token]).sort()
+      for (const tid of list) {
+        arr.push({
+          ...tokenidInfo1155[token][tid],
           tokenid: tid
         })
       }
     }
+    // console.log(selectCurrency)
+    // console.log(token)
+    // console.log(tokenidInfo721)
+    // console.log(tokenidInfo1155)
     // console.log(arr)
     return arr
-  }, [tokenidInfo, selectCurrency])
+  }, [tokenidInfo721, tokenidInfo1155, selectCurrency])
+
+  const tokenList = useMemo(() => {
+    const arr:any = []
+    for (const token in tokenlist) {
+      arr.push({
+        ...tokenlist[token],
+        address: token
+      })
+    }
+    return arr
+  }, [tokenlist])
+
 
   const handleSelectCurrency = useCallback((value) => {
     // console.log(value)
@@ -100,21 +126,21 @@ export default function SelectCurrencyPanel ({
         padding={'0rem'}
       >
         {
-          Object.keys(tokenlist).map((item:any, index) => {
-            const isSelected = item === selectCurrency
+          // Object.keys(tokenlist).map((item:any, index) => {
+          tokenList.map((item:any, index:any) => {
+            const isSelected = item?.address === selectCurrency?.address
             return (
               <MenuItem
                 className={`token-item-${index}`}
                 onClick={() => (isSelected ? null : handleSelectCurrency(item))}
                 disabled={isSelected}
                 key={index}
-                // selected={otherSelected}
               >
-                <TokenLogo symbol={tokenlist[item].symbol} logoUrl={tokenlist[item]?.logoUrl} size={'24px'}></TokenLogo>
+                <TokenLogo symbol={item.symbol} logoUrl={item?.logoUrl} size={'24px'}></TokenLogo>
                 <Column>
-                  <Text title={tokenlist[item].name} fontWeight={500}>
-                    {tokenlist[item].symbol}
-                    <Text fontSize={'10px'}>{tokenlist[item].name ? tokenlist[item].name : item}</Text>
+                  <Text title={item.name} fontWeight={500}>
+                    {item.symbol}
+                    <Text fontSize={'10px'}>{item.name ? item.name : ''}</Text>
                   </Text>
                 </Column>
               </MenuItem>
@@ -160,10 +186,10 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalCurrencyOpen(true)
         }}>
-          <TokenLogo symbol={tokenlist[selectCurrency]?.symbol} logoUrl={tokenlist[selectCurrency]?.logoUrl} size={'46px'}></TokenLogo>
+          <TokenLogo symbol={selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'46px'}></TokenLogo>
           {
             selectCurrency ? (
-              tokenlist[selectCurrency]?.name
+              selectCurrency?.name
             ) : (
               <p className="txt">{t('selectToken')}</p>
             )
@@ -184,6 +210,13 @@ export default function SelectCurrencyPanel ({
           <ChevronDown />
         </SelectCurrencyView>
       </SelectCurrencyBox>
+      {
+        account && selectCurrency?.nfttype === ERC_TYPE.erc1155 ? (
+          <BalanceTxt>
+            {t('balance')}{selectTokenId?.balance ? selectTokenId?.balance : '-'}
+          </BalanceTxt>
+        ) : ''
+      }
     </>
   )
 }

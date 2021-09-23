@@ -67,7 +67,33 @@ export default{
       "tokenid" : "thing", 
       "version" : "NFT",
       "logoUrl" : "https://lh3.googleusercontent.com/w-YsPhz-Gjm6xUL2ojJFHwqwTyPEYTU5Jlmiwu18_51f66f2_QoBf66jM77b2lFghuWg5RNOum_HPOE1AdEArKuP=w600",
-      "nfttype": "erc1155"
+      "nfttype": "erc1155",
+      "tokenidList": {
+        "1": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "2": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "3": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "4": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+      }
     }
   },
   "250": {
@@ -138,7 +164,33 @@ export default{
       "tokenid" : "thing", 
       "version" : "NFT",
       "logoUrl" : "https://lh3.googleusercontent.com/w-YsPhz-Gjm6xUL2ojJFHwqwTyPEYTU5Jlmiwu18_51f66f2_QoBf66jM77b2lFghuWg5RNOum_HPOE1AdEArKuP=w600",
-      "nfttype": "erc1155"
+      "nfttype": "erc1155",
+      "tokenidList": {
+        "1": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "2": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "3": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+        "4": {
+          description: "",
+          image: "",
+          name: "",
+          uri: ""
+        },
+      }
     }
   }
 }

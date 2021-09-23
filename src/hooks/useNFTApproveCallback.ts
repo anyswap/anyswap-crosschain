@@ -22,7 +22,7 @@ export enum ApprovalState {
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   // routerToken?: any,
-  inputToken?: any,
+  inputCurrency: any,
   spender?: any,
   tokenid?: any,
 ): [ApprovalState, () => Promise<void>] {
@@ -31,7 +31,7 @@ export function useApproveCallback(
   
   const [approved, setApproved] = useState<any>()
 
-  const contract = useNFT721Contract(inputToken)
+  const contract = useNFT721Contract(inputCurrency?.address)
   const pendingApproval = useHasPendingApproval(tokenid, spender)
   // console.log(pendingApproval)
   // console.log(approved)
