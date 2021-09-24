@@ -181,7 +181,7 @@ export default function CroseNFT () {
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
     routerToken,
-    selectCurrency,
+    selectCurrency?.nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined,
     account,
     selectTokenId?.tokenid,
     selectChainId,
@@ -189,7 +189,7 @@ export default function CroseNFT () {
   )
   const { wrapType: wrapType1155, execute: onWrap1155, inputError: wrapInputError1155 } = useNFT1155Callback(
     routerToken,
-    selectCurrency,
+    selectCurrency?.nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined,
     account,
     selectTokenId?.tokenid,
     selectChainId,

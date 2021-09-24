@@ -9,6 +9,7 @@ import { useNFTContract, useNFT721Contract, useNFT1155Contract } from './useCont
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
+import { JSBI } from 'anyswap-sdk'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -150,7 +151,9 @@ export function useNFT721Callback(
   useEffect(() => {
     if (contract1155 && tokenid) {
       contract1155.balanceOf(account, tokenid).then((res:any) => {
-        console.log(res)
+        // console.log(res.isZero())
+        // console.log(JSBI.BigInt(100))
+        // console.log(res.lte(JSBI.BigInt(100)))
         if (res) {
           setNftBalance(res)
         } else {
@@ -167,9 +170,11 @@ export function useNFT721Callback(
 
   return useMemo(() => {
     
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !(nftBalance?.toLowerCase() === account?.toLowerCase())) return NOT_APPLICABLE
-
-    const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !amount || isNaN(amount) || amount.indexOf('.') !== -1) return NOT_APPLICABLE
+    console.log(JSBI.BigInt(amount))
+    console.log(nftBalance)
+    console.log(nftBalance.gte(JSBI.BigInt(amount)))
+    const sufficientBalance = ethBalance && !nftBalance.isZero() && nftBalance.gte(JSBI.BigInt(amount))
     const value = amount
     const data = ''
     return {
