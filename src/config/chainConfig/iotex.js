@@ -18,7 +18,7 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '0xa00744882684c3e4747faefd68d283ea44099d03',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0xa00744882684c3e4747faefd68d283ea44099d03',
     crossBridgeInitToken: ''
   },
 }
@@ -30,7 +30,7 @@ export default {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
+    multicalToken: '0xe6801928061cdbe32ac5ad0634427e140efd05f9',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
