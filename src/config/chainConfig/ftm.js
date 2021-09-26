@@ -49,6 +49,12 @@ const bridgeToken = {
     bridgeInitToken: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     bridgeInitChain: '137',
     crossBridgeInitToken: 'FTM'
+  },
+  [VERSION.V6_1]: {
+    bridgeInitToken: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+    bridgeInitChain: '137',
+    nftInitToken: '0xa0b20decbc557e3f68e140ed5a0c69bc865f865a',
+    crossBridgeInitToken: 'FTM'
   }
 }
 

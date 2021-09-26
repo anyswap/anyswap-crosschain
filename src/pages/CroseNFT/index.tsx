@@ -24,6 +24,7 @@ import SelectChainIDPanel from './selectChainId'
 import SelectCurrencyPanel from './selectCurrency'
 
 import config from '../../config'
+import {spportChainArr} from '../../config/chainConfig'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
@@ -31,7 +32,9 @@ import {fromWei} from '../../utils/tools/tools'
 
 import NFT_DATA from './nftdata.js'
 
-const SUPPORT_CHAIN = ['4', '250']
+
+const SUPPORT_CHAIN = spportChainArr
+// console.log(SUPPORT_CHAIN)
 const nftData = NFT_DATA as any
 
 const FlexWrapBox = styled.div`
@@ -92,7 +95,7 @@ export default function CroseNFT () {
     if (nftData && chainId && nftData[chainId]) {
       const list:any = nftData[chainId]
       
-      const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : 'thing'))?.toLowerCase()
+      const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).nftInitToken))?.toLowerCase()
       // console.log(urlParams)
       let isUseToken = 0
       let useToken

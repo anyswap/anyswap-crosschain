@@ -20,6 +20,7 @@ export enum VERSION {
   V4_MOVR = 'BRIDGE_MOVR',
   V5 = 'ALL',
   V6 = 'NFT_TEST',
+  V6_1 = 'NFT',
 }
 
 export const env:any = 'pro'
@@ -34,7 +35,8 @@ export const timeout = 1000 * 60 * 30
 // export const INIT_VERSION = VERSION.V4_OKT
 // const INIT_VERSION = VERSION.V4_MOVR
 // export const INIT_VERSION = VERSION.V5
-export const INIT_VERSION = VERSION.V6
+// export const INIT_VERSION = VERSION.V6
+export const INIT_VERSION = VERSION.V6_1
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -55,7 +57,7 @@ function getUrlVersion (init:any) {
   } else if (url.indexOf('https://arb.anyswap.exchange') === 0) {
     version = VERSION.V3_1
   } else if (url.indexOf('https://nft.anyswap.exchange') === 0) {
-    version = VERSION.V6
+    version = VERSION.V6_1
   } else {
     version = init
   }
@@ -245,6 +247,18 @@ export const controlConfig:any = {
   },
   [VERSION.V6]: {
     bridgeInitDataChain: '4',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 0,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 0,
+    isOpenNFT: 1,
+  },
+  [VERSION.V6_1]: {
+    bridgeInitDataChain: '1',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],

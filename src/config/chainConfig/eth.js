@@ -137,6 +137,13 @@ const bridgeToken = {
     nativeToken: '',
     crossBridgeInitToken: 'ETH'
   },
+  [VERSION.V6_1]: {
+    bridgeInitToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    bridgeInitChain: '56',
+    nftInitToken: '0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7',
+    nativeToken: '',
+    crossBridgeInitToken: 'ETH'
+  },
 }
 
 export default {
