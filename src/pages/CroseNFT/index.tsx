@@ -5,7 +5,7 @@ import {ArrowRight} from 'react-feather'
 import { JSBI } from 'anyswap-sdk'
 
 import {useNFT721Callback, useNFT1155Callback, WrapType} from '../../hooks/useNFTCallback'
-import {useApproveCallback, ApprovalState} from '../../hooks/useNFTApproveCallback'
+import {useApproveCallback, useApprove1155Callback, ApprovalState} from '../../hooks/useNFTApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
 // import { useNFT721Contract } from '../../hooks/useContract'
 
@@ -76,7 +76,7 @@ export default function CroseNFT () {
   const toggleWalletModal = useWalletModalToggle()
 
   const [selectChainId, setSelectChainId] = useState<any>()
-  const [inputValue, setInputValue] = useState<any>()
+  const [inputValue, setInputValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectTokenId, setSelectTokenId] = useState<any>()
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -92,7 +92,7 @@ export default function CroseNFT () {
     if (nftData && chainId && nftData[chainId]) {
       const list:any = nftData[chainId]
       
-      const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : 'Loot'))?.toLowerCase()
+      const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : 'thing'))?.toLowerCase()
       // console.log(urlParams)
       let isUseToken = 0
       let useToken
@@ -196,8 +196,18 @@ export default function CroseNFT () {
     fee,
     inputValue
   )
-  const [approval, approveCallback] = useApproveCallback(selectCurrency?.nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined, routerToken, selectTokenId?.tokenid)
+  const {approvalState: approval721, approve: approveCallback721} = useApproveCallback(selectCurrency?.nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined, routerToken, selectTokenId?.tokenid)
+  const {approvalState: approval1155, approve: approveCallback1155} = useApprove1155Callback(selectCurrency?.nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined, routerToken)
     // console.log(tokenidUri)
+
+  const approval = useMemo(() => {
+    if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
+      return approval721
+    } else {
+      return approval1155
+    }
+  }, [approval721, approval1155, selectCurrency])
+
   function setMetamaskNetwork (item:any) {
     selectNetwork(item).then((res:any) => {
       if (res.msg === 'Error') {
@@ -214,27 +224,36 @@ export default function CroseNFT () {
   }
 
   const isWrapInputError = useMemo(() => {
-    console.log(wrapInputError)
-    if (wrapInputError) {
+    // console.log(wrapInputError)
+    if (wrapInputError && selectCurrency?.nfttype === ERC_TYPE.erc721) {
       return wrapInputError
+    } else if (wrapInputError1155 && selectCurrency?.nfttype === ERC_TYPE.erc1155) {
+      return wrapInputError1155
     }
     return
-  }, [wrapInputError])
+  }, [wrapInputError, wrapInputError1155, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
-    
+    // console.log(selectTokenId)
     if (
       account
       && selectCurrency
       && !isWrapInputError
       && selectChainId
       && selectTokenId
+      && (
+        selectCurrency?.nfttype === ERC_TYPE.erc1155
+        && inputValue
+        && !isNaN(inputValue)
+        && selectTokenId?.balance
+        && Number(selectTokenId?.balance) > Number(inputValue)
+      )
     ) {
       return false
     } else {
       return true
     }
-  }, [selectCurrency, account, isWrapInputError, selectTokenId, selectChainId])
+  }, [selectCurrency, account, isWrapInputError, selectTokenId, selectChainId, inputValue])
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
@@ -322,12 +341,21 @@ export default function CroseNFT () {
                 <ButtonConfirmed
                   onClick={() => {
                     onDelay()
-                    if (approveCallback) approveCallback().then(() => {
-                      setApprovalSubmitted(true)
-                      onClear()
-                    }).catch(() => {
-                      onClear()
-                    })
+                    if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
+                      if (approveCallback721) approveCallback721().then(() => {
+                        setApprovalSubmitted(true)
+                        onClear()
+                      }).catch(() => {
+                        onClear()
+                      })
+                    } else {
+                      if (approveCallback1155) approveCallback1155().then(() => {
+                        setApprovalSubmitted(true)
+                        onClear()
+                      }).catch(() => {
+                        onClear()
+                      })
+                    }
                   }}
                   disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                 >
@@ -342,15 +370,15 @@ export default function CroseNFT () {
                   onDelay()
                   if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
                     if (onWrap) onWrap().then(() => {
-                      setSelectTokenId('')
                       onClear()
+                      setSelectTokenId('')
                     }).catch(() => {
                       onClear()
                     })
                   } else if (selectCurrency?.nfttype === ERC_TYPE.erc1155) {
                     if (onWrap1155) onWrap1155().then(() => {
-                      setSelectTokenId('')
                       onClear()
+                      setSelectTokenId('')
                     }).catch(() => {
                       onClear()
                     })

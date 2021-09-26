@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 // import { tryParseAmount } from '../state/swap/hooks'
+import { tryParseAmount2 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 // import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useETHBalances } from '../state/wallet/hooks'
@@ -9,7 +10,7 @@ import { useNFTContract, useNFT721Contract, useNFT1155Contract } from './useCont
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
-import { JSBI } from 'anyswap-sdk'
+// import { JSBI } from 'anyswap-sdk'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -151,11 +152,9 @@ export function useNFT721Callback(
   useEffect(() => {
     if (contract1155 && tokenid) {
       contract1155.balanceOf(account, tokenid).then((res:any) => {
-        // console.log(res.isZero())
-        // console.log(JSBI.BigInt(100))
-        // console.log(res.lte(JSBI.BigInt(100)))
+        // console.log(res)
         if (res) {
-          setNftBalance(res)
+          setNftBalance(tryParseAmount2(res.toString(), inputCurrency?.decimals ?? 0))
         } else {
           setNftBalance('')
         }
@@ -168,23 +167,22 @@ export function useNFT721Callback(
     }
   }, [contract1155, tokenid, account])
 
+  const inputAmount = useMemo(() => inputCurrency ? tryParseAmount2(amount, inputCurrency?.decimals ?? 0) : '', [inputCurrency, amount])
+
   return useMemo(() => {
-    
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !amount || isNaN(amount) || amount.indexOf('.') !== -1) return NOT_APPLICABLE
-    console.log(JSBI.BigInt(amount))
-    console.log(nftBalance)
-    console.log(nftBalance.gte(JSBI.BigInt(amount)))
-    const sufficientBalance = ethBalance && !nftBalance.isZero() && nftBalance.gte(JSBI.BigInt(amount))
-    const value = amount
-    const data = ''
+    // console.log(tokenid)
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !inputAmount || !tokenid || !nftBalance) return NOT_APPLICABLE
+
+    const sufficientBalance = ethBalance && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
+    const value = Number(inputAmount.raw.toString())
+    const data = '0x'
+
     return {
       wrapType: WrapType.WRAP,
       execute:
         sufficientBalance && tokenid
           ? async () => {
               try {
-                // console.log(111)
-                // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await contract.nft1155SwapOut(
                   ...[
                     inputCurrency?.address,
@@ -220,5 +218,5 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, inputAmount])
 }
