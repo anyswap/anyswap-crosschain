@@ -7,7 +7,7 @@ export function selectNetwork (chainID:any) {
       request: '',
       ...ethereum
     }
-    // console.log(config)
+    // console.log(ethereumFN)
     if (ethereumFN && ethereumFN.request) {
       const data = {
         method: 'wallet_addEthereumChain',

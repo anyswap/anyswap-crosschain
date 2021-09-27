@@ -46,6 +46,7 @@ export function getInitBridgeChain(destChainID: any, bridgeToken: any) {
   return nc
 }
 
+let onlyOne = 0
 function getParamNode(type: any, INIT_NODE: any) {
   type = type?.toString()?.toLowerCase()
   let labelStr = INIT_NODE
@@ -60,7 +61,10 @@ function getParamNode(type: any, INIT_NODE: any) {
       break
     }
   }
-  selectNetwork(labelStr)
+  if (!onlyOne) {
+    onlyOne = 1
+    selectNetwork(labelStr)
+  }
   return labelStr
 }
 
