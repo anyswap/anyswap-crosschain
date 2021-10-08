@@ -14,6 +14,7 @@ import omgx, {OMGX_TEST_CHAINID} from './omgx'
 import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
 import movr, {MOVR_MAIN_CHAINID} from './movr'
 import iotex, {IOTEX_MAIN_CHAINID} from './iotex'
+import sdn, {SDN_MAIN_CHAINID} from './sdn'
 import ltc from './ltc'
 import btc from './btc'
 import block from './block'
@@ -44,7 +45,8 @@ export const chainInfo:ConFig = {
   ...optimism,
   ...colx,
   ...movr,
-  ...iotex
+  ...iotex,
+  ...sdn
 }
 
 const useChain:any = {
@@ -145,7 +147,8 @@ const useChain:any = {
     ONE_MAIN_CHAINID,
     MOVR_MAIN_CHAINID,
     ETH_TEST1_CHAINID,
-    IOTEX_MAIN_CHAINID
+    IOTEX_MAIN_CHAINID,
+    SDN_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
