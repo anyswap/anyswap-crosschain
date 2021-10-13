@@ -49,6 +49,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#E8831D'
   },
+  COIN98: {
+    connector: injected,
+    name: 'Coin98',
+    iconName: 'Coin98.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D'
+  },
   // TERRA: {
   //   connector: terra,
   //   name: 'Terra',

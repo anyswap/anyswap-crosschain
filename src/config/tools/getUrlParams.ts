@@ -1,3 +1,5 @@
+import { createBrowserHistory } from 'history'
+
 import { chainInfo } from '../chainConfig'
 import { isAddress } from '../../utils'
 
@@ -49,6 +51,10 @@ export function getInitBridgeChain(destChainID: any, bridgeToken: any) {
 let onlyOne = 0
 function getParamNode(type: any, INIT_NODE: any) {
   type = type?.toString()?.toLowerCase()
+  const history = createBrowserHistory()
+  console.log(history)
+  console.log(history.location.hash)
+  // history.replace('')
   let labelStr = INIT_NODE
   for (const key in chainInfo) {
     // console.log(key)
@@ -63,6 +69,16 @@ function getParamNode(type: any, INIT_NODE: any) {
   }
   if (!onlyOne) {
     onlyOne = 1
+    const lpath = history.location.hash.split('?')
+    const pathKey = lpath[0]
+    const paramKey = lpath[1]
+    const paramArr = paramKey.split('&')
+    const paramList = []
+    for (const k of paramArr) {
+      if (k.indexOf('network=') === 0) continue
+      paramList.push(k)
+    }
+    history.replace(pathKey + '?' + paramList.join('&'))
     selectNetwork(labelStr)
   }
   return labelStr
