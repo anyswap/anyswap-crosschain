@@ -630,19 +630,22 @@ export default function CrossChain() {
         if (config.getCurConfigInfo().showChain.length > 0 && !config.getCurConfigInfo().showChain.includes(c)) continue
         arr.push(c)
       }
-      // console.log(arr)
-      // console.log(selectCurrency)
-      // console.log(selectChain)
-      if (arr.length > 0 && !arr.includes(selectChain)) {
-        for (const c of arr) {
-          if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-          // console.log(c)
-          setSelectChain(c)
-          break
+      
+      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(chainId).bridgeInitChain
+      if (arr.length > 0) {
+        if (
+          !useChain
+          || (useChain && !arr.includes(useChain))
+        ) {
+          for (const c of arr) {
+            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+            useChain = c
+            break
+          }
         }
-      } else if (!selectChain) {
-        setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
       }
+      setSelectChain(useChain)
+
       setSelectChainList(arr)
     }
   }, [selectCurrency, swapType, chainId, selectChain])
