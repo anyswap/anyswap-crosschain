@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, routerTokenList, bridgeTokenList } from '../state/lists/actions'
+import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
 import { AppState } from '../state'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
@@ -56,6 +56,40 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
         })
     },
     [dispatch, ensResolver]
+  )
+}
+
+export function useFetchMergeTokenListCallback(): () => Promise<any> {
+  const { chainId } = useActiveWeb3React()
+  const dispatch = useDispatch<AppDispatch>()
+  const lists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
+  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+  // console.log(lists)
+  return useCallback(
+    async () => {
+      if (!chainId) return
+      if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
+        return
+      } else {
+        const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
+        return getUrlData(url)
+          .then((tokenList:any) => {
+            // console.log(tokenList)
+            let list:any = {}
+            if (tokenList.msg === 'Success' && tokenList.data) {
+              list = tokenList.data
+            }
+            dispatch(mergeTokenList({ chainId, tokenList:list }))
+            return list
+          })
+          .catch(error => {
+            console.debug(`Failed to get list at url `, error)
+            dispatch(mergeTokenList({ chainId, tokenList: curList.tokenList }))
+            return {}
+          })
+      }
+    },
+    [dispatch, chainId]
   )
 }
 

@@ -59,9 +59,6 @@ export default function CrossChain() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
-  // const toggleNetworkModal = useToggleNetworkModal()
-  // const history = createBrowserHistory()
-  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -389,11 +386,7 @@ export default function CrossChain() {
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-    // setAllTokens({})
-    // setSelectCurrency('')
-    // console.log(chainId)
-    // console.log(t)
-    // console.log(allTokensList)
+
     const list:any = {}
     if (Object.keys(allTokensList).length > 0) {
       for (const token in allTokensList) {
@@ -410,9 +403,6 @@ export default function CrossChain() {
           ) {
             setSelectCurrency(list[token])
           }
-          //  else if (!selectCurrency) {
-          //   setSelectCurrency(list[token])
-          // }
         }
       }
     } else {
@@ -434,15 +424,20 @@ export default function CrossChain() {
         if (c?.toString() === chainId?.toString()) continue
         arr.push(c)
       }
+      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(chainId).bridgeInitChain
       if (arr.length > 0) {
-        for (const c of arr) {
-          if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-          setSelectChain(c)
-          break
+        if (
+          !useChain
+          || (useChain && !arr.includes(useChain))
+        ) {
+          for (const c of arr) {
+            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+            useChain = c
+            break
+          }
         }
-      } else {
-        setSelectChain(config.getCurChainInfo(chainId).bridgeInitChain)
       }
+      setSelectChain(useChain)
       setSelectChainList(arr)
     }
   }, [selectCurrency])

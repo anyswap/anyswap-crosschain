@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList, mergeTokenList } from './actions'
 
 import config from '../../config'
 
@@ -21,6 +21,7 @@ export interface ListsState {
   readonly selectedListUrl: string | undefined
   readonly routerTokenList: any
   readonly bridgeTokenList: any
+  readonly mergeTokenList: any
 }
 
 type ListState = ListsState['byUrl'][string]
@@ -44,17 +45,40 @@ const initialState: ListsState = {
   },
   selectedListUrl: DEFAULT_TOKEN_LIST_URL,
   routerTokenList: {},
-  bridgeTokenList: {}
+  bridgeTokenList: {},
+  mergeTokenList: {},
 }
 
 export default createReducer(initialState, builder =>
   builder
     .addCase(bridgeTokenList, (state, { payload: { chainId, tokenList } }) => {
-      state.bridgeTokenList[chainId] = {tokenList, timestamp: Date.now()}
+      if (state.bridgeTokenList) {
+        state.bridgeTokenList[chainId] = {tokenList, timestamp: Date.now()}
+      } else {
+        state.bridgeTokenList = {
+          [chainId]: {tokenList, timestamp: Date.now()}
+        }
+      }
     })
     .addCase(routerTokenList, (state, { payload: { chainId, tokenList } }) => {
       // console.log(state)
-      state.routerTokenList[chainId] = {tokenList, timestamp: Date.now()}
+      if (state.routerTokenList) {
+        state.routerTokenList[chainId] = {tokenList, timestamp: Date.now()}
+      } else {
+        state.routerTokenList = {
+          [chainId]: {tokenList, timestamp: Date.now()}
+        }
+      }
+    })
+    .addCase(mergeTokenList, (state, { payload: { chainId, tokenList } }) => {
+      // console.log(state)
+      if (state.mergeTokenList) {
+        state.mergeTokenList[chainId] = {tokenList, timestamp: Date.now()}
+      } else {
+        state.mergeTokenList = {
+          [chainId]: {tokenList, timestamp: Date.now()}
+        }
+      }
     })
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
