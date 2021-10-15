@@ -170,6 +170,7 @@
   "minutes": "分钟",
   "Insufficient": "{{symbol}}余额不足",
   "ConnectedWith": "连接到",
+  "Connected": "已连接",
   "Disconnect": "断开",
   "Change": "切换",
   "CopyAddress": "复制地址",

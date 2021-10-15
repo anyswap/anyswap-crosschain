@@ -342,11 +342,6 @@ export default function CrossChain() {
         )
         // console.log(DC)
       }
-      // console.log(isUnderlying)
-      // console.log(curChain)
-      // console.log(destChain)
-      // console.log(CC)
-      // console.log(selectCurrency)
       if (CC) {
         if (isUnderlying) {
           setCurChain({
@@ -374,8 +369,6 @@ export default function CrossChain() {
           })
         }
       }
-      // console.log(selectChain)
-      // console.log(CC)
       if (intervalFN) clearTimeout(intervalFN)
       intervalFN = setTimeout(() => {
         setIntervalCount(intervalCount + 1)

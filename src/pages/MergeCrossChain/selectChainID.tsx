@@ -149,7 +149,7 @@ export default function SelectChainIdInputPanel({
         const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res) {
             setDestBalance(res)
           } else {

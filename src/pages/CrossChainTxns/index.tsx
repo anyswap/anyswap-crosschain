@@ -520,13 +520,9 @@ export default function CrossChain() {
     // onSelectChainId(selectChain)
     setSelectDestCurrency('')
     if (selectChain) {
-      // setInputBridgeValue('')
-      // onUserInput(Field.INPUT, '0')
-      // console.log(selectChain)
       const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens
       const initToken = config.getCurChainInfo(selectChain).swapInitToken
-      // console.log(arr)
-      // console.log(initToken)
+
       for (const obj of arr) {
         if (initToken && obj.address.toLowerCase() === initToken?.toLowerCase()) {
           // console.log(obj)
@@ -549,8 +545,6 @@ export default function CrossChain() {
     }
   }, [setInputBridgeValue])
 
-  // console.log(isUnderlying)
-  // console.log(isDestUnderlying)
   return (
     <>
       <ModalContent

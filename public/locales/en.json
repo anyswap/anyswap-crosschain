@@ -173,6 +173,7 @@
   "minutes": "minutes",
   "Insufficient": "Insufficient {{symbol}} balance",
   "ConnectedWith": "Connected with",
+  "Connected": "Connected",
   "Disconnect": "Disconnect",
   "Change": "Change",
   "CopyAddress": "Copy Address",

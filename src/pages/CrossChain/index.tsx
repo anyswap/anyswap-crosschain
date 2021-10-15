@@ -229,7 +229,8 @@ export default function CrossChain() {
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
-    selectChain
+    selectChain,
+    selectCurrency?.version
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
@@ -238,7 +239,8 @@ export default function CrossChain() {
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
-    selectChain
+    selectChain,
+    selectCurrency?.version
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
@@ -247,7 +249,8 @@ export default function CrossChain() {
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
-    selectChain
+    selectChain,
+    selectCurrency?.version
   )
 
   const outputBridgeValue = useMemo(() => {

@@ -143,6 +143,17 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   return map
 }
 
+export function listsMergeToTokenMap(list:any): TokenAddressMap {
+
+  // console.log(list)
+  const map:any = {}
+  for (const t in list) {
+    // if(!isAddress(t)) continue
+    map[t] = new WrappedBridgeTokenInfo(list[t])
+  }
+  return map
+}
+
 export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any): TokenAddressMap {
 
   // console.log(list)
@@ -218,6 +229,25 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): any 
       return init
     }
   }, [lists, key, chainId])
+}
+
+export function useMergeBridgeTokenList(chainId?:any): any {
+  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists.mergeTokenList)
+  // console.log(lists)
+  const init = {}
+  return useMemo(() => {
+    if (!chainId) return init
+    const current = lists[chainId]?.tokenList
+    // console.log(current)
+    if (!current) return init
+    try {
+      // return listsMergeToTokenMap(current)
+      return current
+    } catch (error) {
+      console.error('Could not show token list due to error', error)
+      return init
+    }
+  }, [lists, chainId])
 }
 
 export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {

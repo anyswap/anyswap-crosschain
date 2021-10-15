@@ -141,7 +141,8 @@ export default function SwapNative() {
     anyToken?.address,
     account ?? undefined,
     inputBridgeValue,
-    selectChain
+    selectChain,
+    selectCurrency?.version
   )
     // console.log(wrapType)
     // console.log('wrapInputError', wrapInputError)

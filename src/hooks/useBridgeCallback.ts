@@ -34,6 +34,7 @@ export function useBridgeCallback(
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
+  version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -79,7 +80,7 @@ export function useBridgeCallback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: version
                   }
                   recordsTxns(data)
                 }
@@ -90,7 +91,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
 }
 
 
@@ -107,6 +108,7 @@ export function useBridgeCallback(
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
+  version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -155,7 +157,7 @@ export function useBridgeCallback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: version
                   }
                   recordsTxns(data)
                 }
@@ -166,7 +168,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
 }
 
 
@@ -184,6 +186,7 @@ export function useBridgeNativeCallback(
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: string | undefined,
+  version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -229,7 +232,7 @@ export function useBridgeNativeCallback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: version
                   }
                   recordsTxns(data)
                 }
@@ -240,7 +243,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
 }
 
 /**

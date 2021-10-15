@@ -18,6 +18,7 @@ import { MenuItem } from '../SearchModal/styleds'
 import Loader from '../Loader'
 
 import config from '../../config'
+import {CROSS_BRIDGE_LIST} from '../../config/constant'
 
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
@@ -112,7 +113,7 @@ function CurrencyRow({
   const currencies = useLocalToken(currencyObj)
   const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken
   && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
-  && bridgeKey !== 'bridgeTokenList'
+  && !CROSS_BRIDGE_LIST.includes(bridgeKey)
    ? true : false
   // console.log(currencyObj)
   // const balance = ''
@@ -195,7 +196,7 @@ export default function BridgeCurrencyList({
     const arr = []
     let ethNode:any = ''
     for (const obj of itemData) {
-      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() && bridgeKey !== 'bridgeTokenList' ? true : false
+      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
       if (
         isNativeToken
         || obj?.address === config.getCurChainInfo(chainId)?.symbol

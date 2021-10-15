@@ -23,6 +23,14 @@ export enum VERSION {
   V6_1 = 'NFT',
 }
 
+export enum BRIDGE_KEY {
+  routerTokenList = 'routerTokenList',
+  bridgeTokenList = 'bridgeTokenList',
+  mergeTokenList = 'mergeTokenList',
+}
+
+export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList, BRIDGE_KEY.mergeTokenList]
+
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
