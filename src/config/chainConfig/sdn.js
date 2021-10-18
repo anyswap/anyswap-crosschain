@@ -37,6 +37,7 @@ export default {
     nodeRpc: SDN_MAINNET,
     nodeRpcList: [
       SDN_MAINNET,
+      'https://shiden.api.onfinality.io/rpc?apikey=d5da52f9-c548-4d48-8a7b-2ebb4d5d8959'
     ],
     chainID: SDN_MAIN_CHAINID,
     lookHash: SDN_MAIN_EXPLORER + '/tx/',
