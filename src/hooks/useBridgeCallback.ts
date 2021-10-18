@@ -544,6 +544,7 @@ export function useBridgeNativeCallback(
   toChainID: any,
   txnsType: string | undefined,
   inputToken: string | undefined,
+  pairid: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -574,16 +575,33 @@ export function useBridgeNativeCallback(
                   value: `0x${inputAmount.raw.toString(16)}`,
                   address: toAddress,
                   token: inputToken,
-                  destChain: toChainID
+                  destChain: toChainID,
+                  isRecords: true
                 }) : await signSwapoutData({
                   value: `0x${inputAmount.raw.toString(16)}`,
                   address: toAddress,
                   token: inputToken,
-                  destChain: toChainID
+                  destChain: toChainID,
+                  isRecords: true
                 })
                 console.log(txReceipt)
                 const txData:any = {hash: txReceipt?.info}
                 addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                if (txData.hash && account) {
+                  const rdata = {
+                    hash: txData.hash,
+                    chainId: chainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: inputAmount.raw.toString(),
+                    formatvalue: inputAmount?.toSignificant(6),
+                    to: toAddress,
+                    symbol: '',
+                    version: txnsType,
+                    pairid: pairid
+                  }
+                  recordsTxns(rdata)
+                }
               } catch (error) {
                 console.log('Could not swapout', error)
               }

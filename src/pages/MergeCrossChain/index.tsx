@@ -93,6 +93,7 @@ export default function CrossChain() {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
+    console.log(selectCurrency)
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }
@@ -270,6 +271,7 @@ export default function CrossChain() {
     selectChain,
     destConfig?.type,
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
+    destConfig?.pairid
   )
 
   const outputBridgeValue = useMemo(() => {
