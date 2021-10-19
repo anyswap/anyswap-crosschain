@@ -98,6 +98,26 @@ export default function SwapNative() {
     return false
   }, [selectCurrency])
 
+  const destConfig = useMemo(() => {
+    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
+      return selectCurrency?.destChains[selectChain]
+    }
+    return false
+  }, [selectCurrency, selectChain])
+
+  const isNativeToken = useMemo(() => {
+    if (
+      selectCurrency
+      && chainId
+      && config.getCurChainInfo(chainId)
+      && config.getCurChainInfo(chainId).nativeToken
+      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency, chainId])
+
   const underlyingToken =  useMemo(() => {
     if (isUnderlying) {
       return {
@@ -136,13 +156,13 @@ export default function SwapNative() {
   // console.log(approval)
   // console.log(ApprovalState)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     anyCurrency?anyCurrency:undefined,
     anyToken?.address,
     account ?? undefined,
     inputBridgeValue,
     selectChain,
-    selectCurrency?.version
+    destConfig?.type
   )
     // console.log(wrapType)
     // console.log('wrapInputError', wrapInputError)
@@ -152,13 +172,9 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType
   )
-  // console.log(swapType)
-  // console.log(swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined))
-  // console.log(anyCurrency)
-  // console.log('wrapInputErrorUnderlying',wrapInputErrorUnderlying)
-
+  
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     anyToken?.address,
     inputBridgeValue,
@@ -175,31 +191,6 @@ export default function SwapNative() {
       setInputBridgeValue('')
     }
   }
-
-  // const bridgeConfig = useMemo(() => {
-  //   if (selectCurrency?.address && allTokens[selectCurrency?.address]) return allTokens[selectCurrency?.address]
-  //   return ''
-  // }, [selectCurrency, allTokens])
-
-  const destConfig = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
-      return selectCurrency?.destChains[selectChain]
-    }
-    return false
-  }, [selectCurrency, selectChain])
-
-  const isNativeToken = useMemo(() => {
-    if (
-      selectCurrency
-      && chainId
-      && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).nativeToken
-      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
-    ) {
-      return true
-    }
-    return false
-  }, [selectCurrency, chainId])
 
   const isWrapInputError = useMemo(() => {
     if (swapType === 'deposit') {

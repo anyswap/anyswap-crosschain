@@ -21,7 +21,6 @@ export enum ApprovalState {
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
-  // routerToken?: any,
   inputCurrency: any,
   spender?: any,
   tokenid?: any,
@@ -120,7 +119,6 @@ export function useApproveCallback(
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApprove1155Callback(
-  // routerToken?: any,
   inputCurrency: any,
   spender?: any,
 ): {approvalState: ApprovalState, approve: () => Promise<void>} {

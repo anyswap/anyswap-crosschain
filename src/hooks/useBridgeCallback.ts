@@ -287,7 +287,7 @@ export function useBridgeNativeCallback(
                 ) : await bridgeContract.withdraw(
                   `0x${inputAmount.raw.toString(16)}`
                 )
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -349,7 +349,7 @@ export function useBridgeNativeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   account
                 )
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${swapType} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -376,7 +376,8 @@ export function useBridgeNativeCallback(
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
-  isUnderlying: any
+  isUnderlying: any,
+  version: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -432,7 +433,7 @@ export function useBridgeNativeCallback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: version
                   }
                   recordsTxns(data)
                 }
@@ -461,7 +462,8 @@ export function useBridgeNativeCallback(
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
-  isUnderlying: any
+  isUnderlying: any,
+  version: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -516,7 +518,7 @@ export function useBridgeNativeCallback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: version
                   }
                   recordsTxns(data)
                 }

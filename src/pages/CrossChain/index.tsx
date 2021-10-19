@@ -96,9 +96,8 @@ export default function CrossChain() {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
   // console.log(selectCurrency)
 
-  // const version = selectCurrency?.version
-
   const destConfig = useMemo(() => {
+    console.log(selectCurrency)
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }
@@ -106,7 +105,7 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   // console.log(selectCurrency)
-  // console.log(bridgeConfig)
+  console.log(destConfig)
   
   const isNativeToken = useMemo(() => {
     if (
@@ -140,7 +139,7 @@ export default function CrossChain() {
   const formatCurrency = useLocalToken(selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.routerToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, destConfig?.routerToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -224,33 +223,33 @@ export default function CrossChain() {
   }, [getSelectPool])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
     selectChain,
-    selectCurrency?.version
+    destConfig?.type
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
     selectChain,
-    selectCurrency?.version
+    destConfig?.type
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
     recipient,
     inputBridgeValue,
     selectChain,
-    selectCurrency?.version
+    destConfig?.type
   )
 
   const outputBridgeValue = useMemo(() => {

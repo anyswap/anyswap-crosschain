@@ -110,9 +110,6 @@ export function useLocalToken(currency?: any): Token | undefined | null {
   const destChains = currency?.destChains
   const logoUrl = currency?.logoUrl
   const price = currency?.price
-  const tokenid = currency?.tokenid
-  const version = currency?.version
-  const routerToken = currency?.routerToken
 
   // const token = address && name ? undefined : useToken(address ? address : undefined)
   // console.log(token)
@@ -134,9 +131,6 @@ export function useLocalToken(currency?: any): Token | undefined | null {
       destChains,
       logoUrl,
       price,
-      tokenid,
-      version,
-      routerToken,
     )
   }, [
     address,
@@ -149,9 +143,6 @@ export function useLocalToken(currency?: any): Token | undefined | null {
     destChains,
     logoUrl,
     price,
-    tokenid,
-    version,
-    routerToken,
   ])
 }
 

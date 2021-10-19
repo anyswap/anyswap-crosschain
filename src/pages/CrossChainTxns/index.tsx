@@ -161,7 +161,7 @@ export default function CrossChain() {
   const formatCurrency = useLocalToken(selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectCurrency?.routerToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, destConfig?.routerToken)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -270,7 +270,7 @@ export default function CrossChain() {
   
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeSwapNativeCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
     v2Trade?.inputAmount?.toSignificant(6),
@@ -278,11 +278,12 @@ export default function CrossChain() {
     ttl,
     outputAmount?.raw?.toString(),
     routerPath,
-    isUnderlying
+    isUnderlying,
+    destConfig?.type
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapUnderlyingCallback(
-    selectCurrency?.routerToken,
+    destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
     v2Trade?.inputAmount?.toSignificant(6),
@@ -290,7 +291,8 @@ export default function CrossChain() {
     ttl,
     outputAmount?.raw?.toString(),
     routerPath,
-    isUnderlying
+    isUnderlying,
+    destConfig?.type
   )
 
 
