@@ -40,7 +40,7 @@ import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
 
-import SelectChainIdInputPanel from '../CrossChain/selectChainID'
+import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
 import Reminder from '../CrossChain/reminder'
 
 const BackBox = styled.div`

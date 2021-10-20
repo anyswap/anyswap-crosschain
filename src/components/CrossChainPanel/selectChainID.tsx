@@ -6,17 +6,17 @@ import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
 
-import { RowBetween } from '../../components/Row'
-import Column from '../../components/Column'
-import { PaddedColumn, Separator } from '../../components/SearchModal/styleds'
-import { Input as NumericalInput } from '../../components/NumericalInput'
-import TokenLogo from '../../components/TokenLogo'
-import Modal from '../../components/Modal'
-// import { MenuItem } from '../../components/SearchModal/styleds'
+import { RowBetween } from '../Row'
+import Column from '../Column'
+import { PaddedColumn, Separator } from '../SearchModal/styleds'
+import { Input as NumericalInput } from '../NumericalInput'
+import TokenLogo from '../TokenLogo'
+import Modal from '../Modal'
+// import { MenuItem } from '../SearchModal/styleds'
 import {
   OptionCardClickable,
   Option
-} from '../../components/Header/SelectNetwork'
+} from '../Header/SelectNetwork'
 
 import { TYPE, CloseIcon } from '../../theme'
 
@@ -40,7 +40,7 @@ import {
   StyledTokenName,
   CurrencySelectBox
   // HideSmallBox
-} from '../../components/CurrencySelect/styleds'
+} from '../CurrencySelect/styleds'
 
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 

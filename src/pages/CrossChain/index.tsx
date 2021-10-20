@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 
-import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -14,6 +13,7 @@ import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 
+import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 import { AutoColumn } from '../../components/Column'
 import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
