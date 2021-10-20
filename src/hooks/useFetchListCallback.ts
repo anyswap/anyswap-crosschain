@@ -1,13 +1,15 @@
 import { nanoid } from '@reduxjs/toolkit'
 import { ChainId } from 'anyswap-sdk'
 import { TokenList } from '@uniswap/token-lists'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
 import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
 import { AppState } from '../state'
+
+import { useUserSelectChainId } from '../state/user/hooks'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
@@ -61,17 +63,26 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
 
 export function useFetchMergeTokenListCallback(): () => Promise<any> {
   const { chainId } = useActiveWeb3React()
+  const [selectNetworkInfo] = useUserSelectChainId()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
+
+  const curList = useChainId && lists && lists[useChainId] ? lists[useChainId] : {}
+
   // console.log(lists)
   return useCallback(
     async () => {
-      if (!chainId) return
+      if (!useChainId) return
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
-        const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
+        const url = `${config.bridgeApi}/merge/tokenlist/${useChainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
             // console.log(tokenList)
@@ -79,17 +90,17 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data
             }
-            dispatch(mergeTokenList({ chainId, tokenList:list }))
+            dispatch(mergeTokenList({ chainId: useChainId, tokenList:list }))
             return list
           })
           .catch(error => {
             console.debug(`Failed to get list at url `, error)
-            dispatch(mergeTokenList({ chainId, tokenList: curList.tokenList }))
+            dispatch(mergeTokenList({ chainId: useChainId, tokenList: curList.tokenList }))
             return {}
           })
       }
     },
-    [dispatch, chainId]
+    [dispatch, useChainId]
   )
 }
 

@@ -46,8 +46,8 @@ const HeadterRightBox = styled.div`
 interface SelectCurrencyInputPanelProps {
   value: string  // token amount
   onUserInput: (value: string) => void // user input amount
-  onMax: (value: any) => void // input max token amount
   showMaxButton: boolean // is view max function
+  onMax?: (value: any) => void // input max token amount
   label?: string 
   onCurrencySelect?: (currency: Currency) => void // user select token
   // currency?: Currency | null
@@ -154,10 +154,12 @@ export default function SelectCurrencyInputPanel({
   }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance])
 
   const handleMax = useCallback(() => {
-    if (useBalance) {
-      onMax(useBalance?.toSignificant(6))
-    } else {
-      onMax('')
+    if (onMax) {
+      if (useBalance) {
+        onMax(useBalance?.toSignificant(6))
+      } else {
+        onMax('')
+      }
     }
   }, [useBalance, onMax])
 

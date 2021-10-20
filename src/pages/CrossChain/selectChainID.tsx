@@ -93,7 +93,11 @@ export default function SelectChainIdInputPanel({
   useEffect(() => {
     // console.log(selectChainList)
     if (selectChainList.length > 0) {
-      setChainList([chainId, ...selectChainList])
+      // if (chainId) {
+      //   setChainList([chainId, ...selectChainList])
+      // } else {
+      // }
+      setChainList([...selectChainList])
     } else {
       setChainList([])
     }

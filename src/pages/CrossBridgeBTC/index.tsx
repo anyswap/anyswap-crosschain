@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useContext} from 'react'
+import React, {useEffect, useState, useMemo, useContext, useCallback} from 'react'
 import {createAddress, isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
@@ -6,6 +6,7 @@ import { ArrowDown } from 'react-feather'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
+import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
@@ -13,14 +14,14 @@ import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tool
 
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 import { AutoColumn } from '../../components/Column'
-// import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import { AutoRow } from '../../components/Row'
 // import Loader from '../../components/Loader'
 import AddressInputPanel from '../../components/AddressInputPanel'
-import { ArrowWrapper } from '../../components/swap/styleds'
+import { ButtonPrimary, ButtonLight } from '../../components/Button'
+import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import Title from '../../components/Title'
-// import ModalContent from '../../components/Modal/ModalContent'
-// import QRcode from '../../components/QRcode'
+import ModalContent from '../../components/Modal/ModalContent'
+import QRcode from '../../components/QRcode'
 
 import SelectChainIdInputPanel from '../CrossChain/selectChainID'
 import Reminder from '../CrossChain/reminder'
@@ -28,6 +29,12 @@ import AppBody from '../AppBody'
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+
+import {
+  ListBox
+} from '../styled'
+
+const BRIDGETYPE = 'mergeTokenList'
 
 export default function CrossBridgeBTC () {
 
@@ -43,25 +50,42 @@ export default function CrossBridgeBTC () {
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [modalOpen, setModalOpen] = useState(false)
+  const [delayAction, setDelayAction] = useState<boolean>(false)
+  const [modalSpecOpen, setModalSpecOpen] = useState(false)
 
-  const useTolenList:any = useMemo(() => {
-    setSelectChainList([])
-    return {}
-  }, [])
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
 
-  const bridgeConfig = useMemo(() => {
-    if (selectCurrency?.address && useTolenList[selectCurrency?.address]) return useTolenList[selectCurrency?.address]
-    return ''
-  }, [selectCurrency, useTolenList])
+  const allTokensList:any = useMergeBridgeTokenList(useChainId)
+
+  // const useTolenList = useMemo(() => {
+
+  // }, [allTokensList, useChainId])
+  useEffect(() => {
+    console.log(allTokensList)
+    if (allTokensList) {
+      let initToken = selectCurrency?.address && selectCurrency?.chainId === useChainId ? selectCurrency?.address : ''
+      for (const token in allTokensList) {
+        if (!initToken) initToken = token
+      }
+      if (initToken) {
+        setSelectCurrency(allTokensList[initToken])
+      }
+    }
+  }, [allTokensList, useChainId])
 
   const destConfig = useMemo(() => {
     // console.log(bridgeConfig)
     // console.log(selectChain)
-    if (bridgeConfig && bridgeConfig?.destChains[selectChain]) {
-      return bridgeConfig?.destChains[selectChain]
+    if (selectCurrency && selectCurrency?.destChains[selectChain]) {
+      return selectCurrency?.destChains[selectChain]
     }
     return false
-  }, [bridgeConfig, selectChain])
+  }, [selectCurrency, selectChain])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
@@ -86,10 +110,30 @@ export default function CrossBridgeBTC () {
     }
   }, [inputBridgeValue, destConfig])
 
+  const isCrossBridge = useMemo(() => {
+    const isAddr = isAddress( recipient, selectChain)
+    if (
+      destConfig
+      && selectCurrency
+      && inputBridgeValue
+      && Boolean(isAddr)
+      && selectChain
+    ) {
+      if (
+        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
+      ) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  }, [recipient, selectChain, destConfig, selectCurrency, inputBridgeValue])
+
   function changeNetwork (chainID:any) {
     selectNetwork(chainID).then((res: any) => {
-      console.log(res)
-      
       if (res.msg === 'Error') {
         alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
       } else {
@@ -102,26 +146,84 @@ export default function CrossBridgeBTC () {
     })
   }
 
-  useEffect(() => {
+  // useEffect(() => {
+  const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')
-    if (account && selectCurrency && destConfig && chainId) {
-      getP2PInfo(account, chainId, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+    if (recipient && selectCurrency && destConfig && selectChain) {
+      getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
         // console.log(res)
         // console.log(selectCurrency)
         if (res?.p2pAddress) {
-          const localAddress = createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+          const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
           if (res?.p2pAddress === localAddress && isAddress(localAddress, selectNetworkInfo?.chainId)) {
             // console.log(localAddress)
             setP2pAddress(localAddress)
-            setLocalConfig(account, selectCurrency?.address, chainId, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+            setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
           }
         }
+        setModalSpecOpen(true)
+        setDelayAction(false)
       })
+    } else {
+      setDelayAction(false)
     }
-  }, [account, selectCurrency, destConfig, chainId])
+  }, [recipient, selectCurrency, destConfig, selectChain])
+
+  useEffect(() => {
+    // console.log(selectCurrency)
+    if (selectCurrency) {
+      const arr = []
+      for (const c in selectCurrency?.destChains) {
+        if (c?.toString() === selectChain?.toString()) continue
+        arr.push(c)
+      }
+      console.log(arr)
+      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(selectChain).bridgeInitChain
+      if (arr.length > 0) {
+        if (
+          !useChain
+          || (useChain && !arr.includes(useChain))
+        ) {
+          for (const c of arr) {
+            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+            useChain = c
+            break
+          }
+        }
+      }
+      setSelectChain(useChain)
+      setSelectChainList(arr)
+    }
+  }, [selectCurrency])
 
   return (
     <>
+      <ModalContent
+        isOpen={modalSpecOpen}
+        title={'Cross-chain Router'}
+        onDismiss={() => {
+          setModalSpecOpen(false)
+        }}
+      >
+        <ListBox>
+          <div className="item">
+            <p className="label">Value:</p>
+            <p className="value">{inputBridgeValue}</p>
+          </div>
+          <div className="item">
+            <p className="label">Address:</p>
+            <p className="value">{p2pAddress}</p>
+          </div>
+          <div className="item">
+            <QRcode uri={p2pAddress} size={160}></QRcode>
+          </div>
+        </ListBox>
+        <BottomGrouping>
+          <ButtonLight onClick={() => {
+            setModalSpecOpen(false)
+          }}>{t('Confirm')}</ButtonLight>
+        </BottomGrouping>
+      </ModalContent>
       <AppBody>
         <Title
           title={t('bridge')}
@@ -139,7 +241,7 @@ export default function CrossBridgeBTC () {
               console.log(inputCurrency)
               setSelectCurrency(inputCurrency)
             }}
-            onMax={() => {}}
+            // onMax={() => {}}
             currency={selectCurrency}
             disableCurrencySelect={false}
             disableChainSelect={true}
@@ -147,11 +249,12 @@ export default function CrossBridgeBTC () {
             isViewNetwork={true}
             id="selectCurrency"
             isError={false}
-            allTokens={useTolenList}
             hideBalance={true}
             isViewModal={modalOpen}
             customChainId={selectNetworkInfo?.chainId}
             // allBalances={allBalances}
+            bridgeKey={BRIDGETYPE}
+            allTokens={allTokensList}
           />
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
@@ -177,24 +280,32 @@ export default function CrossBridgeBTC () {
               console.log(value)
               setModalOpen(value)
             }}
-            bridgeConfig={bridgeConfig}
+            bridgeConfig={selectCurrency}
             isNativeToken={false}
             selectChainList={selectChainList}
-            // isViewAllChain={swapType === BridgeType.deposit}
+            isViewAllChain={true}
           />
-          {destConfig?.type === 'swapout' && (isNaN(selectChain)) ? (
+          <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
+          {/* {destConfig?.type === 'swapout' && (isNaN(selectChain)) ? (
             <>
               <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
             </>
           ): ''}
           {
             p2pAddress ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''
-          }
+          } */}
         </AutoColumn>
 
-        {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
-        <Reminder bridgeConfig={bridgeConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+        <Reminder bridgeConfig={selectCurrency} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
         {/* {ButtonView('INIT')} */}
+        <BottomGrouping>
+          <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+            setDelayAction(true)
+            onCreateP2pAddress()
+          }}>
+            {t('swap')}
+          </ButtonPrimary>
+        </BottomGrouping>
       </AppBody>
     </>
   )
