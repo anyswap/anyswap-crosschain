@@ -40,6 +40,7 @@ export default {
     label: COLX_MAIN_CHAINID,
     isSwitch: 1,
     suffix: 'COLX',
-    anyToken: ''
+    anyToken: '',
+    chainType: 'BTC'
   },
 }

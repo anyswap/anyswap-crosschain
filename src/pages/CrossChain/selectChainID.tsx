@@ -56,7 +56,7 @@ interface SelectChainIdInputPanel {
   id: string
   onOpenModalView?: (value: any) => void,
   bridgeConfig: any,
-  intervalCount: any,
+  intervalCount?: any,
   isNativeToken?: boolean
   isViewAllChain?: boolean
   selectChainList?: Array<any>

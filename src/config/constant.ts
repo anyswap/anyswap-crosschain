@@ -21,6 +21,7 @@ export enum VERSION {
   V5 = 'ALL',
   V6 = 'NFT_TEST',
   V6_1 = 'NFT',
+  V7 = 'SOURCE_CHAIN',
 }
 
 export enum BRIDGE_KEY {
@@ -34,7 +35,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList, BRIDGE_KEY.mergeTo
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.20'
+export const version = '0.1.21'
 export const timeout = 1000 * 60 * 30
 
 // export const INIT_VERSION = VERSION.V1_1
@@ -45,6 +46,7 @@ export const timeout = 1000 * 60 * 30
 export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
+// export const INIT_VERSION = VERSION.V7
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -278,6 +280,17 @@ export const controlConfig:any = {
     isOpenRouterTxns: 0,
     isOpenBridge: 0,
     isOpenNFT: 1,
+  },
+  [VERSION.V7]: {
+    bridgeInitDataChain: '56',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 1,
+    isOpenRouterTxns: 0,
+    isOpenBridge: 1,
   },
 }
 

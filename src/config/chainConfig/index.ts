@@ -15,10 +15,10 @@ import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
 import movr, {MOVR_MAIN_CHAINID} from './movr'
 import iotex, {IOTEX_MAIN_CHAINID} from './iotex'
 import sdn, {SDN_MAIN_CHAINID} from './sdn'
-import ltc from './ltc'
-import btc from './btc'
-import block from './block'
-import colx from './colx'
+import ltc, {LTC_MAIN_CHAINID} from './ltc'
+import btc, {BTC_MAIN_CHAINID} from './btc'
+import block, {BLOCK_MAIN_CHAINID} from './block'
+import colx, {COLX_MAIN_CHAINID} from './colx'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -181,6 +181,28 @@ const useChain:any = {
     // ONE_MAIN_CHAINID,
     // MOVR_MAIN_CHAINID,
     // ETH_TEST_CHAINID
+  ],
+  [VERSION.V7]: [
+    ETH_MAIN_CHAINID,
+    BNB_MAIN_CHAINID,
+    FSN_MAIN_CHAINID,
+    FTM_MAIN_CHAINID,
+    MATIC_MAIN_CHAINID,
+    HT_MAIN_CHAINID,
+    AVAX_MAIN_CHAINID,
+    XDAI_MAIN_CHAINID,
+    ARBITRUM_MAIN_CHAINID,
+    KCC_MAIN_CHAINID,
+    OKT_MAIN_CHAINID,
+    ONE_MAIN_CHAINID,
+    MOVR_MAIN_CHAINID,
+    ETH_TEST1_CHAINID,
+    IOTEX_MAIN_CHAINID,
+    SDN_MAIN_CHAINID,
+    LTC_MAIN_CHAINID,
+    BTC_MAIN_CHAINID,
+    BLOCK_MAIN_CHAINID,
+    COLX_MAIN_CHAINID
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,

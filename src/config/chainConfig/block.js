@@ -40,6 +40,7 @@ export default {
     label: BLOCK_MAIN_CHAINID,
     isSwitch: 1,
     suffix: 'BLOCK',
-    anyToken: ''
+    anyToken: '',
+    chainType: 'BTC'
   },
 }

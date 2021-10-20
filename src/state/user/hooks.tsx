@@ -16,7 +16,8 @@ import {
   // updatePairAddress,
   updateUserExpertMode,
   updateUserSlippageTolerance,
-  toggleURLWarning
+  toggleURLWarning,
+  selectNetworkId
 } from './actions'
 
 import config from '../../config'
@@ -179,4 +180,21 @@ export function useURLWarningToggle(): () => void {
  */
 export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
   return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB), 18, config.baseCurrency + '-V2', config.appName)
+}
+
+
+export function useUserSelectChainId(): [any, (selectChainInfo: any) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const selectNetworkInfo = useSelector<AppState, AppState['user']['selectNetworkId']>(state => {
+    return state.user.selectNetworkId
+  })
+
+  const setUserSelectNetwork = useCallback(
+    (selectNetworkInfo: any) => {
+      dispatch(selectNetworkId(selectNetworkInfo))
+    },
+    [dispatch]
+  )
+
+  return [selectNetworkInfo, setUserSelectNetwork]
 }

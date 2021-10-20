@@ -8,7 +8,7 @@ import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useDarkModeManager } from '../../state/user/hooks'
+import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 
 import { ExternalLink } from '../../theme'
@@ -167,6 +167,7 @@ const VersionLinkBox = styled(ExternalLink)`
 
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()
+  const [selectNetworkInfo] = useUserSelectChainId()
   // const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -187,14 +188,16 @@ export default function Header() {
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
-          <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-            {account && userEthBalance ? (
-              <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
-              </BalanceText>
-            ) : null}
-            <Web3Status />
-          </AccountElement>
+          {selectNetworkInfo && selectNetworkInfo?.label === 'BTC' ? '' : (
+            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+              {account && userEthBalance ? (
+                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                  {userEthBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
+                </BalanceText>
+              ) : null}
+              <Web3Status />
+            </AccountElement>
+          )}
           <StyleDarkToggle
             onClick={() => {
               toggleDarkMode()
