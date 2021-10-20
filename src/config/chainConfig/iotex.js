@@ -49,7 +49,6 @@ export default {
     type: 'main',
     label: IOTEX_MAIN_CHAINID,
     isSwitch: 1,
-    underlying: [],
     suffix: 'IoTeX',
     anyToken: ''
   },

@@ -19,6 +19,7 @@ import ltc, {LTC_MAIN_CHAINID} from './ltc'
 import btc, {BTC_MAIN_CHAINID} from './btc'
 import block, {BLOCK_MAIN_CHAINID} from './block'
 import colx, {COLX_MAIN_CHAINID} from './colx'
+import celo, {CELO_MAIN_CHAINID} from './celo'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -46,7 +47,8 @@ export const chainInfo:ConFig = {
   ...colx,
   ...movr,
   ...iotex,
-  ...sdn
+  ...sdn,
+  ...celo
 }
 
 const useChain:any = {
@@ -148,7 +150,8 @@ const useChain:any = {
     MOVR_MAIN_CHAINID,
     ETH_TEST1_CHAINID,
     IOTEX_MAIN_CHAINID,
-    SDN_MAIN_CHAINID
+    SDN_MAIN_CHAINID,
+    CELO_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
@@ -199,6 +202,7 @@ const useChain:any = {
     ETH_TEST1_CHAINID,
     IOTEX_MAIN_CHAINID,
     SDN_MAIN_CHAINID,
+    CELO_MAIN_CHAINID,
     LTC_MAIN_CHAINID,
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
