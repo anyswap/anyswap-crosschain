@@ -281,7 +281,7 @@ export default function CrossChain({
           selectChainList={selectChainList}
           isViewAllChain={true}
         />
-        <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
+        <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
       </AutoColumn>
 
       <Reminder bridgeConfig={selectCurrency} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>

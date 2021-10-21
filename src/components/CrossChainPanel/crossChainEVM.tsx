@@ -672,7 +672,7 @@ export default function CrossChain({
         />
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
+            <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} selectChainId={selectChain} />
           ) : ''
         }
       </AutoColumn>

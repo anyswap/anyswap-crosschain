@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react'
+import React, { useContext, useCallback, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import useENS from '../../hooks/useENS'
@@ -88,7 +88,8 @@ export default function AddressInputPanel({
   value,
   onChange,
   disabledInput = false,
-  isValid = true
+  isValid = true,
+  selectChainId
 }: {
   id?: string
   // the typed string value
@@ -97,6 +98,7 @@ export default function AddressInputPanel({
   onChange?: (value: string) => void
   disabledInput?: boolean
   isValid?: boolean
+  selectChainId?: any
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
@@ -114,6 +116,12 @@ export default function AddressInputPanel({
 
   const error =  isValid && Boolean(value.length > 0 && !loading && !address && !disabledInput)
 
+  const useChainId = useMemo(() => {
+    if (selectChainId && !isNaN(selectChainId)) return selectChainId
+    if (selectChainId && isNaN(selectChainId)) return ''
+    return chainId
+  }, [selectChainId, chainId])
+
   return (
     <InputPanel id={id}>
       <ContainerRow error={error}>
@@ -123,9 +131,9 @@ export default function AddressInputPanel({
               <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
                 {t('Recipient')}
               </TYPE.black>
-              {address && chainId && (
-                <ExternalLink href={getEtherscanLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  ({t('ViewOn')} {config.getCurChainInfo(chainId).name})
+              {address && useChainId && (
+                <ExternalLink href={getEtherscanLink(useChainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
+                  ({t('ViewOn')} {config.getCurChainInfo(useChainId).name})
                 </ExternalLink>
               )}
             </RowBetween>
