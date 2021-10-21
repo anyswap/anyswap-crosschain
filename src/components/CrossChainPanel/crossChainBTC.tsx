@@ -68,8 +68,8 @@ export default function CrossChain({
 
   // }, [allTokensList, useChainId])
   useEffect(() => {
-    console.log(bridgeKey)
-    console.log(allTokensList)
+    // console.log(bridgeKey)
+    // console.log(allTokensList)
     if (allTokensList) {
       let initToken = selectCurrency?.address && selectCurrency?.chainId === useChainId ? selectCurrency?.address : ''
       for (const token in allTokensList) {
