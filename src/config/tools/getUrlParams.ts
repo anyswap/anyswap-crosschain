@@ -52,8 +52,8 @@ let onlyOne = 0
 function getParamNode(type: any, INIT_NODE: any) {
   type = type?.toString()?.toLowerCase()
   const history = createBrowserHistory()
-  console.log(history)
-  console.log(history.location.hash)
+  // console.log(history)
+  // console.log(history.location.hash)
   // history.replace('')
   let labelStr = INIT_NODE
   for (const key in chainInfo) {

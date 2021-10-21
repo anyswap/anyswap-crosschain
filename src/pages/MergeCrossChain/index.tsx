@@ -1,40 +1,49 @@
-import React from 'react'
+import React, {Suspense} from 'react'
+import styled from 'styled-components'
+import { Switch, Route, Redirect } from 'react-router-dom'
+// import { useTranslation } from 'react-i18next'
 
-import { useTranslation } from 'react-i18next'
-
-import Title from '../../components/Title'
+import CrossChainTitle from '../../components/CrossChainTitle'
 import CrossChainPanel from '../../components/CrossChainPanel'
+import ModeSetting from '../../components/Settings/ModeSetting'
+
+import CrossChainRouter from './router'
+import CrossChainBridge from './bridge'
+
+// import {
+//   useExpertModeManager,
+// } from '../../state/user/hooks'
 
 import AppBody from '../AppBody'
+
+const FLex = styled.div`
+  ${({theme}) => theme.flexEC};
+  width: 100%;
+  margin-bottom: 10px;
+`
+
 const BRIDGETYPE = 'mergeTokenList'
 
-export default function CrossChain() {
-  const { t } = useTranslation()
+export default function CrossChainBox() {
+  // const { t } = useTranslation()
+  // const [expertMode] = useExpertModeManager()
+
   return (
     <>
       <AppBody>
-        <Title
-          title={t('swap')}
-          
-          isNavLink={true}
-          tabList={[
-            {
-              name: t('swap'),
-              path: '/mergeswap',
-              regex: /\/mergeswap/,
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-            },
-            {
-              name: t('pool'),
-              path: '/pool',
-              regex: /\/pool/,
-              iconUrl: require('../../assets/images/icon/pool.svg'),
-              iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
-            }
-          ]}
-        ></Title>
-        <CrossChainPanel bridgeKey={BRIDGETYPE} />
+        <CrossChainTitle />
+        <FLex>
+          <ModeSetting />
+        </FLex>
+        
+        <Suspense fallback={null}>
+          <Switch>
+            <Route exact strict path="/router" component={CrossChainRouter} />
+            <Route exact strict path="/bridge" component={CrossChainBridge} />
+            <Route exact strict path="/mergeswap" component={() => <CrossChainPanel bridgeKey={BRIDGETYPE} />} />
+            <Redirect to="/pool" />
+          </Switch>
+        </Suspense>
       </AppBody>
     </>
   )

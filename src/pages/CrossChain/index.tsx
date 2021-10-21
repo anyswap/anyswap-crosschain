@@ -79,8 +79,6 @@ export default function CrossChain() {
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  // const [allTokens, setAllTokens] = useState<any>({})
-
   const [curChain, setCurChain] = useState<any>({
     chain: chainId,
     ts: '',
@@ -599,7 +597,7 @@ export default function CrossChain() {
             //     }
             //   }
             // }}
-            // allTokens={allTokens}
+            allTokens={allTokensList}
             bridgeKey={BRIDGETYPE}
             // allBalances={allBalances}
           />

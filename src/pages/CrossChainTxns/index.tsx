@@ -668,8 +668,8 @@ export default function CrossChain() {
             id="selectCurrency"
             isError={isInputError}
             isNativeToken={isNativeToken}
-            // allTokens={allTokens}
-            bridgeKey={'routerTokenList'}
+            allTokens={allTokensList}
+            bridgeKey={BRIDGETYPE}
             // allBalances={allBalances}
           />
           {

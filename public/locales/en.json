@@ -154,6 +154,7 @@
   "tip46": "Output will be sent to",
   "tip47": "This swap has a price impact of at least {{params}}%. Please type the word 'confirm' to continue with this swap.",
   "tip48": "This swap has a price impact of at least {{params}}%. Please confirm that you would like to continue with this swap.",
+  "tip49": "Expert mode turns on reminders to allow merging routes with bridges across chains.",
   "Remove": "Remove",
   "Approve": "Approve",
   "Approved": "Approved",

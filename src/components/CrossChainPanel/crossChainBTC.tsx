@@ -6,7 +6,8 @@ import { ArrowDown } from 'react-feather'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
-import { useMergeBridgeTokenList } from '../../state/lists/hooks'
+// import { useMergeBridgeTokenList } from '../../state/lists/hooks'
+import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
@@ -60,13 +61,15 @@ export default function CrossChain({
     return chainId
   }, [selectNetworkInfo, chainId])
 
-  const allTokensList:any = useMergeBridgeTokenList(useChainId)
+  // const allTokensList:any = useMergeBridgeTokenList(useChainId)
+  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
 
   // const useTolenList = useMemo(() => {
 
   // }, [allTokensList, useChainId])
   useEffect(() => {
-    // console.log(allTokensList)
+    console.log(bridgeKey)
+    console.log(allTokensList)
     if (allTokensList) {
       let initToken = selectCurrency?.address && selectCurrency?.chainId === useChainId ? selectCurrency?.address : ''
       for (const token in allTokensList) {

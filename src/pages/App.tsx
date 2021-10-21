@@ -9,11 +9,13 @@ import Web3ReactManager from '../components/Web3ReactManager'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
+
 import CrossChain from './CrossChain'
+import Bridge from './Bridge'
+
 import MergeCrossChain from './MergeCrossChain'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
-import Bridge from './Bridge'
 import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
 
@@ -138,17 +140,36 @@ export default function App() {
             <Switch>
               {/* <Route exact strict path="/bridge" component={Bridge} /> */}
               <Route exact strict path="/dashboard" component={Dashboard} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={CrossChain} />
+
+              {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={CrossChain} />
+              <Route exact strict path="/bridge" component={Bridge} /> */}
 
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
               <Route exact strict path="/pool" component={PoolList} />
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
-              <Route exact strict path="/bridge" component={Bridge} />
               <Route exact strict path="/nft" component={CrossNFT} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
 
-              <Route exact strict path={"/mergeswap"} component={MergeCrossChain} />
+              {/* <Route exact strict path={"/mergeswap"} component={MergeCrossChain} /> */}
+              {
+                config.getCurConfigInfo().isOpenMerge ? (
+                  <Route
+                    path={[
+                      '/router',
+                      '/bridge',
+                      '/mergeswap'
+                    ]}
+                    component={() => <MergeCrossChain />}
+                  />
+                ) : (
+                  <>
+                    <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={CrossChain} />
+                    <Route exact strict path="/bridge" component={Bridge} />
+                  </>
+                )
+              }
+              
 
               {
                 Object.keys(farmlist).map((key, index) => {

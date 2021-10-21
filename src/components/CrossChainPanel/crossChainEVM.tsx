@@ -25,7 +25,8 @@ import ModalContent from '../Modal/ModalContent'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { useMergeBridgeTokenList } from '../../state/lists/hooks'
+// import { useMergeBridgeTokenList } from '../../state/lists/hooks'
+import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
 
 import config from '../../config'
@@ -65,7 +66,8 @@ export default function CrossChain({
     return chainId
   }, [selectNetworkInfo, chainId])
 
-  const allTokensList:any = useMergeBridgeTokenList(useChainId)
+  // const allTokensList:any = useMergeBridgeTokenList(useChainId)
+  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -101,7 +103,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }
@@ -416,6 +418,7 @@ export default function CrossChain({
     const t = selectCurrency && selectCurrency.chainId?.toString() === useChainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(useChainId).bridgeInitToken)
 
     const list:any = {}
+    // console.log(bridgeKey)
     // console.log(allTokensList)
     if (Object.keys(allTokensList).length > 0) {
       let useToken = selectCurrency ? selectCurrency?.address : ''
@@ -435,6 +438,7 @@ export default function CrossChain({
           }
         }
       }
+      // console.log(list)
       setSelectCurrency(list[useToken])
     } else {
       setSelectCurrency('')

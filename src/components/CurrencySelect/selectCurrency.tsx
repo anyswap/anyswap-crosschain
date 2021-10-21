@@ -16,7 +16,7 @@ import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
 import {thousandBit} from '../../utils/tools/tools'
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
-import { useBridgeTokenList } from '../../state/lists/hooks'
+// import { useBridgeTokenList } from '../../state/lists/hooks'
 
 import {
   InputRow,
@@ -112,7 +112,7 @@ export default function SelectCurrencyInputPanel({
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
-  const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
+  // const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
   // const allBalances:any = useBridgeAllTokenBalances(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
@@ -121,8 +121,8 @@ export default function SelectCurrencyInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
 
-  const useTokenList = Object.keys(allTokens).length > 0 ? allTokens : allTokensList
-  // const useTokenList = allTokens
+  // const useTokenList = Object.keys(allTokens).length > 0 ? allTokens : allTokensList
+  const useTokenList = allTokens
   // console.log(useTokenList)
   // console.log(allTokens)
   //   console.log(allTokensList)

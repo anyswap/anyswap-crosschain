@@ -291,6 +291,7 @@ export const controlConfig:any = {
     isOpenRouter: 1,
     isOpenRouterTxns: 0,
     isOpenBridge: 1,
+    isOpenMerge: 1
   },
 }
 

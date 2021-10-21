@@ -244,6 +244,25 @@ export function useMergeBridgeTokenList(chainId?:any): any {
   }, [lists, chainId])
 }
 
+export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:any): any {
+  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
+  // console.log(lists)
+  const init = {}
+  return useMemo(() => {
+    if (!key || !chainId) return init
+    const current = lists[key]?.[chainId]?.tokenList
+    // console.log(current)
+    if (!current) return init
+    try {
+      // return listsMergeToTokenMap(current)
+      return current
+    } catch (error) {
+      console.error('Could not show token list due to error', error)
+      return init
+    }
+  }, [lists, chainId])
+}
+
 export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
   const routerLists:any = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
   const bridgeLists:any = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
