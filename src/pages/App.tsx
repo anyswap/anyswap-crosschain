@@ -10,7 +10,6 @@ import Web3ReactManager from '../components/Web3ReactManager'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
 import CrossChain from './CrossChain'
-import CrossBridgeBTC from './CrossBridgeBTC'
 import MergeCrossChain from './MergeCrossChain'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
@@ -140,7 +139,7 @@ export default function App() {
               {/* <Route exact strict path="/bridge" component={Bridge} /> */}
               <Route exact strict path="/dashboard" component={Dashboard} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={CrossChain} />
-              <Route exact strict path={"/bridge/btc"} component={CrossBridgeBTC} />
+
               {/* <Route exact strict path="/swap" component={() => <CrossChain params={123} />} /> */}
               <Route exact strict path="/pool" component={PoolList} />
               <Route exact strict path="/pool/add" component={Pools} />
@@ -148,6 +147,7 @@ export default function App() {
               <Route exact strict path="/bridge" component={Bridge} />
               <Route exact strict path="/nft" component={CrossNFT} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
+
               <Route exact strict path={"/mergeswap"} component={MergeCrossChain} />
 
               {

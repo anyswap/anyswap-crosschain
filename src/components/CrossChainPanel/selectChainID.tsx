@@ -91,12 +91,7 @@ export default function SelectChainIdInputPanel({
   const theme = useContext(ThemeContext)
   // console.log(bridgeConfig)
   useEffect(() => {
-    // console.log(selectChainList)
     if (selectChainList.length > 0) {
-      // if (chainId) {
-      //   setChainList([chainId, ...selectChainList])
-      // } else {
-      // }
       setChainList([...selectChainList])
     } else {
       setChainList([])
@@ -146,9 +141,6 @@ export default function SelectChainIdInputPanel({
       } else {
         token = destChainInfo?.address
       }
-      // console.log(bridgeConfig)
-      // console.log(selectChainId)
-      // console.log(token)
       if (token) {
         const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)

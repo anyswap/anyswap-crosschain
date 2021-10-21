@@ -3,7 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Title from '../../components/Title'
-import CrossChainPanel from '../../components/CrossChainPanel/crossChainEVM'
+import CrossChainPanel from '../../components/CrossChainPanel'
 
 import AppBody from '../AppBody'
 const BRIDGETYPE = 'mergeTokenList'
