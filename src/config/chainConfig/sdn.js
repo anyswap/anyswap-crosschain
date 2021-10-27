@@ -2,7 +2,7 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const SDN_MAIN_CHAINID = 336
-export const SDN_MAINNET = getLocalRPC(SDN_MAIN_CHAINID, 'https://rpc.shiden.astar.network:8545')
+export const SDN_MAINNET = getLocalRPC(SDN_MAIN_CHAINID, 'https://shiden.api.onfinality.io/public')
 export const SDN_MAIN_EXPLORER = 'https://shiden.subscan.io'
 
 export const tokenList = []
@@ -37,6 +37,8 @@ export default {
     nodeRpc: SDN_MAINNET,
     nodeRpcList: [
       SDN_MAINNET,
+      // 'https://shiden.api.onfinality.io/public',
+      'https://rpc.shiden.astar.network:8545',
       'https://shiden.api.onfinality.io/rpc?apikey=d5da52f9-c548-4d48-8a7b-2ebb4d5d8959'
     ],
     chainID: SDN_MAIN_CHAINID,

@@ -38,6 +38,7 @@ export default {
     nodeRpc: ONE_MAINNET,
     nodeRpcList: [
       ONE_MAINNET,
+      'https://api.s0.t.hmny.io'
     ],
     chainID: ONE_MAIN_CHAINID,
     lookHash: ONE_MAIN_EXPLORER + '/tx/',
