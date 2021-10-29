@@ -103,7 +103,7 @@ export default function CrossChain() {
   }, [selectCurrency, selectChain])
 
   // console.log(selectCurrency)
-  console.log(destConfig)
+  // console.log(destConfig)
   
   const isNativeToken = useMemo(() => {
     if (
@@ -118,6 +118,7 @@ export default function CrossChain() {
     }
     return false
   }, [selectCurrency, chainId])
+  // console.log(isNativeToken)
 
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {

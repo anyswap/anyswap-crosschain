@@ -123,7 +123,7 @@ function CurrencyRow({
   // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = useMemo(() => {
     // console.log(currencyObj)
-    if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()]) {
+    if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()] && !isNativeToken) {
       return allBalances[currencies?.address.toLowerCase()]
     } else if (
       isNativeToken
