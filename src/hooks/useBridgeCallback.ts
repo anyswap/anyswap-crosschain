@@ -243,7 +243,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken])
 }
 
 /**
