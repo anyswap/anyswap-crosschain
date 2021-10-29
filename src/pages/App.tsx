@@ -16,7 +16,7 @@ import Bridge from './Bridge'
 import MergeCrossChain from './MergeCrossChain'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
-import CrossChainTxns from './CrossChainTxns'
+// import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
 
 import ANYFarming from './Farms/ANYFarming'
@@ -149,7 +149,7 @@ export default function App() {
               <Route exact strict path="/pool/add" component={Pools} />
               <Route exact strict path="/farm" component={FarmList} />
               <Route exact strict path="/nft" component={CrossNFT} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} />
+              {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/swap" : "/swap1"} component={CrossChainTxns} /> */}
 
               {/* <Route exact strict path={"/mergeswap"} component={MergeCrossChain} /> */}
               {
@@ -185,7 +185,8 @@ export default function App() {
               }
 
               
-              <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? (config.getCurConfigInfo().isOpenRouter ? '/router' : '/bridge') : '/dashboard' }} /> 
+              {/* <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? (config.getCurConfigInfo().isOpenRouter ? '/router' : '/bridge') : '/dashboard' }} />  */}
+              <Redirect to={{ pathname: '/dashboard' }} /> 
               {/* <Route component={RedirectPathToSwapOnly} /> */}
             </Switch>
           </Web3ReactManager>
