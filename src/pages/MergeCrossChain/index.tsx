@@ -1,6 +1,7 @@
 import React, {Suspense} from 'react'
 import styled from 'styled-components'
 import { Switch, Route, Redirect } from 'react-router-dom'
+// import { Switch, Route } from 'react-router-dom'
 // import { useTranslation } from 'react-i18next'
 
 import CrossChainTitle from '../../components/CrossChainTitle'
@@ -38,10 +39,10 @@ export default function CrossChainBox() {
         
         <Suspense fallback={null}>
           <Switch>
-            <Route exact strict path="/router" component={CrossChainRouter} />
-            <Route exact strict path="/bridge" component={CrossChainBridge} />
+            <Route exact strict path="/cross-chain-router" component={CrossChainRouter} />
+            <Route exact strict path="/cross-chain-bridge" component={CrossChainBridge} />
             <Route exact strict path="/mergeswap" component={() => <CrossChainPanel bridgeKey={BRIDGETYPE} />} />
-            <Redirect to="/pool" />
+            <Redirect to="/cross-chain-router" />
           </Switch>
         </Suspense>
       </AppBody>

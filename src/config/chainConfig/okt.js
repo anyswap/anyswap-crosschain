@@ -51,7 +51,7 @@ export default {
     explorer: OKT_MAIN_EXPLORER,
     symbol: symbol,
     name: 'OKExChain',
-    networkName: 'OKT mainnet',
+    networkName: 'OEC mainnet',
     type: 'main',
     label: OKT_MAIN_CHAINID,
     isSwitch: 1,

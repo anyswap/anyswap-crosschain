@@ -510,13 +510,11 @@ export default function Farming ({
 
   useEffect(() => {
     if (initLpList) {
-      if (price) {
-        getBaseInfo(initLpList, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
-          console.log(res)
-          setLpList(res.lpArr)
-          // getStakingInfo()
-        })
-      }
+      getBaseInfo(initLpList, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
+        console.log(res)
+        setLpList(res.lpArr)
+        // getStakingInfo()
+      })
       setTimeout(() => {
         setInterverTime(InterverTime + 1)
       }, 1000 * 10)
