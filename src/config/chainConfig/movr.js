@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const MOVR_MAIN_CHAINID = 1285
 export const MOVR_MAINNET = getLocalRPC(MOVR_MAIN_CHAINID, 'https://rpc.moonriver.moonbeam.network')
-export const MOVR_MAIN_EXPLORER = 'https://blockscout.moonriver.moonbeam.network'
+export const MOVR_MAIN_EXPLORER = 'https://moonriver.moonscan.io'
 
 export const tokenList = []
 export const testTokenList = []

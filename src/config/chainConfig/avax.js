@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const AVAX_MAIN_CHAINID = 43114
 export const AVAX_MAINNET = getLocalRPC(AVAX_MAIN_CHAINID, 'https://api.avax.network/ext/bc/C/rpc')
-export const AVAX_MAIN_EXPLORER = 'https://avascan.info/blockchain/c'
+export const AVAX_MAIN_EXPLORER = 'https://snowtrace.io'
 
 export const tokenList = [
 
