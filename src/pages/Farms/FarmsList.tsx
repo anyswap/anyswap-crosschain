@@ -395,7 +395,7 @@ export default function FarmsList () {
         coin1: 'https://assets.coingecko.com/coins/images/17429/small/Logo200.png',
         coin2: 'FTM',
         coin3: '',
-        status: 'live'
+        status: 'finished'
       },
       {
         isDoubleLogo: 1,
