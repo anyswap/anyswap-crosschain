@@ -111,12 +111,22 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
           <img src={BulbIcon} alt='' />
           {t('Reminder')}:
         </dt>
-        <dd><i></i>{t(tipType + '1' , {
-          dMinFee: isSwapfeeon ? thousandBit(destConfig?.MinimumSwapFee, 'no') : 0,
-          coin: viewSymbol,
-          dMaxFee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
-          dFee: isSwapfeeon ? thousandBit(useDfee, 'no') : 0
-        })}</dd>
+        {
+          destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
+            <dd><i></i>{t('feeTip' , {
+              coin: viewSymbol,
+              fee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
+              dFee: isSwapfeeon ? thousandBit(useDfee, 'no') : 0
+            })}</dd>
+          ) : (
+            <dd><i></i>{t(tipType + '1' , {
+              dMinFee: isSwapfeeon ? thousandBit(destConfig?.MinimumSwapFee, 'no') : 0,
+              coin: viewSymbol,
+              dMaxFee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
+              dFee: isSwapfeeon ? thousandBit(useDfee, 'no') : 0
+            })}</dd>
+          )
+        }
         <dd><i></i>{t(tipType + '2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t(tipType + '3')} {thousandBit(destConfig?.MaximumSwap, 'no')} {viewSymbol}</dd>
         <dd><i></i>{t(tipType + '4')}</dd>

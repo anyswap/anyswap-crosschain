@@ -313,6 +313,8 @@
   "redeemTip4": "预计跨链到账时间10-30分钟",
   "redeemTip5": "{{depositBigValMoreTime}} {{coin}}以上大额跨链到账时间12小时",
 
+  "feeTip": "跨链手续费 {{dFee}} %, Gas费用 {{fee}} {{coin}}",
+
   "SwitchTo": "切换至",
   "selectNetwork": "选择网络",
   "swapNative": "充提",

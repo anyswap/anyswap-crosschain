@@ -314,6 +314,8 @@
   "redeemTip4": "Estimated Time of Crosschain Arrival is 10-30 min",
   "redeemTip5": "Crosschain amount larger than {{depositBigValMoreTime}} {{coin}} could take up to 12 hours",
 
+  "feeTip": "Crosschain Fee is {{dFee}} %, Gas fee {{fee}} {{coin}}",
+
   "SwitchTo": "Switch to ",
   "selectNetwork": "Select Network",
   "swapNative": "Swap Native",
