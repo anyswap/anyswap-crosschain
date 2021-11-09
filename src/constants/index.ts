@@ -2,7 +2,7 @@ import { ChainId, JSBI, Percent, Token, WETH } from 'anyswap-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 // import { injected, terra } from '../connectors'
-import { injected } from '../connectors'
+import { injected, walletconnect } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -56,6 +56,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D'
+  },
+  WALLET_CONNECT: {
+    connector: walletconnect,
+    name: 'WalletConnect',
+    iconName: 'walletConnectIcon.svg',
+    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
+    href: null,
+    color: '#4196FC',
+    mobile: true
   },
   // TERRA: {
   //   connector: terra,

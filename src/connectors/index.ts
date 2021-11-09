@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 import { NetworkConnector } from './NetworkConnector'
 import { TerraConnector } from './TerraConnector'
@@ -26,6 +27,19 @@ export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
 }
+console.log(spportChainArr)
+// mainnet only
+export const walletconnect = new WalletConnectConnector({
+  supportedChainIds: [...spportChainArr],
+  rpc: {
+    ...spportChain
+    // 1: spportChain['1'],
+    // 250: spportChain['250'],
+  },
+  // bridge: 'https://bridge.walletconnect.org',
+  // qrcode: true,
+  // pollingInterval: 15000
+})
 
 export const network = new NetworkConnector({
   // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }

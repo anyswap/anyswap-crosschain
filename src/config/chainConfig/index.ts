@@ -20,6 +20,8 @@ import btc, {BTC_MAIN_CHAINID} from './btc'
 import block, {BLOCK_MAIN_CHAINID} from './block'
 import colx, {COLX_MAIN_CHAINID} from './colx'
 import celo, {CELO_MAIN_CHAINID} from './celo'
+import cro, {CRO_MAIN_CHAINID} from './cro'
+import oeth, {OETH_MAIN_CHAINID} from './oeth'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -48,7 +50,9 @@ export const chainInfo:ConFig = {
   ...movr,
   ...iotex,
   ...sdn,
-  ...celo
+  ...celo,
+  ...cro,
+  ...oeth
 }
 
 const useChain:any = {
@@ -151,7 +155,9 @@ const useChain:any = {
     ETH_TEST1_CHAINID,
     IOTEX_MAIN_CHAINID,
     SDN_MAIN_CHAINID,
-    CELO_MAIN_CHAINID
+    CELO_MAIN_CHAINID,
+    CRO_MAIN_CHAINID,
+    OETH_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
