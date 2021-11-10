@@ -89,7 +89,8 @@ export default function AddressInputPanel({
   onChange,
   disabledInput = false,
   isValid = true,
-  selectChainId
+  selectChainId,
+  label
 }: {
   id?: string
   // the typed string value
@@ -99,6 +100,7 @@ export default function AddressInputPanel({
   disabledInput?: boolean
   isValid?: boolean
   selectChainId?: any
+  label?: any
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
@@ -129,7 +131,7 @@ export default function AddressInputPanel({
           <AutoColumn gap="md">
             <RowBetween>
               <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
-                {t('Recipient')}
+                {label ? label : t('Recipient')}
               </TYPE.black>
               {address && useChainId && (
                 <ExternalLink href={getEtherscanLink(useChainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>

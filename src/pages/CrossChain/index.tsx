@@ -668,7 +668,7 @@ export default function CrossChain() {
             selectChainList={selectChainList}
           />
           {swapType == 'swap' ? '' : (
-            <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
+            <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} />
           )}
         </AutoColumn>
 

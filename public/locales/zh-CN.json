@@ -348,5 +348,6 @@
   "farmLinkTitle": "将跳转至第三方DApp",
   "farmLinkTip": "提示：您所访问的页面将跳转至第三方DApp.您在第三方DApp的行为将适用该DAPP的用户协议和隐私政策，由第三方直接并单独向您承担责任。",
   "nftrouter": "NFT 路由",
-  "fee": "手续费"
+  "fee": "手续费",
+  "receiveTip": "不要直接发送代币充值到交易所,不支持合约充值"
 }

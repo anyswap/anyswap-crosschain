@@ -915,7 +915,7 @@ export default function CrossChain() {
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' && (viewRrecipient || isNaN(selectChain)) ? (
             <>
-              <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} />
+              <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} isValid={false} />
             </>
           ): ''}
           {
