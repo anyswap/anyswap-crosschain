@@ -17,7 +17,7 @@ interface ConFig {
 
 const ENV = getNetwork(ENV_NODE_CONFIG, INIT_NODE)
 const netConfig:ConFig = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
-
+// console.log(ENV)
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
 
 const config: ConFig = {

@@ -1,4 +1,7 @@
 import { chainInfo } from '../chainConfig'
+import {
+  ENV_NODE_CONFIG
+} from '../constant'
 
 export function selectNetwork (chainID:any) {
   return new Promise(resolve => {
@@ -29,10 +32,10 @@ export function selectNetwork (chainID:any) {
       }
       // console.log(data)
       ethereumFN.request(data).then((res: any) => {
-        console.log(chainID)
+        // console.log(chainID)
         console.log(res)
-        localStorage.setItem('ENV_NODE_CONFIG', chainInfo[chainID].label)
-        // history.go(0)
+        localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
+        history.go(0)
         resolve({
           msg: 'Success'
         })

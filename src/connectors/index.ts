@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+// import { WalletConnectConnector } from 'web3-react/walletconnect-connector'
 
 import { NetworkConnector } from './NetworkConnector'
 import { TerraConnector } from './TerraConnector'
@@ -10,35 +11,32 @@ import config from '../config'
 
 const NETWORK_URL = config.nodeRpc
 
+export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
+
 const spportChain:any = {}
 const spportChainArr:any = []
-for (const chainID in config.chainInfo) {
-// for (const chainID of spportChainArr) {
-  if (isNaN(Number(chainID))) continue
-  if (chainID && config.chainInfo[chainID]?.nodeRpc) {
-    spportChainArr.push(Number(chainID))
-    spportChain[chainID] = config.chainInfo[chainID].nodeRpc
-  }
-}
-// console.log(spportChainArr)
-// console.log(spportChain)
-export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
+// for (const chainID in config.chainInfo) {
+// // for (const chainID of spportChainArr) {
+//   if (isNaN(Number(chainID))) continue
+//   if (chainID && config.chainInfo[chainID]?.nodeRpc) {
+//     spportChainArr.push(Number(chainID))
+//     spportChain[chainID] = config.chainInfo[chainID].nodeRpc
+//   }
+// }
+spportChainArr.push(Number(NETWORK_CHAIN_ID))
+spportChain[NETWORK_CHAIN_ID] = config.chainInfo[NETWORK_CHAIN_ID].nodeRpc
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
 }
-console.log(spportChainArr)
+// console.log(spportChainArr)
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
   supportedChainIds: [...spportChainArr],
   rpc: {
     ...spportChain
-    // 1: spportChain['1'],
-    // 250: spportChain['250'],
   },
-  // bridge: 'https://bridge.walletconnect.org',
-  // qrcode: true,
-  // pollingInterval: 15000
+  chainId: NETWORK_CHAIN_ID
 })
 
 export const network = new NetworkConnector({

@@ -493,6 +493,9 @@ export default function SwapNative() {
       const arr = []
       for (const c in selectCurrency?.destChains) {
         // if (Number(c) === Number(chainId)) continue
+        if (
+          !config.chainInfo[c]
+        ) continue
         arr.push(c)
       }
       // setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
