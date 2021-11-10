@@ -6,6 +6,10 @@ import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
+import { chainInfo } from '../config/chainConfig'
+import {
+  ENV_NODE_CONFIG
+} from '../config/constant'
 // import { useConnectedWallet } from '@terra-money/wallet-provider'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
@@ -66,7 +70,13 @@ export function useInactiveListener(suppress = false) {
     const { ethereum } = window
 
     if (ethereum && ethereum.on && !active && !error && !suppress) {
-      const handleChainChanged = () => {
+      const handleChainChanged = (chainID:any) => {
+        // console.log(chainID)
+        // console.log(parseInt(chainID))
+        if (chainID) {
+          localStorage.setItem(ENV_NODE_CONFIG, chainInfo[parseInt(chainID)].label)
+          history.go(0)
+        }
         // eat errors
         activate(injected, undefined, true).catch(error => {
           console.error('Failed to activate after chain changed', error)

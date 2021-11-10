@@ -15,16 +15,16 @@ export const NETWORK_CHAIN_ID: number = config.chainID ?? 1
 
 const spportChain:any = {}
 const spportChainArr:any = []
-// for (const chainID in config.chainInfo) {
-// // for (const chainID of spportChainArr) {
-//   if (isNaN(Number(chainID))) continue
-//   if (chainID && config.chainInfo[chainID]?.nodeRpc) {
-//     spportChainArr.push(Number(chainID))
-//     spportChain[chainID] = config.chainInfo[chainID].nodeRpc
-//   }
-// }
-spportChainArr.push(Number(NETWORK_CHAIN_ID))
-spportChain[NETWORK_CHAIN_ID] = config.chainInfo[NETWORK_CHAIN_ID].nodeRpc
+for (const chainID in config.chainInfo) {
+// for (const chainID of spportChainArr) {
+  if (isNaN(Number(chainID))) continue
+  if (chainID && config.chainInfo[chainID]?.nodeRpc) {
+    spportChainArr.push(Number(chainID))
+    spportChain[chainID] = config.chainInfo[chainID].nodeRpc
+  }
+}
+// spportChainArr.push(Number(NETWORK_CHAIN_ID))
+// spportChain[NETWORK_CHAIN_ID] = config.chainInfo[NETWORK_CHAIN_ID].nodeRpc
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)

@@ -16,7 +16,7 @@ const bridgeToken = {
     bridgeInitChain: '',
   },
   [VERSION.V5]: {
-    bridgeInitToken: '',
+    bridgeInitToken: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b',
     bridgeInitChain: '56',
     nativeToken: '',
     OETHssBridgeInitToken: ''
