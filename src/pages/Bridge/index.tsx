@@ -259,7 +259,14 @@ export default function CrossChain() {
     return false
   }, [selectCurrency, chainId])
 
-  // console.log(selectChain)
+  const isUsePool = useMemo(() => {
+    // console.log(selectCurrency)
+    if (selectCurrency?.symbol?.toLowerCase() === 'prq') {
+      return false
+    }
+    return true
+  }, [selectCurrency])
+  // console.log(isUsePool)
 
   const formatCurrency0 = useLocalToken(
     selectCurrency?.underlying ? {
@@ -318,6 +325,7 @@ export default function CrossChain() {
       selectCurrency
       && chainId
       && (isUnderlying || isDestUnderlying)
+      && isUsePool
     ) {
       const curChain = isUnderlying ? chainId : selectChain
       const destChain = isUnderlying ? selectChain : chainId
@@ -498,7 +506,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (swapType !== BridgeType.deposit && (isUnderlying || isDestUnderlying) && Number(inputBridgeValue) > Number(destChain.ts))
+        || (swapType !== BridgeType.deposit && (isUnderlying || isDestUnderlying) && isUsePool && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -507,7 +515,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -521,7 +529,7 @@ export default function CrossChain() {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || ((isUnderlying || isDestUnderlying) && Number(inputBridgeValue) > Number(destChain.ts))
+        || ((isUnderlying || isDestUnderlying) && isUsePool && Number(inputBridgeValue) > Number(destChain.ts))
         || isCrossBridge
         || isWrapInputError
       ) {
@@ -532,7 +540,7 @@ export default function CrossChain() {
     } else {
       return false
     }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isUnderlying, isDestUnderlying, isWrapInputError])
+  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isUnderlying, isDestUnderlying, isWrapInputError, isUsePool])
 
 
   const btnTxt = useMemo(() => {
@@ -548,13 +556,13 @@ export default function CrossChain() {
       )
     ) {
       return t('ExceedLimit')
-    } else if ((isUnderlying || isDestUnderlying) && Number(inputBridgeValue) > Number(destChain.ts)) {
+    } else if ((isUnderlying || isDestUnderlying) && isUsePool && Number(inputBridgeValue) > Number(destChain.ts)) {
       return t('nodestlr')
     } else if (wrapType === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue, swapType, isUnderlying, isDestUnderlying])
+  }, [t, isWrapInputError, inputBridgeValue, swapType, isUnderlying, isDestUnderlying, isUsePool])
 
   // useEffect(() => {
   //   if (!chainId) {
@@ -829,7 +837,7 @@ export default function CrossChain() {
             // allBalances={allBalances}
           />
           {
-            account && chainId && (isUnderlying || isDestUnderlying) ? (
+            account && chainId && (isUnderlying || isDestUnderlying) && isUsePool ? (
               <LiquidityPool
                 curChain={curChain}
                 destChain={destChain}
