@@ -247,6 +247,56 @@ const tokenList = {
         "version" : "NFTV1", 
         "logoUrl" : "https://avatars.githubusercontent.com/u/89961031?s=200&v=4", 
         "nfttype" : "erc721"
+      },
+      "0xd761db316b5b9c9c51f7f80127497bc618e2b422": {
+        "chainId" : "250", 
+        "decimals" : null, 
+        "destChains" : {
+            "43114" : {
+                "name" : "Pink Flamingo Social Club", 
+                "symbol" : "PFSC", 
+                "decimals" : "", 
+                "address" : "0x5775e01002f76ac0f1c3ec516d6c849b23d4a37b"
+            }
+        }, 
+        "fee" : {
+            "feePerTransaction" : "0", 
+            "feePerUnitInBatch" : "0"
+        }, 
+        "name" : "Pink Flamingo Social Club", 
+        "priceLabel" : null, 
+        "routerToken" : "0xfe19f0b51438fd612f6fd59c1dbb3ea319f433ba", 
+        "symbol" : "PFSC", 
+        "tokenid" : "PinkFlamingo", 
+        "version" : "NFTV1", 
+        "logoUrl" : "", 
+        "nfttype" : "erc721"
+      }
+    },
+    "43114": {
+      "0x5775e01002f76ac0f1c3ec516d6c849b23d4a37b": {
+        "chainId" : "43114", 
+        "decimals" : null, 
+        "destChains" : {
+            "250" : {
+                "name" : "Pink Flamingo Social Club", 
+                "symbol" : "PFSC", 
+                "decimals" : null, 
+                "address" : "0xd761db316b5b9c9c51f7f80127497bc618e2b422"
+            }
+        }, 
+        "fee" : {
+            "feePerTransaction" : "0", 
+            "feePerUnitInBatch" : "0"
+        }, 
+        "name" : "Pink Flamingo Social Club", 
+        "priceLabel" : "", 
+        "routerToken" : "0x1fbbc7dba1ef75ff43f955a5b9ceec3cc1692cd8", 
+        "symbol" : "PFSC", 
+        "tokenid" : "PinkFlamingo", 
+        "version" : "NFTV1", 
+        "logoUrl" : "", 
+        "nfttype" : "erc721"
       }
     }
   }
