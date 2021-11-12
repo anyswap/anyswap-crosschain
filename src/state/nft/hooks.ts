@@ -78,9 +78,9 @@ export function useNFT721GetAllTokenidListCallback(
         if (Boolean(tokenidInfo[obj.token] && tokenidInfo[obj.token][obj.tokenid]?.image)) continue
         if (
           obj.uri
-          && (
-            obj.uri.indexOf('data:application/json;base64') === 0
-          )
+          // && (
+          //   obj.uri.indexOf('data:application/json;base64') === 0
+          // )
         ) {
           arr.push(axios.get(obj.uri))
           arr1.push(obj)
