@@ -130,9 +130,17 @@ export function useFetchTokenListCallback(): () => Promise<any> {
                   if (version.indexOf('ARB') !== -1) continue
                   for (const token in tList[version]) {
                     if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
+                    let sort = 0
+                    if (version.toLowerCase().indexOf('stable') !== -1) {
+                      sort = 0
+                    } else if (version.toLowerCase().indexOf('native') !== -1) {
+                      sort = 1
+                    } else if (version.toLowerCase().indexOf('underlying') !== -1) {
+                      sort = 2
+                    }
                     list[token] = {
                       ...tList[version][token],
-                      sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+                      sort: sort
                     }
                   }
                 }

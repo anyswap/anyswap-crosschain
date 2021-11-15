@@ -35,7 +35,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList, BRIDGE_KEY.mergeTo
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.21'
+export const version = '0.1.22'
 export const timeout = 1000 * 60 * 30
 
 // export const INIT_VERSION = VERSION.V1_1
@@ -43,9 +43,9 @@ export const timeout = 1000 * 60 * 30
 // export const INIT_VERSION = VERSION.V2_2
 // export const INIT_VERSION = VERSION.V4_OKT
 // const INIT_VERSION = VERSION.V4_MOVR
-// export const INIT_VERSION = VERSION.V5
+export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
-export const INIT_VERSION = VERSION.V6_1
+// export const INIT_VERSION = VERSION.V6_1
 // export const INIT_VERSION = VERSION.V7
 
 function getUrlVersion (init:any) {

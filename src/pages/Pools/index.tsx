@@ -99,12 +99,21 @@ export default function SwapNative() {
   }, [selectCurrency])
 
   const destConfig = useMemo(() => {
+    // console.log(selectCurrency)
+    // console.log(selectChain)
     if (selectCurrency && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }
     return false
   }, [selectCurrency, selectChain])
 
+  const useRouterToken = useMemo(() => {
+    if (chainId?.toString() === selectChain?.toString()) {
+      return selectCurrency?.routerToken
+    }
+    return destConfig?.routerToken
+  }, [chainId, selectChain, selectCurrency])
+  // console.log(useRouterToken)
   const isNativeToken = useMemo(() => {
     if (
       selectCurrency
@@ -149,14 +158,12 @@ export default function SwapNative() {
   // console.log(selectCurrency)
   const anyCurrency = useLocalToken(anyToken ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
-  // const amountToApprove = underlyingCurrency ? new TokenAmount(underlyingCurrency ?? undefined, inputBridgeValue) : undefined
-  // const formatCurrency = useLocalToken(selectCurrency)
+
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, anyToken?.address)
-  // console.log(approval)
-  // console.log(ApprovalState)
+
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    destConfig?.routerToken,
+    useRouterToken,
     anyCurrency?anyCurrency:undefined,
     anyToken?.address,
     account ?? undefined,
@@ -172,9 +179,9 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType
   )
-  
+  // console.log(destConfig)
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(
-    destConfig?.routerToken,
+    useRouterToken,
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     anyToken?.address,
     inputBridgeValue,
@@ -498,7 +505,7 @@ export default function SwapNative() {
         ) continue
         arr.push(c)
       }
-      // setSelectChain(arr.length > 0 ? arr[0] : config.getCurChainInfo(chainId).bridgeInitChain)
+      // console.log(arr)
       setSelectChainList(arr)
     }
   }, [selectCurrency])
