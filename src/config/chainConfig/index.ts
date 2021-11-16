@@ -22,6 +22,7 @@ import colx, {COLX_MAIN_CHAINID} from './colx'
 import celo, {CELO_MAIN_CHAINID} from './celo'
 import cro, {CRO_MAIN_CHAINID} from './cro'
 import oeth, {OETH_MAIN_CHAINID} from './oeth'
+import tlos, {TLOS_MAIN_CHAINID} from './tlos'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -52,7 +53,8 @@ export const chainInfo:ConFig = {
   ...sdn,
   ...celo,
   ...cro,
-  ...oeth
+  ...oeth,
+  ...tlos
 }
 
 const useChain:any = {
@@ -157,7 +159,8 @@ const useChain:any = {
     SDN_MAIN_CHAINID,
     CELO_MAIN_CHAINID,
     CRO_MAIN_CHAINID,
-    OETH_MAIN_CHAINID
+    OETH_MAIN_CHAINID,
+    TLOS_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,

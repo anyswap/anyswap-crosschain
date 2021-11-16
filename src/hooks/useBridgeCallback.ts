@@ -567,6 +567,7 @@ export function useBridgeNativeCallback(
   return useMemo(() => {
     if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
+    // console.log(toChainID)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     // console.log(inputAmount?.raw?.toString())

@@ -23,7 +23,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       } else {
         if (isNativeToken || !isAddress(token)) {
           useWeb3(chainID, 'eth', 'getBalance', [account]).then((res:any) => {
-            console.log(res)
+            // console.log(res)
             if (res && res.toString().indexOf('Error: Returned error') === -1) {
               const bl = res
               setLocalConfig(account, token, chainID, DESTBALANCE, {balance: bl})
