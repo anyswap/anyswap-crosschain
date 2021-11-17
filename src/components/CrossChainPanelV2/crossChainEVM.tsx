@@ -719,7 +719,7 @@ export default function CrossChain({
         }
       </AutoColumn>
 
-      <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+      <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
       {
         config.isStopSystem ? (
           <BottomGrouping>

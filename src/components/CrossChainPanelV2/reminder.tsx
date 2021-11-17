@@ -80,29 +80,26 @@ const SubCurrencySelectBox = styled.div`
 `
 
 interface ReminderType {
-  bridgeConfig: any,
+  destConfig: any,
   bridgeType: string | undefined,
   currency: any,
   selectChain: any
 }
 
-function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeType?:string) {
+function CrossBridge (destConfig:any, currency:any, selectChain:any, bridgeType?:string) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
-  // console.log(selectChain)
-  // console.log(bridgeConfig)
-  if (!bridgeConfig || !currency) {
+  
+  if (!destConfig || !currency) {
     return (
       <></>
     )
   }
-  const destConfig = bridgeConfig && bridgeConfig?.destChains && bridgeConfig?.destChains[selectChain] ? bridgeConfig?.destChains[selectChain] : {}
   const isSwapfeeon = true
   const viewSymbol = config.getBaseCoin(currency?.symbol, chainId)
   const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'
   const dFee = Number(destConfig?.SwapFeeRatePerMillion)
-  // console.log(bridgeConfig)
-  // console.log(destConfig)
+  
   return (
     <SubCurrencySelectBox>
       <dl className='list'>
@@ -129,14 +126,14 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
 }
 
 export default function Reminder ({
-  bridgeConfig,
+  destConfig,
   bridgeType,
   currency,
   selectChain
 }: ReminderType) {
-  // console.log(bridgeType)
+  
   if (bridgeType) {
-    return CrossBridge(bridgeConfig, currency, selectChain, bridgeType)
+    return CrossBridge(destConfig, currency, selectChain, bridgeType)
   }
   return (
     <></>

@@ -324,7 +324,7 @@ export default function CrossChain({
         <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
       </AutoColumn>
 
-      <Reminder bridgeConfig={selectCurrency} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+      <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
       {/* {ButtonView('INIT')} */}
       <BottomGrouping>
         <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
