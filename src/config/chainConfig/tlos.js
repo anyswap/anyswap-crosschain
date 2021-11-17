@@ -16,7 +16,7 @@ const bridgeToken = {
     bridgeInitChain: '',
   },
   [VERSION.V5]: {
-    bridgeInitToken: '',
+    bridgeInitToken: '0x2c78f1b70ccf63cdee49f9233e9faa99d43aa07e',
     bridgeInitChain: '1',
     nativeToken: '',
     crossBridgeInitToken: '0xfa9343c3897324496a05fc75abed6bac29f8a40f'

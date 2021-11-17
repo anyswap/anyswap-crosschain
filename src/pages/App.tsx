@@ -14,6 +14,7 @@ import CrossChain from './CrossChain'
 import Bridge from './Bridge'
 
 import MergeCrossChain from './MergeCrossChain'
+import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
@@ -153,6 +154,12 @@ export default function App() {
                   '/mergeswap'
                 ]}
                 component={() => <MergeCrossChain />}
+              />
+              <Route
+                path={[
+                  '/v2/mergeswap'
+                ]}
+                component={() => <MergeCrossChainV2 />}
               />
               {
                 Object.keys(farmlist).map((key, index) => {
