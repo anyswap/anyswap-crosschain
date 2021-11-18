@@ -109,7 +109,7 @@ export default function CrossChain({
       return selectDestCurrency
     }
     return false
-  }, [selectCurrency, selectChain, selectDestCurrency])
+  }, [selectDestCurrency])
   // console.log(destConfig)
   const isRouter = useMemo(() => {
     // console.log(destConfig)
@@ -145,14 +145,17 @@ export default function CrossChain({
       return true
     }
     return false
-  }, [selectCurrency, selectChain])
+  }, [selectCurrency])
 
   const isDestUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain] && selectCurrency?.destChains[selectChain]?.underlying) {
+    // console.log(destConfig)
+    // console.log(destConfig?.underlying)
+    if (destConfig?.underlying) {
       return true
     }
     return false
-  }, [selectCurrency, selectChain])
+  }, [destConfig])
+  // console.log(isDestUnderlying)
 
   const formatCurrency0 = useLocalToken(
   selectCurrency?.underlying ? {
@@ -217,18 +220,18 @@ export default function CrossChain({
       }
       
       const DC:any = await getNodeTotalsupply(
-        selectCurrency?.destChains[selectChain]?.underlying?.address,
+        destConfig.underlying?.address,
         selectChain,
-        selectCurrency?.destChains[selectChain]?.decimals,
+        destConfig.decimals,
         account,
-        selectCurrency?.destChains[selectChain]?.address
+        destConfig.address
       )
-      // console.log(DC)
+      // console.log(selectCurrency)
       if (DC) {
         setDestChain({
           chain: selectChain,
-          ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain]?.underlying.address]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
-          bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
+          ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
+          bl: DC[destConfig?.address]?.balance
         })
       }
       // console.log(CC)
@@ -238,7 +241,7 @@ export default function CrossChain({
         setIntervalCount(intervalCount + 1)
       }, 1000 * 10)
     }
-  }, [selectCurrency, useChainId, account, selectChain, intervalCount])
+  }, [selectCurrency, useChainId, account, selectChain, intervalCount, destConfig])
 
 
   useEffect(() => {
@@ -705,12 +708,9 @@ export default function CrossChain({
           }}
           selectChainId={selectChain}
           id="selectChainID"
-          // onOpenModalView={(value) => {
-          //   console.log(value)
-          //   setModalOpen(value)
-          // }}
           onCurrencySelect={(inputCurrency) => {
-            selectDestCurrency(inputCurrency)
+            console.log(inputCurrency)
+            setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
           intervalCount={intervalCount}

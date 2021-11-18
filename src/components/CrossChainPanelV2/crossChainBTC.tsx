@@ -85,7 +85,7 @@ export default function CrossChain({
       return selectDestCurrency
     }
     return false
-  }, [selectCurrency, selectChain, selectDestCurrency])
+  }, [selectDestCurrency])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
@@ -319,7 +319,7 @@ export default function CrossChain({
           //   setModalOpen(value)
           // }}
           onCurrencySelect={(inputCurrency) => {
-            selectDestCurrency(inputCurrency)
+            setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
           isNativeToken={false}

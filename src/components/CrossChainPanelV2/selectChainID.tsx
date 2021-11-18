@@ -170,7 +170,7 @@ export default function SelectChainIdInputPanel({
     } else {
       setDestBalance('')
     }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
+  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, destChainInfo])
 
   useEffect(() => {
     setDestBalance('')
