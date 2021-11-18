@@ -410,14 +410,10 @@ export default function SelectNetwork () {
 
   function setMetamaskNetwork (item:any) {
     selectNetwork(item.chainID).then((res:any) => {
+      // console.log(res)
+      setUserSelectNetwork('')
       if (res.msg === 'Error') {
         alert(t('changeMetamaskNetwork', {label: item.networkName}))
-      } else {
-        // setUserSelectNetwork({
-        //   chainId: item.chainID,
-        //   label: 'EVM'
-        // })
-        setUserSelectNetwork('')
       }
       toggleNetworkModal()
     })

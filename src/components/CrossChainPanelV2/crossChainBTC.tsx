@@ -191,7 +191,14 @@ export default function CrossChain({
         }
       }
 
-      const dl:any = selectCurrency?.destChains[useChain]
+      setSelectChain(useChain)
+      setSelectChainList(arr)
+    }
+  }, [selectCurrency])
+
+  useEffect(() => {
+    if (selectCurrency && selectChain) {
+      const dl:any = selectCurrency?.destChains[selectChain]
       const formatDl:any = {}
       for (const t in dl) {
         formatDl[t] = {
@@ -226,13 +233,10 @@ export default function CrossChain({
           destToken = bridgeToken
         }
       }
-      // console.log(dl)
       setSelectDestCurrency(formatDl[destToken])
       setSelectDestCurrencyList(formatDl)
-      setSelectChain(useChain)
-      setSelectChainList(arr)
     }
-  }, [selectCurrency, selectChain, useChainId])
+  }, [selectCurrency, selectChain])
 
   return (
     <>

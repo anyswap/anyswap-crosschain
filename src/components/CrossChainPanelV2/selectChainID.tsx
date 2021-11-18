@@ -23,6 +23,8 @@ import { TYPE, CloseIcon } from '../../theme'
 
 import {thousandBit} from '../../utils/tools/tools'
 
+import { useUserSelectChainId } from '../../state/user/hooks'
+
 import config from '../../config'
 
 import {
@@ -89,6 +91,7 @@ export default function SelectChainIdInputPanel({
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
+  const [selectNetworkInfo] = useUserSelectChainId()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalDestOpen, setModalDestOpen] = useState(false)
@@ -100,6 +103,13 @@ export default function SelectChainIdInputPanel({
     setModalDestOpen(false)
   }, [setModalOpen])
 
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
+
   const theme = useContext(ThemeContext)
   // console.log(bridgeConfig)
   useEffect(() => {
@@ -108,7 +118,7 @@ export default function SelectChainIdInputPanel({
     } else {
       setChainList([])
     }
-  }, [chainId, selectChainList])
+  }, [selectChainList])
   // console.log(chainList)
 
   const handleCurrencySelect = useCallback(
@@ -124,7 +134,7 @@ export default function SelectChainIdInputPanel({
   const destChainInfo = useMemo(() => {
     // console.log(bridgeConfig)
     if (bridgeConfig) {
-      if (selectChainId?.toString() === chainId?.toString()) {
+      if (selectChainId?.toString() === useChainId?.toString()) {
         return bridgeConfig
       } else {
         // if (
@@ -141,24 +151,25 @@ export default function SelectChainIdInputPanel({
       }
     }
     return false
-  }, [bridgeConfig, selectChainId, chainId, selectDestCurrency])
+  }, [bridgeConfig, selectChainId, useChainId, selectDestCurrency])
 
   useEffect(() => {
     if (
       account
-      && chainId
+      && useChainId
       && bridgeConfig
       && selectChainId
       && !isNaN(selectChainId)
+      && selectNetworkInfo?.label !== 'BTC'
     ) {
       let token:any = ''
-      if (chainId?.toString() === selectChainId?.toString()) {
+      if (useChainId?.toString() === selectChainId?.toString()) {
         token = bridgeConfig?.address
       } else {
         token = destChainInfo?.address
       }
       if (token) {
-        const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
+        const isNT = (isNativeToken && useChainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
         // console.log(isNT)
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
           // console.log(res)
@@ -172,11 +183,11 @@ export default function SelectChainIdInputPanel({
     } else {
       setDestBalance('')
     }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, destChainInfo])
+  }, [account, useChainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, destChainInfo])
 
   useEffect(() => {
     setDestBalance('')
-  }, [account, chainId, bridgeConfig, selectChainId])
+  }, [account, useChainId, bridgeConfig, selectChainId])
 
   return (
     <>
@@ -187,7 +198,7 @@ export default function SelectChainIdInputPanel({
         selectedCurrency={selectDestCurrency}
         // otherSelectedCurrency={otherCurrency}
         allTokens={selectDestCurrencyList}
-        chainId={chainId}
+        chainId={useChainId}
         bridgeKey={bridgeKey}
       />
       <InputPanel id={id}>
@@ -248,7 +259,7 @@ export default function SelectChainIdInputPanel({
                             ? destChainInfo?.symbol.slice(0, 4) +
                               '...' +
                               destChainInfo?.symbol.slice(destChainInfo?.symbol.length - 5, destChainInfo?.symbol.length)
-                            : config.getBaseCoin(destChainInfo?.symbol, chainId)
+                            : config.getBaseCoin(destChainInfo?.symbol, useChainId)
                         ) : t('selectToken')
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
@@ -312,7 +323,7 @@ export default function SelectChainIdInputPanel({
               {
                   chainList && chainList.map((item:any, index:any) => {
                     if (
-                      (chainId?.toString() === item?.toString() && !isViewAllChain)
+                      (useChainId?.toString() === item?.toString() && !isViewAllChain)
                       || (config.getCurConfigInfo()?.hiddenChain?.includes(item))
                     ) {
                       return ''
@@ -325,7 +336,7 @@ export default function SelectChainIdInputPanel({
                         onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
                         {/* {Option(item, selectChainId)} */}
-                        <Option curChainId={item} selectChainId={chainId}></Option>
+                        <Option curChainId={item} selectChainId={useChainId}></Option>
                       </OptionCardClickable>
                     )
                   })
