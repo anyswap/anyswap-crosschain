@@ -141,10 +141,12 @@ export default function CrossChain() {
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, destConfig?.routerToken)
 
   useEffect(() => {
+    // console.log(approval)
+    // console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-  }, [approval, approvalSubmitted])
+  }, [approval, approvalSubmitted, selectCurrency])
 
   // console.log(selectCurrency)
 

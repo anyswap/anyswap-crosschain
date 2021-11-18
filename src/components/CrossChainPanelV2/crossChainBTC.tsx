@@ -48,6 +48,7 @@ export default function CrossChain({
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
+  const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
@@ -65,9 +66,6 @@ export default function CrossChain({
   // const allTokensList:any = useMergeBridgeTokenList(useChainId)
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
 
-  // const useTolenList = useMemo(() => {
-
-  // }, [allTokensList, useChainId])
   useEffect(() => {
     // console.log(bridgeKey)
     // console.log(allTokensList)
@@ -83,15 +81,8 @@ export default function CrossChain({
   }, [allTokensList, useChainId])
 
   const destConfig = useMemo(() => {
-    // console.log(selectCurrency)
-    if (
-      selectCurrency
-      && selectDestCurrency
-      && selectCurrency?.destChains
-      && selectCurrency?.destChains[selectChain]
-      && selectCurrency?.destChains[selectChain][selectDestCurrency]
-    ) {
-      return selectCurrency?.destChains[selectChain][selectDestCurrency]
+    if (selectDestCurrency) {
+      return selectDestCurrency
     }
     return false
   }, [selectCurrency, selectChain, selectDestCurrency])
@@ -201,7 +192,15 @@ export default function CrossChain({
       }
 
       const dl:any = selectCurrency?.destChains[useChain]
-      const destTokenList = Object.keys(dl)
+      const formatDl:any = {}
+      for (const t in dl) {
+        formatDl[t] = {
+          ...dl[t],
+          logoUrl: selectCurrency?.logoUrl
+        }
+      }
+      // console.log(formatDl)
+      const destTokenList = Object.keys(formatDl)
       let destToken = ''
       if (destTokenList.length === 1) {
         destToken = destTokenList[0]
@@ -211,12 +210,12 @@ export default function CrossChain({
             routerToken = '',
             isRouterUnderlying = false
         for (const t of destTokenList) {
-          if (typeArr.includes(dl[t].type)) {
+          if (typeArr.includes(formatDl[t].type)) {
             bridgeToken = t
           }
-          if (!typeArr.includes(dl[t].type)) {
+          if (!typeArr.includes(formatDl[t].type)) {
             routerToken = t
-            if (dl[t].underlying) {
+            if (formatDl[t].underlying) {
               isRouterUnderlying = true
             }
           }
@@ -228,8 +227,8 @@ export default function CrossChain({
         }
       }
       // console.log(dl)
-      setSelectDestCurrency(destToken)
-
+      setSelectDestCurrency(formatDl[destToken])
+      setSelectDestCurrencyList(formatDl)
       setSelectChain(useChain)
       setSelectChainList(arr)
     }
@@ -276,6 +275,10 @@ export default function CrossChain({
             console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
           }}
+          onOpenModalView={(value) => {
+            // console.log(value)
+            setModalOpen(value)
+          }}
           // onMax={() => {}}
           currency={selectCurrency}
           disableCurrencySelect={false}
@@ -311,15 +314,19 @@ export default function CrossChain({
           }}
           selectChainId={selectChain}
           id="selectChainID"
-          onOpenModalView={(value:any) => {
-            console.log(value)
-            setModalOpen(value)
+          // onOpenModalView={(value:any) => {
+          //   console.log(value)
+          //   setModalOpen(value)
+          // }}
+          onCurrencySelect={(inputCurrency) => {
+            selectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
           isNativeToken={false}
           selectChainList={selectChainList}
           isViewAllChain={true}
           selectDestCurrency={selectDestCurrency}
+          selectDestCurrencyList={selectDestCurrencyList}
         />
         <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
       </AutoColumn>

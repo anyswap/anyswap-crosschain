@@ -1,6 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Text } from 'rebass'
+import { Currency } from 'anyswap-sdk'
 // import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -12,7 +13,7 @@ import { PaddedColumn, Separator } from '../SearchModal/styleds'
 import { Input as NumericalInput } from '../NumericalInput'
 import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
-// import { MenuItem } from '../SearchModal/styleds'
+import SearchModal from '../CurrencySelect/searchModal'
 import {
   OptionCardClickable,
   Option
@@ -54,13 +55,15 @@ interface SelectChainIdInputPanel {
   disableCurrencySelect?: boolean
   hideInput?: boolean
   id: string
-  onOpenModalView?: (value: any) => void,
+  // onOpenModalView?: (value: any) => void,
+  onCurrencySelect: (currency: Currency) => void // user select token
   bridgeConfig: any,
   intervalCount?: any,
   isNativeToken?: boolean
   isViewAllChain?: boolean
   selectChainList?: Array<any>
   selectDestCurrency?: any
+  selectDestCurrencyList?: any
 }
 
 export default function SelectChainIdInputPanel({
@@ -72,22 +75,27 @@ export default function SelectChainIdInputPanel({
   disableCurrencySelect = false,
   hideInput = false,
   id,
-  onOpenModalView,
+  // onOpenModalView,
+  onCurrencySelect,
   bridgeConfig,
   intervalCount,
   isNativeToken,
   isViewAllChain,
   selectChainList = [],
-  selectDestCurrency
+  selectDestCurrency,
+  selectDestCurrencyList
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
+
   const [modalOpen, setModalOpen] = useState(false)
+  const [modalDestOpen, setModalDestOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
+    setModalDestOpen(false)
   }, [setModalOpen])
 
   const theme = useContext(ThemeContext)
@@ -117,12 +125,14 @@ export default function SelectChainIdInputPanel({
       if (selectChainId?.toString() === chainId?.toString()) {
         return bridgeConfig
       } else {
-        if (
-          bridgeConfig?.destChains
-          && bridgeConfig?.destChains[selectChainId]
-          && bridgeConfig?.destChains[selectChainId][selectDestCurrency]
-        ) {
-          return bridgeConfig?.destChains[selectChainId][selectDestCurrency]
+        // if (
+        //   bridgeConfig?.destChains
+        //   && bridgeConfig?.destChains[selectChainId]
+        //   && bridgeConfig?.destChains[selectChainId][selectDestCurrency]
+        // ) {
+        //   return bridgeConfig?.destChains[selectChainId][selectDestCurrency]
+        if (selectDestCurrency) {
+          return selectDestCurrency
         } else {
           return false
         }
@@ -168,6 +178,15 @@ export default function SelectChainIdInputPanel({
 
   return (
     <>
+      <SearchModal
+        isOpen={modalDestOpen}
+        onDismiss={handleDismissSearch}
+        onCurrencySelect={onCurrencySelect}
+        selectedCurrency={selectDestCurrency}
+        // otherSelectedCurrency={otherCurrency}
+        allTokens={selectDestCurrencyList}
+        chainId={chainId}
+      />
       <InputPanel id={id}>
         <Container hideInput={hideInput}>
           {!hideInput && (
@@ -206,8 +225,11 @@ export default function SelectChainIdInputPanel({
                 selected={!!selectChainId}
                 className="open-currency-select-button"
                 onClick={() => {
-                  if (!disableCurrencySelect && onOpenModalView) {
-                    onOpenModalView(true)
+                  // if (!disableCurrencySelect && onOpenModalView) {
+                  //   onOpenModalView(true)
+                  // }
+                  if (!disableCurrencySelect) {
+                    setModalDestOpen(true)
                   }
                 }}
               >

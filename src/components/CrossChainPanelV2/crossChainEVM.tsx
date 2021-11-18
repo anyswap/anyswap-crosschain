@@ -75,6 +75,7 @@ export default function CrossChain({
   const [inputBridgeValue, setInputBridgeValue] = useState('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
+  const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
@@ -104,15 +105,8 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    // console.log(selectCurrency)
-    if (
-      selectCurrency
-      && selectDestCurrency
-      && selectCurrency?.destChains
-      && selectCurrency?.destChains[selectChain]
-      && selectCurrency?.destChains[selectChain][selectDestCurrency]
-    ) {
-      return selectCurrency?.destChains[selectChain][selectDestCurrency]
+    if (selectDestCurrency) {
+      return selectDestCurrency
     }
     return false
   }, [selectCurrency, selectChain, selectDestCurrency])
@@ -483,7 +477,15 @@ export default function CrossChain({
       }
 
       const dl:any = selectCurrency?.destChains[useChain]
-      const destTokenList = Object.keys(dl)
+      const formatDl:any = {}
+      for (const t in dl) {
+        formatDl[t] = {
+          ...dl[t],
+          logoUrl: selectCurrency?.logoUrl
+        }
+      }
+      // console.log(formatDl)
+      const destTokenList = Object.keys(formatDl)
       let destToken = ''
       if (destTokenList.length === 1) {
         destToken = destTokenList[0]
@@ -493,12 +495,12 @@ export default function CrossChain({
             routerToken = '',
             isRouterUnderlying = false
         for (const t of destTokenList) {
-          if (typeArr.includes(dl[t].type)) {
+          if (typeArr.includes(formatDl[t].type)) {
             bridgeToken = t
           }
-          if (!typeArr.includes(dl[t].type)) {
+          if (!typeArr.includes(formatDl[t].type)) {
             routerToken = t
-            if (dl[t].underlying) {
+            if (formatDl[t].underlying) {
               isRouterUnderlying = true
             }
           }
@@ -510,7 +512,8 @@ export default function CrossChain({
         }
       }
       // console.log(dl)
-      setSelectDestCurrency(destToken)
+      setSelectDestCurrency(formatDl[destToken])
+      setSelectDestCurrencyList(formatDl)
       setSelectChain(useChain)
       setSelectChainList(arr)
     }
@@ -702,15 +705,19 @@ export default function CrossChain({
           }}
           selectChainId={selectChain}
           id="selectChainID"
-          onOpenModalView={(value) => {
-            console.log(value)
-            setModalOpen(value)
+          // onOpenModalView={(value) => {
+          //   console.log(value)
+          //   setModalOpen(value)
+          // }}
+          onCurrencySelect={(inputCurrency) => {
+            selectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
           intervalCount={intervalCount}
           isNativeToken={isNativeToken}
           selectChainList={selectChainList}
           selectDestCurrency={selectDestCurrency}
+          selectDestCurrencyList={selectDestCurrencyList}
         />
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
