@@ -327,6 +327,7 @@ export default function CrossChain({
           isViewAllChain={true}
           selectDestCurrency={selectDestCurrency}
           selectDestCurrencyList={selectDestCurrencyList}
+          bridgeKey={bridgeKey}
         />
         <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
       </AutoColumn>

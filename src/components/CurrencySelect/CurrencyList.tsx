@@ -115,7 +115,7 @@ function CurrencyRow({
   && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
   && !CROSS_BRIDGE_LIST.includes(bridgeKey)
    ? true : false
-  // console.log(currencyObj)
+  // console.log(isNativeToken)
   // const balance = ''
   // const ETHBalance = ''
   // const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
@@ -194,20 +194,23 @@ export default function BridgeCurrencyList({
   // console.log(selectedCurrency)
   const htmlNodes = useMemo(() => {
     const arr = []
-    let ethNode:any = ''
+    const ethNode:any = []
     for (const obj of itemData) {
-      const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase() && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
+      const isNativeToken = 
+        config.getCurChainInfo(chainId)?.nativeToken
+        && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken?.toLowerCase()
+        && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
       if (
         isNativeToken
         || obj?.address === config.getCurChainInfo(chainId)?.symbol
       ) {
-        ethNode = obj
+        ethNode.push(obj)
         continue
       }
       arr.push(obj)
     }
-    if (ethNode) {
-      arr.unshift(ethNode)
+    if (ethNode.length > 0) {
+      arr.unshift(...ethNode)
     }
     return arr
   }, [itemData, chainId])

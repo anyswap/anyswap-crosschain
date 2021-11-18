@@ -64,6 +64,7 @@ interface SelectChainIdInputPanel {
   selectChainList?: Array<any>
   selectDestCurrency?: any
   selectDestCurrencyList?: any
+  bridgeKey?: any
 }
 
 export default function SelectChainIdInputPanel({
@@ -83,7 +84,8 @@ export default function SelectChainIdInputPanel({
   isViewAllChain,
   selectChainList = [],
   selectDestCurrency,
-  selectDestCurrencyList
+  selectDestCurrencyList,
+  bridgeKey
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
@@ -186,6 +188,7 @@ export default function SelectChainIdInputPanel({
         // otherSelectedCurrency={otherCurrency}
         allTokens={selectDestCurrencyList}
         chainId={chainId}
+        bridgeKey={bridgeKey}
       />
       <InputPanel id={id}>
         <Container hideInput={hideInput}>

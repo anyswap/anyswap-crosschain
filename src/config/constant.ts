@@ -30,7 +30,8 @@ export enum BRIDGE_KEY {
   mergeTokenList = 'mergeTokenList',
 }
 
-export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList, BRIDGE_KEY.mergeTokenList]
+// export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList, BRIDGE_KEY.mergeTokenList]
+export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 
 export const env:any = 'pro'
 // export const env:any = 'dev'

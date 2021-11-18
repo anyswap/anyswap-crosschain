@@ -93,7 +93,7 @@ export default function SearchModal ({
     // console.log(arr)
     setTimeout(() => {
       setIntervalCount(1)
-    }, 1000)
+    }, 500)
     if (arr.length > 50 && intervalCount === 0) {
       return arr.splice(0, 50)
     } else {

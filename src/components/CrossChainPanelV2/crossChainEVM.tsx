@@ -127,6 +127,7 @@ export default function CrossChain({
   }, [destConfig, isRouter])
 
   const isNativeToken = useMemo(() => {
+    // console.log(selectCurrency)
     if (
       selectCurrency
       && selectCurrency.address
@@ -139,6 +140,7 @@ export default function CrossChain({
     }
     return false
   }, [selectCurrency, useChainId])
+  // console.log(isNativeToken)
 
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
@@ -718,6 +720,7 @@ export default function CrossChain({
           selectChainList={selectChainList}
           selectDestCurrency={selectDestCurrency}
           selectDestCurrencyList={selectDestCurrencyList}
+          bridgeKey={bridgeKey}
         />
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
