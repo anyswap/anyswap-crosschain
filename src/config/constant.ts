@@ -44,10 +44,10 @@ export const timeout = 1000 * 60 * 30
 // export const INIT_VERSION = VERSION.V2_2
 // export const INIT_VERSION = VERSION.V4_OKT
 // const INIT_VERSION = VERSION.V4_MOVR
-export const INIT_VERSION = VERSION.V5
+// export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
+export const INIT_VERSION = VERSION.V7
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -289,9 +289,9 @@ export const controlConfig:any = {
     showCoin: [],
     showChain: [],
     initNode: '1',
-    isOpenRouter: 1,
+    isOpenRouter: 0,
     isOpenRouterTxns: 0,
-    isOpenBridge: 1,
+    isOpenBridge: 0,
     isOpenMerge: 1
   },
 }

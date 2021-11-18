@@ -232,7 +232,7 @@ export default function CrossChain({
       setSelectChain(useChain)
       setSelectChainList(arr)
     }
-  }, [selectCurrency])
+  }, [selectCurrency, selectChain, useChainId])
 
   return (
     <>

@@ -21,6 +21,12 @@ const bridgeToken = {
     nativeToken: '',
     OETHssBridgeInitToken: ''
   },
+  [VERSION.V7]: {
+    bridgeInitToken: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b',
+    bridgeInitChain: '56',
+    nativeToken: '',
+    OETHssBridgeInitToken: ''
+  },
 }
 
 export default {

@@ -297,7 +297,6 @@ const Link = styled(ExternalLink)`
   }
 `
 
-// console.log(config)
 export default function NavList() {
   const { t } = useTranslation()
 
@@ -311,6 +310,7 @@ export default function NavList() {
           </div>
           {t('dashboard')}
         </StyledNavLink>
+
         {
           config.getCurConfigInfo().isOpenRouter ? (
             <StyledNavLink
@@ -338,7 +338,6 @@ export default function NavList() {
                 <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
               </div>
               {config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap')}
-              {/* {t('router')} */}
             </StyledNavLink>
           ) : ''
         }
@@ -395,6 +394,23 @@ export default function NavList() {
             </StyledNavLink>
           ) : ''
         }
+
+        {
+          config.getCurConfigInfo().isOpenMerge ? (
+            <StyledNavLink
+              id={`swap-nav-link`}
+              to={'/v2/mergeswap'}
+            >
+              <div className="icon">
+                <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
+                <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
+              </div>
+              {t('bridge')}
+            </StyledNavLink>
+          ) : ''
+        }
+
+
         <StyledNavLink
           id={`swap-nav-link`}
           to={'/farm'}

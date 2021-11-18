@@ -161,6 +161,11 @@ const bridgeToken = {
     bridgeInitChain: '66',
     crossBridgeInitToken: 'HT'
   },
+  [VERSION.V7]: {
+    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitChain: '66',
+    crossBridgeInitToken: 'HT'
+  },
 }
 
 export default {

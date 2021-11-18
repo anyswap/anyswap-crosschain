@@ -522,7 +522,7 @@ export default function CrossChain({
       setSelectChain(useChain)
       setSelectChainList(arr)
     }
-  }, [selectCurrency])
+  }, [selectCurrency, selectChain, useChainId])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
