@@ -85,19 +85,22 @@ function getParamNode(type: any, INIT_NODE: any) {
 }
 
 function getNode(type: any, INIT_NODE: any) {
+  let labelStr = INIT_NODE
   if (type.indexOf('fsn') !== -1) {
-    return chainInfo[FSN_MAIN_CHAINID].label
+    labelStr = chainInfo[FSN_MAIN_CHAINID].label
   } else if (type.indexOf('bsc') !== -1) {
-    return chainInfo[BNB_MAIN_CHAINID].label
+    labelStr = chainInfo[BNB_MAIN_CHAINID].label
   } else if (type.indexOf('ftm') !== -1) {
-    return chainInfo[FTM_MAIN_CHAINID].label
+    labelStr = chainInfo[FTM_MAIN_CHAINID].label
   } else if (type.indexOf('eth') !== -1) {
-    return chainInfo[ETH_MAIN_CHAINID].label
+    labelStr = chainInfo[ETH_MAIN_CHAINID].label
   } else if (type.indexOf('huobi') !== -1) {
-    return chainInfo[HT_MAIN_CHAINID].label
-  } else {
-    return INIT_NODE
+    labelStr = chainInfo[HT_MAIN_CHAINID].label
   }
+  if (!onlyOne) {
+    selectNetwork(labelStr)
+  }
+  return labelStr
 }
 export function getNetwork(ENV_NODE_CONFIG: any, INIT_NODE: any) {
   let nc = ''
