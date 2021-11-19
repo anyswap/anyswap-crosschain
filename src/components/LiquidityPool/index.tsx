@@ -60,7 +60,7 @@ export default function LiquidityPool ({
 
   const { t } = useTranslation()
 
-
+  // console.log(destChain)
   return (
     <>
       <LiquidityView>

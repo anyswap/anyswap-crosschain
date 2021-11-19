@@ -209,7 +209,7 @@ export function fromWei (value:any, decimals?:number, dec?:number) {
   if (Number(value) === 0) {
     return 0
   }
-  decimals = decimals ? decimals : 18
+  decimals = decimals !== undefined ? decimals : 18
   if (dec) {
     
     return formatDecimal(Number(formatUnits(value.toString(), decimals)), dec)
