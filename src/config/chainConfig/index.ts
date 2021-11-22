@@ -23,6 +23,7 @@ import celo, {CELO_MAIN_CHAINID} from './celo'
 import cro, {CRO_MAIN_CHAINID} from './cro'
 import oeth, {OETH_MAIN_CHAINID} from './oeth'
 import tlos, {TLOS_MAIN_CHAINID} from './tlos'
+import terra, {TERRA_MAIN_CHAINID} from './terra'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -54,7 +55,8 @@ export const chainInfo:ConFig = {
   ...celo,
   ...cro,
   ...oeth,
-  ...tlos
+  ...tlos,
+  ...terra
 }
 
 const useChain:any = {
@@ -215,7 +217,7 @@ const useChain:any = {
     LTC_MAIN_CHAINID,
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
-    COLX_MAIN_CHAINID
+    COLX_MAIN_CHAINID,
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
@@ -230,7 +232,8 @@ const useChain:any = {
     KCC_MAIN_CHAINID,
     OKT_MAIN_CHAINID,
     ONE_MAIN_CHAINID,
-    MOVR_MAIN_CHAINID
+    MOVR_MAIN_CHAINID,
+    TERRA_MAIN_CHAINID
   ]
 }
 

@@ -633,6 +633,7 @@ export function useBridgeNativeCallback(
   toChainID: any,
   inputToken: string | undefined,
   pairid: string | undefined,
+  terraRecipient: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType;onConnect?: undefined | (() => Promise<void>); execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -648,7 +649,7 @@ export function useBridgeNativeCallback(
 
   const sendTx = useCallback(() => {
     console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType) return
+    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient) return
     const send:any = new MsgSend(
       connectedWallet.walletAddress,
       toAddress,
@@ -656,9 +657,9 @@ export function useBridgeNativeCallback(
     )
     return post({
       msgs: [send],
-      memo: account,
+      memo: terraRecipient,
     })
-  }, [])
+  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient])
 
   return useMemo(() => {
     if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
@@ -681,7 +682,7 @@ export function useBridgeNativeCallback(
                 if (txReceipt) {
                   const txData:any = {hash: txReceipt?.result?.txhash}
                   addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                  if (txReceipt?.info && account) {
+                  if (txReceipt?.info && account && terraRecipient) {
                     const data = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: chainId,
@@ -689,7 +690,7 @@ export function useBridgeNativeCallback(
                       account: connectedWallet?.walletAddress,
                       value: inputAmount.raw.toString(),
                       formatvalue: inputAmount?.toSignificant(6),
-                      to: account,
+                      to: terraRecipient,
                       symbol: inputCurrency?.symbol,
                       version: 'swapin',
                       pairid: pairid,
@@ -704,5 +705,5 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: undefined
     }
-  }, [chainId, inputCurrency, inputAmount, addTransaction, t, toAddress, inputToken, toChainID])
+  }, [chainId, inputCurrency, inputAmount, addTransaction, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid])
 }

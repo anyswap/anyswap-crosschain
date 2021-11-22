@@ -86,6 +86,8 @@ function getInitToken () {
 
 const BRIDGETYPE = 'bridgeTokenList'
 
+const TERRA_CHAIN = 'TERRA'
+
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
@@ -107,6 +109,7 @@ export default function CrossChain() {
   const [selectChain, setSelectChain] = useState<any>(localSelectChain?.toString() === chainId?.toString() ? '' : localSelectChain)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(account ?? '')
+  const [terraRecipient, setTerraRecipient] = useState<any>(account ?? '')
   const [viewRrecipient, setViewRecipient] = useState<any>(false)
   const [swapType, setSwapType] = useState(initSwapType ? initSwapType : BridgeType.bridge)
   const [count, setCount] = useState<number>(0)
@@ -427,7 +430,7 @@ export default function CrossChain() {
     if (allTokens?.deposit && Object.keys(allTokens?.deposit).length > 0) {
       arr.push({
         // name: t('Deposited'),
-        name: 'BTC',
+        name: 'Non-EVM',
         onTabClick: () => {
           if (swapType !== BridgeType.deposit) {
             sessionStorage.setItem(SelectBridgeCurrencyLabel, '')
@@ -435,7 +438,7 @@ export default function CrossChain() {
             setSwapType(BridgeType.deposit)
           }
         },
-        iconTxt: 'B'
+        iconTxt: 'N'
       })
     }
     return arr
@@ -458,7 +461,8 @@ export default function CrossChain() {
     inputBridgeValue,
     selectChain,
     selectCurrency?.address,
-    destConfig?.pairid
+    destConfig?.pairid,
+    terraRecipient
   )
   
   
@@ -495,6 +499,7 @@ export default function CrossChain() {
 
   const isCrossBridge = useMemo(() => {
     const isAddr = swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : isAddress( recipient, selectChain)
+    // console.log(terraRecipient)
     if (
       account
       && destConfig
@@ -503,6 +508,7 @@ export default function CrossChain() {
       && !isWrapInputError
       && Boolean(isAddr)
       && destChain
+      && (terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
@@ -516,7 +522,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool, terraRecipient])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -574,18 +580,23 @@ export default function CrossChain() {
   useEffect(() => {
     setP2pAddress('')
     if (account && selectCurrency && destConfig && swapType === BridgeType.deposit && chainId) {
-      getP2PInfo(account, chainId, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-        // console.log(res)
-        // console.log(selectCurrency)
-        if (res?.p2pAddress) {
-          const localAddress = createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
-          if (res?.p2pAddress === localAddress) {
-            // console.log(localAddress)
-            setP2pAddress(localAddress)
-            setLocalConfig(account, selectCurrency?.address, chainId, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+      // console.log(destConfig)
+      if (selectCurrency?.specChainId === TERRA_CHAIN) {
+        setP2pAddress(destConfig?.DepositAddress)
+      } else {
+        getP2PInfo(account, chainId, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+          // console.log(res)
+          // console.log(selectCurrency)
+          if (res?.p2pAddress) {
+            const localAddress = createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+            if (res?.p2pAddress === localAddress) {
+              // console.log(localAddress)
+              setP2pAddress(localAddress)
+              setLocalConfig(account, selectCurrency?.address, chainId, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+            }
           }
-        }
-      })
+        })
+      }
     }
   }, [account, selectCurrency, destConfig, chainId, swapType])
   
@@ -667,9 +678,14 @@ export default function CrossChain() {
   function ButtonView (type:any) {
     let buttonNode:any = ''
     const onClickFn = (label:any) => {
+      // console.log(label)
       if (label === 'INIT') {
         if (swapType !== BridgeType.deposit) {
           setModalTipOpen(true)
+        } else if (selectCurrency?.specChainId === TERRA_CHAIN) {
+          if (onTerraWrap && swapType === BridgeType.deposit && wrapTerraType === WrapType.WRAP) onTerraWrap().then(() => {
+            onClear()
+          })
         } else {
           setModalSpecOpen(true)
         }
@@ -688,7 +704,10 @@ export default function CrossChain() {
         })
       }
     }
+    // console.log(wrapTerraType)
+    // console.log(selectCurrency)
     if (!account) {
+      // console.log(1)
       buttonNode = <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
     } else if (
       !isNativeToken
@@ -698,6 +717,7 @@ export default function CrossChain() {
       && inputBridgeValue
       && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)
     ) {
+      // console.log(2)
       buttonNode = <ButtonConfirmed
         onClick={() => {
           onClickFn(type === 'INIT' ? 'INIT' : 'APPROVE')
@@ -719,11 +739,13 @@ export default function CrossChain() {
       </ButtonConfirmed>
     } else if (
       swapType === BridgeType.deposit
-      && selectCurrency?.specChainId === 'TERRA'
+      && selectCurrency?.specChainId === TERRA_CHAIN
       && wrapTerraType === WrapType.NOCONNECT
     ) {
+      // console.log(3)
       buttonNode = <ConnectTerraModal />
     } else {
+      // console.log(4)
       buttonNode = <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
         onClickFn(type === 'INIT' ? 'INIT' : 'SWAP')
       }}>
@@ -932,8 +954,13 @@ export default function CrossChain() {
             </>
           ): ''}
           {
-            p2pAddress ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''
+            swapType === BridgeType.deposit && p2pAddress && ![TERRA_CHAIN].includes(selectCurrency?.specChainId) ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''
           }
+          {swapType === BridgeType.deposit && [TERRA_CHAIN].includes(selectCurrency?.specChainId) ? (
+            <>
+              <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={terraRecipient} onChange={setTerraRecipient} isValid={false} />
+            </>
+          ): ''}
         </AutoColumn>
 
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
