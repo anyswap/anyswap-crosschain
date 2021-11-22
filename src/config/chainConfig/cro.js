@@ -2,7 +2,7 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const CRO_MAIN_CHAINID = 25
-export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://evm-cronos.crypto.org')
+export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://cronode1.anyswap.exchange')
 export const CRO_MAIN_EXPLORER = 'https://cronos.crypto.org/explorer'
 
 export const tokenList = []
@@ -43,6 +43,7 @@ export default {
     nodeRpc: CRO_MAINNET,
     nodeRpcList: [
       CRO_MAINNET,
+      'https://evm-cronos.crypto.org'
     ],
     chainID: CRO_MAIN_CHAINID,
     lookHash: CRO_MAIN_EXPLORER + '/tx/',

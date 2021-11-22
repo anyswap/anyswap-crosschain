@@ -15,7 +15,7 @@ import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
-import {timeout, USE_VERSION, VERSION} from '../config/constant'
+import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
@@ -185,7 +185,11 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
       ) {
         return
       } else {
-        return GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain})
+        return GetTokenListByChainID({
+          srcChainID: chainId,
+          chainList: config.getCurConfigInfo().showChain,
+          bridgeAPI: bridgeApi + '/v2/tokenlist'
+        })
           .then((tokenList:any) => {
             // console.log(tokenList)
             dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))

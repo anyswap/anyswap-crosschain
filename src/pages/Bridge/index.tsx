@@ -32,6 +32,7 @@ import { tryParseAmount } from '../../state/swap/hooks'
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
+import {bridgeApi} from '../../config/constant'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
@@ -604,7 +605,11 @@ export default function CrossChain() {
     
     if (chainId) {
       setAllTokens({})
-      GetTokenListByChainID({srcChainID: chainId, chainList: config.getCurConfigInfo().showChain}).then((res:any) => {
+      GetTokenListByChainID({
+        srcChainID: chainId,
+        chainList: config.getCurConfigInfo().showChain,
+        bridgeAPI: bridgeApi + '/v2/tokenlist'
+      }).then((res:any) => {
         console.log(res)
         if (res) {
           setAllTokens(res)
