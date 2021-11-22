@@ -119,16 +119,18 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
     
     useBatchWeb3(chainId, arr).then((res:any) => {
       // console.log(res)
-      try {
-        for (let i = 0, len = arr.length; i < len; i++) {
-          if (res[i].result) {
-            const bl = ERC20_INTERFACE?.decodeFunctionResult('balanceOf', res[i].result)?.toString()
-            if (!list[arr[i].token]) list[arr[i].token] = {}
-            list[arr[i].token][arr[i].key] = fromWei(bl, arr[i].dec)
+      if (res) {
+        try {
+          for (let i = 0, len = arr.length; i < len; i++) {
+            if (res[i].result) {
+              const bl = ERC20_INTERFACE?.decodeFunctionResult('balanceOf', res[i].result)?.toString()
+              if (!list[arr[i].token]) list[arr[i].token] = {}
+              list[arr[i].token][arr[i].key] = fromWei(bl, arr[i].dec)
+            }
           }
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
       }
       resolve(list)
     })

@@ -428,9 +428,10 @@ export default function SwapNative() {
       account,
       destUnlToken
     ) : ''
-    const ts = obj[curAnyToken].ts
-    const anyts = obj[curAnyToken].anyts
-    const bl = obj[curAnyToken].balance
+    // console.log(DC)
+    const ts = obj[curAnyToken]?.ts
+    const anyts = obj[curAnyToken]?.anyts
+    const bl = obj[curAnyToken]?.balance
     if (DC) {
       setDestChain({
         chain: selectChain,

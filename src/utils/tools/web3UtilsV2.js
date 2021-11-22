@@ -3,6 +3,8 @@ import config from '../../config'
 
 const Web3 = require('web3')
 
+const TIMEOUT = 'timeout'
+
 function getWeb3 (rpc) {
   rpc = rpc ? rpc : ''
   const wFn = new Web3(new Web3.providers.HttpProvider(rpc))
@@ -19,7 +21,7 @@ function getContract(ABI) {
 function timeoutWeb3 () {
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve('timeout')
+      resolve(TIMEOUT)
     }, [1000 * 30])
   })
 }
@@ -52,7 +54,7 @@ function getBatchWeb3Result (rpc, list) {
       timeoutWeb3(),
       getBatchWeb3Data(rpc, list)
     ]).then(res => {
-      if (res === 'timeout') {
+      if (res === TIMEOUT) {
         reject(res)
       } else {
         resolve(res)
@@ -79,7 +81,7 @@ function getWeb3Result (rpc, property, name, params) {
       timeoutWeb3(),
       getWeb3Data(rpc, property, name, params)
     ]).then(res => {
-      if (res === 'timeout') {
+      if (res === TIMEOUT) {
         reject(res)
       } else {
         resolve(res)
@@ -112,6 +114,7 @@ async function useBatchWeb3 (chainId, list) {
     if (
       error.toString().indexOf('Invalid JSON RPC response') !== -1
       || error.toString().indexOf('Error: Returned error') !== -1
+      || error === TIMEOUT
     ) {
       if (index < len) {
         index ++
