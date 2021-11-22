@@ -4,6 +4,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 // import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
+import { Twitch } from 'react-feather'
 
 import styled from 'styled-components'
 
@@ -437,6 +438,15 @@ export default function NavList() {
           </div>
           {t('Markets')}
         </MenuItem> */}
+        <MenuItem id="link" href="https://anyswaphelp.zendesk.com/hc/en-us">
+          <div className="icon">
+            {/* <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />
+            <img src={require('../../assets/images/icon/any-purpl.svg')} className="on" alt="" /> */}
+            <Twitch className="off" style={{color: '#96989E',fontSize:'18px',width:'18px',height:'18px'}} />
+            <Twitch className="on" style={{color: '#062536',fontSize:'18px',width:'18px',height:'18px'}} />
+          </div>
+          {t('support')}
+        </MenuItem>
         <MenuItem id="link" href="https://vote.anyswap.exchange/">
           <div className="icon">
             <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />
