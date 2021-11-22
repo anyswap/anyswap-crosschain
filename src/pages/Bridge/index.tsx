@@ -462,7 +462,8 @@ export default function CrossChain() {
     selectChain,
     selectCurrency?.address,
     destConfig?.pairid,
-    terraRecipient
+    terraRecipient,
+    destConfig?.Unit,
   )
   
   

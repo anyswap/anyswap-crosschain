@@ -634,6 +634,7 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   pairid: string | undefined,
   terraRecipient: string | undefined,
+  Unit: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType;onConnect?: undefined | (() => Promise<void>); execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -649,17 +650,17 @@ export function useBridgeNativeCallback(
 
   const sendTx = useCallback(() => {
     console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient) return
+    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit) return
     const send:any = new MsgSend(
       connectedWallet.walletAddress,
       toAddress,
-      { uluna: 	inputAmount.raw.toString() }
+      { [Unit]: 	inputAmount.raw.toString() }
     )
     return post({
       msgs: [send],
       memo: terraRecipient,
     })
-  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient])
+  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit])
 
   return useMemo(() => {
     if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
