@@ -635,6 +635,7 @@ export function useBridgeNativeCallback(
   pairid: string | undefined,
   terraRecipient: string | undefined,
   Unit: string | undefined,
+  srcChainid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType;onConnect?: undefined | (() => Promise<void>); execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -649,7 +650,7 @@ export function useBridgeNativeCallback(
 
 
   const sendTx = useCallback(() => {
-    console.log(connectedWallet)
+    // console.log(connectedWallet)
     if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit) return
     const send:any = new MsgSend(
       connectedWallet.walletAddress,
@@ -677,7 +678,7 @@ export function useBridgeNativeCallback(
         inputAmount
           ? async () => {
               try {
-                console.log(12)
+                // console.log(12)
                 const txReceipt:any = await sendTx()
                 console.log(txReceipt)
                 if (txReceipt) {
@@ -686,7 +687,7 @@ export function useBridgeNativeCallback(
                   if (txData.hash && account && terraRecipient) {
                     const data = {
                       hash: txData.hash?.toLowerCase(),
-                      chainId: chainId,
+                      chainId: srcChainid,
                       selectChain: toChainID,
                       account: connectedWallet?.walletAddress,
                       value: inputAmount.raw.toString(),
@@ -706,5 +707,5 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: undefined
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid])
 }

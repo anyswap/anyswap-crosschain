@@ -464,6 +464,7 @@ export default function CrossChain() {
     destConfig?.pairid,
     terraRecipient,
     destConfig?.Unit,
+    selectCurrency?.specChainId
   )
   
   
@@ -499,7 +500,7 @@ export default function CrossChain() {
   }, [wrapInputError, selectCurrency, swapType])
 
   const isCrossBridge = useMemo(() => {
-    const isAddr = swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : isAddress( recipient, selectChain)
+    const isAddr = swapType === BridgeType.deposit ? ([TERRA_CHAIN].includes(selectCurrency?.specChainId) ? isAddress( terraRecipient, selectChain) : isAddress( p2pAddress, selectCurrency?.specChainId)) : isAddress( recipient, selectChain)
     // console.log(terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
     if (
       account
@@ -509,10 +510,10 @@ export default function CrossChain() {
       && !isWrapInputError
       && Boolean(isAddr)
       && destChain
-      && (
-        (terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
-        || (![TERRA_CHAIN].includes(selectCurrency?.specChainId))
-      )
+      // && (
+      //   (terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
+      //   || (![TERRA_CHAIN].includes(selectCurrency?.specChainId))
+      // )
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
@@ -863,7 +864,7 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             allTokens={useTolenList}
             hideBalance={swapType === BridgeType.deposit}
-            customChainId={swapType === BridgeType.deposit ? selectCurrency?.symbol : ''}
+            customChainId={swapType === BridgeType.deposit ? selectCurrency?.specChainId : ''}
             bridgeKey={BRIDGETYPE}
             // allBalances={allBalances}
           />

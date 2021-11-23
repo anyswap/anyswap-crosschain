@@ -106,18 +106,29 @@ export function recordsTxns ({
 // to: 0xc03033d8b833ff7ca08bf2a58c9bc9d711257249
 // symbol: USDC
 // recordsTxns({
-//   hash: '0x380da576e0d50d4d78ad21952417dfd4d7aaf3c2034cf31541c35b941522ec96',
-//   chainId: '250',
-//   selectChain: '56',
-//   account: '0xc03033d8b833ff7ca08bf2a58c9bc9d711257249',
-//   value: '12000000',
-//   formatvalue: '12',
-//   to: '0xe09c98f97dafb1f954cea0ce550383e2bd0c8829',
-//   symbol: 'USDC',
-//   version: 'STABLEV3',
-//   pairid: 'USDC',
-//   routerToken: '0x1ccca1ce62c62f7be95d4a67722a8fdbed6eecb4'
+//   hash: '8ce1495c5952eea2dc7f8bc580e4ea654292aba1c36dcfb6a37a054c6bb31f70',
+//   chainId: 'TERRA',
+//   selectChain: '250',
+//   account: 'terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws',
+//   value: '1000000',
+//   formatvalue: '1',
+//   to: '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249',
+//   symbol: 'USD',
+//   version: 'swapin',
+//   pairid: 'USD',
+//   routerToken: ''
 // })
+// hash: 8ce1495c5952eea2dc7f8bc580e4ea654292aba1c36dcfb6a37a054c6bb31f70
+// srcChainID: 250
+// destChainID: 250
+// token: 
+// from: terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws
+// version: swapin
+// value: 1000000
+// formatvalue: 1
+// to: 0xC03033d8b833fF7ca08BF2A58C9BC9d711257249
+// symbol: USD
+// pairid: USD
 // https://bridgeapi.anyswap.exchange/v2/register/account/chainId/symbol
 
 
