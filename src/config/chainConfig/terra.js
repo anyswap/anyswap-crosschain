@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const TERRA_MAINNET = ''
 export const TERRA_MAIN_CHAINID = 'TERRA'
-export const TERRA_MAIN_EXPLORER = ''
+export const TERRA_MAIN_EXPLORER = 'https://finder.terra.money/mainnet'
 
 export const tokenList = [
 

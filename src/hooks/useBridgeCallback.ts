@@ -645,7 +645,7 @@ export function useBridgeNativeCallback(
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
-  const addTransaction = useTransactionAdder()
+  // const addTransaction = useTransactionAdder()
 
 
   const sendTx = useCallback(() => {
@@ -682,8 +682,8 @@ export function useBridgeNativeCallback(
                 console.log(txReceipt)
                 if (txReceipt) {
                   const txData:any = {hash: txReceipt?.result?.txhash}
-                  addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                  if (txReceipt?.info && account && terraRecipient) {
+                  // addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                  if (txData.hash && account && terraRecipient) {
                     const data = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: chainId,
@@ -706,5 +706,5 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: undefined
     }
-  }, [chainId, inputCurrency, inputAmount, addTransaction, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid])
 }

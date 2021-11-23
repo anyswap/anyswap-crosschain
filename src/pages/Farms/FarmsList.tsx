@@ -83,6 +83,8 @@ const LinkBox = styled.div`
   border-radius: 10px;
   text-decoration: none;
   cursor:pointer;
+  position:relative;
+  overflow:hidden;
   .default {
     ${({ theme }) => theme.flexC};
     flex-wrap:wrap;
@@ -137,6 +139,8 @@ const StyledNavLink = styled(NavLink)`
   display:block;
   border-radius: 10px;
   text-decoration: none;
+  position:relative;
+  overflow:hidden;
   .default {
     ${({ theme }) => theme.flexC};
     flex-wrap:wrap;
@@ -144,7 +148,6 @@ const StyledNavLink = styled(NavLink)`
     height:100%;
     padding: 22px 10px 0;
     border-radius: 10px;
-    position:relative;
     overflow:hidden;
     .img {
       ${({ theme }) => theme.flexC};
@@ -226,7 +229,6 @@ const FarmStatus = styled.div`
   width: 200px;
   height: 30px;
   line-height:30px;
-  // background: ${({ theme }) => theme.tipBg};
   background: ${({ theme }) => theme.white};
   position:absolute;
   top:10px;
@@ -234,8 +236,7 @@ const FarmStatus = styled.div`
   transform: rotate( 45deg );
   text-align:center;
   font-size:14px;
-  color: ${({ theme }) => theme.primary1};
-  // color:#fff;
+  color: #96989e!important;
   &.live {
     opacity: 1;
   }
@@ -521,13 +522,12 @@ export default function FarmsList () {
           <div className='default'>
             {coinLogo}
             {titleInfo}
-            {
-              status === 'live' ? '' : (
-                <FarmStatus className='finished'>{t('Finished')}</FarmStatus> 
-              )
-            }
-            {/* <FarmStatus className={status === 'live' ? 'live' : 'finished'}>{status === 'live' ?  t('Live') :  t('Finished')}</FarmStatus> */}
           </div>
+          {
+            status === 'live' ? '' : (
+              <FarmStatus className='finished'>{t('Finished')}</FarmStatus> 
+            )
+          }
         </StyledNavLink>
       </FarmList>
     )

@@ -500,7 +500,7 @@ export default function CrossChain() {
 
   const isCrossBridge = useMemo(() => {
     const isAddr = swapType === BridgeType.deposit ? isAddress( p2pAddress, selectCurrency?.specChainId) : isAddress( recipient, selectChain)
-    // console.log(terraRecipient)
+    // console.log(terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
     if (
       account
       && destConfig
@@ -509,7 +509,10 @@ export default function CrossChain() {
       && !isWrapInputError
       && Boolean(isAddr)
       && destChain
-      && (terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
+      && (
+        (terraRecipient && selectCurrency?.specChainId && [TERRA_CHAIN].includes(selectCurrency?.specChainId) && isAddress( terraRecipient, selectChain))
+        || (![TERRA_CHAIN].includes(selectCurrency?.specChainId))
+      )
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
