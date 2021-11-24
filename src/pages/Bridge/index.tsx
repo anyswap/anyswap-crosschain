@@ -550,7 +550,7 @@ export default function CrossChain() {
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (swapType !== BridgeType.deposit && (isUnderlying || isDestUnderlying) && isUsePool && Number(inputBridgeValue) > Number(destChain.ts))
-        || (swapType === BridgeType.deposit && Number(inputBridgeValue) > Number(useCustomBalance))
+        || (swapType === BridgeType.deposit && useCustomBalance && Number(inputBridgeValue) > Number(useCustomBalance))
       ) {
         return true
       } else {
