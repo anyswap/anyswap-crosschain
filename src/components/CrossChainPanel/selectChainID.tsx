@@ -128,8 +128,9 @@ export default function SelectChainIdInputPanel({
   }, [bridgeConfig, selectChainId, chainId])
   // console.log(bridgeConfig)
   // console.log(selectChainId)
-  // console.log(destChainInfo)
+  // console.log(destBalance)
   useEffect(() => {
+    // console.log(customBalance)
     if (
       account
       && chainId
@@ -161,11 +162,15 @@ export default function SelectChainIdInputPanel({
     } else {
       setDestBalance('')
     }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, customBalance])
+  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, customBalance, destChainInfo])
 
   useEffect(() => {
-    setDestBalance('')
-  }, [account, chainId, bridgeConfig, selectChainId])
+    if (customBalance) {
+      setDestBalance(customBalance)
+    } else {
+      setDestBalance('')
+    }
+  }, [account, chainId, bridgeConfig, selectChainId, customBalance])
 
   return (
     <>

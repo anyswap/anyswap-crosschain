@@ -285,6 +285,8 @@ export default function CrossChain() {
         // console.log(res)
         setCustomBalance(res)
       })
+    } else {
+      setCustomBalance('')
     }
   }, [getTerraBalances, destConfig])
   // }, [destConfig])
