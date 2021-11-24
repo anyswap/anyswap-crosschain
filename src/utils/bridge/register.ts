@@ -31,6 +31,10 @@ interface RecordsTxnsProp {
   routerToken?: string | undefined,
 }
 const registerList:any = {}
+
+// console.log(window?.navigator)
+// console.log(window)
+// console.log(returnCitySN)
 export function recordsTxns ({
   hash,
   chainId,
@@ -61,7 +65,9 @@ export function recordsTxns ({
       formatvalue: formatvalue,
       to: to,
       symbol: symbol,
-      pairid: pairid
+      pairid: pairid,
+      userAgent: window?.navigator?.userAgent,
+      userIP: window?.returnCitySN
     }
     if (!registerList[hash]) {
       registerList[hash] = {
