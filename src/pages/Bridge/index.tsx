@@ -13,6 +13,7 @@ import {useCrossBridgeCallback, useTerraCrossBridgeCallback} from '../../hooks/u
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
+import useTerraBalance from '../../hooks/useTerraBalance'
 
 import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
@@ -39,7 +40,7 @@ import {selectNetwork} from '../../config/tools/methods'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
-import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
+import {formatDecimal, fromWei, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
@@ -96,6 +97,10 @@ export default function CrossChain() {
   // const history = createBrowserHistory()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+
+  const { getTerraBalances } = useTerraBalance()
+  // console.log(getTerraBalances)
+  
   // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   // console.log(balances)
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
@@ -105,6 +110,7 @@ export default function CrossChain() {
   initSwapType = initSwapType ? initSwapType.toLowerCase() : ''
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [customBalance, setCustomBalance] = useState<any>()
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>(localSelectChain?.toString() === chainId?.toString() ? '' : localSelectChain)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
@@ -270,7 +276,30 @@ export default function CrossChain() {
     }
     return true
   }, [selectCurrency])
-  // console.log(isUsePool)
+
+  useEffect(() => {
+    if (destConfig?.Unit) {
+      getTerraBalances({terraWhiteList: [{
+        token: destConfig?.Unit
+      }]}).then((res:any) => {
+        // console.log(res)
+        setCustomBalance(res)
+      })
+    }
+  }, [getTerraBalances, destConfig])
+  // }, [destConfig])
+
+  const useCustomBalance = useMemo(() => {
+    // console.log(selectCurrency)
+    if (customBalance && destConfig?.Unit && customBalance[destConfig?.Unit]) {
+      // console.log(customBalance[destConfig?.Unit])
+      // console.log(selectCurrency?.decimals)
+      return fromWei(customBalance[destConfig?.Unit], selectCurrency?.decimals)
+    }
+    return 
+  }, [customBalance, destConfig])
+  // console.log(useCustomBalance)
+  // console.log(useCustomBalance?.toSignificant(6))
 
   const formatCurrency0 = useLocalToken(
     selectCurrency?.underlying ? {
@@ -408,10 +437,12 @@ export default function CrossChain() {
   //   }
   // }, [selectChain])
   // console.log(oldSymbol)
+  useEffect(() => {
+    if (account && terraRecipient && terraRecipient !== account) {
+      setTerraRecipient('')
+    }
+  }, [account])
   
-
-  
-
   const TitleList = useMemo(() => {
     const arr = [
       {
@@ -519,6 +550,7 @@ export default function CrossChain() {
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
         || (swapType !== BridgeType.deposit && (isUnderlying || isDestUnderlying) && isUsePool && Number(inputBridgeValue) > Number(destChain.ts))
+        || (swapType === BridgeType.deposit && Number(inputBridgeValue) > Number(useCustomBalance))
       ) {
         return true
       } else {
@@ -527,7 +559,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool, terraRecipient])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool, terraRecipient, useCustomBalance])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -863,9 +895,10 @@ export default function CrossChain() {
             isError={isInputError}
             isNativeToken={isNativeToken}
             allTokens={useTolenList}
-            hideBalance={swapType === BridgeType.deposit}
+            hideBalance={swapType === BridgeType.deposit && !useCustomBalance}
             customChainId={swapType === BridgeType.deposit ? selectCurrency?.specChainId : ''}
             bridgeKey={BRIDGETYPE}
+            customBalance={swapType === BridgeType.deposit ? useCustomBalance : ''}
             // allBalances={allBalances}
           />
           {
@@ -951,6 +984,7 @@ export default function CrossChain() {
             intervalCount={intervalCount}
             isNativeToken={false}
             selectChainList={selectChainList}
+            customBalance={swapType === BridgeType.deposit ? '' : useCustomBalance}
             // isViewAllChain={swapType === BridgeType.deposit}
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' && (viewRrecipient || isNaN(selectChain)) ? (
@@ -961,11 +995,11 @@ export default function CrossChain() {
           {
             swapType === BridgeType.deposit && p2pAddress && ![TERRA_CHAIN].includes(selectCurrency?.specChainId) ? <AddressInputPanel id="p2pAddress" value={p2pAddress} disabledInput={true} /> : ''
           }
-          {swapType === BridgeType.deposit && [TERRA_CHAIN].includes(selectCurrency?.specChainId) ? (
+          {/* {swapType === BridgeType.deposit && [TERRA_CHAIN].includes(selectCurrency?.specChainId) ? (
             <>
               <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={terraRecipient} onChange={setTerraRecipient} isValid={false} />
             </>
-          ): ''}
+          ): ''} */}
         </AutoColumn>
 
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}

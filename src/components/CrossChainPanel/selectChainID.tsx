@@ -60,6 +60,7 @@ interface SelectChainIdInputPanel {
   isNativeToken?: boolean
   isViewAllChain?: boolean
   selectChainList?: Array<any>
+  customBalance?: any
 }
 
 export default function SelectChainIdInputPanel({
@@ -76,7 +77,8 @@ export default function SelectChainIdInputPanel({
   intervalCount,
   isNativeToken,
   isViewAllChain,
-  selectChainList = []
+  selectChainList = [],
+  customBalance
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
@@ -134,6 +136,7 @@ export default function SelectChainIdInputPanel({
       && bridgeConfig
       && selectChainId
       && !isNaN(selectChainId)
+      && !customBalance
     ) {
       let token:any = ''
       if (chainId?.toString() === selectChainId?.toString()) {
@@ -153,10 +156,12 @@ export default function SelectChainIdInputPanel({
           }
         })
       }
+    } else if (customBalance) {
+      setDestBalance(customBalance)
     } else {
       setDestBalance('')
     }
-  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken])
+  }, [account, chainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, customBalance])
 
   useEffect(() => {
     setDestBalance('')

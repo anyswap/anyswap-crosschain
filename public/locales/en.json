@@ -351,5 +351,6 @@
   "nftrouter": "NFT Router",
   "fee": "Fee",
   "receiveTip": "Please do NOT send funds to exchanges.",
-  "support": "Support"
+  "support": "Support",
+  "ConnectTerraStation": "Connect Terra Station"
 }

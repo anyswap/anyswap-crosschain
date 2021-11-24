@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
+import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
 import {signSwapoutData, signSwapinData} from 'multichain-bridge'
@@ -642,6 +643,7 @@ export function useBridgeNativeCallback(
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
   const { post, connect } = useWallet()
+  const addPopup = useAddPopup()
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -682,9 +684,20 @@ export function useBridgeNativeCallback(
                 const txReceipt:any = await sendTx()
                 console.log(txReceipt)
                 if (txReceipt) {
-                  const txData:any = {hash: txReceipt?.result?.txhash}
+                  const hash = txReceipt?.result?.txhash
+                  const txData:any = {hash: hash}
                   // addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                   if (txData.hash && account && terraRecipient) {
+                    addPopup(
+                      {
+                        txn: {
+                          hash,
+                          success: true,
+                          summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}`
+                        }
+                      },
+                      hash
+                    )
                     const data = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: srcChainid,

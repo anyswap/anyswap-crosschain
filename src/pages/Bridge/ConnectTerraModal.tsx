@@ -58,7 +58,7 @@ export default function ConnectTerraModal () {
         connect(ConnectType.CHROME_EXTENSION)
         setModalView(true)
       }}>
-        {t('ConnectWallet')}
+        {t('ConnectTerraStation')}
       </ButtonPrimary>
     </>
   )

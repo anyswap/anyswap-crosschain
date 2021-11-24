@@ -73,6 +73,7 @@ interface SelectCurrencyInputPanelProps {
   onChangeMode?: (value: any) => void // 更多操作按钮方法，同isViewMode一起使用
   allTokens?: any // 所有token list
   customChainId?: any // 显示自定义chainId
+  customBalance?: any // 显示自定义chainId
   bridgeKey?: any // router为：'routerTokenList' ，bridge为：'bridgeTokenList'
   allBalances?: any // all token balance
   showETH?: any // showETH
@@ -106,6 +107,7 @@ export default function SelectCurrencyInputPanel({
   onChangeMode,
   allTokens = {},
   customChainId,
+  customBalance,
   bridgeKey,
   allBalances,
   showETH
@@ -139,24 +141,28 @@ export default function SelectCurrencyInputPanel({
   const selectedETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
   const useBalance = useMemo(() => {
-    if (selectedCurrencyBalance && !isNativeToken) {
-      return selectedCurrencyBalance
+    // console.log(hideBalance)
+    // console.log(customBalance)
+    if (customBalance) {
+      return customBalance
+    } else if (selectedCurrencyBalance && !isNativeToken) {
+      return selectedCurrencyBalance?.toSignificant(6)
     } else if (isNativeToken || !isAddress(currency?.address)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
-        return selectedCurrencyBalance
+        return selectedCurrencyBalance?.toSignificant(6)
       } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
-        return selectedETHBalance
+        return selectedETHBalance?.toSignificant(6)
       }
       return undefined
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance])
+  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType])
 
   const handleMax = useCallback(() => {
     if (onMax) {
       if (useBalance) {
-        onMax(useBalance?.toSignificant(6))
+        onMax(useBalance)
       } else {
         onMax('')
       }
@@ -223,7 +229,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance.toSignificant(6), 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </>
@@ -236,7 +242,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance && account
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance.toSignificant(6), 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </HideSmallBox>
@@ -329,7 +335,7 @@ export default function SelectCurrencyInputPanel({
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && useBalance
-                              ? (customBalanceText ?? '') + thousandBit(useBalance.toSignificant(6), 2)
+                              ? (customBalanceText ?? '') + thousandBit(useBalance, 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>
