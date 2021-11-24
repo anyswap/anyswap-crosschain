@@ -90,7 +90,8 @@ export default function AddressInputPanel({
   disabledInput = false,
   isValid = true,
   selectChainId,
-  label
+  label,
+  isError
 }: {
   id?: string
   // the typed string value
@@ -101,6 +102,7 @@ export default function AddressInputPanel({
   isValid?: boolean
   selectChainId?: any
   label?: any
+  isError?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
@@ -118,6 +120,15 @@ export default function AddressInputPanel({
 
   const error =  isValid && Boolean(value.length > 0 && !loading && !address && !disabledInput)
 
+  const isErrorFlag = useMemo(() => {
+    if (
+      value
+      && (error || isError)
+    ) {
+      return true
+    }
+    return false
+  }, [error, isError, value])
   const useChainId = useMemo(() => {
     if (selectChainId && !isNaN(selectChainId)) return selectChainId
     if (selectChainId && isNaN(selectChainId)) return ''
@@ -126,7 +137,7 @@ export default function AddressInputPanel({
 
   return (
     <InputPanel id={id}>
-      <ContainerRow error={error}>
+      <ContainerRow error={isErrorFlag}>
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>

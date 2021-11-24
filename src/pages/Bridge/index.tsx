@@ -4,6 +4,7 @@ import {GetTokenListByChainID, createAddress, isAddress} from 'multichain-bridge
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
+import { useConnectedWallet } from '@terra-money/wallet-provider'
 // import { createBrowserHistory } from 'history'
 
 import Reminder from '../CrossChain/reminder'
@@ -99,6 +100,7 @@ export default function CrossChain() {
   const toggleWalletModal = useWalletModalToggle()
 
   const { getTerraBalances } = useTerraBalance()
+  const connectedWallet = useConnectedWallet()
   // console.log(getTerraBalances)
   
   // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
@@ -248,6 +250,14 @@ export default function CrossChain() {
       history.go(0)
     }
   }, [chainId, bridgeConfig, swapType])
+
+  useEffect(() => {
+    if (connectedWallet?.walletAddress && swapType === BridgeType.bridge) {
+      setRecipient(connectedWallet?.walletAddress)
+    } else {
+      setRecipient('')
+    }
+  }, [connectedWallet, swapType])
   
   const isUnderlying = useMemo(() => {
     if (
@@ -788,7 +798,7 @@ export default function CrossChain() {
       buttonNode = <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
         onClickFn(type === 'INIT' ? 'INIT' : 'SWAP')
       }}>
-        {btnTxt}
+        {type === 'SWAP' ? t('confirm') : btnTxt}
       </ButtonPrimary>
     }
     return (
@@ -991,7 +1001,7 @@ export default function CrossChain() {
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' && (viewRrecipient || isNaN(selectChain)) ? (
             <>
-              <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} isValid={false} />
+              <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))}/>
             </>
           ): ''}
           {
