@@ -130,7 +130,7 @@ export default function SelectChainIdInputPanel({
   // console.log(selectChainId)
   // console.log(destBalance)
   useEffect(() => {
-    // console.log(customBalance)
+    setDestBalance('')
     if (
       account
       && chainId
@@ -150,7 +150,7 @@ export default function SelectChainIdInputPanel({
         // console.log(isNT)
         getNodeBalance(account, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
           // console.log(res)
-          if (res) {
+          if (res || res === 0) {
             setDestBalance(res)
           } else {
             setDestBalance('')
