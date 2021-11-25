@@ -55,8 +55,17 @@ export default function ConnectTerraModal () {
         </BottomGrouping>
       </ModalContent>
       <ButtonPrimary onClick={() => {
-        connect(ConnectType.CHROME_EXTENSION)
-        setModalView(true)
+        // console.log(connect)
+        if (connect) {
+          try {
+            connect(ConnectType.CHROME_EXTENSION)
+            setModalView(true)
+          } catch (error) {
+            alert('Please install Terra Station!')
+          }
+        } else {
+          alert('Please install Terra Station!')
+        }
       }}>
         {t('ConnectTerraStation')}
       </ButtonPrimary>
