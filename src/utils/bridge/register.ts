@@ -34,7 +34,7 @@ const registerList:any = {}
 
 // console.log(window?.navigator)
 // console.log(window)
-// console.log(returnCitySN)
+getUrlData('https://api.ipify.org/?format=json').then(res => console.log(res))
 export function recordsTxns ({
   hash,
   chainId,
@@ -48,12 +48,13 @@ export function recordsTxns ({
   pairid,
   routerToken
 }: RecordsTxnsProp) {
-  return new Promise(resolve => {
+  return new Promise(async(resolve) => {
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)
+    const ip:any = await getUrlData('https://api.ipify.org/?format=json')
     const data = {
       hash: hash,
       srcChainID: chainId,
@@ -67,7 +68,7 @@ export function recordsTxns ({
       symbol: symbol,
       pairid: pairid,
       userAgent: window?.navigator?.userAgent,
-      userIP: window?.returnCitySN
+      userIP: window?.returnCitySN ? window?.returnCitySN : (ip?.data?.ip ? {cip: ip?.data?.ip} : '')
     }
     if (!registerList[hash]) {
       registerList[hash] = {
