@@ -11,7 +11,8 @@ import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
-import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
+// import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
+import {setLocalConfig} from '../../utils/tools/tools'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -28,6 +29,10 @@ import Reminder from './reminder'
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+
+import {
+  outputValue
+} from './hooks'
 
 import {
   ListBox
@@ -64,9 +69,6 @@ export default function CrossChain({
   // const allTokensList:any = useMergeBridgeTokenList(useChainId)
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
 
-  // const useTolenList = useMemo(() => {
-
-  // }, [allTokensList, useChainId])
   useEffect(() => {
     // console.log(bridgeKey)
     // console.log(allTokensList)
@@ -90,28 +92,30 @@ export default function CrossChain({
     return false
   }, [selectCurrency, selectChain])
 
-  const outputBridgeValue = useMemo(() => {
-    if (inputBridgeValue && destConfig) {
-      const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
-      const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
-      // console.log(destConfig)
-      // console.log(baseFee)
-      let value = Number(inputBridgeValue) - fee
-      if (fee < Number(destConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
-      } else if (fee > destConfig.MaximumSwapFee) {
-        value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
-      } else {
-        value = Number(inputBridgeValue) - fee - baseFee
-      }
-      if (value && Number(value) && Number(value) > 0) {
-        return thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
-      }
-      return ''
-    } else {
-      return ''
-    }
-  }, [inputBridgeValue, destConfig])
+  // const outputBridgeValue = useMemo(() => {
+  //   if (inputBridgeValue && destConfig) {
+  //     const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
+  //     const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
+  //     // console.log(destConfig)
+  //     // console.log(baseFee)
+  //     let value = Number(inputBridgeValue) - fee
+  //     if (fee < Number(destConfig.MinimumSwapFee)) {
+  //       value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+  //     } else if (fee > destConfig.MaximumSwapFee) {
+  //       value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
+  //     } else {
+  //       value = Number(inputBridgeValue) - fee - baseFee
+  //     }
+  //     if (value && Number(value) && Number(value) > 0) {
+  //       return thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
+  //     }
+  //     return ''
+  //   } else {
+  //     return ''
+  //   }
+  // }, [inputBridgeValue, destConfig])
+
+  const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isCrossBridge = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)

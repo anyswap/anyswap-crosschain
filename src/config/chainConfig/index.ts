@@ -218,6 +218,7 @@ const useChain:any = {
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
     COLX_MAIN_CHAINID,
+    TERRA_MAIN_CHAINID
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,

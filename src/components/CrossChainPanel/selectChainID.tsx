@@ -127,9 +127,9 @@ export default function SelectChainIdInputPanel({
     return false
   }, [bridgeConfig, selectChainId, chainId])
   // console.log(bridgeConfig)
-  // console.log(selectChainId)
   // console.log(destBalance)
   useEffect(() => {
+    // console.log(selectChainId)
     setDestBalance('')
     if (
       account
