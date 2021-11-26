@@ -9,10 +9,12 @@ import { isMobile } from 'react-device-detect'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
+import {useAccounts} from '../../hooks/useAccounts'
+import { useUserSelectChainId } from '../../state/user/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
-import { shortenAddress } from '../../utils'
+import { shortenAddress1 } from '../../utils'
 import { ButtonSecondary } from '../Button'
 
 import Identicon from '../Identicon'
@@ -123,9 +125,24 @@ function Web3StatusInner() {
   const { t } = useTranslation()
   const { account, connector, error } = useWeb3React()
 
-  const { ENSName } = useENSName(account ?? undefined)
+  const useAccount = useAccounts()
+  const [selectNetworkInfo] = useUserSelectChainId()
 
+  const { ENSName } = useENSName(account ?? undefined)
+  // console.log(ENSName)
   const allTransactions = useAllTransactions()
+
+  const viewAccount = useMemo(() => {
+    if (!selectNetworkInfo?.label) {
+      if (ENSName) {
+        return ENSName
+      } else {
+        return account
+      }
+    } else {
+      return useAccount
+    }
+  }, [ENSName, useAccount, account, selectNetworkInfo, useAccount])
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -137,7 +154,7 @@ function Web3StatusInner() {
   const hasPendingTransactions = !!pending.length
   const toggleWalletModal = useWalletModalToggle()
 
-  if (account) {
+  if (viewAccount) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
@@ -147,9 +164,9 @@ function Web3StatusInner() {
         ) : (
           <>{
             isMobile ? (
-              <Text>{ENSName || shortenAddress(account, 2)}</Text>
+              <Text>{ENSName || shortenAddress1(viewAccount, 2)}</Text>
             ) : (
-              <Text>{ENSName || shortenAddress(account)}</Text>
+              <Text>{ENSName || shortenAddress1(viewAccount)}</Text>
             )
           }
           </>

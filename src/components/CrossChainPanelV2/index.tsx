@@ -1,6 +1,7 @@
 import React from 'react'
 import CrossChainBTC from './crossChainBTC'
 import CrossChainEVM from './crossChainEVM'
+import CrossChainNonEVM from './crossChainNonEVM'
 
 import { useUserSelectChainId } from '../../state/user/hooks'
 
@@ -17,10 +18,17 @@ export default function CrossChain({
         <CrossChainBTC bridgeKey={bridgeKey} />
       </>
     )
+  } else if (selectNetworkInfo && selectNetworkInfo?.label !== 'BTC') {
+    return (
+      <>
+        <CrossChainNonEVM bridgeKey={bridgeKey} />
+      </>
+    )
+  } else {
+    return (
+      <>
+        <CrossChainEVM bridgeKey={bridgeKey} />
+      </>
+    )
   }
-  return (
-    <>
-      <CrossChainEVM bridgeKey={bridgeKey} />
-    </>
-  )
 }

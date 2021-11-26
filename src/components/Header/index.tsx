@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import Logo from '../../assets/svg/logo.svg'
@@ -8,8 +8,10 @@ import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
 import { useActiveWeb3React } from '../../hooks'
+import { useBaseBalances } from '../../hooks/useBaseBalance'
+import {useAccounts} from '../../hooks/useAccounts'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
-import { useETHBalances } from '../../state/wallet/hooks'
+// import { useETHBalances } from '../../state/wallet/hooks'
 
 import { ExternalLink } from '../../theme'
 
@@ -165,12 +167,41 @@ const VersionLinkBox = styled(ExternalLink)`
   font-weight:bold;
 `
 
-export default function Header() {
-  const { account, chainId } = useActiveWeb3React()
+function ViewAccountInfo () {
+  const { chainId } = useActiveWeb3React()
   const [selectNetworkInfo] = useUserSelectChainId()
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
+
+  const useAccount = useAccounts()
+  const baseBalance = useBaseBalances(useAccount, useChainId)
+
+  if (selectNetworkInfo?.label === 'BTC') {
+    return <></>
+  }
+  
+  return (
+    <AccountElement active={!!useAccount} style={{ pointerEvents: 'auto' }}>
+      {useAccount && baseBalance ? (
+        <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+          {Number(baseBalance)?.toFixed(2)} {config.getCurChainInfo(useChainId).symbol}
+        </BalanceText>
+      ) : null}
+      <Web3Status />
+    </AccountElement>
+  )
+}
+
+export default function Header() {
+  // const { account, chainId } = useActiveWeb3React()
+  // const [selectNetworkInfo] = useUserSelectChainId()
   // const { t } = useTranslation()
 
-  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  // const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark, toggleDarkMode] = useDarkModeManager()
   // console.log(userEthBalance)
   return (
@@ -188,7 +219,7 @@ export default function Header() {
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
-          {selectNetworkInfo && selectNetworkInfo?.label === 'BTC' ? '' : (
+          {/* {selectNetworkInfo && selectNetworkInfo?.label !== 'EVM' ? '' : (
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
@@ -197,7 +228,8 @@ export default function Header() {
               ) : null}
               <Web3Status />
             </AccountElement>
-          )}
+          )} */}
+          <ViewAccountInfo />
           <StyleDarkToggle
             onClick={() => {
               toggleDarkMode()

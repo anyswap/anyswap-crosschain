@@ -34,7 +34,7 @@ const registerList:any = {}
 
 // console.log(window?.navigator)
 // console.log(window)
-getUrlData('https://api.ipify.org/?format=json').then(res => console.log(res))
+// getUrlData('https://api.ipify.org/?format=json').then(res => console.log(res))
 export function recordsTxns ({
   hash,
   chainId,

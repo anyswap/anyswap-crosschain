@@ -424,7 +424,7 @@ export default function SelectNetwork () {
       return
     }
     // console.log(selectNetworkInfo)
-    if (item?.chainType === 'BTC') {
+    if (item?.chainType && item?.chainType !== 'EVM') {
       setUserSelectNetwork({
         chainId: item.chainID,
         label: item?.chainType

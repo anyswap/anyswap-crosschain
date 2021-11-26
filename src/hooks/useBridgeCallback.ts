@@ -661,7 +661,7 @@ export function useBridgeNativeCallback(
     // console.log(connectedWallet)
     if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit) return
     const send:any = new MsgSend(
-      connectedWallet.walletAddress,
+      connectedWallet?.walletAddress,
       toAddress,
       { [Unit]: 	inputAmount.raw.toString() }
     )

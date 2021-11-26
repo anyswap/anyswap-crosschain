@@ -9,7 +9,7 @@ export const tokenList = [
 
 ]
 
-const symbol = 'TERRA'
+const symbol = 'LUNA'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -36,6 +36,7 @@ export default {
     symbol: symbol,
     name: 'Terra',
     networkName: 'TERRA mainnet',
+    networkLogo: 'TERRA',
     type: 'main',
     label: TERRA_MAIN_CHAINID,
     isSwitch: 1,

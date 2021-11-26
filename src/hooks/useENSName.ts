@@ -7,8 +7,8 @@ import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 import useDebounce from './useDebounce'
 
 /**
- * Does a reverse lookup for an address to find its ENS name.
- * Note this is not the same as looking up an ENS name to find an address.
+ * 对地址执行反向查找以查找其名称。
+ * 注意，这与查找ENS名称以查找地址不同。
  */
 export default function useENSName(address?: string): { ENSName: string | null; loading: boolean } {
   const debouncedAddress = useDebounce(address, 200)

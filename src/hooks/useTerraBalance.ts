@@ -90,6 +90,32 @@ const useMantle = (): {
   }
 }
 
+export function useTerraBaseBalance () {
+  const connectedWallet = useConnectedWallet()
+  const { fetchQuery } = useMantle()
+  const getTerraBaseBalances = useCallback(async (): Promise<BalanceListType> => {
+    const fetchResult = await fetchQuery({
+      query: bankBalanceQuery,
+      variables: JSON.stringify({ address: connectedWallet?.walletAddress }),
+    })
+    const resultList: {
+      Amount: string
+      Denom: string
+    }[] = fetchResult?.BankBalancesAddress?.Result || []
+
+    if (_.some(resultList)) {
+      const list: BalanceListType = {}
+      _.forEach(resultList, (x) => {
+        list[x.Denom] = x.Amount
+      })
+      return list
+    } else {
+      return {}
+    }
+  }, [bankBalanceQuery, connectedWallet])
+  return { getTerraBaseBalances }
+}
+
 const useTerraBalance = (): {
   getTerraBalances: ({
     terraWhiteList,
