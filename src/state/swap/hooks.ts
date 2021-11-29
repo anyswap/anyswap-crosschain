@@ -179,17 +179,7 @@ export function useDerivedSwapInfo(chainId?:any): {
     [Field.OUTPUT]: { currencyId: outputCurrencyId, name: outputName, symbol: outputSymbol, decimals: outputDecimals, chainId: outputChainId },
     recipient
   } = useSwapState()
-  // console.log(typedValue)
-  // console.log(inputName)
-  // console.log(inputSymbol)
-  // console.log(inputDecimals)
-  // console.log(inputChainId)
   
-  // console.log(outputCurrencyId ? outputCurrencyId : config.swapInitToken)
-  // console.log(outputName)
-  // console.log(outputSymbol)
-  // console.log(outputDecimals)
-  // console.log(chainId)
   const inputCurrency = useFormatCurrency(inputChainId, inputCurrencyId, inputDecimals, inputName, inputSymbol)
   // console.log(inputCurrency)
   const outputCurrency = useFormatCurrency(outputChainId, outputCurrencyId ? outputCurrencyId : config.swapInitToken, outputDecimals, outputName, outputSymbol)
@@ -204,28 +194,12 @@ export function useDerivedSwapInfo(chainId?:any): {
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
-  // console.log(inputCurrencyId)
-  // console.log(parsedAmount)
-  // console.log(inputCurrency)
-  // console.log(outputCurrency)
+
   const bestTradeExactIn = useTradeExactIn(inputChainId, isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(outputChainId, inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
-  // console.log(bestTradeExactIn)
-  // console.log(bestTradeExactIn?.inputAmount?.toSignificant(6))
-  // console.log(bestTradeExactIn?.outputAmount?.toSignificant(6))
-  // console.log(bestTradeExactOut)
-  // console.log(bestTradeExactOut?.inputAmount?.toSignificant(6))
-  // console.log(bestTradeExactOut?.outputAmount?.toSignificant(6))
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
-  // console.log(v2Trade)
-  // console.log(isExactIn)
-  // console.log(bestTradeExactIn?.inputAmount?.raw?.toString())
-  // console.log(bestTradeExactIn?.outputAmount?.raw?.toString())
-  // console.log(bestTradeExactOut)
-  // console.log(relevantTokenBalances)
-  // console.log(relevantTokenBalances[0]?.raw?.toString())
-  // console.log(relevantTokenBalances[1]?.raw?.toString())
+
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
     [Field.OUTPUT]: relevantTokenBalances[1]
@@ -268,10 +242,7 @@ export function useDerivedSwapInfo(chainId?:any): {
   const [allowedSlippage] = useUserSlippageTolerance()
   // console.log(allowedSlippage)
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
-  // console.log(slippageAdjustedAmounts)
-  // console.log(slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT]?.raw?.toString() : '')
-  // console.log(slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.OUTPUT]?.raw?.toString() : '')
-  // console.log(slippageAdjustedAmounts['OUTPUT']?.raw?.toString())
+
   const slippageAdjustedAmountsV1 =
     v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage)
 

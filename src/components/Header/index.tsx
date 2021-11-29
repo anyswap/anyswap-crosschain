@@ -179,7 +179,7 @@ function ViewAccountInfo () {
 
   const useAccount = useAccounts()
   const baseBalance = useBaseBalances(useAccount, useChainId)
-
+  // console.log(baseBalance)
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
@@ -188,7 +188,7 @@ function ViewAccountInfo () {
     <AccountElement active={!!useAccount} style={{ pointerEvents: 'auto' }}>
       {useAccount && baseBalance ? (
         <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-          {Number(baseBalance)?.toFixed(2)} {config.getCurChainInfo(useChainId).symbol}
+          {baseBalance?.toSignificant(3)} {config.getCurChainInfo(useChainId).symbol}
         </BalanceText>
       ) : null}
       <Web3Status />

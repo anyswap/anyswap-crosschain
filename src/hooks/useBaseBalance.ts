@@ -1,11 +1,12 @@
 // import { useConnectedWallet } from '@terra-money/wallet-provider'
-
+// import { CurrencyAmount, JSBI, Fraction } from 'anyswap-sdk'
+import { JSBI, Fraction } from 'anyswap-sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useETHBalances } from '../state/wallet/hooks'
 import { useUserSelectChainId } from '../state/user/hooks'
 import useInterval from './useInterval'
 import {useTerraBaseBalance} from './useTerraBalance'
-import {fromWei} from '../utils/tools/tools'
+// import {fromWei} from '../utils/tools/tools'
 
 
 export function useBaseBalances (
@@ -36,8 +37,10 @@ export function useBaseBalances (
     // console.log(uncheckedAddresses)
     // console.log(userEthBalance)
     if (!selectNetworkInfo?.label) {
-      return userEthBalance?.toSignificant(3)
+      return userEthBalance
+    } else if (selectNetworkInfo?.label === 'TERRA') {
+      return balance?.uluna ? new Fraction(JSBI.BigInt(balance?.uluna), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6))) : undefined
     }
-    return balance?.uluna ? fromWei(balance?.uluna, 6) : ''
+    return undefined
   }, [balance, userEthBalance, selectNetworkInfo])
 }

@@ -676,12 +676,13 @@ export default function CrossChain() {
             // allBalances={allBalances}
           />
           {
-            account && chainId && isUnderlying && isDestUnderlying ? (
+            account && chainId && isUnderlying ? (
               <LiquidityPool
                 curChain={curChain}
-                destChain={destChain}
+                // destChain={destChain}
                 isUnderlying={isUnderlying}
-                isDestUnderlying={isDestUnderlying}
+                selectCurrency={selectCurrency}
+                // isDestUnderlying={isDestUnderlying}
               />
             ) : ''
           }
@@ -718,6 +719,17 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />
+          {
+            account && chainId && isDestUnderlying ? (
+              <LiquidityPool
+                // curChain={curChain}
+                destChain={destChain}
+                // isUnderlying={isUnderlying}
+                isDestUnderlying={isDestUnderlying}
+                selectCurrency={selectCurrency}
+              />
+            ) : ''
+          }
           {/* {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} />
           )} */}

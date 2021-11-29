@@ -190,7 +190,7 @@ export default function CrossChain() {
         setCurChain({
           chain: chainId,
           ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
-          bl: CC[selectCurrency?.address]?.balance
+          bl: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.balance : ''
         })
       }
       
@@ -206,7 +206,7 @@ export default function CrossChain() {
         setDestChain({
           chain: selectChain,
           ts: selectCurrency?.underlying ? DC[selectCurrency?.destChains[selectChain]?.underlying.address]?.ts : DC[selectCurrency?.destChains[selectChain].token]?.anyts,
-          bl: DC[selectCurrency?.destChains[selectChain].address]?.balance
+          bl: selectCurrency?.destChains[selectChain]?.underlying?.address ? DC[selectCurrency?.destChains[selectChain]?.underlying?.address]?.balance : ''
         })
       }
       // console.log(CC)
@@ -301,9 +301,6 @@ export default function CrossChain() {
   }, [isNativeToken, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
-    // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-    // console.log(destConfig)
-    // console.log(destChain)
     if (
       account
       && destConfig
@@ -608,12 +605,13 @@ export default function CrossChain() {
             // allBalances={allBalances}
           />
           {
-            account && chainId && isUnderlying && isDestUnderlying ? (
+            account && chainId && isUnderlying ? (
               <LiquidityPool
                 curChain={curChain}
-                destChain={destChain}
+                // destChain={destChain}
                 isUnderlying={isUnderlying}
-                isDestUnderlying={isDestUnderlying}
+                selectCurrency={selectCurrency}
+                // isDestUnderlying={isDestUnderlying}
               />
             ) : ''
           }
@@ -669,6 +667,19 @@ export default function CrossChain() {
             isNativeToken={isNativeToken}
             selectChainList={selectChainList}
           />
+
+          {
+            account && chainId && isDestUnderlying ? (
+              <LiquidityPool
+                // curChain={curChain}
+                destChain={destChain}
+                // isUnderlying={isUnderlying}
+                isDestUnderlying={isDestUnderlying}
+                selectCurrency={selectCurrency}
+              />
+            ) : ''
+          }
+
           {swapType == 'swap' ? '' : (
             <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} />
           )}
@@ -686,27 +697,32 @@ export default function CrossChain() {
                   <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
                 ) : (
                   !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                    <ButtonConfirmed
-                      onClick={() => {
-                        // onDelay()
-                        // approveCallback()
-                        setModalTipOpen(true)
-                      }}
-                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                      width="48%"
-                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                      // confirmed={approval === ApprovalState.APPROVED}
-                    >
-                      {approval === ApprovalState.PENDING ? (
-                        <AutoRow gap="6px" justify="center">
-                          {t('Approving')} <Loader stroke="white" />
-                        </AutoRow>
-                      ) : approvalSubmitted ? (
-                        t('Approved')
-                      ) : (
-                        t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
-                      )}
-                    </ButtonConfirmed>
+                    <>
+                      <ButtonConfirmed
+                        onClick={() => {
+                          // onDelay()
+                          // approveCallback()
+                          setModalTipOpen(true)
+                        }}
+                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                        width="45%"
+                        altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                        // confirmed={approval === ApprovalState.APPROVED}
+                      >
+                        {approval === ApprovalState.PENDING ? (
+                          <AutoRow gap="6px" justify="center">
+                            {t('Approving')} <Loader stroke="white" />
+                          </AutoRow>
+                        ) : approvalSubmitted ? (
+                          t('Approved')
+                        ) : (
+                          t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
+                        )}
+                      </ButtonConfirmed>
+                      <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
+                        {t('swap')}
+                      </ButtonConfirmed>
+                    </>
                   ) : (
                     <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                       setModalTipOpen(true)

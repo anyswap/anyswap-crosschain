@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
 import TokenLogo from '../TokenLogo'
 
@@ -43,11 +44,12 @@ export const LiquidityView = styled.div`
 `
 
 interface LiquidityPoolProps {
-  curChain: any
-  destChain: any
-  isUnderlying: any
-  isDestUnderlying: any
+  curChain?: any
+  destChain?: any
+  isUnderlying?: any
+  isDestUnderlying?: any
   isViewAll?: any
+  selectCurrency?: any
 }
 
 export default function LiquidityPool ({
@@ -55,11 +57,13 @@ export default function LiquidityPool ({
   destChain,
   isUnderlying,
   isDestUnderlying,
-  isViewAll
+  isViewAll,
+  selectCurrency
 }: LiquidityPoolProps) {
 
   const { t } = useTranslation()
 
+  // console.log(curChain)
   // console.log(destChain)
   return (
     <>
@@ -67,24 +71,43 @@ export default function LiquidityPool ({
         {t('pool') + ': '}
         {
           curChain && (isUnderlying || isViewAll) ? (
-            <div className='item'>
-              <span className="label">
-                <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
-                {config.getCurChainInfo(curChain.chain).name}:
-              </span>
-              <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) : '0.00'}</span>
-            </div>
+            <>
+              <div className='item'>
+                <span className="label">
+                  <TokenLogo symbol={config.getCurChainInfo(curChain.chain).networkLogo ?? config.getCurChainInfo(curChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
+                  {config.getCurChainInfo(curChain.chain).name + ' ' + t('pool')}:
+                </span>
+                <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+              </div>
+              {/* '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' */}
+              <NavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
+                <div className='item'>
+                  <span className="label">
+                    {t('yourPoolShare')}:
+                  </span>
+                  <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + selectCurrency?.underlying?.symbol : '0.00'}</span>
+                </div>
+              </NavLink>
+            </>
           ) : ''
         }
         {
           destChain && (isDestUnderlying || isViewAll) ? (
-            <div className='item'>
-              <span className="label">
-                <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
-                {config.getCurChainInfo(destChain.chain).name}:
-              </span>
-              <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) : '0.00'}</span>
-            </div>
+            <>
+              <div className='item'>
+                <span className="label">
+                  <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
+                  {config.getCurChainInfo(destChain.chain).name + ' ' + t('pool')}:
+                </span>
+                <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+              </div>
+              <div className='item'>
+                <span className="label">
+                {t('yourPoolShare')}:
+                </span>
+                <span className='cont'>{destChain.bl ? thousandBit(destChain.bl, 2) + ' ' + selectCurrency?.underlying?.symbol : '0.00'}</span>
+              </div>
+            </>
           ) : ''
         }
       </LiquidityView>

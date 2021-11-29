@@ -642,15 +642,16 @@ export default function CrossChain({
           allTokens={allTokensList}
         />
         {
-          account && useChainId && isUnderlying && isDestUnderlying ? (
-            <LiquidityPool
-              curChain={curChain}
-              destChain={destChain}
-              isUnderlying={isUnderlying}
-              isDestUnderlying={isDestUnderlying}
-            />
-          ) : ''
-        }
+            account && chainId && isUnderlying ? (
+              <LiquidityPool
+                curChain={curChain}
+                // destChain={destChain}
+                isUnderlying={isUnderlying}
+                selectCurrency={selectCurrency}
+                // isDestUnderlying={isDestUnderlying}
+              />
+            ) : ''
+          }
 
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
@@ -710,6 +711,17 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
+        {
+          account && chainId && isDestUnderlying ? (
+            <LiquidityPool
+              // curChain={curChain}
+              destChain={destChain}
+              // isUnderlying={isUnderlying}
+              isDestUnderlying={isDestUnderlying}
+              selectCurrency={selectCurrency}
+            />
+          ) : ''
+        }
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
             <AddressInputPanel id="recipient" value={recipient} onChange={setRecipient} selectChainId={selectChain} />
