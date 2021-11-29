@@ -741,24 +741,29 @@ export default function CrossChain({
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                  <ButtonConfirmed
-                    onClick={() => {
-                      setModalTipOpen(true)
-                    }}
-                    disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                    width="48%"
-                    altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                  >
-                    {approval === ApprovalState.PENDING ? (
-                      <AutoRow gap="6px" justify="center">
-                        {t('Approving')} <Loader stroke="white" />
-                      </AutoRow>
-                    ) : approvalSubmitted ? (
-                      t('Approved')
-                    ) : (
-                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChainId)
-                    )}
-                  </ButtonConfirmed>
+                  <>
+                    <ButtonConfirmed
+                      onClick={() => {
+                        setModalTipOpen(true)
+                      }}
+                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                      width="48%"
+                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                    >
+                      {approval === ApprovalState.PENDING ? (
+                        <AutoRow gap="6px" justify="center">
+                          {t('Approving')} <Loader stroke="white" />
+                        </AutoRow>
+                      ) : approvalSubmitted ? (
+                        t('Approved')
+                      ) : (
+                        t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChainId)
+                      )}
+                    </ButtonConfirmed>
+                    <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
+                        {t('swap')}
+                      </ButtonConfirmed>
+                  </>
                 ) : (
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                     setModalTipOpen(true)
