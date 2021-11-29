@@ -356,17 +356,21 @@ export function Option ({
               }}/>
             </OptionCardLeft1>
           </div>
-          <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
-            const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
-            const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
-            const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
-            const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
-            if (htmlNameNode) htmlNameNode.style.display = 'none'
-            if (htmlNameNode1) htmlNameNode1.style.display = 'none'
-            if (htmlUrlNode) htmlUrlNode.style.display = 'block'
-            if (htmlUrlNode1) htmlUrlNode1.style.display = 'block'
-            e.stopPropagation()
-          }}></StyledMenuIcon>
+          {
+            item.nodeRpc ? (
+              <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
+                const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
+                const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
+                const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
+                const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
+                if (htmlNameNode) htmlNameNode.style.display = 'none'
+                if (htmlNameNode1) htmlNameNode1.style.display = 'none'
+                if (htmlUrlNode) htmlUrlNode.style.display = 'block'
+                if (htmlUrlNode1) htmlUrlNode1.style.display = 'block'
+                e.stopPropagation()
+              }}></StyledMenuIcon>
+            ) : ''
+          }
           {viewLoading ? <LoaderIcon></LoaderIcon> : (
             <CheckSquareIcon id={'chain_list_tick_' + curChainId} onClick={e => {
               setViewLoading(true)
