@@ -921,19 +921,11 @@ export default function CrossChain() {
                 isUnderlying={isUnderlying}
                 isDestUnderlying={isDestUnderlying}
                 isViewAll={true}
+                selectCurrency={selectCurrency}
               />
             ) : ''
           }
 
-          {/* <AutoRow justify="center" style={{ padding: '0 1rem' }}>
-            <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
-              // toggleNetworkModal()
-              
-              changeNetwork(selectChain)
-            }}>
-              <ArrowDown size="16" color={theme.text2} />
-            </ArrowWrapper>
-          </AutoRow> */}
           <AutoRow justify="center" style={{ padding: '0 1rem' }}>
             <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
               // toggleNetworkModal()

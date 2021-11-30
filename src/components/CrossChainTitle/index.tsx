@@ -45,9 +45,9 @@ export default function CrossChain() {
       arr =  [
         {
           name: t('bridge'),
-          path: '/mergeswap',
+          path: '/v2/mergeswap',
           // regex: /[\/mergeswap | \/bridge]/,
-          regex: /\/mergeswap/,
+          regex: /\/v2\/mergeswap/,
           iconUrl: require('../../assets/images/icon/deposit.svg'),
           iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
         }
