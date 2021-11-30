@@ -726,7 +726,7 @@ export default function CrossChain() {
                 destChain={destChain}
                 // isUnderlying={isUnderlying}
                 isDestUnderlying={isDestUnderlying}
-                selectCurrency={selectCurrency}
+                selectCurrency={destConfig}
               />
             ) : ''
           }

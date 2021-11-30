@@ -65,6 +65,7 @@ export default function LiquidityPool ({
 
   // console.log(curChain)
   // console.log(destChain)
+  // console.log(selectCurrency)
   return (
     <>
       <LiquidityView>
@@ -78,21 +79,27 @@ export default function LiquidityPool ({
                   {config.getCurChainInfo(curChain.chain).name + ' ' + t('pool')}:
                 </span>
                 {isViewAll ? (
-                  <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+                  <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
                 ) : (
                   <NavLink to={'/pool'}>
-                    <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+                    <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
                   </NavLink>
                 )}
               </div>
               {isViewAll ? '' : (
-                <div className='item' title={"You can click to remove " + selectCurrency?.underlying?.symbol + " from pool."}>
+                <div className='item' title={"You can click to remove " + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) + " from pool."}>
                   <span className="label">
                     {t('yourPoolShare')}:
                   </span>
-                  <NavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
-                    <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + selectCurrency?.underlying?.symbol : '0.00'}</span>
-                  </NavLink>
+                  {
+                    curChain.bl ? (
+                      <NavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
+                        <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : 'Unlimited'}</span>
+                      </NavLink>
+                    ) : (
+                      <span className='cont'>Unlimited</span>
+                    )
+                  }
                 </div>
               )}
             </>
@@ -106,14 +113,14 @@ export default function LiquidityPool ({
                   <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
                   {config.getCurChainInfo(destChain.chain).name + ' ' + t('pool')}:
                 </span>
-                <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+                <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
               </div>
               {isViewAll ? '' : (
                 <div className='item' title={'Please switch network to ' + config.getCurChainInfo(destChain.chain).name + '.'}>
                   <span className="label">
                   {t('yourPoolShare')}:
                   </span>
-                  <span className='cont'>{destChain.bl ? thousandBit(destChain.bl, 2) + ' ' + selectCurrency?.underlying?.symbol : '0.00'}</span>
+                  <span className='cont'>{destChain.bl ? thousandBit(destChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : 'Unlimited'}</span>
                 </div>
               )}
             </>

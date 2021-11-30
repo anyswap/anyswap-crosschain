@@ -18,7 +18,7 @@ export default function CrossChain({
         <CrossChainBTC bridgeKey={bridgeKey} />
       </>
     )
-  } else if (selectNetworkInfo && selectNetworkInfo?.label !== 'BTC') {
+  } else if (selectNetworkInfo?.label && selectNetworkInfo?.label !== 'BTC') {
     return (
       <>
         <CrossChainNonEVM bridgeKey={bridgeKey} />

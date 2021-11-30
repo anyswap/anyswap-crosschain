@@ -221,7 +221,7 @@ export default function CrossChain({
         setCurChain({
           chain: useChainId,
           ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
-          bl: CC[selectCurrency?.address]?.balance
+          bl: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.balance : ''
         })
       }
       
@@ -233,11 +233,12 @@ export default function CrossChain({
         destConfig.address
       )
       // console.log(selectCurrency)
+      // console.log(DC)
       if (DC) {
         setDestChain({
           chain: selectChain,
           ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
-          bl: DC[destConfig?.address]?.balance
+          bl: destConfig?.underlying ? DC[destConfig?.underlying.address]?.balance : ''
         })
       }
       // console.log(CC)
@@ -718,7 +719,7 @@ export default function CrossChain({
               destChain={destChain}
               // isUnderlying={isUnderlying}
               isDestUnderlying={isDestUnderlying}
-              selectCurrency={selectCurrency}
+              selectCurrency={destConfig}
             />
           ) : ''
         }
