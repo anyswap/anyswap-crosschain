@@ -631,6 +631,7 @@ export default function CrossChain({
           disableCurrencySelect={false}
           showMaxButton={true}
           isViewNetwork={true}
+          customChainId={useChainId}
           onOpenModalView={(value) => {
             // console.log(value)
             setModalOpen(value)

@@ -34,11 +34,11 @@ import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
+// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
-import LiquidityPool from '../LiquidityPool'
+// import LiquidityPool from '../LiquidityPool'
 
 import {
   LogoBox,
@@ -52,7 +52,7 @@ import {
   outputValue
 } from './hooks'
 
-let intervalFN:any = ''
+// let intervalFN:any = ''
 
 export default function CrossChain({
   bridgeKey
@@ -86,23 +86,12 @@ export default function CrossChain({
   const [recipient, setRecipient] = useState<any>(account ?? '')
   const [swapType, setSwapType] = useState('swap')
   
-  const [intervalCount, setIntervalCount] = useState<number>(0)
+  // const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
-
-  const [curChain, setCurChain] = useState<any>({
-    chain: useChainId,
-    ts: '',
-    bl: ''
-  })
-  const [destChain, setDestChain] = useState<any>({
-    chain: config.getCurChainInfo(useChainId).bridgeInitChain,
-    ts: '',
-    bl: ''
-  })
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
@@ -162,59 +151,6 @@ export default function CrossChain({
     })
   }
 
-  useEffect(() => {
-    setDestChain('')
-  }, [selectChain, selectCurrency])
-
-  const getSelectPool = useCallback(async() => {
-    if (selectCurrency && useChainId) {
-      
-      const CC:any = await getNodeTotalsupply(
-        selectCurrency?.underlying?.address,
-        useChainId,
-        selectCurrency?.decimals,
-        account,
-        selectCurrency?.address
-      )
-      // console.log(CC)
-      // console.log(selectCurrency)
-      if (CC) {
-        setCurChain({
-          chain: useChainId,
-          ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
-          bl: CC[selectCurrency?.address]?.balance
-        })
-      }
-      
-      const DC:any = await getNodeTotalsupply(
-        destConfig.underlying?.address,
-        selectChain,
-        destConfig.decimals,
-        account,
-        destConfig.address
-      )
-      // console.log(selectCurrency)
-      if (DC) {
-        setDestChain({
-          chain: selectChain,
-          ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
-          bl: DC[destConfig?.address]?.balance
-        })
-      }
-      // console.log(CC)
-      // console.log(DC)
-      if (intervalFN) clearTimeout(intervalFN)
-      intervalFN = setTimeout(() => {
-        setIntervalCount(intervalCount + 1)
-      }, 1000 * 10)
-    }
-  }, [selectCurrency, useChainId, account, selectChain, intervalCount, destConfig])
-
-
-  useEffect(() => {
-    getSelectPool()
-  }, [getSelectPool])
-
   const { wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
     destConfig.DepositAddress,
@@ -246,15 +182,10 @@ export default function CrossChain({
       && inputBridgeValue
       && !isWrapInputError
       && isAddr
-      && (
-        (isDestUnderlying && destChain)
-        || (!isDestUnderlying && !destChain)
-      )
     ) {
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
       ) {
         return true
       } else {
@@ -263,7 +194,7 @@ export default function CrossChain({
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError, selectChain])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, isWrapInputError, selectChain])
 
   const isInputError = useMemo(() => {
     if (
@@ -276,7 +207,6 @@ export default function CrossChain({
       if (
         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
         || isWrapInputError
         || isCrossBridge
       ) {
@@ -305,13 +235,11 @@ export default function CrossChain({
       )
     ) {
       return t('ExceedLimit')
-    } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
-      return t('nodestlr')
     } else if (wrapTerraType === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, isDestUnderlying, wrapTerraType, isRouter])
+  }, [t, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, wrapTerraType, isRouter])
 
   useEffect(() => {
     const t = selectCurrency && selectCurrency.chainId?.toString() === useChainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(useChainId).bridgeInitToken)
@@ -503,19 +431,8 @@ export default function CrossChain({
           isError={isInputError}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
+          customChainId={useChainId}
         />
-        {
-          account && chainId && isUnderlying ? (
-            <LiquidityPool
-              curChain={curChain}
-              // destChain={destChain}
-              isUnderlying={isUnderlying}
-              selectCurrency={selectCurrency}
-              // isDestUnderlying={isDestUnderlying}
-            />
-          ) : ''
-        }
-
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
             // toggleNetworkModal()
@@ -567,23 +484,12 @@ export default function CrossChain({
             setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
-          intervalCount={intervalCount}
+          // intervalCount={intervalCount}
           selectChainList={selectChainList}
           selectDestCurrency={selectDestCurrency}
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        {
-          account && chainId && isDestUnderlying ? (
-            <LiquidityPool
-              // curChain={curChain}
-              destChain={destChain}
-              // isUnderlying={isUnderlying}
-              isDestUnderlying={isDestUnderlying}
-              selectCurrency={destConfig}
-            />
-          ) : ''
-        }
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient') + '( ' + t('receiveTip') + ' )'} onChange={setRecipient} selectChainId={selectChain} />

@@ -277,7 +277,7 @@ export default function CrossChain({
           isError={false}
           hideBalance={true}
           isViewModal={modalOpen}
-          customChainId={selectNetworkInfo?.chainId}
+          customChainId={useChainId}
           // allBalances={allBalances}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
@@ -302,10 +302,6 @@ export default function CrossChain({
           }}
           selectChainId={selectChain}
           id="selectChainID"
-          // onOpenModalView={(value:any) => {
-          //   console.log(value)
-          //   setModalOpen(value)
-          // }}
           onCurrencySelect={(inputCurrency) => {
             setSelectDestCurrency(inputCurrency)
           }}

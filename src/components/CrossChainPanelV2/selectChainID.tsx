@@ -6,6 +6,7 @@ import { Currency } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
+import useInterval from '../../hooks/useInterval'
 
 import { RowBetween } from '../Row'
 import Column from '../Column'
@@ -81,7 +82,7 @@ export default function SelectChainIdInputPanel({
   // onOpenModalView,
   onCurrencySelect,
   bridgeConfig,
-  intervalCount,
+  // intervalCount,
   isNativeToken,
   isViewAllChain,
   selectChainList = [],
@@ -137,12 +138,6 @@ export default function SelectChainIdInputPanel({
       if (selectChainId?.toString() === useChainId?.toString()) {
         return bridgeConfig
       } else {
-        // if (
-        //   bridgeConfig?.destChains
-        //   && bridgeConfig?.destChains[selectChainId]
-        //   && bridgeConfig?.destChains[selectChainId][selectDestCurrency]
-        // ) {
-        //   return bridgeConfig?.destChains[selectChainId][selectDestCurrency]
         if (selectDestCurrency) {
           return selectDestCurrency
         } else {
@@ -153,14 +148,17 @@ export default function SelectChainIdInputPanel({
     return false
   }, [bridgeConfig, selectChainId, useChainId, selectDestCurrency])
 
-  useEffect(() => {
+  // useEffect(() => {
+  const getDestBalance = useCallback(() => {
+    // console.log(label)
+    // console.log(selectChainId)
     if (
       account
       && useChainId
       && bridgeConfig
       && selectChainId
       && !isNaN(selectChainId)
-      && selectNetworkInfo?.label !== 'BTC'
+      && !selectNetworkInfo?.label
     ) {
       let token:any = ''
       if (useChainId?.toString() === selectChainId?.toString()) {
@@ -183,10 +181,12 @@ export default function SelectChainIdInputPanel({
     } else {
       setDestBalance('')
     }
-  }, [account, useChainId, bridgeConfig, selectChainId, intervalCount, isNativeToken, destChainInfo])
+  }, [account, useChainId, bridgeConfig, selectChainId, isNativeToken, destChainInfo])
+
+  useInterval(getDestBalance, 1000 * 10)
 
   useEffect(() => {
-    setDestBalance('')
+    getDestBalance()
   }, [account, useChainId, bridgeConfig, selectChainId])
 
   return (

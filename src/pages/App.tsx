@@ -121,6 +121,14 @@ const Marginer = styled.div`
 // }
 
 export default function App() {
+  let initUrl = '/dashboard'
+  if (config.getCurConfigInfo().isOpenRouter) {
+    initUrl = '/router'
+  } else if (config.getCurConfigInfo().isOpenBridge) {
+    initUrl = '/bridge'
+  } else if (config.getCurConfigInfo().isOpenMerge) {
+    initUrl = '/v2/mergeswap'
+  }
   return (
     <Suspense fallback={null}>
       {/* <Route component={GoogleAnalyticsReporter} /> */}
@@ -175,7 +183,7 @@ export default function App() {
               }
 
               
-              <Redirect to={{ pathname: config.getCurConfigInfo().isOpenBridge ? (config.getCurConfigInfo().isOpenRouter ? '/router' : '/bridge') : '/dashboard' }} />
+              <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>
           <Marginer />
