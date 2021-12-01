@@ -97,7 +97,7 @@ export function useDestChainid (
           }
         }
       }
-      console.log('useChain', useChain)
+      // console.log('useChain', useChain)
       // setSelectChain(useChain)
       initChainId = useChain
       initChainList = arr

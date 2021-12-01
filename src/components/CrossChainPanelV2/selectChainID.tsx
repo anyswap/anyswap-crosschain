@@ -151,7 +151,7 @@ export default function SelectChainIdInputPanel({
   // useEffect(() => {
   const getDestBalance = useCallback(() => {
     // console.log(label)
-    console.log(selectChainId)
+    // console.log(selectChainId)
     if (
       account
       && useChainId

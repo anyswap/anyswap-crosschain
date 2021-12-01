@@ -12,7 +12,7 @@ import { useActiveWeb3React } from '../../hooks'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-import { useLocalToken } from '../../hooks/Tokens'
+// import { useLocalToken } from '../../hooks/Tokens'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -131,7 +131,7 @@ export default function CrossChain({
     return false
   }, [destConfig])
   
-  const formatCurrency = useLocalToken(selectNetworkInfo?.chainId ? undefined : selectCurrency)
+  // const formatCurrency = useLocalToken(selectNetworkInfo?.chainId ? undefined : selectCurrency)
 
   function onDelay () {
     setDelayAction(true)
@@ -153,8 +153,8 @@ export default function CrossChain({
     })
   }
 
-  const { wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
-    formatCurrency ? formatCurrency : undefined,
+  const { balance: terraBalance, wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
+    selectCurrency,
     destConfig.DepositAddress,
     inputBridgeValue,
     selectChain,
@@ -167,6 +167,10 @@ export default function CrossChain({
 
   const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
+  const useBalance = useMemo(() => {
+    return terraBalance?.toSignificant(3)
+  }, [terraBalance])
+  // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra) {
       return wrapInputErrorTerra
@@ -349,7 +353,7 @@ export default function CrossChain({
           onMax={(value) => {
             handleMaxInput(value)
           }}
-          currency={formatCurrency ? formatCurrency : selectCurrency}
+          currency={selectCurrency}
           disableCurrencySelect={false}
           showMaxButton={true}
           isViewNetwork={true}
@@ -363,6 +367,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
           customChainId={useChainId}
+          customBalance={useBalance}
         />
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {

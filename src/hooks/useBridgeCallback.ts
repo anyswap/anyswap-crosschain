@@ -1,5 +1,6 @@
-import { Currency } from 'anyswap-sdk'
-import { useMemo, useCallback } from 'react'
+
+import { Currency, JSBI, Fraction } from 'anyswap-sdk'
+import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -13,6 +14,8 @@ import { MsgSend } from '@terra-money/terra.js';
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
+
+import useTerraBalance from './useTerraBalance'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -644,17 +647,41 @@ export function useBridgeNativeCallback(
   Unit: string | undefined,
   srcChainid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
-): { wrapType: WrapType;onConnect?: undefined | (() => Promise<void>); execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { 
+  wrapType: WrapType;
+  onConnect?: undefined | (() => Promise<void>);
+  balance?: any,
+  execute?: undefined | (() => Promise<void>);
+  inputError?: string 
+} {
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
   const { post, connect } = useWallet()
   const addPopup = useAddPopup()
+  const {getTerraBalances} = useTerraBalance()
+
+  const [balance, setBalance] = useState<any>()
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
-  // const addTransaction = useTransactionAdder()
+
+  const fetchBalance = useCallback(() => {
+    if (Unit && connectedWallet) {
+      getTerraBalances({terraWhiteList: [{
+        token: Unit
+      }]}).then((res:any) => {
+        const bl = res[Unit] && inputCurrency ? new Fraction(JSBI.BigInt(res[Unit]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        setBalance(bl)
+      })
+    } else {
+      setBalance('')
+    }
+  }, [Unit, connectedWallet])
+  useEffect(() => {
+    fetchBalance()
+  }, [Unit, fetchBalance])
 
 
   const sendTx = useCallback(() => {
@@ -672,16 +699,25 @@ export function useBridgeNativeCallback(
   }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit])
 
   return useMemo(() => {
-    if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))
+    if (!chainId || !toAddress || !toChainID || !inputAmount) {
+      if (balance) {
+        return {
+          ...NOT_APPLICABLE,
+          balance
+        }
+      }
+      return NOT_APPLICABLE
+    }
     // console.log(typedValue)
-
-    // console.log(inputAmount?.raw?.toString())
-    // console.log(balance?.raw?.toString())
+    const sufficientBalance = typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+    // console.log(sufficientBalance)
     return {
       wrapType: !connectedWallet ? WrapType.NOCONNECT : WrapType.WRAP,
       onConnect: async () => {
         connect(ConnectType.CHROME_EXTENSION)
       },
+      balance,
       execute:
         inputAmount
           ? async () => {
@@ -724,7 +760,7 @@ export function useBridgeNativeCallback(
               }
             }
           : undefined,
-      inputError: undefined
+        inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance])
 }
