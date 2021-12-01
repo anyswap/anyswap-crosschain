@@ -12,6 +12,7 @@ import { ButtonLight } from '../../components/Button'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
+import { useUserSelectChainId } from '../../state/user/hooks'
 import AppBody from '../AppBody'
 
 import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
@@ -185,13 +186,23 @@ export default function PoolLists ({
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
-  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
+
+  const [selectNetworkInfo] = useUserSelectChainId()
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
+
+  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, useChainId)
   // const toggleNetworkModal = useToggleNetworkModal()
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
   // const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
+
 
 
   async function getOutChainInfo (destList:any) {
@@ -246,7 +257,7 @@ export default function PoolLists ({
       setPoolList(allToken)
       getOutChainInfo(destList)
     }
-  }, [chainId, allTokensList, intervalCount])
+  }, [useChainId, allTokensList, intervalCount])
 
   const tokenList = useMemo(() => {
     // console.log(poolData)
@@ -367,7 +378,7 @@ export default function PoolLists ({
         {listView}
         {
           item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (chainID?.toString() === chainId?.toString()) return ''
+            if (chainID?.toString() === useChainId?.toString()) return ''
             // const token = item.destChains[chainID]?.address
             // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
             const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
@@ -473,7 +484,7 @@ export default function PoolLists ({
         {listView}
         {
           item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (chainID?.toString() === chainId?.toString()) return ''
+            if (chainID?.toString() === useChainId?.toString()) return ''
             // const token = item.destChains[chainID]?.address
             // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
             const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
@@ -525,7 +536,7 @@ export default function PoolLists ({
       </>
     )
   }
-  // console.log(poolList)
+  // console.log(config.getCurConfigInfo().isOpenMerge)
   return (
     <AppBody>
       {
@@ -591,21 +602,21 @@ export default function PoolLists ({
                         <TokenTableCoinBox>
                           <TokenTableLogo>
                             <TokenLogo
-                              symbol={config.getBaseCoin(item?.symbol, chainId)}
+                              symbol={config.getBaseCoin(item?.symbol, useChainId)}
                               logoUrl={item.logoUrl}
                               size={'1.625rem'}
                             ></TokenLogo>
                           </TokenTableLogo>
                           <TokenNameBox>
-                            <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
-                            <p>{config.getBaseCoin(item?.name, chainId, 1)}</p>
+                            <h3>{config.getBaseCoin(item?.symbol, useChainId)}</h3>
+                            <p>{config.getBaseCoin(item?.name, useChainId, 1)}</p>
                           </TokenNameBox>
                         </TokenTableCoinBox>
                       </DBTd>
                       <DBTd className="l hideSmall">
                         <FlexSC>
-                          <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
-                            <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
+                          <ChainLogoBox key={index} title={config.getCurChainInfo(useChainId).symbol}>
+                            <TokenLogo symbol={config.getCurChainInfo(useChainId).networkLogo ?? config.getCurChainInfo(useChainId).symbol} size={'20px'}></TokenLogo>
                           </ChainLogoBox>
                           {
                             item.destChains && Object.keys(item.destChains).length > 0 ? (
@@ -637,8 +648,8 @@ export default function PoolLists ({
                     </tr>
                     <tr id={'chain_list_' + index} style={{display: 'none'}}>
                       <DBTd colSpan={4}>
-                        {viewTd2(item, chainId)}
-                        {viewCard2(item, chainId)}
+                        {viewTd2(item, useChainId)}
+                        {viewCard2(item, useChainId)}
                       </DBTd>
                     </tr>
                   </DBTbody>

@@ -53,9 +53,10 @@ export default function CrossChain() {
         }
       ]
     }
-    if (!selectNetworkInfo?.chainId) {
-      arr.push(poolObj)
-    }
+    // if (!selectNetworkInfo?.chainId) {
+    //   arr.push(poolObj)
+    // }
+    arr.push(poolObj)
     return arr
   }, [expertMode, selectNetworkInfo])
 

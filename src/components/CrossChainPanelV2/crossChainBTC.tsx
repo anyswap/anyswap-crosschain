@@ -27,9 +27,9 @@ import QRcode from '../QRcode'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-import config from '../../config'
+// import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
-import {selectNetwork} from '../../config/tools/methods'
+// import {selectNetwork} from '../../config/tools/methods'
 
 import {
   ListBox
@@ -115,20 +115,6 @@ export default function CrossChain({
     }
   }, [recipient, selectChain, destConfig, selectCurrency, inputBridgeValue])
 
-  function changeNetwork (chainID:any) {
-    selectNetwork(chainID).then((res: any) => {
-      if (res.msg === 'Error') {
-        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
-      } else {
-        if (selectCurrency?.chainId) {
-          // sessionStorage.setItem(SelectBridgeChainIdLabel, selectCurrency.chainId)
-          history.go(0)
-        }
-      }
-    })
-  }
-
-  // useEffect(() => {
   const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')
     if (recipient && selectCurrency && destConfig && selectChain) {
@@ -232,10 +218,7 @@ export default function CrossChain({
           allTokens={allTokensList}
         />
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
-          <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
-            // toggleNetworkModal()
-            changeNetwork(selectChain)
-          }}>
+          <ArrowWrapper clickable={false} style={{cursor:'pointer'}}>
             <ArrowDown size="16" color={theme.text2} />
           </ArrowWrapper>
         </AutoRow>
