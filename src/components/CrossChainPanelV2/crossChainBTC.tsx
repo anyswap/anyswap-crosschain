@@ -28,6 +28,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import config from '../../config'
+import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 
 import {
@@ -35,7 +36,10 @@ import {
 } from '../../pages/styled'
 
 import {
-  outputValue
+  outputValue,
+  useInitSelectCurrency,
+  useDestChainid,
+  useDestCurrency
 } from './hooks'
 
 export default function CrossChain({
@@ -68,22 +72,17 @@ export default function CrossChain({
     return chainId
   }, [selectNetworkInfo, chainId])
 
+  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+
   // const allTokensList:any = useMergeBridgeTokenList(useChainId)
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
+  const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
 
   useEffect(() => {
-    // console.log(bridgeKey)
-    // console.log(allTokensList)
-    if (allTokensList) {
-      let initToken = selectCurrency?.address && selectCurrency?.chainId === useChainId ? selectCurrency?.address : ''
-      for (const token in allTokensList) {
-        if (!initToken) initToken = token
-      }
-      if (initToken) {
-        setSelectCurrency(allTokensList[initToken])
-      }
-    }
-  }, [allTokensList, useChainId])
+    // console.log(initCurrency)
+    setSelectCurrency(initCurrency)
+  }, [initCurrency])
 
   const destConfig = useMemo(() => {
     if (selectDestCurrency) {
@@ -152,75 +151,25 @@ export default function CrossChain({
     }
   }, [recipient, selectCurrency, destConfig, selectChain])
 
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, useChainId)
+
   useEffect(() => {
     // console.log(selectCurrency)
-    if (selectCurrency) {
-      const arr = []
-      for (const c in selectCurrency?.destChains) {
-        if (c?.toString() === selectChain?.toString()) continue
-        arr.push(c)
-      }
-      // console.log(arr)
-      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(selectChain).bridgeInitChain
-      if (arr.length > 0) {
-        if (
-          !useChain
-          || (useChain && !arr.includes(useChain))
-        ) {
-          for (const c of arr) {
-            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-            useChain = c
-            break
-          }
-        }
-      }
-
-      setSelectChain(useChain)
-      setSelectChainList(arr)
-    }
-  }, [selectCurrency])
+    setSelectChain(initChainId)
+  }, [initChainId])
 
   useEffect(() => {
-    if (selectCurrency && selectChain) {
-      const dl:any = selectCurrency?.destChains[selectChain]
-      const formatDl:any = {}
-      for (const t in dl) {
-        formatDl[t] = {
-          ...dl[t],
-          logoUrl: selectCurrency?.logoUrl
-        }
-      }
-      // console.log(formatDl)
-      const destTokenList = Object.keys(formatDl)
-      let destToken = ''
-      if (destTokenList.length === 1) {
-        destToken = destTokenList[0]
-      } else if (destTokenList.length > 1) {
-        const typeArr = ['swapin', 'swapout']
-        let bridgeToken = '',
-            routerToken = '',
-            isRouterUnderlying = false
-        for (const t of destTokenList) {
-          if (typeArr.includes(formatDl[t].type)) {
-            bridgeToken = t
-          }
-          if (!typeArr.includes(formatDl[t].type)) {
-            routerToken = t
-            if (formatDl[t].underlying) {
-              isRouterUnderlying = true
-            }
-          }
-        }
-        if (isRouterUnderlying) {
-          destToken = routerToken
-        } else {
-          destToken = bridgeToken
-        }
-      }
-      setSelectDestCurrency(formatDl[destToken])
-      setSelectDestCurrencyList(formatDl)
-    }
-  }, [selectCurrency, selectChain])
+    setSelectChainList(initChainList)
+  }, [initChainList])
+  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectChain)
+
+  useEffect(() => {
+    setSelectDestCurrency(initDestCurrency)
+  }, [initDestCurrency])
+
+  useEffect(() => {
+    setSelectDestCurrencyList(initDestCurrencyList)
+  }, [initDestCurrencyList])
 
   return (
     <>

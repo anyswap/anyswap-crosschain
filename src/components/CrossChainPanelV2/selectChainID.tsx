@@ -151,14 +151,14 @@ export default function SelectChainIdInputPanel({
   // useEffect(() => {
   const getDestBalance = useCallback(() => {
     // console.log(label)
-    // console.log(selectChainId)
+    console.log(selectChainId)
     if (
       account
       && useChainId
       && bridgeConfig
       && selectChainId
       && !isNaN(selectChainId)
-      && !selectNetworkInfo?.label
+      // && !selectNetworkInfo?.label
     ) {
       let token:any = ''
       if (useChainId?.toString() === selectChainId?.toString()) {

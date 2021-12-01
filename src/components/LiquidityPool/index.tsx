@@ -79,10 +79,10 @@ export default function LiquidityPool ({
                   {config.getCurChainInfo(curChain.chain).name + ' ' + t('pool')}:
                 </span>
                 {isViewAll ? (
-                  <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
+                  <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
                 ) : (
                   <NavLink to={'/pool'}>
-                    <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
+                    <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
                   </NavLink>
                 )}
               </div>
@@ -94,10 +94,10 @@ export default function LiquidityPool ({
                   {
                     curChain.bl ? (
                       <NavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
-                        <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : 'Unlimited'}</span>
+                        <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : '0.00'}</span>
                       </NavLink>
                     ) : (
-                      <span className='cont'>Unlimited</span>
+                      <span className='cont'>0.00</span>
                     )
                   }
                 </div>
@@ -113,14 +113,14 @@ export default function LiquidityPool ({
                   <TokenLogo symbol={config.getCurChainInfo(destChain.chain).networkLogo ?? config.getCurChainInfo(destChain.chain)?.symbol} size={'1rem'} style={{marginRight: '5px'}}></TokenLogo>
                   {config.getCurChainInfo(destChain.chain).name + ' ' + t('pool')}:
                 </span>
-                <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : 'Unlimited'}</span>
+                <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
               </div>
               {isViewAll ? '' : (
                 <div className='item' title={'Please switch network to ' + config.getCurChainInfo(destChain.chain).name + '.'}>
                   <span className="label">
                   {t('yourPoolShare')}:
                   </span>
-                  <span className='cont'>{destChain.bl ? thousandBit(destChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : 'Unlimited'}</span>
+                  <span className='cont'>{destChain.bl ? thousandBit(destChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : '0.00'}</span>
                 </div>
               )}
             </>

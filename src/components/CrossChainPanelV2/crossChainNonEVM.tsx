@@ -49,7 +49,10 @@ import {
 } from '../../pages/styled'
 
 import {
-  outputValue
+  outputValue,
+  useInitSelectCurrency,
+  useDestChainid,
+  useDestCurrency
 } from './hooks'
 
 // let intervalFN:any = ''
@@ -127,8 +130,7 @@ export default function CrossChain({
     }
     return false
   }, [destConfig])
-  // console.log(isDestUnderlying)
-
+  
   const formatCurrency = useLocalToken(selectNetworkInfo?.chainId ? undefined : selectCurrency)
 
   function onDelay () {
@@ -241,37 +243,13 @@ export default function CrossChain({
     return t('swap')
   }, [t, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, wrapTerraType, isRouter])
 
+  const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
+
   useEffect(() => {
-    const t = selectCurrency && selectCurrency.chainId?.toString() === useChainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(useChainId).bridgeInitToken)
-
-    const list:any = {}
-    // console.log(bridgeKey)
-    // console.log(allTokensList)
-    if (Object.keys(allTokensList).length > 0) {
-      let useToken = selectCurrency ? selectCurrency?.address : ''
-      for (const token in allTokensList) {
-        if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
-        list[token] = {
-          ...allTokensList[token],
-        }
-        // console.log(selectCurrency)
-        if (!useToken || useToken.chainId?.toString() !== useChainId?.toString()) {
-          if (
-            t === token
-            || list[token]?.symbol?.toLowerCase() === t
-            || list[token]?.underlying?.symbol?.toLowerCase() === t
-          ) {
-            useToken = token
-          }
-        }
-      }
-      // console.log(list)
-      setSelectCurrency(list[useToken])
-    } else {
-      setSelectCurrency('')
-    }
-  }, [useChainId, allTokensList])
-
+    // console.log(initCurrency)
+    setSelectCurrency(initCurrency)
+  }, [initCurrency])
+  
   useEffect(() => {
     if (swapType == 'swap' && account && !isNaN(selectChain)) {
       setRecipient(account)
@@ -280,73 +258,26 @@ export default function CrossChain({
     }
   }, [account, swapType, selectChain, destConfig])
 
-  useEffect(() => {
-    // console.log(selectCurrency)
-    if (selectCurrency) {
-      const arr = []
-      for (const c in selectCurrency?.destChains) {
-        if (c?.toString() === useChainId?.toString()) continue
-        arr.push(c)
-      }
-      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(useChainId).bridgeInitChain
-      if (arr.length > 0) {
-        if (
-          !useChain
-          || (useChain && !arr.includes(useChain))
-        ) {
-          for (const c of arr) {
-            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-            useChain = c
-            break
-          }
-        }
-      }
-      setSelectChain(useChain)
-      setSelectChainList(arr)
-    }
-  }, [selectCurrency])
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, useChainId)
 
   useEffect(() => {
-    if (selectCurrency && selectChain) {
-      const dl:any = selectCurrency?.destChains[selectChain]
-      const formatDl:any = {}
-      for (const t in dl) {
-        formatDl[t] = {
-          ...dl[t],
-          logoUrl: selectCurrency?.logoUrl
-        }
-      }
-      // console.log(formatDl)
-      const destTokenList = Object.keys(formatDl)
-      let destToken = ''
-      if (destTokenList.length === 1) {
-        destToken = destTokenList[0]
-      } else if (destTokenList.length > 1) {
-        const typeArr = ['swapin', 'swapout']
-        let bridgeToken = '',
-            routerToken = '',
-            isRouterUnderlying = false
-        for (const t of destTokenList) {
-          if (typeArr.includes(formatDl[t].type)) {
-            bridgeToken = t
-          }
-          if (!typeArr.includes(formatDl[t].type)) {
-            routerToken = t
-            if (formatDl[t].underlying) {
-              isRouterUnderlying = true
-            }
-          }
-        }
-        if (isRouterUnderlying) {
-          destToken = routerToken
-        } else {
-          destToken = bridgeToken
-        }
-      }
-      setSelectDestCurrency(formatDl[destToken])
-      setSelectDestCurrencyList(formatDl)
-    }
-  }, [selectCurrency, selectChain])
+    // console.log(selectCurrency)
+    setSelectChain(initChainId)
+  }, [initChainId])
+
+  useEffect(() => {
+    setSelectChainList(initChainList)
+  }, [initChainList])
+
+  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectChain)
+
+  useEffect(() => {
+    setSelectDestCurrency(initDestCurrency)
+  }, [initDestCurrency])
+
+  useEffect(() => {
+    setSelectDestCurrencyList(initDestCurrencyList)
+  }, [initDestCurrencyList])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
