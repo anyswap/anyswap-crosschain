@@ -765,10 +765,17 @@ export default function CrossChain() {
       }
     }
     // console.log(wrapTerraType)
+    // console.log(WrapType)
     // console.log(selectCurrency)
     if (!account) {
       // console.log(1)
       buttonNode = <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+    } else if (
+      swapType === BridgeType.deposit
+      && selectCurrency?.specChainId === TERRA_CHAIN
+      && (wrapTerraType === WrapType.NOCONNECT || wrapTerraType === WrapType.NOT_APPLICABLE)
+    ) {
+        buttonNode = <ConnectTerraModal />
     } else if (
       !isNativeToken
       && selectCurrency
