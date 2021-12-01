@@ -197,13 +197,15 @@ export default function CrossChain() {
             useToken = token
           }
         }
-        if (['btc', 'ltc', 'block'].includes(list[token].symbol.toLowerCase())) {
+        if (['btc', 'ltc', 'block', 'ust'].includes(list[token].symbol.toLowerCase())) {
           initToken[list[token].symbol.toLowerCase()] = token
         }
       }
       if (!useToken) {
         if (swapType === BridgeType.deposit) {
-          if (initToken['btc']) {
+          if (initToken['ust']) {
+            useToken = initToken['ust']
+          } else if (initToken['btc']) {
             useToken = initToken['btc']
           } else if (initToken['ltc']) {
             useToken = initToken['ltc']
@@ -251,13 +253,32 @@ export default function CrossChain() {
     }
   }, [chainId, bridgeConfig, swapType])
 
+  // useEffect(() => {
+  //   console.log(connectedWallet)
+  //   console.log(swapType)
+  //   console.log(selectChain)
+  //   if (connectedWallet?.walletAddress && swapType === BridgeType.bridge && selectChain === TERRA_CHAIN) {
+  //     console.log(1)
+  //     setRecipient(connectedWallet?.walletAddress)
+  //   } else {
+  //     console.log(2)
+  //     setRecipient('')
+  //   }
+  // }, [connectedWallet, swapType, selectCurrency, selectChain])
+
   useEffect(() => {
-    if (connectedWallet?.walletAddress && swapType === BridgeType.bridge) {
-      setRecipient(connectedWallet?.walletAddress)
+    if (account && swapType !== BridgeType.deposit) {
+      if (destConfig?.type === 'swapin' || !isNaN(selectChain)) {
+        setRecipient(account)
+      } else if (connectedWallet?.walletAddress && selectChain === TERRA_CHAIN) {
+        setRecipient(connectedWallet?.walletAddress)
+      } else {
+        setRecipient('')
+      }
     } else {
       setRecipient('')
     }
-  }, [connectedWallet, swapType])
+  }, [account, destConfig, swapType, selectChain, connectedWallet])
   
   const isUnderlying = useMemo(() => {
     if (
@@ -649,17 +670,7 @@ export default function CrossChain() {
     }
   }, [account, selectCurrency, destConfig, chainId, swapType])
   
-  useEffect(() => {
-    if (account && swapType !== BridgeType.deposit) {
-      if (destConfig?.type === 'swapin' || !isNaN(selectChain)) {
-        setRecipient(account)
-      } else {
-        setRecipient('')
-      }
-    } else {
-      setRecipient('')
-    }
-  }, [account, destConfig, swapType, selectChain])
+  
 
   useEffect(() => {
     
