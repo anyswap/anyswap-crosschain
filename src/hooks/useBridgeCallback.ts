@@ -700,7 +700,7 @@ export function useBridgeNativeCallback(
 
   return useMemo(() => {
     // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))
-    if (!chainId || !toAddress || !toChainID || !inputAmount) {
+    if (!chainId || !toAddress || !toChainID || !inputAmount || !inputCurrency) {
       if (balance) {
         return {
           ...NOT_APPLICABLE,
@@ -710,8 +710,13 @@ export function useBridgeNativeCallback(
       return NOT_APPLICABLE
     }
     // console.log(typedValue)
-    // const sufficientBalance = typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
-    const sufficientBalance = true
+    let sufficientBalance = false
+    try {
+      sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+    } catch (error) {
+      console.log(error)
+    }
+    // const sufficientBalance = true
     // console.log(sufficientBalance)
     return {
       wrapType: !connectedWallet ? WrapType.NOCONNECT : WrapType.WRAP,

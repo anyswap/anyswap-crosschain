@@ -265,7 +265,9 @@ export default function CrossChain() {
   //     setRecipient('')
   //   }
   // }, [connectedWallet, swapType, selectCurrency, selectChain])
-
+  useEffect(() => {
+    setInputBridgeValue('')
+  }, [swapType])
   useEffect(() => {
     if (account && swapType !== BridgeType.deposit) {
       if (destConfig?.type === 'swapin' || !isNaN(selectChain)) {

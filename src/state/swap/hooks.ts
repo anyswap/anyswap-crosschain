@@ -109,7 +109,7 @@ export function tryParseAmount1(value?: string, decimals?: number): CurrencyAmou
   }
   try {
     const typedValueParsed = parseUnits(value, decimals).toString()
-    console.log(typedValueParsed)
+    // console.log(typedValueParsed)
     if (typedValueParsed !== '0') {
       return CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
     }
