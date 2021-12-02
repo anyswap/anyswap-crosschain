@@ -43,6 +43,13 @@ export const LiquidityView = styled.div`
   `};
 `
 
+const StyledNavLink = styled(NavLink)`
+  text-decoration:none;
+  &:hover {
+    text-decoration:revert;
+  }
+`
+
 interface LiquidityPoolProps {
   curChain?: any
   destChain?: any
@@ -81,9 +88,9 @@ export default function LiquidityPool ({
                 {isViewAll ? (
                   <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
                 ) : (
-                  <NavLink to={'/pool'}>
+                  <StyledNavLink to={'/pool'}>
                     <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
-                  </NavLink>
+                  </StyledNavLink>
                 )}
               </div>
               {isViewAll ? '' : (
@@ -93,9 +100,9 @@ export default function LiquidityPool ({
                   </span>
                   {
                     curChain.bl ? (
-                      <NavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
+                      <StyledNavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
                         <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : '0.00'}</span>
-                      </NavLink>
+                      </StyledNavLink>
                     ) : (
                       <span className='cont'>0.00</span>
                     )

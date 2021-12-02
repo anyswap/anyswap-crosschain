@@ -159,10 +159,12 @@ export function useTerraTokenBalances () {
 const useTerraBalance = (): {
   getTerraBalances: ({
     terraWhiteList,
+    account
   }: {
     terraWhiteList: {
       token: string
-    }[]
+    }[],
+    account?:any
   }) => Promise<BalanceListType>
 } => {
   // const loginUser = useRecoilValue(AuthStore.loginUser)
@@ -171,15 +173,18 @@ const useTerraBalance = (): {
 
   const getTerraTokenBalances = useCallback(async ({
     terraWhiteList,
+    account
   }: {
     terraWhiteList: { token: string }[]
+    account?:any
   }): Promise<BalanceListType> => {
-    if (!connectedWallet?.walletAddress) return {}
+    const useAccount = account ? account : connectedWallet?.walletAddress
+    if (!useAccount) return {}
     const aliasResult = getTokenBalanceQuery(
       Object.values(terraWhiteList).map(({ token }) => ({
         token,
         contract: token,
-        msg: { balance: { address: connectedWallet?.walletAddress } },
+        msg: { balance: { address: useAccount } },
       }))
     )
 
@@ -205,11 +210,12 @@ const useTerraBalance = (): {
   }, [connectedWallet, getTokenBalanceQuery])
   // console.log(connectedWallet)
   // const getTerraBankBalances = async (): Promise<BalanceListType> => {
-  const getTerraBankBalances = useCallback(async (): Promise<BalanceListType> => {
-    if (!connectedWallet?.walletAddress) return {}
+  const getTerraBankBalances = useCallback(async (account?:any): Promise<BalanceListType> => {
+    const useAccount = account ? account : connectedWallet?.walletAddress
+    if (!useAccount) return {}
     const fetchResult = await fetchQuery({
       query: bankBalanceQuery,
-      variables: JSON.stringify({ address: connectedWallet?.walletAddress }),
+      variables: JSON.stringify({ address: useAccount }),
     })
     const resultList: {
       Amount: string
@@ -229,11 +235,17 @@ const useTerraBalance = (): {
 
   const getTerraBalances = useCallback(async ({
     terraWhiteList,
+    account
   }: {
-    terraWhiteList: { token: string }[]
+    terraWhiteList: { token: string }[],
+    account?: any
   }): Promise<BalanceListType> => {
-    const bank = await getTerraBankBalances()
-    const token = await getTerraTokenBalances({ terraWhiteList })
+    const bank = await getTerraBankBalances(account)
+    const token = await getTerraTokenBalances({ terraWhiteList, account })
+    // console.log(account)
+    // console.log(terraWhiteList)
+    // console.log(bank)
+    // console.log(token)
     return {
       ...bank,
       ...token,

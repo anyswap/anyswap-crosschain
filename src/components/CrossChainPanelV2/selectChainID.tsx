@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React } from '../../hooks'
 import useInterval from '../../hooks/useInterval'
+import {useNonEVMDestBalance} from '../../hooks/useAllBalances'
 
 import { RowBetween } from '../Row'
 import Column from '../Column'
@@ -148,6 +149,10 @@ export default function SelectChainIdInputPanel({
     return false
   }, [bridgeConfig, selectChainId, useChainId, selectDestCurrency])
 
+
+  
+  const nonEVMbl = useNonEVMDestBalance(destChainInfo?.Unit, destChainInfo?.decimals, selectChainId)
+
   // useEffect(() => {
   const getDestBalance = useCallback(() => {
     // console.log(label)
@@ -189,6 +194,14 @@ export default function SelectChainIdInputPanel({
     getDestBalance()
   }, [account, useChainId, bridgeConfig, selectChainId])
 
+  const useBalance = useMemo(() => {
+    if (isNaN(selectChainId)) {
+      // console.log(nonEVMbl?.toSignificant(6))
+      return nonEVMbl?.toSignificant(6)
+    }
+    return destBalance
+  }, [destBalance, nonEVMbl, selectChainId])
+
   return (
     <>
       <SearchModal
@@ -215,7 +228,7 @@ export default function SelectChainIdInputPanel({
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
-                  {t('balanceTxt') + ': '}{destBalance !== '' ? thousandBit(destBalance, 2) : '-'}
+                  {t('balanceTxt') + ': '}{useBalance !== '' ? thousandBit(useBalance, 2) : '-'}
                 </TYPE.body>
               </RowBetween>
             </LabelRow>

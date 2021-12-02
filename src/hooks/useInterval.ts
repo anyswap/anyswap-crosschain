@@ -3,12 +3,12 @@ import { useEffect, useRef } from 'react'
 export default function useInterval(callback: () => void, delay: null | number, leading = true) {
   const savedCallback = useRef<() => void>()
 
-  // Remember the latest callback.
+  // 记住最新的回调。
   useEffect(() => {
     savedCallback.current = callback
   }, [callback])
 
-  // Set up the interval.
+  // 设置间隔。
   useEffect(() => {
     function tick() {
       const current = savedCallback.current

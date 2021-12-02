@@ -4,6 +4,7 @@ import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
+import { useConnectedWallet } from '@terra-money/wallet-provider'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -65,6 +66,7 @@ export default function CrossChain({
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const [selectNetworkInfo] = useUserSelectChainId()
+  const connectedWallet = useConnectedWallet()
   
   const useChainId = useMemo(() => {
     if (selectNetworkInfo?.chainId) {
@@ -335,6 +337,7 @@ export default function CrossChain({
   // console.log(selectCurrency)
   const isCrossBridge = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
+    // console.log(isAddr)
     if (
       account
       && destConfig
@@ -420,7 +423,11 @@ export default function CrossChain({
     if (swapType == 'swap' && account && !isNaN(selectChain)) {
       setRecipient(account)
     } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
-      setRecipient('')
+      if (selectChain === 'TERRA' && connectedWallet?.walletAddress) {
+        setRecipient(connectedWallet?.walletAddress)
+      } else {
+        setRecipient('')
+      }
     }
   }, [account, swapType, selectChain, destConfig])
 
@@ -658,7 +665,7 @@ export default function CrossChain({
         }
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient') + '( ' + t('receiveTip') + ' )'} onChange={setRecipient} selectChainId={selectChain} />
+            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient') + '( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))} />
           ) : ''
         }
       </AutoColumn>

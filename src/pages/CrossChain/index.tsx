@@ -95,7 +95,7 @@ export default function CrossChain() {
   // console.log(selectCurrency)
 
   const destConfig = useMemo(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (selectCurrency && selectCurrency?.destChains && selectCurrency?.destChains[selectChain]) {
       return selectCurrency?.destChains[selectChain]
     }

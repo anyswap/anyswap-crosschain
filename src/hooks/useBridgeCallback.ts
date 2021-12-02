@@ -710,7 +710,8 @@ export function useBridgeNativeCallback(
       return NOT_APPLICABLE
     }
     // console.log(typedValue)
-    const sufficientBalance = typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+    // const sufficientBalance = typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+    const sufficientBalance = true
     // console.log(sufficientBalance)
     return {
       wrapType: !connectedWallet ? WrapType.NOCONNECT : WrapType.WRAP,

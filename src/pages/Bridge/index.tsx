@@ -774,6 +774,7 @@ export default function CrossChain() {
       swapType === BridgeType.deposit
       && selectCurrency?.specChainId === TERRA_CHAIN
       && (wrapTerraType === WrapType.NOCONNECT || wrapTerraType === WrapType.NOT_APPLICABLE)
+      && !connectedWallet?.walletAddress
     ) {
         buttonNode = <ConnectTerraModal />
     } else if (
