@@ -4,7 +4,6 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 // import { WalletConnectConnector } from 'web3-react/walletconnect-connector'
 
 import { NetworkConnector } from './NetworkConnector'
-import { TerraConnector } from './TerraConnector'
 
 // import {spportChainArr} from '../config/chainConfig'
 import config from '../config'
@@ -40,12 +39,6 @@ export const walletconnect = new WalletConnectConnector({
 })
 
 export const network = new NetworkConnector({
-  // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
-  defaultChainId: NETWORK_CHAIN_ID,
-  urls: { ...spportChain }
-})
-
-export const terra = new TerraConnector({
   // urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
   defaultChainId: NETWORK_CHAIN_ID,
   urls: { ...spportChain }

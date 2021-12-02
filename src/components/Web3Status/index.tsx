@@ -227,7 +227,7 @@ export default function Web3Status() {
     } else {
       return useAccount
     }
-  }, [ENSName, useAccount, account, selectNetworkInfo, useAccount])
+  }, [ENSName, useAccount, account, selectNetworkInfo])
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
