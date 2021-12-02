@@ -6,6 +6,7 @@ import { Activity } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { css } from 'styled-components'
 import { isMobile } from 'react-device-detect'
+import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
@@ -124,7 +125,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 function Web3StatusInner() {
   const { t } = useTranslation()
   const { account, connector, error } = useWeb3React()
-
+  const { connect } = useWallet()
   const useAccount = useAccounts()
   const [selectNetworkInfo] = useUserSelectChainId()
 
@@ -142,7 +143,7 @@ function Web3StatusInner() {
     } else {
       return useAccount
     }
-  }, [ENSName, useAccount, account, selectNetworkInfo, useAccount])
+  }, [ENSName, useAccount, account, selectNetworkInfo])
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -182,8 +183,26 @@ function Web3StatusInner() {
       </Web3StatusError>
     )
   } else {
+    if (selectNetworkInfo?.label === 'TERRA') {
+      return (
+        <Web3StatusConnect id="connect-wallet"  onClick={() => {
+          // console.log(connect)
+          if (connect) {
+            try {
+              connect(ConnectType.CHROME_EXTENSION)
+            } catch (error) {
+              alert('Please install Terra Station!')
+            }
+          } else {
+            alert('Please install Terra Station!')
+          }
+        }} faded={!viewAccount}>
+          <Text>{t('ConnectToWallet')}</Text>
+        </Web3StatusConnect>
+      )
+    }
     return (
-      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
+      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!viewAccount}>
         <Text>{t('ConnectToWallet')}</Text>
       </Web3StatusConnect>
     )
@@ -195,6 +214,20 @@ export default function Web3Status() {
   const contextNetwork = useWeb3React(NetworkContextName)
 
   const { ENSName } = useENSName(account ?? undefined)
+  const useAccount = useAccounts()
+  const [selectNetworkInfo] = useUserSelectChainId()
+
+  const viewAccount = useMemo(() => {
+    if (!selectNetworkInfo?.label) {
+      if (ENSName) {
+        return ENSName
+      } else {
+        return account
+      }
+    } else {
+      return useAccount
+    }
+  }, [ENSName, useAccount, account, selectNetworkInfo, useAccount])
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -213,7 +246,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <WalletModal ENSName={viewAccount ? shortenAddress1(viewAccount) : undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </>
   )
 }

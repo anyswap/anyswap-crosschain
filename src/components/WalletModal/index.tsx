@@ -175,7 +175,7 @@ export default function WalletModal({
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
       connector.walletConnectProvider = undefined
     }
-    console.log(connector)
+    // console.log(connector)
     connector &&
       activate(connector, undefined, true).catch(error => {
         console.log(error)
