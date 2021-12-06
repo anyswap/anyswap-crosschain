@@ -2,7 +2,7 @@ import { ChainId, JSBI, Percent, Token, WETH } from 'anyswap-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 // import { injected, terra } from '../connectors'
-import { injected, walletconnect } from '../connectors'
+import { injected, walletconnect, walletlink } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -65,6 +65,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#4196FC',
     mobile: true
+  },
+  WALLET_LINK: {
+    connector: walletlink,
+    name: 'Coinbase Wallet',
+    iconName: 'coinbaseWalletIcon.svg',
+    description: 'Use Coinbase Wallet app on mobile device',
+    href: null,
+    color: '#315CF5'
   },
   // TERRA: {
   //   connector: terra,

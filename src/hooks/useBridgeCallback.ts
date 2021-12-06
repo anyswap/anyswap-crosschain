@@ -762,6 +762,11 @@ export function useBridgeNativeCallback(
                   }
                 }
               } catch (error) {
+                const err:any = error
+                if (err) {
+                  // console.log(err)
+                  alert(err.toString())
+                }
                 console.log('Could not swapout', error)
               }
             }
