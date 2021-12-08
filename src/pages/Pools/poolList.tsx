@@ -346,7 +346,7 @@ export default function PoolLists ({
           </div>
           <div className="dtil">
             <p className='p'>{t('yourPoolShare')}: {item.underlying ? thousandBit(bl, 2) : '0.00'}</p>
-            <p className='p'>{t('pool')}: {thousandBit(ts, 2)}</p>
+            <p className='p'>{t('pool')}: {item.underlying ? thousandBit(ts, 2) : 'Unlimited'}</p>
             {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
           </div>
           <div className="action">
@@ -396,7 +396,7 @@ export default function PoolLists ({
                 </div>
                 <div className="dtil">
                   <p className='p'>{t('yourPoolShare')}: {item?.destChains[chainID]?.underlying ? thousandBit(bl, 2) : '0.00'}</p>
-                  <p className='p'>{t('pool')}: {thousandBit(ts, 2)}</p>
+                  <p className='p'>{t('pool')}: {item?.destChains[chainID]?.underlying ? thousandBit(ts, 2) : 'Unlimited'}</p>
                   {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
                 </div>
                 <div className="action">
@@ -487,7 +487,7 @@ export default function PoolLists ({
             if (chainID?.toString() === useChainId?.toString()) return ''
             // const token = item.destChains[chainID]?.address
             // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
-            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
+            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : 'Unlimited'
             // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
             const bl = item.destChains[chainID].bl ? item.destChains[chainID].bl : '0.00'
             return (
