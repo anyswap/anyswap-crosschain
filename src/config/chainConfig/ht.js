@@ -149,7 +149,7 @@ const bridgeToken = {
     bridgeInitChain: '',
   },
   [VERSION.V1_1]: {
-    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitToken: '0xa71edc38d189767582c38a3145b5873052c3e47a',
     bridgeInitChain: '66',
   },
   [VERSION.V2_T1]: {
@@ -157,12 +157,12 @@ const bridgeToken = {
     bridgeInitChain: '97'
   },
   [VERSION.V5]: {
-    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitToken: '0xa71edc38d189767582c38a3145b5873052c3e47a',
     bridgeInitChain: '66',
     crossBridgeInitToken: 'HT'
   },
   [VERSION.V7]: {
-    bridgeInitToken: '0xaaae746b5e55d14398879312660e9fde07fbc1dc',
+    bridgeInitToken: '0xa71edc38d189767582c38a3145b5873052c3e47a',
     bridgeInitChain: '66',
     crossBridgeInitToken: 'HT'
   },
