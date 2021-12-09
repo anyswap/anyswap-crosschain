@@ -5,8 +5,10 @@ export const BodyWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  max-width: 1100px;
   padding: 2.5rem 70px;
   overflow:auto;
+  margin:auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 0rem 0px;
   `};
@@ -17,7 +19,8 @@ const BodyContent = styled.div`
   top: 70px;
   right: 0;
   bottom: 0;
-  left: 320px;
+  // left: 320px;
+  left: 0px;
   padding: 0rem 0px;
   overflow: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`

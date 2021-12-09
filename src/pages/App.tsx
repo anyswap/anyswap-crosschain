@@ -54,20 +54,20 @@ const HeaderWrapper = styled.div`
   z-index: 2;
 `
 
-const NavLeft = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  padding-top: 70px;
-  width: 320px;
-  box-shadow: ${({ theme }) => theme.contentShadow};
-  background: ${({ theme }) => theme.contentBg};
-  overflow: auto;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display:none;
-  `}
-`
+// const NavLeft = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   bottom: 0;
+//   padding-top: 70px;
+//   width: 320px;
+//   box-shadow: ${({ theme }) => theme.contentShadow};
+//   background: ${({ theme }) => theme.contentBg};
+//   overflow: auto;
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display:none;
+//   `}
+// `
 const NavBottom = styled.div`
   position: absolute;
   bottom: 0;
@@ -93,7 +93,7 @@ const BodyWrapper = styled.div`
   height: 100%;
   height: 100vh;
   padding-top: 70px;
-  padding-left: 320px;
+  // padding-left: 320px;
   position: relative;
   align-items: center;
   flex: 1;
@@ -139,9 +139,9 @@ export default function App() {
           <Header />
         </HeaderWrapper>
         <BodyWrapper>
-          <NavLeft>
+          {/* <NavLeft>
             <NavList />
-          </NavLeft>
+          </NavLeft> */}
           <Popups />
           <Polling />
           {/* <TopLevelModals /> */}

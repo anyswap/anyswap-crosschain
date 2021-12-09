@@ -2,8 +2,10 @@
 import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import Logo from '../../assets/svg/logo.svg'
-import LogoDark from '../../assets/svg/logo_white.svg'
+// import Logo from '../../assets/svg/logo.svg'
+// import LogoDark from '../../assets/svg/logo_white.svg'
+import Logo from '../../assets/svg/logo.png'
+import LogoDark from '../../assets/svg/logo_white.png'
 import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
@@ -19,6 +21,7 @@ import { ExternalLink } from '../../theme'
 import { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
 import SelectNetwork from './SelectNetwork'
+import NavListTop from './NavListTop'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
 
@@ -35,7 +38,8 @@ const HeaderFrame = styled.div`
   width: 100%;
   top: 0;
   position: relative;
-  padding: 0.875rem 1rem;
+  // padding: 0.875rem 1rem;
+  padding: 0rem 1rem;
   z-index: 2;
   height: 70px;
 
@@ -57,6 +61,7 @@ const HeaderControls = styled.div`
   align-items: center;
   justify-self: flex-end;
   height: 100%;
+  padding: 0.875rem 0rem;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: row;
@@ -85,6 +90,7 @@ const HeaderElement = styled.div`
 const HeaderRow = styled(RowFixed)`
   position: relative;
   height: 100%;
+  padding: 0.875rem 0rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
     width: 100%;
@@ -165,6 +171,7 @@ const VersionLinkBox = styled(ExternalLink)`
   margin-top: 17px;
   font-size: 18px;
   font-weight:bold;
+  display:none;
 `
 
 function ViewAccountInfo () {
@@ -216,19 +223,10 @@ export default function Header() {
           V1↗
         </VersionLinkBox>
       </HeaderRow>
+      <NavListTop />
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
-          {/* {selectNetworkInfo && selectNetworkInfo?.label !== 'EVM' ? '' : (
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-              {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  {userEthBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
-                </BalanceText>
-              ) : null}
-              <Web3Status />
-            </AccountElement>
-          )} */}
           <ViewAccountInfo />
           <StyleDarkToggle
             onClick={() => {

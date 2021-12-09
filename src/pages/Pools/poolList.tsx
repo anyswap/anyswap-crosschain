@@ -541,7 +541,9 @@ export default function PoolLists ({
     <AppBody>
       {
         config.getCurConfigInfo().isOpenMerge ? (
-          <CrossChainTitle />
+          <>
+            <CrossChainTitle />
+          </>
         ) : (
           <Title
             title={t('pool')}

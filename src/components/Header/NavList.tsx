@@ -9,8 +9,8 @@ import { Twitch } from 'react-feather'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
-
-import config from '../../config'
+import {LinkList} from './nav'
+// import config from '../../config'
 
 const HeaderLinks = styled.div`
   width: 100%;
@@ -304,7 +304,46 @@ export default function NavList() {
   return (
     <>
       <HeaderLinks>
-        <StyledNavLink id={`dashboard-nav-link`} to={'/dashboard'}>
+
+        {
+          LinkList.map((item, index) => {
+            if (!item.isView) return ''
+            if (!item.isOutLink) {
+              return (
+                <StyledNavLink
+                  key={index}
+                  to={item.path}
+                  isActive={(match, { pathname }) => {
+                    Boolean(match)
+                    || pathname.startsWith('/router')
+                    || pathname.startsWith('/swap')
+                    if (Boolean(match)) {
+                      return true
+                    } else if (item.isActive) {
+                      let isAc = false
+                      for (const k of item.isActive) {
+                        if (pathname.startsWith(k)) isAc = true; break;
+                      }
+                      return isAc
+                    } else {
+                      return false
+                    }
+                  }}
+                  className={(item.className ? item.className : '')} 
+                >
+                  {t(item.textKey)}
+                </StyledNavLink>
+              )
+            } else {
+              return (
+                <StyledNavLink1 key={index} href={item.path}>
+                  {t(item.textKey)}
+                </StyledNavLink1>
+              )
+            }
+          })
+        }
+        {/* <StyledNavLink id={`dashboard-nav-link`} to={'/dashboard'}>
           <div className="icon">
             <img src={require('../../assets/images/icon/application.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/application-purpl.svg')} className="on" alt="" />
@@ -428,7 +467,7 @@ export default function NavList() {
             <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
           </div>
           {t('explorer')}
-        </StyledNavLink1>
+        </StyledNavLink1> */}
       </HeaderLinks>
       <Tabs>
         {/* <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
