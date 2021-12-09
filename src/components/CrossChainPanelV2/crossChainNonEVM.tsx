@@ -80,7 +80,7 @@ export default function CrossChain({
   const toggleWalletModal = useWalletModalToggle()
   
 
-  const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
@@ -106,15 +106,7 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
-  // console.log(destConfig)
-  const isRouter = useMemo(() => {
-    // console.log(destConfig)
-    if (['swapin', 'swapout'].includes(destConfig?.type)) {
-      return false
-    }
-    return true
-  }, [destConfig])
-
+  
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -123,16 +115,12 @@ export default function CrossChain({
   }, [selectCurrency])
 
   const isDestUnderlying = useMemo(() => {
-    // console.log(destConfig)
-    // console.log(destConfig?.underlying)
     if (destConfig?.underlying) {
       return true
     }
     return false
   }, [destConfig])
   
-  // const formatCurrency = useLocalToken(selectNetworkInfo?.chainId ? undefined : selectCurrency)
-
   function onDelay () {
     setDelayAction(true)
   }
@@ -179,73 +167,83 @@ export default function CrossChain({
     }
   }, [wrapInputErrorTerra])
   // console.log(selectCurrency)
-  const isCrossBridge = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && !isWrapInputError
-      && isAddr
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      ) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      return true
-    }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, isWrapInputError, selectChain])
 
   const isInputError = useMemo(() => {
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && isCrossBridge
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || isWrapInputError
-        || isCrossBridge
-      ) {
-        // console.log(1)
-        return true
-      } else {
-        // console.log(2)
-        return false
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
       }
-    } else {
-      // console.log(3)
-      return false
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (inputBridgeValue !== '' || inputBridgeValue === '0') {
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (isWrapInputError) {
+        return {
+          state: 'Error',
+          tip: isWrapInputError
+        }
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      }
     }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isWrapInputError])
+    return undefined
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig])
+
+  const errorTip = useMemo(() => {
+    const isAddr = isAddress( recipient, selectChain)
+    if (isInputError) {
+      return isInputError
+    } else if (!inputBridgeValue) {
+      return {
+        state: 'Error',
+        tip: t('swap')
+      }
+    } else if (!Boolean(isAddr)) {
+      return {
+        state: 'Error',
+        tip: t('invalidRecipient')
+      }
+    }
+    return undefined
+  }, [isInputError, selectChain, recipient, inputBridgeValue])
+
+  const isCrossBridge = useMemo(() => {
+    if (errorTip) {
+      return true
+    }
+    return false
+  }, [errorTip])
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
-    if (isWrapInputError && inputBridgeValue) {
-      return isWrapInputError
-    } else if (
-      destConfig
-      && inputBridgeValue
-      && (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      )
-    ) {
-      return t('ExceedLimit')
+    if (errorTip) {
+      return errorTip?.tip
     } else if (wrapTerraType === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, wrapTerraType, isRouter])
+  }, [errorTip, t, wrapTerraType])
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
 

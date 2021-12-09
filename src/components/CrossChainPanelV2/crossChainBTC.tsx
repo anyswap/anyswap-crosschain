@@ -54,7 +54,7 @@ export default function CrossChain({
   const theme = useContext(ThemeContext)
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
-  const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
@@ -93,27 +93,67 @@ export default function CrossChain({
 
   const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
-  const isCrossBridge = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
-    if (
-      destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && Boolean(isAddr)
-      && selectChain
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      ) {
-        return true
-      } else {
-        return false
+  const isInputError = useMemo(() => {
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
       }
-    } else {
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (inputBridgeValue !== '' || inputBridgeValue === '0') {
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      }
+    }
+    return undefined
+  }, [selectCurrency, selectChain, inputBridgeValue, destConfig])
+
+  const errorTip = useMemo(() => {
+    const isAddr = isAddress( recipient, selectChain)
+    if (isInputError) {
+      return isInputError
+    } else if (!inputBridgeValue) {
+      return {
+        state: 'Error',
+        tip: t('swap')
+      }
+    } else if (!Boolean(isAddr)) {
+      return {
+        state: 'Error',
+        tip: t('invalidRecipient')
+      }
+    }
+    return undefined
+  }, [isInputError, selectChain, recipient, inputBridgeValue])
+
+  const isCrossBridge = useMemo(() => {
+    if (errorTip) {
       return true
     }
-  }, [recipient, selectChain, destConfig, selectCurrency, inputBridgeValue])
+    return false
+  }, [errorTip])
 
   const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')

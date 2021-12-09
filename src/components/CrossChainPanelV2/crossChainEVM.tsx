@@ -81,7 +81,7 @@ export default function CrossChain({
   const toggleWalletModal = useWalletModalToggle()
   
 
-  const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
@@ -335,82 +335,89 @@ export default function CrossChain({
     }
   }, [isNativeToken, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency, isRouter, wrapInputErrorCrossBridge])
   // console.log(selectCurrency)
-  const isCrossBridge = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
-    // console.log(isAddr)
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && !isWrapInputError
-      && isAddr
-      && (
-        (isDestUnderlying && destChain)
-        || (!isDestUnderlying && !destChain)
-      )
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-      ) {
-        return true
-      } else {
-        return false
+  const isInputError = useMemo(() => {
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
       }
-    } else {
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (inputBridgeValue !== '' || inputBridgeValue === '0') {
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (isWrapInputError) {
+        return {
+          state: 'Error',
+          tip: isWrapInputError
+        }
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (
+        (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
+        || (isDestUnderlying && !destChain)
+      ) {
+        return {
+          state: 'Error',
+          tip: t('insufficientLiquidity')
+        }
+      }
+    }
+    return undefined
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain])
+
+  const errorTip = useMemo(() => {
+    const isAddr = isAddress( recipient, selectChain)
+    if (isInputError) {
+      return isInputError
+    } else if (!inputBridgeValue) {
+      return {
+        state: 'Error',
+        tip: t('swap')
+      }
+    } else if (!Boolean(isAddr)) {
+      return {
+        state: 'Error',
+        tip: t('invalidRecipient')
+      }
+    }
+    return undefined
+  }, [isInputError, selectChain, recipient, inputBridgeValue])
+
+  const isCrossBridge = useMemo(() => {
+    if (errorTip) {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError, selectChain])
-
-  const isInputError = useMemo(() => {
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && isCrossBridge
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-        || isWrapInputError
-        || isCrossBridge
-      ) {
-        // console.log(1)
-        return true
-      } else {
-        // console.log(2)
-        return false
-      }
-    } else {
-      // console.log(3)
-      return false
-    }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isWrapInputError])
+    return false
+  }, [errorTip])
 
   const btnTxt = useMemo(() => {
-    // console.log(isWrapInputError)
-    if (isWrapInputError && inputBridgeValue) {
-      return isWrapInputError
-    } else if (
-      destConfig
-      && inputBridgeValue
-      && (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      )
-    ) {
-      return t('ExceedLimit')
-    } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
-      return t('nodestlr')
+    if (errorTip) {
+      return errorTip?.tip
     } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP || wrapTypeCrossBridge === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, wrapType, wrapTypeNative, wrapTypeUnderlying, isDestUnderlying, wrapTypeCrossBridge, isRouter])
+  }, [errorTip, wrapType, wrapTypeNative, wrapTypeUnderlying, wrapTypeCrossBridge])
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
 
@@ -583,16 +590,16 @@ export default function CrossChain({
           allTokens={allTokensList}
         />
         {
-            account && chainId && isUnderlying ? (
-              <LiquidityPool
-                curChain={curChain}
-                // destChain={destChain}
-                isUnderlying={isUnderlying}
-                selectCurrency={selectCurrency}
-                // isDestUnderlying={isDestUnderlying}
-              />
-            ) : ''
-          }
+          account && chainId && isUnderlying ? (
+            <LiquidityPool
+              curChain={curChain}
+              // destChain={destChain}
+              isUnderlying={isUnderlying}
+              selectCurrency={selectCurrency}
+              // isDestUnderlying={isDestUnderlying}
+            />
+          ) : ''
+        }
 
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {

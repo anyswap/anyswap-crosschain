@@ -20,6 +20,7 @@
   "pending": "处理中",
   "selectToken": "选择通证",
   "selectTokenId": "选择ID",
+  "selectChainId": "选择目标链",
   "selectTokenTip": "通过搜索令牌的名称或符号或在下面粘贴其地址来查找令牌。",
   "searchOrPaste": "搜索通证或粘贴地址",
   "searchOrPasteMobile": "名称、符号或地址",

@@ -20,6 +20,7 @@
   "pending": "Pending",
   "selectToken": "Select a token",
   "selectTokenId": "Select ID",
+  "selectChainId": "Select Chain",
   "selectTokenTip": "Find a token by searching for its name or symbol or by pasting its address below.",
   "searchOrPaste": "Search Token Name, Symbol, or Address",
   "searchOrPasteMobile": "Name, Symbol, or Address",

@@ -63,7 +63,7 @@ export default function SwapNative() {
 
   const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
 
-  const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
@@ -91,13 +91,6 @@ export default function SwapNative() {
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
-  const isUnderlying = useMemo(() => {
-    if (selectCurrency?.underlying) {
-      return true
-    }
-    return false
-  }, [selectCurrency])
-
   const destConfig = useMemo(() => {
     // console.log(selectCurrency)
     // console.log(selectChain)
@@ -106,6 +99,22 @@ export default function SwapNative() {
     }
     return false
   }, [selectCurrency, selectChain])
+
+  const isUnderlying = useMemo(() => {
+    if (selectCurrency?.underlying) {
+      return true
+    }
+    return false
+  }, [selectCurrency])
+
+  const isDestUnderlying = useMemo(() => {
+    // console.log(destConfig)
+    // console.log(destConfig?.underlying)
+    if (destConfig?.underlying) {
+      return true
+    }
+    return false
+  }, [destConfig])
 
   const useRouterToken = useMemo(() => {
     if (chainId?.toString() === selectChain?.toString()) {
@@ -239,120 +248,186 @@ export default function SwapNative() {
     }
   }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType])
 
-  const isCrossBridge = useMemo(() => {
-    // console.log(isWrapInputError)
-    if (
-      account
-      && selectCurrency
-      && inputBridgeValue
-      && Number(inputBridgeValue) > 0
-      && !isWrapInputError
-    ) {
-      // console.log(10)
-      if (
-        swapType === 'deposit'
-        && Number(inputBridgeValue) > 0
-      ) {
-        // console.log(11)
-        return false
-      } else if (swapType !== 'deposit') {
-        // console.log(12)
-        // console.log(poolInfo)
-        if (
-          openAdvance
-          && destChain
-          && chainId?.toString() !== selectChain?.toString()
-          && Number(destChain.ts) >= Number(inputBridgeValue)
-          && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
-          && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
-        ) {
-          // console.log(14)
-          return false
-        } else if (
-          openAdvance
-          && poolInfo
-          && chainId?.toString() === selectChain?.toString()
-          && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
-        ) {
-          // console.log(15)
-          return false
-        } else {
-          // console.log(16)
-          return true
-        }
-      } else {
-        // console.log(13)
-        return true
+  const isInputError = useMemo(() => {
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
       }
-    } else {
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (inputBridgeValue !== '' || inputBridgeValue === '0') {
+      
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (isWrapInputError) {
+        return {
+          state: 'Error',
+          tip: isWrapInputError
+        }
+      } else if (swapType !== 'deposit') {
+        if (chainId?.toString() !== selectChain?.toString()) {
+          // console.log(destChain)
+          if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+            return {
+              state: 'Error',
+              tip: t('ExceedLimit')
+            }
+          } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+            return {
+              state: 'Error',
+              tip: t('ExceedLimit')
+            }
+          } else if (
+            (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
+            || (isDestUnderlying && !destChain)
+          ) {
+            return {
+              state: 'Error',
+              tip: t('insufficientLiquidity')
+            }
+          }
+        } else if (
+          poolInfo
+          && chainId?.toString() === selectChain?.toString()
+          && Number(poolInfo.totalsupply) < Number(inputBridgeValue)
+        ) {
+          // console.log(poolInfo)
+          return {
+            state: 'Error',
+            tip: t('insufficientLiquidity')
+          }
+        }
+      }
+    }
+    return undefined
+  }, [chainId, swapType, selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, poolInfo])
+
+  const errorTip = useMemo(() => {
+    const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
+    if (isInputError) {
+      return isInputError
+    } else if (!inputBridgeValue) {
+      return {
+        state: 'Error',
+        tip: bt
+      }
+    }
+    return undefined
+  }, [isInputError, inputBridgeValue, swapType])
+
+  const isCrossBridge = useMemo(() => {
+    if (errorTip) {
       return true
     }
-  }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError, openAdvance, chainId, selectChain, destConfig])
+    return false
+  }, [errorTip])
 
-  const isInputError = useMemo(() => {
-    // console.log(destConfig)
-    // console.log(isCrossBridge)
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && isCrossBridge
-      && inputBridgeValue
-    ) {
-      // console.log(1)
-      if (Number(inputBridgeValue) <= 0) {
-        return true
-      } else if (
-        swapType !== 'deposit'
-        && openAdvance
-        && (
-          Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-          || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        )
-      ) {
-        // console.log(1)
-        return true
-      } else {
-        // console.log(2)
-        return false
-      }
-    } else {
-      // console.log(3)
-      return false
-    }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
+  // const isCrossBridge = useMemo(() => {
+  //   // console.log(isWrapInputError)
+  //   if (
+  //     account
+  //     && selectCurrency
+  //     && inputBridgeValue
+  //     && Number(inputBridgeValue) > 0
+  //     && !isWrapInputError
+  //   ) {
+  //     // console.log(10)
+  //     if (
+  //       swapType === 'deposit'
+  //       && Number(inputBridgeValue) > 0
+  //     ) {
+  //       // console.log(11)
+  //       return false
+  //     } else if (swapType !== 'deposit') {
+  //       // console.log(12)
+  //       // console.log(poolInfo)
+  //       if (
+  //         openAdvance
+  //         && destChain
+  //         && chainId?.toString() !== selectChain?.toString()
+  //         && Number(destChain.ts) >= Number(inputBridgeValue)
+  //         && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
+  //         && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
+  //       ) {
+  //         // console.log(14)
+  //         return false
+  //       } else if (
+  //         openAdvance
+  //         && poolInfo
+  //         && chainId?.toString() === selectChain?.toString()
+  //         && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
+  //       ) {
+  //         // console.log(15)
+  //         return false
+  //       } else {
+  //         // console.log(16)
+  //         return true
+  //       }
+  //     } else {
+  //       // console.log(13)
+  //       return true
+  //     }
+  //   } else {
+  //     return true
+  //   }
+  // }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError, openAdvance, chainId, selectChain, destConfig])
+
+  // const isInputError = useMemo(() => {
+  //   // console.log(destConfig)
+  //   // console.log(isCrossBridge)
+  //   if (
+  //     account
+  //     && destConfig
+  //     && selectCurrency
+  //     && isCrossBridge
+  //     && inputBridgeValue
+  //   ) {
+  //     // console.log(1)
+  //     if (Number(inputBridgeValue) <= 0) {
+  //       return true
+  //     } else if (
+  //       swapType !== 'deposit'
+  //       && openAdvance
+  //       && (
+  //         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+  //         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
+  //       )
+  //     ) {
+  //       // console.log(1)
+  //       return true
+  //     } else {
+  //       // console.log(2)
+  //       return false
+  //     }
+  //   } else {
+  //     // console.log(3)
+  //     return false
+  //   }
+  // }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
 
   // console.log(isInputError)
 
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
-    if (isWrapInputError && inputBridgeValue && Number(inputBridgeValue) > 0) {
-      return isWrapInputError
-    } else if (
-      swapType !== 'deposit'
-      && openAdvance
-      && destConfig
-      && inputBridgeValue
-      && (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      )
-    ) {
-      return t('ExceedLimit')
-    } else if (
-      swapType !== 'deposit'
-      && openAdvance
-      && destChain
-      && Number(destChain.ts) < Number(inputBridgeValue)
-    ) {
-      return t('nodestlr')
-    } else if (!inputBridgeValue) {
-      return bt
+    if (errorTip) {
+      return errorTip?.tip
     } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP) {
       return bt
     }
     return bt
-  }, [t, swapType, wrapType, wrapTypeUnderlying, isWrapInputError, inputBridgeValue])
+  }, [errorTip, t, wrapType, wrapTypeUnderlying, swapType, wrapTypeNative])
 
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig && chainId?.toString() !== selectChain?.toString()) {
@@ -667,7 +742,7 @@ export default function SwapNative() {
                       )}
                     </ButtonConfirmed>
                   ) : (
-                    <ButtonPrimary disabled={isCrossBridge || isInputError || delayAction} onClick={() => {
+                    <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                       onDelay()
                       if (openAdvance && chainId?.toString() !== selectChain?.toString()) {
                         console.log(1)

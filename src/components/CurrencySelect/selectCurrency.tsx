@@ -66,7 +66,7 @@ interface SelectCurrencyInputPanelProps {
   isViewModal?: boolean // 是否显示选择token弹框
   onOpenModalView?: (value: any) => void // 触发打开弹框方法，同isViewModal一起使用
   isViewNetwork?: boolean // 是否显示选择网络，若true，则在头部显示余额，否则余额显示在币种旁边
-  isError?: boolean // 是否输入错误
+  isError?: any // 是否输入错误
   isNativeToken?: boolean // 是否为原生native代币
   isViewMode?: boolean // 是否显示头部更多操作按钮
   modeConent?: any // 更多操作按钮内容，同isViewMode一起使用
