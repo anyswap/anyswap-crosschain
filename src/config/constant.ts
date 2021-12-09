@@ -71,6 +71,11 @@ function getUrlVersion (init:any) {
     version = VERSION.V6_1
   } else if (url.indexOf('https://nfttest.anyswap.exchange') === 0) {
     version = VERSION.V6
+  } else if (
+    url.indexOf('https://multichain.org') === 0
+    || url.indexOf('https://multichain.tools') === 0
+  ) {
+    version = VERSION.V7
   } else {
     version = init
   }
