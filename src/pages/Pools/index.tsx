@@ -651,7 +651,7 @@ export default function SwapNative() {
             inputType={{swapType, type: 'INPUT'}}
             // onlyUnderlying={true}
             isViewModal={modalOpen}
-            isError={isInputError}
+            isError={Boolean(isInputError)}
             // isViewMode={swapType === 'deposit' ? false : true}
             isViewMode={false}
             modeConent={{txt: openAdvance ? t('Simple') : t('Advance'), isFlag: openAdvance}}

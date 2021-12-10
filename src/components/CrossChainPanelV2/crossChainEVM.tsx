@@ -584,7 +584,7 @@ export default function CrossChain({
           }}
           isViewModal={modalOpen}
           id="selectCurrency"
-          isError={isInputError}
+          isError={Boolean(isInputError)}
           isNativeToken={isNativeToken}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
