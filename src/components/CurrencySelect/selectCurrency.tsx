@@ -33,7 +33,7 @@ import {
   Container,
   StyledTokenName,
   CurrencySelectBox,
-  HideSmallBox
+  // HideSmallBox
 } from './styleds'
 
 import SearchModal from './searchModal'
@@ -157,7 +157,7 @@ export default function SelectCurrencyInputPanel({
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType])
+  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect])
 
   const handleMax = useCallback(() => {
     if (onMax) {
@@ -218,16 +218,18 @@ export default function SelectCurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
                   >{modeConent.txt}</TYPE.body>
-                ) : (
-                  <TYPE.body
-                    color={theme.text2}
-                    fontWeight={500}
-                    fontSize={14}
-                    style={{ display: 'inline', cursor: 'pointer' }}
-                  >
-                    {t('balanceTxt') + ': ' + '-'}
-                  </TYPE.body>
-                )}
+                ) : ''
+                // (
+                //   <TYPE.body
+                //     color={theme.text2}
+                //     fontWeight={500}
+                //     fontSize={14}
+                //     style={{ display: 'inline', cursor: 'pointer' }}
+                //   >
+                //     {t('balanceTxt') + ': ' + '-'}
+                //   </TYPE.body>
+                // )
+                }
                 {account && showMaxButton && isViewNetwork ? (
                   <>
                     <TYPE.body
@@ -243,7 +245,7 @@ export default function SelectCurrencyInputPanel({
                     </TYPE.body>
                   </>
                 ) : (
-                  <HideSmallBox>
+                  <>
                     <TYPE.body
                       color={theme.text2}
                       fontWeight={500}
@@ -254,7 +256,9 @@ export default function SelectCurrencyInputPanel({
                         ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
-                  </HideSmallBox>
+                    {/* <HideSmallBox>
+                    </HideSmallBox> */}
+                  </>
                 )}
               </HeadterRightBox>
             </RowBetween>
@@ -318,7 +322,7 @@ export default function SelectCurrencyInputPanel({
               isViewNetwork ? (
                 <CurrencySelect
                   selected={true}
-                  onClick={() => {disableChainSelect ? '' : toggleNetworkModal()}}
+                  onClick={() => {toggleNetworkModal()}}
                   className="open-currency-select-button"
                 >
                   <Aligner>

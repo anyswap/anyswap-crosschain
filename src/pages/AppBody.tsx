@@ -15,12 +15,12 @@ export const BodyWrapper = styled.div`
 `
 
 const BodyContent = styled.div`
-  position: absolute;
-  top: 70px;
-  right: 0;
-  bottom: 0;
-  // left: 320px;
-  left: 0px;
+  // position: absolute;
+  // top: 70px;
+  // right: 0;
+  // bottom: 0;
+  // // left: 320px;
+  // left: 0px;
   padding: 0rem 0px;
   overflow: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`

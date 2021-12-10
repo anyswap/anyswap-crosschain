@@ -9,6 +9,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
+import {useAccounts} from '../../hooks/useAccounts'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -64,6 +65,7 @@ export default function CrossChain({
 }) {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
+  const useAccount = useAccounts()
   const { t } = useTranslation()
   const [selectNetworkInfo] = useUserSelectChainId()
   
@@ -156,7 +158,11 @@ export default function CrossChain({
   const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    return terraBalance?.toSignificant(3)
+    // console.log(terraBalance)
+    if (terraBalance) {
+      return terraBalance?.toSignificant(3)
+    }
+    return ''
   }, [terraBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
@@ -247,8 +253,8 @@ export default function CrossChain({
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
 
+  // console.log(useAccount)
   useEffect(() => {
-    // console.log(initCurrency)
     setSelectCurrency(initCurrency)
   }, [initCurrency])
   
@@ -317,7 +323,7 @@ export default function CrossChain({
             ) : ''
           }
           <BottomGrouping>
-            {!account ? (
+            {!useAccount ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
@@ -439,7 +445,7 @@ export default function CrossChain({
           </BottomGrouping>
         ) : (
           <BottomGrouping>
-            {!account ? (
+            {!useAccount ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
