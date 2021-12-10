@@ -218,7 +218,16 @@ export default function SelectCurrencyInputPanel({
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
                   >{modeConent.txt}</TYPE.body>
-                ) : ''}
+                ) : (
+                  <TYPE.body
+                    color={theme.text2}
+                    fontWeight={500}
+                    fontSize={14}
+                    style={{ display: 'inline', cursor: 'pointer' }}
+                  >
+                    {t('balanceTxt') + ': ' + '-'}
+                  </TYPE.body>
+                )}
                 {account && showMaxButton && isViewNetwork ? (
                   <>
                     <TYPE.body
@@ -341,7 +350,7 @@ export default function SelectCurrencyInputPanel({
                         </ExtraText>
                       </ErrorSpan>
                     ) : (
-                      ''
+                      t('balanceTxt') + ': ' + '-'
                     )
                   }
                 </ErrorSpanBox>
