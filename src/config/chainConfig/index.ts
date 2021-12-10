@@ -24,6 +24,7 @@ import cro, {CRO_MAIN_CHAINID} from './cro'
 import oeth, {OETH_MAIN_CHAINID} from './oeth'
 import tlos, {TLOS_MAIN_CHAINID} from './tlos'
 import terra, {TERRA_MAIN_CHAINID} from './terra'
+import fuse, {FUSE_MAIN_CHAINID} from './fuse'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -56,7 +57,8 @@ export const chainInfo:ConFig = {
   ...cro,
   ...oeth,
   ...tlos,
-  ...terra
+  ...terra,
+  ...fuse
 }
 
 const useChain:any = {
@@ -162,7 +164,8 @@ const useChain:any = {
     CELO_MAIN_CHAINID,
     CRO_MAIN_CHAINID,
     OETH_MAIN_CHAINID,
-    TLOS_MAIN_CHAINID
+    TLOS_MAIN_CHAINID,
+    FUSE_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
@@ -218,7 +221,8 @@ const useChain:any = {
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
     COLX_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID
+    TERRA_MAIN_CHAINID,
+    FUSE_MAIN_CHAINID
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
