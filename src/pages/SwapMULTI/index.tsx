@@ -97,15 +97,23 @@ export default function SwapMULTI () {
   const theme = useContext(ThemeContext)
   const addTransaction = useTransactionAdder()
 
+  const isSupport = useMemo(() => {
+    if (!chainId || supportChain !== chainId.toString()) {
+      return false
+    }
+    return true
+  }, [chainId])
+
   const contract = useSwapMultiContract(swapToken)
   const anyCurrency = useToken(anyToken)
   const multiCurrency = useToken(multiToken)
-  const balance = useCurrencyBalances(account ?? undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
+  const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
   
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   
+
   const formatInputBridgeValue = tryParseAmount(inputValue, anyCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, account ?? undefined)
 
@@ -116,6 +124,7 @@ export default function SwapMULTI () {
     setInputValue('')
     setDelayAction(false)
   }
+
 
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
@@ -228,7 +237,7 @@ export default function SwapMULTI () {
                   onUserInput={() => {
                     // setInputValue(val)
                   }}
-                  disabled={false}
+                  disabled={true}
                 />
                 {multiCurrency?.symbol}
               </SwapInputContent>
@@ -236,7 +245,7 @@ export default function SwapMULTI () {
           </SwapContentBox>
           
           {
-            !chainId || supportChain !== chainId.toString() ? (
+            !isSupport ? (
               <>
                 <BottomGrouping>
                   <ButtonLight onClick={() => {
