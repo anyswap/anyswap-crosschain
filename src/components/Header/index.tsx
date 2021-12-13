@@ -26,7 +26,13 @@ import NavListTop from './NavListTop'
 import config from '../../config'
 
 
-
+const HeaderFrameBox = styled.div`
+  // position: fixed;
+  // top:0;
+  // left:0;
+  // right:0;
+  width:100%;
+`
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -42,6 +48,7 @@ const HeaderFrame = styled.div`
   padding: 0rem 1rem;
   z-index: 2;
   height: 70px;
+  margin:auto;
 
   max-width: 1440px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -212,39 +219,42 @@ export default function Header() {
   const [isDark, toggleDarkMode] = useDarkModeManager()
   // console.log(userEthBalance)
   return (
-    <HeaderFrame>
-      <HeaderRow>
-        <Title href="https://app.multichain.tools" target="__blank">
-          <UniIcon>
-            <img src={isDark ? LogoDark : Logo} alt="logo" />
-          </UniIcon>
-        </Title>
-        <VersionLinkBox href='https://v1.anyswap.exchange'>
-          V1↗
-        </VersionLinkBox>
-      </HeaderRow>
-      <NavListTop />
-      <HeaderControls>
-        <HeaderElement>
-          <SelectNetwork />
-          <ViewAccountInfo />
-          <StyleDarkToggle
-            onClick={() => {
-              toggleDarkMode()
-            }}
-          >
-            {
-              isDark ? (
+    <HeaderFrameBox>
 
-                <img src={IconDay} alt="" />
-              ) : (
+      <HeaderFrame>
+        <HeaderRow>
+          <Title href="https://app.multichain.tools" target="__blank">
+            <UniIcon>
+              <img src={isDark ? LogoDark : Logo} alt="logo" />
+            </UniIcon>
+          </Title>
+          <VersionLinkBox href='https://v1.anyswap.exchange'>
+            V1↗
+          </VersionLinkBox>
+        </HeaderRow>
+        <NavListTop />
+        <HeaderControls>
+          <HeaderElement>
+            <SelectNetwork />
+            <ViewAccountInfo />
+            <StyleDarkToggle
+              onClick={() => {
+                toggleDarkMode()
+              }}
+            >
+              {
+                isDark ? (
 
-                <img src={IconNight} alt="" />
-              )
-            }
-          </StyleDarkToggle>
-        </HeaderElement>
-      </HeaderControls>
-    </HeaderFrame>
+                  <img src={IconDay} alt="" />
+                ) : (
+
+                  <img src={IconNight} alt="" />
+                )
+              }
+            </StyleDarkToggle>
+          </HeaderElement>
+        </HeaderControls>
+      </HeaderFrame>
+    </HeaderFrameBox>
   )
 }

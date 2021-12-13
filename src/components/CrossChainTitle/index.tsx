@@ -1,6 +1,6 @@
 // import React, { useMemo } from 'react'
 import React from 'react'
-
+import styled from 'styled-components'
 // import { useTranslation } from 'react-i18next'
 
 import Title from '../Title'
@@ -9,7 +9,13 @@ import Title from '../Title'
 //   useExpertModeManager,
 //   useUserSelectChainId
 // } from '../../state/user/hooks'
-
+const TitleBox = styled.div`
+  display: block;
+  width:100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display:none;
+  `}
+`
 
 export default function CrossChain() {
   // const { t } = useTranslation()
@@ -63,11 +69,11 @@ export default function CrossChain() {
   // }, [expertMode, selectNetworkInfo])
 
   return (
-    <>
+    <TitleBox>
       <Title
         title={''}
       >
       </Title>
-    </>
+    </TitleBox>
   )
 }

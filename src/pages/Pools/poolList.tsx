@@ -538,6 +538,7 @@ export default function PoolLists ({
   }
   // console.log(config.getCurConfigInfo().isOpenMerge)
   return (
+    <>
     <AppBody>
       {
         config.getCurConfigInfo().isOpenMerge ? (
@@ -671,5 +672,6 @@ export default function PoolLists ({
         </DBTables>
       </MyBalanceBox>
     </AppBody>
+    </>
   )
 }

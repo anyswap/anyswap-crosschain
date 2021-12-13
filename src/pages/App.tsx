@@ -47,10 +47,10 @@ const HeaderWrapper = styled.div`
   justify-content: center;
   box-shadow: ${({ theme }) => theme.contentShadow};
   background: ${({ theme }) => theme.contentBg};
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
   z-index: 2;
 `
 
@@ -69,7 +69,7 @@ const HeaderWrapper = styled.div`
 //   `}
 // `
 const NavBottom = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   bottom: 0;

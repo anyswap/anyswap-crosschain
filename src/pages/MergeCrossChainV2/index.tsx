@@ -5,7 +5,8 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 // import { useTranslation } from 'react-i18next'
 
 import CrossChainPanel from '../../components/CrossChainPanelV2'
-import Title from '../../components/Title'
+// import Title from '../../components/Title'
+import CrossChainTitle from '../../components/CrossChainTitle'
 // import {
 //   useExpertModeManager,
 // } from '../../state/user/hooks'
@@ -21,8 +22,8 @@ export default function CrossChainBox() {
   return (
     <>
       <AppBody>
-        <Title
-          title={''}
+        {/* <CrossChainTitle
+          // title={''}
           // tabList={[
           //   {
           //     name: t('router'),
@@ -40,7 +41,8 @@ export default function CrossChainBox() {
           //   }
           // ]}
         >
-        </Title>
+        </CrossChainTitle> */}
+        <CrossChainTitle />
         
         <Suspense fallback={null}>
           <Switch>
