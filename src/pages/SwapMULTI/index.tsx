@@ -25,7 +25,8 @@ import TokenLogo from '../../components/TokenLogo'
 
 import AppBody from '../AppBody'
 
-// import config from '../../config'
+import config from '../../config'
+import {selectNetwork} from '../../config/tools/methods'
 
 const ContentBody = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
@@ -56,7 +57,7 @@ const SwapInputLabel = styled.div`
 
 const SwapInputBox = styled.div`
   // background-color: ${({ theme }) => theme.contentBg};
-  background: rgba(255,255,255,.5);
+  // background: rgba(255,255,255,.5);
   padding: 20px;
   width: 100%;
   // margin-bottom: 20px;
@@ -87,6 +88,7 @@ const ArrowBox = styled(AutoRow)`
 const anyToken = '0xea88171509a8772cc39f7f36f34a7b7d9985d101'
 const multiToken = '0xd8ac5e2990b1cbf062ea2145807f530b76e91f98'
 const swapToken = '0xba484d2c9ca181de85228ff6bf75709fcf5664e7'
+const supportChain = '4'
 
 export default function SwapMULTI () {
   const { account, chainId } = useActiveWeb3React()
@@ -234,10 +236,17 @@ export default function SwapMULTI () {
           </SwapContentBox>
           
           {
-            !chainId ? (
+            !chainId || supportChain !== chainId.toString() ? (
               <>
                 <BottomGrouping>
-                  <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+                  <ButtonLight onClick={() => {
+                    selectNetwork(supportChain).then((res: any) => {
+                      console.log(res)
+                      if (res.msg === 'Error') {
+                        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
+                      }
+                    })
+                  }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight>
                 </BottomGrouping>
               </>
             ) : (
