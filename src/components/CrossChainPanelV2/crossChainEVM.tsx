@@ -136,7 +136,7 @@ export default function CrossChain({
   }, [destConfig, isRouter])
 
   const isNativeToken = useMemo(() => {
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (
       selectCurrency
       && selectCurrency.address

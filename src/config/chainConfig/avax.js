@@ -37,7 +37,7 @@ const bridgeToken = {
     bridgeInitToken: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
     bridgeInitChain: '56',
     nativeToken: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
-    crossBridgeInitToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
+    crossBridgeInitToken: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664'
   },
 }
 

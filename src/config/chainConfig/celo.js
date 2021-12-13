@@ -22,10 +22,10 @@ const bridgeToken = {
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
-    bridgeInitToken: '',
+    bridgeInitToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
     bridgeInitChain: '56',
     nativeToken: '',
-    crossBridgeInitToken: ''
+    crossBridgeInitToken: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f'
   },
 }
 

@@ -40,7 +40,7 @@ const LinkStyle = styled.div.attrs({
     height: 100%;
     color: ${({ theme }) => theme.textNav};
     font-size: 16px;
-    font-weight: bold;
+    // font-weight: bold;
     font-family: 'Manrope';
     box-sizing: border-box;
     padding: 1rem 1rem;
@@ -49,6 +49,7 @@ const LinkStyle = styled.div.attrs({
     // border-radius: 0.5625rem;
     position: relative;
     white-space: nowrap;
+    border-bottom: 2px solid transparent;;
   
     &:hover {
       color: ${({ theme }) => theme.textColor};
@@ -57,9 +58,11 @@ const LinkStyle = styled.div.attrs({
     &.${activeClassName} {
       // color: #ffffff;
       // background: ${({ theme }) => theme.bgColorLinear};
-      background: rgba(0,0,0,.1);
+      // background: rgba(0,0,0,.1);
       border-bottom: none;
       font-weight: 600;
+      border-bottom: 2px solid ${({ theme }) => theme.tabActiveColor};
+      color: ${({ theme }) => theme.tabActiveColor};
       // box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
     }
     ${({ theme }) => theme.mediaWidth.upToMedium`

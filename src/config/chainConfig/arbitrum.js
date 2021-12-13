@@ -41,10 +41,10 @@ const bridgeToken = {
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
-    bridgeInitToken: '0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a',
+    bridgeInitToken: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
     bridgeInitChain: '1',
     nativeToken: '',
-    crossBridgeInitToken: ''
+    crossBridgeInitToken: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'
   },
 }
 
