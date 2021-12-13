@@ -19,6 +19,7 @@ import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
+import SwapMULTI from './SwapMULTI'
 
 import ANYFarming from './Farms/ANYFarming'
 import NoanyFarming from './Farms/NoanyFarming'
@@ -155,6 +156,7 @@ export default function App() {
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               <Route exact strict path="/bridge" component={() => <Bridge />} />
+              <Route exact strict path="/multi" component={() => <SwapMULTI />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={() => <CrossChain />} />
               <Route
                 path={[

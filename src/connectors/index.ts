@@ -24,7 +24,7 @@ for (const chainID in config.chainInfo) {
 }
 // spportChainArr.push(Number(NETWORK_CHAIN_ID))
 // spportChain[NETWORK_CHAIN_ID] = config.chainInfo[NETWORK_CHAIN_ID].nodeRpc
-
+// console.log(spportChainArr)
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
 }

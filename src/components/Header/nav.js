@@ -10,6 +10,14 @@ export const LinkList = [
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
+    path: '/multi',
+    textKey: 'MULTI',
+    regex: /\/multi/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: config.getCurConfigInfo().isOpenMerge,
+  },
+  {
     path: '/pool',
     textKey: 'pool',
     regex: /\/pool/,

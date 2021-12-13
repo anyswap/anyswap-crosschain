@@ -1,0 +1,95 @@
+[{
+	"inputs": [{
+		"internalType": "address",
+		"name": "_srcToken",
+		"type": "address"
+	}, {
+		"internalType": "address",
+		"name": "_dstToken",
+		"type": "address"
+	}, {
+		"internalType": "uint256",
+		"name": "_numeratorOfRate",
+		"type": "uint256"
+	}, {
+		"internalType": "uint256",
+		"name": "_denominatorOfRate",
+		"type": "uint256"
+	}],
+	"stateMutability": "nonpayable",
+	"type": "constructor"
+}, {
+	"anonymous": false,
+	"inputs": [{
+		"indexed": true,
+		"internalType": "address",
+		"name": "sender",
+		"type": "address"
+	}, {
+		"indexed": true,
+		"internalType": "uint256",
+		"name": "srcAmount",
+		"type": "uint256"
+	}, {
+		"indexed": true,
+		"internalType": "uint256",
+		"name": "dstAmount",
+		"type": "uint256"
+	}],
+	"name": "Swapped",
+	"type": "event"
+}, {
+	"inputs": [],
+	"name": "denominatorOfRate",
+	"outputs": [{
+		"internalType": "uint256",
+		"name": "",
+		"type": "uint256"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [],
+	"name": "dstToken",
+	"outputs": [{
+		"internalType": "address",
+		"name": "",
+		"type": "address"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [],
+	"name": "numeratorOfRate",
+	"outputs": [{
+		"internalType": "uint256",
+		"name": "",
+		"type": "uint256"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [],
+	"name": "srcToken",
+	"outputs": [{
+		"internalType": "address",
+		"name": "",
+		"type": "address"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "uint256",
+		"name": "srcAmount",
+		"type": "uint256"
+	}],
+	"name": "swap",
+	"outputs": [{
+		"internalType": "uint256",
+		"name": "dstAmount",
+		"type": "uint256"
+	}],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}]

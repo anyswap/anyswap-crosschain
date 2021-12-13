@@ -6,6 +6,7 @@ import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
+import swapMULTIABI from '../constants/abis/swapMULTIABI.json'
 import MasterChef from '../constants/abis/farm/MasterChef.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import WETH_ABI from '../constants/abis/weth.json'
@@ -110,6 +111,10 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
 
 export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   return useContract(address, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
+}
+
+export function useSwapMultiContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, swapMULTIABI, withSignerIfPossible)
 }
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
