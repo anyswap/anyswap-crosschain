@@ -2,17 +2,17 @@ import config from '../../config'
 
 export const LinkList = [
   {
-    path: '/v2/mergeswap',
-    textKey: 'router',
-    regex: /\/v2\/mergeswap/,
+    path: '/multi',
+    textKey: 'MULTI',
+    regex: /\/multi/,
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
-    path: '/multi',
-    textKey: 'MULTI',
-    regex: /\/multi/,
+    path: '/v2/mergeswap',
+    textKey: 'router',
+    regex: /\/v2\/mergeswap/,
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenMerge,
