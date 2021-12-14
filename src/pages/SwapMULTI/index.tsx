@@ -164,6 +164,13 @@ export default function SwapMULTI () {
     }
   }, [isInputError, inputValue])
 
+  const btnTxt = useMemo(() => {
+    if (isInputError) {
+      return isInputError?.tip
+    }
+    return t('swap')
+  }, [isInputError])
+
   const inputAmount = useMemo(() => anyCurrency ? tryParseAmount(inputValue, anyCurrency) : '', [anyCurrency, inputValue])
 
   // useEffect(() => {
@@ -290,7 +297,7 @@ export default function SwapMULTI () {
                         // setModalTipOpen(true)
                         swapAnyToMulti()
                       }}>
-                        {t('swap')}
+                        {btnTxt}
                       </ButtonPrimary>
                     )
                   )
