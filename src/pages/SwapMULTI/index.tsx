@@ -25,10 +25,29 @@ import Loader from '../../components/Loader'
 import { Input as NumericalInput } from '../../components/NumericalInput'
 import TokenLogo from '../../components/TokenLogo'
 
+import {
+  // InputRow,
+  CurrencySelect,
+  // ErrorSpanBox,
+  // ErrorSpan,
+  // ExtraText,
+  // LabelRow,
+  Aligner,
+  TokenLogoBox,
+  // StyledDropDownBox,
+  // StyledDropDown,
+  // InputPanel,
+  // Container,
+  StyledTokenName,
+  // CurrencySelectBox,
+  // HideSmallBox
+} from '../../components/CurrencySelect/styleds'
+
 import AppBody from '../AppBody'
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+
 
 const ContentBody = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
@@ -69,15 +88,29 @@ const SwapInputBox = styled.div`
   `}
 `
 
+const LoaderBox = styled.div`
+  ${({ theme }) => theme.flexC};
+  color: ${({ theme }) => theme.textColorBold};
+  font-size:14px;
+  .txt {
+    margin-left: 10px;
+  }
+`
+
 const SwapInputContent = styled.div`
   ${({ theme }) => theme.flexBC};
 `
 
-const TokenLogoBox = styled.div`
-  margin-right: 15px;
-  width: 50px;
-  margin-top: 15px;
+const CurrencySelect1 = styled(CurrencySelect)`
+  width: 180px;
+  min-width: 180px;
 `
+
+// const TokenLogoBox = styled.div`
+//   margin-right: 15px;
+//   width: 50px;
+//   margin-top: 15px;
+// `
 
 const ArrowBox = styled(AutoRow)`
   // background-color: ${({ theme }) => theme.contentBg};
@@ -89,7 +122,7 @@ const ArrowBox = styled(AutoRow)`
 
 // const anyToken = '0xea88171509a8772cc39f7f36f34a7b7d9985d101'
 // const multiToken = '0xd8ac5e2990b1cbf062ea2145807f530b76e91f98'
-const swapToken = '0xB35fcBCF1fD489fCe02Ee146599e893FDCdC60e6'
+const swapToken = '0x4ecf513a7d0E1548e14b621e21d2584bc7570918'
 const supportChain = '4'
 
 export default function SwapMULTI () {
@@ -246,10 +279,14 @@ export default function SwapMULTI () {
   const swapAnyToMulti = useCallback(() => {
     if (contract && inputAmount) {
       onDelay()
+      console.log(inputAmount.raw.toString())
       contract.swap(`0x${inputAmount.raw.toString(16)}`).then((res:any) => {
         console.log(res)
         onClear()
         addTransaction(res, { summary: `Swap ${anyCurrency?.symbol} To ${multiCurrency?.symbol} ${inputAmount.toSignificant(6)} ${anyCurrency?.symbol}` })
+      }).catch((err:any) => {
+        console.log(err)
+        onClear()
       })
     }
   }, [contract, inputAmount, anyCurrency])
@@ -268,9 +305,6 @@ export default function SwapMULTI () {
                 {t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') + ' ' + anyCurrency?.symbol : '-')}
               </SwapInputLabel>
               <SwapInputContent>
-                {anyCurrency?.symbol ? (
-                  <TokenLogoBox><TokenLogo symbol={anyCurrency?.symbol} size={'100%'}></TokenLogo></TokenLogoBox>
-                ) : ''}
                 <NumericalInput
                   className={isInputError ? 'error' : ''}
                   value={inputValue ?? ''}
@@ -279,7 +313,28 @@ export default function SwapMULTI () {
                   }}
                   disabled={false}
                 />
-                {anyCurrency?.symbol}
+                <CurrencySelect1 selected={true} className="open-currency-select-button">
+                  <Aligner>
+                    <TokenLogoBox>
+                      <TokenLogo symbol={anyCurrency?.symbol} size={'100%'} />
+                    </TokenLogoBox>
+                    <StyledTokenName className="token-symbol-container">
+                      {
+                        anyCurrency?.symbol ? (
+                          <>
+                            <h3>{anyCurrency?.symbol}</h3>
+                            <p>{anyCurrency?.name}</p>
+                          </>
+                        ) : (
+                          <LoaderBox>
+                            <Loader stroke="#ddd" />
+                            <span className="txt">Loading</span>
+                          </LoaderBox>
+                        )
+                      }
+                    </StyledTokenName>
+                  </Aligner>
+                </CurrencySelect1>
               </SwapInputContent>
             </SwapInputBox>
 
@@ -294,9 +349,6 @@ export default function SwapMULTI () {
                 {t('balanceTxt') + ': ' + (balance[1] ? thousandBit(balance[1]?.toSignificant(6), 'no') + ' ' + multiCurrency?.symbol : '-')}
               </SwapInputLabel>
               <SwapInputContent>
-                {multiCurrency?.symbol ? (
-                  <TokenLogoBox><TokenLogo symbol={multiCurrency?.symbol} size={'100%'}></TokenLogo></TokenLogoBox>
-                ) : ''}
                 <NumericalInput
                   value={outputValue ?? ''}
                   onUserInput={() => {
@@ -304,7 +356,32 @@ export default function SwapMULTI () {
                   }}
                   disabled={true}
                 />
-                {multiCurrency?.symbol}
+                <CurrencySelect1 selected={true} className="open-currency-select-button">
+                  <Aligner>
+                    <TokenLogoBox>
+                      <TokenLogo symbol={multiCurrency?.symbol} size={'100%'} />
+                    </TokenLogoBox>
+                    <StyledTokenName className="token-symbol-container">
+                      {
+                        multiCurrency?.symbol ? (
+                          <>
+                            <h3>{multiCurrency?.symbol}</h3>
+                            <p>{multiCurrency?.name}</p>
+                          </>
+                        ) : (
+                          <LoaderBox>
+                            <Loader stroke="#ddd" />
+                            <span className="txt">Loading</span>
+                          </LoaderBox>
+                        )
+                      }
+                    </StyledTokenName>
+                  </Aligner>
+                </CurrencySelect1>
+                {/* {multiCurrency?.symbol ? (
+                  <TokenLogoBox><TokenLogo symbol={multiCurrency?.symbol} size={'100%'}></TokenLogo></TokenLogoBox>
+                ) : ''}
+                {multiCurrency?.symbol} */}
               </SwapInputContent>
             </SwapInputBox>
           </SwapContentBox>
