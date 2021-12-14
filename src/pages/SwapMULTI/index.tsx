@@ -25,6 +25,8 @@ import Loader from '../../components/Loader'
 import { Input as NumericalInput } from '../../components/NumericalInput'
 import TokenLogo from '../../components/TokenLogo'
 
+import { TYPE } from '../../theme'
+
 import {
   // InputRow,
   CurrencySelect,
@@ -106,11 +108,12 @@ const CurrencySelect1 = styled(CurrencySelect)`
   min-width: 180px;
 `
 
-// const TokenLogoBox = styled.div`
-//   margin-right: 15px;
-//   width: 50px;
-//   margin-top: 15px;
-// `
+const TokenLogoBox1 = styled(TokenLogoBox)`
+  background:none;
+  img {
+    background: none;
+  }
+`
 
 const ArrowBox = styled(AutoRow)`
   // background-color: ${({ theme }) => theme.contentBg};
@@ -302,7 +305,13 @@ export default function SwapMULTI () {
           <SwapContentBox>
             <SwapInputBox>
               <SwapInputLabel>
-                {t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') + ' ' + anyCurrency?.symbol : '-')}
+                <TYPE.body
+                  color={theme.text2}
+                  fontWeight={500}
+                  fontSize={14}
+                  style={{ display: 'inline', cursor: 'pointer' }}
+                >{t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') : '-')}</TYPE.body>
+                {/* {t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') : '-')} */}
               </SwapInputLabel>
               <SwapInputContent>
                 <NumericalInput
@@ -315,9 +324,9 @@ export default function SwapMULTI () {
                 />
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
-                    <TokenLogoBox>
+                    <TokenLogoBox1>
                       <TokenLogo symbol={anyCurrency?.symbol} size={'100%'} />
-                    </TokenLogoBox>
+                    </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
                         anyCurrency?.symbol ? (
@@ -346,7 +355,13 @@ export default function SwapMULTI () {
 
             <SwapInputBox>
               <SwapInputLabel>
-                {t('balanceTxt') + ': ' + (balance[1] ? thousandBit(balance[1]?.toSignificant(6), 'no') + ' ' + multiCurrency?.symbol : '-')}
+                <TYPE.body
+                  color={theme.text2}
+                  fontWeight={500}
+                  fontSize={14}
+                  style={{ display: 'inline', cursor: 'pointer' }}
+                >{t('balanceTxt') + ': ' + (balance[1] ? thousandBit(balance[1]?.toSignificant(6), 'no') : '-')}</TYPE.body>
+                {/* {t('balanceTxt') + ': ' + (balance[1] ? thousandBit(balance[1]?.toSignificant(6), 'no') : '-')} */}
               </SwapInputLabel>
               <SwapInputContent>
                 <NumericalInput
@@ -358,9 +373,9 @@ export default function SwapMULTI () {
                 />
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
-                    <TokenLogoBox>
+                    <TokenLogoBox1>
                       <TokenLogo symbol={multiCurrency?.symbol} size={'100%'} />
-                    </TokenLogoBox>
+                    </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
                         multiCurrency?.symbol ? (
@@ -378,10 +393,6 @@ export default function SwapMULTI () {
                     </StyledTokenName>
                   </Aligner>
                 </CurrencySelect1>
-                {/* {multiCurrency?.symbol ? (
-                  <TokenLogoBox><TokenLogo symbol={multiCurrency?.symbol} size={'100%'}></TokenLogo></TokenLogoBox>
-                ) : ''}
-                {multiCurrency?.symbol} */}
               </SwapInputContent>
             </SwapInputBox>
           </SwapContentBox>
