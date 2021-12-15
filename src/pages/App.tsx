@@ -6,6 +6,7 @@ import NavList from '../components/Header/NavList'
 import Polling from '../components/Header/Polling'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
+import URLWarning from '../components/Header/URLWarning' 
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -41,7 +42,8 @@ const AppWrapper = styled.div`
 `
 
 const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${({ theme }) => theme.flexRowNoWrap};
+  flex-wrap: wrap;
   width: 100%;
   // justify-content: space-between;
   justify-content: center;
@@ -134,8 +136,8 @@ export default function App() {
       {/* <Route component={GoogleAnalyticsReporter} /> */}
       {/* <Route component={DarkModeQueryParamReader} /> */}
       <AppWrapper>
-        {/* <URLWarning /> */}
         <HeaderWrapper>
+          <URLWarning />
           <Header />
         </HeaderWrapper>
         <BodyWrapper>
