@@ -223,6 +223,9 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ETH_TEST1NET,
+    nodeRpcList: [
+      ETH_TEST1NET
+    ],
     chainID: ETH_TEST1_CHAINID,
     lookHash: ETH_TEST1_EXPLORER + '/tx/',
     lookAddr: ETH_TEST1_EXPLORER + '/address/',

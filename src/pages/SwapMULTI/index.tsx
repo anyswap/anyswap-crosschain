@@ -123,10 +123,10 @@ const ArrowBox = styled(AutoRow)`
   height:50px;
 `
 
-// const anyToken = '0xea88171509a8772cc39f7f36f34a7b7d9985d101'
-// const multiToken = '0xd8ac5e2990b1cbf062ea2145807f530b76e91f98'
-const swapToken = '0x4ecf513a7d0E1548e14b621e21d2584bc7570918'
-const supportChain = '4'
+// const swapToken = '0x4ecf513a7d0E1548e14b621e21d2584bc7570918'
+// const supportChain = '4'
+const swapToken = '0xaed0472b498548B1354925d222B832b99Bb2EC60'
+const supportChain = '1'
 
 export default function SwapMULTI () {
   const { account, chainId } = useActiveWeb3React()
@@ -137,6 +137,8 @@ export default function SwapMULTI () {
   const multicallContract = useMulticallContract()
 
   const isSupport = useMemo(() => {
+    // console.log(chainId)
+    // console.log(supportChain !== chainId?.toString())
     if (!chainId || supportChain !== chainId.toString()) {
       return false
     }
@@ -264,8 +266,8 @@ export default function SwapMULTI () {
   const inputAmount = useMemo(() => anyCurrency ? tryParseAmount(inputValue, anyCurrency) : '', [anyCurrency, inputValue])
 
   useEffect(() => {
-    // console.log(approval)
-    // console.log(ApprovalState)
+    console.log(approval)
+    console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(false)
     }
