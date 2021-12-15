@@ -159,7 +159,7 @@ export default function SwapMULTI () {
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
 
   const formatInputBridgeValue = tryParseAmount(inputValue, anyCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, account ?? undefined)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, swapToken ?? undefined)
 
   const calls = useMemo(
     () => {
