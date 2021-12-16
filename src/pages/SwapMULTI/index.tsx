@@ -106,6 +106,10 @@ const SwapInputContent = styled.div`
 const CurrencySelect1 = styled(CurrencySelect)`
   width: 180px;
   min-width: 180px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 125px;
+    min-width: 125px;
+  `}
 `
 
 const TokenLogoBox1 = styled(TokenLogoBox)`
