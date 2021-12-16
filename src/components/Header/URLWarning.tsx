@@ -16,10 +16,13 @@ const PhishAlert = styled.div<{ isActive: any }>`
   justify-content: center;
   align-items: center;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
+  position:relative;
 `
 
 export const StyledClose = styled(X)`
-margin-left:20px;
+  margin-left:20px;
+  position:absolute;
+  right:10px;
   :hover {
     cursor: pointer;
   }
