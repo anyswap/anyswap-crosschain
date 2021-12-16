@@ -300,6 +300,72 @@ export default function SwapMULTI () {
     }
   }, [contract, inputAmount, anyCurrency])
 
+  function viewBtn (type:any) {
+    if (type) {
+      return <BottomGrouping>
+      <ButtonLight disabled>Coming Soon</ButtonLight>
+    </BottomGrouping>
+    }
+    return (
+      <>
+        {
+          !isSupport ? (
+            <>
+              <BottomGrouping>
+                <ButtonLight onClick={() => {
+                  selectNetwork(supportChain).then((res: any) => {
+                    console.log(res)
+                    if (res.msg === 'Error') {
+                      alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
+                    }
+                  })
+                }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight>
+              </BottomGrouping>
+            </>
+          ) : (
+            <BottomGrouping>
+              {!account ? (
+                  <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+                ) : (
+                  inputValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                    <ButtonConfirmed
+                      onClick={() => {
+                        onDelay()
+                        approveCallback().then(() => {
+                          onClear()
+                        })
+                      }}
+                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                      width="48%"
+                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                    >
+                      {approval === ApprovalState.PENDING ? (
+                        <AutoRow gap="6px" justify="center">
+                          {t('Approving')} <Loader stroke="white" />
+                        </AutoRow>
+                      ) : approvalSubmitted ? (
+                        t('Approved')
+                      ) : (
+                        t('Approve') + ' ' + anyCurrency?.symbol ?? anyCurrency?.symbol
+                      )}
+                    </ButtonConfirmed>
+                  ) : (
+                    <ButtonPrimary disabled={Boolean(isSwap || delayAction)} onClick={() => {
+                      // setModalTipOpen(true)
+                      swapAnyToMulti()
+                    }}>
+                      {btnTxt}
+                    </ButtonPrimary>
+                  )
+                )
+              }
+            </BottomGrouping>
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppBody>
@@ -402,61 +468,10 @@ export default function SwapMULTI () {
               </SwapInputContent>
             </SwapInputBox>
           </SwapContentBox>
+
           
-          {
-            !isSupport ? (
-              <>
-                <BottomGrouping>
-                  <ButtonLight onClick={() => {
-                    selectNetwork(supportChain).then((res: any) => {
-                      console.log(res)
-                      if (res.msg === 'Error') {
-                        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
-                      }
-                    })
-                  }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight>
-                </BottomGrouping>
-              </>
-            ) : (
-              <BottomGrouping>
-                {!account ? (
-                    <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-                  ) : (
-                    inputValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                      <ButtonConfirmed
-                        onClick={() => {
-                          onDelay()
-                          approveCallback().then(() => {
-                            onClear()
-                          })
-                        }}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                        width="48%"
-                        altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                      >
-                        {approval === ApprovalState.PENDING ? (
-                          <AutoRow gap="6px" justify="center">
-                            {t('Approving')} <Loader stroke="white" />
-                          </AutoRow>
-                        ) : approvalSubmitted ? (
-                          t('Approved')
-                        ) : (
-                          t('Approve') + ' ' + anyCurrency?.symbol ?? anyCurrency?.symbol
-                        )}
-                      </ButtonConfirmed>
-                    ) : (
-                      <ButtonPrimary disabled={Boolean(isSwap || delayAction)} onClick={() => {
-                        // setModalTipOpen(true)
-                        swapAnyToMulti()
-                      }}>
-                        {btnTxt}
-                      </ButtonPrimary>
-                    )
-                  )
-                }
-              </BottomGrouping>
-            )
-          }
+          {viewBtn(1)}
+          
         </ContentBody>
       </AppBody>
     </>
