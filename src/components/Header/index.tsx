@@ -6,6 +6,7 @@ import styled from 'styled-components'
 // import LogoDark from '../../assets/svg/logo_white.svg'
 import Logo from '../../assets/svg/logo.png'
 import LogoDark from '../../assets/svg/logo_white.png'
+import LogoColor from '../../assets/svg/logo_color.png'
 import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
@@ -149,7 +150,19 @@ const UniIcon = styled.div`
   img {
     height:42px
   }
+  .hiddenImg {
+    display: none;
+  }
+  .viewImg {
+    display: block;
+  }
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    .hiddenImg {
+      display: block;
+    }
+    .viewImg {
+      display: none;
+    }
     img {
       height:36px
     }
@@ -225,7 +238,8 @@ export default function Header() {
         <HeaderRow>
           <Title href="https://app.multichain.tools" target="__blank">
             <UniIcon>
-              <img src={isDark ? LogoDark : Logo} alt="logo" />
+              <img src={isDark ? LogoDark : Logo} alt="logo" className='viewImg' />
+              <img src={LogoColor} alt="logo" className='hiddenImg' />
             </UniIcon>
           </Title>
           <VersionLinkBox href='https://v1.anyswap.exchange'>
