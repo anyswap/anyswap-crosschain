@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
 import Polling from '../components/Header/Polling'
+import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 // import Pool from './Pool'
@@ -42,16 +43,17 @@ const AppWrapper = styled.div`
 `
 
 const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
+  ${({ theme }) => theme.flexRowNoWrap};
+  flex-wrap: wrap;
   width: 100%;
   // justify-content: space-between;
   justify-content: center;
   box-shadow: ${({ theme }) => theme.contentShadow};
   background: ${({ theme }) => theme.contentBg};
-  position: fixed;
-  top:0;
-  left:0;
-  right:0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 2;
 `
 
@@ -138,6 +140,7 @@ export default function App() {
       <AppWrapper>
         {/* <URLWarning /> */}
         <HeaderWrapper>
+          <URLWarning />
           <Header />
         </HeaderWrapper>
         <BodyWrapper>

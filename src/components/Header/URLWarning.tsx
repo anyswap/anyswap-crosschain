@@ -1,22 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 
-import { AlertTriangle, X } from 'react-feather'
+// import { AlertTriangle, X } from 'react-feather'
+import { X } from 'react-feather'
 import { useURLWarningToggle, useURLWarningVisible } from '../../state/user/hooks'
 import { isMobile } from 'react-device-detect'
 
 const PhishAlert = styled.div<{ isActive: any }>`
   width: 100%;
   padding: 6px 6px;
-  background-color: ${({ theme }) => theme.blue1};
-  color: white;
+  background-color: #fdf6ec;
+  color: #062536;
   font-size: 11px;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
 `
 
 export const StyledClose = styled(X)`
+margin-left:20px;
   :hover {
     cursor: pointer;
   }
@@ -25,21 +28,20 @@ export const StyledClose = styled(X)`
 export default function URLWarning() {
   const toggleURLWarning = useURLWarningToggle()
   const showURLWarning = useURLWarningVisible()
-
+  const { t } = useTranslation()
   return isMobile ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> Make sure the URL is
-        <code style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }}>app.uniswap.org</code>
+        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */} {t('topTip')}
+        {/* <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a> */}
       </div>
       <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>
-  ) : window.location.hostname === 'app.uniswap.org' ? (
+  ) : window.location.hostname ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> Always make sure the URL is
-        <code style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }}>app.uniswap.org</code> - bookmark it
-        to be safe.
+        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */} {t('topTip')}
+        {/* <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a> */}
       </div>
       <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>

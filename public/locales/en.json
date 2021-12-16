@@ -353,5 +353,6 @@
   "fee": "Fee",
   "receiveTip": "Please do NOT send funds to exchanges.",
   "support": "Support",
-  "ConnectTerraStation": "Connect Terra Station"
+  "ConnectTerraStation": "Connect Terra Station",
+  "topTip": "Multichain is formerly known as Anyswap"
 }
