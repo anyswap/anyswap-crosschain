@@ -11,7 +11,7 @@ const PhishAlert = styled.div<{ isActive: any }>`
   width: 100%;
   padding: 6px 6px;
   background-color: #fdf6ec;
-  color: ${({theme}) => theme.textColorBold};
+  color: #062536;
   font-size: 11px;
   justify-content: center;
   align-items: center;
