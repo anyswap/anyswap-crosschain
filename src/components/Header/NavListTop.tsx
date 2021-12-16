@@ -65,6 +65,9 @@ const LinkStyle = styled.div.attrs({
       color: ${({ theme }) => theme.tabActiveColor};
       // box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
     }
+    &:focus,&:hover,&:active{
+      text-decoration: none;
+    }
     ${({ theme }) => theme.mediaWidth.upToMedium`
       ${({ theme }) => theme.flexC};
       margin:0;

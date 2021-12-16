@@ -236,7 +236,7 @@ export default function Header() {
 
       <HeaderFrame>
         <HeaderRow>
-          <Title href="https://app.multichain.tools" target="__blank">
+          <Title href="/" target="__blank">
             <UniIcon>
               <img src={isDark ? LogoDark : Logo} alt="logo" className='viewImg' />
               <img src={LogoColor} alt="logo" className='hiddenImg' />
