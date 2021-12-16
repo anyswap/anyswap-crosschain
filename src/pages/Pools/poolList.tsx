@@ -552,8 +552,8 @@ export default function PoolLists ({
             tabList={config.getCurConfigInfo().isOpenBridge ? [
               {
                 name: config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap'),
-                path: config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap',
-                regex: config.getCurConfigInfo().isOpenBridge ? /\/router/ : /\/swap/,
+                path: config.getCurConfigInfo().isOpenBridge ? '/v1/router' : '/swap',
+                regex: config.getCurConfigInfo().isOpenBridge ? /\/v1\/router/ : /\/swap/,
                 iconUrl: require('../../assets/images/icon/deposit.svg'),
                 iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
               },

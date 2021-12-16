@@ -127,11 +127,11 @@ const Marginer = styled.div`
 export default function App() {
   let initUrl = '/dashboard'
   if (config.getCurConfigInfo().isOpenRouter) {
-    initUrl = '/router'
+    initUrl = '/v1/router'
   } else if (config.getCurConfigInfo().isOpenBridge) {
     initUrl = '/bridge'
   } else if (config.getCurConfigInfo().isOpenMerge) {
-    initUrl = '/v2/mergeswap'
+    initUrl = '/router'
   }
   return (
     <Suspense fallback={null}>
@@ -160,7 +160,7 @@ export default function App() {
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               <Route exact strict path="/bridge" component={() => <Bridge />} />
               <Route exact strict path="/multi" component={() => <SwapMULTI />} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={() => <CrossChain />} />
+              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
               <Route
                 path={[
                   '/cross-chain-router',
@@ -171,7 +171,7 @@ export default function App() {
               />
               <Route
                 path={[
-                  '/v2/mergeswap'
+                  '/router'
                 ]}
                 component={() => <MergeCrossChainV2 />}
               />

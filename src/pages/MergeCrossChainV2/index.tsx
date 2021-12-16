@@ -22,32 +22,12 @@ export default function CrossChainBox() {
   return (
     <>
       <AppBody>
-        {/* <CrossChainTitle
-          // title={''}
-          // tabList={[
-          //   {
-          //     name: t('router'),
-          //     path: '/v2/mergeswap',
-          //     regex: /\/v2\/mergeswap/,
-          //     iconUrl: require('../../assets/images/icon/deposit.svg'),
-          //     iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-          //   },
-          //   {
-          //     name: t('pool'),
-          //     path: '/pool',
-          //     regex: /\/pool/,
-          //     iconUrl: require('../../assets/images/icon/pool.svg'),
-          //     iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
-          //   }
-          // ]}
-        >
-        </CrossChainTitle> */}
         <CrossChainTitle />
         
         <Suspense fallback={null}>
           <Switch>
-            <Route exact strict path="/v2/mergeswap" component={() => <CrossChainPanel bridgeKey={BRIDGETYPE} />} />
-            <Redirect to="/v2/mergeswap" />
+            <Route exact strict path="/router" component={() => <CrossChainPanel bridgeKey={BRIDGETYPE} />} />
+            <Redirect to="/router" />
           </Switch>
         </Suspense>
       </AppBody>

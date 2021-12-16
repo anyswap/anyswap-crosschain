@@ -109,6 +109,7 @@ export default function NavList() {
                     isActive={(match, { pathname }) => {
                       Boolean(match)
                       || pathname.startsWith('/router')
+                      || pathname.startsWith('/v1/router')
                       || pathname.startsWith('/swap')
                       if (Boolean(match)) {
                         return true

@@ -10,9 +10,9 @@ export const LinkList = [
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
-    path: '/v2/mergeswap',
+    path: '/router',
     textKey: 'router',
-    regex: /\/v2\/mergeswap/,
+    regex: /\/router/,
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenMerge,
@@ -27,9 +27,9 @@ export const LinkList = [
     isActive: ['/add', '/remove']
   },
   {
-    path: '/router',
+    path: '/v1/router',
     textKey: 'router',
-    regex: /\/router/,
+    regex: /\/v1\/router/,
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenRouter
