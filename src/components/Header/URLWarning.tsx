@@ -16,9 +16,12 @@ const PhishAlert = styled.div<{ isActive: any }>`
   justify-content: center;
   align-items: center;
   display: ${({ isActive }) => (isActive ? 'flex' : 'none')};
+  position:relative;
 `
 
 export const StyledClose = styled(X)`
+position:absolute;
+right:10px;
   :hover {
     cursor: pointer;
   }
@@ -42,7 +45,7 @@ export default function URLWarning() {
         {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */} {t('topTip')}
         <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a>
       </div>
-      {/* <StyledClose size={12} onClick={toggleURLWarning} /> */}
+      <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>
   ) : null
 }
