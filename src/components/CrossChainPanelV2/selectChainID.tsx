@@ -319,7 +319,7 @@ export default function SelectChainIdInputPanel({
         </Container>
       </InputPanel>
       {!disableCurrencySelect && onChainSelect && (
-        <Modal isOpen={modalOpen} onDismiss={handleDismissSearch} maxHeight={300}>
+        <Modal isOpen={modalOpen} onDismiss={handleDismissSearch} maxHeight={80}>
           <Column style={{ width: '100%', flex: '1 1' }}>
             <PaddedColumn gap="14px">
               <RowBetween>
