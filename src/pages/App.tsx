@@ -14,7 +14,6 @@ import Dashboard from './Dashboard'
 import CrossChain from './CrossChain'
 import Bridge from './Bridge'
 
-import MergeCrossChain from './MergeCrossChain'
 import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
@@ -161,14 +160,7 @@ export default function App() {
               <Route exact strict path="/bridge" component={() => <Bridge />} />
               <Route exact strict path="/multi" component={() => <SwapMULTI />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
-              <Route
-                path={[
-                  '/cross-chain-router',
-                  '/cross-chain-bridge',
-                  '/mergeswap'
-                ]}
-                component={() => <MergeCrossChain />}
-              />
+  
               <Route
                 path={[
                   '/router'

@@ -4,10 +4,10 @@ import styled, { ThemeContext } from "styled-components"
 import { ArrowDown } from 'react-feather'
 import { transparentize } from 'polished'
 
-import {useToken} from '../../hooks/Tokens'
+import {useLocalToken} from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-import {useSwapMultiContract, useMulticallContract} from '../../hooks/useContract'
+import {useSwapMultiContract} from '../../hooks/useContract'
 
 import {useCurrencyBalances} from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -16,7 +16,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import {thousandBit} from '../../utils/tools/tools'
 
-import { SWAP_MULTI_INTERFACE } from '../../constants/abis/swapMULTIABI'
+// import { SWAP_MULTI_INTERFACE } from '../../constants/abis/swapMULTIABI'
 
 import { ArrowWrapper, BottomGrouping } from '../../components/swap/styleds'
 import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
@@ -132,13 +132,27 @@ const ArrowBox = styled(AutoRow)`
 const swapToken = '0xaed0472b498548B1354925d222B832b99Bb2EC60'
 const supportChain = '1'
 
+const anyToken = {
+  address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
+  symbol: 'ANY',
+  name: 'Anyswap',
+  decimals: 18
+}
+
+const multiToken = {
+  address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
+  symbol: "MULTI",
+  name: "Multichain",
+  decimals: 18
+}
+
 export default function SwapMULTI () {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
   const theme = useContext(ThemeContext)
   const addTransaction = useTransactionAdder()
-  const multicallContract = useMulticallContract()
+  // const multicallContract = useMulticallContract()
 
   const isSupport = useMemo(() => {
     // console.log(chainId)
@@ -153,74 +167,77 @@ export default function SwapMULTI () {
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  const [srcToken, setSrcToken] = useState<any>()
-  const [dstToken, setDstToken] = useState<any>()
-  const [rate, setRate] = useState<any>()
+  // const [srcToken, setSrcToken] = useState<any>()
+  // const [dstToken, setDstToken] = useState<any>()
+  // const [rate, setRate] = useState<any>()
 
   const contract = useSwapMultiContract(swapToken)
-  const anyCurrency = useToken(srcToken)
-  const multiCurrency = useToken(dstToken)
+  const anyCurrency = useLocalToken(anyToken)
+  // console.log(anyCurrency)
+  const multiCurrency = useLocalToken(multiToken)
+  const rate = 1
+  // console.log(multiCurrency)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
 
   const formatInputBridgeValue = tryParseAmount(inputValue, anyCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, swapToken ?? undefined)
 
-  const calls = useMemo(
-    () => {
-      const arr:any = [
-        {
-          address: swapToken,
-          callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('srcToken', []),
-          fragment: 'srcToken'
-        },
-        {
-          address: swapToken,
-          callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('dstToken', []),
-          fragment: 'dstToken'
-        },
-        {
-          address: swapToken,
-          callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('denominatorOfRate', []),
-          fragment: 'denominatorOfRate'
-        },
-        {
-          address: swapToken,
-          callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('numeratorOfRate', []),
-          fragment: 'numeratorOfRate'
-        }
-      ]
-      return arr
-    },
-    [SWAP_MULTI_INTERFACE]
-  )
+  // const calls = useMemo(
+  //   () => {
+  //     const arr:any = [
+  //       {
+  //         address: swapToken,
+  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('srcToken', []),
+  //         fragment: 'srcToken'
+  //       },
+  //       {
+  //         address: swapToken,
+  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('dstToken', []),
+  //         fragment: 'dstToken'
+  //       },
+  //       {
+  //         address: swapToken,
+  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('denominatorOfRate', []),
+  //         fragment: 'denominatorOfRate'
+  //       },
+  //       {
+  //         address: swapToken,
+  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('numeratorOfRate', []),
+  //         fragment: 'numeratorOfRate'
+  //       }
+  //     ]
+  //     return arr
+  //   },
+  //   [SWAP_MULTI_INTERFACE]
+  // )
 
-  const getTokenidList = useCallback(() => {
-    if (multicallContract && calls && calls.length > 0 && isSupport) {
-      multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
-        // console.log(res)
-        const swapObj:any = {}
-        for (let i =0, len = res.returnData.length; i < len; i++) {
-          const obj = res.returnData[i]
-          const value = SWAP_MULTI_INTERFACE?.decodeFunctionResult(calls[i].fragment, obj)[0].toString()
-          swapObj[calls[i].fragment] = value
-        }
-        const rate = Number(swapObj.numeratorOfRate) / Number(swapObj.denominatorOfRate)
-        setSrcToken(swapObj.srcToken)
-        setDstToken(swapObj.dstToken)
-        setRate(rate)
-        // console.log(swapObj)
-      }).catch((err:any) => {
-        console.log(err)
-        setSrcToken(undefined)
-        setDstToken(undefined)
-        setRate(undefined)
-      })
-    }
-  }, [multicallContract, calls, isSupport])
+  // const getTokenidList = useCallback(() => {
+  //   if (multicallContract && calls && calls.length > 0 && isSupport) {
+  //     multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
+  //       // console.log(res)
+  //       const swapObj:any = {}
+  //       for (let i =0, len = res.returnData.length; i < len; i++) {
+  //         const obj = res.returnData[i]
+  //         const value = SWAP_MULTI_INTERFACE?.decodeFunctionResult(calls[i].fragment, obj)[0].toString()
+  //         swapObj[calls[i].fragment] = value
+  //       }
+  //       const rate = Number(swapObj.numeratorOfRate) / Number(swapObj.denominatorOfRate)
+  //       setSrcToken(swapObj.srcToken)
+  //       setDstToken(swapObj.dstToken)
+  //       setRate(rate)
+  //       // console.log(swapObj)
+  //     }).catch((err:any) => {
+  //       console.log(err)
+  //       setSrcToken(undefined)
+  //       setDstToken(undefined)
+  //       setRate(undefined)
+  //     })
+  //   }
+  // }, [multicallContract, calls, isSupport])
 
-  useEffect(() => {
-    getTokenidList()
-  }, [getTokenidList])
+  // useEffect(() => {
+  //   getTokenidList()
+  // }, [getTokenidList])
 
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
@@ -470,7 +487,7 @@ export default function SwapMULTI () {
           </SwapContentBox>
 
           
-          {viewBtn(1)}
+          {viewBtn(0)}
           
         </ContentBody>
       </AppBody>
