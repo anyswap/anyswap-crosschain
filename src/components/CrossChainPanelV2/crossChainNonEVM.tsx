@@ -9,7 +9,7 @@ import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useAccounts} from '../../hooks/useAccounts'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -29,7 +29,6 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 // import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
-import { useUserSelectChainId } from '../../state/user/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -64,20 +63,11 @@ export default function CrossChain({
   bridgeKey: any
 }) {
   // const { account, chainId, library } = useActiveWeb3React()
-  const { account, chainId } = useActiveWeb3React()
-  const useAccount = useAccounts()
+  const { account: EVMAccount } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   const { t } = useTranslation()
-  const [selectNetworkInfo] = useUserSelectChainId()
   
-  const useChainId = useMemo(() => {
-    if (selectNetworkInfo?.chainId) {
-      return selectNetworkInfo?.chainId
-    }
-    return chainId
-  }, [selectNetworkInfo, chainId])
-
-  // const allTokensList:any = useMergeBridgeTokenList(useChainId)
-  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
+  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -88,7 +78,7 @@ export default function CrossChain({
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
-  const [recipient, setRecipient] = useState<any>(account ?? '')
+  const [recipient, setRecipient] = useState<any>(EVMAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
   
   // const [intervalCount, setIntervalCount] = useState<number>(0)
@@ -152,7 +142,7 @@ export default function CrossChain({
     destConfig?.pairid,
     recipient,
     destConfig?.Unit,
-    useChainId
+    chainId
   )
 
   const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
@@ -251,9 +241,8 @@ export default function CrossChain({
     return t('swap')
   }, [errorTip, t, wrapTerraType])
 
-  const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
+  const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
-  // console.log(useAccount)
   useEffect(() => {
     setSelectCurrency(initCurrency)
   }, [initCurrency])
@@ -266,7 +255,7 @@ export default function CrossChain({
     }
   }, [account, swapType, selectChain, destConfig])
 
-  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, useChainId)
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
   useEffect(() => {
     // console.log(selectCurrency)
@@ -308,14 +297,14 @@ export default function CrossChain({
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
         </LogoBox>
         <ConfirmContent>
-          <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChainId)}</TxnsInfoText>
+          <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
           {
             isUnderlying && isDestUnderlying ? (
               <ConfirmText>
                 {
                   t('swapTip', {
-                    symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, useChainId),
-                    symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChainId),
+                    symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                    symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
                     chainName: config.getCurChainInfo(selectChain).name
                   })
                 }
@@ -323,7 +312,7 @@ export default function CrossChain({
             ) : ''
           }
           <BottomGrouping>
-            {!useAccount ? (
+            {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
@@ -370,7 +359,7 @@ export default function CrossChain({
           isError={Boolean(isInputError)}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
-          customChainId={useChainId}
+          customChainId={chainId}
           customBalance={useBalance}
         />
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
@@ -431,7 +420,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(useChainId) ? (
+          swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient') + '( ' + t('receiveTip') + ' )'} onChange={setRecipient} selectChainId={selectChain} />
           ) : ''
         }
@@ -445,7 +434,7 @@ export default function CrossChain({
           </BottomGrouping>
         ) : (
           <BottomGrouping>
-            {!useAccount ? (
+            {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {

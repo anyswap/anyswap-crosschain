@@ -10,8 +10,8 @@ import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
-import {useAccounts} from '../../hooks/useAccounts'
-import { useUserSelectChainId } from '../../state/user/hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
+// import { useUserSelectChainId } from '../../state/user/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
@@ -124,26 +124,13 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 
 function Web3StatusInner() {
   const { t } = useTranslation()
-  const { account, connector, error } = useWeb3React()
+  const { connector, error } = useWeb3React()
   const { connect } = useWallet()
-  const useAccount = useAccounts()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {account, chainId} = useActiveReact()
 
-  const { ENSName } = useENSName(account ?? undefined)
+  const { ENSName } = useENSName(account && !isNaN(chainId) ? account : undefined)
   // console.log(ENSName)
   const allTransactions = useAllTransactions()
-
-  const viewAccount = useMemo(() => {
-    if (!selectNetworkInfo?.label) {
-      if (ENSName) {
-        return ENSName
-      } else {
-        return account
-      }
-    } else {
-      return useAccount
-    }
-  }, [ENSName, useAccount, account, selectNetworkInfo])
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -155,7 +142,7 @@ function Web3StatusInner() {
   const hasPendingTransactions = !!pending.length
   const toggleWalletModal = useWalletModalToggle()
 
-  if (viewAccount) {
+  if (account) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
@@ -165,9 +152,9 @@ function Web3StatusInner() {
         ) : (
           <>{
             isMobile ? (
-              <Text>{ENSName || shortenAddress1(viewAccount, 2)}</Text>
+              <Text>{ENSName || shortenAddress1(account, 2)}</Text>
             ) : (
-              <Text>{ENSName || shortenAddress1(viewAccount)}</Text>
+              <Text>{ENSName || shortenAddress1(account)}</Text>
             )
           }
           </>
@@ -183,7 +170,7 @@ function Web3StatusInner() {
       </Web3StatusError>
     )
   } else {
-    if (selectNetworkInfo?.label === 'TERRA') {
+    if (chainId === 'TERRA') {
       return (
         <Web3StatusConnect id="connect-wallet"  onClick={() => {
           // console.log(connect)
@@ -196,13 +183,13 @@ function Web3StatusInner() {
           } else {
             alert('Please install Terra Station!')
           }
-        }} faded={!viewAccount}>
+        }} faded={!account}>
           <Text>{t('ConnectToWallet')}</Text>
         </Web3StatusConnect>
       )
     }
     return (
-      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!viewAccount}>
+      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <Text>{t('ConnectToWallet')}</Text>
       </Web3StatusConnect>
     )
@@ -210,24 +197,11 @@ function Web3StatusInner() {
 }
 
 export default function Web3Status() {
-  const { active, account } = useWeb3React()
+  const { active } = useWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
 
-  const { ENSName } = useENSName(account ?? undefined)
-  const useAccount = useAccounts()
-  const [selectNetworkInfo] = useUserSelectChainId()
-
-  const viewAccount = useMemo(() => {
-    if (!selectNetworkInfo?.label) {
-      if (ENSName) {
-        return ENSName
-      } else {
-        return account
-      }
-    } else {
-      return useAccount
-    }
-  }, [ENSName, useAccount, account, selectNetworkInfo])
+  const {account} = useActiveReact()
+  // const [selectNetworkInfo] = useUserSelectChainId()
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -246,7 +220,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={viewAccount ? shortenAddress1(viewAccount) : undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <WalletModal ENSName={account ? shortenAddress1(account) : undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </>
   )
 }

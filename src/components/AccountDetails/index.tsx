@@ -1,11 +1,10 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
-import {useAccounts} from '../../hooks/useAccounts'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import { AppDispatch } from '../../state'
-import { useUserSelectChainId } from '../../state/user/hooks'
 import { clearAllTransactions } from '../../state/transactions/actions'
 import { shortenAddress } from '../../utils'
 import { AutoRow } from '../Row'
@@ -222,26 +221,11 @@ export default function AccountDetails({
   ENSName,
   openOptions
 }: AccountDetailsProps) {
-  const { chainId, account, connector } = useActiveWeb3React()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const { connector } = useActiveWeb3React()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const useAccount = useAccounts()
+  const {account, chainId} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
-  const useChainId = useMemo(() => {
-    if (selectNetworkInfo?.chainId) {
-      return selectNetworkInfo?.chainId
-    }
-    return chainId
-  }, [selectNetworkInfo, chainId])
-
-  const viewAccount = useMemo(() => {
-    if (!selectNetworkInfo?.label) {
-      return account
-    } else {
-      return useAccount
-    }
-  }, [useAccount, account, selectNetworkInfo])
 
   function formatConnectorName() {
     // const { ethereum } = window
@@ -317,7 +301,7 @@ export default function AccountDetails({
                     <>
                       <div>
                         {getStatusIcon()}
-                        <p> {viewAccount && shortenAddress(viewAccount)}</p>
+                        <p> {account && shortenAddress(account)}</p>
                       </div>
                     </>
                   )}
@@ -328,19 +312,19 @@ export default function AccountDetails({
                   <>
                     <AccountControl>
                       <div>
-                        {viewAccount && (
-                          <Copy toCopy={viewAccount}>
+                        {account && (
+                          <Copy toCopy={account}>
                             <span style={{ marginLeft: '4px' }}>{t('CopyAddress')}</span>
                           </Copy>
                         )}
-                        {useChainId && viewAccount && (
+                        {chainId && account && (
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={getEtherscanLink(useChainId, ENSName, 'address')}
+                            href={getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(useChainId).name}</span>
+                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -350,19 +334,19 @@ export default function AccountDetails({
                   <>
                     <AccountControl>
                       <div>
-                        {viewAccount && (
-                          <Copy toCopy={viewAccount}>
+                        {account && (
+                          <Copy toCopy={account}>
                             <span style={{ marginLeft: '4px' }}>{t('CopyAddress')}</span>
                           </Copy>
                         )}
-                        {useChainId && viewAccount && (
+                        {chainId && account && (
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={false}
-                            href={getEtherscanLink(useChainId, viewAccount, 'address')}
+                            href={getEtherscanLink(chainId, account, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(useChainId).name}</span>
+                            <span style={{ marginLeft: '4px' }}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</span>
                           </AddressLink>
                         )}
                       </div>

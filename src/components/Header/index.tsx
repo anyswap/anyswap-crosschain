@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 // import Logo from '../../assets/svg/logo.svg'
@@ -10,10 +10,9 @@ import LogoColor from '../../assets/svg/logo_color.png'
 import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
-import {useAccounts} from '../../hooks/useAccounts'
-import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
+import { useDarkModeManager } from '../../state/user/hooks'
 // import { useETHBalances } from '../../state/wallet/hooks'
 
 import { ExternalLink } from '../../theme'
@@ -195,27 +194,18 @@ const VersionLinkBox = styled(ExternalLink)`
 `
 
 function ViewAccountInfo () {
-  const { chainId } = useActiveWeb3React()
-  const [selectNetworkInfo] = useUserSelectChainId()
-  const useChainId = useMemo(() => {
-    if (selectNetworkInfo?.chainId) {
-      return selectNetworkInfo?.chainId
-    }
-    return chainId
-  }, [selectNetworkInfo, chainId])
-
-  const useAccount = useAccounts()
-  const baseBalance = useBaseBalances(useAccount, useChainId)
+  const {account, chainId} = useActiveReact()
+  const baseBalance = useBaseBalances(account, chainId)
   // console.log(baseBalance)
-  if (selectNetworkInfo?.label === 'BTC') {
+  if (chainId === 'BTC') {
     return <></>
   }
   
   return (
-    <AccountElement active={!!useAccount} style={{ pointerEvents: 'auto' }}>
-      {useAccount && baseBalance ? (
+    <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+      {account && baseBalance ? (
         <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-          {baseBalance?.toSignificant(3)} {config.getCurChainInfo(useChainId).symbol}
+          {baseBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
         </BalanceText>
       ) : null}
       <Web3Status />
