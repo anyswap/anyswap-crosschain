@@ -79,7 +79,12 @@ function getParamNode(type: any, INIT_NODE: any) {
       paramList.push(k)
     }
     history.replace(pathKey + '?' + paramList.join('&'))
-    selectNetwork(labelStr)
+    selectNetwork(labelStr).then((res:any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(`Please switch metamask network to：${chainInfo[labelStr].networkName}`)
+      }
+    })
   }
   return labelStr
 }
