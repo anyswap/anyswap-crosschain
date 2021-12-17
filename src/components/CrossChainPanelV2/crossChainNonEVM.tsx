@@ -8,12 +8,9 @@ import { ArrowDown, Plus, Minus } from 'react-feather'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-import { useActiveWeb3React } from '../../hooks'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
-// import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-// import { useLocalToken } from '../../hooks/Tokens'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -62,9 +59,8 @@ export default function CrossChain({
 }: {
   bridgeKey: any
 }) {
-  // const { account, chainId, library } = useActiveWeb3React()
-  const { account: EVMAccount } = useActiveWeb3React()
-  const { account, chainId } = useActiveReact()
+  
+  const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
@@ -78,7 +74,7 @@ export default function CrossChain({
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
-  const [recipient, setRecipient] = useState<any>(EVMAccount ?? '')
+  const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
   
   // const [intervalCount, setIntervalCount] = useState<number>(0)
@@ -92,7 +88,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -248,12 +244,12 @@ export default function CrossChain({
   }, [initCurrency])
   
   useEffect(() => {
-    if (swapType == 'swap' && account && !isNaN(selectChain)) {
-      setRecipient(account)
+    if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+      setRecipient(evmAccount)
     } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
       setRecipient('')
     }
-  }, [account, swapType, selectChain, destConfig])
+  }, [evmAccount, swapType, selectChain, destConfig])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -370,14 +366,14 @@ export default function CrossChain({
             <ArrowDown size="16" color={theme.text2} />
           </ArrowWrapper>
           {
-            account && destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
               <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
                 if (swapType === 'swap') {
                   setSwapType('send')
                 } else {
                   setSwapType('swap')
-                  if (account) {
-                    setRecipient(account)
+                  if (evmAccount) {
+                    setRecipient(evmAccount)
                   }
                 }
               }}>

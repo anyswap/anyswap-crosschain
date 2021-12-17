@@ -11,7 +11,6 @@ export default function CrossChain({
   bridgeKey: any
 }) {
   const {selectNetworkInfo} = useUserSelectChainId()
-  // console.log(selectNetworkInfo)
   if (selectNetworkInfo?.label === 'BTC') {
     return (
       <>
