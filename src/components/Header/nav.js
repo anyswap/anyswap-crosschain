@@ -82,4 +82,12 @@ export const LinkList = [
     isOutLink: true,
     isView: 1,
   },
+  {
+    path: 'https://multichain.zendesk.com/hc/en-us',
+    textKey: 'support',
+    regex: '',
+    className: 'otherInfo',
+    isOutLink: true,
+    isView: 1,
+  },
 ]
