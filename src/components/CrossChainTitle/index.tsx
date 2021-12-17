@@ -5,10 +5,6 @@ import styled from 'styled-components'
 
 import Title from '../Title'
 
-// import {
-//   useExpertModeManager,
-//   useUserSelectChainId
-// } from '../../state/user/hooks'
 const TitleBox = styled.div`
   display: block;
   width:100%;

@@ -187,7 +187,7 @@ export default function PoolLists ({
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
 
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   const useChainId = useMemo(() => {
     if (selectNetworkInfo?.chainId) {
       return selectNetworkInfo?.chainId

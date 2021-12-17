@@ -11,7 +11,6 @@ import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import {useActiveReact} from '../../hooks/useActiveReact'
-// import { useUserSelectChainId } from '../../state/user/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
@@ -201,7 +200,6 @@ export default function Web3Status() {
   const contextNetwork = useWeb3React(NetworkContextName)
 
   const {account} = useActiveReact()
-  // const [selectNetworkInfo] = useUserSelectChainId()
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)

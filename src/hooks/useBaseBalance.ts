@@ -13,7 +13,7 @@ export function useBaseBalances (
   uncheckedAddresses?: string | null | undefined,
   chainId?: any
 ) {
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   const userEthBalance = useETHBalances((uncheckedAddresses && !selectNetworkInfo?.label) ? [uncheckedAddresses] : [])?.[uncheckedAddresses ?? '']
   // const userEthBalance = useETHBalances((uncheckedAddresses) ? [uncheckedAddresses] : [])?.[uncheckedAddresses ?? '']
   const {getTerraBaseBalances} = useTerraBaseBalance()

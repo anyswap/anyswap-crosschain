@@ -65,7 +65,7 @@ export default function CrossChain({
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   const connectedWallet = useConnectedWallet()
   
   const useChainId = useMemo(() => {

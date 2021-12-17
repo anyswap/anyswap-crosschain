@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 // import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
@@ -10,7 +10,8 @@ import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
 import Loader from '../Loader'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleNetworkModal } from '../../state/application/hooks'
@@ -405,48 +406,44 @@ export function Option ({
 
 export default function SelectNetwork () {
   // const history = createBrowserHistory()
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const { t } = useTranslation()
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
-  const [selectNetworkInfo, setUserSelectNetwork] = useUserSelectChainId()
+  const {setUserSelectNetwork} = useUserSelectChainId()
 
 
   function setMetamaskNetwork (item:any) {
     selectNetwork(item.chainID).then((res:any) => {
       // console.log(res)
-      setUserSelectNetwork('')
+      if (setUserSelectNetwork) {
+        setUserSelectNetwork('')
+      }
       if (res.msg === 'Error') {
         alert(t('changeMetamaskNetwork', {label: item.networkName}))
       }
       toggleNetworkModal()
     })
   }
-// console.log(selectNetworkInfo)
+  
   function openUrl (item:any) {
     if (!item.isSwitch) {
       return
     }
-    // console.log(selectNetworkInfo)
+    
     if (item?.chainType && item?.chainType !== 'EVM') {
-      setUserSelectNetwork({
-        chainId: item.chainID,
-        label: item?.chainType
-      })
+      if (setUserSelectNetwork) {
+        setUserSelectNetwork({
+          chainId: item.chainID,
+          label: item?.chainType
+        })
+      }
       toggleNetworkModal()
     } else {
       setMetamaskNetwork(item)
     }
   }
-
-  const useChainId = useMemo(() => {
-    // const hrefPath = window.location.pathname
-    // if (selectNetworkInfo && hrefPath.indexOf('/' + selectNetworkInfo?.label?.toLowerCase()) !== -1) {
-    if (selectNetworkInfo?.chainId) {
-      return selectNetworkInfo?.chainId
-    }
-    return chainId
-  }, [selectNetworkInfo, chainId])
 
   function changeNetwork () {
     return (
@@ -470,8 +467,8 @@ export default function SelectNetwork () {
                   spportChainArr && spportChainArr.map((item:any, index:any) => {
                     return (
                       <OptionCardClickable key={index} className={
-                        useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        <Option curChainId={item} selectChainId={useChainId}></Option>
+                        chainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                        <Option curChainId={item} selectChainId={chainId}></Option>
                       </OptionCardClickable>
                     )
                   })
@@ -487,9 +484,9 @@ export default function SelectNetwork () {
     <>
       {changeNetwork()}
       <HideSmall onClick={() => toggleNetworkModal()}>
-        {<NetworkCard title={config.getCurChainInfo(useChainId).networkName}>
-          <TokenLogo symbol={config.getCurChainInfo(useChainId).networkLogo ?? config.getCurChainInfo(useChainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
-          {config.getCurChainInfo(useChainId).networkName}
+        {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
+          <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
+          {config.getCurChainInfo(chainId).networkName}
         </NetworkCard>}
         {/* {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
           <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 

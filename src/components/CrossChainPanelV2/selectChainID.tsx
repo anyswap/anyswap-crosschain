@@ -93,7 +93,7 @@ export default function SelectChainIdInputPanel({
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
   const { chainId, account } = useActiveWeb3React()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalDestOpen, setModalDestOpen] = useState(false)
@@ -163,7 +163,6 @@ export default function SelectChainIdInputPanel({
       && bridgeConfig
       && selectChainId
       && !isNaN(selectChainId)
-      // && !selectNetworkInfo?.label
     ) {
       let token:any = ''
       if (useChainId?.toString() === selectChainId?.toString()) {

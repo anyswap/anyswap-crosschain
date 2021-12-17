@@ -183,9 +183,9 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
 }
 
 
-export function useUserSelectChainId(): [any, (selectChainInfo: any) => void] {
+export function useUserSelectChainId(): {selectNetworkInfo?:any, setUserSelectNetwork?: (selectChainInfo: any) => void} {
   const dispatch = useDispatch<AppDispatch>()
-  const selectNetworkInfo = useSelector<AppState, AppState['user']['selectNetworkId']>(state => {
+  const selectNetworkInfo:any = useSelector<AppState, AppState['user']['selectNetworkId']>(state => {
     return state.user.selectNetworkId
   })
 
@@ -196,5 +196,7 @@ export function useUserSelectChainId(): [any, (selectChainInfo: any) => void] {
     [dispatch]
   )
 
-  return [selectNetworkInfo, setUserSelectNetwork]
+  return {
+    selectNetworkInfo, setUserSelectNetwork
+  }
 }

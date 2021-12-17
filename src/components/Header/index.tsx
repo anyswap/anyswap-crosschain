@@ -214,11 +214,6 @@ function ViewAccountInfo () {
 }
 
 export default function Header() {
-  // const { account, chainId } = useActiveWeb3React()
-  // const [selectNetworkInfo] = useUserSelectChainId()
-  // const { t } = useTranslation()
-
-  // const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark, toggleDarkMode] = useDarkModeManager()
   // console.log(userEthBalance)
   return (

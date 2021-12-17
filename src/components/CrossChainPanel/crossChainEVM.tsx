@@ -61,7 +61,7 @@ export default function CrossChain({
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   
   const useChainId = useMemo(() => {
     if (selectNetworkInfo?.chainId) {

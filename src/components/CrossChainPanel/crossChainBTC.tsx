@@ -46,7 +46,7 @@ export default function CrossChain({
 
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   const theme = useContext(ThemeContext)
 
   const [p2pAddress, setP2pAddress] = useState<any>('')

@@ -63,7 +63,7 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
 
 export function useFetchMergeTokenListCallback(): () => Promise<any> {
   const { chainId } = useActiveWeb3React()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  const {selectNetworkInfo} = useUserSelectChainId()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
   const useChainId = useMemo(() => {

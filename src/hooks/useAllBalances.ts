@@ -4,11 +4,9 @@ import { useConnectedWallet } from '@terra-money/wallet-provider'
 import useTerraBalance from './useTerraBalance'
 import useInterval from './useInterval'
 
-// import { useUserSelectChainId } from '../state/user/hooks'
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 
 export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
-  // const [selectNetworkInfo] = useUserSelectChainId()
   const connectedWallet = useConnectedWallet()
   const {getTerraBalances} = useTerraBalance()
 

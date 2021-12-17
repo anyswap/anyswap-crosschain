@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
-import { useActiveWeb3React } from '../../hooks'
-import { useUserSelectChainId } from '../../state/user/hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 
@@ -48,9 +47,8 @@ export default function CrossChain({
   bridgeKey: any
 }) {
 
-  const { account, chainId } = useActiveWeb3React()
+  const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
-  const [selectNetworkInfo] = useUserSelectChainId()
   const theme = useContext(ThemeContext)
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
@@ -59,25 +57,19 @@ export default function CrossChain({
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
-  const [recipient, setRecipient] = useState<any>(account ?? '')
+  const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [modalOpen, setModalOpen] = useState(false)
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [modalSpecOpen, setModalSpecOpen] = useState(false)
 
-  const useChainId = useMemo(() => {
-    if (selectNetworkInfo?.chainId) {
-      return selectNetworkInfo?.chainId
-    }
-    return chainId
-  }, [selectNetworkInfo, chainId])
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   // const allTokensList:any = useMergeBridgeTokenList(useChainId)
-  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
-  const {initCurrency} = useInitSelectCurrency(allTokensList, useChainId, initBridgeToken)
+  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
+  const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
   useEffect(() => {
     // console.log(initCurrency)
@@ -163,7 +155,7 @@ export default function CrossChain({
         // console.log(selectCurrency)
         if (res?.p2pAddress) {
           const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
-          if (res?.p2pAddress === localAddress && isAddress(localAddress, selectNetworkInfo?.chainId)) {
+          if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
             // console.log(localAddress)
             setP2pAddress(localAddress)
             setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
@@ -177,7 +169,7 @@ export default function CrossChain({
     }
   }, [recipient, selectCurrency, destConfig, selectChain])
 
-  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, useChainId)
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
   useEffect(() => {
     // console.log(selectCurrency)
@@ -252,7 +244,7 @@ export default function CrossChain({
           isError={false}
           hideBalance={true}
           isViewModal={modalOpen}
-          customChainId={useChainId}
+          customChainId={chainId}
           // allBalances={allBalances}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
