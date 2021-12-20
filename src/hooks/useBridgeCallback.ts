@@ -10,7 +10,18 @@ import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
 import {signSwapoutData, signSwapinData} from 'multichain-bridge'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
-import { MsgSend } from '@terra-money/terra.js';
+// import { MsgSend } from '@terra-money/terra.js';
+import {
+  MsgSend,
+  Coins,
+  // MsgExecuteContract,
+  StdFee,
+  // LCDClient,
+  // Coin,
+  // CreateTxOptions,
+} from '@terra-money/terra.js'
+
+import {useTerraSend} from './terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
@@ -644,7 +655,7 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   pairid: string | undefined,
   terraRecipient: string | undefined,
-  Unit: string | undefined,
+  Unit: any,
   srcChainid: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { 
@@ -661,11 +672,49 @@ export function useBridgeNativeCallback(
   const addPopup = useAddPopup()
   const {getTerraBalances} = useTerraBalance()
 
+  const {getTerraFeeList} = useTerraSend()
+
+  // console.log(gasFee)
+  // console.log(connectedWallet)
   const [balance, setBalance] = useState<any>()
+  const [fee, setFee] = useState<any>(94000)
+
+  
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
+
+  useEffect(() => {
+    if (
+      connectedWallet?.walletAddress
+      && toAddress
+      && Unit
+      && inputAmount
+    ) {
+      getTerraFeeList(
+        connectedWallet?.walletAddress,
+        toAddress,
+        Unit,
+        inputAmount
+      ).then((res) => {
+        let fee:any = ''
+        let lunaFee:any = ''
+        res.map(item => {
+          if (item.denom === Unit) {
+            fee = item.fee
+          }
+          if (item.denom === 'uluna') {
+            lunaFee = item.fee
+          }
+        })
+        if (!fee) {
+          fee = lunaFee
+        }
+        setFee(fee.gas)
+      })
+    }
+  }, [getTerraFeeList, connectedWallet, toAddress, Unit])
 
   const fetchBalance = useCallback(() => {
     if (Unit && connectedWallet) {
@@ -686,19 +735,17 @@ export function useBridgeNativeCallback(
 
   const sendTx = useCallback(() => {
     // console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit) return
+    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit || !fee) return
     const send:any = new MsgSend(
       connectedWallet?.walletAddress,
       toAddress,
       { [Unit]: 	inputAmount.raw.toString() }
     )
-    console.log(connectedWallet?.walletAddress)
-    console.log(toAddress)
-    console.log(Unit)
-    console.log(inputAmount.raw.toString())
-    console.log(terraRecipient)
+    const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
+
     return post({
       msgs: [send],
+      fee: gasFee,
       memo: terraRecipient,
     })
   }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit])
