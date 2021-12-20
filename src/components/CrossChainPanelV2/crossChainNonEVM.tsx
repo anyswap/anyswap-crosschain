@@ -4,6 +4,7 @@ import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
+import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -62,6 +63,9 @@ export default function CrossChain({
   
   const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
+  
+  const { connect } = useWallet()
+  // const connectedWallet = useConnectedWallet()
   
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
@@ -431,7 +435,22 @@ export default function CrossChain({
         ) : (
           <BottomGrouping>
             {!account ? (
-                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+                <>
+
+                  <ButtonLight onClick={() => {
+                    if (connect) {
+                      try {
+                        connect(ConnectType.CHROME_EXTENSION)
+                        // setModalView(true)
+                      } catch (error) {
+                        alert('Please install Terra Station!')
+                      }
+                    } else {
+                      alert('Please install Terra Station!')
+                    }
+                  }}>{t('ConnectWallet')}</ButtonLight>
+                  {/* <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight> */}
+                </>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   setModalTipOpen(true)

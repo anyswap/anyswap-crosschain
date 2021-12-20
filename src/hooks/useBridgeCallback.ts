@@ -692,6 +692,11 @@ export function useBridgeNativeCallback(
       toAddress,
       { [Unit]: 	inputAmount.raw.toString() }
     )
+    console.log(connectedWallet?.walletAddress)
+    console.log(toAddress)
+    console.log(Unit)
+    console.log(inputAmount.raw.toString())
+    console.log(terraRecipient)
     return post({
       msgs: [send],
       memo: terraRecipient,
