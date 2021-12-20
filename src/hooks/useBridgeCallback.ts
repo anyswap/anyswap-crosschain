@@ -677,7 +677,7 @@ export function useBridgeNativeCallback(
   // console.log(gasFee)
   // console.log(connectedWallet)
   const [balance, setBalance] = useState<any>()
-  const [fee, setFee] = useState<any>(94000)
+  const [fee, setFee] = useState<any>()
 
   
   // console.log(balance)
@@ -711,6 +711,7 @@ export function useBridgeNativeCallback(
         if (!fee) {
           fee = lunaFee
         }
+        console.log(fee)
         setFee(fee.gas)
       })
     }
@@ -748,7 +749,7 @@ export function useBridgeNativeCallback(
       fee: gasFee,
       memo: terraRecipient,
     })
-  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit])
+  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit, fee])
 
   return useMemo(() => {
     // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))
@@ -825,5 +826,5 @@ export function useBridgeNativeCallback(
           : undefined,
         inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx])
 }
