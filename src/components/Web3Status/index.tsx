@@ -199,7 +199,7 @@ export default function Web3Status() {
   const { active } = useWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
 
-  const {account} = useActiveReact()
+  // const {account} = useActiveReact()
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -218,7 +218,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={account ? shortenAddress1(account) : undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <WalletModal ENSName={undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </>
   )
 }
