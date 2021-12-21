@@ -25,6 +25,8 @@ import oeth, {OETH_MAIN_CHAINID} from './oeth'
 import tlos, {TLOS_MAIN_CHAINID} from './tlos'
 import terra, {TERRA_MAIN_CHAINID} from './terra'
 import fuse, {FUSE_MAIN_CHAINID} from './fuse'
+import aurora, {AURORA_MAIN_CHAINID} from './aurora'
+import sys, {SYS_MAIN_CHAINID} from './sys'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -58,7 +60,9 @@ export const chainInfo:ConFig = {
   ...oeth,
   ...tlos,
   ...terra,
-  ...fuse
+  ...fuse,
+  ...aurora,
+  ...sys
 }
 
 const useChain:any = {
@@ -165,7 +169,9 @@ const useChain:any = {
     CRO_MAIN_CHAINID,
     OETH_MAIN_CHAINID,
     TLOS_MAIN_CHAINID,
-    FUSE_MAIN_CHAINID
+    FUSE_MAIN_CHAINID,
+    // AURORA_MAIN_CHAINID,
+    SYS_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
@@ -221,6 +227,7 @@ const useChain:any = {
     OETH_MAIN_CHAINID,
     TLOS_MAIN_CHAINID,
     FUSE_MAIN_CHAINID,
+    SYS_MAIN_CHAINID,
     LTC_MAIN_CHAINID,
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
@@ -242,7 +249,8 @@ const useChain:any = {
     OKT_MAIN_CHAINID,
     ONE_MAIN_CHAINID,
     MOVR_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID
+    TERRA_MAIN_CHAINID,
+    AURORA_MAIN_CHAINID,
   ]
 }
 
