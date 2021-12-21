@@ -36,7 +36,7 @@ function getBatchWeb3Data (rpc, list) {
       if (obj.data) {
         batch.add(web3.eth.call.request({data: obj.data, to: obj.to}, 'latest'))
       } else {
-        batch.add(web3Fn[obj.property][obj.methods].request(...obj.inputFormatter))
+        batch.add(web3[obj.property][obj.methods].request(...obj.inputFormatter))
       }
     }
     batch.requestManager.sendBatch(batch.requests, (err, res) => {
@@ -179,6 +179,26 @@ async function useWeb3 (chainId, property, name, params) {
   // console.log(useNode)
   return results
 }
+
+// useBatchWeb3('56', [
+//   {
+//     data: '',
+//     to: '',
+//     property: 'eth',
+//     methods: 'getTransactionReceipt',
+//     inputFormatter: ['0x17405c1d0284d7a44b42a255b66ec35c6e1fe47f1e9bbd7f6ce31fe126b85792']
+//   },
+//   {
+//     data: '',
+//     to: '',
+//     property: 'eth',
+//     methods: 'getTransaction',
+//     inputFormatter: ['0x17405c1d0284d7a44b42a255b66ec35c6e1fe47f1e9bbd7f6ce31fe126b85792']
+//   }
+// ]).then(res => {
+//   console.log('res1')
+//   console.log(res)
+// })
 
 export {
   getWeb3,
