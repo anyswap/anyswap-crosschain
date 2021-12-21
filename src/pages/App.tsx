@@ -7,6 +7,7 @@ import Polling from '../components/Header/Polling'
 import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
+import URLWarning from '../components/Header/URLWarning' 
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -137,7 +138,6 @@ export default function App() {
       {/* <Route component={GoogleAnalyticsReporter} /> */}
       {/* <Route component={DarkModeQueryParamReader} /> */}
       <AppWrapper>
-        {/* <URLWarning /> */}
         <HeaderWrapper>
           <URLWarning />
           <Header />
