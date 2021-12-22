@@ -50,7 +50,7 @@ export function useTerraSend () {
       })
       // console.log(gasPricesFromServer)
       try {
-        const feeDenoms = [AssetNativeDenomEnum.uusd]
+        const feeDenoms = [AssetNativeDenomEnum.uluna]
         
         const msgs = new MsgSend(
           address,
