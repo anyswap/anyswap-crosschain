@@ -241,7 +241,11 @@ export default function SwapMULTI () {
 
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
-      const bl = balance[0]?.toSignificant(6)
+      // console.log(balance[0])
+      // console.log(formatInputBridgeValue)
+      const bl = balance[0]
+      const sufficientBalance = formatInputBridgeValue && bl && !bl.lessThan(formatInputBridgeValue)
+      // console.log(sufficientBalance)
       if (isNaN(inputValue)) {
         return {
           state: 'Error',
@@ -252,7 +256,7 @@ export default function SwapMULTI () {
           state: 'Error',
           tip: t('noZero')
         }
-      } else if (!bl || Number(bl) < Number(inputValue)) {
+      } else if (!sufficientBalance) {
         return {
           state: 'Error',
           tip: t('Insufficient', {symbol: anyCurrency?.symbol})
@@ -316,6 +320,14 @@ export default function SwapMULTI () {
       })
     }
   }, [contract, inputAmount, anyCurrency])
+
+  const onMax = useCallback(() => {
+    const bl = balance[0]
+    // console.log(bl?.toExact())
+    if (bl) {
+      setInputValue(bl?.toExact())
+    }
+  }, [balance])
 
   function viewBtn (type:any) {
     if (type) {
@@ -399,6 +411,7 @@ export default function SwapMULTI () {
                   fontWeight={500}
                   fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
+                  onClick={onMax}
                 >{t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') : '-')}</TYPE.body>
                 {/* {t('balanceTxt') + ': ' + (balance[0] ? thousandBit(balance[0]?.toSignificant(6), 'no') : '-')} */}
               </SwapInputLabel>
