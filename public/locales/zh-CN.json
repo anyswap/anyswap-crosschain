@@ -314,7 +314,7 @@
   "redeemTip4": "预计跨链到账时间10-30分钟",
   "redeemTip5": "{{depositBigValMoreTime}} {{coin}}以上大额跨链到账时间12小时",
 
-  "feeTip": "跨链手续费 {{dFee}} %, Gas费用 {{fee}} {{coin}}",
+  "feeTip": "Gas fee {{fee}} {{coin}} (目标链上的gas费用)",
 
   "SwitchTo": "切换至",
   "selectNetwork": "选择网络",
@@ -335,6 +335,7 @@
   "MyStaking": "我的抵押",
   "farms": "农场",
   "swapTip": "如果目标链的流动性不足会收到{{symbol}}({{chainName}})，请在资金池里面查看余额和赎回{{symbol1}}({{chainName}})！",
+  "approveTip": "请在使用Multichain Router进行跨链前批准{{symbol}}的使用",
   "txnsTip": "请等待几分钟，在浏览器查看跨链交易状态",
   "ExceedLimit": "超出限制",
   "nodestlr": "目标链流动性不足",
@@ -353,5 +354,6 @@
   "receiveTip": "不要直接发送代币充值到交易所,不支持合约充值",
   "support": "支持",
   "ConnectTerraStation": "打开Terra钱包",
-  "topTip": "Multichain品牌前身是Anyswap"
+  "topTip": "Multichain品牌前身是Anyswap",
+  "approvedTip": "{{symbol}}批准了，你可以继续跨链交易"
 }

@@ -315,7 +315,7 @@
   "redeemTip4": "Estimated Time of Crosschain Arrival is 10-30 min",
   "redeemTip5": "Crosschain amount larger than {{depositBigValMoreTime}} {{coin}} could take up to 12 hours",
 
-  "feeTip": "Crosschain Fee is {{dFee}} %, Gas fee {{fee}} {{coin}}",
+  "feeTip": "Gas fee {{fee}} {{coin}} for your cross-chain transaction on destination chain",
 
   "SwitchTo": "Switch to ",
   "selectNetwork": "Select Network",
@@ -336,6 +336,7 @@
   "MyStaking": "My Staking",
   "farms": "Farms",
   "swapTip": "If the liquidity of the target chain is insufficient, you will receive {{symbol}} ({{chainName}}), please check the balance in the liquidity pool and redeem {{symbol1}}({{chainName}}).",
+  "approveTip": "Please approve {{symbol}} before you continue cross chain swap in Multichain router.",
   "txnsTip": "Please wait minutes to check the cross-chain tx status on the explorer",
   "ExceedLimit": "Exceed limit",
   "nodestlr": "Dest Liquidity Insufficient",
@@ -354,5 +355,6 @@
   "receiveTip": "Please do NOT send funds to exchanges.",
   "support": "Support",
   "ConnectTerraStation": "Connect Terra Station",
-  "topTip": "Multichain is formerly known as Anyswap"
+  "topTip": "Multichain is formerly known as Anyswap",
+  "approvedTip": "{{symbol}} approved, you can continue the cross chain transaction"
 }

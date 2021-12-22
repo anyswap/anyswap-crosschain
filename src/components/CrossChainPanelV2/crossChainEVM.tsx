@@ -477,15 +477,29 @@ export default function CrossChain({
           <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
           {
             isUnderlying && isDestUnderlying ? (
-              <ConfirmText>
-                {
-                  t('swapTip', {
-                    symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                    symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
-                    chainName: config.getCurChainInfo(selectChain).name
-                  })
-                }
-              </ConfirmText>
+              <>
+              {
+                !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
+                  <ConfirmText>
+                    {
+                      t('approveTip', {
+                        symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                      })
+                    }
+                  </ConfirmText>
+                ) : (
+                  <ConfirmText>
+                    {
+                      t('swapTip', {
+                        symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                        symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                        chainName: config.getCurChainInfo(selectChain).name
+                      })
+                    }
+                  </ConfirmText>
+                )
+              }
+              </>
             ) : ''
           }
           <BottomGrouping>

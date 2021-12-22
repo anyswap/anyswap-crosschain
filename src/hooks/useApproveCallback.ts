@@ -86,7 +86,10 @@ export function useApproveCallback(
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
-          summary: 'Approve ' + config.getBaseCoin(amountToApprove.currency.symbol, chainId),
+          summary: config.getBaseCoin(amountToApprove.currency.symbol, chainId) + ' approved, you can continue the cross chain transaction',
+          // summary: t('approvedTip', {
+          //   symbol: config.getBaseCoin(amountToApprove.currency.symbol, chainId)
+          // }),
           approval: { tokenAddress: token.address, spender: spender }
         })
       })
