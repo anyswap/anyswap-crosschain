@@ -170,9 +170,11 @@ export default function CrossChain({
   } : selectCurrency)
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
 
   useEffect(() => {
+    // console.log(approval)
+    // console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -288,7 +290,7 @@ export default function CrossChain({
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
+    selectCurrency?.address,
     destConfig?.pairid
   )
 
@@ -519,22 +521,26 @@ export default function CrossChain({
                     onDelay()
                     if (isRouter) {
                       if (!selectCurrency || !isUnderlying) {
+                        console.log('onWrap')
                         if (onWrap) onWrap().then(() => {
                           onClear()
                         })
                       } else {
                         // if (onWrapUnderlying) onWrapUnderlying()
                         if (isNativeToken) {
+                          console.log('onWrapNative')
                           if (onWrapNative) onWrapNative().then(() => {
                             onClear()
                           })
                         } else {
+                          console.log('onWrapUnderlying')
                           if (onWrapUnderlying) onWrapUnderlying().then(() => {
                             onClear()
                           })
                         }
                       }
                     } else {
+                      console.log('onWrapCrossBridge')
                       if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
                         onClear()
                       })

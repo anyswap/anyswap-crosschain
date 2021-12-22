@@ -216,11 +216,11 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
+    // console.log(balance?.toSignificant(6))
     if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-
     return {
       wrapType: WrapType.WRAP,
       execute:
@@ -580,6 +580,7 @@ export function useBridgeNativeCallback(
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
+    // console.log(inputToken)
     if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
     // console.log(toChainID)
