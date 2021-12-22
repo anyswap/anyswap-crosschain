@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const AURORA_MAIN_CHAINID = 1313161554
 export const AURORA_MAINNET = getLocalRPC(AURORA_MAIN_CHAINID, 'https://mainnet.aurora.dev')
-export const AURORA_MAIN_EXPLORER = 'https://explorer.near.org'
+export const AURORA_MAIN_EXPLORER = 'https://explorer.mainnet.aurora.dev'
 
 export const tokenList = []
 export const testTokenList = []
