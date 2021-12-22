@@ -8,7 +8,7 @@ export const AURORA_MAIN_EXPLORER = 'https://explorer.near.org'
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'AURORA'
+const symbol = 'ETH'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -36,7 +36,7 @@ export default {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '',
+    multicalToken: '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
