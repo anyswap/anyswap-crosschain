@@ -311,7 +311,7 @@
   "redeemTip1": "跨链手续费 {{dFee}} %, 最小跨链手续费 {{dMinFee}} {{coin}}, 最大跨链手续费 {{dMaxFee}} {{coin}}",
   "redeemTip2": "最小跨链金额",
   "redeemTip3": "最大跨链金额",
-  "redeemTip4": "预计跨链到账时间10-30分钟",
+  "redeemTip4": "预计跨链到账时间3-30分钟",
   "redeemTip5": "{{depositBigValMoreTime}} {{coin}}以上大额跨链到账时间12小时",
 
   "feeTip": "跨链手续费 {{dFee}} %, Gas费用 {{fee}} {{coin}},Gas fee XXX (目标链上的gas费用)",

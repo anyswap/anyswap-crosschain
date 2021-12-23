@@ -312,7 +312,7 @@
   "redeemTip1": "Crosschain Fee is {{dFee}} %, Minimum Crosschain Fee is {{dMinFee}} {{coin}}, Maximum Crosschain Fee is {{dMaxFee}} {{coin}}",
   "redeemTip2": "Minimum Crosschain Amount is",
   "redeemTip3": "Maximum Crosschain Amount is",
-  "redeemTip4": "Estimated Time of Crosschain Arrival is 10-30 min",
+  "redeemTip4": "Estimated Time of Crosschain Arrival is 3-30 min",
   "redeemTip5": "Crosschain amount larger than {{depositBigValMoreTime}} {{coin}} could take up to 12 hours",
 
   "feeTip": "Crosschain Fee is {{dFee}} %, Gas fee {{fee}} {{coin}}, Gas fee xxx for your cross-chain transaction on destination chain",
