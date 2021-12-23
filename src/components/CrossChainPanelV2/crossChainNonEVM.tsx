@@ -35,13 +35,14 @@ import {selectNetwork} from '../../config/tools/methods'
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 
-import TokenLogo from '../TokenLogo'
+// import TokenLogo from '../TokenLogo'
 // import LiquidityPool from '../LiquidityPool'
+import ConfirmView from './confirmModal'
 
 import {
-  LogoBox,
+  // LogoBox,
   ConfirmContent,
-  TxnsInfoText,
+  // TxnsInfoText,
   ConfirmText,
   FlexEC,
 } from '../../pages/styled'
@@ -145,7 +146,7 @@ export default function CrossChain({
     chainId
   )
 
-  const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
+  const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
     // console.log(terraBalance)
@@ -293,11 +294,38 @@ export default function CrossChain({
           setModalTipOpen(false)
         }}
       >
-        <LogoBox>
+        {/* <LogoBox>
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
-        </LogoBox>
+        </LogoBox> */}
         <ConfirmContent>
-          <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
+          <ConfirmView
+            fromChainId={chainId}
+            value={inputBridgeValue}
+            toChainId={selectChain}
+            swapvalue={outputBridgeValue}
+            recipient={recipient}
+            destConfig={destConfig}
+            selectCurrency={selectCurrency}
+            fee={fee}
+          />
+          {
+            isUnderlying && isDestUnderlying ? (
+              <>
+                <ConfirmText>
+                  {
+                    t('swapTip', {
+                      symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                      symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                      chainName: config.getCurChainInfo(selectChain).name
+                    })
+                  }
+                </ConfirmText>
+              </>
+            ) : (
+              <></>
+            )
+          }
+          {/* <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
           {
             isUnderlying && isDestUnderlying ? (
               <ConfirmText>
@@ -310,7 +338,7 @@ export default function CrossChain({
                 }
               </ConfirmText>
             ) : ''
-          }
+          } */}
           <BottomGrouping>
             {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>

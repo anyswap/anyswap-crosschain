@@ -40,10 +40,12 @@ import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 import TokenLogo from '../TokenLogo'
 import LiquidityPool from '../LiquidityPool'
 
+import ConfirmView from './confirmModal'
+
 import {
   LogoBox,
   ConfirmContent,
-  TxnsInfoText,
+  // TxnsInfoText,
   ConfirmText,
   FlexEC,
 } from '../../pages/styled'
@@ -169,10 +171,12 @@ export default function CrossChain({
     decimals: selectCurrency.underlying.decimals
   } : selectCurrency)
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isRouter) ? formatCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
-
   useEffect(() => {
+    // console.log(isRouter)
+    // console.log(formatInputBridgeValue)
+    // console.log((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined)
     // console.log(approval)
     // console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
@@ -294,7 +298,7 @@ export default function CrossChain({
     destConfig?.pairid
   )
 
-  const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
+  const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isWrapInputError = useMemo(() => {
     if (isRouter) {
@@ -470,39 +474,52 @@ export default function CrossChain({
           setModalTipOpen(false)
         }}
       >
-        <LogoBox>
-          <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
-        </LogoBox>
         <ConfirmContent>
           {
-            isUnderlying && isDestUnderlying ? (
+            !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
               <>
-              {
-                !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
-                  <ConfirmText>
-                    {
-                      t('approveTip', {
-                        symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
-                      })
-                    }
-                  </ConfirmText>
-                ) : (
-                  <>
-                    <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
-                    <ConfirmText>
-                      {
-                        t('swapTip', {
-                          symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                          symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
-                          chainName: config.getCurChainInfo(selectChain).name
-                        })
-                      }
-                    </ConfirmText>
-                  </>
-                )
-              }
+                <LogoBox>
+                  <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
+                </LogoBox>
+                <ConfirmText>
+                  {
+                    t('approveTip', {
+                      symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
+                    })
+                  }
+                </ConfirmText>
               </>
-            ) : ''
+            ) : (
+              <>
+                <ConfirmView
+                  fromChainId={chainId}
+                  value={inputBridgeValue}
+                  toChainId={selectChain}
+                  swapvalue={outputBridgeValue}
+                  recipient={recipient}
+                  destConfig={destConfig}
+                  selectCurrency={selectCurrency}
+                  fee={fee}
+                />
+                {
+                  isUnderlying && isDestUnderlying ? (
+                    <>
+                      <ConfirmText>
+                        {
+                          t('swapTip', {
+                            symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                            symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                            chainName: config.getCurChainInfo(selectChain).name
+                          })
+                        }
+                      </ConfirmText>
+                    </>
+                  ) : (
+                    <></>
+                  )
+                }
+              </>
+            )
           }
           <BottomGrouping>
             {!evmAccount ? (
@@ -542,7 +559,6 @@ export default function CrossChain({
                           onClear()
                         })
                       } else {
-                        // if (onWrapUnderlying) onWrapUnderlying()
                         if (isNativeToken) {
                           console.log('onWrapNative')
                           if (onWrapNative) onWrapNative().then(() => {
@@ -550,7 +566,8 @@ export default function CrossChain({
                           })
                         } else {
                           console.log('onWrapUnderlying')
-                          if (onWrapUnderlying) onWrapUnderlying().then(() => {
+                          if (onWrapUnderlying) onWrapUnderlying().then((hash) => {
+                            console.log(hash)
                             onClear()
                           })
                         }

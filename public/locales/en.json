@@ -315,7 +315,7 @@
   "redeemTip4": "Estimated Time of Crosschain Arrival is 3-30 min",
   "redeemTip5": "Crosschain amount larger than {{depositBigValMoreTime}} {{coin}} could take up to 12 hours",
 
-  "feeTip": "Crosschain Fee is {{dFee}} %, Gas fee {{fee}} {{coin}}, Gas fee xxx for your cross-chain transaction on destination chain",
+  "feeTip": "Crosschain Fee is {{dFee}} %, Gas fee {{fee}} {{coin}} for your cross-chain transaction on destination chain",
 
   "SwitchTo": "Switch to ",
   "selectNetwork": "Select Network",
@@ -356,5 +356,7 @@
   "support": "Support",
   "ConnectTerraStation": "Connect Terra Station",
   "topTip": "Multichain is formerly known as Anyswap",
-  "approvedTip": "{{symbol}} approved, you can continue the cross chain transaction"
+  "approvedTip": "{{symbol}} approved, you can continue the cross chain transaction",
+  "SourceChain": "Source Chain",
+  "Address": "Address"
 }

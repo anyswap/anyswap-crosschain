@@ -83,7 +83,15 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -126,7 +134,7 @@ export function useBridgeCallback(
   toChainID: string | undefined,
   version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
@@ -148,6 +156,7 @@ export function useBridgeCallback(
       execute:
         sufficientBalance && inputAmount
           ? async () => {
+              let hash = ''
               try {
                 // console.log(bridgeContract)
                 // console.log(inputAmount.raw.toString(16))
@@ -160,7 +169,16 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                console.log(txReceipt)
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -177,9 +195,11 @@ export function useBridgeCallback(
                   }
                   recordsTxns(data)
                 }
+                hash = txReceipt?.hash
               } catch (error) {
                 console.log('Could not swapout', error)
               }
+              return hash
             }
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
@@ -235,7 +255,15 @@ export function useBridgeNativeCallback(
                   toChainID],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -440,7 +468,15 @@ export function useBridgeNativeCallback(
                   parseInt((Date.now()/1000 + deadline).toString()),
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -525,7 +561,15 @@ export function useBridgeNativeCallback(
                   parseInt((Date.now()/1000 + deadline).toString()),
                   toChainID
                 )
-                addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -610,7 +654,15 @@ export function useBridgeNativeCallback(
                 })
                 console.log(txReceipt)
                 const txData:any = {hash: txReceipt?.info}
-                addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txData, {
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress?.toLowerCase(),
+                  symbol: inputCurrency?.symbol,
+                  version: txnsType,
+                  routerToken: '',
+                })
                 if (txData.hash && account) {
                   let srcChainID = chainId
                   let destChainID = toChainID
@@ -669,6 +721,7 @@ export function useBridgeNativeCallback(
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
+  const addTransaction = useTransactionAdder()
   const { post, connect } = useWallet()
   const addPopup = useAddPopup()
   const {getTerraBalances} = useTerraBalance()
@@ -788,7 +841,15 @@ export function useBridgeNativeCallback(
                 if (txReceipt) {
                   const hash = txReceipt?.result?.txhash
                   const txData:any = {hash: hash}
-                  // addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                  addTransaction(txData, {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    value: inputAmount.toSignificant(6),
+                    toChainId: toChainID,
+                    toAddress: terraRecipient?.toLowerCase(),
+                    symbol: inputCurrency?.symbol,
+                    version: 'swapin',
+                    routerToken: '',
+                  })
                   if (txData.hash && account && terraRecipient) {
                     addPopup(
                       {

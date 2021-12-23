@@ -314,7 +314,7 @@
   "redeemTip4": "预计跨链到账时间3-30分钟",
   "redeemTip5": "{{depositBigValMoreTime}} {{coin}}以上大额跨链到账时间12小时",
 
-  "feeTip": "跨链手续费 {{dFee}} %, Gas费用 {{fee}} {{coin}},Gas fee XXX (目标链上的gas费用)",
+  "feeTip": "跨链手续费 {{dFee}} %, Gas fee {{fee}} {{coin}} (目标链上的gas费用)",
 
   "SwitchTo": "切换至",
   "selectNetwork": "选择网络",
@@ -355,5 +355,7 @@
   "support": "支持",
   "ConnectTerraStation": "打开Terra钱包",
   "topTip": "Multichain品牌前身是Anyswap",
-  "approvedTip": "{{symbol}}批准了，你可以继续跨链交易"
+  "approvedTip": "{{symbol}}批准了，你可以继续跨链交易",
+  "SourceChain": "Source Chain",
+  "Address": "地址"
 }

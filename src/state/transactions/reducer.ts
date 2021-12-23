@@ -4,7 +4,8 @@ import {
   checkedTransaction,
   clearAllTransactions,
   finalizeTransaction,
-  SerializableTransactionReceipt
+  SerializableTransactionReceipt,
+  updateTransaction
 } from './actions'
 
 const now = () => new Date().getTime()
@@ -19,6 +20,13 @@ export interface TransactionDetails {
   addedTime: number
   confirmedTime?: number
   from: string
+  value?: string
+  toChainId?: string
+  toAddress?: string
+  symbol?: string
+  version?: string
+  routerToken?: string
+  info?: any
 }
 
 export interface TransactionState {
@@ -31,12 +39,38 @@ export const initialState: TransactionState = {}
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(addTransaction, (transactions, { payload: { chainId, from, hash, approval, summary, claim } }) => {
+    .addCase(addTransaction, (transactions, { payload: {
+      chainId,
+      from,
+      hash,
+      approval,
+      summary,
+      claim,
+      value,
+      toChainId,
+      toAddress,
+      symbol,
+      version,
+      routerToken,
+    } }) => {
       if (transactions[chainId]?.[hash]) {
         throw Error('Attempted to add existing transaction.')
       }
       const txs = transactions[chainId] ?? {}
-      txs[hash] = { hash, approval, summary, claim, from, addedTime: now() }
+      txs[hash] = {
+        hash,
+        approval,
+        summary,
+        claim,
+        from,
+        addedTime: now(),
+        value,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+      }
       transactions[chainId] = txs
     })
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
@@ -61,5 +95,12 @@ export default createReducer(initialState, builder =>
       }
       tx.receipt = receipt
       tx.confirmedTime = now()
+    })
+    .addCase(updateTransaction, (transactions, { payload: { hash, chainId, info } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        return
+      }
+      tx.info = info
     })
 )

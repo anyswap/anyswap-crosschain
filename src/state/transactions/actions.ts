@@ -19,6 +19,12 @@ export const addTransaction = createAction<{
   approval?: { tokenAddress: string; spender: string }
   claim?: { recipient: string }
   summary?: string
+  value?: string
+  toChainId?: string
+  toAddress?: string
+  symbol?: string
+  version?: string
+  routerToken?: string
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{
@@ -31,3 +37,9 @@ export const checkedTransaction = createAction<{
   hash: string
   blockNumber: number
 }>('transactions/checkedTransaction')
+
+export const updateTransaction = createAction<{
+  chainId: ChainId
+  hash: string
+  info: any
+}>('transactions/updateTransaction')

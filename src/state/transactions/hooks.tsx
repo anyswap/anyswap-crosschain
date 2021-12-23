@@ -2,7 +2,8 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
@@ -10,9 +11,20 @@ import { TransactionDetails } from './reducer'
 // 可以接受ether库事务响应并将其添加到事务列表的助手
 export function useTransactionAdder(): (
   response: TransactionResponse,
-  customData?: { summary?: string; approval?: { tokenAddress: string; spender: string }; claim?: { recipient: string } }
+  customData?: {
+    summary?: string;
+    approval?: { tokenAddress: string; spender: string };
+    claim?: { recipient: string };
+    value?: any;
+    toChainId?: any;
+    toAddress?: any;
+    symbol?: any;
+    version?: any;
+    routerToken?: any;
+  }
 ) => void {
-  const { chainId, account } = useActiveWeb3React()
+  // const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback(
@@ -21,8 +33,24 @@ export function useTransactionAdder(): (
       {
         summary,
         approval,
-        claim
-      }: { summary?: string; claim?: { recipient: string }; approval?: { tokenAddress: string; spender: string } } = {}
+        claim,
+        value,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+      }: {
+        summary?: string;
+        claim?: { recipient: string };
+        approval?: { tokenAddress: string; spender: string },
+        value?: string,
+        toChainId?: string,
+        toAddress?: string,
+        symbol?: string,
+        version?: string,
+        routerToken?: string,
+      } = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -31,15 +59,28 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim }))
+      dispatch(addTransaction({
+        hash,
+        from: account,
+        chainId,
+        approval,
+        summary,
+        claim,
+        value,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+      }))
     },
     [dispatch, chainId, account]
   )
 }
 
-// returns all the transactions for the current chain
+// 返回当前链的所有事务
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
 
   const state = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 
@@ -55,14 +96,14 @@ export function useIsTransactionPending(transactionHash?: string): boolean {
 }
 
 /**
- * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
+ * 返回事务是否发生在最后一天(86400秒* 1000毫秒/秒)
  * @param tx to check for recency
  */
 export function isTransactionRecent(tx: TransactionDetails): boolean {
   return new Date().getTime() - tx.addedTime < 86_400_000
 }
 
-// returns whether a token has a pending approval transaction
+// 返回令牌是否有未决的审批事务
 export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -85,8 +126,8 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
   )
 }
 
-// watch for submissions to claim
-// return null if not done loading, return undefined if not found
+// 注意提交索赔
+// 如果没有加载，返回null;如果没有找到，返回undefined
 export function useUserHasSubmittedClaim(
   account?: string
 ): { claimSubmitted: boolean; claimTxn: TransactionDetails | undefined } {

@@ -83,7 +83,7 @@ export default function CrossChain({
     return false
   }, [selectDestCurrency])
 
-  const outputBridgeValue = outputValue(inputBridgeValue, destConfig, selectCurrency)
+  const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isInputError = useMemo(() => {
     if (!selectCurrency) {
