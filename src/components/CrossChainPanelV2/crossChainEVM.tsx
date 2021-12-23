@@ -474,7 +474,6 @@ export default function CrossChain({
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
         </LogoBox>
         <ConfirmContent>
-          <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
           {
             isUnderlying && isDestUnderlying ? (
               <>
@@ -483,20 +482,23 @@ export default function CrossChain({
                   <ConfirmText>
                     {
                       t('approveTip', {
-                        symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                        symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
                       })
                     }
                   </ConfirmText>
                 ) : (
-                  <ConfirmText>
-                    {
-                      t('swapTip', {
-                        symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                        symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
-                        chainName: config.getCurChainInfo(selectChain).name
-                      })
-                    }
-                  </ConfirmText>
+                  <>
+                    <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
+                    <ConfirmText>
+                      {
+                        t('swapTip', {
+                          symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                          symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                          chainName: config.getCurChainInfo(selectChain).name
+                        })
+                      }
+                    </ConfirmText>
+                  </>
                 )
               }
               </>
