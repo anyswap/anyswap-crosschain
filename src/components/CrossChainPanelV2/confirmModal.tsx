@@ -176,6 +176,22 @@ export default function ConfirmContent (
           {
             destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
               <>
+                <li className="item">
+                  <p className="label">Crosschain Fee</p>
+                  <p className="value">{useDfee} %</p>
+                </li>
+                <li className="item">
+                  <p className="label">
+                    Gas Fee
+                    <QuestionHelper text={
+                      'for your cross-chain transaction on destination chain'
+                    } />
+                  </p>
+                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
+                </li>
+              </>
+            ) : (
+              <>
                 {/* <li className="item">
                   <p className="label">
                     Gas Fee
@@ -185,22 +201,6 @@ export default function ConfirmContent (
                   </p>
                   <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
                 </li> */}
-                <li className="item">
-                  <p className="label">Crosschain Fee</p>
-                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="item">
-                  <p className="label">
-                    Gas Fee
-                    <QuestionHelper text={
-                      'for your cross-chain transaction on destination chain'
-                    } />
-                  </p>
-                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
-                </li>
                 <li className="item">
                   <p className="label">
                     Crosschain Fee
@@ -213,7 +213,7 @@ export default function ConfirmContent (
                       })
                     } />
                   </p>
-                  <p className="value">{useDfee} %</p>
+                  <p className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</p>
                 </li>
               </>
             )

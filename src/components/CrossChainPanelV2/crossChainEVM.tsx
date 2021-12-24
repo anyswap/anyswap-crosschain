@@ -45,7 +45,7 @@ import ConfirmView from './confirmModal'
 import {
   LogoBox,
   ConfirmContent,
-  // TxnsInfoText,
+  TxnsInfoText,
   ConfirmText,
   FlexEC,
 } from '../../pages/styled'
@@ -481,6 +481,7 @@ export default function CrossChain({
                 <LogoBox>
                   <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
                 </LogoBox>
+                <TxnsInfoText>{config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
                 <ConfirmText>
                   {
                     t('approveTip', {
