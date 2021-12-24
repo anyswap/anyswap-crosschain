@@ -176,7 +176,7 @@ export default function ConfirmContent (
           {
             destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
               <>
-                <li className="item">
+                {/* <li className="item">
                   <p className="label">
                     Gas Fee
                     <QuestionHelper text={
@@ -184,10 +184,10 @@ export default function ConfirmContent (
                     } />
                   </p>
                   <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
-                </li>
+                </li> */}
                 <li className="item">
                   <p className="label">Crosschain Fee</p>
-                  <p className="value">{useDfee} %</p>
+                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
                 </li>
               </>
             ) : (
