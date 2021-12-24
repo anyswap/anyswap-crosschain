@@ -2,7 +2,7 @@ import useENS from '../../hooks/useENS'
 import { Version } from '../../hooks/useToggledVersion'
 import { parseUnits } from '@ethersproject/units'
 // import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from 'anyswap-sdk'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from 'anyswap-sdk'
+import { Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade, Fraction } from 'anyswap-sdk'
 import { ParsedQs } from 'qs'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
@@ -111,6 +111,7 @@ export function tryParseAmount1(value?: string, decimals?: number): CurrencyAmou
     const typedValueParsed = parseUnits(value, decimals).toString()
     // console.log(typedValueParsed)
     if (typedValueParsed !== '0') {
+      // console.log(CurrencyAmount.ether(JSBI.BigInt(typedValueParsed)))
       return CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
     }
   } catch (error) {
@@ -130,6 +131,40 @@ export function tryParseAmount2(value?: string, decimals?: number): CurrencyAmou
     const typedValueParsed = parseUnits(value, decimals).toString()
     if (typedValueParsed !== '0') {
       return CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error)
+  }
+  // necessary for all paths to return a value
+  return undefined
+}
+
+export function tryParseAmount3(value?: string, decimals?: number): any | undefined {
+  if (!value || !decimals) {
+    return undefined
+  }
+  try {
+    const typedValueParsed = parseUnits(value, decimals).toString()
+    if (typedValueParsed !== '0') {
+      return typedValueParsed
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error)
+  }
+  // necessary for all paths to return a value
+  return undefined
+}
+
+export function tryParseAmount4(value?: string, decimals?: number): any | undefined {
+  if (!value || !decimals) {
+    return undefined
+  }
+  try {
+    const typedValueParsed = parseUnits(value, decimals).toString()
+    if (typedValueParsed !== '0') {
+      return new Fraction(JSBI.BigInt(typedValueParsed), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)))
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)

@@ -137,6 +137,7 @@ export default {
     lookBlock: BNB_MAIN_EXPLORER + '/block/',
     explorer: BNB_MAIN_EXPLORER,
     symbol: symbol,
+    symbolName: 'Binance',
     name: 'BSC',
     networkName: 'BSC mainnet',
     type: 'main',

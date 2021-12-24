@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { CheckCircle, Triangle } from 'react-feather'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import { getEtherscanLink } from '../../utils'
 import { ExternalLink } from '../../theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
@@ -38,7 +39,9 @@ const IconWrapper = styled.div<{ pending: boolean; success?: boolean }>`
 `
 
 export default function Transaction({ hash }: { hash: string }) {
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
+  
   const allTransactions = useAllTransactions()
 
   const tx = allTransactions?.[hash]

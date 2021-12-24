@@ -45,7 +45,7 @@ const config: ConFig = {
       )
     ) {
       if (type) {
-        return this.getCurChainInfo(chainId).name
+        return (this.getCurChainInfo(chainId).symbolName ?? this.getCurChainInfo(chainId).name) + '(Router)'
       } else {
         return this.getCurChainInfo(chainId).symbol
       }
@@ -55,7 +55,11 @@ const config: ConFig = {
     // } 
     else {
       if (type) {
-        return name
+        if (value === this.getCurChainInfo(chainId).symbol) {
+          return name + '(Bridge)'
+        } else {
+          return name
+        }
       } else {
         return value
       }

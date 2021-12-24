@@ -2,7 +2,7 @@
 import { Currency, JSBI, Fraction } from 'anyswap-sdk'
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { tryParseAmount, tryParseAmount1 } from '../state/swap/hooks'
+import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useAddPopup } from '../state/application/hooks'
@@ -13,7 +13,7 @@ import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-
 // import { MsgSend } from '@terra-money/terra.js';
 import {
   MsgSend,
-  Coins,
+  // Coins,
   // MsgExecuteContract,
   StdFee,
   // LCDClient,
@@ -721,7 +721,7 @@ export function useBridgeNativeCallback(
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
-  const addTransaction = useTransactionAdder()
+  // const addTransaction = useTransactionAdder()
   const { post, connect } = useWallet()
   const addPopup = useAddPopup()
   const {getTerraBalances} = useTerraBalance()
@@ -735,9 +735,11 @@ export function useBridgeNativeCallback(
 
   
   // console.log(balance)
-  // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
-  const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
+  const inputAmount = useMemo(() => inputCurrency ? tryParseAmount3(typedValue, inputCurrency?.decimals) : undefined, [inputCurrency, typedValue])
+  // console.log(inputCurrency)
+  // console.log(inputAmount?.toSignificant(6))
+  // console.log(tryParseAmount3(typedValue, inputCurrency?.decimals)?.toSignificant(6))
 
   useEffect(() => {
     if (
@@ -746,17 +748,21 @@ export function useBridgeNativeCallback(
       && Unit
       && inputAmount
     ) {
+      // console.log(inputAmount)
       getTerraFeeList(
         connectedWallet?.walletAddress,
         toAddress,
         Unit,
         inputAmount
       ).then((res) => {
+        console.log(res)
         let fee:any = ''
+        let tax:any = ''
         let lunaFee:any = ''
         res.map(item => {
           if (item.denom === Unit) {
             fee = item.fee
+            tax = item.tax
           }
           if (item.denom === 'uluna') {
             lunaFee = item.fee
@@ -765,11 +771,17 @@ export function useBridgeNativeCallback(
         if (!fee) {
           fee = lunaFee
         }
-        console.log(fee)
-        setFee(fee.gas)
+        const txFee =
+          tax?.amount.greaterThan(0) && fee
+            ? new StdFee(fee.gas, fee.amount.add(tax))
+            : fee
+        // console.log(fee)
+        // console.log(txFee)
+        // setFee(fee.gas * 100)
+        setFee(txFee)
       })
     }
-  }, [getTerraFeeList, connectedWallet, toAddress, Unit])
+  }, [connectedWallet, toAddress, Unit, inputAmount])
 
   const fetchBalance = useCallback(() => {
     if (Unit && connectedWallet) {
@@ -794,9 +806,11 @@ export function useBridgeNativeCallback(
     const send:any = new MsgSend(
       connectedWallet?.walletAddress,
       toAddress,
-      { [Unit]: 	inputAmount.raw.toString() }
+      { [Unit]: 	inputAmount }
     )
-    const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
+    
+    // const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
+    const gasFee:any = fee
 
     return post({
       msgs: [send],
@@ -823,6 +837,7 @@ export function useBridgeNativeCallback(
     } catch (error) {
       console.log(error)
     }
+    // sufficientBalance = true
     // const sufficientBalance = true
     // console.log(sufficientBalance)
     return {
@@ -841,33 +856,33 @@ export function useBridgeNativeCallback(
                 if (txReceipt) {
                   const hash = txReceipt?.result?.txhash
                   const txData:any = {hash: hash}
-                  addTransaction(txData, {
-                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
-                    value: inputAmount.toSignificant(6),
-                    toChainId: toChainID,
-                    toAddress: terraRecipient?.toLowerCase(),
-                    symbol: inputCurrency?.symbol,
-                    version: 'swapin',
-                    routerToken: '',
-                  })
+                  // addTransaction(txData, {
+                  //   summary: `Cross bridge ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  //   value: typedValue,
+                  //   toChainId: toChainID,
+                  //   toAddress: terraRecipient?.toLowerCase(),
+                  //   symbol: inputCurrency?.symbol,
+                  //   version: 'swapin',
+                  //   routerToken: '',
+                  // })
                   if (txData.hash && account && terraRecipient) {
                     addPopup(
                       {
                         txn: {
                           hash,
                           success: true,
-                          summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}`
+                          summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`
                         }
                       },
                       hash
                     )
-                    const data = {
+                    const data:any = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: srcChainid,
                       selectChain: toChainID,
                       account: connectedWallet?.walletAddress,
-                      value: inputAmount.raw.toString(),
-                      formatvalue: inputAmount?.toSignificant(6),
+                      value: inputAmount,
+                      formatvalue: typedValue,
                       to: terraRecipient,
                       symbol: inputCurrency?.symbol,
                       version: 'swapin',
