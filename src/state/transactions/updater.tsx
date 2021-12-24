@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
+import {updateTerraHash} from '../../hooks/terra'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
-import { checkedTransaction, finalizeTransaction } from './actions'
+import { checkedTransaction, finalizeTransaction, updateTransaction } from './actions'
+import {useHashSwapInfo} from './hooks'
+
+import {TERRA_MAIN_CHAINID} from '../../config/chainConfig/terra'
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -42,50 +46,143 @@ export default function Updater(): null {
   const addPopup = useAddPopup()
 
   useEffect(() => {
-    if (!chainId || !library || !lastBlockNumber || isNaN(chainId)) return
-
-    Object.keys(transactions)
-      .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
+    if (!chainId) return
+    if (chainId === TERRA_MAIN_CHAINID) {
+      Object.keys(transactions)
+      .filter(hash => {
+        const tx = transactions[hash]
+        // if (tx.receipt) return false
+        if (tx.info) return false
+        return true
+      })
       .forEach(hash => {
-        library
-          .getTransactionReceipt(hash)
-          .then(receipt => {
-            if (receipt) {
+        console.log(hash)
+        const tx = transactions[hash]
+        if (!tx.receipt) {
+          updateTerraHash(hash).then((receipt:any) => {
+            console.log(receipt)
+            if (receipt && !receipt.error) {
               dispatch(
                 finalizeTransaction({
                   chainId,
                   hash,
                   receipt: {
-                    blockHash: receipt.blockHash,
-                    blockNumber: receipt.blockNumber,
-                    contractAddress: receipt.contractAddress,
-                    from: receipt.from,
-                    status: receipt.status,
-                    to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex
+                    blockHash: '',
+                    blockNumber: receipt.height,
+                    contractAddress: '',
+                    from: tx.from,
+                    status: receipt.code ? 0 : 1,
+                    to: tx.toAddress,
+                    transactionHash: hash,
+                    transactionIndex: ''
                   }
                 })
               )
-
               addPopup(
                 {
                   txn: {
                     hash,
-                    success: receipt.status === 1,
+                    success: !receipt.code,
                     summary: transactions[hash]?.summary
                   }
                 },
                 hash
               )
-            } else {
-              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
             }
           })
-          .catch(error => {
-            console.error(`failed to check transaction hash: ${hash}`, error)
+        } else if (
+          !tx.info
+          && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+        )  {
+          useHashSwapInfo(hash).then((receipt:any) => {
+            if (receipt && receipt.msg === 'Success' && receipt.info) {
+              dispatch(
+                updateTransaction({
+                  chainId,
+                  hash,
+                  info: {
+                    ...receipt.info
+                  }
+                })
+              )
+            }
           })
+        }
+        // else {
+        //   dispatch(
+        //     updateTransaction({
+        //       chainId,
+        //       hash,
+        //       info: ''
+        //     })
+        //   )
+        // }
       })
+    } else {
+      if (!library || !lastBlockNumber || isNaN(chainId)) return
+      Object.keys(transactions)
+        .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
+        .forEach(hash => {
+          const tx = transactions[hash]
+          if (!tx.receipt) {
+            library
+              .getTransactionReceipt(hash)
+              .then(receipt => {
+                if (receipt) {
+                  dispatch(
+                    finalizeTransaction({
+                      chainId,
+                      hash,
+                      receipt: {
+                        blockHash: receipt.blockHash,
+                        blockNumber: receipt.blockNumber,
+                        contractAddress: receipt.contractAddress,
+                        from: receipt.from,
+                        status: receipt.status,
+                        to: receipt.to,
+                        transactionHash: receipt.transactionHash,
+                        transactionIndex: receipt.transactionIndex
+                      }
+                    })
+                  )
+    
+                  addPopup(
+                    {
+                      txn: {
+                        hash,
+                        success: receipt.status === 1,
+                        summary: transactions[hash]?.summary
+                      }
+                    },
+                    hash
+                  )
+                } else {
+                  dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+                }
+              })
+              .catch(error => {
+                console.error(`failed to check transaction hash: ${hash}`, error)
+              })
+          } else if (
+            !tx.info
+            && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+          )  {
+            useHashSwapInfo(hash).then((receipt:any) => {
+              if (receipt && receipt.msg === 'Success' && receipt.info) {
+                dispatch(
+                  updateTransaction({
+                    chainId,
+                    hash,
+                    info: {
+                      ...receipt.info
+                    }
+                  })
+                )
+              }
+            })
+          }
+        })
+    }
   }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup])
 
   return null

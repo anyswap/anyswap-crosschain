@@ -101,6 +101,28 @@ export default createReducer(initialState, builder =>
       if (!tx) {
         return
       }
-      tx.info = info
+      tx.info = {
+        bind: info?.bind,
+        confirmations: info?.confirmations,
+        destChainID: info?.destChainID,
+        from: info?.from,
+        historyType: info?.historyType,
+        memo: info?.memo,
+        pairid: info?.pairid,
+        srcChainID: info?.srcChainID,
+        status: info?.status,
+        statusmsg: info?.statusmsg,
+        swapheight: info?.swapheight,
+        swapnonce: info?.swapnonce,
+        swaptx: info?.swaptx,
+        swaptype: info?.swaptype,
+        swapvalue: info?.swapvalue,
+        timestamp: info?.timestamp,
+        to: info?.to,
+        txheight: info?.txheight,
+        txid: info?.txid,
+        txto: info?.txto,
+        value: info?.value,
+      }
     })
 )

@@ -1,12 +1,15 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
 
 // import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
+
+import config from '../../config'
 
 // 可以接受ether库事务响应并将其添加到事务列表的助手
 export function useTransactionAdder(): (
@@ -143,4 +146,21 @@ export function useUserHasSubmittedClaim(
   }, [account, allTransactions])
 
   return { claimSubmitted: Boolean(claimTxn), claimTxn }
+}
+
+export function useHashSwapInfo (hash:any) {
+  return new Promise(resolve => {
+    const url = `${config.bridgeApi}/v2/history/details?params=${hash}`
+    axios.get(url).then(res => {
+      const {status, data} = res
+      if (status === 200) {
+        resolve(data)
+      } else {
+        resolve('')
+      }
+    }).catch((err) => {
+      console.log(err)
+      resolve('')
+    })
+  })
 }

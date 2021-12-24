@@ -2,10 +2,10 @@ import { createAction } from '@reduxjs/toolkit'
 import { ChainId } from 'anyswap-sdk'
 
 export interface SerializableTransactionReceipt {
-  to: string
+  to: any
   from: string
   contractAddress: string
-  transactionIndex: number
+  transactionIndex: any
   blockHash: string
   transactionHash: string
   blockNumber: number
@@ -30,7 +30,7 @@ export const clearAllTransactions = createAction<{ chainId: ChainId }>('transact
 export const finalizeTransaction = createAction<{
   chainId: ChainId
   hash: string
-  receipt: SerializableTransactionReceipt
+  receipt: SerializableTransactionReceipt | undefined
 }>('transactions/finalizeTransaction')
 export const checkedTransaction = createAction<{
   chainId: ChainId

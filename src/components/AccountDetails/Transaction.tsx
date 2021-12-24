@@ -43,12 +43,12 @@ export default function Transaction({ hash }: { hash: string }) {
   const { chainId } = useActiveReact()
   
   const allTransactions = useAllTransactions()
-
+  // console.log(allTransactions)
   const tx = allTransactions?.[hash]
   const summary = tx?.summary
   const pending = !tx?.receipt
   const success = !pending && tx && (tx.receipt?.status === 1 || typeof tx.receipt?.status === 'undefined')
-
+  // console.log(success)
   if (!chainId) return null
 
   return (

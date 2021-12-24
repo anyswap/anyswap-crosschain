@@ -139,3 +139,20 @@ export function useTerraSend () {
     getTerraFeeList
   }
 }
+
+export function updateTerraHash (hash:any): Promise<any> {
+  return new Promise(resolve => {
+    const url = `https://fcd.terra.dev/txs/${hash}`
+    axios.get(url).then(res => {
+      const {status, data} = res
+      if (status === 200) {
+        resolve(data)
+      } else {
+        resolve('')
+      }
+    }).catch((err) => {
+      console.log(err)
+      resolve('')
+    })
+  })
+}

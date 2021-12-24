@@ -34,9 +34,6 @@ const ConfirmList = styled.ul`
     ${({ theme }) => theme.flexBC};
     width: 100%;
     margin-bottom: 10px;
-    p {
-      margin:0;
-    }
     .title {
       font-size: 16px;
       margin: 0;
@@ -83,9 +80,6 @@ const FeeBox = styled.ul`
   list-style:none;
   padding:0;
   margin:0;
-  p {
-    margin:0;
-  }
   .item {
     ${({ theme }) => theme.flexBC};
     color: ${({ theme }) => theme.text2};
@@ -132,20 +126,20 @@ export default function ConfirmContent (
             <div className="label">
               <TokenLogo symbol={config.getCurChainInfo(fromChainId)?.networkLogo ?? config.getCurChainInfo(fromChainId)?.symbol} size={'24px'} />
               <div className="cont">
-                <p className="name">{config.getCurChainInfo(fromChainId)?.name}</p>
-                {/* <p className="info">{t('SourceChain')}</p> */}
+                <div className="name">{config.getCurChainInfo(fromChainId)?.name}</div>
+                {/* <div className="info">{t('SourceChain')}</div> */}
               </div>
             </div>
             <div className="value">
               <div className="cont">
-                <p className="name">- {value}</p>
-                <p className="info">{selectCurrency?.symbol}</p>
+                <div className="name">- {value}</div>
+                <div className="info">{selectCurrency?.symbol}</div>
               </div>
             </div>
           </li>
           <li className="item">
-            <p className="txtLabel">{t('Address')}:</p>
-            <p className="txt">{account}</p>
+            <div className="txtLabel">{t('Address')}:</div>
+            <div className="txt">{account}</div>
           </li>
         </ConfirmList>
         <ConfirmList>
@@ -156,20 +150,20 @@ export default function ConfirmContent (
             <div className="label">
               <TokenLogo symbol={config.getCurChainInfo(toChainId)?.networkLogo ?? config.getCurChainInfo(toChainId)?.symbol} size={'24px'} />
               <div className="cont">
-                <p className="name">{config.getCurChainInfo(toChainId)?.name}</p>
-                {/* <p className="info">Destination Chain</p> */}
+                <div className="name">{config.getCurChainInfo(toChainId)?.name}</div>
+                {/* <div className="info">Destination Chain</div> */}
               </div>
             </div>
             <div className="value">
               <div className="cont">
-                <p className="name">+ {swapvalue}</p>
-                <p className="info">{destConfig?.symbol}</p>
+                <div className="name">+ {swapvalue}</div>
+                <div className="info">{destConfig?.symbol}</div>
               </div>
             </div>
           </li>
           <li className="item">
-            <p className="txtLabel">{t('Address')}:</p>
-            <p className="txt">{recipient}</p>
+            <div className="txtLabel">{t('Address')}:</div>
+            <div className="txt">{recipient}</div>
           </li>
         </ConfirmList>
         <FeeBox>
@@ -177,32 +171,32 @@ export default function ConfirmContent (
             destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
               <>
                 <li className="item">
-                  <p className="label">Crosschain Fee</p>
-                  <p className="value">{useDfee} %</p>
+                  <div className="label">Crosschain Fee</div>
+                  <div className="value">{useDfee} %</div>
                 </li>
                 <li className="item">
-                  <p className="label">
+                  <div className="label">
                     Gas Fee
                     <QuestionHelper text={
                       'for your cross-chain transaction on destination chain'
                     } />
-                  </p>
-                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
+                  </div>
+                  <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
                 </li>
               </>
             ) : (
               <>
                 {/* <li className="item">
-                  <p className="label">
+                  <div className="label">
                     Gas Fee
                     <QuestionHelper text={
                       'for your cross-chain transaction on destination chain'
                     } />
-                  </p>
-                  <p className="value">{fee + ' ' + selectCurrency?.symbol}</p>
+                  </div>
+                  <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
                 </li> */}
                 <li className="item">
-                  <p className="label">
+                  <div className="label">
                     Crosschain Fee
                     <QuestionHelper text={
                       t('redeemTip1' , {
@@ -212,15 +206,15 @@ export default function ConfirmContent (
                         dFee: thousandBit(useDfee, 'no')
                       })
                     } />
-                  </p>
-                  <p className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</p>
+                  </div>
+                  <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
                 </li>
               </>
             )
           }
           <li className="item">
-            <p className="label">Estimated time of arrival:</p>
-            <p className="value">3-30 min</p>
+            <div className="label">Estimated time of arrival:</div>
+            <div className="value">3-30 min</div>
           </li>
         </FeeBox>
       </ConfirmBox>

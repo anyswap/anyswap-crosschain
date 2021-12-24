@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
-import { useAddPopup } from '../state/application/hooks'
+// import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
 import {signSwapoutData, signSwapinData} from 'multichain-bridge'
@@ -721,9 +721,9 @@ export function useBridgeNativeCallback(
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
-  // const addTransaction = useTransactionAdder()
+  const addTransaction = useTransactionAdder()
   const { post, connect } = useWallet()
-  const addPopup = useAddPopup()
+  // const addPopup = useAddPopup()
   const {getTerraBalances} = useTerraBalance()
 
   const {getTerraFeeList} = useTerraSend()
@@ -856,26 +856,26 @@ export function useBridgeNativeCallback(
                 if (txReceipt) {
                   const hash = txReceipt?.result?.txhash
                   const txData:any = {hash: hash}
-                  // addTransaction(txData, {
-                  //   summary: `Cross bridge ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
-                  //   value: typedValue,
-                  //   toChainId: toChainID,
-                  //   toAddress: terraRecipient?.toLowerCase(),
-                  //   symbol: inputCurrency?.symbol,
-                  //   version: 'swapin',
-                  //   routerToken: '',
-                  // })
+                  addTransaction(txData, {
+                    summary: `Cross bridge ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    value: typedValue,
+                    toChainId: toChainID,
+                    toAddress: terraRecipient?.toLowerCase(),
+                    symbol: inputCurrency?.symbol,
+                    version: 'swapin',
+                    routerToken: '',
+                  })
                   if (txData.hash && account && terraRecipient) {
-                    addPopup(
-                      {
-                        txn: {
-                          hash,
-                          success: true,
-                          summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`
-                        }
-                      },
-                      hash
-                    )
+                    // addPopup(
+                    //   {
+                    //     txn: {
+                    //       hash,
+                    //       success: true,
+                    //       summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`
+                    //     }
+                    //   },
+                    //   hash
+                    // )
                     const data:any = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: srcChainid,
