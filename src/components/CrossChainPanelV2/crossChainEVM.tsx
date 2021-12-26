@@ -363,12 +363,12 @@ export default function CrossChain({
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
         return {
           state: 'Error',
-          tip: t('ExceedLimit')
+          tip: t('LessThanLimit')
         }
       } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
         return {
           state: 'Error',
-          tip: t('ExceedLimit')
+          tip: t('MoreThanLimit')
         }
       } else if (
         (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))

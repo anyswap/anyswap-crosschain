@@ -337,8 +337,11 @@
   "farms": "Farms",
   "swapTip": "If the liquidity of the target chain is insufficient, you will receive {{symbol}} ({{chainName}}), please check the balance in the liquidity pool and redeem {{symbol1}}({{chainName}}).",
   "approveTip": "Please approve {{symbol}} before you continue cross chain swap in Multichain router.",
-  "txnsTip": "Please wait minutes to check the cross-chain tx status on the explorer",
+  "txnsTip": "Please allow 3-30 minutes for the cross-chain transaction to complete. You may check the status on our explorer",
   "ExceedLimit": "Exceed limit",
+  "LessThanLimit": "Less than minimum amount",
+  "MoreThanLimit": "More than maximum amount",
+
   "nodestlr": "Dest Liquidity Insufficient",
   "destTS": "Dest Liquidity",
   "StakingTip": "Stake {{symbol}}, APR:",
@@ -355,7 +358,7 @@
   "receiveTip": "Please do NOT send funds to exchanges.",
   "support": "Support",
   "ConnectTerraStation": "Connect Terra Station",
-  "topTip": "Multichain is formerly known as Anyswap",
+  "topTip": "Multichain is previously known as Anyswap",
   "approvedTip": "{{symbol}} approved, you can continue the cross chain transaction",
   "SourceChain": "Source Chain",
   "Address": "Address"
