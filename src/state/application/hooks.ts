@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
+import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, viewTxnsDtils } from './actions'
 
 export function useBlockNumber(initChainId?:any): number | undefined {
   const { chainId } = useActiveWeb3React()
@@ -96,4 +96,27 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)
   return useMemo(() => list.filter(item => item.show), [list])
+}
+
+
+export function useTxnsDtilOpen(): any {
+  const viewTxnsDtilsData = useSelector((state: AppState) => state.application.viewTxnsDtils)
+  const dispatch = useDispatch<AppDispatch>()
+  const onChangeViewDtil = useCallback(
+    (hash: any, isOpenModal: any) => {
+      // console.log(field)
+      // console.log(typedValue)
+      // console.log(typeInput({ field, typedValue }))
+      dispatch(viewTxnsDtils({ hash, isOpenModal }))
+    },
+    [dispatch]
+  )
+
+  return {
+    ...(viewTxnsDtilsData ? viewTxnsDtilsData : {
+      hash: '',
+      isOpenModal: ''
+    }),
+    onChangeViewDtil
+  }
 }

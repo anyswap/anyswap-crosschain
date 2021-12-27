@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
+import {useTxnsDtilOpen} from '../state/application/hooks'
 // import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
@@ -51,9 +52,10 @@ export function useBridgeCallback(
   toChainID: string | undefined,
   version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance?.raw.toString(16))
@@ -74,6 +76,7 @@ export function useBridgeCallback(
       execute:
         sufficientBalance && inputAmount
           ? async () => {
+              const results:any = {}
               try {
                 // console.log(bridgeContract)
                 // console.log(inputAmount.raw.toString(16))
@@ -91,6 +94,8 @@ export function useBridgeCallback(
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -108,9 +113,12 @@ export function useBridgeCallback(
                   }
                   recordsTxns(data)
                 }
+                results.hash = txReceipt?.hash
+                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.error('Could not swapout', error)
               }
+              return results
             }
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
@@ -137,6 +145,7 @@ export function useBridgeCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -156,7 +165,7 @@ export function useBridgeCallback(
       execute:
         sufficientBalance && inputAmount
           ? async () => {
-              let hash = ''
+              const results:any = {}
               try {
                 // console.log(bridgeContract)
                 // console.log(inputAmount.raw.toString(16))
@@ -178,6 +187,8 @@ export function useBridgeCallback(
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -195,11 +206,12 @@ export function useBridgeCallback(
                   }
                   recordsTxns(data)
                 }
-                hash = txReceipt?.hash
+                results.hash = txReceipt?.hash
+                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
-              return hash
+              return results
             }
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
@@ -227,6 +239,7 @@ export function useBridgeNativeCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const balance = useETHBalances(account ? [account] : [])?.[account ?? '']
   // console.log(balance)
@@ -263,6 +276,8 @@ export function useBridgeNativeCallback(
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -280,6 +295,7 @@ export function useBridgeNativeCallback(
                   }
                   recordsTxns(data)
                 }
+                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.error('Could not swapout', error)
               }
@@ -430,6 +446,7 @@ export function useBridgeNativeCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -476,6 +493,8 @@ export function useBridgeNativeCallback(
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -493,6 +512,7 @@ export function useBridgeNativeCallback(
                   }
                   recordsTxns(data)
                 }
+                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -524,6 +544,7 @@ export function useBridgeNativeCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance)
@@ -569,6 +590,8 @@ export function useBridgeNativeCallback(
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -586,6 +609,7 @@ export function useBridgeNativeCallback(
                   }
                   recordsTxns(data)
                 }
+                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -613,6 +637,7 @@ export function useBridgeNativeCallback(
   pairid: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -662,6 +687,8 @@ export function useBridgeNativeCallback(
                   symbol: inputCurrency?.symbol,
                   version: txnsType,
                   routerToken: '',
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl
                 })
                 if (txData.hash && account) {
                   let srcChainID = chainId
@@ -684,6 +711,7 @@ export function useBridgeNativeCallback(
                   }
                   recordsTxns(rdata)
                 }
+                onChangeViewDtil(txData?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
@@ -720,6 +748,7 @@ export function useBridgeNativeCallback(
 } {
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const connectedWallet = useConnectedWallet()
   const addTransaction = useTransactionAdder()
   const { post, connect } = useWallet()
@@ -864,6 +893,8 @@ export function useBridgeNativeCallback(
                     symbol: inputCurrency?.symbol,
                     version: 'swapin',
                     routerToken: '',
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl
                   })
                   if (txData.hash && account && terraRecipient) {
                     // addPopup(
@@ -890,6 +921,7 @@ export function useBridgeNativeCallback(
                     }
                     recordsTxns(data)
                   }
+                  onChangeViewDtil(txData?.hash, true)
                 }
               } catch (error) {
                 const err:any = error

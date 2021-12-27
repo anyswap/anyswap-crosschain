@@ -25,6 +25,8 @@ export const addTransaction = createAction<{
   symbol?: string
   version?: string
   routerToken?: string
+  token?: string
+  logoUrl?: string
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{

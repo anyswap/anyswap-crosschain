@@ -27,6 +27,8 @@ export interface TransactionDetails {
   version?: string
   routerToken?: string
   info?: any
+  token?: any
+  logoUrl?: any
 }
 
 export interface TransactionState {
@@ -52,6 +54,8 @@ export default createReducer(initialState, builder =>
       symbol,
       version,
       routerToken,
+      token,
+      logoUrl
     } }) => {
       if (transactions[chainId]?.[hash]) {
         throw Error('Attempted to add existing transaction.')
@@ -70,6 +74,8 @@ export default createReducer(initialState, builder =>
         symbol,
         version,
         routerToken,
+        token,
+        logoUrl
       }
       transactions[chainId] = txs
     })

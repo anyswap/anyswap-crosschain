@@ -253,3 +253,41 @@ export function bigToSmallSort (propertyArray:any) {
     return sorting();
   };
 }
+
+export function fromTime (timestamp:any) {
+  if (timestamp.toString().length === 10) {
+    timestamp = Number(timestamp) * 1000
+  } else if (timestamp.toString().length > 13) {
+    timestamp = timestamp.toString().substring(0, 13)
+  }
+  return Number(timestamp)
+}
+
+export function timeChange (timestamp:any, type:any, format?:any) {
+  let time:any = timestamp ? new Date(fromTime(timestamp)) : new Date()
+  const formatType = format ? format : '/'
+  let Y = time.getFullYear()
+  const M = (time.getMonth() + 1) < 10 ? ('0' + (time.getMonth() + 1)) : (time.getMonth() + 1)
+  const D = time.getDate() < 10 ? ('0' + time.getDate()) : time.getDate()
+  const h = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours()
+  const m = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
+  const s = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
+
+  if (type === 'yyyy-mm-dd') {
+    time = Y + formatType + M + formatType + D
+  } else if (type === 'yyyy-mm-dd hh:mm') {
+    time = Y + formatType + M + formatType + D + ' ' + h + ':' + m
+  } else if (type === 'yyyy-mm-dd hh:mm:ss') {
+    time = Y + formatType + M + formatType + D + ' ' + h + ':' + m + ':' + s
+  } else if (type === 'yyyy-mm-dd hh') {
+    time = Y + formatType + M + formatType + D + ' ' + h
+  } else if (type === 'yyyy-mm') {
+    time = Y + formatType + M
+  } else if (type === 'yyyy') {
+    time = Y
+  } else if (type === 'yy-mm-dd hh:mm') {
+    Y = Y.toString().substr(2)
+    time = Y + formatType + M + formatType + D + ' ' + h + ':' + m
+  }
+  return time
+}

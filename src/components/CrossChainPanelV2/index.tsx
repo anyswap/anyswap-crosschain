@@ -3,9 +3,12 @@ import CrossChainBTC from './crossChainBTC'
 import CrossChainEVM from './crossChainEVM'
 import CrossChainNonEVM from './crossChainNonEVM'
 
+import TxnsDtilsModal from './txnsDtilsModal'
+import TxnsListModal from './txnsListModal'
+
 import { useUserSelectChainId } from '../../state/user/hooks'
 
-export default function CrossChain({
+function CrossChainView ({
   bridgeKey
 }: {
   bridgeKey: any
@@ -30,4 +33,18 @@ export default function CrossChain({
       </>
     )
   }
+}
+
+export default function CrossChain({
+  bridgeKey
+}: {
+  bridgeKey: any
+}) {
+  return (
+    <>
+      <TxnsDtilsModal />
+      <TxnsListModal />
+      <CrossChainView bridgeKey={bridgeKey} />
+    </>
+  )
 }
