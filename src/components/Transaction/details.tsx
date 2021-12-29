@@ -48,6 +48,9 @@ const HistoryDetailsBox = styled.div`
     .Failure, .Timeout, .BigAmount {
       color: ${({theme}) => theme.red1};
     }
+    .Success, .Pending {
+      color: ${({theme}) => theme.green1};
+    }
   }
 `
 

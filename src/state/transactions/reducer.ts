@@ -123,6 +123,7 @@ export default createReducer(initialState, builder =>
         swaptx: info?.swaptx,
         swaptype: info?.swaptype,
         swapvalue: info?.swapvalue,
+        formatswapvalue: info?.formatswapvalue,
         timestamp: info?.timestamp,
         to: info?.to,
         txheight: info?.txheight,

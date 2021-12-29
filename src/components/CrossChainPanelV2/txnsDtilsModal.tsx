@@ -84,7 +84,7 @@ export default function TxnsDtilsModal () {
           toStatus={toStatus}
           txid={tx?.hash}
           swaptx={fromStatus === Status.Failure || toStatus === Status.Failure ? 'Null' : tx?.info?.swaptx}
-          swapvalue={fromStatus === Status.Failure || toStatus === Status.Failure ? 'Null' : tx?.info?.swapvalue}
+          swapvalue={fromStatus === Status.Failure || toStatus === Status.Failure ? 'Null' : tx?.info?.formatswapvalue}
           timestamp={tx?.addedTime}
           value={tx?.value}
         />
