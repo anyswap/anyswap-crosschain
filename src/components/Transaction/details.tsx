@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-
+import { NavLink } from 'react-router-dom'
 import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 
@@ -9,6 +9,7 @@ import {timeChange} from '../../utils/tools/tools'
 
 import { ExternalLink } from '../../theme'
 
+import {Status} from '../../config/status'
 import config from '../../config'
 
 const HistoryDetailsBox = styled.div`
@@ -29,8 +30,8 @@ const HistoryDetailsBox = styled.div`
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
-      height: 30px;
-      line-height: 30px;
+      height: 21px;
+      line-height: 21px;
     }
     .a {
       width: 80%;
@@ -51,12 +52,20 @@ const HistoryDetailsBox = styled.div`
     .Success, .Pending {
       color: ${({theme}) => theme.green1};
     }
+    .tips {
+      font-size: 14px;
+      height: 21px;
+      line-height: 21px;
+      text-align:center;
+      .a {
+        width: 100%;
+      }
+    }
   }
 `
 
-const Link = styled(ExternalLink)`
-
-`
+const Link = styled(ExternalLink)``
+const Link2 = styled(NavLink)``
 
 export default function HistoryDetails ({
   symbol,
@@ -71,6 +80,8 @@ export default function HistoryDetails ({
   txid,
   swaptx,
   value,
+  version,
+  token,
 }: {
   symbol?: any,
   from?: any,
@@ -84,6 +95,8 @@ export default function HistoryDetails ({
   txid?: any,
   swaptx?: any,
   value?: any,
+  version?: any,
+  token?: any,
 }) {
   return (
     <>
@@ -145,6 +158,24 @@ export default function HistoryDetails ({
           <div className="label">Date</div>
           <div className="value">{timeChange(timestamp, 'yyyy-mm-dd hh:mm')}</div>
         </div>
+        {
+          fromStatus === Status.Success && !toStatus ? (
+            <div className="item">
+              <div className="tips">
+                <Link className="a" href={`${config.explorer}?tabparams=tools&fromChainID=${fromChainID}&toChainID=${toChainID}&symbol=${symbol}&hash=${txid}`} target="_blank">Go to Explorer submit hash -&gt;</Link>
+              </div>
+            </div>
+          ) : ''
+        }
+        {
+          fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token ? (
+            <div className="item">
+              <div className="tips">
+                <Link2 className="a" to={`/pool/add?bridgetoken=${token}&bridgetype=withdraw`}>Received? To remove the liquidity</Link2>
+              </div>
+            </div>
+          ) : ''
+        }
       </HistoryDetailsBox>
     </>
   )

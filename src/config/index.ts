@@ -4,6 +4,7 @@ import {
   INIT_NODE,
   USE_VERSION,
   bridgeApi,
+  explorer,
   env,
   version,
   controlConfig
@@ -28,6 +29,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,
+  explorer,
   oldAppName: 'Anyswap V1',
   appName: 'HTswap LP',
   baseCurrency: 'ANY',

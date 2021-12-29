@@ -75,7 +75,7 @@ export const LinkList = [
   //   isView: 1
   // },
   {
-    path: 'https://anyswap.net',
+    path: config.explorer,
     textKey: 'explorer',
     regex: '',
     className: 'otherInfo',
