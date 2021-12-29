@@ -13,7 +13,7 @@ import useInterval from '../../hooks/useInterval'
 
 import {TERRA_MAIN_CHAINID} from '../../config/chainConfig/terra'
 
-const END_STATUS = [1, 3, 10, 16,-2]
+import {END_STATUS} from '../../config/status'
 
 export function shouldCheck(
   lastBlockNumber: number,
