@@ -2,9 +2,12 @@ import React from "react"
 import styled from "styled-components"
 
 import Loader from '../Loader'
+import Copy from '../AccountDetails/Copy'
 
 import { getEtherscanLink } from '../../utils'
 import {timeChange} from '../../utils/tools/tools'
+
+import { ExternalLink } from '../../theme'
 
 import config from '../../config'
 
@@ -20,27 +23,36 @@ const HistoryDetailsBox = styled.div`
       color: ${({theme}) => theme.text2}
     }
     .value {
-      ${({theme}) => theme.flexSC};
+      ${({theme}) => theme.flexBC};
       width: 100%;
       color: ${({theme}) => theme.textColor};
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
-      display:block;
       height: 30px;
       line-height: 30px;
     }
     .a {
+      width: 80%;
       color: ${({theme}) => theme.primary4};
       text-decoration: none;
-      &:hover,&:focus,&:active{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      display:block;
+      &:hover,&:focus,&:active,&:focus-visible{
         border:none;
+        background: none;
       }
     }
     .Failure, .Timeout, .BigAmount {
       color: ${({theme}) => theme.red1};
     }
   }
+`
+
+const Link = styled(ExternalLink)`
+
 `
 
 export default function HistoryDetails ({
@@ -75,19 +87,39 @@ export default function HistoryDetails ({
       <HistoryDetailsBox>
         <div className="item">
           <div className="label">From Hash</div>
-          <a className="value a" href={getEtherscanLink(fromChainID, txid, 'transaction')} target="__blank">{txid}</a>
+          <div className="value">
+            <Link className="a" href={getEtherscanLink(fromChainID, txid, 'transaction')} target="_blank">{txid}</Link>
+            <Copy toCopy={txid}></Copy>
+          </div>
         </div>
         <div className="item">
           <div className="label">To Hash</div>
-          {swaptx ? <a className="value a" href={getEtherscanLink(toChainID, swaptx, 'transaction')} target="__blank">{swaptx}</a> : <div className="value"><Loader stroke="#5f6bfb" /></div>}
+          <div className="value">
+            {swaptx ? (
+              <>
+                <Link className="a" href={getEtherscanLink(toChainID, swaptx, 'transaction')} target="_blank">{swaptx}</Link>
+                <Copy toCopy={swaptx}></Copy>
+              </>
+            ) : <Loader  stroke="#5f6bfb" />}
+          </div>
         </div>
         <div className="item">
           <div className="label">From Address</div>
-          <a className="value a" href={getEtherscanLink(fromChainID, txid, 'address')} target="__blank">{from}</a>
+          <div className="value">
+            <Link className="a" href={getEtherscanLink(fromChainID, from, 'address')} target="_blank">{from}</Link>
+            <Copy toCopy={from}></Copy>
+          </div>
         </div>
         <div className="item">
           <div className="label">To Address</div>
-          {to ? <a className="value a" href={getEtherscanLink(toChainID, txid, 'address')} target="__blank">{to}</a> : <div className="value"><Loader stroke="#5f6bfb" /></div>}
+          <div className="value">
+            {to ? (
+              <>
+                <Link className="value a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
+                <Copy toCopy={to}></Copy>
+              </>
+            ) : <Loader stroke="#5f6bfb" />}
+          </div>
         </div>
         
         <div className="item">

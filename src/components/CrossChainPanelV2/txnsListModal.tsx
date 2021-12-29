@@ -9,10 +9,12 @@ import TokenLogo from "../TokenLogo"
 const TxnsListBox = styled.div`
   position:fixed;
   top: 100px;
-  right: 20px
+  right: 20px;
+  height: 100%;
   max-height: 300px;
   overflow-x: hidden;
   overflow-y: auto;
+  z-index: 9;
 `
 
 export default function TxnsListModal () {
@@ -21,15 +23,16 @@ export default function TxnsListModal () {
 
   // console.log(allTransactions)
   // const hash = getParams('hash')
-  console.log(allTransactions)
+  // console.log(allTransactions)
   return (
     <>
       <TxnsListBox>
-        {Object.keys(allTransactions).map((hash) => {
+        {Object.keys(allTransactions).reverse().map((hash) => {
           const symbol = allTransactions[hash].symbol
+          const logoUrl = allTransactions[hash].logoUrl
           return (
             <div onClick={() => {onChangeViewDtil(hash, true)}} key={hash}>
-              <TokenLogo symbol={symbol} size={'36px'} />
+              <TokenLogo symbol={symbol} logoUrl={logoUrl} size={'36px'} />
             </div>
           )
         })}
