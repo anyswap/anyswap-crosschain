@@ -357,5 +357,7 @@
   "topTip": "Multichain品牌前身是Anyswap",
   "approvedTip": "{{symbol}}批准了，你可以继续跨链交易",
   "SourceChain": "Source Chain",
-  "Address": "地址"
+  "Address": "地址",
+  "Age": "Age",
+  "Status": "状态"
 }

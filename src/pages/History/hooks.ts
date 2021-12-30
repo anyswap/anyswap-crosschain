@@ -8,3 +8,25 @@ export function getSymbol (pairid:any) {
   const symbol = pairid ? pairid.replace(/v[0-9]+$/, '').replace('any', '').toUpperCase() : ''
   return symbol
 }
+
+const txnsType = ['swapout']
+
+export function getFromChainId (tx:any) {
+  if (tx?.fromChainID) {
+    return tx?.fromChainID
+  } else if (!txnsType.includes(tx?.historyType)) {
+    return tx?.srcChainID
+  } else {
+    return tx?.destChainID
+  }
+}
+
+export function getToChainId (tx:any) {
+  if (tx?.toChainID) {
+    return tx?.toChainID
+  } else if (!txnsType.includes(tx?.historyType)) {
+    return tx?.destChainID
+  } else {
+    return tx?.srcChainID
+  }
+}

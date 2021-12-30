@@ -54,7 +54,7 @@ export function shortenAddress(address: string, chars = 4): string {
 }
 
 export function shortenAddress1(address: string, chars = 4): string {
-  return `${address.substring(0, chars + 2)}...${address.substring(42 - chars)}`
+  return `${address.substring(0, chars + 2)}...${address.substring(address.length - chars)}`
 }
 
 // add 10%

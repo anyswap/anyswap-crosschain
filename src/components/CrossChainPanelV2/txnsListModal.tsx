@@ -28,8 +28,8 @@ export default function TxnsListModal () {
     <>
       <TxnsListBox>
         {Object.keys(allTransactions).reverse().map((hash, index) => {
-          const symbol = allTransactions[hash].symbol
-          const logoUrl = allTransactions[hash].logoUrl
+          const symbol = allTransactions[hash]?.symbol
+          const logoUrl = allTransactions[hash]?.logoUrl
           return (
             <div onClick={() => {onChangeViewDtil(hash, true)}} key={index}>
               <TokenLogo symbol={symbol} logoUrl={logoUrl} size={'36px'} />

@@ -291,3 +291,70 @@ export function timeChange (timestamp:any, type:any, format?:any) {
   }
   return time
 }
+
+function timeSec (time:any) {
+	return time + 's ago'
+}
+
+function timeMin (time:any, type?:any) {
+	const seconds = time - (Math.floor(time / 60) * 60)
+	let callback = Math.floor(time / 60) + ' mins ' + timeSec(seconds)
+	if (type === 'min') {
+		callback = Math.floor(time / 60) + ' mins '
+	} else {
+		callback = Math.floor(time / 60) + ' mins ' + timeSec(seconds)
+	}
+	return callback
+}
+
+function timeHour (time:any, type?:any) {
+	const hours = Math.floor(time / (60 * 60))
+	const minute = timeMin(time - (hours * 60 * 60), type)
+	let callback = hours + ' hours ' + minute
+	if (type === 'hour') {
+		callback = hours + ' hours '
+	} else {
+		callback = hours + ' hours ' + minute
+	}
+	return callback
+}
+
+function timeDay (time:any, type?:any) {
+	const days = Math.floor(time / (60 * 60 * 24))
+	const hours = timeHour(time - (days * 60 * 60 * 24), type)
+	const callback = days + ' days ' + hours
+	return callback
+}
+
+export function timesFun (time:any, now?:any) {
+  // let nowTime = Date.parse(now)
+  const nowTime = now ? now : Date.parse(new Date().toString())
+  // console.log(nowTime)
+  time = time.toString().length > 10 ? time : (time * 1000)
+  // console.log(time)
+  let dataTime = 0
+  let callback:any = 0
+  if (isNaN(time)) {
+    dataTime = Date.parse(time)
+  } else {
+    dataTime = time
+  }
+  let timeDiffer = (nowTime - dataTime) / 1000
+  timeDiffer = timeDiffer > 0 ? timeDiffer : 1
+
+  if (timeDiffer < 60) { // seconds
+    // console.log(1)
+    callback = timeSec(timeDiffer)
+  } else if (timeDiffer < (60 * 60)) { // minute
+    // console.log(2)
+    callback = timeMin(timeDiffer)
+  } else if (timeDiffer < (60 * 60 * 24)) { // hours
+    // console.log(3)
+    callback = timeHour(timeDiffer, 'min')
+  } else { // day
+    // console.log(4)
+    callback = timeDay(timeDiffer, 'hour')
+  }
+  // console.log(callback)
+  return callback
+}

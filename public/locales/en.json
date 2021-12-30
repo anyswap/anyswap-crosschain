@@ -358,5 +358,7 @@
   "topTip": "Multichain is formerly known as Anyswap",
   "approvedTip": "{{symbol}} approved, you can continue the cross chain transaction",
   "SourceChain": "Source Chain",
-  "Address": "Address"
+  "Address": "Address",
+  "Age": "Age",
+  "Status": "Status"
 }
