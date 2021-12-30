@@ -27,6 +27,7 @@ import terra, {TERRA_MAIN_CHAINID} from './terra'
 import fuse, {FUSE_MAIN_CHAINID} from './fuse'
 import aurora, {AURORA_MAIN_CHAINID} from './aurora'
 import sys, {SYS_MAIN_CHAINID} from './sys'
+import metis, {METIS_MAIN_CHAINID} from './metis'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -62,7 +63,8 @@ export const chainInfo:ConFig = {
   ...terra,
   ...fuse,
   ...aurora,
-  ...sys
+  ...sys,
+  ...metis
 }
 
 const useChain:any = {
@@ -172,7 +174,8 @@ const useChain:any = {
     FUSE_MAIN_CHAINID,
     // AURORA_MAIN_CHAINID,
     SYS_MAIN_CHAINID,
-    AURORA_MAIN_CHAINID
+    AURORA_MAIN_CHAINID,
+    METIS_MAIN_CHAINID
   ],
   [VERSION.V6]: [
     // ETH_MAIN_CHAINID,
@@ -230,6 +233,7 @@ const useChain:any = {
     FUSE_MAIN_CHAINID,
     SYS_MAIN_CHAINID,
     AURORA_MAIN_CHAINID,
+    METIS_MAIN_CHAINID,
     LTC_MAIN_CHAINID,
     BTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
