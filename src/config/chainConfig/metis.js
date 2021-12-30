@@ -50,7 +50,7 @@ export default {
     lookBlock: METIS_MAIN_EXPLORER + '/block/',
     explorer: METIS_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Telos',
+    name: 'Metis',
     networkName: 'METIS mainnet',
     type: 'main',
     label: METIS_MAIN_CHAINID,
