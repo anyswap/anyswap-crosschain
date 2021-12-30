@@ -1,12 +1,21 @@
 import React, { useEffect } from "react"
-
+import axios from "axios"
 import {useActiveReact} from '../../hooks/useActiveReact'
 
-export default function History () {
-  const {account, chainId} = useActiveReact()
-  useEffect(() => {
+import config from '../../config'
 
-  }, [account, chainId])
+export default function History () {
+  const {account} = useActiveReact()
+  useEffect(() => {
+    if (account) {
+      const url = `${config.bridgeApi}/v2/all/history/${account}/all/all/all?offset=0&limit=50&status=8,9,10`
+      axios.get(url).then(res => {
+        const {data, status} = res
+        console.log(data)
+        console.log(status)
+      })
+    }
+  }, [account])
   return (
     <>
     </>

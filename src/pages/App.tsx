@@ -26,6 +26,7 @@ import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
 import FarmList from './Farms/FarmsList'
 
+import HistoryList from './History'
 import HistoryDetails from './History/details'
 
 import config from '../config'
@@ -160,6 +161,7 @@ export default function App() {
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               <Route exact strict path="/bridge" component={() => <Bridge />} />
               <Route exact strict path="/multi" component={() => <SwapMULTI />} />
+              <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
   

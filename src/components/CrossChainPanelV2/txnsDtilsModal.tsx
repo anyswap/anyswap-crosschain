@@ -38,7 +38,7 @@ export default function TxnsDtilsModal () {
         return Status.Failure
       } else if (!tx.info) {
         return null
-      } else if (tx.info?.status) {
+      } else if (tx.info?.status || tx.info?.status === 0) {
         const status = tx.info?.status
         const statusType = getStatus(status)
         return statusType
