@@ -12,6 +12,9 @@ import QuestionHelper from '../QuestionHelper'
 import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
 import { filterTokens } from '../SearchModal/filtering'
 import { useTokenComparator } from '../SearchModal/sorting'
+import Row from '../Row'
+
+import CommonBases from './CommonBases'
 
 import { CloseIcon } from '../../theme'
 
@@ -53,6 +56,8 @@ export default function SearchModal ({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [intervalCount, setIntervalCount] = useState<any>(0)
 
+  // const [mainTokenList, setMainTokenList] = useState<Array<any>>([])
+
 
   const inputRef = useRef<HTMLInputElement>()
 
@@ -62,8 +67,27 @@ export default function SearchModal ({
 
   const tokenList = useMemo(() => {
     const arr:any = []
+    // const mainTokenLists:any = []
     for (const token in allTokens) {
-      arr.push(allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token])
+      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      arr.push(obj)
+      // if (['USDC'].includes(obj.symbol)) {
+      //   mainTokenLists.push(obj)
+      // }
+    }
+    // console.log(mainTokenLists)
+    // setMainTokenList(mainTokenLists)
+    return arr
+  }, [allTokens])
+
+  const mainTokenList = useMemo(() => {
+    const arr:any = []
+    for (const token in allTokens) {
+      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      if (['MultichainUSDC', 'MultichainDAI'].includes(obj.name)) continue
+      if (['USDC', 'ETH', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC'].includes(obj.symbol)) {
+        arr.push(obj)
+      }
     }
     return arr
   }, [allTokens])
@@ -154,15 +178,25 @@ export default function SearchModal ({
             </Text>
             <CloseIcon onClick={onDismiss} />
           </RowBetween>
-          <SearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t('tokenSearchPlaceholder')}
-            value={searchQuery}
-            ref={inputRef as RefObject<HTMLInputElement>}
-            onChange={handleInput}
-            onKeyDown={handleEnter}
-          />
+          <Row>
+            <SearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t('tokenSearchPlaceholder')}
+              value={searchQuery}
+              ref={inputRef as RefObject<HTMLInputElement>}
+              onChange={handleInput}
+              onKeyDown={handleEnter}
+            />
+          </Row>
+          {mainTokenList.length > 0 ? (
+            <CommonBases
+            // chainId={chainId}
+            selectedCurrency={selectedCurrency}
+            onSelect={handleCurrencySelect}
+            tokenList = {mainTokenList}
+            />
+          ) : ''}
         </PaddedColumn>
         <Separator />
         <div style={{ flex: '1' }}>
