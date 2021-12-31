@@ -95,7 +95,8 @@ export function useBridgeCallback(
                   version: version,
                   routerToken: routerToken,
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -188,7 +189,8 @@ export function useBridgeCallback(
                   version: version,
                   routerToken: routerToken,
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -277,7 +279,8 @@ export function useBridgeNativeCallback(
                   version: version,
                   routerToken: routerToken,
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -494,7 +497,8 @@ export function useBridgeNativeCallback(
                   version: version,
                   routerToken: routerToken,
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -591,7 +595,8 @@ export function useBridgeNativeCallback(
                   version: version,
                   routerToken: routerToken,
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -688,7 +693,8 @@ export function useBridgeNativeCallback(
                   version: txnsType,
                   routerToken: '',
                   token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl
+                  logoUrl: inputCurrency?.logoUrl,
+                  underlying: inputCurrency?.underlying
                 })
                 if (txData.hash && account) {
                   let srcChainID = chainId
@@ -894,19 +900,10 @@ export function useBridgeNativeCallback(
                     version: 'swapin',
                     routerToken: '',
                     token: inputCurrency?.address,
-                    logoUrl: inputCurrency?.logoUrl
+                    logoUrl: inputCurrency?.logoUrl,
+                    underlying: inputCurrency?.underlying
                   })
                   if (txData.hash && account && terraRecipient) {
-                    // addPopup(
-                    //   {
-                    //     txn: {
-                    //       hash,
-                    //       success: true,
-                    //       summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`
-                    //     }
-                    //   },
-                    //   hash
-                    // )
                     const data:any = {
                       hash: txData.hash?.toLowerCase(),
                       chainId: srcChainid,

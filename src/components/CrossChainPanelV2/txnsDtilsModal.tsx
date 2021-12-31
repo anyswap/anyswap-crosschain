@@ -18,7 +18,7 @@ export default function TxnsDtilsModal () {
   // console.log(allTransactions)
   // const hash = getParams('hash')
   const tx = allTransactions?.[hash]
-  console.log(tx)
+  // console.log(tx)
   const fromStatus = useMemo(() => {
     if (tx) {
       if (!tx.receipt) {
@@ -74,6 +74,8 @@ export default function TxnsDtilsModal () {
           value={tx?.value}
           version={tx?.version}
           token={tx?.token}
+          underlying={tx?.underlying}
+          isReceiveAnyToken={tx?.isReceiveAnyToken}
         />
       </ModalContent>
     </>

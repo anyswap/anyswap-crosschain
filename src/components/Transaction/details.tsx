@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import styled from "styled-components"
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,10 @@ import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 
 import { getEtherscanLink } from '../../utils'
+import {useWeb3} from '../../utils/tools/web3UtilsV2'
 // import {timeChange} from '../../utils/tools/tools'
+
+import {useUpdateUnderlyingStatus} from '../../state/transactions/hooks'
 
 import { ExternalLink } from '../../theme'
 
@@ -101,7 +104,9 @@ const ChainStatusBox = styled.div`
 `
 
 const Link = styled(ExternalLink)``
-const Link2 = styled(NavLink)``
+const Link2 = styled(NavLink)`
+  text-align:right;
+`
 
 export default function HistoryDetails ({
   symbol,
@@ -118,6 +123,8 @@ export default function HistoryDetails ({
   value,
   version,
   token,
+  underlying,
+  isReceiveAnyToken
 }: {
   symbol?: any,
   from?: any,
@@ -133,8 +140,20 @@ export default function HistoryDetails ({
   value?: any,
   version?: any,
   token?: any,
+  underlying?: any,
+  isReceiveAnyToken?: any,
 }) {
   const { t } = useTranslation()
+  const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
+  useEffect(() => {
+    if (underlying && swaptx && !isReceiveAnyToken) {
+      useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
+        if (res && res.logs && res.logs.length === 1 && setUnderlyingStatus) {
+          setUnderlyingStatus(fromChainID, txid, true)
+        }
+      })
+    }
+  }, [underlying, swaptx, toChainID])
   return (
     <>
       <HistoryDetailsBox>
@@ -181,7 +200,16 @@ export default function HistoryDetails ({
         </div>
         <div className="item">
           <div className="label">Receive Value</div>
-          <div className="value">{swapvalue ? swapvalue + ' ' + symbol : '-'}</div>
+          <div className="value bc">
+            {swapvalue ? swapvalue + ' ' + symbol : '-'}
+            {
+              fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
+                <>
+                  <Link2 className="a" to={`/pool/add?bridgetoken=${token}&bridgetype=withdraw`}>Remove the liquidity -&gt;</Link2>
+                </>
+              ) : ''
+            }
+          </div>
         </div>
         {/* <div className="item">
           <div className="label">{config.getCurChainInfo(fromChainID)?.name} Status</div>
@@ -216,15 +244,15 @@ export default function HistoryDetails ({
             </div>
           ) : ''
         }
-        {
-          fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token ? (
+        {/* {
+          fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
             <div className="item">
               <div className="tips">
                 <Link2 className="a" to={`/pool/add?bridgetoken=${token}&bridgetype=withdraw`}>Received? To remove the liquidity</Link2>
               </div>
             </div>
           ) : ''
-        }
+        } */}
       </HistoryDetailsBox>
     </>
   )

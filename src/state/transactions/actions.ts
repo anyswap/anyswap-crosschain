@@ -27,6 +27,7 @@ export const addTransaction = createAction<{
   routerToken?: string
   token?: string
   logoUrl?: string
+  underlying?: any
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{
@@ -45,3 +46,9 @@ export const updateTransaction = createAction<{
   hash: string
   info: any
 }>('transactions/updateTransaction')
+
+export const updateUnderlyingStatus = createAction<{
+  chainId: ChainId
+  hash: string
+  isReceiveAnyToken: any
+}>('transactions/updateUnderlyingStatus')

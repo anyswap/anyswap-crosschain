@@ -6,7 +6,7 @@ import axios from 'axios'
 // import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { AppDispatch, AppState } from '../index'
-import { addTransaction } from './actions'
+import { addTransaction, updateUnderlyingStatus } from './actions'
 import { TransactionDetails } from './reducer'
 
 import config from '../../config'
@@ -26,6 +26,7 @@ export function useTransactionAdder(): (
     routerToken?: any;
     token?: any;
     logoUrl?: any;
+    underlying?: any;
   }
 ) => void {
   // const { chainId, account } = useActiveWeb3React()
@@ -46,7 +47,8 @@ export function useTransactionAdder(): (
         version,
         routerToken,
         token,
-        logoUrl
+        logoUrl,
+        underlying,
       }: {
         summary?: string;
         claim?: { recipient: string };
@@ -59,6 +61,7 @@ export function useTransactionAdder(): (
         routerToken?: string,
         token?: string,
         logoUrl?: string,
+        underlying?: string,
       } = {}
     ) => {
       if (!account) return
@@ -82,7 +85,8 @@ export function useTransactionAdder(): (
         version,
         routerToken,
         token,
-        logoUrl
+        logoUrl,
+        underlying,
       }))
     },
     [dispatch, chainId, account]
@@ -171,4 +175,21 @@ export function useHashSwapInfo (hash:any) {
       resolve('')
     })
   })
+}
+
+export function useUpdateUnderlyingStatus(): {setUnderlyingStatus?: (chainId: any, hash: string, isReceiveAnyToken: any) => void} {
+  const dispatch = useDispatch<AppDispatch>()
+  // const state = useSelector<AppState, AppState['transactions']>(state => state.transactions)
+
+  const setUnderlyingStatus = useCallback(
+    (chainId: any, hash: string, isReceiveAnyToken: any) => {
+      // console.log(chainId, hash, isReceiveAnyToken)
+      dispatch(updateUnderlyingStatus({chainId, hash, isReceiveAnyToken}))
+    },
+    [dispatch]
+  )
+
+  return {
+    setUnderlyingStatus
+  }
 }

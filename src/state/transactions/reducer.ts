@@ -5,7 +5,8 @@ import {
   clearAllTransactions,
   finalizeTransaction,
   SerializableTransactionReceipt,
-  updateTransaction
+  updateTransaction,
+  updateUnderlyingStatus
 } from './actions'
 
 const now = () => new Date().getTime()
@@ -29,6 +30,8 @@ export interface TransactionDetails {
   info?: any
   token?: any
   logoUrl?: any
+  underlying?: any
+  isReceiveAnyToken?: any
 }
 
 export interface TransactionState {
@@ -55,7 +58,8 @@ export default createReducer(initialState, builder =>
       version,
       routerToken,
       token,
-      logoUrl
+      logoUrl,
+      underlying,
     } }) => {
       if (transactions[chainId]?.[hash]) {
         throw Error('Attempted to add existing transaction.')
@@ -75,7 +79,8 @@ export default createReducer(initialState, builder =>
         version,
         routerToken,
         token,
-        logoUrl
+        logoUrl,
+        underlying,
       }
       transactions[chainId] = txs
     })
@@ -131,5 +136,12 @@ export default createReducer(initialState, builder =>
         txto: info?.txto,
         value: info?.value,
       }
+    })
+    .addCase(updateUnderlyingStatus, (transactions, { payload: { hash, chainId, isReceiveAnyToken } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        return
+      }
+      tx.isReceiveAnyToken = isReceiveAnyToken
     })
 )
