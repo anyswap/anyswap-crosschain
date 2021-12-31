@@ -129,6 +129,8 @@ function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}
     } else {
       return toStatus
     }
+  } else {
+    return toStatus
   }
 }
 
