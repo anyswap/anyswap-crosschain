@@ -126,12 +126,19 @@ export function colors(darkMode: boolean): Colors {
     secondary2: darkMode ? '#17000b26' : '#5f6bfb',
     secondary3: darkMode ? '#17000b26' : '#5f6bfb',
 
-    birdgeStateBg: darkMode ? 'rgba(0,0,0,0.6)' : '#fff5e0',
-    birdgeStateBorder: darkMode ? 'rgba(0,0,0,0.6)' : '#e3d1aa',
-    birdgeStateBg1: darkMode ? 'rgba(0,0,0,0.6)' : '#e2f9e5',
-    birdgeStateBorder1: darkMode ? 'rgba(0,0,0,0.6)' : '#a3daab',
-    birdgeStateBg2: darkMode ? 'rgba(0,0,0,0.6)' : 'rgb(255,104,113,.2)',
-    birdgeStateBorder2: darkMode ? 'rgba(0,0,0,0.6)' : 'rgb(255,104,113)',
+    birdgeStateBg: darkMode ? 'rgba(255,245,224,.2)' : 'rgba(255,245,224)',
+    birdgeStateBorder: darkMode ? 'rgba(227,209,170, .2)' : 'rgba(227,209,170, 1)',
+    birdgeStateBg1: darkMode ? 'rgba(226,249,229,.2)' : 'rgba(226,249,229,1)',
+    birdgeStateBorder1: darkMode ? 'rgba(163, 218, 171, .2)' : 'rgba(163, 218, 171, 1)',
+    birdgeStateBg2: darkMode ? 'rgba(255,104,113,.2)' : 'rgba(255,104,113,.2)',
+    birdgeStateBorder2: darkMode ? 'rgba(255,104,113, .2)' : 'rgba(255,104,113,1)',
+
+    // birdgeStateBg: '#fff5e0',
+    // birdgeStateBorder: '#e3d1aa',
+    // birdgeStateBg1: '#e2f9e5',
+    // birdgeStateBorder1: '#a3daab',
+    // birdgeStateBg2: 'rgb(255,104,113,.2)',
+    // birdgeStateBorder2: 'rgb(255,104,113)',
 
     // other
     red1: '#FF6871',

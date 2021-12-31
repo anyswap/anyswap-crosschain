@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import styled from "styled-components"
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { CheckCircle } from 'react-feather'
 import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 
@@ -24,7 +25,7 @@ const HistoryDetailsBox = styled.div`
   .item {
     width: 100%;
     font-size: 14px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid ${({theme}) => theme.selectedBg};
     padding: 10px 15px 5px;
     &:last-child {
       border-bottom: none;
@@ -79,6 +80,7 @@ const ChainStatusBox = styled.div`
   width: 100%;
   font-size:12px;
   color: ${({ theme }) => theme.textColorBold};
+  // color: #031a6e;
   font-weight:bold;
   padding: 12px 15px;
   border-radius:9px;
@@ -222,14 +224,22 @@ export default function HistoryDetails ({
 
         <ChainStatusBox className={fromStatus}>
           <div className="name">
-            <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            {
+              fromStatus === Status.Success? (
+                <CheckCircle size="16" style={{marginRight: '10px'}} />
+              ) : <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            }
             {config.getCurChainInfo(fromChainID)?.name + ' Status'}
           </div>
           <span className="status">{fromStatus === Status.Pending ? (<><span style={{marginRight:'5px'}}>{fromStatus}</span> <Loader stroke="#5f6bfb" /></>) : fromStatus}</span>
         </ChainStatusBox>
         <ChainStatusBox className={toStatus ? toStatus : Status.Pending}>
           <div className="name">
-            <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            {
+              toStatus === Status.Success? (
+                <CheckCircle size="16" style={{marginRight: '10px'}} />
+              ) : <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            }
             {config.getCurChainInfo(toChainID)?.name + ' Status'}
           </div>
           <span className="status">{toStatus ? toStatus : (<><span style={{marginRight:'5px'}}>{Status.Pending}</span> <Loader stroke="#5f6bfb" /></>)}</span>

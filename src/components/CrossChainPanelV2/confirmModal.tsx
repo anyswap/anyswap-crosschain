@@ -59,6 +59,9 @@ const ConfirmList = styled.ul`
         .info {
           color: ${({ theme }) => theme.text2};
         }
+        .name {
+          margin-right: 5px;
+        }
       }
     }
     .txtLabel {
@@ -66,7 +69,7 @@ const ConfirmList = styled.ul`
       color: ${({ theme }) => theme.textColor};
     }
     .txt {
-      width: 70%;
+      width: 85%;
       overflow:hidden;
       text-overflow: ellipsis;
       white-space:normal;
@@ -172,7 +175,7 @@ export default function ConfirmContent (
             destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
               <>
                 <li className="item">
-                  <div className="label">Crosschain Fee</div>
+                  <div className="label">Crosschain Fee:</div>
                   <div className="value">{useDfee} %</div>
                 </li>
                 <li className="item">
@@ -180,7 +183,7 @@ export default function ConfirmContent (
                     Gas Fee
                     <QuestionHelper text={
                       'for your cross-chain transaction on destination chain'
-                    } />
+                    } />:
                   </div>
                   <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
                 </li>
@@ -206,7 +209,7 @@ export default function ConfirmContent (
                         dMaxFee: thousandBit(destConfig?.MaximumSwapFee, 'no'),
                         dFee: thousandBit(useDfee, 'no')
                       })
-                    } />
+                    } />:
                   </div>
                   <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
                 </li>

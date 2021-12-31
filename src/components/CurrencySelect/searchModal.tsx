@@ -85,7 +85,8 @@ export default function SearchModal ({
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
       if (['MultichainUSDC', 'MultichainDAI'].includes(obj.name)) continue
-      if (['USDC', 'ETH', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC'].includes(obj.symbol)) {
+      if ([
+        'USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e'].includes(obj.symbol)) {
         arr.push(obj)
       }
     }
