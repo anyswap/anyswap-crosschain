@@ -110,6 +110,28 @@ const Link2 = styled(NavLink)`
   text-align:right;
 `
 
+function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
+  if (fromStatus === Status.Pending) {
+    return Status.Pending
+  } else if (fromStatus === Status.Failure) {
+    return Status.Failure
+  } else if (fromStatus === Status.Success) {
+    if (!toStatus || toStatus === Status.Confirming) {
+      return (<>
+        <span style={{marginRight:'5px'}}>{Status.Confirming}</span> <Loader stroke="#5f6bfb" />
+      </>)
+    } else if (toStatus === Status.Crosschaining) {
+      return (<>
+        <span style={{marginRight:'5px'}}>{Status.Crosschaining}</span> <Loader stroke="#5f6bfb" />
+      </>)
+    } else if (toStatus === Status.Success) {
+      return Status.Success
+    } else {
+      return toStatus
+    }
+  }
+}
+
 export default function HistoryDetails ({
   symbol,
   from,
@@ -242,7 +264,8 @@ export default function HistoryDetails ({
             }
             {config.getCurChainInfo(toChainID)?.name + ' Status'}
           </div>
-          <span className="status">{toStatus ? toStatus : (<><span style={{marginRight:'5px'}}>{Status.Pending}</span> <Loader stroke="#5f6bfb" /></>)}</span>
+          {/* <span className="status">{toStatus ? toStatus : (<><span style={{marginRight:'5px'}}>{Status.Pending}</span> <Loader stroke="#5f6bfb" /></>)}</span> */}
+          <span className="status"><DestChainStatus fromStatus={fromStatus} toStatus={toStatus} /></span>
         </ChainStatusBox>
         
         {

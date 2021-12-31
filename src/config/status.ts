@@ -11,15 +11,13 @@ export enum Status {
 
 export function getStatus (status:any) {
   let statusType = ''
-  if ([2, 4, 6, 11, 14].includes(status)) {
-    statusType = Status.Pending
-  } else if ([0, 5, 8].includes(status)) {
+  if ([0, 5].includes(status)) {
     statusType = Status.Confirming
-  } else if ([7, 9].includes(status)) {
+  } else if ([7, 8, 9].includes(status)) {
     statusType = Status.Crosschaining
   } else if ([10].includes(status)) {
     statusType = Status.Success
-  } else if ([1, 3, 16].includes(status)) {
+  } else if ([1,2, 4, 6, 3, 16, 11, 14].includes(status)) {
     statusType = Status.Failure
   } else if ([20].includes(status)) {
     statusType = Status.Timeout
