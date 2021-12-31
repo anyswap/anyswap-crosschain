@@ -473,6 +473,7 @@ export default function CrossChain({
         onDismiss={() => {
           setModalTipOpen(false)
         }}
+        padding={'10px 2rem 20px'}
       >
         <ConfirmContent>
           {

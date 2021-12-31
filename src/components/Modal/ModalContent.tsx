@@ -35,7 +35,7 @@ export default function ModalContent({
   title,
   tip,
   minHeight = false,
-  maxHeight = 90,
+  maxHeight = 99,
   initialFocusRef,
   padding,
   children

@@ -1,24 +1,31 @@
 import React from "react"
 import styled from "styled-components"
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 
 import { getEtherscanLink } from '../../utils'
-import {timeChange} from '../../utils/tools/tools'
+// import {timeChange} from '../../utils/tools/tools'
 
 import { ExternalLink } from '../../theme'
 
 import {Status} from '../../config/status'
 import config from '../../config'
 
+import ScheduleIcon from '../../assets/images/icon/schedule.svg'
+
 const HistoryDetailsBox = styled.div`
   width: 100%;
+  padding: 0 20px 20px;
   .item {
     width: 100%;
     font-size: 14px;
     border-bottom: 1px solid #ddd;
     padding: 10px 15px 5px;
+    &:last-child {
+      border-bottom: none;
+    }
     .label {
       width: 100%;
       color: ${({theme}) => theme.text2}
@@ -64,6 +71,35 @@ const HistoryDetailsBox = styled.div`
   }
 `
 
+const ChainStatusBox = styled.div`
+  ${({ theme }) => theme.flexBC};
+  width: 100%;
+  font-size:12px;
+  color: ${({ theme }) => theme.textColorBold};
+  font-weight:bold;
+  padding: 12px 15px;
+  border-radius:9px;
+  margin-top:15px;
+  .name {
+    ${({ theme }) => theme.flexSC};
+  }
+  .status {
+    ${({ theme }) => theme.flexEC};
+  }
+  &.yellow,&.Confirming,&.Crosschaining {
+    border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
+    background: ${({ theme }) => theme.birdgeStateBg};
+  }
+  &.green,&.Success, &.Pending{
+    border: 1px solid ${({ theme }) => theme.birdgeStateBorder1};
+    background: ${({ theme }) => theme.birdgeStateBg1};
+  }
+  &.red,&.Failure, &.Timeout, &.BigAmount{
+    border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
+    background: ${({ theme }) => theme.birdgeStateBg2};
+  }
+`
+
 const Link = styled(ExternalLink)``
 const Link2 = styled(NavLink)``
 
@@ -98,68 +134,81 @@ export default function HistoryDetails ({
   version?: any,
   token?: any,
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <HistoryDetailsBox>
         <div className="item">
-          <div className="label">From Hash</div>
+          <div className="label">{config.getCurChainInfo(fromChainID)?.name} Hash</div>
           <div className="value">
             <Link className="a" href={getEtherscanLink(fromChainID, txid, 'transaction')} target="_blank">{txid}</Link>
             <Copy toCopy={txid}></Copy>
           </div>
         </div>
         <div className="item">
-          <div className="label">To Hash</div>
+          <div className="label">{config.getCurChainInfo(toChainID)?.name} Hash</div>
           <div className="value">
             {swaptx ? (
               <>
                 <Link className="a" href={getEtherscanLink(toChainID, swaptx, 'transaction')} target="_blank">{swaptx}</Link>
                 <Copy toCopy={swaptx}></Copy>
               </>
-            ) : <Loader  stroke="#5f6bfb" />}
+            ) : '-'}
           </div>
         </div>
         <div className="item">
-          <div className="label">From Address</div>
+          <div className="label">{t('From')}</div>
           <div className="value">
             <Link className="a" href={getEtherscanLink(fromChainID, from, 'address')} target="_blank">{from}</Link>
             <Copy toCopy={from}></Copy>
           </div>
         </div>
         <div className="item">
-          <div className="label">To Address</div>
+          <div className="label">{t('Receive')}</div>
           <div className="value">
             {to ? (
               <>
                 <Link className="value a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
                 <Copy toCopy={to}></Copy>
               </>
-            ) : <Loader stroke="#5f6bfb" />}
+            ) : '-'}
           </div>
         </div>
         
         <div className="item">
-          <div className="label">From Value</div>
+          <div className="label">Send Value</div>
           <div className="value">{value + ' ' + symbol}</div>
         </div>
         <div className="item">
-          <div className="label">To Value</div>
-          <div className="value">{swapvalue ? swapvalue + ' ' + symbol : <Loader stroke="#5f6bfb" />}</div>
+          <div className="label">Receive Value</div>
+          <div className="value">{swapvalue ? swapvalue + ' ' + symbol : '-'}</div>
         </div>
-        <div className="item">
+        {/* <div className="item">
           <div className="label">{config.getCurChainInfo(fromChainID)?.name} Status</div>
           <div className={fromStatus + " value"}>{fromStatus}</div>
         </div>
         <div className="item">
           <div className="label">{config.getCurChainInfo(toChainID)?.name} Status</div>
           <div className={toStatus + " value"}>{toStatus ? toStatus : <Loader stroke="#5f6bfb" />}</div>
-        </div>
-        <div className="item">
-          <div className="label">Date</div>
-          <div className="value">{timeChange(timestamp, 'yyyy-mm-dd hh:mm')}</div>
-        </div>
+        </div> */}
+
+        <ChainStatusBox className={fromStatus}>
+          <div className="name">
+            <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            {config.getCurChainInfo(fromChainID)?.name + ' Status'}
+          </div>
+          <span className="status">{fromStatus === Status.Pending ? (<><span style={{marginRight:'5px'}}>{fromStatus}</span> <Loader stroke="#5f6bfb" /></>) : fromStatus}</span>
+        </ChainStatusBox>
+        <ChainStatusBox className={toStatus ? toStatus : Status.Pending}>
+          <div className="name">
+            <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+            {config.getCurChainInfo(toChainID)?.name + ' Status'}
+          </div>
+          <span className="status">{toStatus ? toStatus : (<><span style={{marginRight:'5px'}}>{Status.Pending}</span> <Loader stroke="#5f6bfb" /></>)}</span>
+        </ChainStatusBox>
+        
         {
-          fromStatus === Status.Success && !toStatus ? (
+          fromStatus === Status.Success && !toStatus && (Date.now() - (timestamp.length <= 10 ? (Number(timestamp) * 1000) : Number(timestamp)) > (1000 * 60 * 30)) ? (
             <div className="item">
               <div className="tips">
                 <Link className="a" href={`${config.explorer}?tabparams=tools&fromChainID=${fromChainID}&toChainID=${toChainID}&symbol=${symbol}&hash=${txid}`} target="_blank">Go to Explorer submit hash -&gt;</Link>

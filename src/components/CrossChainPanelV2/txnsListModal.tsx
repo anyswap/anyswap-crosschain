@@ -15,6 +15,11 @@ const TxnsListBox = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 9;
+  .item {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 5px;
+  }
 `
 
 export default function TxnsListModal () {
@@ -30,8 +35,9 @@ export default function TxnsListModal () {
         {Object.keys(allTransactions).reverse().map((hash, index) => {
           const symbol = allTransactions[hash]?.symbol
           const logoUrl = allTransactions[hash]?.logoUrl
+          if (!allTransactions[hash]?.version) return ''
           return (
-            <div onClick={() => {onChangeViewDtil(hash, true)}} key={index}>
+            <div onClick={() => {onChangeViewDtil(hash, true)}} key={index} className="item">
               <TokenLogo symbol={symbol} logoUrl={logoUrl} size={'36px'} />
             </div>
           )

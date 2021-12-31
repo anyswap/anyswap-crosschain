@@ -27,7 +27,7 @@ const ConfirmList = styled.ul`
   width: 100%;
   list-style:none;
   padding:10px;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
   .item {
@@ -83,6 +83,7 @@ const FeeBox = styled.ul`
   .item {
     ${({ theme }) => theme.flexBC};
     color: ${({ theme }) => theme.text2};
+    font-size: 14px;
   }
 `
 
@@ -109,7 +110,7 @@ export default function ConfirmContent (
 ) {
   const { t } = useTranslation()
   const { account } = useActiveReact()
-  console.log(destConfig)
+  // console.log(destConfig)
   const dFee = Number(destConfig?.SwapFeeRatePerMillion)
   const useDfee = destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? 0 : dFee
   return (

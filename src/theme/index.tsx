@@ -126,6 +126,13 @@ export function colors(darkMode: boolean): Colors {
     secondary2: darkMode ? '#17000b26' : '#5f6bfb',
     secondary3: darkMode ? '#17000b26' : '#5f6bfb',
 
+    birdgeStateBg: darkMode ? 'rgba(0,0,0,0.6)' : '#fff5e0',
+    birdgeStateBorder: darkMode ? 'rgba(0,0,0,0.6)' : '#e3d1aa',
+    birdgeStateBg1: darkMode ? 'rgba(0,0,0,0.6)' : '#e2f9e5',
+    birdgeStateBorder1: darkMode ? 'rgba(0,0,0,0.6)' : '#a3daab',
+    birdgeStateBg2: darkMode ? 'rgba(0,0,0,0.6)' : 'rgb(255,104,113,.2)',
+    birdgeStateBorder2: darkMode ? 'rgba(0,0,0,0.6)' : 'rgb(255,104,113)',
+
     // other
     red1: '#FF6871',
     red2: '#F82D3A',

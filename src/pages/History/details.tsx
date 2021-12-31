@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
-// import styled from "styled-components"
+import styled from "styled-components"
 import axios from "axios"
+import { transparentize } from 'polished'
 
 import {getParams} from '../../config/tools/getUrlParams'
 import AppBody from '../AppBody'
@@ -11,6 +12,16 @@ import config from '../../config'
 import {getStatus, Status} from '../../config/status'
 
 import HistoryDetails from "../../components/Transaction/details"
+
+const HistoryBox = styled.div`
+  background-color: ${({ theme }) => theme.contentBg};
+  box-shadow: 0 0.25rem 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
+  padding: 20px 20px 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 20px;
+`
 
 export default function HistoryDetailsView () {
   const hash = getParams('hash')
@@ -56,20 +67,22 @@ export default function HistoryDetailsView () {
   return (
     <>
       <AppBody>
-        <HistoryDetails
-          symbol={getSymbol(tx?.pairid)}
-          from={tx?.from}
-          to={tx?.bind}
-          fromChainID={getFromChainId(tx)}
-          toChainID={getToChainId(tx)}
-          fromStatus={fromStatus}
-          toStatus={toStatus}
-          txid={tx?.txid}
-          swaptx={tx?.swaptx}
-          swapvalue={tx?.formatswapvalue}
-          timestamp={tx?.timestamp}
-          value={tx?.formatvalue}
-        />
+        <HistoryBox>
+          <HistoryDetails
+            symbol={getSymbol(tx?.pairid)}
+            from={tx?.from}
+            to={tx?.bind}
+            fromChainID={getFromChainId(tx)}
+            toChainID={getToChainId(tx)}
+            fromStatus={fromStatus}
+            toStatus={toStatus}
+            txid={tx?.txid}
+            swaptx={tx?.swaptx}
+            swapvalue={tx?.formatswapvalue}
+            timestamp={tx?.timestamp}
+            value={tx?.formatvalue}
+          />
+        </HistoryBox>
       </AppBody>
     </>
   )

@@ -293,6 +293,7 @@ export default function CrossChain({
         onDismiss={() => {
           setModalTipOpen(false)
         }}
+        padding={'10px 2rem 20px'}
       >
         {/* <LogoBox>
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>

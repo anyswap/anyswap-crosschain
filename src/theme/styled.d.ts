@@ -83,6 +83,13 @@ export interface Colors {
   secondary2: Color
   secondary3: Color
 
+  birdgeStateBg: Color
+  birdgeStateBorder: Color
+  birdgeStateBg1: Color
+  birdgeStateBorder1: Color
+  birdgeStateBg2: Color
+  birdgeStateBorder2: Color
+
   // other
   red1: Color
   red2: Color
