@@ -100,7 +100,7 @@ const bridgeToken = {
     bridgeInitToken: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
     bridgeInitChain: '137',
     nativeToken: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-    crossBridgeInitToken: 'BNB'
+    crossBridgeInitToken: ''
   },
 }
 

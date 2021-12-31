@@ -180,10 +180,10 @@ export default function ConfirmContent (
                 </li>
                 <li className="item">
                   <div className="label">
-                    Gas Fee
+                    Gas Fee:
                     <QuestionHelper text={
                       'for your cross-chain transaction on destination chain'
-                    } />:
+                    } />
                   </div>
                   <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
                 </li>
@@ -201,7 +201,7 @@ export default function ConfirmContent (
                 </li> */}
                 <li className="item">
                   <div className="label">
-                    Crosschain Fee
+                    Crosschain Fee:
                     <QuestionHelper text={
                       t('redeemTip1' , {
                         dMinFee: thousandBit(destConfig?.MinimumSwapFee, 'no'),
@@ -209,7 +209,7 @@ export default function ConfirmContent (
                         dMaxFee: thousandBit(destConfig?.MaximumSwapFee, 'no'),
                         dFee: thousandBit(useDfee, 'no')
                       })
-                    } />:
+                    } />
                   </div>
                   <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
                 </li>
