@@ -135,6 +135,7 @@ export default createReducer(initialState, builder =>
         txid: info?.txid,
         txto: info?.txto,
         value: info?.value,
+        time: info?.time,
       }
     })
     .addCase(updateUnderlyingStatus, (transactions, { payload: { hash, chainId, isReceiveAnyToken } }) => {

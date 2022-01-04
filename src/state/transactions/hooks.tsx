@@ -162,7 +162,7 @@ export function useUserHasSubmittedClaim(
 
 export function useHashSwapInfo (hash:any) {
   return new Promise(resolve => {
-    const url = `${config.bridgeApi}/v2/history/details?params=${hash}`
+    const url = `${config.bridgeApi}/v2/history/details/latest?params=${hash}`
     axios.get(url).then(res => {
       const {status, data} = res
       if (status === 200) {

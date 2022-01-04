@@ -76,6 +76,7 @@ export default function TxnsDtilsModal () {
           token={tx?.token}
           underlying={tx?.underlying}
           isReceiveAnyToken={tx?.isReceiveAnyToken}
+          avgTime={tx?.info?.time}
         />
       </ModalContent>
     </>

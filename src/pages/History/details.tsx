@@ -81,6 +81,7 @@ export default function HistoryDetailsView () {
             swapvalue={tx?.formatswapvalue}
             timestamp={tx?.timestamp}
             value={tx?.formatvalue}
+            avgTime={tx?.time}
           />
         </HistoryBox>
       </AppBody>

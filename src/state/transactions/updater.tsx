@@ -97,6 +97,7 @@ export default function Updater(): null {
         } else if (
           !(tx.info && END_STATUS.includes(tx?.info?.status))
           && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+          && tx?.version
         )  {
           useHashSwapInfo(hash).then((receipt:any) => {
             if (receipt && receipt.msg === 'Success' && receipt.info) {
@@ -170,6 +171,7 @@ export default function Updater(): null {
           } else if (
             !(tx.info && END_STATUS.includes(tx?.info?.status))
             && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+            && tx?.version
           )  {
             useHashSwapInfo(hash).then((receipt:any) => {
               if (receipt && receipt.msg === 'Success' && receipt.info) {

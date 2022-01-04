@@ -190,15 +190,6 @@ export default function ConfirmContent (
               </>
             ) : (
               <>
-                {/* <li className="item">
-                  <div className="label">
-                    Gas Fee
-                    <QuestionHelper text={
-                      'for your cross-chain transaction on destination chain'
-                    } />
-                  </div>
-                  <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
-                </li> */}
                 <li className="item">
                   <div className="label">
                     Crosschain Fee:
