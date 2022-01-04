@@ -86,7 +86,7 @@ const ConfirmList = styled.div`
   padding:10px;
   margin: 0 0 10px;
   border-radius: 10px;
-  border: 1px solid ${({theme}) => theme.selectedBg};
+  border: 1px solid ${({theme}) => theme.bg3};
   .item {
     ${({ theme }) => theme.flexBC};
     width: 100%;
@@ -269,7 +269,7 @@ export default function HistoryDetails ({
             </div>
             <div className="value">
               <div className="cont">
-                {swapvalue ? swapvalue + ' ' + symbol : '-'}
+                {swapvalue ? '+ ' + swapvalue + ' ' + symbol : '-'}
                 {/* {
                   fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
                     <>
