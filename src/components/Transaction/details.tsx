@@ -54,7 +54,7 @@ const Link = styled(ExternalLink)``
 const Link2 = styled(NavLink)`
   text-align:right;
 `
-const ConfirmBox  = styled.div`
+const TxnsDtilBox  = styled.div`
   width: 100%;
   padding: 20px 20px;
   .a {
@@ -81,7 +81,7 @@ const ConfirmBox  = styled.div`
     }
   }
 `
-const ConfirmList = styled.div`
+const TxnsDtilList = styled.div`
   width: 100%;
   padding:10px;
   margin: 0 0 10px;
@@ -211,8 +211,8 @@ export default function HistoryDetails ({
     <>
 
 
-      <ConfirmBox>
-        <ConfirmList>
+      <TxnsDtilBox>
+        <TxnsDtilList>
           <div className="item">
             <h3 className="title">{t('From')}</h3>
           </div>
@@ -244,7 +244,7 @@ export default function HistoryDetails ({
               <Copy toCopy={from}></Copy>
             </div>
           </div>
-        </ConfirmList>
+        </TxnsDtilList>
         <ChainStatusBox className={fromStatus}>
           <div className="name">
             {
@@ -256,7 +256,7 @@ export default function HistoryDetails ({
           </div>
           <span className="status">{fromStatus === Status.Pending ? (<><span style={{marginRight:'5px'}}>{fromStatus}</span> <Loader stroke="#5f6bfb" /></>) : fromStatus}</span>
         </ChainStatusBox>
-        <ConfirmList>
+        <TxnsDtilList>
           <div className="item">
             <h3 className="title">{t('to')}</h3>
           </div>
@@ -310,7 +310,7 @@ export default function HistoryDetails ({
               </>
             ) : ''
           }
-        </ConfirmList>
+        </TxnsDtilList>
         <ChainStatusBox className={toStatus ? toStatus : Status.Pending}>
           <div className="name">
             {
@@ -324,7 +324,7 @@ export default function HistoryDetails ({
         </ChainStatusBox>
         {
           avgTime ? (
-            <ConfirmList>
+            <TxnsDtilList>
               <div className="item">
                 <div className="label">
                   <div className="cont">Use Time:</div>
@@ -333,7 +333,7 @@ export default function HistoryDetails ({
                   <div className="cont">{avgTime} s</div>
                 </div>
               </div>
-            </ConfirmList>
+            </TxnsDtilList>
           ) : ''
         }
         
@@ -345,7 +345,7 @@ export default function HistoryDetails ({
             </div>
           ) : ''
         }
-      </ConfirmBox>
+      </TxnsDtilBox>
     </>
   )
 }
