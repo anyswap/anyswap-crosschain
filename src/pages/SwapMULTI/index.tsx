@@ -90,14 +90,14 @@ const SwapInputBox = styled.div`
   `}
 `
 
-const LoaderBox = styled.div`
-  ${({ theme }) => theme.flexC};
-  color: ${({ theme }) => theme.textColorBold};
-  font-size:14px;
-  .txt {
-    margin-left: 10px;
-  }
-`
+// const LoaderBox = styled.div`
+//   ${({ theme }) => theme.flexC};
+//   color: ${({ theme }) => theme.textColorBold};
+//   font-size:14px;
+//   .txt {
+//     margin-left: 10px;
+//   }
+// `
 
 const SwapInputContent = styled.div`
   ${({ theme }) => theme.flexBC};
@@ -129,21 +129,53 @@ const ArrowBox = styled(AutoRow)`
 
 // const swapToken = '0x4ecf513a7d0E1548e14b621e21d2584bc7570918'
 // const supportChain = '4'
-const swapToken = '0xaed0472b498548B1354925d222B832b99Bb2EC60'
-const supportChain = '1'
 
-const anyToken = {
-  address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
-  symbol: 'ANY',
-  name: 'Anyswap',
-  decimals: 18
-}
-
-const multiToken = {
-  address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
-  symbol: "MULTI",
-  name: "Multichain",
-  decimals: 18
+const swapList:any = {
+  '1': {
+    swapToken: '0xaed0472b498548B1354925d222B832b99Bb2EC60',
+    anyToken: {
+      address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
+      symbol: 'ANY',
+      name: 'Anyswap',
+      decimals: 18
+    },
+    multiToken: {
+      address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
+      symbol: "MULTI",
+      name: "Multichain",
+      decimals: 18
+    }
+  },
+  // '56': {
+  //   swapToken: '0xaed0472b498548B1354925d222B832b99Bb2EC60',
+  //   anyToken: {
+  //     address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
+  //     symbol: 'ANY',
+  //     name: 'Anyswap',
+  //     decimals: 18
+  //   },
+  //   multiToken: {
+  //     address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
+  //     symbol: "MULTI",
+  //     name: "Multichain",
+  //     decimals: 18
+  //   }
+  // },
+  // '250': {
+  //   swapToken: '0xaed0472b498548B1354925d222B832b99Bb2EC60',
+  //   anyToken: {
+  //     address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
+  //     symbol: 'ANY',
+  //     name: 'Anyswap',
+  //     decimals: 18
+  //   },
+  //   multiToken: {
+  //     address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
+  //     symbol: "MULTI",
+  //     name: "Multichain",
+  //     decimals: 18
+  //   }
+  // }
 }
 
 export default function SwapMULTI () {
@@ -154,14 +186,21 @@ export default function SwapMULTI () {
   const addTransaction = useTransactionAdder()
   // const multicallContract = useMulticallContract()
 
+  const useSwapInfo = useMemo(() => {
+    if (chainId && swapList[chainId]) {
+      return swapList[chainId]
+    }
+    return undefined
+  }, [chainId])
+
   const isSupport = useMemo(() => {
     // console.log(chainId)
     // console.log(supportChain !== chainId?.toString())
-    if (!chainId || supportChain !== chainId.toString()) {
+    if (!useSwapInfo) {
       return false
     }
     return true
-  }, [chainId])
+  }, [useSwapInfo])
 
   
   const [inputValue, setInputValue] = useState<any>()
@@ -171,16 +210,18 @@ export default function SwapMULTI () {
   // const [dstToken, setDstToken] = useState<any>()
   // const [rate, setRate] = useState<any>()
 
-  const contract = useSwapMultiContract(swapToken)
-  const anyCurrency = useLocalToken(anyToken)
+
+
+  const contract = useSwapMultiContract(useSwapInfo?.swapToken)
+  const anyCurrency = useLocalToken(useSwapInfo?.anyToken)
   // console.log(anyCurrency)
-  const multiCurrency = useLocalToken(multiToken)
+  const multiCurrency = useLocalToken(useSwapInfo?.multiToken)
   const rate = 1
   // console.log(multiCurrency)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
 
   const formatInputBridgeValue = tryParseAmount(inputValue, anyCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, swapToken ?? undefined)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useSwapInfo?.swapToken ?? undefined)
 
   // const calls = useMemo(
   //   () => {
@@ -341,14 +382,26 @@ export default function SwapMULTI () {
           !isSupport ? (
             <>
               <BottomGrouping>
-                <ButtonLight onClick={() => {
+                {
+                  Object.keys(swapList).map((item, index) => {
+                    return <ButtonLight key={index} style={{margin: '0 5px'}} onClick={() => {
+                      selectNetwork(item).then((res: any) => {
+                        console.log(res)
+                        if (res.msg === 'Error') {
+                          alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(item).networkName}))
+                        }
+                      })
+                    }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(item).name}</ButtonLight>
+                  })
+                }
+                {/* <ButtonLight onClick={() => {
                   selectNetwork(supportChain).then((res: any) => {
                     console.log(res)
                     if (res.msg === 'Error') {
                       alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
                     }
                   })
-                }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight>
+                }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight> */}
               </BottomGrouping>
             </>
           ) : (
@@ -427,7 +480,7 @@ export default function SwapMULTI () {
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
                     <TokenLogoBox1>
-                      <TokenLogo symbol={anyCurrency?.symbol} size={'100%'} />
+                      <TokenLogo symbol={anyCurrency?.symbol ?? 'ANY'} size={'100%'} />
                     </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
@@ -437,10 +490,14 @@ export default function SwapMULTI () {
                             <p>{anyCurrency?.name}</p>
                           </>
                         ) : (
-                          <LoaderBox>
-                            <Loader stroke="#ddd" />
-                            <span className="txt">Loading</span>
-                          </LoaderBox>
+                          <>
+                            {/* <LoaderBox>
+                              <Loader stroke="#ddd" />
+                              <span className="txt">Loading</span>
+                            </LoaderBox> */}
+                            <h3>ANY</h3>
+                            <p>Anyswap</p>
+                          </>
                         )
                       }
                     </StyledTokenName>
@@ -476,7 +533,7 @@ export default function SwapMULTI () {
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
                     <TokenLogoBox1>
-                      <TokenLogo symbol={multiCurrency?.symbol} size={'100%'} />
+                      <TokenLogo symbol={multiCurrency?.symbol ?? 'MULTI'} size={'100%'} />
                     </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
@@ -486,10 +543,14 @@ export default function SwapMULTI () {
                             <p>{multiCurrency?.name}</p>
                           </>
                         ) : (
-                          <LoaderBox>
-                            <Loader stroke="#ddd" />
-                            <span className="txt">Loading</span>
-                          </LoaderBox>
+                          <>
+                            {/* <LoaderBox>
+                              <Loader stroke="#ddd" />
+                              <span className="txt">Loading</span>
+                            </LoaderBox> */}
+                            <h3>MULTI</h3>
+                            <p>Multichain</p>
+                          </>
                         )
                       }
                     </StyledTokenName>
