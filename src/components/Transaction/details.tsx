@@ -18,7 +18,7 @@ import { ExternalLink } from '../../theme'
 import {Status} from '../../config/status'
 import config from '../../config'
 
-import ScheduleIcon from '../../assets/images/icon/schedule.svg'
+// import ScheduleIcon from '../../assets/images/icon/schedule.svg'
 
 const ChainStatusBox = styled.div`
   ${({ theme }) => theme.flexBC};
@@ -143,11 +143,13 @@ function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}
   } else if (fromStatus === Status.Success) {
     if (!toStatus || toStatus === Status.Confirming) {
       return (<>
-        <span style={{marginRight:'5px'}}>{Status.Confirming}</span> <Loader stroke="#5f6bfb" />
+        {/* <span style={{marginRight:'5px'}}>{Status.Confirming}</span> <Loader stroke="#5f6bfb" /> */}
+        {Status.Confirming}
       </>)
     } else if (toStatus === Status.Crosschaining) {
       return (<>
-        <span style={{marginRight:'5px'}}>{Status.Crosschaining}</span> <Loader stroke="#5f6bfb" />
+        {/* <span style={{marginRight:'5px'}}>{Status.Crosschaining}</span> <Loader stroke="#5f6bfb" /> */}
+        {Status.Crosschaining}
       </>)
     } else if (toStatus === Status.Success) {
       return Status.Success
@@ -250,11 +252,11 @@ export default function HistoryDetails ({
             {
               fromStatus === Status.Success? (
                 <CheckCircle size="16" style={{marginRight: '10px'}} />
-              ) : <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+              ) : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
             }
             {config.getCurChainInfo(fromChainID)?.name + ' Status'}
           </div>
-          <span className="status">{fromStatus === Status.Pending ? (<><span style={{marginRight:'5px'}}>{fromStatus}</span> <Loader stroke="#5f6bfb" /></>) : fromStatus}</span>
+          <span className="status">{fromStatus === Status.Pending ? (<><span>{fromStatus}</span></>) : fromStatus}</span>
         </ChainStatusBox>
         <TxnsDtilList>
           <div className="item">
@@ -316,7 +318,10 @@ export default function HistoryDetails ({
             {
               toStatus === Status.Success? (
                 <CheckCircle size="16" style={{marginRight: '10px'}} />
-              ) : <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/>
+              ) : <>
+                {/* <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/> */}
+                <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+              </>
             }
             {config.getCurChainInfo(toChainID)?.name + ' Status'}
           </div>
@@ -327,7 +332,7 @@ export default function HistoryDetails ({
             <TxnsDtilList>
               <div className="item">
                 <div className="label">
-                  <div className="cont">Use Time:</div>
+                  <div className="cont">Time used:</div>
                 </div>
                 <div className="value">
                   <div className="cont">{avgTime} s</div>
