@@ -296,7 +296,7 @@ export const controlConfig:any = {
     showChain: [],
     initNode: '1',
     isOpenRouter: 0,
-    isOpenRouterTxns: 0,
+    isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,
     isOpenMerge: 1
   },

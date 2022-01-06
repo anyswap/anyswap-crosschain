@@ -18,6 +18,14 @@ export const LinkList = [
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
+    path: '/cross-chain-txns',
+    textKey: 'swap',
+    regex: /\/cross-chain-txns/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: config.getCurConfigInfo().isOpenRouterTxns
+  },
+  {
     path: '/pool',
     textKey: 'pool',
     regex: /\/pool/,
@@ -41,14 +49,6 @@ export const LinkList = [
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenBridge
-  },
-  {
-    path: '/swap',
-    textKey: 'swap',
-    regex: /\/swap/,
-    className: 'otherInfo',
-    isOutLink: false,
-    isView: config.getCurConfigInfo().isOpenRouterTxns
   },
   {
     path: '/nft',

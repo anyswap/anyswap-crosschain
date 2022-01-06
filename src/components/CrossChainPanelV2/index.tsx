@@ -4,7 +4,7 @@ import CrossChainEVM from './crossChainEVM'
 import CrossChainNonEVM from './crossChainNonEVM'
 
 import TxnsDtilsModal from './txnsDtilsModal'
-import TxnsListModal from './txnsListModal'
+// import TxnsListModal from './txnsListModal'
 
 import { useUserSelectChainId } from '../../state/user/hooks'
 
@@ -43,7 +43,7 @@ export default function CrossChain({
   return (
     <>
       <TxnsDtilsModal />
-      <TxnsListModal />
+      {/* <TxnsListModal /> */}
       <CrossChainView bridgeKey={bridgeKey} />
     </>
   )

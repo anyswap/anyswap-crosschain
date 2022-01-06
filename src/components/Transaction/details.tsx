@@ -137,20 +137,14 @@ const TxnsDtilList = styled.div`
 
 function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
   if (fromStatus === Status.Pending) {
-    return Status.Pending
+    return undefined
   } else if (fromStatus === Status.Failure) {
     return Status.Failure
   } else if (fromStatus === Status.Success) {
     if (!toStatus || toStatus === Status.Confirming) {
-      return (<>
-        {/* <span style={{marginRight:'5px'}}>{Status.Confirming}</span> <Loader stroke="#5f6bfb" /> */}
-        {Status.Confirming}
-      </>)
+      return Status.Confirming
     } else if (toStatus === Status.Crosschaining) {
-      return (<>
-        {/* <span style={{marginRight:'5px'}}>{Status.Crosschaining}</span> <Loader stroke="#5f6bfb" /> */}
-        {Status.Crosschaining}
-      </>)
+      return Status.Crosschaining
     } else if (toStatus === Status.Success) {
       return Status.Success
     } else {
@@ -200,6 +194,7 @@ export default function HistoryDetails ({
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
+  const useToStatus = DestChainStatus({fromStatus,toStatus})
   useEffect(() => {
     if (underlying && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
@@ -249,14 +244,16 @@ export default function HistoryDetails ({
         </TxnsDtilList>
         <ChainStatusBox className={fromStatus}>
           <div className="name">
+            {config.getCurChainInfo(fromChainID)?.name + ' Status'}
+          </div>
+          <span className="status">
             {
               fromStatus === Status.Success? (
                 <CheckCircle size="16" style={{marginRight: '10px'}} />
               ) : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
             }
-            {config.getCurChainInfo(fromChainID)?.name + ' Status'}
-          </div>
-          <span className="status">{fromStatus === Status.Pending ? (<><span>{fromStatus}</span></>) : fromStatus}</span>
+            {fromStatus === Status.Pending ? (<><span>{fromStatus}</span></>) : fromStatus}
+          </span>
         </ChainStatusBox>
         <TxnsDtilList>
           <div className="item">
@@ -296,12 +293,12 @@ export default function HistoryDetails ({
           <div className="item">
             <div className="txtLabel">{t('Receive')}:</div>
             <div className="value">
-              <Link className="a" href={getEtherscanLink(fromChainID, to, 'address')} target="_blank">{to}</Link>
+              <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
               <Copy toCopy={to}></Copy>
             </div>
           </div>
           {
-            fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
+            fromStatus === Status.Success && useToStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
               <>
                 <div className="item">
                   <div className="txtLabel">{t('Remove')}:</div>
@@ -313,19 +310,26 @@ export default function HistoryDetails ({
             ) : ''
           }
         </TxnsDtilList>
-        <ChainStatusBox className={toStatus ? toStatus : Status.Pending}>
+        <ChainStatusBox className={useToStatus ? useToStatus : Status.Pending}>
           <div className="name">
-            {
+            
+            {/* {
               toStatus === Status.Success? (
                 <CheckCircle size="16" style={{marginRight: '10px'}} />
               ) : <>
-                {/* <img src={ScheduleIcon} alt='' style={{marginRight: '10px'}}/> */}
                 <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
               </>
-            }
+            } */}
             {config.getCurChainInfo(toChainID)?.name + ' Status'}
           </div>
-          <span className="status"><DestChainStatus fromStatus={fromStatus} toStatus={toStatus} /></span>
+          <span className="status">
+            {
+              useToStatus ? (
+                useToStatus === Status.Success ? <CheckCircle size="16" style={{marginRight: '10px'}} /> : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+              ) : ''
+            }
+            {useToStatus ? useToStatus : '-'}
+          </span>
         </ChainStatusBox>
         {
           avgTime ? (
@@ -335,7 +339,7 @@ export default function HistoryDetails ({
                   <div className="cont">Time used:</div>
                 </div>
                 <div className="value">
-                  <div className="cont">{avgTime} s</div>
+                  <div className="cont">{avgTime} s / {(avgTime / 60).toFixed(2)} min</div>
                 </div>
               </div>
             </TxnsDtilList>
