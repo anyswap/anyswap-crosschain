@@ -1,5 +1,6 @@
 import config from '../../config'
 import multicallABI from '../../constants/multicall/abi.json'
+// import ERC20_INTERFACE from '../../constants/abis/erc20'
 const TIMEOUT = 'timeout'
 
 const Web3 = require('web3')
@@ -114,32 +115,38 @@ async function useMulticall (chainId, list) {
 
 // const rList = [
 //   {
-//     data: '0x06fdde03',
-//     methods: 'name',
-//     to: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
+//     data: ERC20_INTERFACE.encodeFunctionData('balanceOf', ['0xC03033d8b833fF7ca08BF2A58C9BC9d711257249']),
+//     methods: 'balanceOf',
+//     to: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
 //   },
 //   {
-//     data: '0x313ce567',
-//     methods: 'decimals',
-//     to: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
+//     data: ERC20_INTERFACE.encodeFunctionData('balanceOf', ['0xC03033d8b833fF7ca08BF2A58C9BC9d711257249']),
+//     methods: 'balanceOf',
+//     to: '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa'
 //   },
-//   {
-//     data: '0x95d89b41',
-//     methods: 'symbol',
-//     to: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
-//   }
+//   // {
+//   //   data: '0x313ce567',
+//   //   methods: 'decimals',
+//   //   to: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
+//   // },
+//   // {
+//   //   data: '0x95d89b41',
+//   //   methods: 'symbol',
+//   //   to: '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
+//   // }
 // ]
-// useMulticall('288', rList).then(res => {
+// useMulticall('56', rList).then(res => {
 //   console.log(res)
-//   for (let i = 0, len = rList.length; i < len; i++) {
-//     console.log(rList[i].methods)
-//     console.log(ERC20_INTERFACE.decodeFunctionResult(rList[i].methods, res[i])[0])
-//   }
+//   const bl1 = ERC20_INTERFACE.decodeFunctionResult(rList[0].methods, res[0])[0]
+//   const bl2 = ERC20_INTERFACE.decodeFunctionResult(rList[1].methods, res[1])[0]
+//   console.log(bl1)
+//   console.log(bl2)
+//   console.log(bl1.sub(bl2).toString())
+//   // for (let i = 0, len = rList.length; i < len; i++) {
+//   //   console.log(rList[i].methods)
+//   //   console.log(ERC20_INTERFACE.decodeFunctionResult(rList[i].methods, res[i])[0])
+//   // }
 // })
-// init()
-// module.exports = {
-//   useMulticall
-// }
 export {
   useMulticall
 }
