@@ -210,38 +210,64 @@ export default function CrossChain({
 
   const getSelectPool = useCallback(async() => {
     if (selectCurrency && chainId) {
-      
-      const CC:any = await getNodeTotalsupply(
-        selectCurrency?.underlying?.address,
-        chainId,
-        selectCurrency?.decimals,
-        evmAccount,
-        selectCurrency?.address
-      )
-      // console.log(CC)
-      // console.log(selectCurrency)
-      if (CC) {
+      if (selectCurrency?.underlying?.address && isRouter) {
+        const CC:any = await getNodeTotalsupply(
+          selectCurrency?.underlying?.address,
+          chainId,
+          selectCurrency?.decimals,
+          evmAccount,
+          selectCurrency?.address
+        )
+        // console.log(CC)
+        // console.log(selectCurrency)
+        if (CC) {
+          setCurChain({
+            chain: chainId,
+            ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
+            bl: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.balance : ''
+          })
+        } else {
+          setCurChain({
+            chain: chainId,
+            ts: '',
+            bl: ''
+          })
+        }
+      } else {
         setCurChain({
           chain: chainId,
-          ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
-          bl: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.balance : ''
+          ts: '',
+          bl: ''
         })
       }
-      
-      const DC:any = await getNodeTotalsupply(
-        destConfig.underlying?.address,
-        selectChain,
-        destConfig.decimals,
-        evmAccount,
-        destConfig.address
-      )
-      // console.log(selectCurrency)
-      // console.log(DC)
-      if (DC) {
+      if (destConfig.underlying?.address) {
+        const DC:any = await getNodeTotalsupply(
+          destConfig.underlying?.address,
+          selectChain,
+          destConfig.decimals,
+          evmAccount,
+          destConfig.address
+        )
+        // console.log(selectCurrency)
+        // console.log(DC)
+        if (DC) {
+          setDestChain({
+            chain: selectChain,
+            ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
+            bl: destConfig?.underlying ? DC[destConfig?.underlying.address]?.balance : ''
+          })
+        } else {
+          setDestChain({
+            chain: selectChain,
+            ts: '',
+            bl: ''
+          })
+        }
+      } else {
         setDestChain({
           chain: selectChain,
-          ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
-          bl: destConfig?.underlying ? DC[destConfig?.underlying.address]?.balance : ''
+          ts: '',
+          bl: ''
         })
       }
       // console.log(CC)
@@ -251,7 +277,7 @@ export default function CrossChain({
         setIntervalCount(intervalCount + 1)
       }, 1000 * 10)
     }
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig])
+  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter])
 
 
   useEffect(() => {
