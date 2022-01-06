@@ -56,7 +56,7 @@ export function useInitSelectCurrency (
       for (const token in allTokensList) {
         if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
-          ...allTokensList[token],
+          ...(allTokensList[token].tokenInfo ? allTokensList[token].tokenInfo : allTokensList[token]),
         }
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
