@@ -339,7 +339,7 @@ export default function HistoryDetails ({
                   <div className="cont">Time used:</div>
                 </div>
                 <div className="value">
-                  <div className="cont">{avgTime} s / {(avgTime / 60).toFixed(2)} min</div>
+                  <div className="cont">{avgTime} s / {(avgTime / 60).toFixed(2)} m</div>
                 </div>
               </div>
             </TxnsDtilList>

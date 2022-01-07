@@ -82,16 +82,18 @@ export default function Updater(): null {
                   }
                 })
               )
-              addPopup(
-                {
-                  txn: {
-                    hash,
-                    success: !receipt.code,
-                    summary: transactions[hash]?.summary
-                  }
-                },
-                hash
-              )
+              if (!tx?.version) {
+                addPopup(
+                  {
+                    txn: {
+                      hash,
+                      success: !receipt.code,
+                      summary: transactions[hash]?.summary
+                    }
+                  },
+                  hash
+                )
+              }
             }
           })
         } else if (
@@ -150,17 +152,18 @@ export default function Updater(): null {
                       }
                     })
                   )
-
-                  addPopup(
-                    {
-                      txn: {
-                        hash,
-                        success: receipt.status === 1,
-                        summary: transactions[hash]?.summary
-                      }
-                    },
-                    hash
-                  )
+                  if (!tx?.version) {
+                    addPopup(
+                      {
+                        txn: {
+                          hash,
+                          success: receipt.status === 1,
+                          summary: transactions[hash]?.summary
+                        }
+                      },
+                      hash
+                    )
+                  }
                 } else {
                   dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
                 }
@@ -192,72 +195,6 @@ export default function Updater(): null {
   }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup])
 
   useInterval(updateNonEVMTxns, 1000 * 10)
-
-  // useEffect(() => {
-  //   if (!chainId || !library || !lastBlockNumber || isNaN(chainId)) return
-  //   Object.keys(transactions)
-  //     .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
-  //     .forEach(hash => {
-  //       const tx = transactions[hash]
-  //       if (!tx.receipt) {
-  //         library
-  //           .getTransactionReceipt(hash)
-  //           .then(receipt => {
-  //             if (receipt) {
-  //               dispatch(
-  //                 finalizeTransaction({
-  //                   chainId,
-  //                   hash,
-  //                   receipt: {
-  //                     blockHash: receipt.blockHash,
-  //                     blockNumber: receipt.blockNumber,
-  //                     contractAddress: receipt.contractAddress,
-  //                     from: receipt.from,
-  //                     status: receipt.status,
-  //                     to: receipt.to,
-  //                     transactionHash: receipt.transactionHash,
-  //                     transactionIndex: receipt.transactionIndex
-  //                   }
-  //                 })
-  //               )
-
-  //               addPopup(
-  //                 {
-  //                   txn: {
-  //                     hash,
-  //                     success: receipt.status === 1,
-  //                     summary: transactions[hash]?.summary
-  //                   }
-  //                 },
-  //                 hash
-  //               )
-  //             } else {
-  //               dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
-  //             }
-  //           })
-  //           .catch(error => {
-  //             console.error(`failed to check transaction hash: ${hash}`, error)
-  //           })
-  //       } else if (
-  //         !(tx.info && END_STATUS.includes(tx?.info?.status))
-  //         && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
-  //       )  {
-  //         useHashSwapInfo(hash).then((receipt:any) => {
-  //           if (receipt && receipt.msg === 'Success' && receipt.info) {
-  //             dispatch(
-  //               updateTransaction({
-  //                 chainId,
-  //                 hash,
-  //                 info: {
-  //                   ...receipt.info
-  //                 }
-  //               })
-  //             )
-  //           }
-  //         })
-  //       }
-  //     })
-  // }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup])
 
   return null
 }
