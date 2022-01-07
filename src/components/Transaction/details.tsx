@@ -36,7 +36,7 @@ const ChainStatusBox = styled.div`
   .status {
     ${({ theme }) => theme.flexEC};
   }
-  &.yellow,&.Confirming,&.Crosschaining {
+  &.yellow,&.Confirming,&.Crosschaining,&.Routing {
     border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
     background: ${({ theme }) => theme.birdgeStateBg};
   }

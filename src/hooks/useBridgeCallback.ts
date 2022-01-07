@@ -570,7 +570,7 @@ export function useBridgeNativeCallback(
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                // console.log(`0x${inputAmount.raw.toString(16)}`)
+                console.log(`${inputAmount.raw.toString()}`)
                 // console.log(outputAmount)
                 // console.log(routerPath)
                 // console.log(toAddress)

@@ -52,7 +52,7 @@ import {BASECURRENCY} from '../../config/constant'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal} from '../../utils/tools/tools'
-import { isAddress } from '../../utils'
+// import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
@@ -64,6 +64,13 @@ import {
   TxnsInfoText,
   ConfirmText,
 } from '../styled'
+
+import {
+  // outputValue,
+  useInitSelectCurrency,
+  useDestChainid,
+  // useDestCurrency
+} from '../../components/CrossChainPanelV2/hooks'
 
 const SettingsBox = styled.div`
   ${({ theme }) => theme.flexEC};
@@ -90,7 +97,7 @@ export default function CrossChain() {
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
-  const [inputBridgeValue, setInputBridgeValue] = useState('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
   const [selectChain, setSelectChain] = useState<any>()
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
@@ -256,7 +263,8 @@ export default function CrossChain() {
   // console.log(ttl)
   
   const routerPath = useMemo(() => {
-    const arr:any = [selectCurrency?.address]
+    const arr:any = [selectCurrency?.underlying?.address ?? selectCurrency?.address]
+    // const arr:any = []
     if (v2Trade?.route?.pairs) {
       for (const obj of v2Trade?.route?.path) {
         if (obj?.address) {
@@ -264,6 +272,7 @@ export default function CrossChain() {
         }
       }
     }
+    // console.log(arr)
     return arr
   }, [v2Trade])
 
@@ -273,7 +282,7 @@ export default function CrossChain() {
     destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
-    v2Trade?.inputAmount?.toSignificant(6),
+    inputBridgeValue,
     selectChain,
     ttl,
     outputAmount?.raw?.toString(),
@@ -286,7 +295,7 @@ export default function CrossChain() {
     destConfig?.routerToken,
     formatCurrency?formatCurrency:undefined,
     account,
-    v2Trade?.inputAmount?.toSignificant(6),
+    inputBridgeValue,
     selectChain,
     ttl,
     outputAmount?.raw?.toString(),
@@ -326,13 +335,22 @@ export default function CrossChain() {
   }, [destConfig, selectChain, isUnderlying])
 
   useEffect(() => {
+    // console.log(selectDestCurrency)
+    // onCurrencySelection(
+    //   Field.OUTPUT,
+    //   isUnderlying ? selectDestCurrency?.underlying?.address : selectDestCurrency?.address,
+    //   selectChain,
+    //   isUnderlying ? selectDestCurrency?.underlying?.decimals : selectDestCurrency?.decimals,
+    //   isUnderlying ? selectDestCurrency?.underlying?.symbol : selectDestCurrency?.symbol,
+    //   isUnderlying ? selectDestCurrency?.underlying?.name : selectDestCurrency?.name,
+    // )
     onCurrencySelection(
       Field.OUTPUT,
-      isUnderlying ? selectDestCurrency?.underlying?.address : selectDestCurrency?.address,
+      selectDestCurrency?.address,
       selectChain,
-      isUnderlying ? selectDestCurrency?.underlying?.decimals : selectDestCurrency?.decimals,
-      isUnderlying ? selectDestCurrency?.underlying?.symbol : selectDestCurrency?.symbol,
-      isUnderlying ? selectDestCurrency?.underlying?.name : selectDestCurrency?.name,
+      selectDestCurrency?.decimals,
+      selectDestCurrency?.symbol,
+      selectDestCurrency?.name,
     )
   }, [selectDestCurrency, selectChain, isUnderlying])
   
@@ -393,133 +411,174 @@ export default function CrossChain() {
     
   }, [isNativeToken, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency])
 
-  const isCrossBridge = useMemo(() => {
-    // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-    // console.log(destChain)
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && !isWrapInputError
-      && v2Trade?.outputAmount
-      // && isAddress(recipient)
-      && (
-        (isDestUnderlying && destChain)
-        || (!isDestUnderlying && !destChain)
-      )
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-      ) {
-        return true
-      } else {
-        return false
+  const isInputError = useMemo(() => {
+    // console.log(isWrapInputError)
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
       }
-    } else {
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (inputBridgeValue !== '' || inputBridgeValue === '0') {
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (isWrapInputError) {
+        return {
+          state: 'Error',
+          tip: isWrapInputError
+        }
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedLimit')
+        }
+      } else if (
+        (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
+        || (isDestUnderlying && !destChain)
+      ) {
+        return {
+          state: 'Error',
+          tip: t('insufficientLiquidity')
+        }
+      }
+    }
+    return undefined
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain])
+
+  const errorTip = useMemo(() => {
+    if (isInputError) {
+      return isInputError
+    } else if (!inputBridgeValue) {
+      return {
+        state: 'Error',
+        tip: t('swap')
+      }
+    }
+    return undefined
+  }, [isInputError, selectChain, inputBridgeValue])
+
+  // const isCrossBridge = useMemo(() => {
+  //   // console.log(!wrapInputErrorUnderlying && !isNativeToken)
+  //   // console.log(destChain)
+  //   if (
+  //     account
+  //     && destConfig
+  //     && selectCurrency
+  //     && inputBridgeValue
+  //     && !isWrapInputError
+  //     && v2Trade?.outputAmount
+  //     // && isAddress(recipient)
+  //     && (
+  //       (isDestUnderlying && destChain)
+  //       || (!isDestUnderlying && !destChain)
+  //     )
+  //   ) {
+  //     if (
+  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
+  //       || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
+  //     ) {
+  //       return true
+  //     } else {
+  //       return false
+  //     }
+  //   } else {
+  //     return true
+  //   }
+  // // }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  // }, [selectCurrency, account, destConfig, inputBridgeValue, destChain, isWrapInputError])
+  const isCrossBridge = useMemo(() => {
+    if (errorTip) {
       return true
     }
-  // }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
-  }, [selectCurrency, account, destConfig, inputBridgeValue, destChain, isWrapInputError])
+    return false
+  }, [errorTip])
 
-  const isInputError = useMemo(() => {
-    // console.log(destChain)
-    if (
-      account
-      && destConfig
-      && selectCurrency
-      && inputBridgeValue
-      && isCrossBridge
-    ) {
-      if (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-        || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-        || isWrapInputError
-        || isCrossBridge
-      ) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      return false
-    }
-  }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isWrapInputError])
+  // const isInputError = useMemo(() => {
+  //   // console.log(destChain)
+  //   if (
+  //     account
+  //     && destConfig
+  //     && selectCurrency
+  //     && inputBridgeValue
+  //     && isCrossBridge
+  //   ) {
+  //     if (
+  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
+  //       || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
+  //       || isWrapInputError
+  //       || isCrossBridge
+  //     ) {
+  //       return true
+  //     } else {
+  //       return false
+  //     }
+  //   } else {
+  //     return false
+  //   }
+  // }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isWrapInputError])
 
+  // const btnTxt = useMemo(() => {
+  //   // console.log(isWrapInputError)
+  //   if (isWrapInputError && inputBridgeValue) {
+  //     return isWrapInputError
+  //   } else if (
+  //     destConfig
+  //     && inputBridgeValue
+  //     && (
+  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
+  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
+  //     )
+  //   ) {
+  //     return t('ExceedLimit')
+  //   } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
+  //     return t('nodestlr')
+  //   } else if (wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
+  //     return t('swap')
+  //   }
+  //   return t('swap')
+  // }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, wrapTypeNative, wrapTypeUnderlying, isDestUnderlying])
   const btnTxt = useMemo(() => {
-    // console.log(isWrapInputError)
-    if (isWrapInputError && inputBridgeValue) {
-      return isWrapInputError
-    } else if (
-      destConfig
-      && inputBridgeValue
-      && (
-        Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-        || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-      )
-    ) {
-      return t('ExceedLimit')
-    } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
-      return t('nodestlr')
+    if (errorTip) {
+      return errorTip?.tip
     } else if (wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
       return t('swap')
     }
     return t('swap')
-  }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, wrapTypeNative, wrapTypeUnderlying, isDestUnderlying])
+  }, [errorTip, wrapTypeNative, wrapTypeUnderlying])
 
+  const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
   useEffect(() => {
-    const t = selectCurrency && selectCurrency.chainId?.toString() === chainId?.toString() ? selectCurrency.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).bridgeInitToken)
-    // setAllTokens({})
-    // setSelectCurrency('')
-    const list:any = {}
-    for (const token in allTokensList) {
-      if (!isAddress(token)) continue
-      list[token] = {
-        ...allTokensList[token].tokenInfo,
-      }
-      if (!selectCurrency || selectCurrency.chainId?.toString() !== chainId?.toString()) {
-        if (
-          t === token
-          || list[token]?.symbol?.toLowerCase() === t
-          || list[token]?.underlying?.symbol?.toLowerCase() === t
-        ) {
-          setSelectCurrency(list[token])
-        }
-      }
-    }
-  }, [chainId, allTokensList])
+    // console.log(allTokensList)
+    setSelectCurrency(initCurrency)
+  }, [initCurrency])
 
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
   useEffect(() => {
     // console.log(selectCurrency)
-    if (selectCurrency) {
-      const arr = []
-      for (const c in selectCurrency?.destChains) {
-        if (
-          c?.toString() === chainId?.toString()
-          || !config.chainInfo[c]
-        ) continue
-        arr.push(c)
-      }
-      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(chainId).bridgeInitChain
-      if (arr.length > 0) {
-        if (
-          !useChain
-          || (useChain && !arr.includes(useChain))
-        ) {
-          for (const c of arr) {
-            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-            useChain = c
-            break
-          }
-        }
-      }
-      setSelectChain(useChain)
-      setSelectChainList(arr)
-    }
-  }, [selectCurrency])
+    setSelectChain(initChainId)
+  }, [initChainId])
+  useEffect(() => {
+    setSelectChainList(initChainList)
+  }, [initChainList])
 
   useEffect(() => {
     // onSelectChainId(selectChain)
