@@ -15,7 +15,7 @@ export default function TxnsDtilsModal () {
   const { chainId } = useActiveReact()
   const {hash, isOpenModal, onChangeViewDtil} = useTxnsDtilOpen()
 
-  // console.log(allTransactions)
+  // console.log(isOpenModal)
   // const hash = getParams('hash')
   const tx = allTransactions?.[hash]
   // console.log(tx)

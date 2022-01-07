@@ -7,6 +7,7 @@ import Polling from '../components/Header/Polling'
 import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
+import TxnsDtilsModal from '../components/CrossChainPanelV2/txnsDtilsModal'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -150,6 +151,7 @@ export default function App() {
           </NavLeft> */}
           <Popups />
           <Polling />
+          <TxnsDtilsModal />
           {/* <TopLevelModals /> */}
           <Web3ReactManager>
             <Switch>

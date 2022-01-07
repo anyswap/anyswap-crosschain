@@ -121,7 +121,10 @@ export default function Transaction({ hash }: { hash: string }) {
     <TransactionWrapper>
       {
         tx?.version ? (
-          <TransactionState1 onClick={() => {onChangeViewDtil(hash, true)}}>
+          <TransactionState1 onClick={() => {
+            // console.log(hash)
+            onChangeViewDtil(hash, true)
+          }}>
             <RowFixed>
               <TransactionStatusText>{summary ?? hash} ↗</TransactionStatusText>
             </RowFixed>
