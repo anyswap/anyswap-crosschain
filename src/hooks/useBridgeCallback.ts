@@ -640,6 +640,7 @@ export function useBridgeNativeCallback(
   txnsType: string | undefined,
   inputToken: string | undefined,
   pairid: string | undefined,
+  receiveAddress?: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const {onChangeViewDtil} = useTxnsDtilOpen()
@@ -655,7 +656,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputToken)
-    if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!chainId || !toAddress || !toChainID || !receiveAddress) return NOT_APPLICABLE
     // console.log(typedValue)
     // console.log(toChainID)
 
@@ -688,7 +689,7 @@ export function useBridgeNativeCallback(
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: receiveAddress?.toLowerCase(),
                   symbol: inputCurrency?.symbol,
                   version: txnsType,
                   routerToken: '',
@@ -710,7 +711,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress,
+                    to: receiveAddress,
                     symbol: '',
                     version: txnsType,
                     pairid: pairid
@@ -725,7 +726,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, receiveAddress])
 }
 
 /**

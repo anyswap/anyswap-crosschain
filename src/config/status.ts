@@ -4,7 +4,7 @@ export enum Status {
   Failure = "Failure",
   Null = "Null",
   Confirming = "Confirming",
-  Crosschaining = "Crosschaining",
+  Crosschaining = "Routing",
   Timeout = "Timeout",
   BigAmount = "Big Amount",
 }

@@ -228,7 +228,7 @@ export default function HistoryDetails ({
             </div>
           </div>
           <div className="item">
-            <div className="txtLabel">Hash:</div>
+            <div className="txtLabel">Tx hash:</div>
             <div className="value">
               <Link className="a" href={getEtherscanLink(fromChainID, txid, 'transaction')} target="_blank">{txid}</Link>
               <Copy toCopy={txid}></Copy>
@@ -280,7 +280,7 @@ export default function HistoryDetails ({
             </div>
           </div>
           <div className="item">
-            <div className="txtLabel">Hash:</div>
+            <div className="txtLabel">Tx hash:</div>
             <div className="value">
               {swaptx ? (
                 <>

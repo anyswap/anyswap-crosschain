@@ -114,16 +114,16 @@ export function recordsTxns ({
 // symbol: UST
 // pairid: USTv5
 // recordsTxns({
-//   hash: 'ceac140bff1f9d1da04e7ec94ebcef83a8d868ed527149b3a6e842e65a5e5fb4',
-//   chainId: 'TERRA',
-//   selectChain: '250',
-//   account: 'terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws',
-//   value: '50000000',
-//   formatvalue: '50',
+//   hash: '0xa8d9cb02e8f9fb0328b2a9a6f3a77eeeb741ff308db4237eac68c557dac578bb',
+//   chainId: '32659',
+//   selectChain: '56',
+//   account: '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249',
+//   value: '',
+//   formatvalue: '',
 //   to: '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249',
-//   symbol: 'USD',
-//   version: 'swapin',
-//   pairid: 'USTv5',
+//   symbol: 'any',
+//   version: 'swapout',
+//   pairid: 'any',
 //   routerToken: ''
 // })
 

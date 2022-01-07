@@ -519,7 +519,8 @@ export default function CrossChain() {
     selectChain,
     destConfig?.type,
     isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
-    destConfig?.pairid
+    destConfig?.pairid,
+    destConfig?.type === 'swapin' ? destConfig.DepositAddress : recipient,
   )
   const { wrapType: wrapTerraType, execute: onTerraWrap } = useTerraCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
