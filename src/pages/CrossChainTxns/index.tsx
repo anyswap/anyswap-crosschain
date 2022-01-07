@@ -412,7 +412,7 @@ export default function CrossChain() {
   }, [isNativeToken, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency])
 
   const isInputError = useMemo(() => {
-    // console.log(isWrapInputError)
+    // console.log(selectCurrency)
     if (!selectCurrency) {
       return {
         state: 'Error',
@@ -456,6 +456,11 @@ export default function CrossChain() {
         return {
           state: 'Error',
           tip: t('insufficientLiquidity')
+        }
+      } else if (routerPath.length <= 0) {
+        return {
+          state: 'Error',
+          tip: 'Loading'
         }
       }
     }

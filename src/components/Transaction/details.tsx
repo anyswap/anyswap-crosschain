@@ -293,8 +293,12 @@ export default function HistoryDetails ({
           <div className="item">
             <div className="txtLabel">{t('Receive')}:</div>
             <div className="value">
-              <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
-              <Copy toCopy={to}></Copy>
+              {swaptx ? (
+                <>
+                  <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
+                  <Copy toCopy={to}></Copy>
+                </>
+              ) : '-'}
             </div>
           </div>
           {
