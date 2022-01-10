@@ -641,6 +641,7 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   pairid: string | undefined,
   receiveAddress?: string | undefined,
+  selectCurrency?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const {onChangeViewDtil} = useTxnsDtilOpen()
@@ -663,13 +664,15 @@ export function useBridgeNativeCallback(
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     // console.log(inputAmount?.raw?.toString())
     // console.log(balance?.raw?.toString())
+    const symbol = inputCurrency?.symbol ?? selectCurrency?.symbol
     return {
       wrapType: WrapType.WRAP,
       execute:
         sufficientBalance && inputAmount
           ? async () => {
               try {
-                console.log(txnsType)
+                // console.log(txnsType)
+                // console.log(inputCurrency)
                 const txReceipt:any = txnsType === 'swapin' ? await signSwapinData({
                   value: `0x${inputAmount.raw.toString(16)}`,
                   address: toAddress,
@@ -686,11 +689,11 @@ export function useBridgeNativeCallback(
                 console.log(txReceipt)
                 const txData:any = {hash: txReceipt?.info}
                 addTransaction(txData, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: receiveAddress?.toLowerCase(),
-                  symbol: inputCurrency?.symbol,
+                  symbol: symbol,
                   version: txnsType,
                   routerToken: '',
                   token: inputCurrency?.address,
@@ -724,7 +727,7 @@ export function useBridgeNativeCallback(
               }
             }
           : undefined,
-      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: symbol})
     }
   }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, receiveAddress])
 }

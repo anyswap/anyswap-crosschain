@@ -323,6 +323,7 @@ export default function CrossChain({
     selectCurrency?.address,
     destConfig?.pairid,
     recipient,
+    selectCurrency
   )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
