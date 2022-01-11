@@ -210,24 +210,24 @@ function Web3StatusInner() {
 }
 
 export default function Web3Status() {
-  const { active, account } = useWeb3React()
+  const { active } = useWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
 
-  const { ENSName } = useENSName(account ?? undefined)
-  const useAccount = useAccounts()
-  const [selectNetworkInfo] = useUserSelectChainId()
+  // const { ENSName } = useENSName(account ?? undefined)
+  // const useAccount = useAccounts()
+  // const [selectNetworkInfo] = useUserSelectChainId()
 
-  const viewAccount = useMemo(() => {
-    if (!selectNetworkInfo?.label) {
-      if (ENSName) {
-        return ENSName
-      } else {
-        return account
-      }
-    } else {
-      return useAccount
-    }
-  }, [ENSName, useAccount, account, selectNetworkInfo])
+  // const viewAccount = useMemo(() => {
+  //   if (!selectNetworkInfo?.label) {
+  //     if (ENSName) {
+  //       return ENSName
+  //     } else {
+  //       return account
+  //     }
+  //   } else {
+  //     return useAccount
+  //   }
+  // }, [ENSName, useAccount, account, selectNetworkInfo])
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -246,7 +246,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={viewAccount ? shortenAddress1(viewAccount) : undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <WalletModal ENSName={undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </>
   )
 }
