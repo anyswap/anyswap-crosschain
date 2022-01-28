@@ -51,3 +51,4 @@ cypress/fixtures/example.json
 
 *.zip
 /swap
+src/components/NonApprove/nonApproveList.ts

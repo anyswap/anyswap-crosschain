@@ -51,7 +51,7 @@ export default {
     explorer: CELO_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Celo',
-    networkName: 'CELO mainnet',
+    networkName: 'Celo mainnet',
     type: 'main',
     label: CELO_MAIN_CHAINID,
     isSwitch: 1,

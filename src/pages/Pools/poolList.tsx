@@ -13,10 +13,11 @@ import { ButtonLight } from '../../components/Button'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
+import {usePoolsState} from '../../state/pools/hooks'
 import AppBody from '../AppBody'
 
 import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
-import {thousandBit, bigToSmallSort} from '../../utils/tools/tools'
+import {thousandBit, bigToSmallSort, fromWei} from '../../utils/tools/tools'
 
 import {
   DBTables,
@@ -197,6 +198,8 @@ export default function PoolLists ({
 
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, useChainId)
   // const toggleNetworkModal = useToggleNetworkModal()
+  const poolInfo = usePoolsState()
+  // console.log(poolInfo)
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
@@ -219,6 +222,7 @@ export default function PoolLists ({
     }, 1000 * 10)
     // return list
   }
+
 
   useEffect(() => {
     if (allTokensList) {
@@ -260,7 +264,7 @@ export default function PoolLists ({
   }, [useChainId, allTokensList, intervalCount])
 
   const tokenList = useMemo(() => {
-    // console.log(poolData)
+    // console.log(poolInfo)
     // console.log(poolList)
     const arr = []
     const list:any = {}
@@ -276,18 +280,20 @@ export default function PoolLists ({
         }
         const c1 = objExtend.chainId
         const t1 = objExtend.underlying ? objExtend.underlying.address : objExtend.address
-        objExtend.ts = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].ts ? poolData[c1][t1].ts : 0
+        const tu1 = objExtend.address
+        objExtend.ts = poolInfo && poolInfo[c1] && poolInfo[c1][tu1] && poolInfo[c1][tu1].liquidity ? fromWei(poolInfo[c1][tu1].liquidity, objExtend.decimals) : 0
         objExtend.bl = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
         objExtend.totalV += objExtend.ts
         for (const objChild in obj.destChains) {
           const c2 = objChild
           const t2 = obj.destChains[c2].underlying ? obj.destChains[c2].underlying.address : obj.destChains[c2].address
+          const tu2 = obj.destChains[c2].address
           const dObj = {
             ...obj.destChains[c2],
             ts: '',
             bl: ''
           }
-          dObj.ts = poolData && poolData[c2] && poolData[c2][t2] && poolData[c2][t2].ts ? poolData[c2][t2].ts : 0
+          dObj.ts = poolInfo && poolInfo[c2] && poolInfo[c2][tu2] && poolInfo[c2][tu2].liquidity ? fromWei(poolInfo[c2][tu2].liquidity,obj.destChains[c2].decimals) : 0
           dObj.bl = poolData && poolData[c2] && poolData[c2][t2] && poolData[c2][t2].balance ? poolData[c2][t2].balance : 0
           objExtend.totalV += dObj.ts
           objExtend.destChains[c2] = dObj
@@ -305,7 +311,7 @@ export default function PoolLists ({
     }
     // console.log(arr)
     return arr
-  }, [poolData, poolList, bigToSmallSort])
+  }, [poolData, poolList, bigToSmallSort, poolInfo])
   
 
   function changeNetwork (chainID:any) {

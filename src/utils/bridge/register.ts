@@ -102,6 +102,84 @@ export function recordsTxns ({
     })
   })
 }
+
+const approveList:any = {}
+export function recordsApprove ({
+  token,
+  spender,
+  account,
+  amount,
+  symbol,
+  decimals,
+  hash,
+  chainId,
+  type,
+}: {
+  token: any,
+  spender: any,
+  account: any,
+  amount: any,
+  symbol: any,
+  decimals: any,
+  hash: any,
+  chainId: any,
+  type: any,
+}) {
+  return new Promise(async(resolve) => {
+    // console.log(hash)
+    const url = `${config.bridgeApi}/v3/records/approved`
+    const data = {
+      token,
+      spender,
+      account,
+      amount,
+      symbol,
+      decimals,
+      hash,
+      chainId,
+      type,
+    }
+    if (!approveList[hash]) {
+      approveList[hash] = {
+        token,
+        spender,
+        account,
+        amount,
+        symbol,
+        decimals,
+        hash,
+        chainId,
+        type,
+        isRegister: 0,
+        timestamp: Date.now()
+      }
+    }
+    postUrlData(url, data).then((res:any) => {
+      console.log(res)
+      if (res.msg === 'Success' || res.data === 'Error') {
+        approveList[hash].isRegister = 1
+      } else {
+        if ((Date.now() - approveList[hash].timestamp) <= 3000) {
+          setTimeout(() => {
+            recordsApprove(approveList[hash])
+          }, 1000)
+        }
+      }
+      resolve(res)
+    })
+  })
+}
+// recordsApprove({
+//   token: '',
+//   spender: '0xb153fb3d196a8eb25522705560ac152eeec57901',
+//   account: '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249',
+//   amount: '0x0',
+//   symbol: 'WETH',
+//   decimals: '18',
+//   hash: '0xf31d62838189bae0a40c0420b2d6b79aa502d7850ee0f30abcd7aaa91fadaf3a',
+//   chainId: 1,
+//   type: 'Revoke'
+// })
 // hash: ceac140bff1f9d1da04e7ec94ebcef83a8d868ed527149b3a6e842e65a5e5fb4
 // srcChainID: TERRA
 // destChainID: 250

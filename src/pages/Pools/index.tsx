@@ -159,7 +159,7 @@ export default function SwapNative() {
   const anyCurrency = useLocalToken(anyToken ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
 
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, anyToken?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(

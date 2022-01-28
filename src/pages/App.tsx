@@ -26,6 +26,9 @@ import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
 import FarmList from './Farms/FarmsList'
 
+import NonApprove from '../components/NonApprove'
+import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
+
 import config from '../config'
 import farmlist from '../config/farmlist'
 // console.log(ANYFarming)
@@ -146,6 +149,7 @@ export default function App() {
           </NavLeft>
           <Popups />
           <Polling />
+          <NonApprove />
           {/* <TopLevelModals /> */}
           <Web3ReactManager>
             <Switch>
@@ -156,6 +160,7 @@ export default function App() {
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               <Route exact strict path="/bridge" component={() => <Bridge />} />
+              <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={() => <CrossChain />} />
               <Route
                 path={[

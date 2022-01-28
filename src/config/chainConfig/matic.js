@@ -54,13 +54,13 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     bridgeInitChain: '56',
-    nativeToken: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    nativeToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     crossBridgeInitToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   },
   [VERSION.V7]: {
     bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     bridgeInitChain: '56',
-    nativeToken: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    nativeToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     crossBridgeInitToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   }
 }
@@ -95,7 +95,7 @@ export default {
     explorer: MATIC_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Polygon',
-    networkName: 'MATIC mainnet',
+    networkName: 'Polygon mainnet',
     type: 'main',
     label: MATIC_MAIN_CHAINID,
     isSwitch: 1,

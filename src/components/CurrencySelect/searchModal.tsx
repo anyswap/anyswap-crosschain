@@ -17,7 +17,7 @@ import { CloseIcon } from '../../theme'
 
 import { isAddress } from '../../utils'
 
-import { useToken } from '../../hooks/Tokens'
+import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
 interface CurrencySearchModalProps {
@@ -57,16 +57,25 @@ export default function SearchModal ({
   const inputRef = useRef<HTMLInputElement>()
 
   const isAddressSearch = isAddress(searchQuery)
-
-  const searchToken = useToken(searchQuery)
+  const useAllTokenList = useMemo(() => {
+    const list:any = {}
+    for (const token in allTokens) {
+      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      list[token] = {
+        ...obj
+      }
+    }
+    return list
+  }, [allTokens])
+  const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
 
   const tokenList = useMemo(() => {
     const arr:any = []
-    for (const token in allTokens) {
-      arr.push(allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token])
+    for (const token in useAllTokenList) {
+      arr.push(useAllTokenList[token])
     }
     return arr
-  }, [allTokens])
+  }, [useAllTokenList])
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []

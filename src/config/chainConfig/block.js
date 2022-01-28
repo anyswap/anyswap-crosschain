@@ -35,7 +35,7 @@ export default {
     explorer: BLOCK_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Blocknet',
-    networkName: 'BLOCK mainnet',
+    networkName: 'Blocknet mainnet',
     type: 'main',
     label: BLOCK_MAIN_CHAINID,
     isSwitch: 1,

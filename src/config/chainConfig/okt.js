@@ -56,7 +56,7 @@ export default {
     lookBlock: OKT_MAIN_EXPLORER + '/block/',
     explorer: OKT_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'OKExChain',
+    name: 'OEC',
     networkName: 'OEC mainnet',
     type: 'main',
     label: OKT_MAIN_CHAINID,

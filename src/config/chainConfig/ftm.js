@@ -92,7 +92,7 @@ export default {
     explorer: FTM_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Fantom',
-    networkName: 'FTM mainnet',
+    networkName: 'Fantom mainnet',
     type: 'main',
     label: FTM_MAIN_CHAINID,
     isSwitch: 1,

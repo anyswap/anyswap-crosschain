@@ -35,7 +35,7 @@ export default {
     explorer: TERRA_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Terra',
-    networkName: 'TERRA mainnet',
+    networkName: 'Terra mainnet',
     networkLogo: 'TERRA',
     type: 'main',
     label: TERRA_MAIN_CHAINID,

@@ -137,7 +137,7 @@ export default function CrossChain() {
 
   const formatCurrency = useLocalToken(selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency && !isNativeToken ? formatCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, destConfig?.routerToken)
 
   useEffect(() => {

@@ -54,7 +54,7 @@ export default {
     explorer: SDN_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Shiden Network',
-    networkName: 'SDN mainnet',
+    networkName: 'Shiden Network mainnet',
     type: 'main',
     label: SDN_MAIN_CHAINID,
     isSwitch: 1,

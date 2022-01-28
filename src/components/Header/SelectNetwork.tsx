@@ -202,6 +202,7 @@ export const OptionCardClickable = styled(OptionCard)`
 `
 export const HideSmall = styled.span`
   cursor:pointer;
+  width: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
@@ -212,7 +213,7 @@ export const NetworkCard = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
   white-space:nowrap;
-  min-width: 160px;
+  // min-width: 160px;
   color: ${({ theme }) => theme.textColorBold};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
@@ -489,7 +490,7 @@ export default function SelectNetwork () {
       <HideSmall onClick={() => toggleNetworkModal()}>
         {<NetworkCard title={config.getCurChainInfo(useChainId).networkName}>
           <TokenLogo symbol={config.getCurChainInfo(useChainId).networkLogo ?? config.getCurChainInfo(useChainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
-          {config.getCurChainInfo(useChainId).networkName}
+          {config.getCurChainInfo(useChainId).name}
         </NetworkCard>}
         {/* {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
           <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 

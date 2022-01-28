@@ -35,7 +35,7 @@ export default {
     explorer: BTC_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Bitcoin',
-    networkName: 'BTC mainnet',
+    networkName: 'Bitcoin mainnet',
     type: 'main',
     label: BTC_MAIN_CHAINID,
     isSwitch: 1,

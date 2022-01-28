@@ -18,13 +18,13 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0x0be9e53fd7edac9f859882afdda116645287c629',
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0x0be9e53fd7edac9f859882afdda116645287c629',
     crossBridgeInitToken: ''
   },
 }
@@ -52,7 +52,7 @@ export default {
     explorer: FUSE_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Fuse',
-    networkName: 'FUSE mainnet',
+    networkName: 'Fuse mainnet',
     type: 'main',
     label: FUSE_MAIN_CHAINID,
     isSwitch: 1,
