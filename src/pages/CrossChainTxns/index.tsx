@@ -6,7 +6,8 @@ import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
 import SelectChainIdInputPanel from './selectChainID'
-import Reminder from '../CrossChain/reminder'
+// import Reminder from '../CrossChain/reminder'
+import Reminder from '../../components/CrossChainPanelV2/reminder'
 
 import { useActiveWeb3React } from '../../hooks'
 import {useBridgeSwapUnderlyingCallback, useBridgeSwapNativeCallback} from '../../hooks/useBridgeCallback'
@@ -470,97 +471,17 @@ export default function CrossChain() {
   const errorTip = useMemo(() => {
     if (isInputError) {
       return isInputError
-    } else if (!inputBridgeValue) {
-      return {
-        state: 'Error',
-        tip: t('swap')
-      }
     }
     return undefined
   }, [isInputError, selectChain, inputBridgeValue])
 
-  // const isCrossBridge = useMemo(() => {
-  //   // console.log(!wrapInputErrorUnderlying && !isNativeToken)
-  //   // console.log(destChain)
-  //   if (
-  //     account
-  //     && destConfig
-  //     && selectCurrency
-  //     && inputBridgeValue
-  //     && !isWrapInputError
-  //     && v2Trade?.outputAmount
-  //     // && isAddress(recipient)
-  //     && (
-  //       (isDestUnderlying && destChain)
-  //       || (!isDestUnderlying && !destChain)
-  //     )
-  //   ) {
-  //     if (
-  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-  //       || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-  //     ) {
-  //       return true
-  //     } else {
-  //       return false
-  //     }
-  //   } else {
-  //     return true
-  //   }
-  // // }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
-  // }, [selectCurrency, account, destConfig, inputBridgeValue, destChain, isWrapInputError])
   const isCrossBridge = useMemo(() => {
-    if (errorTip) {
+    if (errorTip || !inputBridgeValue) {
       return true
     }
     return false
   }, [errorTip])
 
-  // const isInputError = useMemo(() => {
-  //   // console.log(destChain)
-  //   if (
-  //     account
-  //     && destConfig
-  //     && selectCurrency
-  //     && inputBridgeValue
-  //     && isCrossBridge
-  //   ) {
-  //     if (
-  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-  //       || (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts))
-  //       || isWrapInputError
-  //       || isCrossBridge
-  //     ) {
-  //       return true
-  //     } else {
-  //       return false
-  //     }
-  //   } else {
-  //     return false
-  //   }
-  // }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge, isWrapInputError])
-
-  // const btnTxt = useMemo(() => {
-  //   // console.log(isWrapInputError)
-  //   if (isWrapInputError && inputBridgeValue) {
-  //     return isWrapInputError
-  //   } else if (
-  //     destConfig
-  //     && inputBridgeValue
-  //     && (
-  //       Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-  //       || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-  //     )
-  //   ) {
-  //     return t('ExceedLimit')
-  //   } else if (isDestUnderlying && Number(inputBridgeValue) > Number(destChain.ts)) {
-  //     return t('nodestlr')
-  //   } else if (wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP) {
-  //     return t('swap')
-  //   }
-  //   return t('swap')
-  // }, [t, isWrapInputError, inputBridgeValue, destConfig, destChain, wrapTypeNative, wrapTypeUnderlying, isDestUnderlying])
   const btnTxt = useMemo(() => {
     if (errorTip) {
       return errorTip?.tip
@@ -733,7 +654,7 @@ export default function CrossChain() {
             }}
             isViewModal={modalOpen}
             id="selectCurrency"
-            isError={isInputError}
+            isError={Boolean(isInputError)}
             isNativeToken={isNativeToken}
             allTokens={allTokensList}
             bridgeKey={BRIDGETYPE}
@@ -799,7 +720,8 @@ export default function CrossChain() {
           )} */}
         </AutoColumn>
 
-        <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} />
+        {/* <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain} /> */}
+        <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
 
         <BottomGrouping>
           {!account ? (

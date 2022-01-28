@@ -358,7 +358,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
 }
 
 
@@ -798,7 +798,7 @@ export function useBridgeNativeCallback(
         let fee:any = ''
         let tax:any = ''
         let lunaFee:any = ''
-        res.map(item => {
+        res.map((item:any) => {
           if (item.denom === Unit) {
             fee = item.fee
             tax = item.tax

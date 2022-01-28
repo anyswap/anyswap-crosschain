@@ -137,7 +137,7 @@ export default function CrossChain() {
 
   const formatCurrency = useLocalToken(selectCurrency)
   // const formatInputBridgeValue = inputBridgeValue && Number(inputBridgeValue) ? tryParseAmount(inputBridgeValue, formatCurrency ?? undefined) : ''
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency && !isNativeToken ? formatCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, destConfig?.routerToken)
 
   useEffect(() => {
@@ -419,29 +419,57 @@ export default function CrossChain() {
   useEffect(() => {
     // console.log(selectCurrency)
     if (selectCurrency) {
-      const arr = []
-      for (const c in selectCurrency?.destChains) {
-        if (
-          c?.toString() === chainId?.toString()
-          || !config.chainInfo[c]
-        ) continue
-        arr.push(c)
-      }
-      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(chainId).bridgeInitChain
-      if (arr.length > 0) {
-        if (
-          !useChain
-          || (useChain && !arr.includes(useChain))
-        ) {
-          for (const c of arr) {
-            if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
-            useChain = c
-            break
+      // const arr = []
+      // for (const c in selectCurrency?.destChains) {
+      //   if (
+      //     c?.toString() === chainId?.toString()
+      //     || !config.chainInfo[c]
+      //   ) continue
+      //   arr.push(c)
+      // }
+      // let useChain:any = selectChain ? selectChain : config.getCurChainInfo(chainId).bridgeInitChain
+      // if (arr.length > 0) {
+      //   if (
+      //     !useChain
+      //     || (useChain && !arr.includes(useChain))
+      //   ) {
+      //     for (const c of arr) {
+      //       if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+      //       useChain = c
+      //       break
+      //     }
+      //   }
+      // }
+      let initChainId:any = '',
+        initChainList:any = []
+      if (selectCurrency) {
+        const arr = []
+        for (const c in selectCurrency?.destChains) {
+          if (c?.toString() === chainId?.toString()) continue
+          arr.push(c)
+        }
+        // console.log(arr)
+        let useChain:any = selectChain ? selectChain : config.getCurChainInfo(selectChain).bridgeInitChain
+        if (arr.length > 0) {
+          if (
+            !useChain
+            || (useChain && !arr.includes(useChain))
+          ) {
+            for (const c of arr) {
+              if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
+              useChain = c
+              break
+            }
           }
         }
+        // console.log('useChain', useChain)
+        // setSelectChain(useChain)
+        initChainId = useChain
+        initChainList = arr
+        // setSelectChainList(arr)
       }
-      setSelectChain(useChain)
-      setSelectChainList(arr)
+      setSelectChain(initChainId)
+      setSelectChainList(initChainList)
     }
   }, [selectCurrency])
 

@@ -8,7 +8,7 @@ export const XDAI_MAIN_EXPLORER = 'https://blockscout.com/xdai/mainnet'
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'xDAI'
+const symbol = 'GNO'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -51,12 +51,12 @@ export default {
     lookBlock: XDAI_MAIN_EXPLORER + '/block/',
     explorer: XDAI_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'xDAI',
-    networkName: 'XDAI mainnet',
+    name: 'Gnosis',
+    networkName: 'Gnosis mainnet',
     type: 'main',
     label: XDAI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'xDAI',
+    suffix: 'Gnosis',
     anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
 }

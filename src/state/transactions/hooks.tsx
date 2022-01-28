@@ -53,15 +53,15 @@ export function useTransactionAdder(): (
         summary?: string;
         claim?: { recipient: string };
         approval?: { tokenAddress: string; spender: string },
-        value?: string,
-        toChainId?: string,
-        toAddress?: string,
-        symbol?: string,
-        version?: string,
-        routerToken?: string,
-        token?: string,
-        logoUrl?: string,
-        underlying?: string,
+        value?: any,
+        toChainId?: any,
+        toAddress?: any,
+        symbol?: any,
+        version?: any,
+        routerToken?: any,
+        token?: any,
+        logoUrl?: any,
+        underlying?: any,
       } = {}
     ) => {
       if (!account) return

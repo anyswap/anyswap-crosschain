@@ -1,14 +1,14 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const SYS_MAIN_CHAINID = 57
-export const SYS_MAINNET = getLocalRPC(SYS_MAIN_CHAINID, 'https://rpc.syscoin.org')
-export const SYS_MAIN_EXPLORER = 'https://explorer.syscoin.org'
+export const ASTAR_MAIN_CHAINID = 592
+export const ASTAR_MAINNET = getLocalRPC(ASTAR_MAIN_CHAINID, 'https://rpc.astar.bldnodes.org/')
+export const ASTAR_MAIN_EXPLORER = 'https://rpc.astar.network:8545'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'SYS'
+const symbol = 'ASTR'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -30,33 +30,35 @@ const bridgeToken = {
 }
 
 export default {
-  [SYS_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + SYS_MAIN_CHAINID,
+  [ASTAR_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + ASTAR_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x077a210d0baa86c23ae8f80021b177ebc5bee25e',
+    multicalToken: '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: SYS_MAINNET,
+    nodeRpc: ASTAR_MAINNET,
     nodeRpcList: [
-      SYS_MAINNET,
+      ASTAR_MAINNET,
+      'https://rpc.astar.network:8545',
+      'https://astar.subscan.io',
     ],
-    chainID: SYS_MAIN_CHAINID,
-    lookHash: SYS_MAIN_EXPLORER + '/tx/',
-    lookAddr: SYS_MAIN_EXPLORER + '/address/',
-    lookBlock: SYS_MAIN_EXPLORER + '/block/',
-    explorer: SYS_MAIN_EXPLORER,
+    chainID: ASTAR_MAIN_CHAINID,
+    lookHash: ASTAR_MAIN_EXPLORER + '/extrinsic/',
+    lookAddr: ASTAR_MAIN_EXPLORER + '/account/',
+    lookBlock: ASTAR_MAIN_EXPLORER + '/block/',
+    explorer: ASTAR_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Syscoin NEVM',
-    networkName: 'Syscoin mainnet',
-    networkLogo: 'SYS',
+    name: 'Astar Network',
+    networkName: 'Astar mainnet',
+    networkLogo: 'ASTR',
     type: 'main',
-    label: SYS_MAIN_CHAINID,
+    label: ASTAR_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'SYS',
+    suffix: 'ASTR',
     anyToken: ''
   },
 }

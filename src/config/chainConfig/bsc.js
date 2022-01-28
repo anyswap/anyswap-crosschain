@@ -157,6 +157,9 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: BNB_TESTNET,
+    nodeRpcList: [
+      BNB_TESTNET
+    ],
     chainID: BNB_TEST_CHAINID,
     lookHash: BNB_TEST_EXPLORER + '/tx/',
     lookAddr: BNB_TEST_EXPLORER + '/address/',

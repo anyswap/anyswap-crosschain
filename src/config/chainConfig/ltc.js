@@ -35,7 +35,7 @@ export default {
     explorer: LTC_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Litecoin',
-    networkName: 'LTC mainnet',
+    networkName: 'Litecoin mainnet',
     type: 'main',
     label: LTC_MAIN_CHAINID,
     isSwitch: 1,

@@ -53,7 +53,7 @@ export default {
     explorer: ONE_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Harmony',
-    networkName: 'ONE mainnet',
+    networkName: 'Harmony mainnet',
     type: 'main',
     label: ONE_MAIN_CHAINID,
     isSwitch: 1,

@@ -70,7 +70,10 @@ export default function LiquidityPool ({
 
   const { t } = useTranslation()
 
+  // console.log('curChain')
+  // console.log(selectCurrency)
   // console.log(curChain)
+  // console.log(destChain)
   // console.log(destChain)
   // console.log(selectCurrency)
   return (
@@ -78,7 +81,7 @@ export default function LiquidityPool ({
       <LiquidityView>
         {/* {t('pool') + ': '} */}
         {
-          curChain && (isUnderlying || isViewAll) ? (
+          curChain && (isUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
             <>
               <div className='item'>
                 <span className="label">
@@ -88,9 +91,13 @@ export default function LiquidityPool ({
                 {isViewAll ? (
                   <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
                 ) : (
-                  <StyledNavLink to={'/pool'}>
+                  selectCurrency?.address === 'FTM' ? (
                     <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
-                  </StyledNavLink>
+                  ) : (
+                    <StyledNavLink to={'/pool'}>
+                      <span className='cont'>{curChain.ts ? thousandBit(curChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+                    </StyledNavLink>
+                  )
                 )}
               </div>
               {isViewAll ? '' : (
@@ -100,9 +107,13 @@ export default function LiquidityPool ({
                   </span>
                   {
                     curChain.bl ? (
-                      <StyledNavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
-                        <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : '0.00'}</span>
-                      </StyledNavLink>
+                      selectCurrency?.address === 'FTM' ? (
+                        <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
+                      ) : (
+                        <StyledNavLink to={'/pool/add?bridgetoken=' + selectCurrency?.address + '&bridgetype=withdraw'}>
+                          <span className='cont'>{curChain.bl ? thousandBit(curChain.bl, 2) + ' ' + (selectCurrency?.underlying?.symbol ?? selectCurrency?.symbol) : '0.00'}</span>
+                        </StyledNavLink>
+                      )
                     ) : (
                       <span className='cont'>0.00</span>
                     )
@@ -113,7 +124,7 @@ export default function LiquidityPool ({
           ) : ''
         }
         {
-          destChain && (isDestUnderlying || isViewAll) ? (
+          destChain && (isDestUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
             <>
               <div className='item'>
                 <span className="label">

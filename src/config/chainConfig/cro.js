@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const CRO_MAIN_CHAINID = 25
 export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://cronode1.anyswap.exchange')
-export const CRO_MAIN_EXPLORER = 'https://cronos.crypto.org/explorer'
+export const CRO_MAIN_EXPLORER = 'https://cronoscan.com'
 
 export const tokenList = []
 export const testTokenList = []
@@ -52,7 +52,7 @@ export default {
     explorer: CRO_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Cronos',
-    networkName: 'CRO mainnet',
+    networkName: 'Cronos mainnet',
     type: 'main',
     label: CRO_MAIN_CHAINID,
     isSwitch: 1,

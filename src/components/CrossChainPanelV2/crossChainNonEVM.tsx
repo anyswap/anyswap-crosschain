@@ -11,7 +11,7 @@ import Reminder from './reminder'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
-import { WrapType } from '../../hooks/useWrapCallback'
+// import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -38,7 +38,7 @@ import {selectNetwork} from '../../config/tools/methods'
 // import TokenLogo from '../TokenLogo'
 // import LiquidityPool from '../LiquidityPool'
 import ConfirmView from './confirmModal'
-
+import ErrorTip from './errorTip'
 import {
   // LogoBox,
   ConfirmContent,
@@ -209,36 +209,33 @@ export default function CrossChain({
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
-    if (isInputError) {
+    if (!account) {
+      return undefined
+    } else if (isInputError) {
       return isInputError
-    } else if (!inputBridgeValue) {
-      return {
-        state: 'Error',
-        tip: t('swap')
-      }
-    } else if (!Boolean(isAddr)) {
+    } else if (recipient && !Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
       }
     }
     return undefined
-  }, [isInputError, selectChain, recipient, inputBridgeValue])
+  }, [isInputError, selectChain, recipient])
 
   const isCrossBridge = useMemo(() => {
-    if (errorTip) {
+    if (errorTip || !inputBridgeValue) {
       return true
     }
     return false
-  }, [errorTip])
+  }, [errorTip, inputBridgeValue])
 
   const btnTxt = useMemo(() => {
     // console.log(isWrapInputError)
-    if (errorTip) {
-      return errorTip?.tip
-    } else if (wrapTerraType === WrapType.WRAP) {
-      return t('swap')
-    }
+    // if (errorTip) {
+    //   return errorTip?.tip
+    // } else if (wrapTerraType === WrapType.WRAP) {
+    //   return t('swap')
+    // }
     return t('swap')
   }, [errorTip, t, wrapTerraType])
 
@@ -456,6 +453,7 @@ export default function CrossChain({
       </AutoColumn>
 
       <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+      <ErrorTip errorTip={errorTip} />
       {
         config.isStopSystem ? (
           <BottomGrouping>

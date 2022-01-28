@@ -29,7 +29,7 @@ import Reminder from './reminder'
 // import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 // import {selectNetwork} from '../../config/tools/methods'
-
+import ErrorTip from './errorTip'
 import {
   ListBox
 } from '../../pages/styled'
@@ -126,26 +126,21 @@ export default function CrossChain({
     const isAddr = isAddress( recipient, selectChain)
     if (isInputError) {
       return isInputError
-    } else if (!inputBridgeValue) {
-      return {
-        state: 'Error',
-        tip: t('swap')
-      }
-    } else if (!Boolean(isAddr)) {
+    } else if (recipient && !Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
       }
     }
     return undefined
-  }, [isInputError, selectChain, recipient, inputBridgeValue])
+  }, [isInputError, selectChain, recipient])
 
   const isCrossBridge = useMemo(() => {
-    if (errorTip) {
+    if (errorTip || !inputBridgeValue) {
       return true
     }
     return false
-  }, [errorTip])
+  }, [errorTip, inputBridgeValue])
 
   const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')
@@ -281,6 +276,7 @@ export default function CrossChain({
       </AutoColumn>
 
       <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+      <ErrorTip errorTip={errorTip} />
       {/* {ButtonView('INIT')} */}
       <BottomGrouping>
         <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {

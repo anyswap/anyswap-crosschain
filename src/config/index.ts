@@ -39,6 +39,7 @@ const config: ConFig = {
   isStopSystem: 0,
   getBaseCoin (value:any, chainId:any, type?: number, name?: string) {
     // console.log(value)
+    // console.log(chainId)
     if (
       value
       && (

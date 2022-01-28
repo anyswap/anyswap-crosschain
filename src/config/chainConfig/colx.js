@@ -35,7 +35,7 @@ export default {
     explorer: COLX_MAIN_EXPLORER,
     symbol: symbol,
     name: 'ColossusXT',
-    networkName: 'COLX mainnet',
+    networkName: 'ColossusXT mainnet',
     type: 'main',
     label: COLX_MAIN_CHAINID,
     isSwitch: 1,

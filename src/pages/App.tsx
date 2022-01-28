@@ -29,6 +29,8 @@ import FarmList from './Farms/FarmsList'
 
 import HistoryList from './History'
 import HistoryDetails from './History/details'
+import NonApprove from '../components/NonApprove'
+import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
 import config from '../config'
 import farmlist from '../config/farmlist'
@@ -152,6 +154,7 @@ export default function App() {
           <Popups />
           <Polling />
           <TxnsDtilsModal />
+          <NonApprove />
           {/* <TopLevelModals /> */}
           <Web3ReactManager>
             <Switch>
@@ -165,6 +168,7 @@ export default function App() {
               <Route exact strict path="/multi" component={() => <SwapMULTI />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
+              <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
   
               <Route

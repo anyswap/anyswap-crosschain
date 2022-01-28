@@ -19,8 +19,8 @@ const ContentWrapper = styled.div`
 
 interface ModalProps {
   isOpen: boolean
-  onDismiss: () => void
-  title: string,
+  onDismiss?: () => void
+  title?: string,
   tip?: string,
   minHeight?: number | false
   maxHeight?: number
@@ -44,7 +44,7 @@ export default function ModalContent({
     <>
       <Modal
         isOpen={isOpen}
-        onDismiss={onDismiss}
+        onDismiss={onDismiss ? onDismiss : () => {console.log()}}
         maxHeight={maxHeight}
         minHeight={minHeight}
         initialFocusRef={initialFocusRef}
@@ -56,7 +56,7 @@ export default function ModalContent({
                 {title}
                 {tip ? <QuestionHelper text={tip} /> : ''}
               </Text>
-              <CloseIcon onClick={onDismiss} />
+              {onDismiss ? <CloseIcon onClick={onDismiss} /> : ''}
             </RowBetween>
           </PaddedColumn>
           <Separator />

@@ -78,7 +78,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   BITKEEP: {
     connector: injected,
     name: 'BitKeep',
-    iconName: 'BitKeep.jpg',
+    iconName: 'BitKeep.png',
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D'

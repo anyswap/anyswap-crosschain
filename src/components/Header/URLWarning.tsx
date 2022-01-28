@@ -35,16 +35,18 @@ export default function URLWarning() {
   return isMobile ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */} {t('topTip')}
-        {/* <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a> */}
+      {/* [Warning] Please visit link (<a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://app.multichain.org/#/approvals' target='__blank'>https://app.multichain.org/#/approvals</a>) to confirm approvals asap. Details: <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='' target='__blank'>medium</a>.  */}
+        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */}
+        {t('topTip')}<a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a>
       </div>
       <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>
   ) : window.location.hostname ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */} {t('topTip')}
-        {/* <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a> */}
+        {/* [Warning] Please visit link (<a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://app.multichain.org/#/approvals' target='__blank'>https://app.multichain.org/#/approvals</a>) to confirm approvals asap. Details: <a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='' target='__blank'>medium</a>.  */}
+        {/* <AlertTriangle style={{ marginRight: 6 }} size={12} /> */}
+        {t('topTip')}<a style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }} href='https://multichain.org' target='__blank'>https://multichain.org</a>
       </div>
       <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>

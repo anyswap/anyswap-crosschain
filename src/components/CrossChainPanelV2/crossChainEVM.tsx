@@ -12,7 +12,7 @@ import Reminder from './reminder'
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback, useCrossBridgeCallback} from '../../hooks/useBridgeCallback'
-import { WrapType } from '../../hooks/useWrapCallback'
+// import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 
@@ -41,6 +41,7 @@ import TokenLogo from '../TokenLogo'
 import LiquidityPool from '../LiquidityPool'
 
 import ConfirmView from './confirmModal'
+import ErrorTip from './errorTip'
 
 import {
   LogoBox,
@@ -54,7 +55,8 @@ import {
   outputValue,
   useInitSelectCurrency,
   useDestChainid,
-  useDestCurrency
+  useDestCurrency,
+  getFTMSelectPool
 } from './hooks'
 
 let intervalFN:any = ''
@@ -207,10 +209,26 @@ export default function CrossChain({
   useEffect(() => {
     setDestChain('')
   }, [selectChain, selectCurrency])
-
+  const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, isUnderlying, isDestUnderlying, chainId, selectChain, destConfig)
+  // console.log(curChain)
+  // console.log(destChain)
   const getSelectPool = useCallback(async() => {
-    if (selectCurrency && chainId) {
-      if (selectCurrency?.underlying?.address && isRouter) {
+    if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
+      // console.log(curFTMChain)
+      // console.log(destFTMChain)
+      // console.log(selectCurrency)
+      // console.log(destConfig)
+      setCurChain({
+        ...curFTMChain
+      })
+      setDestChain({
+        ...destFTMChain
+      })
+      return
+    }
+    // console.log(11111)
+    if (selectCurrency && chainId && (isRouter || selectCurrency?.address === 'FTM')) {
+      if (selectCurrency?.underlying?.address && (isRouter || selectCurrency?.address === 'FTM')) {
         const CC:any = await getNodeTotalsupply(
           selectCurrency?.underlying?.address,
           chainId,
@@ -276,8 +294,19 @@ export default function CrossChain({
       intervalFN = setTimeout(() => {
         setIntervalCount(intervalCount + 1)
       }, 1000 * 10)
+    } else {
+      setCurChain({
+        chain: chainId,
+        ts: '',
+        bl: ''
+      })
+      setDestChain({
+        chain: selectChain,
+        ts: '',
+        bl: ''
+      })
     }
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter])
+  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, curFTMChain, destFTMChain])
 
 
   useEffect(() => {
@@ -413,35 +442,32 @@ export default function CrossChain({
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
-    if (isInputError) {
+    if (!evmAccount || !chainId) {
+      return undefined
+    } else if (isInputError) {
       return isInputError
-    } else if (!inputBridgeValue) {
-      return {
-        state: 'Error',
-        tip: t('swap')
-      }
-    } else if (!Boolean(isAddr)) {
+    } else if (recipient && !Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
       }
     }
     return undefined
-  }, [isInputError, selectChain, recipient, inputBridgeValue])
+  }, [isInputError, selectChain, recipient, evmAccount, chainId])
 
   const isCrossBridge = useMemo(() => {
-    if (errorTip) {
+    if (errorTip || !inputBridgeValue) {
       return true
     }
     return false
-  }, [errorTip])
+  }, [errorTip, inputBridgeValue])
 
   const btnTxt = useMemo(() => {
-    if (errorTip) {
-      return errorTip?.tip
-    } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP || wrapTypeCrossBridge === WrapType.WRAP) {
-      return t('swap')
-    }
+    // if (errorTip) {
+    //   return errorTip?.tip
+    // } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP || wrapTypeCrossBridge === WrapType.WRAP) {
+    //   return t('swap')
+    // }
     return t('swap')
   }, [errorTip, wrapType, wrapTypeNative, wrapTypeUnderlying, wrapTypeCrossBridge])
 
@@ -649,16 +675,19 @@ export default function CrossChain({
           isNativeToken={isNativeToken}
           bridgeKey={bridgeKey}
           allTokens={allTokensList}
+          isRouter={isRouter}
         />
         {
-          evmAccount && chainId && isUnderlying ? (
-            <LiquidityPool
-              curChain={curChain}
-              // destChain={destChain}
-              isUnderlying={isUnderlying}
-              selectCurrency={selectCurrency}
-              // isDestUnderlying={isDestUnderlying}
-            />
+          evmAccount && chainId && (isUnderlying || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') && (isRouter || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') ? (
+            <>
+              <LiquidityPool
+                curChain={curChain}
+                // destChain={destChain}
+                isUnderlying={isUnderlying}
+                selectCurrency={selectCurrency}
+                // isDestUnderlying={isDestUnderlying}
+              />
+            </>
           ) : ''
         }
 
@@ -721,7 +750,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && chainId && isDestUnderlying ? (
+          evmAccount && chainId && (isDestUnderlying || destConfig?.address === 'FTM') ? (
             <LiquidityPool
               // curChain={curChain}
               destChain={destChain}
@@ -739,6 +768,8 @@ export default function CrossChain({
       </AutoColumn>
 
       <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+
+      <ErrorTip errorTip={errorTip} />
       {
         config.isStopSystem ? (
           <BottomGrouping>

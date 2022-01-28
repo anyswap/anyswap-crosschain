@@ -16,15 +16,15 @@ const bridgeToken = {
     bridgeInitChain: '',
   },
   [VERSION.V5]: {
-    bridgeInitToken: '0x2c78f1b70ccf63cdee49f9233e9faa99d43aa07e',
+    bridgeInitToken: '0xd102ce6a4db07d247fcc28f366a623df0938ca9e',
     bridgeInitChain: '1',
     nativeToken: '0xd102ce6a4db07d247fcc28f366a623df0938ca9e',
     crossBridgeInitToken: '0xfa9343c3897324496a05fc75abed6bac29f8a40f'
   },
   [VERSION.V7]: {
-    bridgeInitToken: '0x2c78f1b70ccf63cdee49f9233e9faa99d43aa07e',
+    bridgeInitToken: '0xd102ce6a4db07d247fcc28f366a623df0938ca9e',
     bridgeInitChain: '1',
-    nativeToken: '',
+    nativeToken: '0xd102ce6a4db07d247fcc28f366a623df0938ca9e',
     crossBridgeInitToken: '0xfa9343c3897324496a05fc75abed6bac29f8a40f'
   },
 }
@@ -52,7 +52,7 @@ export default {
     explorer: TLOS_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Telos',
-    networkName: 'TLOS mainnet',
+    networkName: 'Telos mainnet',
     type: 'main',
     label: TLOS_MAIN_CHAINID,
     isSwitch: 1,

@@ -20,7 +20,7 @@ import { CloseIcon } from '../../theme'
 
 import { isAddress } from '../../utils'
 
-import { useToken } from '../../hooks/Tokens'
+import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
 interface CurrencySearchModalProps {
@@ -35,6 +35,7 @@ interface CurrencySearchModalProps {
   bridgeKey?: any
   allBalances?: any
   showETH?: any
+  selectDestChainId?: any
 }
 
 export default function SearchModal ({
@@ -48,7 +49,8 @@ export default function SearchModal ({
   chainId,
   bridgeKey,
   // allBalances,
-  showETH
+  showETH,
+  selectDestChainId
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
   const {tokenComparator, balances: allBalances} = useTokenComparator(bridgeKey, chainId, false)
@@ -56,42 +58,47 @@ export default function SearchModal ({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [intervalCount, setIntervalCount] = useState<any>(0)
 
-  // const [mainTokenList, setMainTokenList] = useState<Array<any>>([])
-
-
   const inputRef = useRef<HTMLInputElement>()
 
   const isAddressSearch = isAddress(searchQuery)
-
-  const searchToken = useToken(searchQuery)
+  const useAllTokenList = useMemo(() => {
+    const list:any = {}
+    for (const token in allTokens) {
+      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      list[token] = {
+        ...obj
+      }
+    }
+    return list
+  }, [allTokens])
+  const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
 
   const tokenList = useMemo(() => {
     const arr:any = []
     // const mainTokenLists:any = []
-    for (const token in allTokens) {
-      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+    for (const token in useAllTokenList) {
+      const obj:any = useAllTokenList[token]
       arr.push(obj)
-      // if (['USDC'].includes(obj.symbol)) {
-      //   mainTokenLists.push(obj)
-      // }
     }
-    // console.log(mainTokenLists)
-    // setMainTokenList(mainTokenLists)
     return arr
-  }, [allTokens])
+  }, [useAllTokenList])
 
   const mainTokenList = useMemo(() => {
     const arr:any = []
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
-      if (['MultichainUSDC', 'MultichainDAI'].includes(obj.name)) continue
-      if ([
-        'USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH'].includes(obj.symbol)) {
+      if (
+        (obj.symbol === 'USDT' && obj.chainId === '250')
+        || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && obj.chainId === '250')
+        || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
+      ) continue
+      
+      if (['USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH', 'fUSDT'].includes(obj.symbol)) {
         arr.push(obj)
       }
     }
     return arr
-  }, [allTokens])
+  }, [useAllTokenList])
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []
@@ -213,6 +220,7 @@ export default function SearchModal ({
                   selectedCurrency={selectedCurrency}
                   allBalances={allBalances}
                   bridgeKey={bridgeKey}
+                  selectDestChainId={selectDestChainId}
                   // fixedListRef={fixedList}
                 />
               </>

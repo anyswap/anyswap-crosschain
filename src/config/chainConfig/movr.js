@@ -62,7 +62,7 @@ export default {
     explorer: MOVR_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Moonriver',
-    networkName: 'MOVR mainnet',
+    networkName: 'Moonriver mainnet',
     type: 'main',
     label: MOVR_MAIN_CHAINID,
     isSwitch: 1,

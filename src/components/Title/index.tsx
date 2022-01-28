@@ -176,7 +176,7 @@ export default function Title({ title, tabList = [] , isNavLink = false, current
   const [tabIndex, setTabIndex] = useState(0)
   const [tabName, setTabName] = useState('')
   const pathname = window.location.hash
-  const activeTabKey = tabList.length > 0 ? tabList[tabList.findIndex(({ regex }) => pathname.match(regex))].name : ''
+  const activeTabKey = tabList.length > 0 ? tabList[tabList.findIndex(({ regex }) => pathname.match(regex))]?.name : ''
   
   function tabListView() {
     if (isNavLink) {

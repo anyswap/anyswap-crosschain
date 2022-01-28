@@ -95,7 +95,8 @@ function CurrencyRow({
   style,
   allBalances,
   ETHBalance,
-  bridgeKey
+  bridgeKey,
+  selectDestChainId
 }: {
   currency: any
   onSelect: () => void
@@ -105,6 +106,7 @@ function CurrencyRow({
   allBalances?: any
   ETHBalance?: any
   bridgeKey?: any
+  selectDestChainId?: any
 }) {
   const { account, chainId } = useActiveWeb3React()
   // const { t } = useTranslation()
@@ -133,6 +135,7 @@ function CurrencyRow({
     }
     return balance1
   }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance, balance1])
+  const isDestChainId = selectDestChainId ? selectDestChainId : chainId
   return (
     <MenuItem
       style={style}
@@ -144,9 +147,10 @@ function CurrencyRow({
       <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'}></TokenLogo>
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
-          {isNativeToken ? config.getBaseCoin(currencyObj.symbol, chainId) : currencyObj.symbol}
+          {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
+          {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
           {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
-          <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, chainId, 1, currencyObj.name) : ''}</Text>
+          <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
@@ -177,7 +181,8 @@ export default function BridgeCurrencyList({
   // fixedListRef,
   showETH,
   allBalances,
-  bridgeKey
+  bridgeKey,
+  selectDestChainId
 }: {
   height: number
   currencies: Currency[]
@@ -188,6 +193,7 @@ export default function BridgeCurrencyList({
   showETH: boolean
   allBalances?: any
   bridgeKey?: any
+  selectDestChainId?: any
 }) {
   const { account, chainId } = useActiveWeb3React()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
@@ -236,6 +242,7 @@ export default function BridgeCurrencyList({
                 allBalances={allBalances}
                 ETHBalance={ETHBalance}
                 bridgeKey={bridgeKey}
+                selectDestChainId={selectDestChainId}
               />
             )
           })

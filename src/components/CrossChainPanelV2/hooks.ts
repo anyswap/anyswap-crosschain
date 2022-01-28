@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import {isAddress} from 'multichain-bridge'
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
+import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
 
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
@@ -175,4 +176,92 @@ export function useDestCurrency (
       initDestCurrencyList
     }
   }, [selectCurrency, selectChain])
+}
+
+export function getFTMSelectPool (
+  selectCurrency: any,
+  isUnderlying: any,
+  isDestUnderlying: any,
+  chainId: any,
+  selectChain: any,
+  destConfig: any,
+) {
+  const [curChain, setCurChain] = useState<any>({
+    chain: chainId,
+    ts: '',
+    bl: ''
+  })
+  const [destChain, setDestChain] = useState<any>({
+    chain: config.getCurChainInfo(chainId).bridgeInitChain,
+    ts: '',
+    bl: ''
+  })
+  const getFTMSelectPool = useCallback(async() => {
+
+    if (
+      selectCurrency
+      && chainId
+      && (isUnderlying || isDestUnderlying)
+      && (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM')
+    ) {
+      // console.log(selectCurrency)
+      const curChain = isUnderlying ? chainId : selectChain
+      const destChain = isUnderlying ? selectChain : chainId
+      const tokenA = isUnderlying ? selectCurrency : destConfig
+      const dec = selectCurrency?.decimals
+      
+      const CC:any = await getNodeBalance(
+        tokenA?.underlying1 ? tokenA?.underlying1?.address : tokenA?.underlying?.address,
+        tokenA?.address,
+        curChain,
+        dec,
+      )
+      let DC:any = ''
+      // console.log(!isNaN(selectChain))
+      DC = await getNodeBalance(
+        destConfig?.DepositAddress,
+        selectCurrency.symbol,
+        destChain,
+        dec,
+      )
+      // console.log(curChain)
+      // console.log(CC)
+      // console.log(destChain)
+      // console.log(DC)
+      if (CC) {
+        if (isUnderlying) {
+          setCurChain({
+            chain: chainId,
+            ts: CC,
+          })
+        } else {
+          setDestChain({
+            chain: selectChain,
+            ts: CC,
+          })
+        }
+      }
+      // console.log(DC)
+      if (DC) {
+        if (isUnderlying) {
+          setDestChain({
+            chain: selectChain,
+            ts: DC,
+          })
+        } else {
+          setCurChain({
+            chain: chainId,
+            ts: DC,
+          })
+        }
+      }
+    }
+  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  useEffect(() => {
+    getFTMSelectPool()
+  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  return {
+    curChain,
+    destChain
+  }
 }

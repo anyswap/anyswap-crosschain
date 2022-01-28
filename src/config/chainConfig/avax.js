@@ -63,7 +63,7 @@ export default {
     explorer: AVAX_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Avalanche',
-    networkName: 'AVAX mainnet',
+    networkName: 'Avalanche mainnet',
     type: 'main',
     label: AVAX_MAIN_CHAINID,
     isSwitch: 1,

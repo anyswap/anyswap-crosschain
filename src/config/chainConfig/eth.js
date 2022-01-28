@@ -175,7 +175,7 @@ export default {
     explorer: ETH_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Ethereum',
-    networkName: 'ETH mainnet',
+    networkName: 'Ethereum mainnet',
     type: 'main',
     label: ETH_MAIN_CHAINID,
     isSwitch: 1,

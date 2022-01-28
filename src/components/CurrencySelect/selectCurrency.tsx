@@ -77,6 +77,7 @@ interface SelectCurrencyInputPanelProps {
   bridgeKey?: any // router为：'routerTokenList' ，bridge为：'bridgeTokenList'
   allBalances?: any // all token balance
   showETH?: any // showETH
+  isRouter?: any // showETH
 }
 
 export default function SelectCurrencyInputPanel({
@@ -110,7 +111,8 @@ export default function SelectCurrencyInputPanel({
   customBalance,
   bridgeKey,
   allBalances,
-  showETH
+  showETH,
+  isRouter,
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -145,7 +147,7 @@ export default function SelectCurrencyInputPanel({
     // console.log(customBalance)
     if (customBalance) {
       return customBalance
-    } else if (selectedCurrencyBalance && !isNativeToken) {
+    } else if (selectedCurrencyBalance && (!isNativeToken || isRouter === false)) {
       return selectedCurrencyBalance?.toSignificant(6)
     } else if (isNativeToken || !isAddress(currency?.address)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
@@ -157,7 +159,7 @@ export default function SelectCurrencyInputPanel({
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect])
+  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect, isRouter])
 
   const handleMax = useCallback(() => {
     if (onMax) {
@@ -302,13 +304,13 @@ export default function SelectCurrencyInputPanel({
                             CROSS_BRIDGE_LIST.includes(bridgeKey) ? 
                             currency?.symbol
                             :
-                            inputType && inputType.swapType === 'deposit' ? config.getBaseCoin(currency?.symbol, useChainId) : config.getBaseCoin(currency?.symbol, useChainId)
+                            isRouter === false ? currency?.symbol : config.getBaseCoin(currency?.symbol, useChainId)
                           )
                       ) || t('selectToken')
                     }
                   </h3>
                   <p>
-                  {currency && currency.name && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? config.getBaseCoin(currency.symbol, useChainId, 1, currency.name) : currency?.name}
+                  {currency && currency.name && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? (isRouter === false ? currency.name : config.getBaseCoin(currency.symbol, useChainId, 1, currency.name)) : currency?.name}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (

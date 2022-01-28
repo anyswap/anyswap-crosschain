@@ -40,7 +40,8 @@ import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
 
-import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
+// import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
+import SelectChainIdInputPanel from '../../components/CrossChainPanelV2/selectChainID'
 import Reminder from '../CrossChain/reminder'
 
 const BackBox = styled.div`
@@ -168,7 +169,7 @@ export default function SwapNative() {
   const anyCurrency = useLocalToken(anyToken ?? undefined)
   const underlyingCurrency = useLocalToken(underlyingToken ?? undefined)
 
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, anyToken?.address)
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
@@ -334,91 +335,6 @@ export default function SwapNative() {
     return false
   }, [errorTip])
 
-  // const isCrossBridge = useMemo(() => {
-  //   // console.log(isWrapInputError)
-  //   if (
-  //     account
-  //     && selectCurrency
-  //     && inputBridgeValue
-  //     && Number(inputBridgeValue) > 0
-  //     && !isWrapInputError
-  //   ) {
-  //     // console.log(10)
-  //     if (
-  //       swapType === 'deposit'
-  //       && Number(inputBridgeValue) > 0
-  //     ) {
-  //       // console.log(11)
-  //       return false
-  //     } else if (swapType !== 'deposit') {
-  //       // console.log(12)
-  //       // console.log(poolInfo)
-  //       if (
-  //         openAdvance
-  //         && destChain
-  //         && chainId?.toString() !== selectChain?.toString()
-  //         && Number(destChain.ts) >= Number(inputBridgeValue)
-  //         && Number(inputBridgeValue) >= Number(destConfig.MinimumSwap)
-  //         && Number(inputBridgeValue) <= Number(destConfig.MaximumSwap)
-  //       ) {
-  //         // console.log(14)
-  //         return false
-  //       } else if (
-  //         openAdvance
-  //         && poolInfo
-  //         && chainId?.toString() === selectChain?.toString()
-  //         && Number(poolInfo.totalsupply) >= Number(inputBridgeValue)
-  //       ) {
-  //         // console.log(15)
-  //         return false
-  //       } else {
-  //         // console.log(16)
-  //         return true
-  //       }
-  //     } else {
-  //       // console.log(13)
-  //       return true
-  //     }
-  //   } else {
-  //     return true
-  //   }
-  // }, [selectCurrency, account, inputBridgeValue, poolInfo, swapType, destChain, isWrapInputError, openAdvance, chainId, selectChain, destConfig])
-
-  // const isInputError = useMemo(() => {
-  //   // console.log(destConfig)
-  //   // console.log(isCrossBridge)
-  //   if (
-  //     account
-  //     && destConfig
-  //     && selectCurrency
-  //     && isCrossBridge
-  //     && inputBridgeValue
-  //   ) {
-  //     // console.log(1)
-  //     if (Number(inputBridgeValue) <= 0) {
-  //       return true
-  //     } else if (
-  //       swapType !== 'deposit'
-  //       && openAdvance
-  //       && (
-  //         Number(inputBridgeValue) < Number(destConfig.MinimumSwap)
-  //         || Number(inputBridgeValue) > Number(destConfig.MaximumSwap)
-  //       )
-  //     ) {
-  //       // console.log(1)
-  //       return true
-  //     } else {
-  //       // console.log(2)
-  //       return false
-  //     }
-  //   } else {
-  //     // console.log(3)
-  //     return false
-  //   }
-  // }, [account, destConfig, selectCurrency, inputBridgeValue, isCrossBridge])
-
-  // console.log(isInputError)
-
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
     if (errorTip) {
@@ -574,7 +490,7 @@ export default function SwapNative() {
   useEffect(() => {
     // console.log(selectCurrency)
     if (selectCurrency) {
-      const arr = []
+      const arr:any = [chainId]
       for (const c in selectCurrency?.destChains) {
         // if (Number(c) === Number(chainId)) continue
         if (
@@ -585,7 +501,7 @@ export default function SwapNative() {
       // console.log(arr)
       setSelectChainList(arr)
     }
-  }, [selectCurrency])
+  }, [selectCurrency, chainId])
 
   const handleMaxInput = useCallback((value) => {
     if (value) {
@@ -659,6 +575,10 @@ export default function SwapNative() {
             onChangeMode={(value) => {
               setOpenAdvance(value)
             }}
+            onOpenModalView={(value) => {
+              // console.log(value)
+              setModalOpen(value)
+            }}
             isNativeToken={isNativeToken}
             allTokens={allTokensList}
             bridgeKey={BRIDGETYPE}
@@ -684,7 +604,7 @@ export default function SwapNative() {
                   selectChainId={selectChain}
                   id="selectChainID"
                   onOpenModalView={(value) => {
-                    console.log(value)
+                    // console.log(value)
                     setModalOpen(value)
                   }}
                   bridgeConfig={selectCurrency}

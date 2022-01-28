@@ -4,8 +4,8 @@ import {tokenListUrl, VERSION, USE_VERSION, BASECURRENCY} from '../constant'
 export const FTM_MAIN_CHAINID = 250
 // const useNode = 'https://rpc.fantom.network'
 // const useNode = 'https://rpc2.fantom.network'
-const useNode = 'https://rpc3.fantom.network'
-// const useNode = 'https://rpcapi.fantom.network'
+// const useNode = 'https://rpc3.fantom.network'
+const useNode = 'https://rpcapi.fantom.network'
 export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(FTM_MAIN_CHAINID, useNode) : getLocalRPC(FTM_MAIN_CHAINID, 'https://ftmnode1.anyswap.exchange')
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
@@ -92,7 +92,7 @@ export default {
     explorer: FTM_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Fantom',
-    networkName: 'FTM mainnet',
+    networkName: 'Fantom mainnet',
     type: 'main',
     label: FTM_MAIN_CHAINID,
     isSwitch: 1,
