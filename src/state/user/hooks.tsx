@@ -17,7 +17,8 @@ import {
   updateUserExpertMode,
   updateUserSlippageTolerance,
   toggleURLWarning,
-  selectNetworkId
+  selectNetworkId,
+  updateUserBetaMessage
 } from './actions'
 
 import config from '../../config'
@@ -98,6 +99,22 @@ export function useUserSlippageTolerance(): [number, (slippage: number) => void]
   )
 
   return [userSlippageTolerance, setUserSlippageTolerance]
+}
+
+export function useBetaMessageManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const showBetaMessage = useSelector<AppState, AppState['user']['showBetaMessage']>(state => {
+    return state.user.showBetaMessage
+  })
+
+  const dismissBetaMessage = useCallback(
+    () => {
+      dispatch(updateUserBetaMessage({ showBetaMessage: false }))
+    },
+    [dispatch]
+  )
+
+  return [showBetaMessage, dismissBetaMessage]
 }
 
 export function useUserTransactionTTL(): [number, (slippage: number) => void] {

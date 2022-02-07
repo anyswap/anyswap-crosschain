@@ -19,6 +19,9 @@ export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('u
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'
 )
+export const updateUserBetaMessage = createAction<{ showBetaMessage: boolean }>(
+  'user/updateUserBetaMessage'
+)
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const updatePairAddress = createAction<{ pairAddress: number }>('user/updatePairAddress')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')

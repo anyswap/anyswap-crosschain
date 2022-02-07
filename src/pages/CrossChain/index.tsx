@@ -28,6 +28,7 @@ import ModalContent from '../../components/Modal/ModalContent'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
+import { useBetaMessageManager } from '../../state/user/hooks'
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
@@ -41,7 +42,7 @@ import { isAddress } from '../../utils'
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'
 import LiquidityPool from '../../components/LiquidityPool'
-
+import WarningTip from '../../components/WarningTip'
 import {
   LogoBox,
   ConfirmContent,
@@ -61,6 +62,7 @@ export default function CrossChain() {
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const [showBetaMessage] = useBetaMessageManager()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState('')
@@ -308,6 +310,7 @@ export default function CrossChain() {
       && inputBridgeValue
       && !isWrapInputError
       && isAddress(recipient)
+      && !showBetaMessage
       && (
         (isDestUnderlying && destChain)
         || (!isDestUnderlying && !destChain)
@@ -325,7 +328,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, destChain, isWrapInputError, showBetaMessage])
 
   const isInputError = useMemo(() => {
     // console.log(account)
@@ -712,6 +715,7 @@ export default function CrossChain() {
             <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} />
           )}
         </AutoColumn>
+        <WarningTip />
 
         <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
         {
