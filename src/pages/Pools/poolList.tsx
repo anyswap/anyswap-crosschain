@@ -610,7 +610,7 @@ export default function PoolLists ({
                           </TokenTableLogo>
                           <TokenNameBox>
                             <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
-                            <p>{config.getBaseCoin(item?.name, chainId, 1)}</p>
+                            {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
                           </TokenNameBox>
                         </TokenTableCoinBox>
                       </DBTd>
