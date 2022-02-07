@@ -14,7 +14,8 @@ import {
   updateUserSlippageTolerance,
   updateUserDeadline,
   toggleURLWarning,
-  selectNetworkId
+  selectNetworkId,
+  updateUserBetaMessage
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -27,6 +28,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+  showBetaMessage: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -63,6 +65,7 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   userExpertMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
+  showBetaMessage: true,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   pairAddress: undefined,
   tokens: {},
@@ -110,6 +113,9 @@ export default createReducer(initialState, builder =>
     .addCase(updateUserSlippageTolerance, (state, action) => {
       state.userSlippageTolerance = action.payload.userSlippageTolerance
       state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserBetaMessage, (state, action) => {
+      state.showBetaMessage = action.payload.showBetaMessage
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

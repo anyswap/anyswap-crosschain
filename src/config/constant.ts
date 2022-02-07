@@ -36,7 +36,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.23'
+export const version = '0.1.24'
 export const timeout = 1000 * 60 * 30
 
 // export const INIT_VERSION = VERSION.V1_1
