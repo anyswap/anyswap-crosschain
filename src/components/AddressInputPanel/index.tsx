@@ -83,6 +83,10 @@ const Input = styled.input<{ error?: boolean }>`
   `};
 `
 
+const LabelBox = styled.div`
+  ${({ theme }) => theme.flexSC}
+`
+
 export default function AddressInputPanel({
   id,
   value,
@@ -91,6 +95,7 @@ export default function AddressInputPanel({
   isValid = true,
   selectChainId,
   label,
+  labelTip,
   isError
 }: {
   id?: string
@@ -102,6 +107,7 @@ export default function AddressInputPanel({
   isValid?: boolean
   selectChainId?: any
   label?: any
+  labelTip?: any
   isError?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
@@ -141,9 +147,18 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
-                {label ? label : t('Recipient')}
-              </TYPE.black>
+              <LabelBox>
+                <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
+                  {label ? label : t('Recipient')}
+                </TYPE.black>
+                {
+                  labelTip ? (
+                    <TYPE.black color={theme.red1} fontWeight={500} fontSize={14}>
+                      {labelTip}
+                    </TYPE.black>
+                  ) : ''
+                }
+              </LabelBox>
               {address && useChainId && (
                 <ExternalLink href={getEtherscanLink(useChainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
                   ({t('ViewOn')} {config.getCurChainInfo(useChainId).name})
