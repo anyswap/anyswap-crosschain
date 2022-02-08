@@ -31,6 +31,7 @@ import metis, {METIS_MAIN_CHAINID} from './metis'
 import glmr, {GLMR_MAIN_CHAINID} from './moonbeam'
 import astar, {ASTAR_MAIN_CHAINID} from './astar'
 import rose, {ROSE_MAIN_CHAINID} from './rose'
+import vlx, {VLX_MAIN_CHAINID} from './vlx'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -71,6 +72,7 @@ export const chainInfo:ConFig = {
   ...glmr,
   ...astar,
   ...rose,
+  ...vlx,
 }
 
 const allChainList = [
@@ -100,6 +102,7 @@ const allChainList = [
   SDN_MAIN_CHAINID,
   FUSE_MAIN_CHAINID,
   ASTAR_MAIN_CHAINID,
+  VLX_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
