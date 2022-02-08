@@ -16,6 +16,7 @@ import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallbac
 import { useLocalToken } from '../../hooks/Tokens'
 import useTerraBalance from '../../hooks/useTerraBalance'
 
+
 import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 import { AutoColumn } from '../../components/Column'
@@ -31,6 +32,7 @@ import QRcode from '../../components/QRcode'
 // import { useWalletModalToggle, useToggleNetworkModal } from '../../state/application/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
+import { useBetaMessageManager } from '../../state/user/hooks'
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
@@ -49,6 +51,8 @@ import TokenLogo from '../../components/TokenLogo'
 import ConnectTerraModal from './ConnectTerraModal'
 
 import LiquidityPool from '../../components/LiquidityPool'
+
+import WarningTip from '../../components/WarningTip'
 
 import {
   LogoBox,
@@ -101,6 +105,7 @@ export default function CrossChain() {
 
   const { getTerraBalances } = useTerraBalance()
   const connectedWallet = useConnectedWallet()
+  const [showBetaMessage] = useBetaMessageManager()
   // console.log(getTerraBalances)
   
   // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
@@ -574,6 +579,7 @@ export default function CrossChain() {
       && selectCurrency
       && inputBridgeValue
       && !isWrapInputError
+      && !showBetaMessage
       && Boolean(isAddr)
       && destChain
       // && (
@@ -594,7 +600,7 @@ export default function CrossChain() {
     } else {
       return true
     }
-  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool, terraRecipient, useCustomBalance])
+  }, [selectCurrency, account, destConfig, inputBridgeValue, recipient, swapType, destChain, isWrapInputError, selectChain, p2pAddress, isUnderlying, isDestUnderlying, isUsePool, terraRecipient, useCustomBalance,showBetaMessage])
 
   const isInputError = useMemo(() => {
     // console.log(isCrossBridge)
@@ -1041,7 +1047,7 @@ export default function CrossChain() {
           />
           {swapType === BridgeType.bridge && destConfig?.type === 'swapout' && (viewRrecipient || isNaN(selectChain)) ? (
             <>
-              <AddressInputPanel id="recipient" label={t('Recipient') + '( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))}/>
+              <AddressInputPanel id="recipient" label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} value={recipient} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))}/>
             </>
           ): ''}
           {
@@ -1053,7 +1059,7 @@ export default function CrossChain() {
             </>
           ): ''} */}
         </AutoColumn>
-
+        <WarningTip />
         {/* <Reminder bridgeConfig={bridgeConfig} bridgeType='bridgeAssets' currency={selectCurrency} /> */}
         <Reminder bridgeConfig={bridgeConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
         {ButtonView('INIT')}
