@@ -349,7 +349,7 @@
   "farmLinkTip": "提示：您所访问的页面将跳转至第三方DApp.您在第三方DApp的行为将适用该DAPP的用户协议和隐私政策，由第三方直接并单独向您承担责任。",
   "nftrouter": "NFT 路由",
   "fee": "手续费",
-  "receiveTip": "Please do NOT send funds to exchange wallet or custodial wallet.",
+  "receiveTip": "请不要发送到交易所钱包或者托管钱包",
   "support": "支持",
   "ConnectTerraStation": "打开Terra钱包",
   "topTip": "Anyswap 品牌已升级为Multichain! 体验全新Multichain请到",
