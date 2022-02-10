@@ -89,6 +89,7 @@ export default function SearchModal ({
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
       if (
         (obj.symbol === 'USDT' && obj.chainId === '250')
+        || (obj.symbol === 'fUSDT' && obj.chainId === '56')
         || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && obj.chainId === '250')
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
