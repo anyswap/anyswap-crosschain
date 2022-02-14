@@ -30,12 +30,19 @@ if (typeof NETWORK_URL === 'undefined') {
 }
 // console.log(spportChainArr)
 // mainnet only
+// export const walletconnect = new WalletConnectConnector({
+//   supportedChainIds: [...spportChainArr],
+//   rpc: {
+//     ...spportChain
+//   },
+//   chainId: NETWORK_CHAIN_ID
+// })
 export const walletconnect = new WalletConnectConnector({
   supportedChainIds: [...spportChainArr],
   rpc: {
     ...spportChain
   },
-  chainId: NETWORK_CHAIN_ID
+  qrcode: true,
 })
 
 export const network = new NetworkConnector({
