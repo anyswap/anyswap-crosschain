@@ -637,9 +637,9 @@ export function useBridgeNativeCallback(
                   }
                 }
                 console.log(txReceipt)
-                const txData:any = {hash: txReceipt.hash}
-                addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                const txData:any = {hash: txReceipt?.hash}
                 if (txData.hash && account) {
+                  addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                   let srcChainID = chainId
                   let destChainID = toChainID
                   if (toChainID === 'TERRA' && txnsType === 'swapout') {
