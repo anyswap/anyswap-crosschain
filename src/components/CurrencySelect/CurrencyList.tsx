@@ -145,7 +145,7 @@ function CurrencyRow({
       <Column>
         <Text title={currencyObj.name} fontWeight={500}>
           {isNativeToken ? config.getBaseCoin(currencyObj.symbol, chainId) : currencyObj.symbol}
-          <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text>
+          <Text fontSize={'10px'}>{isNativeToken ? config.getBaseCoin(currencyObj.symbol, chainId, 1) : currencyObj.name}</Text>
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
