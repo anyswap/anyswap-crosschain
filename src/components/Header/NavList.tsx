@@ -4,7 +4,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 // import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
-import { Twitch } from 'react-feather'
+// import { Twitch } from 'react-feather'
 
 import styled from 'styled-components'
 
@@ -101,125 +101,125 @@ const StyledNavLink = styled(NavLink).attrs({
   `}
 `
 
-const StyledNavLink1 = styled(ExternalLink)`
-  ${({ theme }) => theme.flexSC}
-  align-items: left;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
+// const StyledNavLink1 = styled(ExternalLink)`
+//   ${({ theme }) => theme.flexSC}
+//   align-items: left;
+//   outline: none;
+//   cursor: pointer;
+//   text-decoration: none;
 
-  width: 100%;
-  font-weight: 500;
-  color: ${({ theme }) => theme.textNav};
-  font-size: 0.875rem;
-  font-family: 'Manrope';
-  box-sizing: border-box;
-  padding: 1rem 0.875rem;
-  line-height: 1rem;
-  margin: 6px 0;
-  height: 48px;
-  border-radius: 0.5625rem;
-  position: relative;
-  white-space: nowrap;
+//   width: 100%;
+//   font-weight: 500;
+//   color: ${({ theme }) => theme.textNav};
+//   font-size: 0.875rem;
+//   font-family: 'Manrope';
+//   box-sizing: border-box;
+//   padding: 1rem 0.875rem;
+//   line-height: 1rem;
+//   margin: 6px 0;
+//   height: 48px;
+//   border-radius: 0.5625rem;
+//   position: relative;
+//   white-space: nowrap;
 
-  .icon {
-    ${({ theme }) => theme.flexC};
-    width: 38px;
-    height: 38px;
-    border-radius: 100%;
-    background: ${({ theme }) => theme.navIconBg};
-    margin-right: 1rem;
-    .on {
-      display: none;
-    }
-    .off {
-      display: block;
-    }
-    img {
-      height: 100%;
-    }
-  }
+//   .icon {
+//     ${({ theme }) => theme.flexC};
+//     width: 38px;
+//     height: 38px;
+//     border-radius: 100%;
+//     background: ${({ theme }) => theme.navIconBg};
+//     margin-right: 1rem;
+//     .on {
+//       display: none;
+//     }
+//     .off {
+//       display: block;
+//     }
+//     img {
+//       height: 100%;
+//     }
+//   }
 
-  &:hover {
-    color: ${({ theme }) => theme.textColor};
-    font-weight: 600;
-    text-decoration: none;
-    .icon {
-      background: ${({ theme }) => theme.navBg2};
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
-  }
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    ${({ theme }) => theme.flexC};
-    margin:0;
-    .icon {
-      display:none;
-    }
-  `}
-`
-const Tabs = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
-  align-items: center;
-  margin-bottom: 19px;
-  width: 100%;
-  padding: 1rem 1.5625rem;
-  box-sizing: border-box;
-  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
-`
+//   &:hover {
+//     color: ${({ theme }) => theme.textColor};
+//     font-weight: 600;
+//     text-decoration: none;
+//     .icon {
+//       background: ${({ theme }) => theme.navBg2};
+//       .on {
+//         display: block;
+//       }
+//       .off {
+//         display: none;
+//       }
+//     }
+//   }
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     ${({ theme }) => theme.flexC};
+//     margin:0;
+//     .icon {
+//       display:none;
+//     }
+//   `}
+// `
+// const Tabs = styled.div`
+//   ${({ theme }) => theme.flexColumnNoWrap}
+//   align-items: center;
+//   margin-bottom: 19px;
+//   width: 100%;
+//   padding: 1rem 1.5625rem;
+//   box-sizing: border-box;
+//   border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display: none;
+//   `}
+// `
 
-const MenuItem = styled(ExternalLink)`
-  ${({ theme }) => theme.flexSC};
-  width: 100%;
-  height: 2.5rem;
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: #96989e;
-  border-bottom: none;
-  margin: 0;
-  padding: 0.0625rem 0.875rem;
-  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
-  .icon {
-    ${({ theme }) => theme.flexC};
-    width: 38px;
-    height: 38px;
-    margin-right: 1rem;
-    .on {
-      display: none;
-    }
-    .off {
-      display: block;
-    }
-  }
-  .arrow {
-    position: absolute;
-    top: 0.875rem;
-    right: 1rem;
-  }
-  &:hover {
-    color: ${({ theme }) => theme.textColor};
-    font-weight: 600;
-    text-decoration: none;
-    .icon {
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
-  }
-  &:last-child {
-    border: none;
-  }
-`
+// const MenuItem = styled(ExternalLink)`
+//   ${({ theme }) => theme.flexSC};
+//   width: 100%;
+//   height: 2.5rem;
+//   font-size: 0.75rem;
+//   font-weight: normal;
+//   color: #96989e;
+//   border-bottom: none;
+//   margin: 0;
+//   padding: 0.0625rem 0.875rem;
+//   border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
+//   .icon {
+//     ${({ theme }) => theme.flexC};
+//     width: 38px;
+//     height: 38px;
+//     margin-right: 1rem;
+//     .on {
+//       display: none;
+//     }
+//     .off {
+//       display: block;
+//     }
+//   }
+//   .arrow {
+//     position: absolute;
+//     top: 0.875rem;
+//     right: 1rem;
+//   }
+//   &:hover {
+//     color: ${({ theme }) => theme.textColor};
+//     font-weight: 600;
+//     text-decoration: none;
+//     .icon {
+//       .on {
+//         display: block;
+//       }
+//       .off {
+//         display: none;
+//       }
+//     }
+//   }
+//   &:last-child {
+//     border: none;
+//   }
+// `
 const OutLink = styled.div`
   padding-left: 30px;
   margin-top: 78px;
@@ -412,7 +412,7 @@ export default function NavList() {
         }
 
 
-        <StyledNavLink
+        {/* <StyledNavLink
           id={`swap-nav-link`}
           to={'/farm'}
         >
@@ -421,27 +421,25 @@ export default function NavList() {
             <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
           </div>
           {t('farms')}
-        </StyledNavLink>
-        <StyledNavLink1 id="link" href="https://anyswap.net">
+        </StyledNavLink> */}
+        {/* <StyledNavLink1 id="link" href="https://anyswap.net">
           <div className="icon">
             <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
             <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
           </div>
           {t('explorer')}
-        </StyledNavLink1>
+        </StyledNavLink1> */}
       </HeaderLinks>
-      <Tabs>
-        {/* <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
+      {/* <Tabs>
+        <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
           <div className="icon">
             <img src={require('../../assets/images/icon/markets.svg')} className="off" alt="" />
             <img src={require('../../assets/images/icon/markets-purpl.svg')} className="on" alt="" />
           </div>
           {t('Markets')}
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem id="link" href="https://anyswaphelp.zendesk.com/hc/en-us">
           <div className="icon">
-            {/* <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/any-purpl.svg')} className="on" alt="" /> */}
             <Twitch className="off" style={{color: '#96989E',fontSize:'18px',width:'18px',height:'18px'}} />
             <Twitch className="on" style={{color: '#062536',fontSize:'18px',width:'18px',height:'18px'}} />
           </div>
@@ -475,7 +473,7 @@ export default function NavList() {
           </div>
           {t('Listing')}
         </MenuItem>
-      </Tabs>
+      </Tabs> */}
       <OutLink>
         <OutLinkImgBox>
           <Link id="link" href="https://t.me/anyswap">
@@ -484,42 +482,9 @@ export default function NavList() {
               <img src={require('../../assets/images/icon/telegram-white.svg')} className="on" alt="" />
             </div>
           </Link>
-          <Link id="link" href="https://medium.com/@anyswap">
-            <div className="icon">
-              <img src={require('../../assets/images/icon/medium.svg')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/medium-white.svg')} className="on" alt="" />
-            </div>
-          </Link>
-          <Link id="link" href="https://twitter.com/AnyswapNetwork">
-            <div className="icon">
-              <img src={require('../../assets/images/icon/twitter.svg')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/twitter-white.svg')} className="on" alt="" />
-            </div>
-          </Link>
-          <Link id="link" href="https://github.com/anyswap">
-            <div className="icon">
-              <img src={require('../../assets/images/icon/github.png')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/github-white.png')} className="on" alt="" />
-            </div>
-          </Link>
-          <Link id="link" href="https://coinmarketcap.com/currencies/anyswap/">
-            <div className="icon">
-              <img src={require('../../assets/images/icon/coinmarketcap.png')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/coinmarketcap-white.png')} className="on" alt="" />
-            </div>
-          </Link>
-          <Link id="link" href="https://www.coingecko.com/en/coins/anyswap">
-            <div className="icon">
-              <img src={require('../../assets/images/icon/coingecko.png')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/coingecko-white.png')} className="on" alt="" />
-            </div>
-          </Link>
         </OutLinkImgBox>
         <CopyRightBox>
-          <h5>
-            Powered by <span>Fusion DCRM</span>
-          </h5>
-          <p>© 2020 Anyswap. All rights reserved.</p>
+          <p>© CHANGE_NAME 2020. All rights reserved.</p>
         </CopyRightBox>
       </OutLink>
     </>

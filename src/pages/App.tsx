@@ -6,7 +6,7 @@ import NavList from '../components/Header/NavList'
 import Polling from '../components/Header/Polling'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
-import URLWarning from '../components/Header/URLWarning' 
+import URLWarning from '../components/Header/URLWarning'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -19,12 +19,12 @@ import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
-import CrossNFT from './CroseNFT'
+// import CrossNFT from './CroseNFT'
 
 import ANYFarming from './Farms/ANYFarming'
 import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
-import FarmList from './Farms/FarmsList'
+// import FarmList from './Farms/FarmsList'
 
 import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
@@ -136,13 +136,12 @@ export default function App() {
   }
   return (
     <Suspense fallback={null}>
-      {/* <Route component={GoogleAnalyticsReporter} /> */}
-      {/* <Route component={DarkModeQueryParamReader} /> */}
       <AppWrapper>
         <HeaderWrapper>
           <URLWarning />
           <Header />
         </HeaderWrapper>
+
         <BodyWrapper>
           <NavLeft>
             <NavList />
@@ -151,48 +150,55 @@ export default function App() {
           <Polling />
           <NonApprove />
           {/* <TopLevelModals /> */}
+
           <Web3ReactManager>
             <Switch>
               <Route exact strict path="/dashboard" component={() => <Dashboard />} />
               <Route exact strict path="/pool" component={() => <PoolList />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
-              <Route exact strict path="/farm" component={() => <FarmList />} />
-              <Route exact strict path="/nft" component={() => <CrossNFT />} />
+              {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
+              {/* <Route exact strict path="/nft" component={() => <CrossNFT />} /> */}
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               <Route exact strict path="/bridge" component={() => <Bridge />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/router" : "/swap"} component={() => <CrossChain />} />
               <Route
-                path={[
-                  '/cross-chain-router',
-                  '/cross-chain-bridge',
-                  '/mergeswap'
-                ]}
+                exact
+                strict
+                path={config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap'}
+                component={() => <CrossChain />}
+              />
+              <Route
+                path={['/cross-chain-router', '/cross-chain-bridge', '/mergeswap']}
                 component={() => <MergeCrossChain />}
               />
-              <Route
-                path={[
-                  '/v2/mergeswap'
-                ]}
-                component={() => <MergeCrossChainV2 />}
-              />
-              {
-                Object.keys(farmlist).map((key, index) => {
-                  if (farmlist[key].farmtype === 'noany') {
-                    return (
-                      <Route exact strict path={'/' + farmlist[key].url} component={() => <NoanyFarming farmkey={key} />} key={index} />
-                    )
-                  }
+              <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
+              {Object.keys(farmlist).map((key, index) => {
+                if (farmlist[key].farmtype === 'noany') {
                   return (
-                    <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
+                    <Route
+                      exact
+                      strict
+                      path={'/' + farmlist[key].url}
+                      component={() => <NoanyFarming farmkey={key} />}
+                      key={index}
+                    />
                   )
-                })
-              }
+                }
+                return (
+                  <Route
+                    exact
+                    strict
+                    path={'/' + farmlist[key].url}
+                    component={() => <ANYFarming farmkey={key} />}
+                    key={index}
+                  />
+                )
+              })}
 
-              
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>
+
           <Marginer />
           <NavBottom>
             <NavList />

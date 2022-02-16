@@ -1,3 +1,4 @@
+import { toChecksumAddress } from 'web3-utils'
 import { ChainId, Token } from 'anyswap-sdk'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
@@ -18,7 +19,7 @@ export class WrappedTokenInfo extends Token {
   public readonly tokenInfo: TokenInfo
   public readonly tags: TagInfo[]
   constructor(tokenInfo: TokenInfo, tags: TagInfo[]) {
-    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+    super(tokenInfo.chainId, toChecksumAddress(tokenInfo.address), tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
     this.tokenInfo = tokenInfo
     this.tags = tags
   }
@@ -38,7 +39,7 @@ export class WrappedBridgeTokenInfo extends Token {
   constructor(tokenInfo: any) {
     super(
       tokenInfo.chainId,
-      tokenInfo.address,
+      toChecksumAddress(tokenInfo.address),
       tokenInfo.decimals,
       tokenInfo.symbol,
       tokenInfo.name,

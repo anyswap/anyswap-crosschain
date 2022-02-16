@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -9,11 +8,9 @@ import IconNight from '../../assets/images/icon/night.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
-import {useAccounts} from '../../hooks/useAccounts'
+import { useAccounts } from '../../hooks/useAccounts'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
 // import { useETHBalances } from '../../state/wallet/hooks'
-
-import { ExternalLink } from '../../theme'
 
 // import Row, { RowFixed } from '../Row'
 import { RowFixed } from '../Row'
@@ -21,9 +18,6 @@ import Web3Status from '../Web3Status'
 import SelectNetwork from './SelectNetwork'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
-
-
-
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -134,7 +128,7 @@ const UniIcon = styled.div`
   ${({ theme }) => theme.flexSC};
   height: 100%;
   img {
-    height:42px
+    height: 42px;
   }
   ${({ theme }) => theme.mediaWidth.upToSmall`
     img {
@@ -157,17 +151,7 @@ const StyleDarkToggle = styled.div`
   }
 `
 
-const VersionLinkBox = styled(ExternalLink)`
-  ${({theme}) => theme.flexSC}
-  text-decoration: none;
-  color: rgb(115, 75, 226);
-  line-height: 26px;
-  margin-top: 17px;
-  font-size: 18px;
-  font-weight:bold;
-`
-
-function ViewAccountInfo () {
+function ViewAccountInfo() {
   const { chainId } = useActiveWeb3React()
   const [selectNetworkInfo] = useUserSelectChainId()
   const useChainId = useMemo(() => {
@@ -183,7 +167,7 @@ function ViewAccountInfo () {
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
-  
+
   return (
     <AccountElement active={!!useAccount} style={{ pointerEvents: 'auto' }}>
       {useAccount && baseBalance ? (
@@ -212,9 +196,6 @@ export default function Header() {
             <img src={isDark ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
-        <VersionLinkBox href='https://v1.anyswap.exchange'>
-          V1↗
-        </VersionLinkBox>
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
@@ -235,15 +216,7 @@ export default function Header() {
               toggleDarkMode()
             }}
           >
-            {
-              isDark ? (
-
-                <img src={IconDay} alt="" />
-              ) : (
-
-                <img src={IconNight} alt="" />
-              )
-            }
+            {isDark ? <img src={IconDay} alt="" /> : <img src={IconNight} alt="" />}
           </StyleDarkToggle>
         </HeaderElement>
       </HeaderControls>

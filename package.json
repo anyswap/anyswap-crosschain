@@ -167,6 +167,7 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "2.3.0",
     "web3": "^1.4.0",
+    "web3-utils": "^1.7.0",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3",
     "webpack-manifest-plugin": "2.2.0",

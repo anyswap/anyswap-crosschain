@@ -6,9 +6,8 @@ import { updateBlockNumber } from './actions'
 // import { useDispatch } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../index'
-
+import config from '../../config'
 import { useWeb3 } from '../../utils/tools/web3UtilsV2'
-
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
@@ -48,7 +47,7 @@ export default function Updater(): null {
       .getBlockNumber()
       .then(blockNumberCallback)
       .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
-    
+
     library.on('block', blockNumberCallback)
     return () => {
       library.removeListener('block', blockNumberCallback)
@@ -58,15 +57,20 @@ export default function Updater(): null {
   const debouncedState = useDebounce(state, 10)
 
   useEffect(() => {
-    if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
+    if (
+      !debouncedState.chainId ||
+      !debouncedState.blockNumber ||
+      !windowVisible ||
+      !config.getCurChainInfo(destChainId)
+    ) {
+      return
+    }
 
     if (destChainId) {
-      useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res:any) => {
+      useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res: any) => {
         dispatch(updateBlockNumber({ chainId: destChainId, blockNumber: res }))
       })
     }
-
-    // console.log(debouncedState)
 
     dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
   }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])

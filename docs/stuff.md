@@ -6,6 +6,8 @@
 
 # Что происходит
 
+основной конфиг: `src/config/*`
+
 ### Страницы Router
 
 `src/pages/CrossChain/index.tsx` - для начала свапа в модалке вызываем кнопку с названием `t('Confirm')`. Там куча условий где выбираем что вызвать `onWrap, onWrapNative, onWrapUnderlying`. Это переименованные функции из хуков:
