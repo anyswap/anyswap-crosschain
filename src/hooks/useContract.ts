@@ -16,6 +16,8 @@ import { useActiveWeb3React } from './index'
 
 import RouterSwapAction from '../constants/abis/bridge/RouterSwapAction.json'
 import RouterAction from '../constants/abis/bridge/RouterAction.json'
+import swapBTCABI from '../constants/abis/bridge/swapBTCABI.json'
+import swapETHABI from '../constants/abis/bridge/swapETHABI.json'
 
 import NFT from '../constants/abis/bridge/nft.json'
 import NFT721 from '../constants/abis/bridge/erc721.json'
@@ -90,6 +92,14 @@ export function useNFT1155Contract(tokenAddress?:any, withSignerIfPossible?: boo
 
 export function useSwapUnderlyingContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, RouterAction, withSignerIfPossible)
+}
+
+export function useSwapBTCContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress, swapBTCABI, withSignerIfPossible)
+}
+
+export function useSwapETHContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress, swapETHABI, withSignerIfPossible)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {

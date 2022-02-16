@@ -10,6 +10,7 @@ export function selectNetwork (chainID:any) {
       request: '',
       ...ethereum
     }
+    localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
     if (ethereumFN && ethereumFN.request) {
       // console.log(ethereumFN)
       // console.log(ethereumFN.chainId)
@@ -34,7 +35,7 @@ export function selectNetwork (chainID:any) {
       ethereumFN.request(data).then((res: any) => {
         // console.log(chainID)
         console.log(res)
-        localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
+        // localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
         history.go(0)
         resolve({
           msg: 'Success'

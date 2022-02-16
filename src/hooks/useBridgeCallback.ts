@@ -7,8 +7,11 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
-import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
-import {signSwapoutData, signSwapinData} from 'multichain-bridge'
+import { useBridgeContract, useSwapUnderlyingContract, useSwapBTCContract, useSwapETHContract } from './useContract'
+// import {useSwapBTCABI, useSwapETHABI} from './useContract'
+// import {signSwapoutData, signSwapinData} from 'multichain-bridge'
+// import {signSwapoutData, signSwapinData} from './useBuildData'
+import { isAddress } from '../utils'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 // import { MsgSend } from '@terra-money/terra.js';
 import {
@@ -568,19 +571,26 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   pairid: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = inputCurrency ? tokenBalance : ethBalance
-  // console.log(balance)
+  // console.log(library)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
+  const contractBTC = useSwapBTCContract(isAddress(inputToken) ? inputToken : undefined)
+  const contractETH = useSwapETHContract(isAddress(inputToken) ? inputToken : undefined)
   return useMemo(() => {
-    if (!chainId || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (
+      !chainId
+      || !toAddress
+      || !toChainID
+      || !library
+    ) return NOT_APPLICABLE
     // console.log(typedValue)
     // console.log(toChainID)
 
@@ -594,21 +604,40 @@ export function useBridgeNativeCallback(
           ? async () => {
               try {
                 console.log(txnsType)
-                const txReceipt:any = txnsType === 'swapin' ? await signSwapinData({
-                  value: `0x${inputAmount.raw.toString(16)}`,
-                  address: toAddress,
-                  token: inputToken,
-                  destChain: toChainID,
-                  isRecords: true
-                }) : await signSwapoutData({
-                  value: `0x${inputAmount.raw.toString(16)}`,
-                  address: toAddress,
-                  token: inputToken,
-                  destChain: toChainID,
-                  isRecords: true
-                })
+                let txReceipt:any
+                if (txnsType === 'swapin') {
+                  if (isAddress(inputToken)) {
+                    if (contractETH) {
+                      txReceipt = await contractETH.transfer(toAddress, `0x${inputAmount.raw.toString(16)}`)
+                    } else {
+                      return
+                    }
+                  } else {
+                    const data:any = {
+                      from: account,
+                      to: toAddress,
+                      value: `0x${inputAmount.raw.toString(16)}`,
+                    }
+                    const hash = await library.send('eth_sendTransaction', [data])
+                    txReceipt = hash && hash.toString().indexOf('0x') === 0 ? {hash} : ''
+                  }
+                } else {
+                  if (toChainID && isNaN(toChainID)) {
+                    if (contractBTC) {
+                      txReceipt = await contractBTC.Swapout(`0x${inputAmount.raw.toString(16)}`, toAddress)
+                    } else {
+                      return
+                    }
+                  } else {
+                    if (contractETH) {
+                      txReceipt = await contractETH.Swapout(`0x${inputAmount.raw.toString(16)}`, toAddress)
+                    } else {
+                      return
+                    }
+                  }
+                }
                 console.log(txReceipt)
-                const txData:any = {hash: txReceipt?.info}
+                const txData:any = {hash: txReceipt.hash}
                 addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 if (txData.hash && account) {
                   let srcChainID = chainId
@@ -638,7 +667,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library])
 }
 
 /**

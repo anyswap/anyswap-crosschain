@@ -49,7 +49,7 @@ const BetaMessage = styled.div`
 export default function WarningTip () {
   const { t } = useTranslation()
   const [showBetaMessage, dismissBetaMessage] = useBetaMessageManager()
-  console.log(showBetaMessage)
+  // console.log(showBetaMessage)
   return (
     <>
       {/* {showBetaMessage  && ( */}
