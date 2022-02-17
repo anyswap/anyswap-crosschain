@@ -306,8 +306,8 @@ export default function NavList() {
       <HeaderLinks>
         <StyledNavLink id={`dashboard-nav-link`} to={'/dashboard'}>
           <div className="icon">
-            <img src={require('../../assets/images/icon/application.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/application-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/application.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/application-purpl.svg')} className="on" alt="" />
           </div>
           {t('dashboard')}
         </StyledNavLink>
@@ -335,8 +335,8 @@ export default function NavList() {
               }
             >
               <div className="icon">
-                <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
+                <img src={require('../../assets/icon/router.svg')} className="off" alt="" />
+                <img src={require('../../assets/icon/network-white.svg')} className="on" alt="" />
               </div>
               {config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap')}
             </StyledNavLink>
@@ -346,8 +346,8 @@ export default function NavList() {
           config.getCurConfigInfo().isOpenRouterTxns ? (
             <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
               <div className="icon">
-                <img src={require('../../assets/images/icon/swap.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/swap-purpl.svg')} className="on" alt="" />
+                <img src={require('../../assets/icon/swap.svg')} className="off" alt="" />
+                <img src={require('../../assets/icon/swap-purpl.svg')} className="on" alt="" />
               </div>
               {t('swap')}
             </StyledNavLink>
@@ -357,8 +357,8 @@ export default function NavList() {
           config.getCurConfigInfo().isOpenBridge ? (
             <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
               <div className="icon">
-                <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
+                <img src={require('../../assets/icon/bridge.svg')} className="off" alt="" />
+                <img src={require('../../assets/icon/bridge-purpl.svg')} className="on" alt="" />
               </div>
               {t('bridge')}
             </StyledNavLink>
@@ -376,8 +376,8 @@ export default function NavList() {
                 }
               >
                 <div className="icon">
-                  <img src={require('../../assets/images/icon/pool.svg')} className="off" alt="" />
-                  <img src={require('../../assets/images/icon/pool-purpl.svg')} className="on" alt="" />
+                  <img src={require('../../assets/icon/pool.svg')} className="off" alt="" />
+                  <img src={require('../../assets/icon/pool-purpl.svg')} className="on" alt="" />
                 </div>
                 {t('pool')}
               </StyledNavLink>
@@ -388,8 +388,8 @@ export default function NavList() {
           config.getCurConfigInfo().isOpenNFT ? (
             <StyledNavLink id={`bridge-nav-link`} to={'/nft'}>
               <div className="icon">
-                <img src={require('../../assets/images/icon/bridge.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/bridge-purpl.svg')} className="on" alt="" />
+                <img src={require('../../assets/icon/bridge.svg')} className="off" alt="" />
+                <img src={require('../../assets/icon/bridge-purpl.svg')} className="on" alt="" />
               </div>
               {t('nftrouter')}
             </StyledNavLink>
@@ -403,8 +403,8 @@ export default function NavList() {
               to={'/v2/mergeswap'}
             >
               <div className="icon">
-                <img src={require('../../assets/images/icon/router.svg')} className="off" alt="" />
-                <img src={require('../../assets/images/icon/network-white.svg')} className="on" alt="" />
+                <img src={require('../../assets/icon/router.svg')} className="off" alt="" />
+                <img src={require('../../assets/icon/network-white.svg')} className="on" alt="" />
               </div>
               {t('bridge')}
             </StyledNavLink>
@@ -417,15 +417,15 @@ export default function NavList() {
           to={'/farm'}
         >
           <div className="icon">
-            <img src={require('../../assets/images/icon/send.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/send-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/send.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/send-purpl.svg')} className="on" alt="" />
           </div>
           {t('farms')}
         </StyledNavLink> */}
         {/* <StyledNavLink1 id="link" href="https://anyswap.net">
           <div className="icon">
-            <img src={require('../../assets/images/icon/explorer-purpl.png')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/explorer.png')} className="on" alt="" />
+            <img src={require('../../assets/icon/explorer-purpl.png')} className="off" alt="" />
+            <img src={require('../../assets/icon/explorer.png')} className="on" alt="" />
           </div>
           {t('explorer')}
         </StyledNavLink1> */}
@@ -433,8 +433,8 @@ export default function NavList() {
       {/* <Tabs>
         <MenuItem id="link" href={config.getCurChainInfo(chainId).marketsUrl}>
           <div className="icon">
-            <img src={require('../../assets/images/icon/markets.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/markets-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/markets.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/markets-purpl.svg')} className="on" alt="" />
           </div>
           {t('Markets')}
         </MenuItem>
@@ -447,29 +447,29 @@ export default function NavList() {
         </MenuItem>
         <MenuItem id="link" href="https://vote.anyswap.exchange/">
           <div className="icon">
-            <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/any-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/any.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/any-purpl.svg')} className="on" alt="" />
           </div>
           {t('ANYToken')}
         </MenuItem>
         <MenuItem id="link" href="https://anyswap.net/network">
           <div className="icon">
-            <img src={require('../../assets/images/icon/network.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/network-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/network.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/network-purpl.svg')} className="on" alt="" />
           </div>
           {t('Network')}
         </MenuItem>
         <MenuItem id="link" href="https://anyswap-faq.readthedocs.io/en/latest/index.html">
           <div className="icon">
-            <img src={require('../../assets/images/icon/documents.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/documents-purpl.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/documents.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/documents-purpl.svg')} className="on" alt="" />
           </div>
           {t('Documents')}
         </MenuItem>
         <MenuItem id="link" href="https://dard6erxu8t.typeform.com/to/C7RwF08A">
           <div className="icon">
-            <img src={require('../../assets/images/icon/bridge-gray.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/bridge.svg')} className="on" alt="" />
+            <img src={require('../../assets/icon/bridge-gray.svg')} className="off" alt="" />
+            <img src={require('../../assets/icon/bridge.svg')} className="on" alt="" />
           </div>
           {t('Listing')}
         </MenuItem>
@@ -478,8 +478,8 @@ export default function NavList() {
         <OutLinkImgBox>
           <Link id="link" href="https://t.me/anyswap">
             <div className="icon">
-              <img src={require('../../assets/images/icon/telegram.svg')} className="off" alt="" />
-              <img src={require('../../assets/images/icon/telegram-white.svg')} className="on" alt="" />
+              <img src={require('../../assets/icon/telegram.svg')} className="off" alt="" />
+              <img src={require('../../assets/icon/telegram-white.svg')} className="on" alt="" />
             </div>
           </Link>
         </OutLinkImgBox>

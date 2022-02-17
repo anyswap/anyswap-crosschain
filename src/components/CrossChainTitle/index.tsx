@@ -20,8 +20,8 @@ export default function CrossChain() {
       name: t('pool'),
       path: '/pool',
       regex: /\/pool/,
-      iconUrl: require('../../assets/images/icon/pool.svg'),
-      iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
+      iconUrl: require('../../assets/icon/pool.svg'),
+      iconActiveUrl: require('../../assets/icon/pool-purpl.svg')
     }
     let arr = []
     if (expertMode) {
@@ -30,15 +30,15 @@ export default function CrossChain() {
           name: t('router'),
           path: '/router',
           regex: /\/router/,
-          iconUrl: require('../../assets/images/icon/deposit.svg'),
-          iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          iconUrl: require('../../assets/icon/deposit.svg'),
+          iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
         },
         {
           name: t('bridge'),
           path: '/bridge',
           regex: /\/bridge/,
-          iconUrl: require('../../assets/images/icon/deposit.svg'),
-          iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          iconUrl: require('../../assets/icon/deposit.svg'),
+          iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
         }
       ]
     } else {
@@ -48,8 +48,8 @@ export default function CrossChain() {
           path: '/v2/mergeswap',
           // regex: /[\/mergeswap | \/bridge]/,
           regex: /\/v2\/mergeswap/,
-          iconUrl: require('../../assets/images/icon/deposit.svg'),
-          iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+          iconUrl: require('../../assets/icon/deposit.svg'),
+          iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
         }
       ]
     }

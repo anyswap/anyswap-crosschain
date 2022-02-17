@@ -5,8 +5,8 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
-import MetamaskIcon from '../../assets/images/metamask.png'
-import { ReactComponent as Close } from '../../assets/images/x.svg'
+import MetamaskIcon from '../../assets/metamask.png'
+import { ReactComponent as Close } from '../../assets/x.svg'
 import { injected } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import usePrevious from '../../hooks/usePrevious'
@@ -208,7 +208,7 @@ export default function WalletModal({
               link={option.href}
               header={option.name}
               subheader={null}
-              icon={require('../../assets/images/' + option.iconName)}
+              icon={require('../../assets/' + option.iconName)}
             />
           )
         }
@@ -270,7 +270,7 @@ export default function WalletModal({
             link={option.href}
             header={option.name}
             subheader={null} //use option.descriptio to bring back multi-line
-            icon={require('../../assets/images/' + option.iconName)}
+            icon={require('../../assets/' + option.iconName)}
           />
         )
       )

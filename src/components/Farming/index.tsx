@@ -669,7 +669,7 @@ export default function Farming ({
                   <Flex>
                     {
                       account ? (
-                        <ComineSoon><img alt={''} src={require('../../assets/images/icon/schedule.svg')} style={{marginRight: '10px'}} />{t('ComineSoon')}</ComineSoon>
+                        <ComineSoon><img alt={''} src={require('../../assets/icon/schedule.svg')} style={{marginRight: '10px'}} />{t('ComineSoon')}</ComineSoon>
                       ) : (
                         <Button1 onClick={toggleWalletModal}  style={{height: '45px',maxWidth: '200px'}}>
                           {t('ConnectWallet')}
@@ -797,9 +797,9 @@ export default function Farming ({
         }}>
           {
             isDark ? (
-              <img src={require('../../assets/images/icon/add-fff.svg')} alt='' />
+              <img src={require('../../assets/icon/add-fff.svg')} alt='' />
             ) : (
-              <img src={require('../../assets/images/icon/add.svg')} alt='' />
+              <img src={require('../../assets/icon/add.svg')} alt='' />
             )
           }
         </AddBox>
@@ -856,7 +856,7 @@ export default function Farming ({
         <StakingBox>
           <StakingList>
             <li className='item'>
-              <div className='pic'><img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /></div>
+              <div className='pic'><img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/coin/source/'+ poolCoin + '.svg')} /></div>
               <div className='info'>
                 <h3>{prd}</h3>
                 <p>
