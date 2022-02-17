@@ -8,7 +8,12 @@
 
 основной конфиг: `src/config/*`
 
-### Страницы Router
+### Router (`src/pages/CrossChain/`)
 
-`src/pages/CrossChain/index.tsx` - для начала свапа в модалке вызываем кнопку с названием `t('Confirm')`. Там куча условий где выбираем что вызвать `onWrap, onWrapNative, onWrapUnderlying`. Это переименованные функции из хуков:
-`useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback`. Хуки из `src/hooks/useBridgeCallback.ts` и в каждом из них основная функция это `execute`, она то и переименовывается. Беглым взглядом в каждом из хуков мы вызываем `bridgeContract` методы с разными параметрами
+- мы заполнили форму и нажимаем свап. Отображается модалка где мы подтверждаем кнопкой Confirm
+- запускается функция `onSwap`, где мы выбираем тип свапа. В зависимости от типа, мы вызываем `execute` функцию у `useBridgeCallback`, `useBridgeUnderlyingCallback` или `useBridgeNativeCallback`. Эти хуки экспортируем из `src/hooks/useBridgeCallback.ts`
+- в каждом из них мы вызываем какой то метод `bridgeContract`
+
+### Bridge (`src/pages/Bridge/`)
+
+

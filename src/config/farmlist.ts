@@ -85,7 +85,7 @@ const config: FarmConfig = {
     blockNumber: 28800,
     lpTokenIno: BSC_ANY,
     url: 'farm/bsc/hero',
-    logoUrl: require('../assets/images/coin/source/TRO.png'),
+    logoUrl: require('../assets/coin/source/TRO.png'),
     key: 'HERO',
     farmtype: 'any'
   },

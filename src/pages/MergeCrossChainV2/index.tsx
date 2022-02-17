@@ -30,15 +30,15 @@ export default function CrossChainBox() {
               name: t('router'),
               path: '/v2/mergeswap',
               regex: /\/v2\/mergeswap/,
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+              iconUrl: require('../../assets/icon/deposit.svg'),
+              iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
             },
             {
               name: t('pool'),
               path: '/pool',
               regex: /\/pool/,
-              iconUrl: require('../../assets/images/icon/pool.svg'),
-              iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
+              iconUrl: require('../../assets/icon/pool.svg'),
+              iconActiveUrl: require('../../assets/icon/pool-purpl.svg')
             }
           ]}
         >

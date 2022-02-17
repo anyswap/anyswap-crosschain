@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import Logo from '../../assets/svg/logo.svg'
-import LogoDark from '../../assets/svg/logo_white.svg'
-import IconDay from '../../assets/images/icon/day.svg'
-import IconNight from '../../assets/images/icon/night.svg'
+import Logo from '../../assets/logo.svg'
+import LogoDark from '../../assets/logo_white.svg'
+import IconDay from '../../assets/icon/day.svg'
+import IconNight from '../../assets/icon/night.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
 import { useAccounts } from '../../hooks/useAccounts'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
 // import { useETHBalances } from '../../state/wallet/hooks'
-
+import NavList from './NavList'
 // import Row, { RowFixed } from '../Row'
 import { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
@@ -124,7 +124,7 @@ const Title = styled.a`
   }
 `
 
-const UniIcon = styled.div`
+const Icon = styled.div`
   ${({ theme }) => theme.flexSC};
   height: 100%;
   img {
@@ -135,6 +135,12 @@ const UniIcon = styled.div`
       height:36px
     }
   `};
+`
+
+const NavListWrapper = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display:none;
+  `}
 `
 
 const StyleDarkToggle = styled.div`
@@ -192,11 +198,15 @@ export default function Header() {
     <HeaderFrame>
       <HeaderRow>
         <Title href="https://anyswap.exchange" target="__blank">
-          <UniIcon>
+          <Icon>
             <img src={isDark ? LogoDark : Logo} alt="logo" />
-          </UniIcon>
+          </Icon>
         </Title>
+        <NavListWrapper>
+          <NavList />
+        </NavListWrapper>
       </HeaderRow>
+
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />

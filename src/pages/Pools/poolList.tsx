@@ -557,15 +557,15 @@ export default function PoolLists ({
                 name: config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap'),
                 path: config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap',
                 regex: config.getCurConfigInfo().isOpenBridge ? /\/router/ : /\/swap/,
-                iconUrl: require('../../assets/images/icon/deposit.svg'),
-                iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+                iconUrl: require('../../assets/icon/deposit.svg'),
+                iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
               },
               {
                 name: t('pool'),
                 path: '/pool',
                 regex: /\/pool/,
-                iconUrl: require('../../assets/images/icon/pool.svg'),
-                iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
+                iconUrl: require('../../assets/icon/pool.svg'),
+                iconActiveUrl: require('../../assets/icon/pool-purpl.svg')
               }
             ] : []}
           ></Title>

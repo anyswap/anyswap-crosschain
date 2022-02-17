@@ -16,7 +16,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleNetworkModal } from '../../state/application/hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
 
-import { ReactComponent as Close } from '../../assets/images/x.svg'
+import { ReactComponent as Close } from '../../assets/x.svg'
 
 import config from '../../config'
 import {chainInfo, spportChainArr} from '../../config/chainConfig'

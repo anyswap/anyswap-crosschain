@@ -17,12 +17,12 @@ import { useTokenComparator } from '../../components/SearchModal/sorting'
 import AppBody from '../AppBody'
 import Title from '../../components/Title'
 
-import SearchIcon from '../../assets/images/icon/search.svg'
-import { ReactComponent as Dropup } from '../../assets/images/dropup-blue.svg'
-import { ReactComponent as Dropdown } from '../../assets/images/dropdown-blue.svg'
+import SearchIcon from '../../assets/icon/search.svg'
+import { ReactComponent as Dropup } from '../../assets/dropup-blue.svg'
+import { ReactComponent as Dropdown } from '../../assets/dropdown-blue.svg'
 
-import NextkIcon from '../../assets/images/icon/Next.svg'
-import PreviouskIcon from '../../assets/images/icon/Previous.svg'
+import NextkIcon from '../../assets/icon/Next.svg'
+import PreviouskIcon from '../../assets/icon/Previous.svg'
 
 import config from '../../config'
 

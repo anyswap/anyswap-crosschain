@@ -532,8 +532,8 @@ export default function SwapNative() {
                 setInputBridgeValue('')
                 setOpenAdvance(false)
               },
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+              iconUrl: require('../../assets/icon/deposit.svg'),
+              iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
             },
             {
               name: t('Remove'),
@@ -542,8 +542,8 @@ export default function SwapNative() {
                 setInputBridgeValue('')
                 setOpenAdvance(true)
               },
-              iconUrl: require('../../assets/images/icon/withdraw.svg'),
-              iconActiveUrl: require('../../assets/images/icon/withdraw-purple.svg')
+              iconUrl: require('../../assets/icon/withdraw.svg'),
+              iconActiveUrl: require('../../assets/icon/withdraw-purple.svg')
             }
           ]}
           currentTab={swapType === 'deposit' ? 0 : 1}

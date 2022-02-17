@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import {thousandBit} from '../../utils/tools/tools'
 import { useActiveWeb3React } from '../../hooks'
-import BulbIcon from '../../assets/images/icon/bulb.svg'
+import BulbIcon from '../../assets/icon/bulb.svg'
 import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`

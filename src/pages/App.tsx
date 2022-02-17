@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
-import Polling from '../components/Header/Polling'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import URLWarning from '../components/Header/URLWarning'
@@ -28,7 +27,7 @@ import NoanyFarming from './Farms/NoanyFarming'
 
 import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
-
+import Footer from '../components/Footer'
 import config from '../config'
 import farmlist from '../config/farmlist'
 // console.log(ANYFarming)
@@ -59,20 +58,6 @@ const HeaderWrapper = styled.div`
   z-index: 2;
 `
 
-const NavLeft = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  padding-top: 70px;
-  width: 320px;
-  box-shadow: ${({ theme }) => theme.contentShadow};
-  background: ${({ theme }) => theme.contentBg};
-  overflow: auto;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display:none;
-  `}
-`
 const NavBottom = styled.div`
   position: absolute;
   bottom: 0;
@@ -98,14 +83,13 @@ const BodyWrapper = styled.div`
   height: 100%;
   height: 100vh;
   padding-top: 70px;
-  padding-left: 320px;
   position: relative;
   align-items: center;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10;
-  margin: auto;
+  margin: 0 auto;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 16px;
@@ -113,10 +97,6 @@ const BodyWrapper = styled.div`
   `};
 
   z-index: 1;
-`
-
-const Marginer = styled.div`
-  margin-top: 5rem;
 `
 
 // function TopLevelModals() {
@@ -143,11 +123,7 @@ export default function App() {
         </HeaderWrapper>
 
         <BodyWrapper>
-          <NavLeft>
-            <NavList />
-          </NavLeft>
           <Popups />
-          <Polling />
           <NonApprove />
           {/* <TopLevelModals /> */}
 
@@ -198,12 +174,12 @@ export default function App() {
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>
-
-          <Marginer />
           <NavBottom>
             <NavList />
           </NavBottom>
         </BodyWrapper>
+
+        <Footer />
       </AppWrapper>
     </Suspense>
   )

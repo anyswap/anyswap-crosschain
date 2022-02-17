@@ -17,7 +17,7 @@ const BodyContent = styled.div`
   top: 70px;
   right: 0;
   bottom: 0;
-  left: 320px;
+  left: 0;
   padding: 0rem 0px;
   overflow: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
