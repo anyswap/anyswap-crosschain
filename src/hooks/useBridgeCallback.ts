@@ -718,7 +718,19 @@ export function useBridgeNativeCallback(
                 console.log(txReceipt)
                 const txData:any = {hash: txReceipt?.hash}
                 if (txData.hash && account) {
-                  addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                  // addTransaction(txData, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                  addTransaction(txData, {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(symbol, chainId)}`,
+                    value: inputAmount.toSignificant(6),
+                    toChainId: toChainID,
+                    toAddress: receiveAddress?.toLowerCase(),
+                    symbol: symbol,
+                    version: txnsType,
+                    routerToken: '',
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl,
+                    underlying: inputCurrency?.underlying
+                  })
                   let srcChainID = chainId
                   let destChainID = toChainID
                   if (toChainID === 'TERRA' && txnsType === 'swapout') {
@@ -738,8 +750,8 @@ export function useBridgeNativeCallback(
                     pairid: pairid
                   }
                   recordsTxns(rdata)
+                  onChangeViewDtil(txData?.hash, true)
                 }
-                onChangeViewDtil(txData?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
               }
