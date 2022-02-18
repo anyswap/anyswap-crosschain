@@ -73,4 +73,5 @@ const config: ConFig = {
     }
   }
 }
+console.log('config', config)
 export default config

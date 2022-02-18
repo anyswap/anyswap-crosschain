@@ -17,12 +17,21 @@
 `CrossChainBTC, CrossChainNonEVM, CrossChainEVM`.
 Возможно просто удалить `CrossChainNonEVM` и пропустить `CrossChainBTC`.
 В `CrossChainEVM` мы при свапе вызываем один из хуков:
+
 - `useBridgeCallback`
 - `useBridgeNativeCallback`
 - `useBridgeUnderlyingCallback`
 - `useCrossBridgeCallback`
 
-В каждом из них мы вызываем какой то метод у `bridgeContract`
+В каждом из них мы вызываем какой то метод у `bridgeContract` (кроме `useCrossBridgeCallback`, который использует `signSwapinData` method с `multichain-bridge[https://github.com/anyswap/multichain-bridge]` репозитория), который использует определенные методы (описаны ниже) из `bridgeContract` контракта в зависимости от используемого asset'a.
+
+Методы `bridgeContract`:
+
+- `anySwapOutNative` (`useBridgeNativeCallback`)
+- `anySwapOut` (`useBridgeCallback`)
+- `anySwapOutUnderlying` (`useBridgeUnderlyingCallback`)
+
+сейчас нужно найти пример кода этого `bridgeContract`, который использует `RouterSwapAction` abi.
 
 ---
 
