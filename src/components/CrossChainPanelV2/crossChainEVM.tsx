@@ -431,6 +431,9 @@ export default function CrossChain({
         (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
         || (isDestUnderlying && !destChain)
       ) {
+        // if (selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT") {
+        //   return undefined
+        // }
         return {
           state: 'Error',
           tip: t('insufficientLiquidity')
@@ -457,10 +460,14 @@ export default function CrossChain({
 
   const isCrossBridge = useMemo(() => {
     if (errorTip || !inputBridgeValue) {
+      if (selectCurrency && selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT") {
+      // if (selectCurrency && selectCurrency.chainId === '56' && selectCurrency.symbol === "USDC") {
+        return false
+      }
       return true
     }
     return false
-  }, [errorTip, inputBridgeValue])
+  }, [errorTip, inputBridgeValue, selectCurrency])
 
   const btnTxt = useMemo(() => {
     // if (errorTip) {
