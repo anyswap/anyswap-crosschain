@@ -516,29 +516,19 @@ export default function CrossChain({
                   </ButtonConfirmed>
                 ) : (
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  // <ButtonPrimary disabled={delayAction} onClick={() => {
                     onDelay()
                     if (isRouter) {
                       if (!selectCurrency || !isUnderlying) {
-                        if (onWrap) onWrap().then(() => {
-                          onClear()
-                        })
+                        if (onWrap) onWrap().then(onClear)
                       } else {
-                        // if (onWrapUnderlying) onWrapUnderlying()
                         if (isNativeToken) {
-                          if (onWrapNative) onWrapNative().then(() => {
-                            onClear()
-                          })
+                          if (onWrapNative) onWrapNative().then(onClear)
                         } else {
-                          if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                            onClear()
-                          })
+                          if (onWrapUnderlying) onWrapUnderlying().then(onClear)
                         }
                       }
-                    } else {
-                      if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
-                        onClear()
-                      })
+                    } else if (onWrapCrossBridge) {
+                      onWrapCrossBridge().then(onClear)
                     }
                   }}>
                     {t('Confirm')}
@@ -551,7 +541,6 @@ export default function CrossChain({
       </ModalContent>
 
       <AutoColumn gap={'sm'}>
-
         <SelectCurrencyInputPanel
           label={t('From')}
           value={inputBridgeValue}

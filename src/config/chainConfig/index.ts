@@ -15,15 +15,15 @@ import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
 import movr, {MOVR_MAIN_CHAINID} from './movr'
 import iotex, {IOTEX_MAIN_CHAINID} from './iotex'
 import sdn, {SDN_MAIN_CHAINID} from './sdn'
-import ltc, {LTC_MAIN_CHAINID} from './ltc'
-import btc, {BTC_MAIN_CHAINID} from './btc'
-import block, {BLOCK_MAIN_CHAINID} from './block'
-import colx, {COLX_MAIN_CHAINID} from './colx'
+// import ltc, {LTC_MAIN_CHAINID} from './ltc'
+// import btc, {BTC_MAIN_CHAINID} from './btc'
+// import block, {BLOCK_MAIN_CHAINID} from './block'
+// import colx, {COLX_MAIN_CHAINID} from './colx'
 import celo, {CELO_MAIN_CHAINID} from './celo'
 import cro, {CRO_MAIN_CHAINID} from './cro'
 import oeth, {OETH_MAIN_CHAINID} from './oeth'
 import tlos, {TLOS_MAIN_CHAINID} from './tlos'
-import terra, {TERRA_MAIN_CHAINID} from './terra'
+// import terra, {TERRA_MAIN_CHAINID} from './terra'
 import fuse, {FUSE_MAIN_CHAINID} from './fuse'
 import aurora, {AURORA_MAIN_CHAINID} from './aurora'
 import sys, {SYS_MAIN_CHAINID} from './sys'
@@ -51,12 +51,12 @@ export const chainInfo:ConFig = {
   ...kcc,
   ...okt,
   ...one,
-  ...ltc,
-  ...btc,
-  ...block,
+  // ...ltc,
+  // ...btc,
+  // ...block,
   ...omgx,
   ...optimism,
-  ...colx,
+  // ...colx,
   ...movr,
   ...iotex,
   ...sdn,
@@ -64,7 +64,7 @@ export const chainInfo:ConFig = {
   ...cro,
   ...oeth,
   ...tlos,
-  ...terra,
+  // ...terra,
   ...fuse,
   ...aurora,
   ...sys,
@@ -224,11 +224,11 @@ const useChain:any = {
   ],
   [VERSION.V7]: [
     ...allChainList,
-    BTC_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID,
-    LTC_MAIN_CHAINID,
-    BLOCK_MAIN_CHAINID,
-    COLX_MAIN_CHAINID,
+    // BTC_MAIN_CHAINID,
+    // TERRA_MAIN_CHAINID,
+    // LTC_MAIN_CHAINID,
+    // BLOCK_MAIN_CHAINID,
+    // COLX_MAIN_CHAINID,
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
@@ -244,7 +244,7 @@ const useChain:any = {
     OKT_MAIN_CHAINID,
     ONE_MAIN_CHAINID,
     MOVR_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID,
+    // TERRA_MAIN_CHAINID,
     AURORA_MAIN_CHAINID,
     ASTAR_MAIN_CHAINID
   ]

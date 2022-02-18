@@ -35,14 +35,23 @@
 
 ---
 
-deploy
+docs:
+https://github.com/anyswap/anyswap-docs/blob/main/docs/DevelopersGuide/integrateBridgeFrontend.md
+
+deploy:
 https://github.com/anyswap/chaindata/blob/main/deploy.md
 
-router v4 (использем его в 7 версии)
+router v4 (используeм его в 7 версии):
 https://github.com/W2Ning/Anyswap_Vul_Poc/blob/c039be7e1df8d0901fcc175fb9ead6b8f90d4297/AnyswapV4Router.sol
 
-router v6
+router v6:
 https://github.com/tintinweb/smart-contract-sanctuary-ethereum/blob/38fa8189cff383521956c310309d4e7c924f87e6/contracts/mainnet/ba/ba8da9dcf11b50b03fd5284f164ef5cdef910705_AnyswapV6Router.sol
 
-V5ERC20
+AnyswapV5ERC20:
 https://testnet.bscscan.com/address/0x6fd2b7fc5db32a133a6824e1117d0f290ba43abc#code
+
+AnyswapV6ERC20:
+https://bscscan.com/address/0x41a072b1c8d716721e407640e5b1fdcc714239ab#code
+
+Usefull:
+https://github.com/andrecronje/anyswap-v1-core/tree/master/contracts
