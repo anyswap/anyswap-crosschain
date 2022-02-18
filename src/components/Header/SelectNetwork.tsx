@@ -1,14 +1,18 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useRef, useCallback,RefObject } from 'react'
 // import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Settings, CheckSquare } from 'react-feather'
-
+import { Text } from 'rebass'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import { YellowCard } from '../Card'
 import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
 import Loader from '../Loader'
+import Column from '../Column'
+import { RowBetween } from '../Row'
+import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
 
 import { useActiveWeb3React } from '../../hooks'
 
@@ -404,6 +408,46 @@ export function Option ({
   )
 }
 
+function ChainListBox ({
+  height,
+  useChainId,
+  openUrl,
+  searchQuery
+}: {
+  height: number
+  useChainId: any
+  openUrl: (value:any) => void
+  searchQuery: any
+}) {
+  return (
+    <>
+      <NetWorkList style={{height: height}}>
+        {
+          spportChainArr && spportChainArr.map((item:any, index:any) => {
+            if (
+              (searchQuery
+              && (
+                chainInfo[item].name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+                || chainInfo[item].symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+                || searchQuery.toLowerCase() === item.toString().toLowerCase()
+              ))
+              || !searchQuery
+            ) {
+              return (
+                <OptionCardClickable key={index} className={
+                  useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                  <Option curChainId={item} selectChainId={useChainId}></Option>
+                </OptionCardClickable>
+              )
+            }
+            return
+          })
+        }
+      </NetWorkList>
+    </>
+  )
+}
+
 export default function SelectNetwork () {
   // const history = createBrowserHistory()
   const { chainId } = useActiveWeb3React()
@@ -411,7 +455,8 @@ export default function SelectNetwork () {
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
   const [selectNetworkInfo, setUserSelectNetwork] = useUserSelectChainId()
-
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const inputRef = useRef<HTMLInputElement>()
 
   function setMetamaskNetwork (item:any) {
     selectNetwork(item.chainID).then((res:any) => {
@@ -449,6 +494,13 @@ export default function SelectNetwork () {
     return chainId
   }, [selectNetworkInfo, chainId])
 
+  const handleInput = useCallback(event => {
+    const input = event.target.value
+    setSearchQuery(input)
+    // fixedList.current?.scrollTo(0)
+  }, [])
+
+
   function changeNetwork () {
     return (
       <Modal
@@ -457,7 +509,41 @@ export default function SelectNetwork () {
         maxHeight={80}
         minHeight={80}
       >
-        <Wrapper>
+        <Column style={{ width: '100%', flex: '1 1' }}>
+          <PaddedColumn gap="14px">
+            <RowBetween>
+              <Text fontWeight={500} fontSize={16}>
+                {t('SwitchTo')}
+              </Text>
+              <CloseIcon onClick={() => {toggleNetworkModal()}} />
+            </RowBetween>
+            <SearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t('SwitchTo')}
+              value={searchQuery}
+              ref={inputRef as RefObject<HTMLInputElement>}
+              onChange={handleInput}
+              // onKeyDown={handleEnter}
+            />
+          </PaddedColumn>
+          <Separator />
+          <div style={{ flex: '1' }}>
+            <AutoSizer disableWidth>
+              {({ height }) => (
+                <>
+                  <ChainListBox
+                    height={height}
+                    useChainId={useChainId}
+                    openUrl={openUrl}
+                    searchQuery={searchQuery}
+                  />
+                </>
+              )}
+            </AutoSizer>
+          </div>
+        </Column>
+        {/* <Wrapper>
           <UpperSection>
             <CloseIcon onClick={() => {toggleNetworkModal()}}>
               <CloseColor />
@@ -480,7 +566,7 @@ export default function SelectNetwork () {
               </NetWorkList>
             </ContentWrapper>
           </UpperSection>
-        </Wrapper>
+        </Wrapper> */}
       </Modal>
     )
   }
