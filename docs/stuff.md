@@ -23,7 +23,7 @@
 - `useBridgeUnderlyingCallback`
 - `useCrossBridgeCallback`
 
-В каждом из них мы вызываем какой то метод у `bridgeContract` (кроме `useCrossBridgeCallback`, который использует `signSwapinData` method с `multichain-bridge[https://github.com/anyswap/multichain-bridge]` репозитория), который использует определенные методы (описаны ниже) из `bridgeContract` контракта в зависимости от используемого asset'a.
+В каждом из них мы вызываем какой то метод у `bridgeContract` (кроме `useCrossBridgeCallback`, который использует `signSwapinData` method с [multichain-bridge](https://github.com/anyswap/multichain-bridge) репозитория), который использует определенные методы (описаны ниже) из `bridgeContract` контракта в зависимости от используемого asset'a.
 
 Методы `bridgeContract`:
 
@@ -31,7 +31,11 @@
 - `anySwapOut` (`useBridgeCallback`)
 - `anySwapOutUnderlying` (`useBridgeUnderlyingCallback`)
 
-сейчас нужно найти пример кода этого `bridgeContract`, который использует `RouterSwapAction` abi.
+...
+
+### Dashboard
+
+в `pages/Dashboard/index.tsx` исходя из номера текущей сети запрашиваем токены из [multichain-bridge](https://github.com/anyswap/multichain-bridge) через метод `GetTokenListByChainID`
 
 ---
 

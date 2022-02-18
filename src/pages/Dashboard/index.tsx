@@ -155,10 +155,7 @@ export default function DashboardDtil() {
       arr.push('')
     }
     Promise.all(arr).then((res:any) => {
-      // console.log(res)
-      // console.log(allTokensList)
       if (allTokensList && Object.keys(allTokensList).length > 0) {
-        // console.log(111)
         for (const token in allTokensList) {
           if (!isAddress(token)) continue
           if (ANY_TOKEN?.toLowerCase() === token?.toLowerCase()) {
@@ -234,14 +231,10 @@ export default function DashboardDtil() {
           }
           alist.push(token)
         }
-        // for (const type in res[0]) {
-        // }
       }
-      // console.log(alist)
-      // console.log(tlist)
+
       setTotalCount(alist.length)
       setAllTokenList(tlist)
-      // setPoolArr(ulist)
       setAllTokenArr(alist)
     })
   }, [chainId, allTokensList])
@@ -256,22 +249,23 @@ export default function DashboardDtil() {
   const [searchContent, setSearchContent] = useState('')
   const [showMore, setShowMore] = useState(true)
 
-  const viewTokenList = useMemo(() => {
-    // console.log(pagecount)
+  const listOfTokenAddresses = useMemo(() => {
     const start = pagecount * pagesize
     const end = start + pagesize
+
     if (allTokenArr) {
       const resArr = searchContent ? allTokenArr : allTokenArr.slice(start, end)
       return resArr
     }
+
     return []
   }, [pagecount, allTokenArr, searchContent, allTokenList])
-  
+
   const tokenList = useMemo(() => {
-    const l:any = []
+    const tokens:any = []
+
     if (account) {
-      // console.log(viewTokenList)
-      for (const token of viewTokenList) {
+      for (const token of listOfTokenAddresses) {
         const anyToken = allTokenList[token]?.underlying ? allTokenList[token]?.underlying?.address?.toLowerCase() : allTokenList[token]?.address?.toLowerCase()
         const undToken = allTokenList[token]?.underlying ? allTokenList[token]?.address?.toLowerCase() : ''
         let balance:any = allBalances && allBalances[anyToken] ? allBalances[anyToken]?.toSignificant(6) : ''
@@ -299,7 +293,7 @@ export default function DashboardDtil() {
           totalBlance = ''
         }
         
-        l.push({
+        tokens.push({
           ...allTokenList[token],
           balance: balance,
           poolBlance: underlyingBlance,
@@ -307,20 +301,20 @@ export default function DashboardDtil() {
         })
       }
     } else {
-      for (const token of viewTokenList) {
-        l.push({
+      for (const token of listOfTokenAddresses) {
+        tokens.push({
           ...allTokenList[token]
         })
       }
     }
-    l.sort((a:any, b:any) => {
+    tokens.sort((a:any, b:any) => {
       if (!isNaN(a.totalBlance) && !isNaN(b.totalBlance) && Number(a.totalBlance) > Number(b.totalBlance)) {
         return -1
       }
       return 0
     })
-    return l
-  }, [viewTokenList, allTokenList, allBalances])
+    return tokens
+  }, [listOfTokenAddresses, allTokenList, allBalances])
   // console.log(tokenList)
   function searchBox() {
     return (
@@ -382,26 +376,6 @@ export default function DashboardDtil() {
                 </tr>
               </DBThead>
               <DBTbody>
-                {/* <tr>
-                  <DBTd>
-                    <TokenTableCoinBox>
-                      <TokenTableLogo>
-                        <TokenLogo
-                          symbol={config.getCurChainInfo(chainId).symbol}
-                          size={'1.625rem'}
-                        ></TokenLogo>
-                      </TokenTableLogo>
-                      <TokenNameBox>
-                        <h3>{config.getBaseCoin(config.getCurChainInfo(chainId)?.symbol, chainId)}</h3>
-                        <p>{config.getBaseCoin(config.getCurChainInfo(chainId)?.name, chainId, 1)}</p>
-                      </TokenNameBox>
-                    </TokenTableCoinBox>
-                  </DBTd>
-                  <DBTd className="r">{ETHBalance?.toSignificant(6) ? formatDecimal(ETHBalance?.toSignificant(6), 2) : '-'}</DBTd>
-                  <DBTd className="r">{ETHBalance ? '0.00' : '-'}</DBTd>
-                  <DBTd className="r">{ETHBalance?.toSignificant(6) ? formatDecimal(ETHBalance?.toSignificant(6), 2) : '-'}</DBTd>
-                  <DBTd className="c"></DBTd>
-                </tr> */}
                 {tokenList.length > 0 ? (
                   tokenList.map((item:any, index:any) => {
                     if (
