@@ -306,7 +306,7 @@ export default function SwapNative() {
         ) {
           // console.log(poolInfo)
           return {
-            state: 'Error',
+            state: 'Warning',
             tip: t('insufficientLiquidity')
           }
         }
@@ -330,10 +330,21 @@ export default function SwapNative() {
 
   const isCrossBridge = useMemo(() => {
     if (errorTip) {
+      if (
+        (
+          selectCurrency
+          && selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT"
+        )
+        && errorTip
+        && errorTip.state === 'Warning'
+      ) {
+      // if (selectCurrency && selectCurrency.chainId === '56' && selectCurrency.symbol === "USDC") {
+        return false
+      }
       return true
     }
     return false
-  }, [errorTip])
+  }, [errorTip, selectCurrency])
 
   const btnTxt = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')

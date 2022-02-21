@@ -27,6 +27,7 @@ export default function ErrorTip ({
 }: {
   errorTip:any
 }) {
+  if (!errorTip) return (<></>)
   return (
     <>
     {

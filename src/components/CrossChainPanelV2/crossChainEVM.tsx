@@ -435,7 +435,7 @@ export default function CrossChain({
         //   return undefined
         // }
         return {
-          state: 'Error',
+          state: 'Warning',
           tip: t('insufficientLiquidity')
         }
       }
@@ -460,7 +460,14 @@ export default function CrossChain({
 
   const isCrossBridge = useMemo(() => {
     if (errorTip || !inputBridgeValue) {
-      if (selectCurrency && selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT") {
+      if (
+        (
+          selectCurrency
+          && selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT"
+        )
+        && errorTip
+        && errorTip.state === 'Warning'
+      ) {
       // if (selectCurrency && selectCurrency.chainId === '56' && selectCurrency.symbol === "USDC") {
         return false
       }
