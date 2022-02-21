@@ -30,6 +30,12 @@ export enum ApplicationModal {
   NETWORK
 }
 
+export type AppData = {
+  logo: string
+  copyrightName: string
+}
+
+export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(

@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { BsTelegram } from 'react-icons/bs'
 import Polling from '../Header/Polling'
 import { ExternalLink } from '../../theme'
+import { useAppState } from '../../state/application/hooks'
 
 const FooterWrapper = styled.div`
   padding: 0.3rem;
@@ -16,43 +18,9 @@ const Content = styled.div`
   justify-content: center;
 `
 
-const Link = styled(ExternalLink)`
-  .icon {
-    ${({ theme }) => theme.flexC};
-    width: 34px;
-    height: 34px;
-    background-color: ${({ theme }) => theme.outLinkIconBg};
-    border-radius: 100%;
-    margin-right: 0.625rem;
-    padding: 8px;
-    &:hover {
-      background-color: #5f6cfc;
-    }
-    img {
-      display: block;
-      width: 100%;
-    }
-    .on {
-      display: none;
-    }
-    .off {
-      display: block;
-    }
-  }
-  &:hover {
-    .icon {
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
-  }
-`
-
 const Copyright = styled.p<{ pale?: boolean }>`
-  margin: 0 0 0.7rem 0;
+  padding: 0.4rem;
+  margin: 0;
   text-align: center;
   ${({ pale }) => (pale ? `opacity: 0.92; font-size: 0.96em;` : '')}
 
@@ -62,9 +30,30 @@ const Copyright = styled.p<{ pale?: boolean }>`
   }
 `
 
+const SocialLinks = styled.div`
+  padding: 0.8rem 0;
+  display: flex;
+  align-items: center;
+`
+
+const Link = styled(ExternalLink)`
+  width: 1.6rem;
+
+  :not(:last-child) {
+    margin-right: 0.625rem;
+  }
+
+  .icon {
+    color: ${({ theme }) => theme.primary2};
+    width: 100%;
+    height: 100%;
+  }
+`
+
 export default function Footer() {
   const year = new Date().getFullYear()
-  const copyright = `© CHANGE_ME ${year}`
+  const { copyrightName } = useAppState()
+  const copyright = copyrightName ? `© ${copyrightName} ${year}` : null
   const SourceCopyright = (
     <>
       Powered by{' '}
@@ -77,15 +66,14 @@ export default function Footer() {
   return (
     <FooterWrapper>
       <Content>
-        <Copyright>{copyright}</Copyright>
+        {copyright && <Copyright>{copyright}</Copyright>}
         <Copyright pale>{SourceCopyright}</Copyright>
 
-        <Link id="link" href="https://t.me/anyswap">
-          <div className="icon">
-            <img src={require('../../assets/icon/telegram.svg')} className="off" alt="" />
-            <img src={require('../../assets/icon/telegram-white.svg')} className="on" alt="" />
-          </div>
-        </Link>
+        <SocialLinks>
+          <Link id="link" href="">
+            <BsTelegram className="icon" />
+          </Link>
+        </SocialLinks>
       </Content>
 
       <Polling />

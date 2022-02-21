@@ -2,18 +2,23 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
+import { ApplicationState } from './reducer'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
 
-export function useBlockNumber(initChainId?:any): number | undefined {
+export function useBlockNumber(initChainId?: any): number | undefined {
   const { chainId } = useActiveWeb3React()
   const useChainId = initChainId ? initChainId : chainId
   // console.log(useChainId)
-  return useSelector((state: AppState) => { 
+  return useSelector((state: AppState) => {
     // console.log(useChainId)
     // console.log(state.application.blockNumber)
     // console.log(state.application.blockNumber[useChainId ?? -1])
     return state.application.blockNumber[useChainId ?? -1]
   })
+}
+
+export function useAppState(): ApplicationState {
+  return useSelector((state: AppState) => state.application)
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
@@ -64,7 +69,6 @@ export function useToggleDelegateModal(): () => void {
 export function useToggleVoteModal(): () => void {
   return useToggleModal(ApplicationModal.VOTE)
 }
-
 
 export function useToggleNetworkModal(): () => void {
   return useToggleModal(ApplicationModal.NETWORK)

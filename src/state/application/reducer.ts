@@ -1,15 +1,26 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
-import { addPopup, PopupContent, removePopup, updateBlockNumber, ApplicationModal, setOpenModal } from './actions'
+import {
+  addPopup,
+  PopupContent,
+  removePopup,
+  updateBlockNumber,
+  ApplicationModal,
+  setOpenModal,
+  retrieveAppData,
+  AppData
+} from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
-export interface ApplicationState {
+export type ApplicationState = {
   readonly blockNumber: { readonly [chainId: number]: number }
   readonly popupList: PopupList
   readonly openModal: ApplicationModal | null
-}
+} & AppData
 
 const initialState: ApplicationState = {
+  logo: '',
+  copyrightName: '',
   blockNumber: {},
   popupList: [],
   openModal: null
@@ -17,6 +28,16 @@ const initialState: ApplicationState = {
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(retrieveAppData, (state, action) => {
+      const data = action.payload
+
+      if (data) {
+        const { logo, copyrightName } = data
+
+        if (logo) state.logo = logo
+        if (copyrightName) state.copyrightName = copyrightName
+      }
+    })
     .addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload
       if (typeof state.blockNumber[chainId] !== 'number') {

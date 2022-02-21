@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import Logo from '../../assets/logo.svg'
-import LogoDark from '../../assets/logo_white.svg'
+import assets from '../../assets'
 import IconDay from '../../assets/icon/day.svg'
 import IconNight from '../../assets/icon/night.svg'
 
@@ -10,6 +9,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
 import { useAccounts } from '../../hooks/useAccounts'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
+import { useAppState } from '../../state/application/hooks'
 // import { useETHBalances } from '../../state/wallet/hooks'
 import NavList from './NavList'
 // import Row, { RowFixed } from '../Row'
@@ -190,16 +190,16 @@ export default function Header() {
   // const { account, chainId } = useActiveWeb3React()
   // const [selectNetworkInfo] = useUserSelectChainId()
   // const { t } = useTranslation()
-
   // const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const { logo } = useAppState()
   const [isDark, toggleDarkMode] = useDarkModeManager()
-  // console.log(userEthBalance)
+
   return (
     <HeaderFrame>
       <HeaderRow>
-        <Title href="https://anyswap.exchange" target="__blank">
+        <Title href=".">
           <Icon>
-            <img src={isDark ? LogoDark : Logo} alt="logo" />
+            <img src={logo || assets.TEMP_LOGO} alt="logo" />
           </Icon>
         </Title>
         <NavListWrapper>

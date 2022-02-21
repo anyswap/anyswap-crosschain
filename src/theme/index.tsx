@@ -100,13 +100,6 @@ export function colors(darkMode: boolean): Colors {
     placeholderGray: darkMode ? '#5F5F5F' : '#E1E1E1',
     activeGray: darkMode ? '#363d5f' : '#F7F8FA',
 
-    // backgrounds
-    // bgc1: darkMode ? '#21263e' : '#FFFFFF',
-
-    // // borders
-    // bsd1: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
-
-
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
     advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
@@ -134,11 +127,7 @@ export function colors(darkMode: boolean): Colors {
     yellow2: 'rgb(3, 26, 110)',
     blue1: '#2172E5',
 
-    moreBtn: darkMode ? '#363d5f' : '#f9fafb',
-
-    // dont wanna forget these blue yet
-    // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
-    // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
+    moreBtn: darkMode ? '#363d5f' : '#f9fafb'
   }
 }
 
@@ -157,7 +146,6 @@ export function theme(darkMode: boolean): DefaultTheme {
     shadow2: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
     contentShadow: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
     tableShadow: darkMode ? '0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.4)' : '0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04)',
-
 
     // media queries
     mediaWidth: mediaWidthTemplates,
@@ -255,13 +243,17 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
+html {
+  --global-font-family: 'Manrope', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 html, input, textarea, button {
-  font-family: 'Manrope', sans-serif !important;
+  font-family: var(--global-font-family);
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Manrope', sans-serif !important;
+    font-family: var(--global-font-family);
   }
 }
 
@@ -271,10 +263,10 @@ body {
   padding: 0;
 }
 
- a {
-   color: ${colors(false).blue1}; 
-   font-family: 'Manrope', sans-serif !important;
- }
+a {
+  color: ${colors(false).blue1}; 
+  font-family: var(--global-font-family);
+}
 
 * {
   box-sizing: border-box;
@@ -291,7 +283,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
-  
 }
 `
 

@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
+import { useDispatch } from 'react-redux'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
 import Popups from '../components/Popups'
@@ -9,19 +10,17 @@ import URLWarning from '../components/Header/URLWarning'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
-
 import CrossChain from './CrossChain'
-import Bridge from './Bridge'
-
-import MergeCrossChain from './MergeCrossChain'
+// import Bridge from './Bridge'
+// import MergeCrossChain from './MergeCrossChain'
 import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
 // import CrossNFT from './CroseNFT'
 
-import ANYFarming from './Farms/ANYFarming'
-import NoanyFarming from './Farms/NoanyFarming'
+// import ANYFarming from './Farms/ANYFarming'
+// import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
 // import FarmList from './Farms/FarmsList'
 
@@ -29,13 +28,11 @@ import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 import Footer from '../components/Footer'
 import config from '../config'
-import farmlist from '../config/farmlist'
-// console.log(ANYFarming)
+import { retrieveAppData } from '../state/application/actions'
+import useAppData from '../hooks/useAppData'
+// import farmlist from '../config/farmlist'
+
 const AppWrapper = styled.div`
-  // display: flex;
-  // flex-flow: column;
-  // align-items: flex-start;
-  // overflow-x: hidden;
   width: 100%;
   height: 100%;
   width: 100vw;
@@ -47,7 +44,6 @@ const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   flex-wrap: wrap;
   width: 100%;
-  // justify-content: space-between;
   justify-content: center;
   box-shadow: ${({ theme }) => theme.contentShadow};
   background: ${({ theme }) => theme.contentBg};
@@ -106,6 +102,8 @@ const BodyWrapper = styled.div`
 // }
 
 export default function App() {
+  const dispatch = useDispatch()
+
   let initUrl = '/dashboard'
   if (config.getCurConfigInfo().isOpenRouter) {
     initUrl = '/router'
@@ -114,6 +112,13 @@ export default function App() {
   } else if (config.getCurConfigInfo().isOpenMerge) {
     initUrl = '/v2/mergeswap'
   }
+
+  const { data, isLoading } = useAppData()
+
+  useEffect(() => {
+    dispatch(retrieveAppData(data ? { ...data } : data))
+  }, [data, isLoading, dispatch])
+
   return (
     <Suspense fallback={null}>
       <AppWrapper>
@@ -130,12 +135,10 @@ export default function App() {
           <Web3ReactManager>
             <Switch>
               <Route exact strict path="/dashboard" component={() => <Dashboard />} />
+              <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
               <Route exact strict path="/pool" component={() => <PoolList />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
-              {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
-              {/* <Route exact strict path="/nft" component={() => <CrossNFT />} /> */}
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
-              <Route exact strict path="/bridge" component={() => <Bridge />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
               <Route
                 exact
@@ -143,12 +146,14 @@ export default function App() {
                 path={config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap'}
                 component={() => <CrossChain />}
               />
-              <Route
+              {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
+              {/* <Route exact strict path="/nft" component={() => <CrossNFT />} /> */}
+              {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
+              {/* <Route
                 path={['/cross-chain-router', '/cross-chain-bridge', '/mergeswap']}
                 component={() => <MergeCrossChain />}
-              />
-              <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
-              {Object.keys(farmlist).map((key, index) => {
+              /> */}
+              {/* {Object.keys(farmlist).map((key, index) => {
                 if (farmlist[key].farmtype === 'noany') {
                   return (
                     <Route
@@ -169,7 +174,7 @@ export default function App() {
                     key={index}
                   />
                 )
-              })}
+              })} */}
 
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
