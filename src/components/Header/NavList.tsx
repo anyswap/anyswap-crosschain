@@ -15,7 +15,6 @@ const HeaderLinks = styled.div`
   display: flex;
   width: 100%;
   padding: 1.5625rem 1.5625rem 0.625rem;
-  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
   ${({ theme }) => theme.mediaWidth.upToMedium`
     ${({ theme }) => theme.flexBC}
     padding: 0.5rem 1rem;
@@ -32,18 +31,14 @@ const StyledNavLink = styled(NavLink).attrs({
   outline: none;
   cursor: pointer;
   text-decoration: none;
-
   width: 100%;
   font-weight: 500;
   color: ${({ theme }) => theme.textNav};
-  font-size: 0.875rem;
-  font-family: 'Manrope';
   box-sizing: border-box;
   padding: 1rem 0.875rem;
   line-height: 1rem;
   margin: 6px 0;
   height: 48px;
-  border-radius: 0.5625rem;
   position: relative;
   white-space: nowrap;
 
@@ -64,7 +59,6 @@ const StyledNavLink = styled(NavLink).attrs({
 
   &:hover {
     color: ${({ theme }) => theme.textColor};
-    font-weight: 600;
     .icon {
       background: ${({ theme }) => theme.navBg2};
       .on {
@@ -76,23 +70,30 @@ const StyledNavLink = styled(NavLink).attrs({
     }
   }
   &.${activeClassName} {
-    color: #ffffff;
-    background: ${({ theme }) => theme.bgColorLinear};
-    border-bottom: none;
-    font-weight: 600;
-    box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
-    .icon {
-      background: ${({ theme }) => theme.navBg};
-      box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
+    border-bottom: 2px solid ${({ theme }) => theme.textColorBold};
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
+    justify-content: center;
+    border-radius: .6rem;
+
+    &.${activeClassName} {
+      color: #ffffff;
+      background: ${({ theme }) => theme.bgColorLinear};
+      border-bottom: none;
+      font-weight: 600;
+      box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
+      .icon {
+        background: ${({ theme }) => theme.navBg};
+        box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
+        .on {
+          display: block;
+        }
+        .off {
+          display: none;
+        }
+      }
+    }
+
     ${({ theme }) => theme.flexC};
     margin:0;
     .icon {
@@ -228,10 +229,6 @@ export default function NavList() {
     <>
       <HeaderLinks>
         <StyledNavLink id={`dashboard-nav-link`} to={'/dashboard'}>
-          <div className="icon">
-            <img src={require('../../assets/icon/application.svg')} className="off" alt="" />
-            <img src={require('../../assets/icon/application-purpl.svg')} className="on" alt="" />
-          </div>
           {t('dashboard')}
         </StyledNavLink>
 
@@ -271,12 +268,9 @@ export default function NavList() {
         ) : (
           ''
         )}
-        {config.getCurConfigInfo().isOpenBridge ? (
+
+        {/* {config.getCurConfigInfo().isOpenBridge ? (
           <StyledNavLink id={`bridge-nav-link`} to={'/bridge'}>
-            <div className="icon">
-              <img src={require('../../assets/icon/bridge.svg')} className="off" alt="" />
-              <img src={require('../../assets/icon/bridge-purpl.svg')} className="on" alt="" />
-            </div>
             {t('bridge')}
           </StyledNavLink>
         ) : config.getCurConfigInfo().isOpenRouter ? (
@@ -299,8 +293,8 @@ export default function NavList() {
           </StyledNavLink>
         ) : (
           ''
-        )}
-        {config.getCurConfigInfo().isOpenNFT ? (
+        )} */}
+        {/* {config.getCurConfigInfo().isOpenNFT ? (
           <StyledNavLink id={`bridge-nav-link`} to={'/nft'}>
             <div className="icon">
               <img src={require('../../assets/icon/bridge.svg')} className="off" alt="" />
@@ -310,19 +304,18 @@ export default function NavList() {
           </StyledNavLink>
         ) : (
           ''
-        )}
+        )} */}
 
         {config.getCurConfigInfo().isOpenMerge ? (
           <StyledNavLink id={`swap-nav-link`} to={'/v2/mergeswap'}>
-            <div className="icon">
-              <img src={require('../../assets/icon/router.svg')} className="off" alt="" />
-              <img src={require('../../assets/icon/network-white.svg')} className="on" alt="" />
-            </div>
-            {t('bridge')}
+            {t('router')}
           </StyledNavLink>
         ) : (
           ''
         )}
+        <StyledNavLink id={`pool-nav-link`} to={'/pool'}>
+          {t('pool')}
+        </StyledNavLink>
 
         {/* <StyledNavLink
           id={`swap-nav-link`}

@@ -8,8 +8,6 @@
 
 основной конфиг: `src/config/*`
 
-## Что использовать
-
 можно включить последнюю версиию (7) в конфиге:
 `export const INIT_VERSION = VERSION.V7`
 
@@ -18,10 +16,12 @@
 Возможно просто удалить `CrossChainNonEVM` и пропустить `CrossChainBTC`.
 В `CrossChainEVM` мы при свапе вызываем один из хуков:
 
-- `useBridgeCallback`
-- `useBridgeNativeCallback`
-- `useBridgeUnderlyingCallback`
-- `useCrossBridgeCallback`
+- `useCrossBridgeCallback`: если мы не на роутере, то используем этот хук. Определяем мы это по валюте, которая выставлена в форме. Если её тип равен `swapin` или `swapout`, тогда это не роутер. Пока этот тип виден только у **ANY** токена
+- `useBridgeCallback`: если `!isUnderlying`. На данный момент это условие верно для **ANY** токенов
+- `useBridgeNativeCallback`: если нативная валюта или её токен обертка (MATIC / WMATIC, BNB / WBNB, etc.)
+- `useBridgeUnderlyingCallback`: в остальных случаях
+
+> вывод: если это **ANY**, тогда юзаем `useBridgeCallback`. Если нативные монеты или обертки, тогда `useBridgeNativeCallback`. Для остальных токенов `useBridgeUnderlyingCallback`
 
 В каждом из них мы вызываем какой то метод у `bridgeContract` (кроме `useCrossBridgeCallback`, который использует `signSwapinData` method с [multichain-bridge](https://github.com/anyswap/multichain-bridge) репозитория), который использует определенные методы (описаны ниже) из `bridgeContract` контракта в зависимости от используемого asset'a.
 
