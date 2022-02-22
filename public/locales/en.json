@@ -339,6 +339,8 @@
   "approveTip": "Please approve {{symbol}} before you continue cross chain swap in Multichain router.",
   "txnsTip": "Please wait minutes to check the cross-chain tx status on the explorer",
   "ExceedLimit": "Exceed limit",
+  "ExceedMaxLimit": "Exceed max limit：{{amount}}{{symbol}}",
+  "ExceedMinLimit": "Exceed min limit：{{amount}}{{symbol}}",
   "nodestlr": "Dest Liquidity Insufficient",
   "destTS": "Dest Liquidity",
   "StakingTip": "Stake {{symbol}}, APR:",

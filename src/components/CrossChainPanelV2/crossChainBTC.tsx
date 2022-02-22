@@ -110,12 +110,18 @@ export default function CrossChain({
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
         return {
           state: 'Error',
-          tip: t('ExceedLimit')
+          tip: t('ExceedMinLimit', {
+            amount: destConfig.MinimumSwap,
+            symbol: selectCurrency.symbol
+          })
         }
       } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
         return {
           state: 'Error',
-          tip: t('ExceedLimit')
+          tip: t('ExceedMaxLimit', {
+            amount: destConfig.MaximumSwap,
+            symbol: selectCurrency.symbol
+          })
         }
       }
     }
