@@ -186,6 +186,7 @@ export default {
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
+    storage: '0x3cd0eff1Eb5478db0E20F94504217b285e31660f',
     swapRouterToken: '',
     swapInitToken: '0xb09bad01684f6d47fc7dc9591889cc77eaed8d22',
     multicalToken: '0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821',
