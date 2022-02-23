@@ -179,21 +179,22 @@ export default function SelectCurrencyInputPanel({
 
   const logoUrl = useMemo(() => {
     // console.log(currency)
-    if (useTokenList && currency?.address) {
-      for (const t in useTokenList) {
-        if (
-          t === currency?.address?.toLowerCase()
-          || useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
-          || useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
-        ) {
-          // console.log(useTokenList[t])
-          return useTokenList[t]?.tokenInfo?.logoUrl ?? useTokenList[t]?.logoUrl
-        }
-      }
-    }
-    return ''
+    // if (useTokenList && currency?.address) {
+    //   for (const t in useTokenList) {
+    //     if (
+    //       t === currency?.address?.toLowerCase()
+    //       || useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
+    //       || useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
+    //     ) {
+    //       // console.log(useTokenList[t])
+    //       return useTokenList[t]?.tokenInfo?.logoUrl ?? useTokenList[t]?.logoUrl
+    //     }
+    //   }
+    // }
+    // return ''
+    return currency?.logoUrl
   }, [useTokenList, currency])
-  // console.log(currency)
+  // console.log(logoUrl)
   return (
     <InputPanel id={id} className={isError ? 'error' : ''}>
       <Container hideInput={hideInput}>
