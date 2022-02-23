@@ -11,6 +11,7 @@ import TokenLogo from '../TokenLogo'
 import { TYPE } from '../../theme'
 
 import { useActiveWeb3React } from '../../hooks'
+import { useLocalToken } from '../../hooks/Tokens'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
@@ -138,8 +139,8 @@ export default function SelectCurrencyInputPanel({
       onOpenModalView(false)
     }
   }, [setModalOpen])
-
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const formatCurrency = useLocalToken(currency ?? undefined)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, formatCurrency ?? undefined)
   const selectedETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
 
   const useBalance = useMemo(() => {
