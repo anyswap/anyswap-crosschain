@@ -77,8 +77,8 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
-        const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
-        // const url = `${config.bridgeApi}/v4/tokenlistv2/${chainId}`
+        // const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
+        const url = `${config.bridgeApi}/v4/tokenlistv2/${chainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
             // console.log(tokenList)

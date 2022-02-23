@@ -57,9 +57,10 @@ export default function CommonBases({
           </Text>
         </BaseWrapper> */}
         {(tokenList ? tokenList : []).map((token: any) => {
-          const selected = selectedCurrency.address === token.address
+          const selected = selectedCurrency.key === token.key
           return (
-            <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token.address}>
+            <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token?.key}>
+              {/* <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={(token?.tokenType ? token?.tokenType : '') + token.address}> */}
               <TokenLogo symbol={token?.symbol} logoUrl={token?.logoUrl} style={{ marginRight: 8 }} />
               <Text fontWeight={500} fontSize={16}>
                 {token?.symbol}

@@ -48,21 +48,20 @@ const config: ConFig = {
       )
     ) {
       if (type) {
-        return (this.getCurChainInfo(chainId).symbolName ?? this.getCurChainInfo(chainId).name) + '(Router)'
+        // return (this.getCurChainInfo(chainId).symbolName ?? this.getCurChainInfo(chainId).name) + '(Router)'
+        return name
       } else {
-        return this.getCurChainInfo(chainId).symbol
+        // return this.getCurChainInfo(chainId).symbol
+        return value
       }
-    } 
-    // else if (value && value === 'WETH') {
-    //   return 'W' + this.getCurChainInfo(chainId).symbol
-    // } 
-    else {
+    } else {
       if (type) {
-        if (value === this.getCurChainInfo(chainId).symbol) {
-          return name + '(Bridge)'
-        } else {
-          return name
-        }
+        // if (value === this.getCurChainInfo(chainId).symbol) {
+        //   return name + '(Bridge)'
+        // } else {
+        //   return name
+        // }
+        return name
       } else {
         return value
       }

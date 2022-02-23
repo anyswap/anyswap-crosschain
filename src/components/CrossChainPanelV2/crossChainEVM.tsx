@@ -135,16 +135,12 @@ export default function CrossChain({
     console.log(selectCurrency)
     if (
       selectCurrency
-      && selectCurrency.address
-      && chainId
-      && config.getCurChainInfo(chainId)
-      && config.getCurChainInfo(chainId).nativeToken
-      && config.getCurChainInfo(chainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+      && selectCurrency?.tokenType === 'NATIVE'
     ) {
       return true
     }
     return false
-  }, [selectCurrency, chainId])
+  }, [selectCurrency])
   // console.log(isNativeToken)
 
   const isUnderlying = useMemo(() => {
@@ -680,7 +676,7 @@ export default function CrossChain({
           onMax={(value) => {
             handleMaxInput(value)
           }}
-          currency={formatCurrency ? formatCurrency : selectCurrency}
+          currency={selectCurrency}
           disableCurrencySelect={false}
           showMaxButton={true}
           isViewNetwork={true}

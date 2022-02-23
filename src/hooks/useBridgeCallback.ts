@@ -652,8 +652,8 @@ export function useBridgeNativeCallback(
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const balance = inputCurrency ? tokenBalance : ethBalance
-  // console.log(library)
+  const balance = inputCurrency && selectCurrency?.tokenType !== 'NATIVE' ? tokenBalance : ethBalance
+  // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount(typedValue, inputCurrency) : tryParseAmount1(typedValue, 18), [inputCurrency, typedValue])
@@ -674,7 +674,7 @@ export function useBridgeNativeCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     // console.log(inputAmount?.raw?.toString())
-    // console.log(balance?.raw?.toString())
+    // console.log(sufficientBalance)
     const symbol = inputCurrency?.symbol ?? selectCurrency?.symbol
     return {
       wrapType: WrapType.WRAP,
@@ -685,7 +685,7 @@ export function useBridgeNativeCallback(
                 console.log(txnsType)
                 let txReceipt:any
                 if (txnsType === 'swapin') {
-                  if (isAddress(inputToken)) {
+                  if (isAddress(inputToken) && selectCurrency?.tokenType !== 'NATIVE') {
                     if (contractETH) {
                       txReceipt = await contractETH.transfer(toAddress, `0x${inputAmount.raw.toString(16)}`)
                     } else {

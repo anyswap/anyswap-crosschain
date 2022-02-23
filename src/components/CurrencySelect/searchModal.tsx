@@ -66,7 +66,8 @@ export default function SearchModal ({
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
       list[token] = {
-        ...obj
+        ...obj,
+        key: token
       }
     }
     return list
@@ -80,13 +81,14 @@ export default function SearchModal ({
       const obj:any = useAllTokenList[token]
       arr.push(obj)
     }
+    // console.log(arr)
     return arr
   }, [useAllTokenList])
 
   const mainTokenList = useMemo(() => {
     const arr:any = []
-    for (const token in allTokens) {
-      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+    for (const token in useAllTokenList) {
+      const obj:any = useAllTokenList[token]
       if (
         (obj.symbol === 'USDT' && obj.chainId === '250')
         || (obj.symbol === 'fUSDT' && obj.chainId === '56')

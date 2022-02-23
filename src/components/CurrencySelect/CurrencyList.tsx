@@ -113,11 +113,14 @@ function CurrencyRow({
   const currencyObj = currency
   const key = currencyKey(currencyObj)
   const currencies = useLocalToken(currencyObj)
-  const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken
-  && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
-  && !CROSS_BRIDGE_LIST.includes(bridgeKey)
-   ? true : false
-  // console.log(isNativeToken)
+  // const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken
+  // && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
+  // && !CROSS_BRIDGE_LIST.includes(bridgeKey)
+  //  ? true : false
+  const isNativeToken = currencyObj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
+  // if (isNativeToken) {
+  //   console.log(currencyObj)
+  // }
   // const balance = ''
   // const ETHBalance = ''
   // const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
@@ -185,10 +188,10 @@ export default function BridgeCurrencyList({
   selectDestChainId
 }: {
   height: number
-  currencies: Currency[]
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
-  otherCurrency?: Currency | null
+  currencies: any[]
+  selectedCurrency?: any | null
+  onCurrencySelect: (currency: any) => void
+  otherCurrency?: any | null
   // fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
   allBalances?: any
@@ -203,10 +206,11 @@ export default function BridgeCurrencyList({
     const arr = []
     const ethNode:any = []
     for (const obj of itemData) {
-      const isNativeToken = 
-        config.getCurChainInfo(chainId)?.nativeToken
-        && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken?.toLowerCase()
-        && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
+      // const isNativeToken = 
+      //   config.getCurChainInfo(chainId)?.nativeToken
+      //   && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken?.toLowerCase()
+      //   && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
+      const isNativeToken = obj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
       if (
         isNativeToken
         || obj?.address === config.getCurChainInfo(chainId)?.symbol
@@ -226,10 +230,10 @@ export default function BridgeCurrencyList({
       <ListBox style={{height: height}}>
         {
           htmlNodes.map((item, index) => {
-            const currency: Currency = item
+            const currency: any = item
             // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
             const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-            const isSelected = Boolean(selectedCurrency?.address?.toLowerCase() === currency?.address?.toLowerCase())
+            const isSelected = Boolean(selectedCurrency?.key?.toLowerCase() === currency?.key?.toLowerCase())
             const handleSelect = () => onCurrencySelect(currency)
             return (
               <CurrencyRow
