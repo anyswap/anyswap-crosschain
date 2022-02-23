@@ -1,5 +1,5 @@
 import { Currency } from 'anyswap-sdk'
-import React, { useState, useContext, useCallback, useEffect, useMemo} from 'react'
+import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -13,8 +13,8 @@ import { TYPE } from '../../theme'
 import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
-import {CROSS_BRIDGE_LIST} from '../../config/constant'
-import {thousandBit} from '../../utils/tools/tools'
+import { CROSS_BRIDGE_LIST } from '../../config/constant'
+import { thousandBit } from '../../utils/tools/tools'
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 // import { useBridgeTokenList } from '../../state/lists/hooks'
 
@@ -32,23 +32,21 @@ import {
   InputPanel,
   Container,
   StyledTokenName,
-  CurrencySelectBox,
+  CurrencySelectBox
   // HideSmallBox
 } from './styleds'
 
 import SearchModal from './searchModal'
 import { isAddress } from '../../utils'
 
-const HeadterRightBox = styled.div`
-
-`
+const HeadterRightBox = styled.div``
 
 interface SelectCurrencyInputPanelProps {
-  value: string  // token amount
+  value: string // token amount
   onUserInput: (value: string) => void // user input amount
   showMaxButton: boolean // is view max function
   onMax?: (value: any) => void // input max token amount
-  label?: string 
+  label?: string
   onCurrencySelect?: (currency: Currency) => void // user select token
   // currency?: Currency | null
   currency?: any // select token
@@ -60,7 +58,7 @@ interface SelectCurrencyInputPanelProps {
   otherCurrency?: Currency | null //
   id: string
   showCommonBases?: boolean
-  customBalanceText?: string 
+  customBalanceText?: string
   inputType?: any // input type, object type, params:{swapType: 'withdraw' | 'deposit', ...{custom params}}
   // onlyUnderlying?: boolean
   isViewModal?: boolean // 是否显示选择token弹框
@@ -103,7 +101,7 @@ export default function SelectCurrencyInputPanel({
   isViewNetwork,
   isError,
   isNativeToken,
-  isViewMode, 
+  isViewMode,
   modeConent,
   onChangeMode,
   allTokens = {},
@@ -112,7 +110,7 @@ export default function SelectCurrencyInputPanel({
   bridgeKey,
   allBalances,
   showETH,
-  isRouter,
+  isRouter
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -144,7 +142,7 @@ export default function SelectCurrencyInputPanel({
 
   const useBalance = useMemo(() => {
     // console.log(hideBalance)
-    // console.log(customBalance)
+    // console.log('customBalance', customBalance)
     if (customBalance) {
       return customBalance
     } else if (selectedCurrencyBalance && (!isNativeToken || isRouter === false)) {
@@ -159,7 +157,16 @@ export default function SelectCurrencyInputPanel({
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect, isRouter])
+  }, [
+    selectedCurrencyBalance,
+    isNativeToken,
+    selectedETHBalance,
+    customBalance,
+    currency,
+    inputType,
+    disableChainSelect,
+    isRouter
+  ])
 
   const handleMax = useCallback(() => {
     if (onMax) {
@@ -182,9 +189,9 @@ export default function SelectCurrencyInputPanel({
     if (useTokenList && currency?.address) {
       for (const t in useTokenList) {
         if (
-          t === currency?.address?.toLowerCase()
-          || useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
-          || useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
+          t === currency?.address?.toLowerCase() ||
+          useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase() ||
+          useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
         ) {
           // console.log(useTokenList[t])
           return useTokenList[t]?.tokenInfo?.logoUrl ?? useTokenList[t]?.logoUrl
@@ -203,9 +210,8 @@ export default function SelectCurrencyInputPanel({
               <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
                 {label}
               </TYPE.body>
-              
-              <HeadterRightBox>
 
+              <HeadterRightBox>
                 {isViewMode && onChangeMode ? (
                   <TYPE.body
                     onClick={() => {
@@ -219,8 +225,12 @@ export default function SelectCurrencyInputPanel({
                     fontWeight={500}
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
-                  >{modeConent.txt}</TYPE.body>
-                ) : ''
+                  >
+                    {modeConent.txt}
+                  </TYPE.body>
+                ) : (
+                  ''
+                )
                 // (
                 //   <TYPE.body
                 //     color={theme.text2}
@@ -232,6 +242,7 @@ export default function SelectCurrencyInputPanel({
                 //   </TYPE.body>
                 // )
                 }
+                {/* {useBalance} - {account} - {hideBalance ? 'hideBalance' : 'showBalance'} - {currency} */}
                 {account && showMaxButton && isViewNetwork ? (
                   <>
                     <TYPE.body
@@ -242,7 +253,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
+                        ? (customBalanceText ?? t('balanceTxt') + ': ') + thousandBit(useBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </>
@@ -255,7 +266,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance && account
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
+                        ? (customBalanceText ?? t('balanceTxt') + ': ') + thousandBit(useBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                     {/* <HideSmallBox>
@@ -280,7 +291,6 @@ export default function SelectCurrencyInputPanel({
             </>
           )}
           <CurrencySelectBox>
-
             <CurrencySelect
               selected={!!currency}
               className="open-currency-select-button"
@@ -296,21 +306,22 @@ export default function SelectCurrencyInputPanel({
                 </TokenLogoBox>
                 <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                   <h3>
-                    {
-                      (
-                        currency && currency.symbol && currency.symbol.length > 20
-                          ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                          : (
-                            CROSS_BRIDGE_LIST.includes(bridgeKey) ? 
-                            currency?.symbol
-                            :
-                            isRouter === false ? currency?.symbol : config.getBaseCoin(currency?.symbol, useChainId)
-                          )
-                      ) || t('selectToken')
-                    }
+                    {(currency && currency.symbol && currency.symbol.length > 20
+                      ? currency.symbol.slice(0, 4) +
+                        '...' +
+                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                      : CROSS_BRIDGE_LIST.includes(bridgeKey)
+                      ? currency?.symbol
+                      : isRouter === false
+                      ? currency?.symbol
+                      : config.getBaseCoin(currency?.symbol, useChainId)) || t('selectToken')}
                   </h3>
                   <p>
-                  {currency && currency.name && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? (isRouter === false ? currency.name : config.getBaseCoin(currency.symbol, useChainId, 1, currency.name)) : currency?.name}
+                    {currency && currency.name && !CROSS_BRIDGE_LIST.includes(bridgeKey)
+                      ? isRouter === false
+                        ? currency.name
+                        : config.getBaseCoin(currency.symbol, useChainId, 1, currency.name)
+                      : currency?.name}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (
@@ -320,48 +331,51 @@ export default function SelectCurrencyInputPanel({
                 )}
               </Aligner>
             </CurrencySelect>
-            {
-              isViewNetwork ? (
-                <CurrencySelect
-                  selected={true}
-                  onClick={() => {toggleNetworkModal()}}
-                  className="open-currency-select-button"
-                >
-                  <Aligner>
-                    <TokenLogoBox>
-                      <TokenLogo symbol={config.getCurChainInfo(useChainId)?.networkLogo ?? config.getCurChainInfo(useChainId)?.symbol} size={'24px'} />
-                    </TokenLogoBox>
-                    <StyledTokenName className="token-symbol-container">
-                      {config.getCurChainInfo(useChainId).networkName}
-                    </StyledTokenName>
-                    {!disableCurrencySelect && !!currency && (
-                      <StyledDropDownBox>
-                        <StyledDropDown selected={!!currency} />
-                      </StyledDropDownBox>
-                    )}
-                  </Aligner>
-                </CurrencySelect>
-              ) : (
-                <ErrorSpanBox>
-                  {
-                    !hideBalance && !!currency ? (
-                      <ErrorSpan onClick={handleMax}>
-                        <ExtraText>
-                          <h5>{t('balance')}</h5>
-                          <p>
-                            {!hideBalance && !!currency && useBalance
-                              ? (customBalanceText ?? '') + thousandBit(useBalance, 2)
-                              : '-'}{' '}
-                          </p>
-                        </ExtraText>
-                      </ErrorSpan>
-                    ) : (
-                      t('balanceTxt') + ': ' + '-'
-                    )
-                  }
-                </ErrorSpanBox>
-              )
-            }
+            {isViewNetwork ? (
+              <CurrencySelect
+                selected={true}
+                onClick={() => {
+                  toggleNetworkModal()
+                }}
+                className="open-currency-select-button"
+              >
+                <Aligner>
+                  <TokenLogoBox>
+                    <TokenLogo
+                      symbol={
+                        config.getCurChainInfo(useChainId)?.networkLogo ?? config.getCurChainInfo(useChainId)?.symbol
+                      }
+                      size={'24px'}
+                    />
+                  </TokenLogoBox>
+                  <StyledTokenName className="token-symbol-container">
+                    {config.getCurChainInfo(useChainId).networkName}
+                  </StyledTokenName>
+                  {!disableCurrencySelect && !!currency && (
+                    <StyledDropDownBox>
+                      <StyledDropDown selected={!!currency} />
+                    </StyledDropDownBox>
+                  )}
+                </Aligner>
+              </CurrencySelect>
+            ) : (
+              <ErrorSpanBox>
+                {!hideBalance && !!currency ? (
+                  <ErrorSpan onClick={handleMax}>
+                    <ExtraText>
+                      <h5>{t('balance')}</h5>
+                      <p>
+                        {!hideBalance && !!currency && useBalance
+                          ? (customBalanceText ?? '') + thousandBit(useBalance, 2)
+                          : '-'}{' '}
+                      </p>
+                    </ExtraText>
+                  </ErrorSpan>
+                ) : (
+                  t('balanceTxt') + ': ' + '-'
+                )}
+              </ErrorSpanBox>
+            )}
           </CurrencySelectBox>
         </InputRow>
       </Container>

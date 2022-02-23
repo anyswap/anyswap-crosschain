@@ -10,7 +10,7 @@ import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
-import {useActiveReact} from '../../hooks/useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
@@ -125,7 +125,7 @@ function Web3StatusInner() {
   const { t } = useTranslation()
   const { connector, error } = useWeb3React()
   const { connect } = useWallet()
-  const {account, chainId} = useActiveReact()
+  const { account, chainId } = useActiveReact()
 
   const { ENSName } = useENSName(account && !isNaN(chainId) ? account : undefined)
   // console.log(ENSName)
@@ -146,16 +146,18 @@ function Web3StatusInner() {
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>{pending?.length} {t('Pending')}</Text> <Loader stroke="white" />
+            <Text>
+              {pending?.length} {t('Pending')}
+            </Text>{' '}
+            <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <>{
-            isMobile ? (
+          <>
+            {isMobile ? (
               <Text>{ENSName || shortenAddress1(account, 2)}</Text>
             ) : (
               <Text>{ENSName || shortenAddress1(account)}</Text>
-            )
-          }
+            )}
           </>
         )}
         {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}
@@ -171,22 +173,27 @@ function Web3StatusInner() {
   } else {
     if (chainId === 'TERRA') {
       return (
-        <Web3StatusConnect id="connect-wallet"  onClick={() => {
-          // console.log(connect)
-          if (connect) {
-            try {
-              connect(ConnectType.CHROME_EXTENSION)
-            } catch (error) {
+        <Web3StatusConnect
+          id="connect-wallet"
+          onClick={() => {
+            // console.log(connect)
+            if (connect) {
+              try {
+                connect(ConnectType.CHROME_EXTENSION)
+              } catch (error) {
+                alert('Please install Terra Station!')
+              }
+            } else {
               alert('Please install Terra Station!')
             }
-          } else {
-            alert('Please install Terra Station!')
-          }
-        }} faded={!account}>
+          }}
+          faded={!account}
+        >
           <Text>{t('ConnectToWallet')}</Text>
         </Web3StatusConnect>
       )
     }
+
     return (
       <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <Text>{t('ConnectToWallet')}</Text>

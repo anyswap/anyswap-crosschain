@@ -34,6 +34,7 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
 import config from '../config'
 import farmlist from '../config/farmlist'
+
 // console.log(ANYFarming)
 const AppWrapper = styled.div`
   // display: flex;
@@ -169,28 +170,37 @@ export default function App() {
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
-  
               <Route
-                path={[
-                  '/router'
-                ]}
-                component={() => <MergeCrossChainV2 />}
+                exact
+                strict
+                path={config.getCurConfigInfo().isOpenBridge ? '/v1/router' : '/swap'}
+                component={() => <CrossChain />}
               />
-              {
-                Object.keys(farmlist).map((key, index) => {
-                  if (farmlist[key].farmtype === 'noany') {
-                    return (
-                      <Route exact strict path={'/' + farmlist[key].url} component={() => <NoanyFarming farmkey={key} />} key={index} />
-                    )
-                  }
-                  return (
-                    <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
-                  )
-                })
-              }
 
-              
+              <Route path={['/router']} component={() => <MergeCrossChainV2 />} />
+              {Object.keys(farmlist).map((key, index) => {
+                if (farmlist[key].farmtype === 'noany') {
+                  return (
+                    <Route
+                      exact
+                      strict
+                      path={'/' + farmlist[key].url}
+                      component={() => <NoanyFarming farmkey={key} />}
+                      key={index}
+                    />
+                  )
+                }
+                return (
+                  <Route
+                    exact
+                    strict
+                    path={'/' + farmlist[key].url}
+                    component={() => <ANYFarming farmkey={key} />}
+                    key={index}
+                  />
+                )
+              })}
+
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>

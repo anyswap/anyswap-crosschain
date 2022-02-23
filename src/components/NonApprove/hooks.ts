@@ -1,13 +1,13 @@
-import { useEffect, useCallback,useState, useMemo } from "react"
+import { useEffect, useCallback, useState, useMemo } from 'react'
 import { JSBI } from 'anyswap-sdk'
-import {useMulticall} from '../../utils/tools/multicall'
+import { useMulticall } from '../../utils/tools/multicall'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import {useActiveWeb3React} from '../../hooks'
-import {nonApproveList} from './nonApproveList'
-import {useNonApproveCallback} from '../../hooks/useApproveCallback'
+import { useActiveWeb3React } from '../../hooks'
+import { nonApproveList } from './nonApproveList'
+import { useNonApproveCallback } from '../../hooks/useApproveCallback'
 
-export function useAllApproved () {
-  const {account, chainId} = useActiveWeb3React()
+export function useAllApproved() {
+  const { account, chainId } = useActiveWeb3React()
   const [approveList, setApproveList] = useState<any>([])
   const [approvedList, setApprovedList] = useState<any>([])
   const [loading, setLoading] = useState<any>(true)
@@ -25,11 +25,10 @@ export function useAllApproved () {
       symbol: undefined
     }
   }, [chainId])
-  const {isSetApprove} = useNonApproveCallback(useTokenInfo.token, useTokenInfo.anyToken, useTokenInfo.symbol)
+  const { isSetApprove } = useNonApproveCallback(useTokenInfo.token, useTokenInfo.anyToken, useTokenInfo.symbol)
   const getAllApprove = useCallback(() => {
     setLoading(true)
     if (account && chainId) {
-      
       const framekey = 'allowance'
       const arr = []
       for (const c in nonApproveList) {
@@ -44,13 +43,13 @@ export function useAllApproved () {
         arr.push(useMulticall(c, arr1))
       }
       Promise.all(arr).then(res => {
-        // console.log(res)
+        console.log(res)
         let i = 0
         const arr = []
         const arr1 = []
         for (const c in nonApproveList) {
           const list = res[i]
-          i ++
+          i++
           for (let j = 0, len = list.length; j < len; j++) {
             const value = list[j]
             const a = JSBI.greaterThan(JSBI.BigInt(value), JSBI.BigInt(0))
@@ -66,8 +65,8 @@ export function useAllApproved () {
             arr.push(obj)
           }
         }
-        // console.log(arr)
-        // console.log(arr1)
+        console.log(arr)
+        console.log(arr1)
         setApproveList(arr1)
         setApprovedList(arr)
         setLoading(false)
@@ -80,5 +79,5 @@ export function useAllApproved () {
   useEffect(() => {
     getAllApprove()
   }, [account, isSetApprove, chainId])
-  return {approveList, approvedList, loading}
+  return { approveList, approvedList, loading }
 }

@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-
-import {isAddress} from 'multichain-bridge'
+import { JSBI, Fraction } from 'anyswap-sdk'
+import { isAddress } from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
-import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
+import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-import {useActiveReact} from '../../hooks/useActiveReact'
-import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
+import { useActiveReact } from '../../hooks/useActiveReact'
+import { useTerraCrossBridgeCallback } from '../../hooks/useBridgeCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -29,8 +29,8 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 
 import config from '../../config'
-import {getParams} from '../../config/tools/getUrlParams'
-import {selectNetwork} from '../../config/tools/methods'
+import { getParams } from '../../config/tools/getUrlParams'
+import { selectNetwork } from '../../config/tools/methods'
 
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -44,34 +44,25 @@ import {
   ConfirmContent,
   // TxnsInfoText,
   ConfirmText,
-  FlexEC,
+  FlexEC
 } from '../../pages/styled'
 
-import {
-  outputValue,
-  useInitSelectCurrency,
-  useDestChainid,
-  useDestCurrency
-} from './hooks'
+import { outputValue, useInitSelectCurrency, useDestChainid, useDestCurrency } from './hooks'
+
+import { useCurrentNasBalance } from '../../hooks/nebulas'
 
 // let intervalFN:any = ''
 
-export default function CrossChain({
-  bridgeKey
-}: {
-  bridgeKey: any
-}) {
-  
+export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
-  
+
   const { connect } = useWallet()
   // const connectedWallet = useConnectedWallet()
-  
-  const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
+
+  const allTokensList: any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
-  
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
@@ -81,7 +72,7 @@ export default function CrossChain({
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
-  
+
   // const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -89,7 +80,7 @@ export default function CrossChain({
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  let initBridgeToken: any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
@@ -99,7 +90,7 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
-  
+
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -113,11 +104,11 @@ export default function CrossChain({
     }
     return false
   }, [destConfig])
-  
-  function onDelay () {
+
+  function onDelay() {
     setDelayAction(true)
   }
-  function onClear (type?:any) {
+  function onClear(type?: any) {
     setDelayAction(false)
     setModalTipOpen(false)
     if (!type) {
@@ -125,16 +116,21 @@ export default function CrossChain({
     }
   }
 
-  function changeNetwork (chainID:any) {
+  function changeNetwork(chainID: any) {
     selectNetwork(chainID).then((res: any) => {
       console.log(res)
       if (res.msg === 'Error') {
-        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+        alert(t('changeMetamaskNetwork', { label: config.getCurChainInfo(chainID).networkName }))
       }
     })
   }
 
-  const { balance: terraBalance, wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
+  const {
+    balance: terraBalance,
+    wrapType: wrapTerraType,
+    execute: onTerraWrap,
+    inputError: wrapInputErrorTerra
+  } = useTerraCrossBridgeCallback(
     selectCurrency,
     destConfig.DepositAddress,
     inputBridgeValue,
@@ -146,15 +142,28 @@ export default function CrossChain({
     chainId
   )
 
-  const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
+  const { balance: nasBalance } = useCurrentNasBalance()
+
+  const { outputBridgeValue, fee } = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
     // console.log(terraBalance)
     if (terraBalance) {
       return terraBalance?.toSignificant(3)
     }
+    if (chainId === 'NEBULAS') {
+      if (nasBalance) {
+        const nasBalanceFormat = new Fraction(
+          JSBI.BigInt(nasBalance),
+          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
+        )?.toSignificant(3)
+        // console.log('nasBalance', nasBalanceFormat)
+        return nasBalanceFormat
+      }
+    }
+
     return ''
-  }, [terraBalance])
+  }, [terraBalance, nasBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra) {
@@ -214,7 +223,7 @@ export default function CrossChain({
   }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig])
 
   const errorTip = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
+    const isAddr = isAddress(recipient, selectChain)
     if (!account) {
       return undefined
     } else if (isInputError) {
@@ -245,12 +254,12 @@ export default function CrossChain({
     return t('swap')
   }, [errorTip, t, wrapTerraType])
 
-  const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
+  const { initCurrency } = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
   useEffect(() => {
     setSelectCurrency(initCurrency)
   }, [initCurrency])
-  
+
   useEffect(() => {
     if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
@@ -259,7 +268,7 @@ export default function CrossChain({
     }
   }, [evmAccount, swapType, selectChain, destConfig])
 
-  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
+  const { initChainId, initChainList } = useDestChainid(selectCurrency, selectChain, chainId)
 
   useEffect(() => {
     // console.log(selectCurrency)
@@ -270,7 +279,7 @@ export default function CrossChain({
     setSelectChainList(initChainList)
   }, [initChainList])
 
-  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectChain)
+  const { initDestCurrency, initDestCurrencyList } = useDestCurrency(selectCurrency, selectChain)
 
   useEffect(() => {
     setSelectDestCurrency(initDestCurrency)
@@ -280,13 +289,16 @@ export default function CrossChain({
     setSelectDestCurrencyList(initDestCurrencyList)
   }, [initDestCurrencyList])
 
-  const handleMaxInput = useCallback((value) => {
-    if (value) {
-      setInputBridgeValue(value)
-    } else {
-      setInputBridgeValue('')
-    }
-  }, [setInputBridgeValue])
+  const handleMaxInput = useCallback(
+    value => {
+      if (value) {
+        setInputBridgeValue(value)
+      } else {
+        setInputBridgeValue('')
+      }
+    },
+    [setInputBridgeValue]
+  )
 
   return (
     <>
@@ -312,23 +324,19 @@ export default function CrossChain({
             selectCurrency={selectCurrency}
             fee={fee}
           />
-          {
-            isUnderlying && isDestUnderlying ? (
-              <>
-                <ConfirmText>
-                  {
-                    t('swapTip', {
-                      symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                      symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
-                      chainName: config.getCurChainInfo(selectChain).name
-                    })
-                  }
-                </ConfirmText>
-              </>
-            ) : (
-              <></>
-            )
-          }
+          {isUnderlying && isDestUnderlying ? (
+            <>
+              <ConfirmText>
+                {t('swapTip', {
+                  symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
+                  symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                  chainName: config.getCurChainInfo(selectChain).name
+                })}
+              </ConfirmText>
+            </>
+          ) : (
+            <></>
+          )}
           {/* <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
           {
             isUnderlying && isDestUnderlying ? (
@@ -345,44 +353,46 @@ export default function CrossChain({
           } */}
           <BottomGrouping>
             {!account ? (
-                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                // <ButtonPrimary disabled={delayAction} onClick={() => {
+              <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+            ) : (
+              <ButtonPrimary
+                disabled={isCrossBridge || delayAction}
+                onClick={() => {
+                  // <ButtonPrimary disabled={delayAction} onClick={() => {
                   onDelay()
-                  if (onTerraWrap) onTerraWrap().then(() => {
-                    onClear()
-                  })
-                }}>
-                  {t('Confirm')}
-                </ButtonPrimary>
-              )
-            }
+                  if (onTerraWrap)
+                    onTerraWrap().then(() => {
+                      onClear()
+                    })
+                }}
+              >
+                {t('Confirm')}
+              </ButtonPrimary>
+            )}
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>
 
       <AutoColumn gap={'sm'}>
-
         <SelectCurrencyInputPanel
           label={t('From')}
           value={inputBridgeValue}
-          onUserInput={(value) => {
+          onUserInput={value => {
             // console.log(value)
             setInputBridgeValue(value)
           }}
-          onCurrencySelect={(inputCurrency) => {
+          onCurrencySelect={inputCurrency => {
             // console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
           }}
-          onMax={(value) => {
+          onMax={value => {
             handleMaxInput(value)
           }}
           currency={selectCurrency}
           disableCurrencySelect={false}
           showMaxButton={true}
           isViewNetwork={true}
-          onOpenModalView={(value) => {
+          onOpenModalView={value => {
             // console.log(value)
             setModalOpen(value)
           }}
@@ -395,15 +405,21 @@ export default function CrossChain({
           customBalance={useBalance}
         />
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
-          <ArrowWrapper clickable={false} style={{cursor:'pointer'}} onClick={() => {
-            // toggleNetworkModal()
-            changeNetwork(selectChain)
-          }}>
+          <ArrowWrapper
+            clickable={false}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              // toggleNetworkModal()
+              changeNetwork(selectChain)
+            }}
+          >
             <ArrowDown size="16" color={theme.text2} />
           </ArrowWrapper>
-          {
-            destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
-              <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
+          {destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            <ArrowWrapper
+              clickable={false}
+              style={{ cursor: 'pointer', position: 'absolute', right: 0 }}
+              onClick={() => {
                 if (swapType === 'swap') {
                   setSwapType('send')
                 } else {
@@ -412,35 +428,37 @@ export default function CrossChain({
                     setRecipient(evmAccount)
                   }
                 }
-              }}>
-                {
-                  swapType === 'swap' ? (
-                    <FlexEC>
-                      <Plus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
-                    </FlexEC>
-                  ) : (
-                    <FlexEC>
-                      <Minus size="16" color={theme.text2} /> <span style={{fontSize: '12px', lineHeight:'12px'}}>{t('sendto')}</span>
-                    </FlexEC>
-                  )
-                }
-              </ArrowWrapper>
-            ) : ''
-          }
+              }}
+            >
+              {swapType === 'swap' ? (
+                <FlexEC>
+                  <Plus size="16" color={theme.text2} />{' '}
+                  <span style={{ fontSize: '12px', lineHeight: '12px' }}>{t('sendto')}</span>
+                </FlexEC>
+              ) : (
+                <FlexEC>
+                  <Minus size="16" color={theme.text2} />{' '}
+                  <span style={{ fontSize: '12px', lineHeight: '12px' }}>{t('sendto')}</span>
+                </FlexEC>
+              )}
+            </ArrowWrapper>
+          ) : (
+            ''
+          )}
         </AutoRow>
 
         <SelectChainIdInputPanel
           label={t('to')}
           value={outputBridgeValue.toString()}
-          onUserInput={(value) => {
+          onUserInput={value => {
             setInputBridgeValue(value)
           }}
-          onChainSelect={(chainID) => {
+          onChainSelect={chainID => {
             setSelectChain(chainID)
           }}
           selectChainId={selectChain}
           id="selectChainID"
-          onCurrencySelect={(inputCurrency) => {
+          onCurrencySelect={inputCurrency => {
             console.log(inputCurrency)
             setSelectDestCurrency(inputCurrency)
           }}
@@ -451,50 +469,60 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        {
-          swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} selectChainId={selectChain} />
-          ) : ''
-        }
+        {swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
+          <AddressInputPanel
+            id="recipient"
+            value={recipient}
+            label={t('Recipient')}
+            labelTip={'( ' + t('receiveTip') + ' )'}
+            onChange={setRecipient}
+            selectChainId={selectChain}
+          />
+        ) : (
+          ''
+        )}
       </AutoColumn>
 
-      <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+      <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} />
       <ErrorTip errorTip={errorTip} />
-      {
-        config.isStopSystem ? (
-          <BottomGrouping>
-            <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
-          </BottomGrouping>
-        ) : (
-          <BottomGrouping>
-            {!account ? (
-                <>
-
-                  <ButtonLight onClick={() => {
-                    if (connect) {
-                      try {
-                        connect(ConnectType.CHROME_EXTENSION)
-                        // setModalView(true)
-                      } catch (error) {
-                        alert('Please install Terra Station!')
-                      }
-                    } else {
+      {config.isStopSystem ? (
+        <BottomGrouping>
+          <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
+        </BottomGrouping>
+      ) : (
+        <BottomGrouping>
+          {!account ? (
+            <>
+              <ButtonLight
+                onClick={() => {
+                  if (connect) {
+                    try {
+                      connect(ConnectType.CHROME_EXTENSION)
+                      // setModalView(true)
+                    } catch (error) {
                       alert('Please install Terra Station!')
                     }
-                  }}>{t('ConnectWallet')}</ButtonLight>
-                  {/* <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight> */}
-                </>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  setModalTipOpen(true)
-                }}>
-                  {btnTxt}
-                </ButtonPrimary>
-              )
-            }
-          </BottomGrouping>
-        )
-      }
+                  } else {
+                    alert('Please install Terra Station!')
+                  }
+                }}
+              >
+                {t('ConnectWallet')}
+              </ButtonLight>
+              {/* <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight> */}
+            </>
+          ) : (
+            <ButtonPrimary
+              disabled={isCrossBridge || delayAction}
+              onClick={() => {
+                setModalTipOpen(true)
+              }}
+            >
+              {btnTxt}
+            </ButtonPrimary>
+          )}
+        </BottomGrouping>
+      )}
     </>
   )
 }
