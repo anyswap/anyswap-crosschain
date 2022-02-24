@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { AppData } from '../state/application/actions'
 import { useStorageContract } from './useContract'
+import config from '../config'
+import { ZERO_ADDRESS } from '../constants'
 
 const parseInfo = (info: string) => {
   const parsed = {
@@ -25,9 +27,9 @@ export default function useAppData(): {
   error: Error | null
 } {
   const [data, setData] = useState<AppData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const storage = useStorageContract(4)
+  const storage = useStorageContract(config.STORAGE_CHAIN_ID)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,19 +40,15 @@ export default function useAppData(): {
 
       try {
         const domain = window.location.hostname || document.location.host
-        const { owner, info } = await storage.methods.getData(domain).call()
-
-        console.group('%c Log', 'color: orange; font-size: 14px')
-        console.log('owner: ', owner)
-        console.log('info: ', info)
-        console.groupEnd()
+        const data = await storage.methods.getData(domain).call()
+        const { owner, info } = data
 
         setData({
           ...parseInfo(info || '{}'),
-          owner
+          owner: owner === ZERO_ADDRESS ? '' : owner
         })
       } catch (error) {
-        console.group('%c App data', 'color: red;')
+        console.group('%c app data', 'color: red;')
         console.error(error)
         console.groupEnd()
         setError(error)

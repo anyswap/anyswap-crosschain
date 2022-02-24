@@ -5,7 +5,7 @@ import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID, ETH_TEST1_CHAINID} from './eth'
 import fsn, {FSN_MAIN_CHAINID} from './fsn'
 import ftm, {FTM_MAIN_CHAINID} from './ftm'
 import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
-import matic, {MATIC_MAIN_CHAINID} from './matic'
+import matic, {MATIC_MAIN_CHAINID, MATIC_TEST_CHAINID} from './matic'
 import xdai, {XDAI_MAIN_CHAINID} from './xdai'
 import kcc, {KCC_MAIN_CHAINID} from './kcc'
 import okt, {OKT_MAIN_CHAINID} from './okt'
@@ -104,6 +104,8 @@ const allChainList = [
   ASTAR_MAIN_CHAINID,
   VLX_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
+  BNB_TEST_CHAINID,
+  MATIC_TEST_CHAINID,
 ]
 
 const useChain:any = {

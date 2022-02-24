@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import { formatSwapTokenList, getLocalRPC } from './methods'
+import { tokenListUrl, VERSION, USE_VERSION } from '../constant'
 // console.log(process.env)
 // alert(process.env.NODE_ENV)
 
@@ -19,7 +19,10 @@ const useNode = 'https://bsc-dataseed3.ninicoin.io/'
 // const useNode = 'https://bsc-dataseed4.binance.org/'
 
 export const BNB_MAIN_CHAINID = 56
-export const BNB_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(BNB_MAIN_CHAINID, useNode) : getLocalRPC(BNB_MAIN_CHAINID, 'https://bscnode1.anyswap.exchange')
+export const BNB_MAINNET =
+  process.env.NODE_ENV === 'development'
+    ? getLocalRPC(BNB_MAIN_CHAINID, useNode)
+    : getLocalRPC(BNB_MAIN_CHAINID, 'https://bscnode1.anyswap.exchange')
 export const BNB_MAIN_EXPLORER = 'https://bscscan.com'
 // console.log(BNB_MAINNET)
 export const BNB_TEST_CHAINID = 97
@@ -28,30 +31,28 @@ export const BNB_TEST_EXPLORER = 'https://testnet.bscscan.com'
 
 export const tokenList = [
   {
-    "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg Ethereum",
-    "symbol": "ETH"
+    address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+    chainId: BNB_MAIN_CHAINID,
+    decimals: 18,
+    name: 'Binance-Peg Ethereum',
+    symbol: 'ETH'
   },
   {
-    "address": "0x4338665cbb7b2485a8855a139b75d5e34ab0db94",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg Litecoin",
-    "symbol": "LTC"
+    address: '0x4338665cbb7b2485a8855a139b75d5e34ab0db94',
+    chainId: BNB_MAIN_CHAINID,
+    decimals: 18,
+    name: 'Binance-Peg Litecoin',
+    symbol: 'LTC'
   },
   {
-    "address": "0x55d398326f99059ff775485246999027b3197955",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg BSC-USD",
-    "symbol": "USDT"
-  },
+    address: '0x55d398326f99059ff775485246999027b3197955',
+    chainId: BNB_MAIN_CHAINID,
+    decimals: 18,
+    name: 'Binance-Peg BSC-USD',
+    symbol: 'USDT'
+  }
 ]
-export const testTokenList = [
-
-]
+export const testTokenList = []
 
 const symbol = 'BNB'
 
@@ -101,7 +102,7 @@ const bridgeToken = {
     bridgeInitChain: '137',
     nativeToken: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     crossBridgeInitToken: 'BNB'
-  },
+  }
 }
 
 export default {
@@ -129,7 +130,7 @@ export default {
       'https://bsc-dataseed1.binance.org/',
       'https://bsc-dataseed2.binance.org/',
       'https://bsc-dataseed3.binance.org/',
-      'https://bsc-dataseed4.binance.org/',
+      'https://bsc-dataseed4.binance.org/'
     ],
     chainID: BNB_MAIN_CHAINID,
     lookHash: BNB_MAIN_EXPLORER + '/tx/',
@@ -149,6 +150,7 @@ export default {
     tokenListUrl: tokenListUrl + BNB_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
+    storage: '0xC79616C2cC4F5342fAFB013c249b98b926BB95C8',
     swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
     swapInitToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5',
     multicalToken: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
@@ -156,9 +158,7 @@ export default {
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: BNB_TESTNET,
-    nodeRpcList: [
-      BNB_TESTNET
-    ],
+    nodeRpcList: [BNB_TESTNET],
     chainID: BNB_TEST_CHAINID,
     lookHash: BNB_TEST_EXPLORER + '/tx/',
     lookAddr: BNB_TEST_EXPLORER + '/address/',

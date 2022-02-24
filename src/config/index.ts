@@ -1,6 +1,6 @@
 import { chainInfo } from './chainConfig'
 import { ENV_NODE_CONFIG, INIT_NODE, USE_VERSION, bridgeApi, env, version, controlConfig } from './constant'
-
+import { BNB_TEST_CHAINID } from './chainConfig/bsc'
 import { getNetwork, getInitBridgeChain } from './tools/getUrlParams'
 
 interface ConFig {
@@ -20,7 +20,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,
-  STORAGE_CHAIN_ID: 4,
+  STORAGE_CHAIN_ID: BNB_TEST_CHAINID,
   oldAppName: 'Anyswap V1',
   appName: 'Cross-chain',
   baseCurrency: 'ANY',
