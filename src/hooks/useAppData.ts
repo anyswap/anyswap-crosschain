@@ -7,15 +7,17 @@ import { ZERO_ADDRESS } from '../constants'
 const parseInfo = (info: string) => {
   const parsed = {
     logo: '',
-    projectName: ''
+    projectName: '',
+    brandColor: ''
   }
   const result = JSON.parse(info)
 
   if (Object.keys(result)) {
-    const { logoUrl, projectName } = result
+    const { logoUrl, projectName, brandColor } = result
 
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
+    if (brandColor) parsed.brandColor = brandColor
   }
 
   return parsed

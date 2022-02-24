@@ -25,6 +25,7 @@ const initialState: ApplicationState = {
   owner: '',
   logo: '',
   projectName: '',
+  brandColor: '',
   blockNumber: {},
   popupList: [],
   openModal: null
@@ -36,11 +37,12 @@ export default createReducer(initialState, builder =>
       const data = action.payload
 
       if (data) {
-        const { owner, logo, projectName } = data
+        const { owner, logo, projectName, brandColor } = data
 
         if (owner) state.owner = owner
         if (logo) state.logo = logo
         if (projectName) state.projectName = projectName
+        if (brandColor) state.brandColor = brandColor
       }
     })
     .addCase(updateBlockNumber, (state, action) => {

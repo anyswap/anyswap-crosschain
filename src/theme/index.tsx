@@ -1,11 +1,7 @@
 // import { transparentize } from 'polished'
 import React, { useMemo } from 'react'
-import styled, {
-  ThemeProvider as StyledComponentsThemeProvider,
-  createGlobalStyle,
-  css,
-  DefaultTheme
-} from 'styled-components'
+import styled, { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
+import { useThemeColors } from '../hooks/useColor'
 import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
@@ -34,7 +30,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 const white = '#FFFFFF'
 const black = '#000000'
 
-export function colors(darkMode: boolean): Colors {
+export function colors(darkMode: boolean) {
   return {
     // base
     white,
@@ -100,16 +96,15 @@ export function colors(darkMode: boolean): Colors {
     placeholderGray: darkMode ? '#5F5F5F' : '#E1E1E1',
     activeGray: darkMode ? '#363d5f' : '#F7F8FA',
 
-    //specialty colors
-    modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
-    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
-
-    //primary colors
     primary1: 'linear-gradient(to right, #734ce2 , #606bfb)',
     primary2: darkMode ? '#3680E7' : '#FF8CC3',
     primary3: darkMode ? '#4D8FEA' : '#5f6bfb',
     primary4: darkMode ? '#5f6bfb' : '#5f6bfb',
     primary5: darkMode ? '#5f6bfb' : '#5f6bfb',
+
+    // specialty colors
+    modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
+    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
 
     // color text
     primaryText1: darkMode ? '#fff' : '#fff',
@@ -131,7 +126,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function theme(darkMode: boolean): DefaultTheme {
+export function theme(darkMode: boolean) {
   return {
     ...colors(darkMode),
 
@@ -184,10 +179,16 @@ export function theme(darkMode: boolean): DefaultTheme {
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const darkMode = useIsDarkMode()
-
+  // move all colors which are requested from the outside in a hook
+  const dynamicColors = useThemeColors()
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+  const extendedTheme = {
+    ...themeObject,
+    ...dynamicColors
+  }
+
+  return <StyledComponentsThemeProvider theme={extendedTheme}>{children}</StyledComponentsThemeProvider>
 }
 
 const TextWrapper = styled(Text)<{ color: keyof Colors }>`

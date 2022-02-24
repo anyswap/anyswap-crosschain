@@ -8,7 +8,7 @@ import {
   // useAddPopup,
   useAppState
 } from '../../state/application/hooks'
-// import { HuePicker } from 'react-color'
+import { HuePicker } from 'react-color'
 import { ButtonPrimary } from '../../components/Button'
 import InputPanel from '../../components/InputPanel'
 // import Toggle from '../../components/Toggle'
@@ -24,31 +24,31 @@ const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
 `
 
-// const ColorTop = styled.div`
-//   display: flex;
-//   margin-bottom: 0.7rem;
-//   align-items: center;
-//   justify-content: space-between;
-// `
+const ColorTop = styled.div`
+  display: flex;
+  margin-bottom: 0.7rem;
+  align-items: center;
+  justify-content: space-between;
+`
 
 const Button = styled(ButtonPrimary)`
   font-size: 0.8em;
   margin-top: 0.3rem;
 `
 
-// const LabelExtended = styled.label`
-//   width: auto !important;
-//   display: flex;
-//   align-items: center;
-// `
+const LabelExtended = styled.label`
+  width: auto !important;
+  display: flex;
+  align-items: center;
+`
 
-// const colorPickerStyles = {
-//   default: {
-//     picker: {
-//       width: '100%'
-//     }
-//   }
-// }
+const colorPickerStyles = {
+  default: {
+    picker: {
+      width: '100%'
+    }
+  }
+}
 
 export default function Settings() {
   const { t } = useTranslation()
@@ -58,8 +58,8 @@ export default function Settings() {
 
   const {
     projectName: stateProjectName,
-    logo: stateLogo
-    // brandColor: stateBrandColor,
+    logo: stateLogo,
+    brandColor: stateBrandColor
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   } = useAppState()
@@ -76,18 +76,18 @@ export default function Settings() {
     }
   }, [logoUrl])
 
-  // const [brandColor, setBrandColor] = useState(stateBrandColor)
-  // const [customColor, setCustomColor] = useState(false)
+  const [brandColor, setBrandColor] = useState(stateBrandColor)
+  const [customColor, setCustomColor] = useState(false)
 
-  // const updateBrandColor = (value: string) => setBrandColor(value)
+  const updateBrandColor = (value: string) => setBrandColor(value)
 
   // const [socialLinks, setSocialLinks] = useState<string[]>(stateSocialLinks)
   // const [disableSourceCopyright, setDisableSourceCopyright] = useState<boolean>(stateDisableSourceCopyright)
 
   const currentStrSettings = JSON.stringify({
     projectName: stateProjectName,
-    logoUrl: stateLogo
-    // brandColor: stateBrandColor,
+    logoUrl: stateLogo,
+    brandColor: stateBrandColor
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   })
@@ -97,8 +97,8 @@ export default function Settings() {
   useEffect(() => {
     const newStrSettings = JSON.stringify({
       projectName,
-      logoUrl
-      // brandColor,
+      logoUrl,
+      brandColor
       // socialLinks,
       // disableSourceCopyright
     })
@@ -107,8 +107,9 @@ export default function Settings() {
   }, [
     currentStrSettings,
     projectName,
-    logoUrl
-    //  brandColor, socialLinks, disableSourceCopyright
+    logoUrl,
+    brandColor
+    // socialLinks, disableSourceCopyright
   ])
 
   const saveSettings = async () => {
@@ -118,8 +119,8 @@ export default function Settings() {
       const domain = window.location.hostname || document.location.host
       const settings = JSON.stringify({
         projectName,
-        logoUrl
-        // brandColor,
+        logoUrl,
+        brandColor
         // socialLinks,
         // disableSourceCopyright
       })
@@ -177,7 +178,7 @@ export default function Settings() {
       </OptionWrapper>
 
       {/* <OptionWrapper>
-        // <ListFactory
+        <ListFactory
           title={t('socialLinks')}
           placeholder="https://"
           items={socialLinks}
@@ -189,7 +190,7 @@ export default function Settings() {
       <OptionWrapper flex>
         {t('Disable source copyright')}
         <Toggle isActive={disableSourceCopyright} toggle={() => setDisableSourceCopyright(prevState => !prevState)} />
-      </OptionWrapper>
+      </OptionWrapper> */}
 
       <OptionWrapper margin={0.4}>
         <ColorTop>
@@ -209,7 +210,7 @@ export default function Settings() {
             styles={colorPickerStyles}
           />
         )}
-      </OptionWrapper> */}
+      </OptionWrapper>
 
       <Button onClick={saveSettings} disabled={!settingsChanged || !isValidLogo}>
         {t('saveSettings')}
