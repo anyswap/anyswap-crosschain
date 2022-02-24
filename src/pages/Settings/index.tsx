@@ -8,8 +8,8 @@ import {
   // useAddPopup,
   useAppState
 } from '../../state/application/hooks'
-import { HuePicker } from 'react-color'
 import { ButtonPrimary } from '../../components/Button'
+import ColorSelector from '../../components/ColorSelector'
 import InputPanel from '../../components/InputPanel'
 // import Toggle from '../../components/Toggle'
 // import ListFactory from '../../components/ListFactory'
@@ -24,31 +24,10 @@ const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
 `
 
-const ColorTop = styled.div`
-  display: flex;
-  margin-bottom: 0.7rem;
-  align-items: center;
-  justify-content: space-between;
-`
-
 const Button = styled(ButtonPrimary)`
   font-size: 0.8em;
   margin-top: 0.3rem;
 `
-
-const LabelExtended = styled.label`
-  width: auto !important;
-  display: flex;
-  align-items: center;
-`
-
-const colorPickerStyles = {
-  default: {
-    picker: {
-      width: '100%'
-    }
-  }
-}
 
 export default function Settings() {
   const { t } = useTranslation()
@@ -59,7 +38,9 @@ export default function Settings() {
   const {
     projectName: stateProjectName,
     logo: stateLogo,
-    brandColor: stateBrandColor
+    brandColor: stateBrandColor,
+    backgroundColor: stateBackgroundColor,
+    elementsColor: stateElementsColor
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   } = useAppState()
@@ -77,9 +58,27 @@ export default function Settings() {
   }, [logoUrl])
 
   const [brandColor, setBrandColor] = useState(stateBrandColor)
-  const [customColor, setCustomColor] = useState(false)
+  const [backgroundColor, setBackgroundColor] = useState(stateBackgroundColor)
+  const [elementsColor, setElementsColor] = useState(stateElementsColor)
 
-  const updateBrandColor = (value: string) => setBrandColor(value)
+  enum ColorType {
+    BRAND,
+    BACKGROUND,
+    ELEMENTS_COLOR
+  }
+
+  const updateColor = (value: string, type: ColorType) => {
+    switch (type) {
+      case ColorType.BRAND:
+        setBrandColor(value)
+        break
+      case ColorType.BACKGROUND:
+        setBackgroundColor(value)
+        break
+      case ColorType.ELEMENTS_COLOR:
+        setElementsColor(value)
+    }
+  }
 
   // const [socialLinks, setSocialLinks] = useState<string[]>(stateSocialLinks)
   // const [disableSourceCopyright, setDisableSourceCopyright] = useState<boolean>(stateDisableSourceCopyright)
@@ -87,7 +86,9 @@ export default function Settings() {
   const currentStrSettings = JSON.stringify({
     projectName: stateProjectName,
     logoUrl: stateLogo,
-    brandColor: stateBrandColor
+    brandColor: stateBrandColor,
+    backgroundColor: stateBackgroundColor,
+    elementsColor: stateElementsColor
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   })
@@ -98,7 +99,9 @@ export default function Settings() {
     const newStrSettings = JSON.stringify({
       projectName,
       logoUrl,
-      brandColor
+      brandColor,
+      backgroundColor,
+      elementsColor
       // socialLinks,
       // disableSourceCopyright
     })
@@ -108,7 +111,9 @@ export default function Settings() {
     currentStrSettings,
     projectName,
     logoUrl,
-    brandColor
+    brandColor,
+    backgroundColor,
+    elementsColor
     // socialLinks, disableSourceCopyright
   ])
 
@@ -120,7 +125,9 @@ export default function Settings() {
       const settings = JSON.stringify({
         projectName,
         logoUrl,
-        brandColor
+        brandColor,
+        backgroundColor,
+        elementsColor
         // socialLinks,
         // disableSourceCopyright
       })
@@ -193,23 +200,25 @@ export default function Settings() {
       </OptionWrapper> */}
 
       <OptionWrapper margin={0.4}>
-        <ColorTop>
-          <span>{t('primaryColor')}</span>
-          <LabelExtended>
-            <input type="checkbox" name="use custom color" onChange={() => setCustomColor(prevState => !prevState)} />{' '}
-            {t('own')}
-          </LabelExtended>
-        </ColorTop>
-
-        {customColor ? (
-          <InputPanel label={`(rgb, hsl, hex)`} value={brandColor} onChange={updateBrandColor} />
-        ) : (
-          <HuePicker
-            color={brandColor}
-            onChangeComplete={(color: { hex: string }) => updateBrandColor(color.hex)}
-            styles={colorPickerStyles}
-          />
-        )}
+        <ColorSelector
+          name={t('primaryColor')}
+          defaultColor={stateBrandColor}
+          onColor={color => updateColor(color, ColorType.BRAND)}
+        />
+      </OptionWrapper>
+      <OptionWrapper margin={0.4}>
+        <ColorSelector
+          name={t('backgroundColor')}
+          defaultColor={backgroundColor}
+          onColor={color => updateColor(color, ColorType.BACKGROUND)}
+        />
+      </OptionWrapper>
+      <OptionWrapper margin={0.4}>
+        <ColorSelector
+          name={t('elementsColor')}
+          defaultColor={elementsColor}
+          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR)}
+        />
       </OptionWrapper>
 
       <Button onClick={saveSettings} disabled={!settingsChanged || !isValidLogo}>

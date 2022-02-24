@@ -35,6 +35,8 @@ export type AppData = {
   logo: string
   projectName: string
   brandColor: string
+  backgroundColor: string
+  elementsColor: string
 }
 
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')

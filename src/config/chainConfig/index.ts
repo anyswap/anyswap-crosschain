@@ -11,7 +11,7 @@ import kcc, {KCC_MAIN_CHAINID} from './kcc'
 import okt, {OKT_MAIN_CHAINID} from './okt'
 import one, {ONE_MAIN_CHAINID} from './one'
 import omgx, {OMGX_TEST_CHAINID} from './omgx'
-import optimism, {OPTIMISM_TEST_CHAINID} from './optimism'
+import optimism, {OPTIMISM_MAIN_CHAINID, OPTIMISM_TEST_CHAINID} from './optimism'
 import movr, {MOVR_MAIN_CHAINID} from './movr'
 import iotex, {IOTEX_MAIN_CHAINID} from './iotex'
 import sdn, {SDN_MAIN_CHAINID} from './sdn'
@@ -85,6 +85,7 @@ const allChainList = [
   GLMR_MAIN_CHAINID,
   MOVR_MAIN_CHAINID,
   ONE_MAIN_CHAINID,
+  OPTIMISM_MAIN_CHAINID,
   AURORA_MAIN_CHAINID,
   OETH_MAIN_CHAINID,
   CRO_MAIN_CHAINID,

@@ -36,12 +36,13 @@ const StyledNavLink = styled(NavLink).attrs({
   font-weight: 500;
   color: ${({ theme }) => theme.textNav};
   box-sizing: border-box;
-  padding: 1rem 0.875rem;
+  padding: 1.1rem 0.875rem;
   line-height: 1rem;
   margin: 6px 0;
   height: 48px;
   position: relative;
   white-space: nowrap;
+  font-size: 1.3rem;
 
   .icon {
     ${({ theme }) => theme.flexC};
@@ -71,7 +72,7 @@ const StyledNavLink = styled(NavLink).attrs({
     }
   }
   &.${activeClassName} {
-    border-bottom: 2px solid ${({ theme }) => theme.textColorBold};
+    border-bottom: 2px solid ${({ theme }) => theme.primary3};
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: center;
@@ -82,10 +83,8 @@ const StyledNavLink = styled(NavLink).attrs({
       background: ${({ theme }) => theme.bgColorLinear};
       border-bottom: none;
       font-weight: 600;
-      box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
       .icon {
         background: ${({ theme }) => theme.navBg};
-        box-shadow: 0 0.25rem 0.75rem 0 rgba(115, 75, 226, 0.51);
         .on {
           display: block;
         }

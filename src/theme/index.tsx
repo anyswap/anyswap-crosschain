@@ -41,24 +41,20 @@ export function colors(darkMode: boolean) {
     text2: darkMode ? '#C3C5CB' : '#565A69',
     text3: darkMode ? '#ddd' : '#999',
     text4: darkMode ? '#565A69' : '#C3C5CB',
-    text5: darkMode ? 'rgb(21, 26, 47)' : '#EDEEF2',
     textNav: darkMode ? '#979dac' : '#062536',
     textColor: darkMode ? '#979dac' : '#031a6e',
     textColorBold: darkMode ? '#FFFFFF' : '#062536',
 
     // backgrounds / greys
     bg1: darkMode ? '#212429' : '#FFFFFF',
-    bg2: darkMode ? 'rgb(21, 26, 47)' : '#F7F8FA',
+    // bg2 in the useColors hook
     bg3: darkMode ? '#40444F' : '#EDEEF2',
     bg4: darkMode ? '#565A69' : '#CED0D9',
     bg5: darkMode ? '#ddd' : '#999',
-    contentBg: darkMode ? '#21263e' : white,
     navIconBg: darkMode ? '#363d5f' : 'rgba(0,0,0,0.05)',
     navBg: darkMode ? '#21263e' : '#031a6e',
     navBg2: darkMode ? '#363d5f' : '#031a6e',
     bgColorLinear: 'linear-gradient(to right, #734ce2 , #606bfb)',
-    outLinkIconBg: darkMode ? '#2b314f' : '#ecf6ff',
-    bodyBg: darkMode ? '#151a2f' : '#f9fafb',
     tabBg: darkMode ? '#2b314f' : white,
     tabActiveBg: darkMode ? '#6725fc' : 'none',
     tabColor: darkMode ? white : '#96989e',
@@ -102,17 +98,9 @@ export function colors(darkMode: boolean) {
     primary4: darkMode ? '#5f6bfb' : '#5f6bfb',
     primary5: darkMode ? '#5f6bfb' : '#5f6bfb',
 
-    // specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
-    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
 
-    // color text
     primaryText1: darkMode ? '#fff' : '#fff',
-
-    // secondary colors
-    secondary1: darkMode ? '#2172E5' : '#2483fe',
-    secondary2: darkMode ? '#17000b26' : '#5f6bfb',
-    secondary3: darkMode ? '#17000b26' : '#5f6bfb',
 
     // other
     red1: '#FF6871',

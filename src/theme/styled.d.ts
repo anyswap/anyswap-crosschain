@@ -11,7 +11,6 @@ export interface Colors {
   text2: Color
   text3: Color
   text4: Color
-  text5: Color
   textNav: Color
   textColor: Color
   textColorBold: Color
@@ -27,8 +26,6 @@ export interface Colors {
   navBg: Color
   navBg2: Color
   bgColorLinear: Color
-  outLinkIconBg: Color
-  bodyBg: Color
   tabBg: Color
   tabActiveBg: Color
   tabColor: Color
@@ -37,7 +34,7 @@ export interface Colors {
   tipBg: Color
   tipBorder: Color
   tipColor: Color
-  
+
   lightPuroleBg: Color
   viewMoreBtn: Color
 
@@ -67,7 +64,6 @@ export interface Colors {
   activeGray: Color
 
   modalBG: Color
-  advancedBG: Color
 
   //blues
   primary1: Color
@@ -77,11 +73,6 @@ export interface Colors {
   primary5: Color
 
   primaryText1: Color
-
-  // pinks
-  secondary1: Color
-  secondary2: Color
-  secondary3: Color
 
   // other
   red1: Color

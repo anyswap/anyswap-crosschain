@@ -8,16 +8,20 @@ const parseInfo = (info: string) => {
   const parsed = {
     logo: '',
     projectName: '',
-    brandColor: ''
+    brandColor: '',
+    backgroundColor: '',
+    elementsColor: ''
   }
   const result = JSON.parse(info)
 
   if (Object.keys(result)) {
-    const { logoUrl, projectName, brandColor } = result
+    const { logoUrl, projectName, brandColor, backgroundColor, elementsColor } = result
 
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
     if (brandColor) parsed.brandColor = brandColor
+    if (backgroundColor) parsed.backgroundColor = backgroundColor
+    if (elementsColor) parsed.elementsColor = elementsColor
   }
 
   return parsed
