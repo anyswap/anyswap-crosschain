@@ -52,7 +52,7 @@ const Button = styled(ButtonPrimary)`
 
 export default function Settings() {
   const { t } = useTranslation()
-  const { account } = useActiveWeb3React()
+  const { account, library } = useActiveWeb3React()
   // const addTransaction = useTransactionAdder()
   // const addPopup = useAddPopup()
 
@@ -112,8 +112,8 @@ export default function Settings() {
   ])
 
   const saveSettings = async () => {
-    if (!account) return 
-    
+    if (!account || !library?.provider) return
+
     try {
       const domain = window.location.hostname || document.location.host
       const settings = JSON.stringify({
@@ -125,6 +125,7 @@ export default function Settings() {
       })
 
       await callStorage({
+        provider: library?.provider,
         account,
         storageChainId: config.STORAGE_CHAIN_ID,
         method: STORAGE_METHODS.setData,

@@ -3,16 +3,17 @@ import STORAGE from '../constants/abis/storage.json'
 import { chainInfo } from '../config/chainConfig'
 
 export const callStorage = async (params: {
+  provider: any
   account: string
   storageChainId: number
   method: string
   args: any[]
   onHash?: (hash: string) => void
 }) => {
-  const { storageChainId, method, args, onHash, account } = params
-  const { storage: storageAddress, nodeRpc } = chainInfo[storageChainId]
+  const { provider, storageChainId, method, args, onHash, account } = params
+  const { storage: storageAddress } = chainInfo[storageChainId]
 
-  const web3 = new Web3(nodeRpc)
+  const web3 = new Web3(provider)
   //@ts-ignore
   const storage = new web3.eth.Contract(STORAGE.abi, storageAddress)
 

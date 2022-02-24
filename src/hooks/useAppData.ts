@@ -12,9 +12,9 @@ const parseInfo = (info: string) => {
   const result = JSON.parse(info)
 
   if (Object.keys(result)) {
-    const { logo, projectName } = result
+    const { logoUrl, projectName } = result
 
-    if (logo) parsed.logo = logo
+    if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
   }
 
