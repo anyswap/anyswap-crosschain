@@ -17,3 +17,10 @@ declare module 'nebulas' {
 }
 
 declare const NasExtWallet
+
+declare module 'nebpay.js' {
+  export default class {
+    pay(to, value, arg)
+    call(to, value, callFunction, callArgs, payload)
+  }
+}

@@ -10,11 +10,12 @@ import TokenLogo from '../TokenLogo'
 
 import { TYPE } from '../../theme'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import { CROSS_BRIDGE_LIST } from '../../config/constant'
 import { thousandBit } from '../../utils/tools/tools'
+import { useActiveWeb3React } from '../../hooks'
+
 // import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 // import { useBridgeTokenList } from '../../state/lists/hooks'
 
@@ -113,7 +114,10 @@ export default function SelectCurrencyInputPanel({
   isRouter
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
+
+  // only for EVM
   const { account, chainId } = useActiveWeb3React()
+
   // const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
   // const allBalances:any = useBridgeAllTokenBalances(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
@@ -242,7 +246,7 @@ export default function SelectCurrencyInputPanel({
                 //   </TYPE.body>
                 // )
                 }
-                {/* {useBalance} - {account} - {hideBalance ? 'hideBalance' : 'showBalance'} - {currency} */}
+
                 {account && showMaxButton && isViewNetwork ? (
                   <>
                     <TYPE.body

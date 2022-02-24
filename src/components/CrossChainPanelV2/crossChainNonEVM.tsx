@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
-import { JSBI, Fraction } from 'anyswap-sdk'
 import { isAddress } from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
@@ -49,7 +48,7 @@ import {
 
 import { outputValue, useInitSelectCurrency, useDestChainid, useDestCurrency } from './hooks'
 
-import { useCurrentNasBalance } from '../../hooks/nebulas'
+import { useCurrentNasBalance, useNebBridgeCallback } from '../../hooks/nebulas'
 
 // let intervalFN:any = ''
 
@@ -84,7 +83,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log(selectCurrency)
+    console.log('selectCurrency', selectCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -142,7 +141,14 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     chainId
   )
 
-  const { balance: nasBalance } = useCurrentNasBalance()
+  const { balanceBig: nasBalance } = useCurrentNasBalance()
+
+  const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
+    inputCurrency: selectCurrency,
+    typedValue: inputBridgeValue,
+    chainId,
+    recipient
+  })
 
   const { outputBridgeValue, fee } = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -153,11 +159,8 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     }
     if (chainId === 'NEBULAS') {
       if (nasBalance) {
-        const nasBalanceFormat = new Fraction(
-          JSBI.BigInt(nasBalance),
-          JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
-        )?.toSignificant(3)
-        // console.log('nasBalance', nasBalanceFormat)
+        const nasBalanceFormat = nasBalance?.toSignificant(3)
+        console.log('nasBalance', nasBalanceFormat)
         return nasBalanceFormat
       }
     }
@@ -166,12 +169,15 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   }, [terraBalance, nasBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
-    if (wrapInputErrorTerra) {
+    if (wrapInputErrorTerra && chainId === 'TERRA') {
       return wrapInputErrorTerra
+    } else if (wrapInputErrorNeb && chainId === 'NEBULAS') {
+      console.log('isWrapInputError NEBULAS')
+      return wrapInputErrorNeb
     } else {
       return false
     }
-  }, [wrapInputErrorTerra])
+  }, [wrapInputErrorTerra, wrapInputErrorNeb, chainId])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -227,6 +233,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     if (!account) {
       return undefined
     } else if (isInputError) {
+      console.log('errorTip isInputError', isInputError)
       return isInputError
     } else if (recipient && !Boolean(isAddr)) {
       return {
@@ -252,7 +259,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     //   return t('swap')
     // }
     return t('swap')
-  }, [errorTip, t, wrapTerraType])
+  }, [errorTip, t, wrapTerraType, wrapNebType])
 
   const { initCurrency } = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
@@ -360,10 +367,16 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
                 onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
                   onDelay()
-                  if (onTerraWrap)
+                  if (onTerraWrap && chainId === 'TERRA')
                     onTerraWrap().then(() => {
                       onClear()
                     })
+                  else if (onNebWrap && chainId === 'NEBULAS') {
+                    console.log('onNebWrap')
+                    onNebWrap().then(() => {
+                      onClear()
+                    })
+                  }
                 }}
               >
                 {t('Confirm')}
@@ -372,13 +385,12 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>
-
       <AutoColumn gap={'sm'}>
         <SelectCurrencyInputPanel
           label={t('From')}
           value={inputBridgeValue}
           onUserInput={value => {
-            // console.log(value)
+            console.log('onUserInput', value)
             setInputBridgeValue(value)
           }}
           onCurrencySelect={inputCurrency => {
@@ -482,9 +494,9 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
           ''
         )}
       </AutoColumn>
-
       <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} />
       <ErrorTip errorTip={errorTip} />
+      {errorTip ? errorTip.tip : '--'}
       {config.isStopSystem ? (
         <BottomGrouping>
           <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
