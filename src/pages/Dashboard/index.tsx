@@ -15,7 +15,6 @@ import { useBridgeTokenList } from '../../state/lists/hooks'
 import TokenLogo from '../../components/TokenLogo'
 import { useTokenComparator } from '../../components/SearchModal/sorting'
 import AppBody from '../AppBody'
-import Title from '../../components/Title'
 
 import SearchIcon from '../../assets/icon/search.svg'
 import { ReactComponent as Dropup } from '../../assets/dropup-blue.svg'
@@ -358,7 +357,6 @@ export default function DashboardDtil() {
   return (
     <>
       <AppBody>
-        <Title title={t('dashboard')}></Title>
         <MyBalanceBox>
           <TitleAndSearchBox>
             <h3>{t('myBalance')}</h3>
