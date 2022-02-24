@@ -52,8 +52,8 @@ const Link = styled(ExternalLink)`
 
 export default function Footer() {
   const year = new Date().getFullYear()
-  const { copyrightName } = useAppState()
-  const copyright = copyrightName ? `© ${copyrightName} ${year}` : null
+  const { projectName } = useAppState()
+  const copyright = projectName ? `© ${projectName} ${year}` : null
   const SourceCopyright = (
     <>
       Powered by{' '}

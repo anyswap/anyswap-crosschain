@@ -7,20 +7,24 @@ import {
   ApplicationModal,
   setOpenModal,
   retrieveAppData,
+  setAppManagement,
   AppData
 } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
 export type ApplicationState = {
+  readonly appManagement: boolean
   readonly blockNumber: { readonly [chainId: number]: number }
   readonly popupList: PopupList
   readonly openModal: ApplicationModal | null
 } & AppData
 
 const initialState: ApplicationState = {
+  appManagement: false,
+  owner: '',
   logo: '',
-  copyrightName: '',
+  projectName: '',
   blockNumber: {},
   popupList: [],
   openModal: null
@@ -32,10 +36,11 @@ export default createReducer(initialState, builder =>
       const data = action.payload
 
       if (data) {
-        const { logo, copyrightName } = data
+        const { owner, logo, projectName } = data
 
+        if (owner) state.owner = owner
         if (logo) state.logo = logo
-        if (copyrightName) state.copyrightName = copyrightName
+        if (projectName) state.projectName = projectName
       }
     })
     .addCase(updateBlockNumber, (state, action) => {
@@ -45,6 +50,11 @@ export default createReducer(initialState, builder =>
       } else {
         state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
       }
+    })
+    .addCase(setAppManagement, (state, action) => {
+      const { status } = action.payload
+
+      state.appManagement = status
     })
     .addCase(setOpenModal, (state, action) => {
       state.openModal = action.payload

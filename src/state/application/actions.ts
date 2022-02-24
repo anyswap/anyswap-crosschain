@@ -31,10 +31,12 @@ export enum ApplicationModal {
 }
 
 export type AppData = {
+  owner: string
   logo: string
-  copyrightName: string
+  projectName: string
 }
 
+export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')

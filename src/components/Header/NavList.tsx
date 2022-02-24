@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 // import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
 // import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 // import { Twitch } from 'react-feather'
-
+import { useDispatch } from 'react-redux'
+import { useActiveWeb3React } from '../../hooks'
 import styled from 'styled-components'
-
-// import { ExternalLink } from '../../theme'
-
+import { setAppManagement } from '../../state/application/actions'
+import { useAppState } from '../../state/application/hooks'
 import config from '../../config'
+// import { ExternalLink } from '../../theme'
 
 const HeaderLinks = styled.div`
   display: flex;
@@ -224,6 +225,20 @@ const StyledNavLink = styled(NavLink).attrs({
 
 export default function NavList() {
   const { t } = useTranslation()
+  const { account, chainId } = useActiveWeb3React()
+  const { owner, appManagement } = useAppState()
+  const dispatch = useDispatch()
+  const [isOwner, setIsOwner] = useState<boolean>(!owner || account?.toLowerCase() === owner?.toLowerCase())
+
+  useEffect(() => {
+    setIsOwner(!owner || account?.toLowerCase() === owner?.toLowerCase())
+  }, [account, owner])
+
+  const openSettings = () => {
+    if (!appManagement) {
+      dispatch(setAppManagement({ status: true }))
+    }
+  }
 
   return (
     <>
@@ -316,6 +331,12 @@ export default function NavList() {
         <StyledNavLink id={`pool-nav-link`} to={'/pool'}>
           {t('pool')}
         </StyledNavLink>
+
+        {isOwner && chainId === config.STORAGE_CHAIN_ID && (
+          <StyledNavLink id={`settings-nav-link`} to={'/settings'} onClick={openSettings}>
+            {t('settings')}
+          </StyledNavLink>
+        )}
 
         {/* <StyledNavLink
           id={`swap-nav-link`}

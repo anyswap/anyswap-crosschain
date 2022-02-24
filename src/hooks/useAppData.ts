@@ -5,15 +5,15 @@ import { useStorageContract } from './useContract'
 const parseInfo = (info: string) => {
   const parsed = {
     logo: '',
-    copyrightName: ''
+    projectName: ''
   }
   const result = JSON.parse(info)
 
   if (Object.keys(result)) {
-    const { logo, copyrightName } = result
+    const { logo, projectName } = result
 
     if (logo) parsed.logo = logo
-    if (copyrightName) parsed.copyrightName = copyrightName
+    if (projectName) parsed.projectName = projectName
   }
 
   return parsed
@@ -38,11 +38,16 @@ export default function useAppData(): {
 
       try {
         const domain = window.location.hostname || document.location.host
-        const { info } = await storage.methods.getData(domain).call()
+        const { owner, info } = await storage.methods.getData(domain).call()
+
+        console.group('%c Log', 'color: orange; font-size: 14px')
+        console.log('owner: ', owner)
+        console.log('info: ', info)
+        console.groupEnd()
 
         setData({
-          ...parseInfo(info || '{}')
-          // owner
+          ...parseInfo(info || '{}'),
+          owner
         })
       } catch (error) {
         console.group('%c App data', 'color: red;')

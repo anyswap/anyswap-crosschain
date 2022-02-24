@@ -185,10 +185,6 @@ function ViewAccountInfo() {
 }
 
 export default function Header() {
-  // const { account, chainId } = useActiveWeb3React()
-  // const [selectNetworkInfo] = useUserSelectChainId()
-  // const { t } = useTranslation()
-  // const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const { logo } = useAppState()
   const [isDark, toggleDarkMode] = useDarkModeManager()
 
@@ -208,16 +204,6 @@ export default function Header() {
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
-          {/* {selectNetworkInfo && selectNetworkInfo?.label !== 'EVM' ? '' : (
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-              {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  {userEthBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
-                </BalanceText>
-              ) : null}
-              <Web3Status />
-            </AccountElement>
-          )} */}
           <ViewAccountInfo />
           <StyleDarkToggle
             onClick={() => {
