@@ -14,20 +14,10 @@ type Colors = {
 
 export function useThemeColors(): Colors {
   const [darkMode] = useDarkModeManager()
-  const { brandColor, backgroundColor, elementsColor } = useAppState()
+  const { brandColor, backgroundColorLight, backgroundColorDark, elementsColorLight, elementsColorDark } = useAppState()
 
-  // * main background
-  let bg2 = darkMode ? 'rgb(21, 26, 47)' : '#F7F8FA'
-  // * main components bg
-  let contentBg = darkMode ? '#21263e' : '#FFF'
-
-  if (backgroundColor) {
-    bg2 = new Color(backgroundColor).hex().toString()
-  }
-
-  if (elementsColor) {
-    contentBg = new Color(elementsColor).hex().toString()
-  }
+  const bg2 = darkMode ? backgroundColorDark || 'rgb(21, 26, 47)' : backgroundColorLight || '#F7F8FA'
+  const contentBg = darkMode ? elementsColorDark || '#21263e' : elementsColorLight || '#FFF'
 
   let primary1 = darkMode ? '#999999' : '#262626'
   let primary2 = darkMode ? '#858585' : '#363636'

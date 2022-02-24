@@ -39,8 +39,10 @@ export default function Settings() {
     projectName: stateProjectName,
     logo: stateLogo,
     brandColor: stateBrandColor,
-    backgroundColor: stateBackgroundColor,
-    elementsColor: stateElementsColor
+    backgroundColorLight: stateBackgroundColorLight,
+    backgroundColorDark: stateBackgroundColorDark,
+    elementsColorLight: stateElementsColorLight,
+    elementsColorDark: stateElementsColorDark
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   } = useAppState()
@@ -58,13 +60,17 @@ export default function Settings() {
   }, [logoUrl])
 
   const [brandColor, setBrandColor] = useState(stateBrandColor)
-  const [backgroundColor, setBackgroundColor] = useState(stateBackgroundColor)
-  const [elementsColor, setElementsColor] = useState(stateElementsColor)
+  const [backgroundColorLight, setBackgroundColorLight] = useState(stateBackgroundColorLight)
+  const [backgroundColorDark, setBackgroundColorDark] = useState(stateBackgroundColorDark)
+  const [elementsColorLight, setElementsColorLight] = useState(stateElementsColorLight)
+  const [elementsColorDark, setElementsColorDark] = useState(stateElementsColorDark)
 
   enum ColorType {
     BRAND,
-    BACKGROUND,
-    ELEMENTS_COLOR
+    BACKGROUND_LIGHT,
+    BACKGROUND_DARK,
+    ELEMENTS_COLOR_LIGHT,
+    ELEMENTS_COLOR_DARK
   }
 
   const updateColor = (value: string, type: ColorType) => {
@@ -72,11 +78,17 @@ export default function Settings() {
       case ColorType.BRAND:
         setBrandColor(value)
         break
-      case ColorType.BACKGROUND:
-        setBackgroundColor(value)
+      case ColorType.BACKGROUND_LIGHT:
+        setBackgroundColorLight(value)
         break
-      case ColorType.ELEMENTS_COLOR:
-        setElementsColor(value)
+      case ColorType.BACKGROUND_DARK:
+        setBackgroundColorDark(value)
+        break
+      case ColorType.ELEMENTS_COLOR_LIGHT:
+        setElementsColorLight(value)
+        break
+      case ColorType.ELEMENTS_COLOR_DARK:
+        setElementsColorDark(value)
     }
   }
 
@@ -87,8 +99,10 @@ export default function Settings() {
     projectName: stateProjectName,
     logoUrl: stateLogo,
     brandColor: stateBrandColor,
-    backgroundColor: stateBackgroundColor,
-    elementsColor: stateElementsColor
+    backgroundColorLight: stateBackgroundColorLight,
+    backgroundColorDark: stateBackgroundColorDark,
+    elementsColorLight: stateElementsColorLight,
+    elementsColorDark: stateElementsColorDark
     // socialLinks: stateSocialLinks,
     // disableSourceCopyright: stateDisableSourceCopyright
   })
@@ -100,8 +114,10 @@ export default function Settings() {
       projectName,
       logoUrl,
       brandColor,
-      backgroundColor,
-      elementsColor
+      backgroundColorLight,
+      backgroundColorDark,
+      elementsColorLight,
+      elementsColorDark
       // socialLinks,
       // disableSourceCopyright
     })
@@ -112,8 +128,10 @@ export default function Settings() {
     projectName,
     logoUrl,
     brandColor,
-    backgroundColor,
-    elementsColor
+    backgroundColorLight,
+    backgroundColorDark,
+    elementsColorLight,
+    elementsColorDark
     // socialLinks, disableSourceCopyright
   ])
 
@@ -126,8 +144,10 @@ export default function Settings() {
         projectName,
         logoUrl,
         brandColor,
-        backgroundColor,
-        elementsColor
+        backgroundColorLight,
+        backgroundColorDark,
+        elementsColorLight,
+        elementsColorDark
         // socialLinks,
         // disableSourceCopyright
       })
@@ -199,25 +219,39 @@ export default function Settings() {
         <Toggle isActive={disableSourceCopyright} toggle={() => setDisableSourceCopyright(prevState => !prevState)} />
       </OptionWrapper> */}
 
-      <OptionWrapper margin={0.4}>
+      <OptionWrapper margin={0.5}>
         <ColorSelector
           name={t('primaryColor')}
           defaultColor={stateBrandColor}
           onColor={color => updateColor(color, ColorType.BRAND)}
         />
       </OptionWrapper>
-      <OptionWrapper margin={0.4}>
+
+      <OptionWrapper margin={0.5}>
+        <h4>{t('backgroundColor')}</h4>
         <ColorSelector
-          name={t('backgroundColor')}
-          defaultColor={backgroundColor}
-          onColor={color => updateColor(color, ColorType.BACKGROUND)}
+          name={t('light')}
+          defaultColor={backgroundColorLight}
+          onColor={color => updateColor(color, ColorType.BACKGROUND_LIGHT)}
+        />
+        <ColorSelector
+          name={t('dark')}
+          defaultColor={backgroundColorDark}
+          onColor={color => updateColor(color, ColorType.BACKGROUND_DARK)}
         />
       </OptionWrapper>
-      <OptionWrapper margin={0.4}>
+
+      <OptionWrapper margin={0.5}>
+        <h4>{t('elementsColor')}</h4>
         <ColorSelector
-          name={t('elementsColor')}
-          defaultColor={elementsColor}
-          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR)}
+          name={t('light')}
+          defaultColor={elementsColorLight}
+          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_LIGHT)}
+        />
+        <ColorSelector
+          name={t('dark')}
+          defaultColor={elementsColorDark}
+          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_DARK)}
         />
       </OptionWrapper>
 
