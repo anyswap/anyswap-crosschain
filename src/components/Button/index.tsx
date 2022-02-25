@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { darken, lighten } from 'polished'
-
+import { useTranslation } from 'react-i18next'
 import { RowBetween } from '../Row'
 import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
@@ -41,6 +41,11 @@ const Base = styled(RebassButton)<{
   > * {
     user-select: none;
   }
+`
+
+export const CleanButton = styled(Base)`
+  background-color: transparent;
+  color: inherit;
 `
 
 export const ButtonPrimary = styled(Base)`
@@ -261,6 +266,28 @@ export function ButtonConfirmed({
   } else {
     return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
   }
+}
+
+const ButtonAddStyle = styled(CleanButton)<{ disabled?: boolean }>`
+  cursor: pointer;
+  height: 2rem;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.primary2};
+  color: ${({ theme }) => theme.white1};
+  ${({ disabled }) => (disabled ? `pointer-events: none; opacity: .6;` : '')}
+`
+
+export function ButtonAdd({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useTranslation()
+
+  return (
+    <ButtonAddStyle onClick={onClick} disabled={disabled} title={t('add')}>
+      {t('add')}
+    </ButtonAddStyle>
+  )
 }
 
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {

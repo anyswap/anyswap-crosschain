@@ -106,9 +106,11 @@ export function colors(darkMode: boolean) {
     red1: '#FF6871',
     red2: '#F82D3A',
     green1: '#27AE60',
-    yellow1: '#FFE270',
-    yellow2: 'rgb(3, 26, 110)',
+    yellow1: '#ff9c0840',
+    yellow2: '#FFE270',
+    yellow3: '#F3841E',
     blue1: '#2172E5',
+    white1: '#ffffff',
 
     moreBtn: darkMode ? '#363d5f' : '#f9fafb'
   }
@@ -215,7 +217,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
   },
   yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'yellow2'} {...props} />
   },
   darkGray(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'text3'} {...props} />

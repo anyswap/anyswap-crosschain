@@ -39,6 +39,8 @@ export type AppData = {
   backgroundColorDark: string
   elementsColorLight: string
   elementsColorDark: string
+  socialLinks: string[]
+  disableSourceCopyright: boolean
 }
 
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')

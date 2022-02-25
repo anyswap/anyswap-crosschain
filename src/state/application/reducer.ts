@@ -30,6 +30,8 @@ const initialState: ApplicationState = {
   backgroundColorDark: '',
   elementsColorLight: '',
   elementsColorDark: '',
+  socialLinks: [],
+  disableSourceCopyright: false,
   blockNumber: {},
   popupList: [],
   openModal: null

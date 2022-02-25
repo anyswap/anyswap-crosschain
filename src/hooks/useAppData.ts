@@ -5,14 +5,17 @@ import config from '../config'
 import { ZERO_ADDRESS } from '../constants'
 
 const parseInfo = (info: string) => {
-  const parsed = {
+  const parsed: AppData = {
+    owner: '',
     logo: '',
     projectName: '',
     brandColor: '',
     backgroundColorLight: '',
     backgroundColorDark: '',
     elementsColorLight: '',
-    elementsColorDark: ''
+    elementsColorDark: '',
+    socialLinks: [],
+    disableSourceCopyright: false
   }
   const result = JSON.parse(info)
 
@@ -24,7 +27,9 @@ const parseInfo = (info: string) => {
       backgroundColorLight,
       backgroundColorDark,
       elementsColorLight,
-      elementsColorDark
+      elementsColorDark,
+      socialLinks,
+      disableSourceCopyright
     } = result
 
     if (logoUrl) parsed.logo = logoUrl
@@ -34,6 +39,8 @@ const parseInfo = (info: string) => {
     if (backgroundColorDark) parsed.backgroundColorDark = backgroundColorDark
     if (elementsColorLight) parsed.elementsColorLight = elementsColorLight
     if (elementsColorDark) parsed.elementsColorDark = elementsColorDark
+    if (Array.isArray(socialLinks) && socialLinks.length) parsed.socialLinks = socialLinks
+    if (disableSourceCopyright) parsed.disableSourceCopyright = disableSourceCopyright
   }
 
   return parsed

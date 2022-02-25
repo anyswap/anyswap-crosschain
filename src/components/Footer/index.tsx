@@ -1,13 +1,17 @@
 import React from 'react'
+import validUrl from 'valid-url'
 import styled from 'styled-components'
-import { BsTelegram } from 'react-icons/bs'
 import Polling from '../Header/Polling'
-import { ExternalLink } from '../../theme'
 import { useAppState } from '../../state/application/hooks'
+import { TiSocialInstagram } from 'react-icons/ti'
+import { FaTelegramPlane } from 'react-icons/fa'
+import { BsQuestionCircle } from 'react-icons/bs'
+import { SiTwitter } from 'react-icons/si'
+import { AiOutlineYoutube } from 'react-icons/ai'
+import { BsFacebook, BsGithub, BsDiscord, BsMedium, BsReddit, BsLinkedin, BsLightningChargeFill } from 'react-icons/bs'
 
-const FooterWrapper = styled.div`
-  padding: 0.3rem;
-  font-size: 0.9em;
+const FooterWrapper = styled.footer`
+  padding: 0.6rem 0.3rem 1.6rem;
   color: ${({ theme }) => theme.text2};
 `
 
@@ -31,28 +35,49 @@ const Copyright = styled.p<{ pale?: boolean }>`
 `
 
 const SocialLinks = styled.div`
-  padding: 0.8rem 0;
+  padding-top: 0.5rem;
   display: flex;
   align-items: center;
 `
 
-const Link = styled(ExternalLink)`
-  width: 1.6rem;
+const SocialLink = styled.a`
+  font-size: 1.6em;
+  color: ${({ theme }) => theme.primary3};
+  transition: 0.2s;
 
-  :not(:last-child) {
-    margin-right: 0.625rem;
+  & + & {
+    margin-left: 17%;
   }
 
-  .icon {
-    color: ${({ theme }) => theme.primary2};
-    width: 100%;
-    height: 100%;
+  :hover {
+    opacity: 0.7;
   }
 `
 
+const returnIconByUri = (uri: string) => {
+  const lowerUri = uri.toLowerCase()
+  let icon = <BsQuestionCircle title={uri} />
+
+  if (uri.length) {
+    if (lowerUri.match(/twitter/)) icon = <SiTwitter title="Twitter" />
+    if (lowerUri.match(/instagram/)) icon = <TiSocialInstagram title="Instagram" />
+    if (lowerUri.match(/t\.me/)) icon = <FaTelegramPlane title="Telegram" />
+    if (lowerUri.match(/youtube/)) icon = <AiOutlineYoutube title="Youtube" />
+    if (lowerUri.match(/facebook/)) icon = <BsFacebook title="Facebook" />
+    if (lowerUri.match(/github/)) icon = <BsGithub title="Github" />
+    if (lowerUri.match(/discord/)) icon = <BsDiscord title="Discord" />
+    if (lowerUri.match(/medium/)) icon = <BsMedium title="Medium" />
+    if (lowerUri.match(/reddit/)) icon = <BsReddit title="Reddit" />
+    if (lowerUri.match(/linkedin/)) icon = <BsLinkedin title="Linkedin" />
+    if (lowerUri.match(/snapshot/)) icon = <BsLightningChargeFill title="Snapshot" />
+  }
+
+  return icon
+}
+
 export default function Footer() {
   const year = new Date().getFullYear()
-  const { projectName } = useAppState()
+  const { projectName, disableSourceCopyright, socialLinks } = useAppState()
   const copyright = projectName ? `© ${projectName} ${year}` : null
   const SourceCopyright = (
     <>
@@ -67,13 +92,23 @@ export default function Footer() {
     <FooterWrapper>
       <Content>
         {copyright && <Copyright>{copyright}</Copyright>}
-        <Copyright pale>{SourceCopyright}</Copyright>
+        {!disableSourceCopyright && <Copyright pale>{SourceCopyright}</Copyright>}
 
-        <SocialLinks>
-          <Link id="link" href="">
-            <BsTelegram className="icon" />
-          </Link>
-        </SocialLinks>
+        {!!socialLinks.length && (
+          <SocialLinks>
+            {socialLinks.map((link: string, index: number) => {
+              if (validUrl.isUri(link)) {
+                return (
+                  <SocialLink key={index} href={link} target="_blank">
+                    {returnIconByUri(link)}
+                  </SocialLink>
+                )
+              }
+
+              return null
+            })}
+          </SocialLinks>
+        )}
       </Content>
 
       <Polling />
