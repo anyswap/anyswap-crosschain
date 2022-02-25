@@ -7,11 +7,12 @@ import config from '../../config'
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
   return useMemo(() => {
     if (inputBridgeValue && destConfig && selectCurrency) {
-      const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
+      const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+      const baseFee = destConfig.BaseFeePercent ? minFee : 0
       let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(destConfig.MinimumSwapFee)) {
-        fee = Number(destConfig.MinimumSwapFee)
+      if (fee < Number(minFee)) {
+        fee = Number(minFee)
         value = Number(inputBridgeValue) - fee
       } else if (fee > destConfig.MaximumSwapFee) {
         fee = Number(destConfig.MaximumSwapFee)
