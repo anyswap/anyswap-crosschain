@@ -541,13 +541,14 @@ export default function CrossChain() {
   
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
-      const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
+      const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+      const baseFee = destConfig.BaseFeePercent ? minFee : 0
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion)
       // console.log(destConfig)
       // console.log(baseFee)
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(destConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      if (fee < Number(minFee)) {
+        value = Number(inputBridgeValue) - Number(minFee)
       } else if (fee > destConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       } else {
