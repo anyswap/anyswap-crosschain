@@ -363,5 +363,6 @@
   "elementsColor": "元素颜色",
   "light": "光",
   "dark": "黑暗",
-  "saveSettings": "保存设置"
+  "saveSettings": "保存设置",
+  "settings": "设置"
 }

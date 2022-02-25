@@ -364,5 +364,6 @@
   "elementsColor": "Elements color",
   "light": "Light",
   "dark": "Dark",
-  "saveSettings": "Save settings"
+  "saveSettings": "Save settings",
+  "settings": "Settings"
 }
