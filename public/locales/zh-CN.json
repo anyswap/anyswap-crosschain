@@ -353,5 +353,15 @@
   "support": "支持",
   "ConnectTerraStation": "打开Terra钱包",
   "topTip": "Anyswap 品牌已升级为Multichain! 体验全新Multichain请到",
-  "agree": "同意"
+  "agree": "同意",
+  "projectName": "项目名称",
+  "logoUrl": "标志网址",
+  "socialLinks": "社会联系",
+  "disableSourceCopyright": "禁用源版权",
+  "primaryColor": "原色",
+  "backgroundColor": "背景颜色",
+  "elementsColor": "元素颜色",
+  "light": "光",
+  "dark": "黑暗",
+  "saveSettings": "保存设置"
 }

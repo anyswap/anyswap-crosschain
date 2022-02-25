@@ -225,7 +225,7 @@ export default function Settings() {
         </OptionWrapper>
 
         <OptionWrapper flex>
-          {t('Disable source copyright')}
+          {t('disableSourceCopyright')}
           <Toggle isActive={disableSourceCopyright} toggle={() => setDisableSourceCopyright(prevState => !prevState)} />
         </OptionWrapper>
 
