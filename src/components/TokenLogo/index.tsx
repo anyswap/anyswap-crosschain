@@ -5,7 +5,7 @@ import { useActiveWeb3React } from '../../hooks'
 
 import config from '../../config'
 
-import initPath from '../../assets/images/question.svg'
+import initPath from '../../assets/question.svg'
 
 const Image = styled.img<{ size?: any }>`
   width: ${({ size }) => size};
@@ -16,15 +16,15 @@ const Image = styled.img<{ size?: any }>`
   border-radius: ${({ size }) => size};
 `
 
-// const initPath = require('../../assets/images/question.svg')
+// const initPath = require('../../assets/question.svg')
 
 function getSourcePath(symbol: any) {
   let path = ''
   try {
-    path = require('../../assets/images/coin/source/' + symbol + '.svg')
+    path = require('../../assets/coin/source/' + symbol + '.svg')
   } catch (error) {
     try {
-      path = require('../../assets/images/coin/source/' + symbol + '.png')
+      path = require('../../assets/coin/source/' + symbol + '.png')
     } catch (error) {
       path = initPath
     }
@@ -34,10 +34,10 @@ function getSourcePath(symbol: any) {
 function getAnyPath(symbol: any) {
   let path = ''
   try {
-    path = require('../../assets/images/coin/any/' + symbol + '.svg')
+    path = require('../../assets/coin/any/' + symbol + '.svg')
   } catch (error) {
     try {
-      path = require('../../assets/images/coin/any/' + symbol + '.png')
+      path = require('../../assets/coin/any/' + symbol + '.png')
     } catch (error) {
       path = initPath
     }

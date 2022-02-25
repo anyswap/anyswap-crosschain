@@ -54,17 +54,19 @@ export default function Updater(): null {
     }
   }, [fetchMergeTokenList, chainId])
 
-  // 每 10 分钟获取所有列表，但仅在我们初始化库之后
-  useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
-  useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
-  useInterval(fetchAllTokenLists1Callback, library ? 1000 * 60 * 10 : null)
-  useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 10 : null)
+  // Get all the lists every 10 minutes, but only after we initialize the library
+  const TEN_MINUTES = 1000 * 60 * 10
+  const interval = library ? TEN_MINUTES : null
+
+  useInterval(fetchAllListsCallback, interval)
+  useInterval(fetchAllTokenListsCallback, interval)
+  useInterval(fetchAllTokenLists1Callback, interval)
+  useInterval(fetchMergeTokenListsCallback, interval)
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
     Object.keys(lists).forEach(listUrl => {
       const list = lists[listUrl]
-
       if (!list.current && !list.loadingRequestId && !list.error) {
         fetchList(listUrl).catch(error => console.debug('list added fetching error', error))
       }

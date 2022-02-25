@@ -484,8 +484,25 @@ export default function CrossChain() {
     }
     // setSwapType('send')
   }, [setInputBridgeValue])
-  // console.log(isUnderlying)
-  // console.log(isDestUnderlying)
+
+  const onSwap = () => {
+    onDelay()
+
+    if (!selectCurrency || !isUnderlying) {
+      if (onWrap) {
+        onWrap().then(onClear)
+      }
+    } else {
+      if (isNativeToken) {
+        if (onWrapNative) {
+          onWrapNative().then(onClear)
+        }
+      } else if (onWrapUnderlying) {
+        onWrapUnderlying().then(onClear)
+      }
+    }
+  }
+
   return (
     <>
       <ModalContent
@@ -541,26 +558,7 @@ export default function CrossChain() {
                     )}
                   </ButtonConfirmed>
                 ) : (
-                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  // <ButtonPrimary disabled={delayAction} onClick={() => {
-                    onDelay()
-                    if (!selectCurrency || !isUnderlying) {
-                      if (onWrap) onWrap().then(() => {
-                        onClear()
-                      })
-                    } else {
-                      // if (onWrapUnderlying) onWrapUnderlying()
-                      if (isNativeToken) {
-                        if (onWrapNative) onWrapNative().then(() => {
-                          onClear()
-                        })
-                      } else {
-                        if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                          onClear()
-                        })
-                      }
-                    }
-                  }}>
+                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={onSwap}>
                     {t('Confirm')}
                   </ButtonPrimary>
                 )
@@ -579,15 +577,15 @@ export default function CrossChain() {
               name: config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap'),
               path: config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap',
               regex: config.getCurConfigInfo().isOpenBridge ? /\/router/ : /\/swap/,
-              iconUrl: require('../../assets/images/icon/deposit.svg'),
-              iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
+              iconUrl: require('../../assets/icon/deposit.svg'),
+              iconActiveUrl: require('../../assets/icon/deposit-purple.svg')
             },
             {
               name: t('pool'),
               path: '/pool',
               regex: /\/pool/,
-              iconUrl: require('../../assets/images/icon/pool.svg'),
-              iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
+              iconUrl: require('../../assets/icon/pool.svg'),
+              iconActiveUrl: require('../../assets/icon/pool-purpl.svg')
             }
           ] : []}
         ></Title>

@@ -12,8 +12,6 @@ import Loader from '../Loader'
 import {useActiveWeb3React} from '../../hooks'
 import styled, { ThemeContext } from "styled-components"
 
-// import {nonApproveList} from './nonApproveList'
-
 // import {useMulticall} from '../../utils/tools/multicall'
 
 // import ERC20_INTERFACE from '../../constants/abis/erc20'

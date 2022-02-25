@@ -1,11 +1,7 @@
 // import { transparentize } from 'polished'
 import React, { useMemo } from 'react'
-import styled, {
-  ThemeProvider as StyledComponentsThemeProvider,
-  createGlobalStyle,
-  css,
-  DefaultTheme
-} from 'styled-components'
+import styled, { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
+import { useThemeColors } from '../hooks/useColor'
 import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
@@ -34,7 +30,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 const white = '#FFFFFF'
 const black = '#000000'
 
-export function colors(darkMode: boolean): Colors {
+export function colors(darkMode: boolean) {
   return {
     // base
     white,
@@ -45,24 +41,20 @@ export function colors(darkMode: boolean): Colors {
     text2: darkMode ? '#C3C5CB' : '#565A69',
     text3: darkMode ? '#ddd' : '#999',
     text4: darkMode ? '#565A69' : '#C3C5CB',
-    text5: darkMode ? 'rgb(21, 26, 47)' : '#EDEEF2',
-    textNav: darkMode ? '#979dac' : '#062536',
+    textNav: darkMode ? '#cdd1dd' : '#062536',
     textColor: darkMode ? '#979dac' : '#031a6e',
-    textColorBold: darkMode ? white : '#062536',
+    textColorBold: darkMode ? '#FFFFFF' : '#062536',
 
     // backgrounds / greys
     bg1: darkMode ? '#212429' : '#FFFFFF',
-    bg2: darkMode ? 'rgb(21, 26, 47)' : '#F7F8FA',
+    // bg2 in the useColors hook
     bg3: darkMode ? '#40444F' : '#EDEEF2',
     bg4: darkMode ? '#565A69' : '#CED0D9',
     bg5: darkMode ? '#ddd' : '#999',
-    contentBg: darkMode ? '#21263e' : white,
     navIconBg: darkMode ? '#363d5f' : 'rgba(0,0,0,0.05)',
     navBg: darkMode ? '#21263e' : '#031a6e',
     navBg2: darkMode ? '#363d5f' : '#031a6e',
     bgColorLinear: 'linear-gradient(to right, #734ce2 , #606bfb)',
-    outLinkIconBg: darkMode ? '#2b314f' : '#ecf6ff',
-    bodyBg: darkMode ? '#151a2f' : '#f9fafb',
     tabBg: darkMode ? '#2b314f' : white,
     tabActiveBg: darkMode ? '#6725fc' : 'none',
     tabColor: darkMode ? white : '#96989e',
@@ -100,49 +92,31 @@ export function colors(darkMode: boolean): Colors {
     placeholderGray: darkMode ? '#5F5F5F' : '#E1E1E1',
     activeGray: darkMode ? '#363d5f' : '#F7F8FA',
 
-    // backgrounds
-    // bgc1: darkMode ? '#21263e' : '#FFFFFF',
-
-    // // borders
-    // bsd1: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
-
-
-    //specialty colors
-    modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
-    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
-
-    //primary colors
     primary1: 'linear-gradient(to right, #734ce2 , #606bfb)',
     primary2: darkMode ? '#3680E7' : '#FF8CC3',
     primary3: darkMode ? '#4D8FEA' : '#5f6bfb',
     primary4: darkMode ? '#5f6bfb' : '#5f6bfb',
     primary5: darkMode ? '#5f6bfb' : '#5f6bfb',
 
-    // color text
-    primaryText1: darkMode ? '#fff' : '#fff',
+    modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
 
-    // secondary colors
-    secondary1: darkMode ? '#2172E5' : '#2483fe',
-    secondary2: darkMode ? '#17000b26' : '#5f6bfb',
-    secondary3: darkMode ? '#17000b26' : '#5f6bfb',
+    primaryText1: darkMode ? '#fff' : '#fff',
 
     // other
     red1: '#FF6871',
     red2: '#F82D3A',
     green1: '#27AE60',
-    yellow1: '#FFE270',
-    yellow2: 'rgb(3, 26, 110)',
+    yellow1: '#ff9c0840',
+    yellow2: '#FFE270',
+    yellow3: '#F3841E',
     blue1: '#2172E5',
+    white1: '#ffffff',
 
-    moreBtn: darkMode ? '#363d5f' : '#f9fafb',
-
-    // dont wanna forget these blue yet
-    // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
-    // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
+    moreBtn: darkMode ? '#363d5f' : '#f9fafb'
   }
 }
 
-export function theme(darkMode: boolean): DefaultTheme {
+export function theme(darkMode: boolean) {
   return {
     ...colors(darkMode),
 
@@ -157,7 +131,6 @@ export function theme(darkMode: boolean): DefaultTheme {
     shadow2: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
     contentShadow: darkMode ? '7px 2px 26px 0 rgba(5, 6, 13, 0.24)' : '7px 2px 26px 0 rgba(0, 0, 0, 0.06)',
     tableShadow: darkMode ? '0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.4)' : '0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04)',
-
 
     // media queries
     mediaWidth: mediaWidthTemplates,
@@ -196,10 +169,16 @@ export function theme(darkMode: boolean): DefaultTheme {
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const darkMode = useIsDarkMode()
-
+  // move all colors which are requested from the outside in a hook
+  const dynamicColors = useThemeColors()
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+  const extendedTheme = {
+    ...themeObject,
+    ...dynamicColors
+  }
+
+  return <StyledComponentsThemeProvider theme={extendedTheme}>{children}</StyledComponentsThemeProvider>
 }
 
 const TextWrapper = styled(Text)<{ color: keyof Colors }>`
@@ -238,7 +217,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
   },
   yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'yellow2'} {...props} />
   },
   darkGray(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'text3'} {...props} />
@@ -255,13 +234,17 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
+html {
+  --global-font-family: 'Manrope', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 html, input, textarea, button {
-  font-family: 'Manrope', sans-serif !important;
+  font-family: var(--global-font-family);
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Manrope', sans-serif !important;
+    font-family: var(--global-font-family);
   }
 }
 
@@ -271,10 +254,10 @@ body {
   padding: 0;
 }
 
- a {
-   color: ${colors(false).blue1}; 
-   font-family: 'Manrope', sans-serif !important;
- }
+a {
+  color: ${colors(false).blue1}; 
+  font-family: var(--global-font-family);
+}
 
 * {
   box-sizing: border-box;
@@ -291,7 +274,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
-  
 }
 `
 

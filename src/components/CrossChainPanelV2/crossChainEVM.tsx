@@ -119,9 +119,8 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
-  // console.log(destConfig)
+
   const isRouter = useMemo(() => {
-    // console.log(destConfig)
     if (['swapin', 'swapout'].includes(destConfig?.type)) {
       return false
     }
@@ -149,7 +148,6 @@ export default function CrossChain({
     }
     return false
   }, [selectCurrency, useChainId])
-  // console.log(isNativeToken)
 
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
@@ -460,6 +458,24 @@ export default function CrossChain({
     }
   }, [setInputBridgeValue])
 
+  const onSwap = () => {
+    onDelay()
+
+    if (isRouter) {
+      if (!selectCurrency || !isUnderlying) {
+        if (onWrap) onWrap().then(onClear)
+      } else {
+        if (isNativeToken) {
+          if (onWrapNative) onWrapNative().then(onClear)
+        } else {
+          if (onWrapUnderlying) onWrapUnderlying().then(onClear)
+        }
+      }
+    } else if (onWrapCrossBridge) {
+      onWrapCrossBridge().then(onClear)
+    }
+  }
+
   return (
     <>
       <ModalContent
@@ -515,32 +531,7 @@ export default function CrossChain({
                     )}
                   </ButtonConfirmed>
                 ) : (
-                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  // <ButtonPrimary disabled={delayAction} onClick={() => {
-                    onDelay()
-                    if (isRouter) {
-                      if (!selectCurrency || !isUnderlying) {
-                        if (onWrap) onWrap().then(() => {
-                          onClear()
-                        })
-                      } else {
-                        // if (onWrapUnderlying) onWrapUnderlying()
-                        if (isNativeToken) {
-                          if (onWrapNative) onWrapNative().then(() => {
-                            onClear()
-                          })
-                        } else {
-                          if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                            onClear()
-                          })
-                        }
-                      }
-                    } else {
-                      if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
-                        onClear()
-                      })
-                    }
-                  }}>
+                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={onSwap}>
                     {t('Confirm')}
                   </ButtonPrimary>
                 )
@@ -551,7 +542,6 @@ export default function CrossChain({
       </ModalContent>
 
       <AutoColumn gap={'sm'}>
-
         <SelectCurrencyInputPanel
           label={t('From')}
           value={inputBridgeValue}

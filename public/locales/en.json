@@ -300,7 +300,7 @@
   "bridgeTxns": "Bridge Transactions",
 
   "Reminder": "Reminder",
-  
+
   "mintTip0": "You need have <strong>{{coin}} and 0.02 {{coin2}} gas fee</strong> on your same eth wallet first:",
   "mintTip1": "Crosschain Fee is {{dFee}} %, Minimum Crosschain Fee is {{dMinFee}} {{coin}}, Maximum Crosschain Fee is {{dMaxFee}} {{coin}}",
   "mintTip2": "Minimum Crosschain Amount is",
@@ -354,5 +354,16 @@
   "support": "Support",
   "ConnectTerraStation": "Connect Terra Station",
   "topTip": "We are excited to inform you that Anyswap has rebranded to Multichain! Please visit our brand new website:",
-  "agree": "Agree"
+  "agree": "Agree",
+  "projectName": "Project name",
+  "logoUrl": "Logo url",
+  "socialLinks": "Social links",
+  "disableSourceCopyright": "Disable source copyright",
+  "primaryColor": "Primatry color",
+  "backgroundColor": "Background color",
+  "elementsColor": "Elements color",
+  "light": "Light",
+  "dark": "Dark",
+  "saveSettings": "Save settings",
+  "settings": "Settings"
 }

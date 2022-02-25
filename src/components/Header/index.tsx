@@ -1,29 +1,23 @@
-
 import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import Logo from '../../assets/svg/logo.svg'
-import LogoDark from '../../assets/svg/logo_white.svg'
-import IconDay from '../../assets/images/icon/day.svg'
-import IconNight from '../../assets/images/icon/night.svg'
+import assets from '../../assets'
+import IconDay from '../../assets/icon/day.svg'
+import IconNight from '../../assets/icon/night.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
-import {useAccounts} from '../../hooks/useAccounts'
+import { useAccounts } from '../../hooks/useAccounts'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
+import { useAppState } from '../../state/application/hooks'
 // import { useETHBalances } from '../../state/wallet/hooks'
-
-import { ExternalLink } from '../../theme'
-
+import NavList from './NavList'
 // import Row, { RowFixed } from '../Row'
 import { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
 import SelectNetwork from './SelectNetwork'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
-
-
-
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -64,11 +58,9 @@ const HeaderControls = styled.div`
     justify-self: center;
     width: 100%;
     max-width: 960px;
-    // padding: 1rem;
     padding: 0rem;
     z-index: 99;
     border-radius: 12px 12px 0 0;
-    background-color: ${({ theme }) => theme.bg1};
   `};
 `
 
@@ -130,17 +122,23 @@ const Title = styled.a`
   }
 `
 
-const UniIcon = styled.div`
+const Icon = styled.div`
   ${({ theme }) => theme.flexSC};
   height: 100%;
   img {
-    height:42px
+    height: 42px;
   }
   ${({ theme }) => theme.mediaWidth.upToSmall`
     img {
       height:36px
     }
   `};
+`
+
+const NavListWrapper = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display:none;
+  `}
 `
 
 const StyleDarkToggle = styled.div`
@@ -157,17 +155,7 @@ const StyleDarkToggle = styled.div`
   }
 `
 
-const VersionLinkBox = styled(ExternalLink)`
-  ${({theme}) => theme.flexSC}
-  text-decoration: none;
-  color: rgb(115, 75, 226);
-  line-height: 26px;
-  margin-top: 17px;
-  font-size: 18px;
-  font-weight:bold;
-`
-
-function ViewAccountInfo () {
+function ViewAccountInfo() {
   const { chainId } = useActiveWeb3React()
   const [selectNetworkInfo] = useUserSelectChainId()
   const useChainId = useMemo(() => {
@@ -183,7 +171,7 @@ function ViewAccountInfo () {
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
-  
+
   return (
     <AccountElement active={!!useAccount} style={{ pointerEvents: 'auto' }}>
       {useAccount && baseBalance ? (
@@ -197,53 +185,32 @@ function ViewAccountInfo () {
 }
 
 export default function Header() {
-  // const { account, chainId } = useActiveWeb3React()
-  // const [selectNetworkInfo] = useUserSelectChainId()
-  // const { t } = useTranslation()
-
-  // const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const { logo } = useAppState()
   const [isDark, toggleDarkMode] = useDarkModeManager()
-  // console.log(userEthBalance)
+
   return (
     <HeaderFrame>
       <HeaderRow>
-        <Title href="https://anyswap.exchange" target="__blank">
-          <UniIcon>
-            <img src={isDark ? LogoDark : Logo} alt="logo" />
-          </UniIcon>
+        <Title href=".">
+          <Icon>
+            <img src={logo || assets.TEMP_LOGO} alt="logo" />
+          </Icon>
         </Title>
-        <VersionLinkBox href='https://v1.anyswap.exchange'>
-          V1↗
-        </VersionLinkBox>
+        <NavListWrapper>
+          <NavList />
+        </NavListWrapper>
       </HeaderRow>
+
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
-          {/* {selectNetworkInfo && selectNetworkInfo?.label !== 'EVM' ? '' : (
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-              {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  {userEthBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
-                </BalanceText>
-              ) : null}
-              <Web3Status />
-            </AccountElement>
-          )} */}
           <ViewAccountInfo />
           <StyleDarkToggle
             onClick={() => {
               toggleDarkMode()
             }}
           >
-            {
-              isDark ? (
-
-                <img src={IconDay} alt="" />
-              ) : (
-
-                <img src={IconNight} alt="" />
-              )
-            }
+            {isDark ? <img src={IconDay} alt="" /> : <img src={IconNight} alt="" />}
           </StyleDarkToggle>
         </HeaderElement>
       </HeaderControls>

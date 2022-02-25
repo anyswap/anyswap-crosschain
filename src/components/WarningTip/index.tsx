@@ -25,7 +25,7 @@ const BetaMessage = styled.div`
   margin-top: 0.625rem;
   padding-right: 8.875rem;
 
-  span{
+  span {
     margin-right: 10px;
   }
   .confirm {
@@ -40,28 +40,29 @@ const BetaMessage = styled.div`
     top: 50%;
     right: 1rem;
     position: absolute;
-    background:${({ theme }) => theme.moreBtn};
+    background: ${({ theme }) => theme.moreBtn};
     margin-top: -0.9375rem;
-    color: ${({ theme }) => theme.textColorBold}
+    color: ${({ theme }) => theme.textColorBold};
   }
 `
 
-export default function WarningTip () {
+export default function WarningTip() {
   const { t } = useTranslation()
   const [showBetaMessage, dismissBetaMessage] = useBetaMessageManager()
-  console.log(showBetaMessage)
+
   return (
     <>
-      {/* {showBetaMessage  && ( */}
-      {showBetaMessage ? (
+      {showBetaMessage && (
         <BetaMessage>
           <span role="img" aria-label="warning">
             💀
           </span>{' '}
           {t('betaWarning')}
-          <div className='confirm' onClick={dismissBetaMessage}>{t('agree')}</div>
+          <div className="confirm" onClick={dismissBetaMessage}>
+            {t('agree')}
+          </div>
         </BetaMessage>
-      ) : ''}
+      )}
     </>
   )
 }

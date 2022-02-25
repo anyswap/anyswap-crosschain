@@ -17,7 +17,7 @@ import { NetworkContextName } from '../../constants'
 // `
 
 // const Message = styled.h2`
-//   color: ${({ theme }) => theme.secondary1};
+//   color: ${({ theme }) => theme.blue1};
 // `
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {

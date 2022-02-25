@@ -8,7 +8,7 @@ export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
 export const ETH_TEST_CHAINID = 4
-export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
+export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/59c24a75202249aa92607c1b19158373')
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
 export const ETH_TEST1_CHAINID = 5
@@ -186,6 +186,7 @@ export default {
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
+    storage: '0xF9D447dC12bbAc01d871C5a64399d4d9e19e941B',
     swapRouterToken: '',
     swapInitToken: '0xb09bad01684f6d47fc7dc9591889cc77eaed8d22',
     multicalToken: '0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821',
@@ -195,7 +196,6 @@ export default {
     nodeRpc: ETH_TESTNET,
     nodeRpcList: [
       ETH_TESTNET,
-      'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd',
       'https://rinkeby.infura.io/v3/0e40cfd5e7a64b2d9aea8427e4bd52a0'
     ],
     chainID: ETH_TEST_CHAINID,

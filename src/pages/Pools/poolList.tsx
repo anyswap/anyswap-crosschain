@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 
 import TokenLogo from '../../components/TokenLogo'
-import Title from '../../components/Title'
-import CrossChainTitle from '../../components/CrossChainTitle'
 import { ButtonLight } from '../../components/Button'
 // import {selectNetwork} from '../../components/Header/SelectNetwork'
 
@@ -542,36 +540,9 @@ export default function PoolLists ({
       </>
     )
   }
-  // console.log(config.getCurConfigInfo().isOpenMerge)
+
   return (
     <AppBody>
-      {
-        config.getCurConfigInfo().isOpenMerge ? (
-          <CrossChainTitle />
-        ) : (
-          <Title
-            title={t('pool')}
-            isNavLink={config.getCurConfigInfo().isOpenBridge ? true : false}
-            tabList={config.getCurConfigInfo().isOpenBridge ? [
-              {
-                name: config.getCurConfigInfo().isOpenBridge ? t('router') : t('swap'),
-                path: config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap',
-                regex: config.getCurConfigInfo().isOpenBridge ? /\/router/ : /\/swap/,
-                iconUrl: require('../../assets/images/icon/deposit.svg'),
-                iconActiveUrl: require('../../assets/images/icon/deposit-purple.svg')
-              },
-              {
-                name: t('pool'),
-                path: '/pool',
-                regex: /\/pool/,
-                iconUrl: require('../../assets/images/icon/pool.svg'),
-                iconActiveUrl: require('../../assets/images/icon/pool-purpl.svg')
-              }
-            ] : []}
-          ></Title>
-        )
-      }
-
       <MyBalanceBox>
         <DBTables>
           <DBThead>

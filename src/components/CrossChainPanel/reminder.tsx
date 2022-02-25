@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import {thousandBit} from '../../utils/tools/tools'
 import { useActiveWeb3React } from '../../hooks'
-import BulbIcon from '../../assets/images/icon/bulb.svg'
 import config from '../../config'
 
 const SubCurrencySelectBox = styled.div`
@@ -107,7 +106,6 @@ function CrossBridge (bridgeConfig:any, currency:any, selectChain:any, bridgeTyp
     <SubCurrencySelectBox>
       <dl className='list'>
         <dt>
-          <img src={BulbIcon} alt='' />
           {t('Reminder')}:
         </dt>
         <dd><i></i>{t(tipType + '1' , {

@@ -5,6 +5,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract, useRpcMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
 import chunkArray from '../../utils/chunkArray'
+// import {log} from '../../utils/logs'
 import { CancelledError, retry, RetryableError } from '../../utils/retry'
 import { useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
@@ -197,7 +198,10 @@ export default function Updater({type}: {type?:number}): null {
     if (cancellations.current?.blockNumber !== latestBlockNumber) {
       cancellations.current?.cancellations?.forEach(c => c())
     }
-    // console.log(calls)
+    // log({
+    //   name: 'multicall updater calls',
+    //   value: calls
+    // })
     dispatch(
       fetchingMulticallResults({
         calls,

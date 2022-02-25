@@ -30,6 +30,21 @@ export enum ApplicationModal {
   NETWORK
 }
 
+export type AppData = {
+  owner: string
+  logo: string
+  projectName: string
+  brandColor: string
+  backgroundColorLight: string
+  backgroundColorDark: string
+  elementsColorLight: string
+  elementsColorDark: string
+  socialLinks: string[]
+  disableSourceCopyright: boolean
+}
+
+export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')
+export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(

@@ -137,16 +137,18 @@ async function useBatchWeb3 (chainId, list) {
   return results
 }
 
-async function useWeb3 (chainId, property, name, params) {
+async function useWeb3(chainId, property, name, params) {
   params = params ? params : []
   const rpcArr = config.getCurChainInfo(chainId).nodeRpcList
-  const len = rpcArr.length - 1
+  const len = rpcArr?.length - 1
+
   if (!useNode[chainId]) {
     useNode[chainId] = {
       rpc: rpcArr[0],
       index: 0
     }
   }
+
   let index = useNode[chainId].index
   const rpc = rpcArr[useNode[chainId].index]
   let results = ''

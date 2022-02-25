@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { darken } from 'polished'
 import { transparentize } from 'polished'
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import { ReactComponent as DropDown } from '../../assets/dropdown.svg'
 
 
 export const InputRow = styled.div<{ selected: boolean }>`

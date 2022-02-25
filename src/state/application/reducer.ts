@@ -1,15 +1,37 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
-import { addPopup, PopupContent, removePopup, updateBlockNumber, ApplicationModal, setOpenModal } from './actions'
+import {
+  addPopup,
+  PopupContent,
+  removePopup,
+  updateBlockNumber,
+  ApplicationModal,
+  setOpenModal,
+  retrieveAppData,
+  setAppManagement,
+  AppData
+} from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
-export interface ApplicationState {
+export type ApplicationState = {
+  readonly appManagement: boolean
   readonly blockNumber: { readonly [chainId: number]: number }
   readonly popupList: PopupList
   readonly openModal: ApplicationModal | null
-}
+} & AppData
 
 const initialState: ApplicationState = {
+  appManagement: false,
+  owner: '',
+  logo: '',
+  projectName: '',
+  brandColor: '',
+  backgroundColorLight: '',
+  backgroundColorDark: '',
+  elementsColorLight: '',
+  elementsColorDark: '',
+  socialLinks: [],
+  disableSourceCopyright: false,
   blockNumber: {},
   popupList: [],
   openModal: null
@@ -17,6 +39,16 @@ const initialState: ApplicationState = {
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(retrieveAppData, (state, action) => {
+      const data = action.payload
+
+      if (data && Object.keys(data).length) {
+        Object.keys(data).forEach((key: string) => {
+          // @ts-ignore
+          state[key] = data[key]
+        })
+      }
+    })
     .addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload
       if (typeof state.blockNumber[chainId] !== 'number') {
@@ -24,6 +56,11 @@ export default createReducer(initialState, builder =>
       } else {
         state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
       }
+    })
+    .addCase(setAppManagement, (state, action) => {
+      const { status } = action.payload
+
+      state.appManagement = status
     })
     .addCase(setOpenModal, (state, action) => {
       state.openModal = action.payload

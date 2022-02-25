@@ -18,13 +18,13 @@ const bridgeToken = {
   [VERSION.V5]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a',
     crossBridgeInitToken: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c'
   },
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a',
     crossBridgeInitToken: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c'
   },
 }

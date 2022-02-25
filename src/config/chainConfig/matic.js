@@ -1,29 +1,40 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import { formatSwapTokenList, getLocalRPC } from './methods'
+import { tokenListUrl, VERSION, USE_VERSION } from '../constant'
 
 export const MATIC_MAIN_CHAINID = 137
 // export const MATIC_MAINNET = 'https://rpc-mainnet.maticvigil.com'
 // export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? 'https://rpc-mainnet.maticvigil.com' : 'https://maticnode1.anyswap.exchange'
-export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(MATIC_MAIN_CHAINID, 'https://polygon-rpc.com/') : getLocalRPC(MATIC_MAIN_CHAINID, 'https://maticnode1.anyswap.exchange')
+export const MATIC_MAINNET =
+  process.env.NODE_ENV === 'development'
+    ? getLocalRPC(MATIC_MAIN_CHAINID, 'https://polygon-rpc.com/')
+    : getLocalRPC(MATIC_MAIN_CHAINID, 'https://maticnode1.anyswap.exchange')
 // export const MATIC_MAIN_EXPLORER = 'https://explorer-mainnet.maticvigil.com'
 export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
 // console.log(MATIC_MAINNET)
 export const tokenList = [
   {
-    "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-    "chainId": MATIC_MAIN_CHAINID,
-    "decimals": 8,
-    "name": "Wrapped BTC",
-    "symbol": "WBTC"
+    address: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
+    chainId: MATIC_MAIN_CHAINID,
+    decimals: 8,
+    name: 'Wrapped BTC',
+    symbol: 'WBTC'
   },
   {
-    "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-    "chainId": MATIC_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Dai Stablecoin",
-    "symbol": "DAI"
-  },
+    address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+    chainId: MATIC_MAIN_CHAINID,
+    decimals: 18,
+    name: 'Dai Stablecoin',
+    symbol: 'DAI'
+  }
 ]
+
+export const MATIC_TEST_CHAINID = 80001
+export const MATIC_TESTNET =
+  process.env.NODE_ENV === 'development'
+    ? getLocalRPC(MATIC_TEST_CHAINID, 'https://matic-mumbai.chainstacklabs.com')
+    : getLocalRPC(MATIC_TEST_CHAINID, 'https://matic-mumbai.chainstacklabs.com')
+
+export const MATIC_TEST_EXPLORER = 'https://mumbai.polygonscan.com/'
 
 export const testTokenList = []
 
@@ -32,7 +43,7 @@ const symbol = 'MATIC'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeInitChain: '',
+    bridgeInitChain: ''
   },
   [VERSION.V1_1]: {
     bridgeInitToken: '0xdf00960e0adfea78ee29da7fcca17cfdddc0a4ca',
@@ -41,15 +52,15 @@ const bridgeToken = {
   },
   [VERSION.V2]: {
     bridgeInitToken: '0x9610b01aaa57ec026001f7ec5cface51bfea0ba6',
-    bridgeInitChain: '56',
+    bridgeInitChain: '56'
   },
   [VERSION.V2_1]: {
     bridgeInitToken: '0x9610b01aaa57ec026001f7ec5cface51bfea0ba6',
-    bridgeInitChain: '56',
+    bridgeInitChain: '56'
   },
   [VERSION.V2_2]: {
     bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-    bridgeInitChain: '56',
+    bridgeInitChain: '56'
   },
   [VERSION.V5]: {
     bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
@@ -86,7 +97,7 @@ export default {
       'https://rpc-mainnet.maticvigil.com',
       'https://rpc-mainnet.matic.quiknode.pro',
       'https://matic-mainnet-full-rpc.bwarelabs.com',
-      'https://matic-mainnet-archive-rpc.bwarelabs.com',
+      'https://matic-mainnet-archive-rpc.bwarelabs.com'
     ],
     chainID: MATIC_MAIN_CHAINID,
     lookHash: MATIC_MAIN_EXPLORER + '/tx/',
@@ -102,4 +113,30 @@ export default {
     suffix: 'MATIC',
     anyToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   },
+  [MATIC_TEST_CHAINID]: {
+    tokenListUrl: tokenListUrl + MATIC_TEST_CHAINID,
+    tokenList: formatSwapTokenList(symbol, testTokenList),
+    ...bridgeToken[USE_VERSION],
+    storage: '0x4ccEC45Db8B91F28C9f311FDCA8Cf7eB5E4061FF',
+    swapRouterToken: '',
+    swapInitToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    timelock: '',
+    nodeRpc: MATIC_TESTNET,
+    nodeRpcList: [MATIC_TESTNET],
+    chainID: MATIC_TEST_CHAINID,
+    lookHash: MATIC_TEST_EXPLORER + '/tx/',
+    lookAddr: MATIC_TEST_EXPLORER + '/address/',
+    lookBlock: MATIC_TEST_EXPLORER + '/block/',
+    explorer: MATIC_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Mumbai',
+    networkName: 'Polygon Mumbai',
+    type: 'test',
+    label: MATIC_TEST_CHAINID,
+    isSwitch: 1,
+    suffix: 'ERC20'
+  }
 }

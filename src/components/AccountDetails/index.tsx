@@ -13,7 +13,7 @@ import Copy from './Copy'
 import Transaction from './Transaction'
 
 // import { SUPPORTED_WALLETS } from '../../constants'
-import { ReactComponent as Close } from '../../assets/images/x.svg'
+import { ReactComponent as Close } from '../../assets/x.svg'
 import { getEtherscanLink } from '../../utils'
 import { injected } from '../../connectors'
 import Identicon from '../Identicon'

@@ -1,9 +1,9 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import { formatSwapTokenList, getLocalRPC } from './methods'
+import { tokenListUrl, VERSION, USE_VERSION } from '../constant'
 
-export const OPTIMISM_MAIN_CHAINID = ''
-export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, '')
-export const OPTIMISM_MAIN_EXPLORER = ''
+export const OPTIMISM_MAIN_CHAINID = 10
+export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, 'https://mainnet.optimism.io')
+export const OPTIMISM_MAIN_EXPLORER = 'https://optimistic.etherscan.io'
 
 export const OPTIMISM_TEST_CHAINID = 69
 export const OPTIMISM_TESTNET = getLocalRPC(OPTIMISM_TEST_CHAINID, 'https://kovan.optimism.io')
@@ -11,7 +11,7 @@ export const OPTIMISM_TEST_EXPLORER = 'https://kovan-l2-explorer.surge.sh'
 
 export const tokenList = []
 
-const symbol = 'OPTIMISM'
+const symbol = 'OETH'
 
 const bridgeToken = {
   [VERSION.V3]: {
@@ -29,32 +29,41 @@ const bridgeToken = {
     bridgeInitChain: '421611',
     nativeToken: ''
   },
+  [VERSION.V5]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '1',
+    nativeToken: '0x4200000000000000000000000000000000000006',
+    crossBridgeInitToken: ''
+  },
+  [VERSION.V7]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '1',
+    nativeToken: '0x4200000000000000000000000000000000000006',
+    crossBridgeInitToken: ''
+  }
 }
 
 export default {
-  
   [OPTIMISM_MAIN_CHAINID]: {
     tokenListUrl: tokenListUrl + OPTIMISM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x9e73d56dd1942743ffdf055449b052a806b854be',
+    multicalToken: '0xFbdd194376de19a88118e84E279b977f165d01b8',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: OPTIMISM_MAINNET,
-    nodeRpcList: [
-      OPTIMISM_MAINNET,
-    ],
+    nodeRpcList: [OPTIMISM_MAINNET],
     chainID: OPTIMISM_MAIN_CHAINID,
     lookHash: OPTIMISM_MAIN_EXPLORER + '/tx/',
     lookAddr: OPTIMISM_MAIN_EXPLORER + '/address/',
     lookBlock: OPTIMISM_MAIN_EXPLORER + '/block/',
     explorer: OPTIMISM_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'OPTIMISM',
-    networkName: 'OPTIMISM mainnet',
+    name: 'Optimism',
+    networkName: 'Optimism mainnet',
     networkLogo: 'OPTIMISM',
     type: 'main',
     label: OPTIMISM_MAIN_CHAINID,
@@ -86,5 +95,5 @@ export default {
     label: OPTIMISM_TEST_CHAINID,
     isSwitch: 1,
     suffix: 'OPTIMISM'
-  },
+  }
 }
