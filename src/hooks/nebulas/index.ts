@@ -5,10 +5,19 @@ import { Currency, JSBI, Fraction } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 
 import NebPay from 'nebpay.js'
+import { BigNumber } from 'ethers'
 
 interface SendNasProp {
   recipient: string
   value: string
+}
+
+export const toNasBasic = (value: string) => {
+  const baseDecimals = 18
+  const baseAmount = BigNumber.from(10).pow(BigNumber.from(baseDecimals))
+
+  const stringAmount = baseAmount.mul(value)
+  return stringAmount.toString()
 }
 
 // use neb pay chrome extension to post function
@@ -17,7 +26,7 @@ export const bridgeNas = ({ recipient, value }: SendNasProp) =>
     const callToAddress = 'n1uymn9w3xiEMVJ9XfgoeowpopnUbMC99sF'
     const callFunction = 'transfer'
     const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
-    const callArgs = JSON.stringify([depositAddress, value, recipient])
+    const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
     const nebPay = new NebPay()
     nebPay.call(callToAddress, value, callFunction, callArgs, {
       extension: {
@@ -28,8 +37,7 @@ export const bridgeNas = ({ recipient, value }: SendNasProp) =>
       // debug: true,
       listener: (serialNumber: string, resp: string) => {
         try {
-          console.log('serialNumber', serialNumber)
-          console.log('resp', resp)
+          console.log('bridgeNas resp', resp, serialNumber)
           resolve(serialNumber)
         } catch (err) {
           reject(err)
