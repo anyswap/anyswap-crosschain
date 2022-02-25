@@ -25,7 +25,7 @@
 
 # misc
 .DS_Store
-.env
+# .env
 .env.local
 .env copy
 .env.development.local
