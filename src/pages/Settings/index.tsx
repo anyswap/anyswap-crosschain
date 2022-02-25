@@ -32,6 +32,7 @@ const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
 `
 
 const Button = styled(ButtonPrimary)`
+  max-width: none;
   font-size: 0.8em;
   margin-top: 0.3rem;
 `

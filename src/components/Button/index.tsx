@@ -44,6 +44,7 @@ const Base = styled(RebassButton)<{
 `
 
 export const CleanButton = styled(Base)`
+  max-width: none;
   background-color: transparent;
   color: inherit;
 `

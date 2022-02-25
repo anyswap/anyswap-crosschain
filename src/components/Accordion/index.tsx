@@ -10,8 +10,8 @@ const Wrapper = styled.div<{ minimalStyles?: boolean; padding: number; borderRad
       : `
     padding: ${padding}rem ${padding * 1.6}rem;
     border-radius: ${borderRadius}rem;
-    border: 1px solid ${theme.bg3};
-    background-color: ${theme.bg2};
+    border: 1px solid ${theme.bg4};
+    background-color: ${theme.bg3};
   `}
 `
 
