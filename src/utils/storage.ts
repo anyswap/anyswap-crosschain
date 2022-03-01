@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import STORAGE from '../constants/abis/storage.json'
+import STORAGE from '../constants/abis/app/Storage.json'
 import { chainInfo } from '../config/chainConfig'
 
 export const callStorage = async (params: {

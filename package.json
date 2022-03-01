@@ -96,7 +96,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "minify-contracts-build": "npx minify-json ./src/constants/abis/*",
+    "minify-app-contracts-build": "npx minify-json ./src/constants/abis/app",
     "test": "node scripts/test.js --env=jsdom",
     "integration-test": "start-server-and-test 'serve build -l 3006' http://localhost:3006 'cypress run'"
   },
