@@ -32,6 +32,8 @@ import glmr, {GLMR_MAIN_CHAINID} from './moonbeam'
 import astar, {ASTAR_MAIN_CHAINID} from './astar'
 import rose, {ROSE_MAIN_CHAINID} from './rose'
 import vlx, {VLX_MAIN_CHAINID} from './vlx'
+import clv, {CLV_MAIN_CHAINID} from'./clv'
+import crab, {CRAB_MAIN_CHAINID} from './crab'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -73,6 +75,8 @@ export const chainInfo:ConFig = {
   ...astar,
   ...rose,
   ...vlx,
+  ...clv,
+  ...crab
 }
 
 const allChainList = [
@@ -104,6 +108,8 @@ const allChainList = [
   FUSE_MAIN_CHAINID,
   ASTAR_MAIN_CHAINID,
   VLX_MAIN_CHAINID,
+  CLV_MAIN_CHAINID,
+  CRAB_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 

@@ -26,7 +26,7 @@ export function selectNetwork (chainID:any) {
               decimals: 18,
             },
             rpcUrls: [chainInfo[chainID].nodeRpc],
-            blockExplorerUrls: chainInfo[chainID].nodeRpcList ? chainInfo[chainID].nodeRpcList : [chainInfo[chainID].explorer],
+            blockExplorerUrls: chainInfo[chainID].explorer ? [chainInfo[chainID].explorer] : [],
             iconUrls: null // Currently ignored.
           }
         ],
