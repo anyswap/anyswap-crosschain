@@ -496,7 +496,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       </AutoColumn>
       <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} />
       <ErrorTip errorTip={errorTip} />
-      {errorTip ? errorTip.tip : '--'}
+
       {config.isStopSystem ? (
         <BottomGrouping>
           <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
