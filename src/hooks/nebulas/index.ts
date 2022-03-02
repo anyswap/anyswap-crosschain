@@ -28,7 +28,7 @@ export const bridgeNas = ({ recipient, value }: SendNasProp) =>
     const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
     const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
     const nebPay = new NebPay()
-    nebPay.call(callToAddress, value, callFunction, callArgs, {
+    nebPay.call(callToAddress, 0, callFunction, callArgs, {
       extension: {
         openExtension: true
       },
