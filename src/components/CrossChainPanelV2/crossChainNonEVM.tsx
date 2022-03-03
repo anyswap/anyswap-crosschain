@@ -11,6 +11,7 @@ import Reminder from './reminder'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
+import { useCurrentNasBalance, useNebBridgeCallback } from '../../hooks/nas'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -100,6 +101,7 @@ export default function CrossChain({
     return false
   }, [selectDestCurrency])
   
+  console.log(selectCurrency)
   const isUnderlying = useMemo(() => {
     if (selectCurrency && selectCurrency?.underlying) {
       return true
@@ -134,6 +136,18 @@ export default function CrossChain({
     })
   }
 
+  const { balanceBig: nasBalance } = useCurrentNasBalance()
+
+  const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
+    inputCurrency: selectCurrency,
+    DepositAddress: destConfig.DepositAddress,
+    typedValue: inputBridgeValue,
+    chainId,
+    selectChain,
+    recipient,
+    pairid: destConfig?.pairid,
+  })
+
   const { balance: terraBalance, wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
     selectCurrency,
     destConfig.DepositAddress,
@@ -150,19 +164,28 @@ export default function CrossChain({
 
   const useBalance = useMemo(() => {
     // console.log(terraBalance)
-    if (terraBalance) {
-      return terraBalance?.toSignificant(3)
+    if (chainId === 'NEBULAS') {
+      if (nasBalance) {
+        const nasBalanceFormat = nasBalance?.toSignificant(3)
+        return nasBalanceFormat
+      }
+    } else if (chainId === 'TERRA') {
+      if (terraBalance) {
+        return terraBalance?.toSignificant(3)
+      }
     }
     return ''
-  }, [terraBalance])
+  }, [terraBalance,chainId,nasBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
-    if (wrapInputErrorTerra) {
+    if (wrapInputErrorTerra && chainId === 'TERRA') {
       return wrapInputErrorTerra
+    } else if (wrapInputErrorNeb && chainId === 'NEBULAS') {
+      return wrapInputErrorNeb
     } else {
       return false
     }
-  }, [wrapInputErrorTerra])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -243,7 +266,7 @@ export default function CrossChain({
     //   return t('swap')
     // }
     return t('swap')
-  }, [errorTip, t, wrapTerraType])
+  }, [errorTip, t, wrapTerraType, wrapNebType])
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
@@ -350,9 +373,16 @@ export default function CrossChain({
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                 // <ButtonPrimary disabled={delayAction} onClick={() => {
                   onDelay()
-                  if (onTerraWrap) onTerraWrap().then(() => {
-                    onClear()
-                  })
+                  if (onTerraWrap && chainId === 'TERRA') {
+                    onTerraWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onNebWrap && chainId === 'NEBULAS') {
+                    console.log('onNebWrap')
+                    onNebWrap().then(() => {
+                      onClear()
+                    })
+                  }
                 }}>
                   {t('Confirm')}
                 </ButtonPrimary>

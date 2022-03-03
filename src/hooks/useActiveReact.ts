@@ -3,10 +3,13 @@ import { useConnectedWallet } from '@terra-money/wallet-provider'
 import { useUserSelectChainId } from '../state/user/hooks'
 import { useMemo } from 'react'
 
+import { useCurrentAddress } from './nas'
+
 export function useActiveReact () {
   const { account, chainId } = useActiveWeb3React()
   const connectedWallet = useConnectedWallet()
   const {selectNetworkInfo} = useUserSelectChainId()
+  const nebAddress = useCurrentAddress()
   return useMemo(() => {
     let useAccount = account
     let useChainId:any = chainId
@@ -16,11 +19,14 @@ export function useActiveReact () {
     } else if (selectNetworkInfo?.label === 'BTC') {
       useAccount = ''
       useChainId = selectNetworkInfo?.chainId
+    } else if (selectNetworkInfo?.label === 'NEBULAS') {
+      useAccount = nebAddress
+      useChainId = selectNetworkInfo?.chainId
     }
     return {
       account: useAccount,
       chainId: useChainId,
       evmAccount: account
     }
-  }, [account, connectedWallet, selectNetworkInfo, chainId])
+  }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress])
 }

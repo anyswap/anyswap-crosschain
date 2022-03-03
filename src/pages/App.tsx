@@ -34,7 +34,10 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
 import config from '../config'
 import farmlist from '../config/farmlist'
-// console.log(ANYFarming)
+
+// import '../hooks/xrp'
+
+// console.log(Sdk)
 const AppWrapper = styled.div`
   // display: flex;
   // flex-flow: column;
