@@ -1,56 +1,37 @@
 import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
-import { deployAnyswapERC20, deployAnyswapRouter, deployRouterConfig } from '../../utils/contract'
+import { deployAnyswapERC20 } from '../../utils/contract'
 import { OptionWrapper } from './index'
 
-enum Option {
-  AddToken,
-  AddBlockchain
-}
-
-enum Contract {
-  AnyswapERC20,
-  AnyswapRouter,
-  AnyswapRouterConfig
-}
-
-const deploy = {
-  [Contract.AnyswapERC20]: deployAnyswapERC20,
-  [Contract.AnyswapRouter]: deployAnyswapRouter,
-  [Contract.AnyswapRouterConfig]: deployRouterConfig
-}
+const OptionLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+`
 
 export default function Contracts() {
-  /* 
-  display options:
-  1. add a token (choose source and target networks)
-  2. add a blockchain
-
-  for 1 - deploy AnyswapERC20 for source/target networks
-  TODO: call methods: ...
-
-  for 2 - deploy AnyswapRouter (and RouterConfig?)
-  ? also deploy AnyswapERC20 for each token from the source network ?
-  TODO: call methods: ...
-  
-  */
   const { library, account, chainId } = useActiveWeb3React()
-
-  const [
-    currentOption
-    // setCurrentOption
-  ] = useState(Option.AddToken)
+  const { t } = useTranslation()
 
   const [underlying, setUnderlying] = useState('')
   const [name, setName] = useState('')
   const [symbol, setSymbol] = useState('')
-  const [decimals, setDecimals] = useState('')
+  const [decimals, setDecimals] = useState(-1)
   // TODO: add mpc address somewhere
   const [vault] = useState('') // mpc  address
   // TODO: get router address somewhere
   const [minter] = useState('')
+
+  const [canDeployToken, setCanDeployToken] = useState(false)
+
+  useEffect(() => {
+    setCanDeployToken(
+      Boolean(underlying && name && symbol && Number.isInteger(decimals) && decimals > -1 && vault && minter)
+    )
+  }, [underlying, name, symbol, decimals, vault, minter])
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
@@ -60,8 +41,12 @@ export default function Contracts() {
         const web3 = getWeb3Library(library.provider)
         //@ts-ignore
         const contract = new web3.eth.Contract(ERC20_ABI, underlying)
+        const name = await contract.methods.name().call()
+        const symbol = await contract.methods.symbol().call()
         const decimals = await contract.methods.decimals().call()
 
+        setName(`Any${name}`)
+        setSymbol(`Any${symbol}`)
         setDecimals(decimals)
       } catch (error) {
         console.error(error)
@@ -71,10 +56,23 @@ export default function Contracts() {
     fetchUnderlyingInfo()
   }, [underlying, chainId])
 
-  const onDeployment = async ({ contract, params }: { contract: Contract; params: { [k: string]: any } }) => {
+  const onTokenDeployment = async () => {
+    console.group('%c Log', 'color: orange; font-size: 14px')
+    console.log('name: ', name)
+    console.log('symbol: ', symbol)
+    console.log('decimals: ', decimals)
+    console.groupEnd()
+
     try {
-      await deploy[contract]({
-        ...params,
+      await deployAnyswapERC20({
+        library,
+        account,
+        name,
+        symbol,
+        decimals,
+        underlying,
+        vault,
+        minter,
         onHash: (hash: string) => {
           console.log('hash: ', hash)
         }
@@ -93,24 +91,20 @@ export default function Contracts() {
 
   return (
     <div>
-      <h4>Option: {currentOption}</h4>
+      <OptionWrapper>
+        <OptionLabel>
+          {t('addressOfERC20Token')}
+          <input
+            defaultValue={underlying}
+            type="text"
+            placeholder="0x..."
+            onChange={event => setUnderlying(event.target.value)}
+          />
+        </OptionLabel>
+      </OptionWrapper>
 
-      {currentOption === Option.AddToken ? (
-        <>
-          <OptionWrapper>
-            <label>
-              Address of the your ERC20 token
-              <input
-                defaultValue={underlying}
-                type="text"
-                placeholder="0x..."
-                onChange={event => setUnderlying(event.target.value)}
-              />
-            </label>
-          </OptionWrapper>
-
-          <OptionWrapper>
-            <label>
+      {/* <OptionWrapper>
+            <OptionLabel>
               Name
               <input
                 defaultValue={name}
@@ -118,11 +112,11 @@ export default function Contracts() {
                 placeholder="0x..."
                 onChange={event => setName(event.target.value)}
               />
-            </label>
+            </OptionLabel>
           </OptionWrapper>
 
           <OptionWrapper>
-            <label>
+            <OptionLabel>
               Symbol
               <input
                 defaultValue={symbol}
@@ -130,51 +124,12 @@ export default function Contracts() {
                 placeholder="0x..."
                 onChange={event => setSymbol(event.target.value)}
               />
-            </label>
-          </OptionWrapper>
-
-          {/* <OptionWrapper>
-            <label>
-              Decimals
-              <input
-                defaultValue={decimals}
-                type="text"
-                placeholder="0x..."
-                onChange={event => setDecimals(event.target.value)}
-              />
-            </label>
+            </OptionLabel>
           </OptionWrapper> */}
 
-          <button
-            onClick={() =>
-              onDeployment({
-                contract: Contract.AnyswapERC20,
-                params: {
-                  library,
-                  account,
-                  name,
-                  symbol,
-                  decimals,
-                  underlying,
-                  vault,
-                  minter
-                }
-              })
-            }
-          >
-            Deploy token
-          </button>
-        </>
-      ) : (
-        <>
-          <button onClick={() => onDeployment({ contract: Contract.AnyswapRouter, params: {} })}>
-            Deploy AnyswapRouter
-          </button>
-          <button onClick={() => onDeployment({ contract: Contract.AnyswapRouterConfig, params: {} })}>
-            Deploy Config
-          </button>
-        </>
-      )}
+      <button disabled={!canDeployToken} onClick={onTokenDeployment}>
+        {t('deployCrossChainToken')}
+      </button>
     </div>
   )
 }
