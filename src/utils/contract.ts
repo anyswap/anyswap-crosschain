@@ -60,7 +60,7 @@ export const deployContract = async (params: any) => {
 }
 
 export const deployAnyswapERC20 = async (params: any) => {
-  const { library, onHash, name, symbol, decimals, underlying, vault, minter } = params
+  const { library, account, onHash, name, symbol, decimals, underlying, vault, minter } = params
   const { abi, bytecode } = AnyswapERC20
 
   return deployContract({
@@ -68,12 +68,13 @@ export const deployAnyswapERC20 = async (params: any) => {
     byteCode: bytecode,
     deployArguments: [name, symbol, decimals, underlying, vault, minter],
     library,
+    account,
     onHash
   })
 }
 
 export const deployAnyswapRouter = async (params: any) => {
-  const { library, onHash, factory, wNative, mpc } = params
+  const { library, account, onHash, factory, wNative, mpc } = params
   const { abi, bytecode } = AnyswapV6Router
 
   return deployContract({
@@ -81,12 +82,13 @@ export const deployAnyswapRouter = async (params: any) => {
     byteCode: bytecode,
     deployArguments: [factory, wNative, mpc],
     library,
+    account,
     onHash
   })
 }
 
 export const deployRouterConfig = async (params: any) => {
-  const { library, onHash } = params
+  const { library, onHash, account } = params
   const { abi, bytecode } = RouterConfig
 
   return deployContract({
@@ -94,6 +96,7 @@ export const deployRouterConfig = async (params: any) => {
     byteCode: bytecode,
     deployArguments: [],
     library,
+    account,
     onHash
   })
 }

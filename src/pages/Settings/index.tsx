@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { useActiveWeb3React } from '../../hooks'
 import AppBody from '../AppBody'
 import { MyBalanceBox } from '../Dashboard/styleds'
 import Interface from './Interface'
 import Contracts from './Contracts'
+import config from '../../config'
+
+export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
+  margin: ${({ margin }) => margin || 0.2}rem 0;
+  padding: 0.3rem 0;
+
+  ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
+`
 
 const SettingsWrapper = styled(MyBalanceBox)`
   max-width: 35rem;
@@ -45,28 +54,35 @@ const Content = styled.div`
 
 export default function Settings() {
   const { t } = useTranslation()
+  const { chainId } = useActiveWeb3React()
+  const [tabs, setTabs] = useState<string[]>([])
   const [tab, setTab] = useState('interface')
 
-  const returnTabs = () => {
-    return [
-      { tabKey: 'interface', tabName: 'interface' },
-      { tabKey: 'contracts', tabName: 'contracts' }
-    ].map((info, index) => {
-      return (
-        <Tab key={index} active={tab === info.tabKey} onClick={() => setTab(info.tabKey)}>
-          {t(info.tabName)}
-        </Tab>
-      )
-    })
-  }
+  useEffect(() => {
+    if (chainId === config.STORAGE_CHAIN_ID) {
+      setTabs(['interface', 'contracts'])
+      setTab('interface')
+    } else {
+      setTabs(['contracts'])
+      setTab('contracts')
+    }
+  }, [chainId])
 
   return (
     <AppBody>
       <SettingsWrapper>
-        <Tabs>{returnTabs()}</Tabs>
+        {tabs.length > 1 ? (
+          <Tabs>
+            {tabs.map((name, index) => (
+              <Tab key={index} active={tab === name} onClick={() => setTab(name)}>
+                {t(name)}
+              </Tab>
+            ))}
+          </Tabs>
+        ) : null}
         <Content>
           {tab === 'contracts' && <Contracts />}
-          {tab === 'interface' && <Interface />}
+          {chainId === config.STORAGE_CHAIN_ID && tab === 'interface' && <Interface />}
         </Content>
       </SettingsWrapper>
     </AppBody>

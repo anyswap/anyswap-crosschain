@@ -224,7 +224,7 @@ const StyledNavLink = styled(NavLink).attrs({
 
 export default function NavList() {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const { owner, appManagement } = useAppState()
   const dispatch = useDispatch()
   const [isOwner, setIsOwner] = useState<boolean>(!owner || account?.toLowerCase() === owner?.toLowerCase())
@@ -331,7 +331,7 @@ export default function NavList() {
           {t('pool')}
         </StyledNavLink>
 
-        {isOwner && chainId === config.STORAGE_CHAIN_ID && (
+        {isOwner && (
           <StyledNavLink id={`settings-nav-link`} to={'/settings'} onClick={openSettings}>
             {t('settings')}
           </StyledNavLink>

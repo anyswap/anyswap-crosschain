@@ -13,16 +13,10 @@ import ColorSelector from '../../components/ColorSelector'
 import InputPanel from '../../components/InputPanel'
 import Toggle from '../../components/Toggle'
 import ListFactory from '../../components/ListFactory'
+import { OptionWrapper } from './index'
 import { callStorage } from '../../utils/storage'
 import { STORAGE_METHODS } from '../../constants'
 import config from '../../config'
-
-const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
-  margin: ${({ margin }) => margin || 0.2}rem 0;
-  padding: 0.3rem 0;
-
-  ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
-`
 
 const Button = styled(ButtonPrimary)`
   max-width: none;

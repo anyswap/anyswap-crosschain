@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
 import Popups from '../components/Popups'
-import { useActiveWeb3React } from '../hooks'
 import Web3ReactManager from '../components/Web3ReactManager'
 import URLWarning from '../components/Header/URLWarning'
 // import Pool from './Pool'
@@ -119,7 +118,6 @@ const BodyWrapper = styled.div`
 // }
 
 export default function App() {
-  const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
 
   let initUrl = '/dashboard'
@@ -166,12 +164,7 @@ export default function App() {
 
               <Web3ReactManager>
                 <Switch>
-                  <Route
-                    exact
-                    strict
-                    path="/settings"
-                    component={() => (appManagement && chainId === config.STORAGE_CHAIN_ID ? <Settings /> : null)}
-                  />
+                  <Route exact strict path="/settings" component={() => (appManagement ? <Settings /> : null)} />
                   <Route exact strict path="/dashboard" component={() => <Dashboard />} />
                   <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
                   <Route exact strict path="/pool" component={() => <PoolList />} />
