@@ -312,35 +312,37 @@ const tokenList = {
       }
     },
     "137": {
-      "address" : "0x231e9a191598b7eba9c374118c9abcf6d2ba41df", 
-      "chainId" : "137", 
-      "decimals" : null, 
-      "destChains" : {
-          "250" : {
-              "name" : "Pink Flamingo Social Club", 
-              "symbol" : "PFSC", 
-              "decimals" : null, 
-              "address" : "0xd761db316b5b9c9c51f7f80127497bc618e2b422"
-          }, 
-          "43114" : {
-              "name" : "Pink Flamingo Social Club", 
-              "symbol" : "PFSC", 
-              "decimals" : null, 
-              "address" : "0x5775e01002f76ac0f1c3ec516d6c849b23d4a37b"
-          }
-      }, 
-      "fee" : {
-          "feePerTransaction" : "0", 
-          "feePerUnitInBatch" : "0"
-      }, 
-      "name" : "Pink Flamingo Social Club", 
-      "priceLabel" : "", 
-      "routerToken" : "0x887230c6bfeecd0d94c467fb05e852defcbdd1bb", 
-      "symbol" : "PFSC", 
-      "tokenid" : "PinkFlamingo", 
-      "version" : "NFTV1", 
-      "logoUrl" : "", 
-      "nfttype" : "erc721"
+      "0x231e9a191598b7eba9c374118c9abcf6d2ba41df": {
+        "address" : "0x231e9a191598b7eba9c374118c9abcf6d2ba41df", 
+        "chainId" : "137", 
+        "decimals" : null, 
+        "destChains" : {
+            "250" : {
+                "name" : "Pink Flamingo Social Club", 
+                "symbol" : "PFSC", 
+                "decimals" : null, 
+                "address" : "0xd761db316b5b9c9c51f7f80127497bc618e2b422"
+            }, 
+            "43114" : {
+                "name" : "Pink Flamingo Social Club", 
+                "symbol" : "PFSC", 
+                "decimals" : null, 
+                "address" : "0x5775e01002f76ac0f1c3ec516d6c849b23d4a37b"
+            }
+        }, 
+        "fee" : {
+            "feePerTransaction" : "0", 
+            "feePerUnitInBatch" : "0"
+        }, 
+        "name" : "Pink Flamingo Social Club", 
+        "priceLabel" : "", 
+        "routerToken" : "0x887230c6bfeecd0d94c467fb05e852defcbdd1bb", 
+        "symbol" : "PFSC", 
+        "tokenid" : "PinkFlamingo", 
+        "version" : "NFTV1", 
+        "logoUrl" : "", 
+        "nfttype" : "erc721"
+      }
     }
   }
 }
