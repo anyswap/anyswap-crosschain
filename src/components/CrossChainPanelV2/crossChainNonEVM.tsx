@@ -83,7 +83,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log('selectCurrency', selectCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -117,7 +116,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
 
   function changeNetwork(chainID: any) {
     selectNetwork(chainID).then((res: any) => {
-      console.log(res)
+      // console.log(res)
       if (res.msg === 'Error') {
         alert(t('changeMetamaskNetwork', { label: config.getCurChainInfo(chainID).networkName }))
       }
@@ -160,7 +159,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     if (chainId === 'NEBULAS') {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toSignificant(3)
-        console.log('nasBalance', nasBalanceFormat)
+        // console.log('nasBalance', nasBalanceFormat)
         return nasBalanceFormat
       }
     }
@@ -172,7 +171,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     if (wrapInputErrorTerra && chainId === 'TERRA') {
       return wrapInputErrorTerra
     } else if (wrapInputErrorNeb && chainId === 'NEBULAS') {
-      console.log('isWrapInputError NEBULAS')
+      // console.log('isWrapInputError NEBULAS')
       return wrapInputErrorNeb
     } else {
       return false
@@ -233,7 +232,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     if (!account) {
       return undefined
     } else if (isInputError) {
-      console.log('errorTip isInputError', isInputError)
+      // console.log('errorTip isInputError', isInputError)
       return isInputError
     } else if (recipient && !Boolean(isAddr)) {
       return {
@@ -372,7 +371,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
                       onClear()
                     })
                   else if (onNebWrap && chainId === 'NEBULAS') {
-                    console.log('onNebWrap')
+                    // console.log('onNebWrap')
                     onNebWrap().then(() => {
                       onClear()
                     })
@@ -390,11 +389,9 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
           label={t('From')}
           value={inputBridgeValue}
           onUserInput={value => {
-            console.log('onUserInput', value)
             setInputBridgeValue(value)
           }}
           onCurrencySelect={inputCurrency => {
-            // console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
           }}
           onMax={value => {
@@ -421,7 +418,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
             clickable={false}
             style={{ cursor: 'pointer' }}
             onClick={() => {
-              // toggleNetworkModal()
               changeNetwork(selectChain)
             }}
           >
