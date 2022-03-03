@@ -37,7 +37,7 @@ export const bridgeNas = ({ recipient, value }: SendNasProp) =>
       // debug: true,
       listener: (serialNumber: string, resp: string) => {
         try {
-          console.log('bridgeNas resp', resp, serialNumber)
+          // console.log('bridgeNas resp', resp, serialNumber)
           resolve(serialNumber)
         } catch (err) {
           reject(err)
@@ -57,7 +57,7 @@ export const useCurrentAddress = () => {
     if (isExtWalletInstall() && !address) {
       NasExtWallet.getUserAddress((addr: string) => {
         setAddress(addr)
-        console.log('user nas address: ' + address + Date.now())
+        // console.log('user nas address: ' + address + Date.now())
       })
     }
   }, [address])
@@ -83,7 +83,7 @@ export const useCurrentNasBalance = () => {
     if (nebulas.Account.isValidAddress(address)) {
       const state = await neb.api.getAccountState(address)
       setBalance(state.balance)
-      console.log('getNasBalance', address, state)
+      // console.log('getNasBalance', address, state)
       return state.balance
     }
   }, [address])
@@ -130,7 +130,7 @@ export function useNebBridgeCallback({
   const { t } = useTranslation()
   const { balanceBig } = useCurrentNasBalance()
 
-  console.log('useNebBridgeCallback', chainId, typedValue)
+  // console.log('useNebBridgeCallback', chainId, typedValue)
   return useMemo(() => {
     if (balanceBig && typedValue) {
       // const inputAmount = useMemo(
@@ -144,14 +144,14 @@ export function useNebBridgeCallback({
 
       const inputError = sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
 
-      console.log('useNebBridgeCallback inputError', inputError)
+      // console.log('useNebBridgeCallback inputError', inputError)
 
       return {
         inputError,
         wrapType: WrapType.WRAP,
         execute: typedValue
           ? async () => {
-              console.log('call neb pay wallet')
+              // console.log('call neb pay wallet')
               bridgeNas({
                 recipient,
                 value: typedValue
