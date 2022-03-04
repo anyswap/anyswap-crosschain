@@ -101,8 +101,8 @@ export default function CrossChain({
     return false
   }, [selectDestCurrency])
   
-  console.log(selectCurrency)
   const isUnderlying = useMemo(() => {
+    console.log(selectCurrency)
     if (selectCurrency && selectCurrency?.underlying) {
       return true
     }

@@ -1,20 +1,26 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import nebulas from 'nebulas'
+// import nebulas from 'nebulas'
 // import { tryParseAmount3 } from '../../state/swap/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import { Currency, JSBI, Fraction } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
-
+import axios from 'axios'
+// import qs from 'qs'
 // import { useTransactionAdder } from '../../state/transactions/hooks'
 import useInterval from '../../hooks/useInterval'
 
 import NebPay from 'nebpay.js'
 import { BigNumber } from 'ethers'
 
-interface SendNasProp {
-  recipient: string
-  value: string
-}
+// interface SendNasProp {
+//   recipient: string
+//   value: string
+// }
+const Base58 = require('bs58')
+const cryptoUtils = require('./crypto-utils')
+
+const NAS_URL = 'https://testnet.nebulas.io'
+// const NAS_URL = 'https://mainnet.nebulas.io'
 
 export const toNasBasic = (value: string) => {
   const baseDecimals = 18
@@ -25,30 +31,81 @@ export const toNasBasic = (value: string) => {
 }
 
 // use neb pay chrome extension to post function
-export const bridgeNas = ({ recipient, value }: SendNasProp) =>
-  new Promise((resolve, reject) => {
-    const callToAddress = 'n1uymn9w3xiEMVJ9XfgoeowpopnUbMC99sF'
-    const callFunction = 'transfer'
-    const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
-    const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
-    const nebPay = new NebPay()
-    nebPay.call(callToAddress, 0, callFunction, callArgs, {
-      extension: {
-        openExtension: true
-      },
-      gasPrice: '20000000000',
-      gasLimit: '8000000',
-      // debug: true,
-      listener: (serialNumber: string, resp: string) => {
-        try {
-          console.log('bridgeNas resp', resp, serialNumber)
-          resolve(serialNumber)
-        } catch (err) {
-          reject(err)
-        }
+// export const bridgeNas = ({ recipient, value }: SendNasProp) =>
+//   new Promise((resolve, reject) => {
+//     const callToAddress = 'n1uymn9w3xiEMVJ9XfgoeowpopnUbMC99sF'
+//     const callFunction = 'transfer'
+//     const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
+//     const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
+//     const nebPay = new NebPay()
+//     nebPay.call(callToAddress, 0, callFunction, callArgs, {
+//       extension: {
+//         openExtension: true
+//       },
+//       gasPrice: '20000000000',
+//       gasLimit: '8000000',
+//       // debug: true,
+//       listener: (serialNumber: string, resp: string) => {
+//         try {
+//           console.log('bridgeNas resp', resp, serialNumber)
+//           resolve(serialNumber)
+//         } catch (err) {
+//           reject(err)
+//         }
+//       }
+//     })
+//   })
+const AddressLength = 26;
+const AddressPrefix = 25;
+const NormalType = 87;
+const ContractType = 88;
+
+// const KeyVersion3 = 3;
+// const KeyCurrentVersion = 4;
+const isString = function (obj:any) {
+  return typeof obj === 'string' && obj.constructor === String;
+}
+const isNumber = function (object:any) {
+	return typeof object === 'number';
+}
+export const isValidAddress = function (addr:any, type?:any) {
+  /*jshint maxcomplexity:10 */
+
+  if (isString(addr)) {
+      try {
+          addr = Base58.decode(addr);
+      } catch (e) {
+          console.log("invalid address.");
+          // if address can't be base58 decode, return false.
+          return false;
       }
-    })
-  })
+  } else if (!Buffer.isBuffer(addr)) {
+      return false;
+  }
+  // address not equal to 26
+  if (addr.length !== AddressLength) {
+      return false;
+  }
+
+  // check if address start with AddressPrefix
+  const buff = Buffer.from(addr);
+  if (buff.readUIntBE(0, 1) !== AddressPrefix) {
+      return false;
+  }
+
+  // check if address type is NormalType or ContractType
+  const t = buff.readUIntBE(1, 1);
+  if (isNumber(type) && (type === NormalType || type === ContractType)) {
+      if (t !== type) {
+          return false;
+      }
+  } else if (t !== NormalType && t !== ContractType) {
+      return false;
+  }
+  const content = addr.slice(0, 22);
+  const checksum = addr.slice(-4);
+  return Buffer.compare(cryptoUtils.sha3(content).slice(0, 4), checksum) === 0;
+}
 
 export const isExtWalletInstall = () => {
   return 'NasExtWallet' in window
@@ -59,9 +116,10 @@ export const useCurrentAddress = () => {
 
   const getUserAddress = useCallback(() => {
     if (isExtWalletInstall() && !address) {
+      // console.log(NasExtWallet)
       NasExtWallet.getUserAddress((addr: string) => {
         setAddress(addr)
-        console.log('user nas address: ' + address + Date.now())
+        // console.log('user nas address: ' + address + Date.now())
       })
     }
   }, [address])
@@ -76,16 +134,21 @@ export const useCurrentAddress = () => {
 export const useCurrentNasBalance = () => {
   const [balance, setBalance] = useState<string>()
   const address = useCurrentAddress()
-  const neb = new nebulas.Neb()
-  neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
-  console.log(address)
+  // const neb = new nebulas.Neb()
+  // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
+  // console.log(address)
   const getNasBalance = useCallback(async () => {
-    if (nebulas.Account.isValidAddress(address)) {
-      const state = await neb.api.getAccountState(address)
-      setBalance(state.balance)
-      console.log('getNasBalance', address, state)
+    if (isValidAddress(address)) {
+      // const state = await neb.api.getAccountState(address)
+      const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
+      // console.log(state)
+      if (state?.data?.result) {
+        setBalance(state?.data?.result.balance)
+      }
+      // console.log('getNasBalance', address, state)
       return state.balance
     }
+    // setBalance('')
   }, [address])
 
   useEffect(() => {
@@ -122,6 +185,60 @@ export enum WrapType {
 
 // const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
+function sendNasTx (token:any, DepositAddress:any,inputAmount:any,recipient:any) {
+  return new Promise(resolve => {
+    const callFunction = 'transfer'
+    const depositAddress = DepositAddress
+    const callArgs = JSON.stringify([depositAddress, inputAmount, recipient])
+    const nebPay = new NebPay()
+    // console.log(nebPay)
+    // console.log(nebPay.call(token, 0, callFunction, callArgs, {
+    //   extension: {
+    //     openExtension: true
+    //   },
+    //   gasPrice: '20000000000',
+    //   gasLimit: '8000000',
+    // }))
+    nebPay.call(token, 0, callFunction, callArgs, {
+      extension: {
+        openExtension: true
+      },
+      gasPrice: '20000000000',
+      gasLimit: '8000000',
+      // debug: true,
+      listener: (serialNumber: string, resp: string) => {
+        try {
+          console.log('bridgeNas resp')
+          console.log(resp)
+          console.log(serialNumber)
+          resolve(resp)
+          // resolve(serialNumber)
+          // if (txData.hash && account && terraRecipient) {
+          //   const data:any = {
+          //     hash: txData.hash?.toLowerCase(),
+          //     chainId: chainId,
+          //     selectChain: selectChain,
+          //     account: address,
+          //     value: inputAmount,
+          //     formatvalue: typedValue,
+          //     to: recipient,
+          //     symbol: inputCurrency?.symbol,
+          //     version: 'swapin',
+          //     pairid: pairid,
+          //   }
+          //   recordsTxns(data)
+          // }
+          // onChangeViewDtil(txData?.hash, true)
+        } catch (err) {
+          // reject(err)
+          console.log(err)
+          resolve('')
+        }
+      }
+    })
+  })
+}
+
 export function useNebBridgeCallback({
   inputCurrency,
   typedValue,
@@ -136,62 +253,65 @@ export function useNebBridgeCallback({
   execute?: undefined | (() => Promise<void>)
 } {
   const { t } = useTranslation()
-  const { balanceBig } = useCurrentNasBalance()
+  const { balanceBig:balance } = useCurrentNasBalance()
   const address = useCurrentAddress()
   // const addTransaction = useTransactionAdder()
 
-  console.log(balanceBig)
+  // console.log(balance)
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount3(typedValue, inputCurrency?.decimals) : undefined, [inputCurrency, typedValue])
   return useMemo(() => {
-    if (balanceBig && typedValue) {
-      const sufficientBalance = true
+    if (balance && typedValue) {
+      const sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
 
       const inputError = sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
 
-      console.log('useNebBridgeCallback inputError', inputError)
-
+      // console.log('useNebBridgeCallback inputError', inputError)
+      // console.log(isValidAddress(inputCurrency?.address))
       return {
         inputError,
         wrapType: WrapType.WRAP,
         execute: typedValue
           ? async () => {
-              const callFunction = 'transfer'
-              const depositAddress = DepositAddress
-              const callArgs = JSON.stringify([depositAddress, inputAmount, recipient])
-              const nebPay = new NebPay()
-              return nebPay.call(inputCurrency?.address, 0, callFunction, callArgs, {
-                extension: {
-                  openExtension: true
-                },
-                gasPrice: '20000000000',
-                gasLimit: '8000000',
-                // debug: true,
-                listener: (serialNumber: string, resp: string) => {
-                  try {
-                    console.log('bridgeNas resp', resp, serialNumber)
-                    // resolve(serialNumber)
-                    // if (txData.hash && account && terraRecipient) {
-                    //   const data:any = {
-                    //     hash: txData.hash?.toLowerCase(),
-                    //     chainId: chainId,
-                    //     selectChain: selectChain,
-                    //     account: address,
-                    //     value: inputAmount,
-                    //     formatvalue: typedValue,
-                    //     to: recipient,
-                    //     symbol: inputCurrency?.symbol,
-                    //     version: 'swapin',
-                    //     pairid: pairid,
-                    //   }
-                    //   recordsTxns(data)
-                    // }
-                    // onChangeViewDtil(txData?.hash, true)
-                  } catch (err) {
-                    // reject(err)
-                    console.log(err)
-                  }
-                }
-              })
+            sendNasTx(inputCurrency?.address,DepositAddress,inputAmount, recipient)
+              // const callFunction = 'transfer'
+              // const depositAddress = DepositAddress
+              // const callArgs = JSON.stringify([depositAddress, inputAmount, recipient])
+              // const nebPay = new NebPay()
+              // return nebPay.call(inputCurrency?.address, 0, callFunction, callArgs, {
+              //   extension: {
+              //     openExtension: true
+              //   },
+              //   gasPrice: '20000000000',
+              //   gasLimit: '8000000',
+              //   // debug: true,
+              //   listener: (serialNumber: string, resp: string) => {
+              //     try {
+              //       console.log('bridgeNas resp')
+              //       console.log(resp)
+              //       console.log(serialNumber)
+              //       // resolve(serialNumber)
+              //       // if (txData.hash && account && terraRecipient) {
+              //       //   const data:any = {
+              //       //     hash: txData.hash?.toLowerCase(),
+              //       //     chainId: chainId,
+              //       //     selectChain: selectChain,
+              //       //     account: address,
+              //       //     value: inputAmount,
+              //       //     formatvalue: typedValue,
+              //       //     to: recipient,
+              //       //     symbol: inputCurrency?.symbol,
+              //       //     version: 'swapin',
+              //       //     pairid: pairid,
+              //       //   }
+              //       //   recordsTxns(data)
+              //       // }
+              //       // onChangeViewDtil(txData?.hash, true)
+              //     } catch (err) {
+              //       // reject(err)
+              //       console.log(err)
+              //     }
+              //   }
+              // })
             }
           : undefined
       }
@@ -201,5 +321,5 @@ export function useNebBridgeCallback({
       inputError: '',
       wrapType: WrapType.NOCONNECT
     }
-  }, [balanceBig, typedValue, address, DepositAddress, selectChain, pairid, inputCurrency, chainId])
+  }, [balance, typedValue, address, DepositAddress, selectChain, pairid, inputCurrency, chainId,inputAmount, recipient])
 }
