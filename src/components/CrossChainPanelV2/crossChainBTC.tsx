@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useMemo, useContext, useCallback} from 'react'
 import {createAddress, isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
@@ -12,6 +12,7 @@ import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
+import { shortenAddress } from '../../utils'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -22,6 +23,7 @@ import { ButtonPrimary, ButtonLight } from '../Button'
 import { ArrowWrapper, BottomGrouping } from '../swap/styleds'
 import ModalContent from '../Modal/ModalContent'
 import QRcode from '../QRcode'
+import CopyHelper from '../AccountDetails/Copy'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -40,6 +42,14 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
+
+const CrossChainTip = styled.div`
+  width: 100%;
+  color: ${({ theme }) => theme.textColorBold};
+  .red {
+    color: ${({ theme }) => theme.red1};
+  }
+`
 
 export default function CrossChain({
   bridgeKey
@@ -62,6 +72,7 @@ export default function CrossChain({
   const [modalOpen, setModalOpen] = useState(false)
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [modalSpecOpen, setModalSpecOpen] = useState(false)
+  const [memo, setMemo] = useState('')
 
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
@@ -86,6 +97,7 @@ export default function CrossChain({
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isInputError = useMemo(() => {
+    console.log(selectCurrency)
     if (!selectCurrency) {
       return {
         state: 'Error',
@@ -150,25 +162,34 @@ export default function CrossChain({
 
   const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')
+    setMemo('')
     if (recipient && selectCurrency && destConfig && selectChain) {
-      getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-        // console.log(res)
-        // console.log(selectCurrency)
-        if (res?.p2pAddress) {
-          const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
-          if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
-            // console.log(localAddress)
-            setP2pAddress(localAddress)
-            setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
-          }
-        }
+      if (chainId === 'XRP') {
+        setP2pAddress(destConfig?.DepositAddress)
+        // setMemo(`{data: ${recipient}}`)
+        setMemo(recipient)
         setModalSpecOpen(true)
         setDelayAction(false)
-      })
+      } else {
+        getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+          // console.log(res)
+          // console.log(selectCurrency)
+          if (res?.p2pAddress) {
+            const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
+            if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
+              // console.log(localAddress)
+              setP2pAddress(localAddress)
+              setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+            }
+          }
+          setModalSpecOpen(true)
+          setDelayAction(false)
+        })
+      }
     } else {
       setDelayAction(false)
     }
-  }, [recipient, selectCurrency, destConfig, selectChain])
+  }, [recipient, selectCurrency, destConfig, selectChain, chainId])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -200,14 +221,40 @@ export default function CrossChain({
         }}
       >
         <ListBox>
+          
+          {
+            chainId === 'XRP' ? (
+              <>
+                <CrossChainTip>
+                  Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
+                  <p className='red'>If you don&apos;t input memo, you will not receive XRP on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          }
+          {
+            chainId === 'XRP' ? '' : (
+              <div className="item">
+                <p className="label">Value:</p>
+                <p className="value">{inputBridgeValue}</p>
+              </div>
+            )
+          }
           <div className="item">
-            <p className="label">Value:</p>
-            <p className="value">{inputBridgeValue}</p>
+            <p className="label">Deposit Address:</p>
+            <p className="value flex-bc">
+              {p2pAddress}
+              <CopyHelper toCopy={p2pAddress} />
+            </p>
           </div>
-          <div className="item">
-            <p className="label">Address:</p>
-            <p className="value">{p2pAddress}</p>
-          </div>
+          {
+            memo ? (
+              <div className="item">
+                <p className="label">Memo:</p>
+                <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
+              </div>
+            ) : ''
+          }
           <div className="item">
             <QRcode uri={p2pAddress} size={160}></QRcode>
           </div>

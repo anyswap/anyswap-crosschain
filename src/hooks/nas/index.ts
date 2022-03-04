@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from 'react'
 // import nebulas from 'nebulas'
 // import { tryParseAmount3 } from '../../state/swap/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
+import {useActiveReact} from '../useActiveReact'
 import { Currency, JSBI, Fraction } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
@@ -12,10 +13,6 @@ import useInterval from '../../hooks/useInterval'
 import NebPay from 'nebpay.js'
 import { BigNumber } from 'ethers'
 
-// interface SendNasProp {
-//   recipient: string
-//   value: string
-// }
 const Base58 = require('bs58')
 const cryptoUtils = require('./crypto-utils')
 
@@ -30,31 +27,6 @@ export const toNasBasic = (value: string) => {
   return stringAmount.toString()
 }
 
-// use neb pay chrome extension to post function
-// export const bridgeNas = ({ recipient, value }: SendNasProp) =>
-//   new Promise((resolve, reject) => {
-//     const callToAddress = 'n1uymn9w3xiEMVJ9XfgoeowpopnUbMC99sF'
-//     const callFunction = 'transfer'
-//     const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
-//     const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
-//     const nebPay = new NebPay()
-//     nebPay.call(callToAddress, 0, callFunction, callArgs, {
-//       extension: {
-//         openExtension: true
-//       },
-//       gasPrice: '20000000000',
-//       gasLimit: '8000000',
-//       // debug: true,
-//       listener: (serialNumber: string, resp: string) => {
-//         try {
-//           console.log('bridgeNas resp', resp, serialNumber)
-//           resolve(serialNumber)
-//         } catch (err) {
-//           reject(err)
-//         }
-//       }
-//     })
-//   })
 const AddressLength = 26;
 const AddressPrefix = 25;
 const NormalType = 87;
@@ -112,6 +84,7 @@ export const isExtWalletInstall = () => {
 }
 
 export const useCurrentAddress = () => {
+  // const { chainId } = useActiveReact()
   const [address, setAddress] = useState<string>('')
 
   const getUserAddress = useCallback(() => {
@@ -132,13 +105,14 @@ export const useCurrentAddress = () => {
 }
 
 export const useCurrentNasBalance = () => {
+  const { chainId } = useActiveReact()
   const [balance, setBalance] = useState<string>()
   const address = useCurrentAddress()
   // const neb = new nebulas.Neb()
   // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
   // console.log(address)
   const getNasBalance = useCallback(async () => {
-    if (isValidAddress(address)) {
+    if (isValidAddress(address) && chainId === 'NEBULAS') {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)
@@ -149,7 +123,7 @@ export const useCurrentNasBalance = () => {
       return state.balance
     }
     // setBalance('')
-  }, [address])
+  }, [address, chainId])
 
   useEffect(() => {
     getNasBalance()

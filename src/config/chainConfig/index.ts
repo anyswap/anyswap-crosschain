@@ -35,6 +35,7 @@ import vlx, {VLX_MAIN_CHAINID} from './vlx'
 import clv, {CLV_MAIN_CHAINID} from'./clv'
 import crab, {CRAB_MAIN_CHAINID} from './crab'
 import nas, {NAS_MAIN_CHAINID} from './nas'
+import xrp, {XRP_MAIN_CHAINID} from './xrp'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -78,7 +79,8 @@ export const chainInfo:ConFig = {
   ...vlx,
   ...clv,
   ...crab,
-  ...nas
+  ...nas,
+  ...xrp
 }
 
 const allChainList = [
@@ -238,7 +240,8 @@ const useChain:any = {
     LTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
     COLX_MAIN_CHAINID,
-    NAS_MAIN_CHAINID
+    // NAS_MAIN_CHAINID,
+    XRP_MAIN_CHAINID,
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
@@ -256,7 +259,8 @@ const useChain:any = {
     MOVR_MAIN_CHAINID,
     TERRA_MAIN_CHAINID,
     AURORA_MAIN_CHAINID,
-    ASTAR_MAIN_CHAINID
+    ASTAR_MAIN_CHAINID,
+    NAS_MAIN_CHAINID
   ]
 }
 

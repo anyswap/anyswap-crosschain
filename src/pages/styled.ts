@@ -56,6 +56,10 @@ export const ListBox = styled.div`
     .value {
       color: ${({ theme }) => theme.textColorBold};
       margin: 0;
+      &.flex-bc {
+        ${({ theme }) => theme.flexBC};
+        flex-wrap:wrap;
+      }
     }
   }
 `
