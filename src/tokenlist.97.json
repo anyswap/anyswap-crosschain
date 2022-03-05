@@ -1,19 +1,19 @@
 {
    "0x6e9c98a8a481bf038ba7e1d669a0086547dd144e":{
       "address":"0x6e9c98a8a481bf038ba7e1d669a0086547dd144e",
-      "name":"TetherUSD",
+      "name":"TetherUSD111",
       "symbol":"USDT",
       "decimals":8,
       "underlying":{
          "address":"0xd71a1bbabb389f3af78633e040bd994a99210c59",
-         "name":"TetherUSD",
+         "name":"TetherUSD111",
          "symbol":"anyUSDT",
          "decimals":8
       },
       "destChains":{
          "77":{
             "0x35bE4cA2f4C66861b6B3B9E6F35A7d8FDaD48dea":{
-               "name":"TetherUSD",
+               "name":"TetherUSD222",
                "symbol":"USDT",
                "decimals":8,
                "address":"0x35bE4cA2f4C66861b6B3B9E6F35A7d8FDaD48dea",
