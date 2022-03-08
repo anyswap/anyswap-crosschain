@@ -17,10 +17,13 @@ export const WNASContract = 'n1jrKxgPEUcs7BU2vq3jBzNBdTwWH1oFXku'
 export const NebChainID = 1
 
 export const toNasBasic = (value: string) => {
+  const valueNum = Number(value)
   const baseDecimals = 18
   const baseAmount = BigNumber.from(10).pow(BigNumber.from(baseDecimals))
 
-  const stringAmount = baseAmount.mul(value)
+  const valueBig = BigNumber.from((valueNum * 10 ** 18).toString())
+
+  const stringAmount = baseAmount.mul(valueBig).div(baseAmount)
   return stringAmount.toString()
 }
 
