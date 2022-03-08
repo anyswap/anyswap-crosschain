@@ -29,7 +29,6 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
 import { useBetaMessageManager } from '../../state/user/hooks'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'

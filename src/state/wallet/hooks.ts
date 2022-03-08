@@ -2,9 +2,9 @@
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import { useAllTokens } from '../../hooks/Tokens'
+// import { useAllTokens } from '../../hooks/Tokens'
 
-import { useBridgeTokenList, useBridgeAllTokenList } from '../lists/hooks'
+import { useBridgeTokenList } from '../lists/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
@@ -260,30 +260,9 @@ export function useCurrencyBalance(account?: string, currency?: Currency, chainI
 }
 
 // mimics useAllBalances
-export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
-  const allTokens = useAllTokens()
-  const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  // console.log(account)
-  // console.log(allTokensArray)
-  const balances = useTokenBalances(account ?? undefined, allTokensArray)
-  return balances ?? {}
-}
-
-
-// mimics useAllBalances
 export function useBridgeAllTokenBalances(key?: string | undefined, chainId?:any): { [tokenAddress: string]: TokenAmount | undefined } {
   const { account } = useActiveWeb3React()
   const allTokens = useBridgeTokenList(key, chainId)
-  // console.log(allTokens)
-  const allTokensArray:any = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  // console.log(allTokensArray)
-  const balances = useTokenBalances(account ?? undefined, allTokensArray)
-  return balances ?? {}
-}
-export function useBridgeAllTokensBalances(chainId?:any): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
-  const allTokens = useBridgeAllTokenList(chainId)
   // console.log(allTokens)
   const allTokensArray:any = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   // console.log(allTokensArray)

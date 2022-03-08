@@ -33,7 +33,6 @@ import QRcode from '../../components/QRcode'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBetaMessageManager } from '../../state/user/hooks'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {bridgeApi} from '../../config/constant'
@@ -108,8 +107,6 @@ export default function CrossChain() {
   const [showBetaMessage] = useBetaMessageManager()
   // console.log(getTerraBalances)
   
-  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
-  // console.log(balances)
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
   const initBridgeToken = getInitToken()
 

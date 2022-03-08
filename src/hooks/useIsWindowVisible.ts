@@ -7,7 +7,7 @@ function isWindowVisible() {
 }
 
 /**
- * Returns whether the window is currently visible to the user.
+ * 返回当前窗口对用户是否可见。
  */
 export default function useIsWindowVisible(): boolean {
   const [focused, setFocused] = useState<boolean>(isWindowVisible())

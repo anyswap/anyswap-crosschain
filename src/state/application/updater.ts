@@ -26,8 +26,8 @@ export default function Updater(): null {
   const blockNumberCallback = useCallback(
     (blockNumber: number) => {
       setState(state => {
-        // console.log('时间', Date.now())
-        // console.log(state)
+        console.log('时间', Date.now())
+        console.log(state)
         if (chainId === state.chainId) {
           if (typeof state.blockNumber !== 'number') return { chainId, blockNumber }
           return { chainId, blockNumber: Math.max(blockNumber, state.blockNumber) }
@@ -55,9 +55,10 @@ export default function Updater(): null {
     }
   }, [dispatch, chainId, library, blockNumberCallback, windowVisible])
 
-  const debouncedState = useDebounce(state, 10)
+  const debouncedState = useDebounce(state, 0)
 
   useEffect(() => {
+    // console.log(debouncedState)
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
 
     if (destChainId) {

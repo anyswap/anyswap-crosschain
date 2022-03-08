@@ -27,7 +27,6 @@ import Title from '../../components/Title'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -58,7 +57,7 @@ export default function SwapNative() {
   const history = createBrowserHistory()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
+  
   const toggleWalletModal = useWalletModalToggle()
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
 

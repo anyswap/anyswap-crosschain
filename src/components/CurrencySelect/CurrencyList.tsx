@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
@@ -117,10 +116,6 @@ function CurrencyRow({
   && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
   && !CROSS_BRIDGE_LIST.includes(bridgeKey)
    ? true : false
-  // console.log(isNativeToken)
-  // const balance = ''
-  // const ETHBalance = ''
-  // const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
   const balance1 = ''
   // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = useMemo(() => {

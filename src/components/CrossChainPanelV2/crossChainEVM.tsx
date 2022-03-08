@@ -227,8 +227,8 @@ export default function CrossChain({
       return
     }
     // console.log(11111)
-    if (selectCurrency && chainId && (isRouter || selectCurrency?.address === 'FTM')) {
-      if (selectCurrency?.underlying?.address && (isRouter || selectCurrency?.address === 'FTM')) {
+    if (selectCurrency && chainId && isRouter) {
+      if (selectCurrency?.underlying?.address && isRouter) {
         const CC:any = await getNodeTotalsupply(
           selectCurrency?.underlying?.address,
           chainId,
