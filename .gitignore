@@ -53,3 +53,6 @@ cypress/fixtures/example.json
 *.zip
 /swap
 src/components/NonApprove/nonApproveList.ts
+yarn.lock
+.yarn/install-state.gz
+.yarnrc.yml
