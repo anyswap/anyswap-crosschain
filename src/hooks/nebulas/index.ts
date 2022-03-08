@@ -12,6 +12,10 @@ interface SendNasProp {
   value: string
 }
 
+export const NebAPIEndpoint = 'https://mainnet.nebulas.io'
+export const WNASContract = 'n1jrKxgPEUcs7BU2vq3jBzNBdTwWH1oFXku'
+export const NebChainID = 1
+
 export const toNasBasic = (value: string) => {
   const baseDecimals = 18
   const baseAmount = BigNumber.from(10).pow(BigNumber.from(baseDecimals))
@@ -23,7 +27,7 @@ export const toNasBasic = (value: string) => {
 // use neb pay chrome extension to post function
 export const bridgeNas = ({ recipient, value }: SendNasProp) =>
   new Promise((resolve, reject) => {
-    const callToAddress = 'n1uymn9w3xiEMVJ9XfgoeowpopnUbMC99sF'
+    const callToAddress = WNASContract
     const callFunction = 'transfer'
     const depositAddress = 'n1avapCUsTfyZDkNkYYFofjtak3bmroSYmY'
     const callArgs = JSON.stringify([depositAddress, toNasBasic(value), recipient])
@@ -73,11 +77,56 @@ export const useCurrentAddress = () => {
   }, [address])
 }
 
+export const useCurrentWNASBalance = () => {
+  const [balance, setBalance] = useState<string>()
+  const address = useCurrentAddress()
+  const neb = new nebulas.Neb()
+  neb.setRequest(new nebulas.HttpRequest(NebAPIEndpoint))
+
+  const getWNASBalance = useCallback(async () => {
+    try {
+      if (!nebulas.Account.isValidAddress(address)) {
+        return false
+      }
+      const tx = await neb.api.call({
+        chainID: NebChainID,
+        from: address,
+        to: WNASContract,
+        value: 0,
+        gasPrice: '20000000000',
+        gasLimit: '8000000',
+        contract: {
+          function: 'balanceOf',
+          args: JSON.stringify([address])
+        }
+      })
+
+      const result = JSON.parse(tx.result)
+      setBalance(result)
+      return result
+    } catch (err) {
+      console.error(err)
+    }
+  }, [address])
+
+  useEffect(() => {
+    getWNASBalance()
+  }, [address])
+
+  return {
+    getWNASBalance,
+    balance,
+    balanceBig: balance
+      ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)))
+      : undefined
+  }
+}
+
 export const useCurrentNasBalance = () => {
   const [balance, setBalance] = useState<string>()
   const address = useCurrentAddress()
   const neb = new nebulas.Neb()
-  neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
+  neb.setRequest(new nebulas.HttpRequest(NebAPIEndpoint))
 
   const getNasBalance = useCallback(async () => {
     if (nebulas.Account.isValidAddress(address)) {
@@ -128,7 +177,7 @@ export function useNebBridgeCallback({
   execute?: undefined | (() => Promise<void>)
 } {
   const { t } = useTranslation()
-  const { balanceBig } = useCurrentNasBalance()
+  const { balanceBig } = useCurrentWNASBalance()
 
   // console.log('useNebBridgeCallback', chainId, typedValue)
   return useMemo(() => {
