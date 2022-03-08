@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
-import { deployAnyswapERC20 } from '../../utils/contract'
+import { addToken } from '../../utils/contract'
 import { OptionWrapper } from './index'
 
 const OptionLabel = styled.label`
@@ -46,7 +46,7 @@ export default function Contracts() {
         const decimals = await contract.methods.decimals().call()
 
         setName(`Any${name}`)
-        setSymbol(`Any${symbol}`)
+        setSymbol(`ANY${symbol}`)
         setDecimals(decimals)
       } catch (error) {
         console.error(error)
@@ -57,14 +57,14 @@ export default function Contracts() {
   }, [underlying, chainId])
 
   const onTokenDeployment = async () => {
-    console.group('%c Log', 'color: orange; font-size: 14px')
-    console.log('name: ', name)
-    console.log('symbol: ', symbol)
-    console.log('decimals: ', decimals)
-    console.groupEnd()
+    if (!chainId || !account) return
 
     try {
-      await deployAnyswapERC20({
+      await addToken({
+        chainId,
+        toChainId: -1,
+        mpc: '',
+        mpcPubKey: '',
         library,
         account,
         name,
@@ -73,6 +73,7 @@ export default function Contracts() {
         underlying,
         vault,
         minter,
+        routerConfig: '',
         onHash: (hash: string) => {
           console.log('hash: ', hash)
         }
