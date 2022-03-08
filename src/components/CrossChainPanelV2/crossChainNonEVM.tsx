@@ -156,7 +156,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     if (terraBalance) {
       return terraBalance?.toSignificant(3)
     }
-    if (chainId === 'NEBULAS') {
+    if (chainId === 'NAS') {
       if (wnasBalance) {
         const nasBalanceFormat = wnasBalance?.toSignificant(3)
         // console.log('nasBalance', nasBalanceFormat)
@@ -170,8 +170,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === 'TERRA') {
       return wrapInputErrorTerra
-    } else if (wrapInputErrorNeb && chainId === 'NEBULAS') {
-      // console.log('isWrapInputError NEBULAS')
+    } else if (wrapInputErrorNeb && chainId === 'NAS') {
       return wrapInputErrorNeb
     } else {
       return false
@@ -370,7 +369,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
                     onTerraWrap().then(() => {
                       onClear()
                     })
-                  else if (onNebWrap && chainId === 'NEBULAS') {
+                  else if (onNebWrap && chainId === 'NAS') {
                     // console.log('onNebWrap')
                     onNebWrap().then(() => {
                       onClear()

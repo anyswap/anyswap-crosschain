@@ -2,7 +2,7 @@ import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const NEBULAS_MAINNET = ''
-export const NEBULAS_MAIN_CHAINID = 'NEBULAS'
+export const NEBULAS_MAIN_CHAINID = 'NAS'
 export const NEBULAS_MAIN_EXPLORER = 'https://explorer.nebulas.io/#'
 
 export const tokenList = [
@@ -39,8 +39,8 @@ export default {
     type: 'main',
     label: NEBULAS_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'NEBULAS',
+    suffix: 'NAS',
     anyToken: '',
-    chainType: 'NEBULAS'
+    chainType: 'NAS'
   },
 }

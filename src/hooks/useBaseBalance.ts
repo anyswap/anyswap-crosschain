@@ -28,7 +28,7 @@ export function useBaseBalances(uncheckedAddresses?: string | null | undefined, 
       getTerraBaseBalances().then(res => {
         setBalance(res)
       })
-    } else if (selectNetworkInfo?.label === 'NEBULAS') {
+    } else if (selectNetworkInfo?.label === 'NAS') {
       getWNASBalance().then(res => {
         setBalance(res)
       })
@@ -50,7 +50,7 @@ export function useBaseBalances(uncheckedAddresses?: string | null | undefined, 
       return balance?.uluna
         ? new Fraction(JSBI.BigInt(balance?.uluna), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6)))
         : undefined
-    } else if (selectNetworkInfo?.label === 'NEBULAS') {
+    } else if (selectNetworkInfo?.label === 'NAS') {
       console.log('useBaseBalances nas balance', balance)
       try {
         return balance

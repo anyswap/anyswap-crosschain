@@ -203,7 +203,7 @@ function ViewAccountInfo() {
     return <></>
   }
 
-  if (chainId === 'NEBULAS') {
+  if (chainId === 'NAS') {
     return (
       <AccountElement active={true} style={{ pointerEvents: 'auto' }}>
         {address ? (
