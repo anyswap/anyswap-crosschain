@@ -12,6 +12,7 @@ declare module 'nebulas' {
 
     api: {
       getAccountState(address)
+      call(args)
     }
   }
 }

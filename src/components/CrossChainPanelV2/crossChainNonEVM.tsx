@@ -48,7 +48,7 @@ import {
 
 import { outputValue, useInitSelectCurrency, useDestChainid, useDestCurrency } from './hooks'
 
-import { useCurrentNasBalance, useNebBridgeCallback } from '../../hooks/nebulas'
+import { useCurrentWNASBalance, useNebBridgeCallback } from '../../hooks/nebulas'
 
 // let intervalFN:any = ''
 
@@ -140,7 +140,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     chainId
   )
 
-  const { balanceBig: nasBalance } = useCurrentNasBalance()
+  const { balanceBig: wnasBalance } = useCurrentWNASBalance()
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
     inputCurrency: selectCurrency,
@@ -157,15 +157,15 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       return terraBalance?.toSignificant(3)
     }
     if (chainId === 'NEBULAS') {
-      if (nasBalance) {
-        const nasBalanceFormat = nasBalance?.toSignificant(3)
+      if (wnasBalance) {
+        const nasBalanceFormat = wnasBalance?.toSignificant(3)
         // console.log('nasBalance', nasBalanceFormat)
         return nasBalanceFormat
       }
     }
 
     return ''
-  }, [terraBalance, nasBalance])
+  }, [terraBalance, wnasBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === 'TERRA') {

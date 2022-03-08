@@ -6,7 +6,7 @@ import { useETHBalances } from '../state/wallet/hooks'
 import { useUserSelectChainId } from '../state/user/hooks'
 import useInterval from './useInterval'
 import { useTerraBaseBalance } from './useTerraBalance'
-import { useCurrentNasBalance } from './nebulas'
+import { useCurrentWNASBalance } from './nebulas'
 
 // import {fromWei} from '../utils/tools/tools'
 
@@ -20,7 +20,7 @@ export function useBaseBalances(uncheckedAddresses?: string | null | undefined, 
   // const userEthBalance = useETHBalances((uncheckedAddresses) ? [uncheckedAddresses] : [])?.[uncheckedAddresses ?? '']
   const { getTerraBaseBalances } = useTerraBaseBalance()
 
-  const { getNasBalance } = useCurrentNasBalance()
+  const { getWNASBalance } = useCurrentWNASBalance()
 
   const [balance, setBalance] = useState<any>()
   const fetchBalancesCallback = useCallback(() => {
@@ -29,7 +29,7 @@ export function useBaseBalances(uncheckedAddresses?: string | null | undefined, 
         setBalance(res)
       })
     } else if (selectNetworkInfo?.label === 'NEBULAS') {
-      getNasBalance().then(res => {
+      getWNASBalance().then(res => {
         setBalance(res)
       })
     }
