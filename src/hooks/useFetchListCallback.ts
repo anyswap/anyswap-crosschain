@@ -18,6 +18,10 @@ import config from '../config'
 import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
+import jsonTokenList from '../tokenlist.97.json'
+import jsonServerInfo from '../serverinfo.97.json'
+
+
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
   const { chainId, library } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
@@ -45,8 +49,15 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
       return getTokenList(listUrl, ensResolver)
         .then(tokenList => {
           console.log(tokenList)
-          dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
-          return tokenList
+          console.log(jsonTokenList)
+          if (true) {
+            // @ts-ignore
+            dispatch(fetchTokenList.fulfilled({ url: listUrl, jsonTokenList, requestId }))
+            return jsonTokenList
+          } else {
+            dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
+            return tokenList
+          }
         })
         .catch(error => {
           // console.log(error)
@@ -85,13 +96,19 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
         const url = `${config.bridgeApi}/merge/tokenlist/${useChainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
-            // console.log(tokenList)
+            console.log('>>> useFetchMergeTokenListCallback', tokenList)
             let list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data
             }
-            dispatch(mergeTokenList({ chainId: useChainId, tokenList:list }))
-            return list
+            if (true) {
+              // @ts-ignore
+              dispatch(mergeTokenList({ chainId: useChainId, tokenList: jsonTokenList }))
+              return jsonTokenList
+            } else {
+              dispatch(mergeTokenList({ chainId: useChainId, tokenList:list }))
+              return list
+            }
           })
           .catch(error => {
             console.debug(`Failed to get list at url `, error)
@@ -110,6 +127,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
   const lists = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
   // console.log(lists)
+  console.log('>>> useFetchTokenListCallback')
   return useCallback(
     async () => {
       if (!chainId) return
@@ -124,7 +142,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
             // console.log(tokenList)
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
-              const tList = tokenList.data
+              const tList = (true) ? jsonServerInfo : tokenList.data
               if (version === 'all') {
                 for (const version in tList) {
                   if (version.indexOf('ARB') !== -1) continue

@@ -4,9 +4,6 @@
   "description": "CrossChain",
   "homepage": "/",
   "private": true,
-  "engines": {
-    "node": "^16.11.1"
-  },
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",
     "@popperjs/core": "^2.4.4",
