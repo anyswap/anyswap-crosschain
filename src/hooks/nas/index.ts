@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, useCallback } from 'react'
+// import { useEffect, useMemo, useState, useCallback } from 'react'
+import {  useMemo, useState, useCallback } from 'react'
 // import nebulas from 'nebulas'
 // import { tryParseAmount3 } from '../../state/swap/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
@@ -16,8 +17,8 @@ import { BigNumber } from 'ethers'
 const Base58 = require('bs58')
 const cryptoUtils = require('./crypto-utils')
 
-const NAS_URL = 'https://testnet.nebulas.io'
-// const NAS_URL = 'https://mainnet.nebulas.io'
+// const NAS_URL = 'https://testnet.nebulas.io'
+const NAS_URL = 'https://mainnet.nebulas.io'
 
 export const toNasBasic = (value: string) => {
   const baseDecimals = 18
@@ -112,7 +113,7 @@ export const useCurrentNasBalance = () => {
   // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
   // console.log(address)
   const getNasBalance = useCallback(async () => {
-    if (isValidAddress(address) && chainId === 'NEBULAS') {
+    if (isValidAddress(address) && chainId === 'NAS') {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)
@@ -125,11 +126,11 @@ export const useCurrentNasBalance = () => {
     // setBalance('')
   }, [address, chainId])
 
-  useEffect(() => {
-    getNasBalance()
-  }, [address])
+  // useEffect(() => {
+  //   getNasBalance()
+  // }, [address])
 
-  useInterval(getNasBalance, 1000 * 3)
+  useInterval(getNasBalance, 1000 * 10)
 
   return {
     getNasBalance,

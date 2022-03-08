@@ -19,7 +19,7 @@ export function useActiveReact () {
     } else if (selectNetworkInfo?.label === 'BTC') {
       useAccount = ''
       useChainId = selectNetworkInfo?.chainId
-    } else if (selectNetworkInfo?.label === 'NEBULAS') {
+    } else if (selectNetworkInfo?.label === 'NAS') {
       useAccount = nebAddress
       useChainId = selectNetworkInfo?.chainId
     }

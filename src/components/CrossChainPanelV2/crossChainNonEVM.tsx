@@ -164,7 +164,7 @@ export default function CrossChain({
 
   const useBalance = useMemo(() => {
     // console.log(terraBalance)
-    if (chainId === 'NEBULAS') {
+    if (chainId === 'NAS') {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toSignificant(3)
         return nasBalanceFormat
@@ -180,7 +180,7 @@ export default function CrossChain({
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === 'TERRA') {
       return wrapInputErrorTerra
-    } else if (wrapInputErrorNeb && chainId === 'NEBULAS') {
+    } else if (wrapInputErrorNeb && chainId === 'NAS') {
       return wrapInputErrorNeb
     } else {
       return false
@@ -377,7 +377,7 @@ export default function CrossChain({
                     onTerraWrap().then(() => {
                       onClear()
                     })
-                  } else if (onNebWrap && chainId === 'NEBULAS') {
+                  } else if (onNebWrap && chainId === 'NAS') {
                     console.log('onNebWrap')
                     onNebWrap().then(() => {
                       onClear()
