@@ -9,11 +9,24 @@ function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount, sortA
     return 1
   } else {
     if (balanceA && balanceB) {
-      return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
-    } else if (balanceA && balanceA.greaterThan('0')) {
-      return -1
-    } else if (balanceB && balanceB.greaterThan('0')) {
-      return 1
+      if ( balanceA instanceof TokenAmount && balanceB instanceof TokenAmount) {
+        return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
+      } else {
+        return Number(balanceA) > Number(balanceB) ? -1 : Number(balanceA) <= Number(balanceB) ? 0 : 1
+      }
+    } else if (balanceA) {
+      if (balanceA instanceof TokenAmount && balanceA.greaterThan('0')) {
+        return -1
+      } else if (Number(balanceA) > 0) {
+        return -1
+      }
+    } else if (balanceB) {
+      if (balanceB instanceof TokenAmount && balanceB.greaterThan('0')) {
+        return 1
+      } else if (Number(balanceA) > 0) {
+        return 1
+      }
+      // return 1
     }
     return 0
   }

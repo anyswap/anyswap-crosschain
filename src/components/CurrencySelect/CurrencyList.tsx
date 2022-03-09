@@ -48,8 +48,13 @@ const ListBox = styled.div`
   overflow:auto;
 `
 
-function Balance({ balance }: { balance: CurrencyAmount }) {
-  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
+// function Balance({ balance }: { balance: CurrencyAmount }) {
+//   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
+// }
+function Balance({ balance }: { balance: any }) {
+  const isBl = balance instanceof CurrencyAmount ? true : false
+  // console.log(balance)
+  return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? balance.toSignificant(6) : balance.balance}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
@@ -150,19 +155,8 @@ function CurrencyRow({
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
-      {/* {
-        isNativeToken ? (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {ETHBalance ? <Balance balance={ETHBalance} /> : account ? <Loader /> : null}
-          </RowFixed>
-        ) : (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-          </RowFixed>
-        )
-      } */}
       <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {balance && balance?.toSignificant(6) ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
+        {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
       </RowFixed>
     </MenuItem>
   )

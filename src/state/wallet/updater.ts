@@ -58,10 +58,16 @@ export default function Updater(): null {
     if (chainId && account && Object.keys(balances).length > 0) {
       console.log(Date.now()- startTime)
       tokenListRef.current.index += 1
+      const blList:any = {}
+      for (const k in balances) {
+        blList[k] = {
+          balance: balances[k]?.toSignificant(6)
+        }
+      }
       dispatch(tokenBalanceList({
         chainId,
         account,
-        tokenList: balances
+        tokenList: blList
       }))
     }
   }, [dispatch, balances, chainId, account])
