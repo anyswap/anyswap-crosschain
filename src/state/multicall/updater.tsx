@@ -33,8 +33,8 @@ export async function fetchChunk(
 ): Promise<{ results: string[]; blockNumber: number }> {
   console.debug('Fetching chunk', multicallContract, chunk, minBlockNumber)
   let resultsBlockNumber, returnData
-  // console.log(chunk)
   // console.log('chunk')
+  // console.log(chunk)
   try {
     ;[resultsBlockNumber, returnData] = await multicallContract.aggregate(chunk.map(obj => [obj.address, obj.callData]))
     // console.log('multicallContract1')

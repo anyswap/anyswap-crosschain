@@ -11,6 +11,7 @@ import burn from './burn/reducer'
 import nft from './nft/reducer'
 import multicall from './multicall/reducer'
 import pools from './pools/reducer'
+import wallet from './wallet/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
@@ -24,7 +25,8 @@ const store = configureStore({
     nft,
     multicall,
     lists,
-    pools
+    pools,
+    wallet
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })

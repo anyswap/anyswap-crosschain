@@ -118,20 +118,6 @@ export default createReducer(initialState, builder =>
     })
     // .addCase(fetchTokenList.rejected, (state, { payload: { url, requestId, errorMessage } }) => {
     .addCase(fetchTokenList.rejected, (state, { payload: { url } }) => {
-      // console.log(state.byUrl[url]?.loadingRequestId)
-      // console.log(requestId)
-      // if (state.byUrl[url]?.loadingRequestId !== requestId) {
-      //   // no-op since it's not the latest request
-      //   return
-      // }
-      // console.log(123)
-      // state.byUrl[url] = {
-      //   ...state.byUrl[url],
-      //   loadingRequestId: null,
-      //   error: errorMessage,
-      //   current: config.tokenList,
-      //   pendingUpdate: null
-      // }
       state.byUrl[url] = {
         ...state.byUrl[url],
         loadingRequestId: null,

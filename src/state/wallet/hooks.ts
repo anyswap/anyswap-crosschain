@@ -1,14 +1,17 @@
 // import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from 'anyswap-sdk'
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from 'anyswap-sdk'
 import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
-
-import { useBridgeTokenList } from '../lists/hooks'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
+// import { useBridgeTokenList } from '../lists/hooks'
+// import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { AppState } from '../index'
+// import { tokenBalanceList } from './actions'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -73,18 +76,22 @@ export function useTokenBalancesWithLoadingIndicator(
 
   return [
     useMemo(
-      () =>
-        address && validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined
-              if (amount) {
-                memo[token.address.toLowerCase()] = new TokenAmount(token, amount)
-              }
-              // console.log(memo)
-              return memo
-            }, {})
-          : {},
+      () => {
+        if (address && validatedTokens.length > 0) {
+          const results = validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+            const value = balances?.[i]?.result?.[0]
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined
+            if (amount) {
+              memo[token.address.toLowerCase()] = new TokenAmount(token, amount)
+            }
+            // console.log(memo)
+            return memo
+          }, {})
+          return results
+        } else {
+          return {}
+        }
+      },
       [address, validatedTokens, balances]
     ),
     anyLoading
@@ -170,6 +177,19 @@ export function useTokenBalancesList(
   ]
 }
 
+export function useTokenBalanceList(): any {
+  const { chainId, account } = useActiveReact()
+  const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
+  // console.log(lists)
+  return useMemo(() => {
+    if (chainId && account && lists) {
+      if (lists[account] && lists[account][chainId]) return lists[account][chainId]
+      return {}
+    }
+    return {}
+  }, [lists, chainId, account])
+}
+
 export function useTokenTotalSupply(
   tokens?: (string | undefined)[],
   chainId?:any
@@ -235,11 +255,7 @@ export function useCurrencyBalances(
   ])
   // console.log(tokens)
   const tokenBalances = useTokenBalances(account, tokens, chainId)
-  // console.log(tokenBalances)
-  // const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const containsETH: boolean = isETH
-  // console.log(currencies)
-  // console.log(containsETH)
   const ethBalance = useETHBalances(containsETH ? [account] : [], chainId)
 
   return useMemo(
@@ -256,16 +272,10 @@ export function useCurrencyBalances(
 }
 
 export function useCurrencyBalance(account?: string, currency?: Currency, chainId?:any, isETH?:any): CurrencyAmount | undefined {
+  // const balances = useTokenBalanceList()
   return useCurrencyBalances(account, [currency], chainId, isETH)[0]
-}
-
-// mimics useAllBalances
-export function useBridgeAllTokenBalances(key?: string | undefined, chainId?:any): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
-  const allTokens = useBridgeTokenList(key, chainId)
-  // console.log(allTokens)
-  const allTokensArray:any = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  // console.log(allTokensArray)
-  const balances = useTokenBalances(account ?? undefined, allTokensArray)
-  return balances ?? {}
+  // if (chainId) {
+  // } else {
+  //   return currency?.address?.toLowerCase() && balances[currency?.address?.toLowerCase()] ? balances[currency?.address?.toLowerCase()] : undefined
+  // }
 }

@@ -324,3 +324,4 @@ export function useAllLists(): TokenList[] {
     [lists]
   )
 }
+

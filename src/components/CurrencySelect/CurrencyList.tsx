@@ -131,6 +131,7 @@ function CurrencyRow({
     return balance1
   }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance, balance1])
   const isDestChainId = selectDestChainId ? selectDestChainId : chainId
+  // console.log(balance)
   return (
     <MenuItem
       style={style}
@@ -161,7 +162,7 @@ function CurrencyRow({
         )
       } */}
       <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+        {balance && balance?.toSignificant(6) ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
       </RowFixed>
     </MenuItem>
   )

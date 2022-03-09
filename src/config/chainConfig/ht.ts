@@ -9,6 +9,11 @@ export const HT_TEST_CHAINID = 256
 export const HT_TESTNET = getLocalRPC(HT_TEST_CHAINID, 'https://http-testnet.hecochain.com')
 export const HT_TEST_EXPLORER = 'https://testnet.hecoinfo.com'
 
+export enum ChainId {
+  HT_MAIN_CHAINID = 128,
+  HT_TEST_CHAINID = 256
+}
+
 export const tokenList = [
   {
     "address": "0x66a79d23e58475d2738179ca52cd0b41d73f0bea",
@@ -143,7 +148,7 @@ export const testTokenList = [
 
 const symbol = 'HT'
 
-const bridgeToken = {
+const bridgeToken:any = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeInitChain: '',
