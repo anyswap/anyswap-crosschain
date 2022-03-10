@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const TLOS_MAIN_CHAINID = 40
+export const TLOS_MAIN_CHAINID = ChainId.TLOS
 export const TLOS_MAINNET = getLocalRPC(TLOS_MAIN_CHAINID, 'https://rpc1.us.telos.net/evm')
 export const TLOS_MAIN_EXPLORER = 'https://rpc1.us.telos.net/v2/explore/evm'
 

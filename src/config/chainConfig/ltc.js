@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const LTC_MAINNET = ''
-export const LTC_MAIN_CHAINID = 'LTC'
+export const LTC_MAIN_CHAINID = ChainId.LTC
 export const LTC_MAIN_EXPLORER = ''
 
 export const tokenList = [

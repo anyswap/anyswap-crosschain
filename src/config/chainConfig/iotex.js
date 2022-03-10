@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const IOTEX_MAIN_CHAINID = 4689
+export const IOTEX_MAIN_CHAINID = ChainId.IOTEX
 export const IOTEX_MAINNET = getLocalRPC(IOTEX_MAIN_CHAINID, 'https://babel-api.mainnet.iotex.io')
 export const IOTEX_MAIN_EXPLORER = 'https://iotexscan.io'
 

@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const SDN_MAIN_CHAINID = 336
+export const SDN_MAIN_CHAINID = ChainId.SDN
 export const SDN_MAINNET = getLocalRPC(SDN_MAIN_CHAINID, 'https://rpc.shiden.astar.network:8545')
 export const SDN_MAIN_EXPLORER = 'https://shiden.subscan.io'
 

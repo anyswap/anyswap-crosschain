@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const GLMR_MAIN_CHAINID = 1284
+export const GLMR_MAIN_CHAINID = ChainId.GLMR
 export const GLMR_MAINNET = getLocalRPC(GLMR_MAIN_CHAINID, 'https://rpc.api.moonbeam.network')
 export const GLMR_MAIN_EXPLORER = 'https://moonscan.io'
 

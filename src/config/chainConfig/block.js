@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const BLOCK_MAINNET = ''
-export const BLOCK_MAIN_CHAINID = 'BLOCK'
+export const BLOCK_MAIN_CHAINID = ChainId.BLOCK
 export const BLOCK_MAIN_EXPLORER = ''
 
 export const tokenList = [

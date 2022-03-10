@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const COLX_MAINNET = ''
-export const COLX_MAIN_CHAINID = 'COLX'
+export const COLX_MAIN_CHAINID = ChainId.COLX
 export const COLX_MAIN_EXPLORER = ''
 
 export const tokenList = [

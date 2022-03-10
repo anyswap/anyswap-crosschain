@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const CRAB_MAIN_CHAINID = 44
+export const CRAB_MAIN_CHAINID = ChainId.CRAB
 export const CRAB_MAINNET = getLocalRPC(CRAB_MAIN_CHAINID, 'http://crab-rpc.darwinia.network')
 export const CRAB_MAIN_EXPLORER = 'https://crab.subscan.io'
 

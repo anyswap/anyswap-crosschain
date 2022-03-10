@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const VLX_MAIN_CHAINID = 106
+export const VLX_MAIN_CHAINID = ChainId.VLX
 export const VLX_MAINNET = getLocalRPC(VLX_MAIN_CHAINID, 'https://evmexplorer.velas.com/rpc')
 export const VLX_MAIN_EXPLORER = 'https://evmexplorer.velas.com'
 

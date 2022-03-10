@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const AURORA_MAIN_CHAINID = 1313161554
+export const AURORA_MAIN_CHAINID = ChainId.AURORA
 export const AURORA_MAINNET = getLocalRPC(AURORA_MAIN_CHAINID, 'https://mainnet.aurora.dev')
 export const AURORA_MAIN_EXPLORER = 'https://explorer.mainnet.aurora.dev'
 

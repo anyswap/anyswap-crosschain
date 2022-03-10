@@ -157,7 +157,7 @@ export const useCurrentNasBalance = () => {
   const address = useCurrentAddress()
   // const neb = new nebulas.Neb()
   // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
-  // console.log(address)
+  // console.log(chainId)
   const getNasBalance = useCallback(async () => {
     if (isValidAddress(address) && chainId === 'NAS') {
       // const state = await neb.api.getAccountState(address)
@@ -167,14 +167,10 @@ export const useCurrentNasBalance = () => {
         setBalance(state?.data?.result.balance)
       }
       // console.log('getNasBalance', address, state)
-      return state.balance
+      return state?.data?.result.balance
     }
     // setBalance('')
   }, [address, chainId])
-
-  // useEffect(() => {
-  //   getNasBalance()
-  // }, [address])
 
   useInterval(getNasBalance, 1000 * 10)
 
@@ -257,7 +253,7 @@ export function useNebBridgeCallback({
   // console.log(balance)
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount3(typedValue, inputCurrency?.decimals) : undefined, [inputCurrency, typedValue])
   return useMemo(() => {
-    if (balance && typedValue) {
+    if (balance && typedValue && recipient && DepositAddress) {
       const sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
 
       const inputError = sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })

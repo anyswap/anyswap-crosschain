@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const ONE_MAIN_CHAINID = 1666600000
+export const ONE_MAIN_CHAINID = ChainId.ONE
 export const ONE_MAINNET = getLocalRPC(ONE_MAIN_CHAINID, 'https://api.harmony.one')
 export const ONE_MAIN_EXPLORER = 'https://explorer.harmony.one/#'
 

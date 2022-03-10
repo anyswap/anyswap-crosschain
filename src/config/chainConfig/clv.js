@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const CLV_MAIN_CHAINID = 1024
+export const CLV_MAIN_CHAINID = ChainId.CLV
 export const CLV_MAINNET = getLocalRPC(CLV_MAIN_CHAINID, 'https://api-para.clover.finance')
 export const CLV_MAIN_EXPLORER = 'https://clover.subscan.io'
 

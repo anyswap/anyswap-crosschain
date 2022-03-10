@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const OKT_MAIN_CHAINID = 66
+export const OKT_MAIN_CHAINID = ChainId.OKT
 export const OKT_MAINNET = getLocalRPC(OKT_MAIN_CHAINID, 'https://exchainrpc.okex.org')
 export const OKT_MAIN_EXPLORER = 'https://www.oklink.com/okexchain'
 

@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const XRP_MAINNET = ''
-export const XRP_MAIN_CHAINID = 'XRP'
+export const XRP_MAIN_CHAINID = ChainId.XRP
 export const XRP_MAIN_EXPLORER = 'https://xrpscan.com'
 
 export const tokenList = [

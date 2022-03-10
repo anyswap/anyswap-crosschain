@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const OETH_MAIN_CHAINID = 288
+export const OETH_MAIN_CHAINID = ChainId.BOBA
 export const OETH_MAINNET = getLocalRPC(OETH_MAIN_CHAINID, 'https://mainnet.boba.network')
 export const OETH_MAIN_EXPLORER = 'https://blockexplorer.boba.network'
 

@@ -20,7 +20,7 @@ export function useBaseBalances (
   const {getTerraBaseBalances} = useTerraBaseBalance()
 
   const { getNasBalance } = useCurrentNasBalance()
-
+  // console.log(selectNetworkInfo)
   const [balance, setBalance] = useState<any>()
   const fetchBalancesCallback = useCallback(() => {
     if (selectNetworkInfo?.label === 'TERRA') {
@@ -29,6 +29,7 @@ export function useBaseBalances (
       })
     } else if (selectNetworkInfo?.label === 'NAS') {
       getNasBalance().then(res => {
+        // console.log(res)
         setBalance(res)
       })
     }

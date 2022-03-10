@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const TERRA_MAINNET = ''
-export const TERRA_MAIN_CHAINID = 'TERRA'
+export const TERRA_MAIN_CHAINID = ChainId.TERRA
 export const TERRA_MAIN_EXPLORER = 'https://finder.terra.money/mainnet'
 
 export const tokenList = [

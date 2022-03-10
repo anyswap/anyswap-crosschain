@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const NAS_MAINNET = ''
-export const NAS_MAIN_CHAINID = 'NAS'
+export const NAS_MAIN_CHAINID = ChainId.NAS
 export const NAS_MAIN_EXPLORER = 'https://explorer.nebulas.io/#'
 
 export const tokenList = [
