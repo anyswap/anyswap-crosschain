@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 // import { Contract } from '@ethersproject/contracts'
 import { isAddress, toBN } from 'web3-utils'
 import { getWeb3Library } from './getLibrary'
+import InfinityERC20 from '../constants/abis/app/InfinityERC20.json'
 import AnyswapERC20 from '../constants/abis/app/AnyswapV6ERC20.json'
 import AnyswapV6Router from '../constants/abis/app/AnyswapV6Router.json'
 import RouterConfig from '../constants/abis/app/RouterConfig.json'
@@ -57,6 +58,20 @@ export const deployContract = async (params: any) => {
   } catch (error) {
     throw error
   }
+}
+
+export const deployInfinityERC20 = async (params: any) => {
+  const { library, account, onHash, name, symbol, decimals } = params
+  const { abi, bytecode } = InfinityERC20
+
+  return deployContract({
+    abi,
+    byteCode: bytecode,
+    deployArguments: [name, symbol, decimals],
+    library,
+    account,
+    onHash
+  })
 }
 
 export const deployAnyswapERC20 = async (params: any) => {

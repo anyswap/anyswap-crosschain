@@ -15,6 +15,11 @@ export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
 `
 
+export const OptionLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+`
+
 const SettingsWrapper = styled(MyBalanceBox)`
   max-width: 35rem;
   margin: 0 auto;
