@@ -34,6 +34,7 @@ import rose, {ROSE_MAIN_CHAINID} from './rose'
 import vlx, {VLX_MAIN_CHAINID} from './vlx'
 import clv, {CLV_MAIN_CHAINID} from'./clv'
 import crab, {CRAB_MAIN_CHAINID} from './crab'
+import milkada, {MIKO_MAIN_CHAINID} from './milkada'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -76,7 +77,8 @@ export const chainInfo:ConFig = {
   ...rose,
   ...vlx,
   ...clv,
-  ...crab
+  ...crab,
+  ...milkada
 }
 
 const allChainList = [
@@ -110,6 +112,7 @@ const allChainList = [
   VLX_MAIN_CHAINID,
   CLV_MAIN_CHAINID,
   CRAB_MAIN_CHAINID,
+  MIKO_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
