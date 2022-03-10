@@ -1,6 +1,6 @@
 // import { useEffect, useMemo, useState, useCallback } from 'react'
 import {  useMemo, useState, useCallback } from 'react'
-// import nebulas from 'nebulas'
+import nebulas from 'nebulas'
 // import { tryParseAmount3 } from '../../state/swap/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {useTxnsDtilOpen} from '../../state/application/hooks'
@@ -106,6 +106,49 @@ export const useCurrentAddress = () => {
   return useMemo(() => {
     return address
   }, [address])
+}
+
+export const useCurrentWNASBalance = (token?:any) => {
+  const [balance, setBalance] = useState<string>()
+  const address = useCurrentAddress()
+  const neb:any = new nebulas.Neb()
+  neb.setRequest(new nebulas.HttpRequest(NAS_URL))
+
+  const getWNASBalance = useCallback(async () => {
+    try {
+      if (!isValidAddress(address) || !token) {
+        return false
+      }
+      const tx = await neb.api.call({
+        chainID: 1,
+        from: address,
+        to: token,
+        value: 0,
+        gasPrice: '20000000000',
+        gasLimit: '8000000',
+        contract: {
+          function: 'balanceOf',
+          args: JSON.stringify([address])
+        }
+      })
+
+      const result = JSON.parse(tx.result)
+      setBalance(result)
+      return result
+    } catch (err) {
+      console.error(err)
+    }
+  }, [address])
+
+  useInterval(getWNASBalance, 1000 * 10)
+
+  return {
+    getWNASBalance,
+    balance,
+    balanceBig: balance
+      ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)))
+      : undefined
+  }
 }
 
 export const useCurrentNasBalance = () => {

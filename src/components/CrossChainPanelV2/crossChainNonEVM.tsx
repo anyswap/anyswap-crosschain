@@ -11,7 +11,8 @@ import Reminder from './reminder'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
-import { useCurrentNasBalance, useNebBridgeCallback } from '../../hooks/nas'
+// import { useCurrentNasBalance, useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
+import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -136,7 +137,8 @@ export default function CrossChain({
     })
   }
 
-  const { balanceBig: nasBalance } = useCurrentNasBalance()
+  // const { balanceBig: nasBalance } = useCurrentNasBalance()
+  const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
     inputCurrency: selectCurrency,
