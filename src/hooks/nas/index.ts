@@ -249,7 +249,7 @@ export function useNebBridgeCallback({
   execute?: undefined | (() => Promise<void>)
 } {
   const { t } = useTranslation()
-  const { balanceBig:balance } = useCurrentNasBalance()
+  const { balanceBig:balance } = useCurrentWNASBalance(inputCurrency?.address)
   const address = useCurrentAddress()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const addTransaction = useTransactionAdder()
