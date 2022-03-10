@@ -11,8 +11,8 @@ import {useTokenBalances} from './hooks'
 import { useBridgeTokenList } from '../lists/hooks'
 
 // import config from '../../config'
-const startTime = Date.now()
-const limit = 100
+// const startTime = Date.now()
+const limit = 80
 export default function Updater(): null {
   const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
@@ -53,10 +53,10 @@ export default function Updater(): null {
   // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
 
   useEffect(() => {
-    console.log(balances)
-    console.log(tokenListRef)
+    // console.log(balances)
+    // console.log(tokenListRef)
     if (chainId && account && Object.keys(balances).length > 0) {
-      console.log(Date.now()- startTime)
+      // console.log(Date.now()- startTime)
       tokenListRef.current.index += 1
       const blList:any = {}
       for (const k in balances) {

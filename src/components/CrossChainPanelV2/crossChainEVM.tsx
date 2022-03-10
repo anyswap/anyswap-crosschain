@@ -781,7 +781,7 @@ export default function CrossChain({
           ) : ''
         }
         {
-          swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
+          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin') || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))} />
           ) : ''
         }
