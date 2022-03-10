@@ -183,6 +183,7 @@ export default {
     anyToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6'
   },
   [ETH_TEST_CHAINID]: {
+    storage: '0xd2baDd65d97549EB8af9B83BcD74768c9ebaeC31',
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],

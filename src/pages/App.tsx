@@ -71,7 +71,7 @@ const HeaderWrapper = styled.div`
 `
 
 const NavBottom = styled.div`
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   bottom: 0;
@@ -210,12 +210,12 @@ export default function App() {
                   <Redirect to={{ pathname: initUrl }} />
                 </Switch>
               </Web3ReactManager>
-              <NavBottom>
-                <NavList />
-              </NavBottom>
             </BodyWrapper>
 
             <Footer />
+            <NavBottom>
+              <NavList />
+            </NavBottom>
           </AppWrapper>
         )}
       </HelmetProvider>
