@@ -306,7 +306,10 @@ export default function CrossChain() {
 
   const isUsePool = useMemo(() => {
     // console.log(selectCurrency)
-    if (selectCurrency?.symbol?.toLowerCase() === 'prq') {
+    if (
+      selectCurrency?.symbol?.toLowerCase() === 'prq'
+      || selectCurrency?.symbol?.toLowerCase() === 'zeum'
+    ) {
       return false
     }
     return true

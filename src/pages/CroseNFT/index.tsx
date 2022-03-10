@@ -237,7 +237,6 @@ export default function CroseNFT () {
   }, [wrapInputError, wrapInputError1155, selectCurrency])
 
   const isCrossBridge = useMemo(() => {
-    // console.log(selectTokenId)
     if (
       account
       && selectCurrency
@@ -245,11 +244,13 @@ export default function CroseNFT () {
       && selectChainId
       && selectTokenId
       && (
-        selectCurrency?.nfttype === ERC_TYPE.erc1155
-        && inputValue
-        && !isNaN(inputValue)
-        && selectTokenId?.balance
-        && Number(selectTokenId?.balance) > Number(inputValue)
+        (
+          selectCurrency?.nfttype === ERC_TYPE.erc1155
+          && inputValue
+          && !isNaN(inputValue)
+          && selectTokenId?.balance
+          && Number(selectTokenId?.balance) > Number(inputValue)
+        ) || selectCurrency?.nfttype !== ERC_TYPE.erc1155
       )
     ) {
       return false
