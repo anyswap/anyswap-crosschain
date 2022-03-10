@@ -9,6 +9,7 @@ import { tokenBalanceList } from './actions'
 import {useTokenBalances} from './hooks'
 
 import { useBridgeTokenList } from '../lists/hooks'
+import { isAddress } from '../../utils'
 
 // import config from '../../config'
 // const startTime = Date.now()
@@ -22,12 +23,7 @@ export default function Updater(): null {
     index: 0,
     list: []
   })
-  // const allTokensArray:any = useMemo(() => {
-  //   const list = Object.values(allTokens ?? {})
-  //   console.log(allTokens)
-  //   console.log(list)
-  //   return list
-  // }, [allTokens])
+  
   useEffect(() => {
     tokenListRef.current = {
       index: 0,
@@ -38,16 +34,16 @@ export default function Updater(): null {
     const list = Object.values(allTokens ?? {})
     const index = tokenListRef.current.index * limit
     const endIndes = index + limit
-    if (index < list.length) {
+    if (index < list.length && !isNaN(chainId)) {
       // console.log(list.length)
       // console.log(index)
       // console.log(endIndes)
       tokenListRef.current.list = list.slice(index, endIndes)
     }
-  }, [allTokens, tokenListRef.current.index])
+  }, [allTokens, tokenListRef.current.index, chainId])
   // console.log(allTokensArray)
   // const balances = useTokenBalances(account ?? undefined, allTokensArray.slice(0,10))
-  const balances = useTokenBalances(account ?? undefined, tokenListRef?.current?.list ?? [])
+  const balances = useTokenBalances(account && isAddress(account) ? account : undefined, tokenListRef?.current?.list && !isNaN(chainId) ? tokenListRef?.current?.list : [])
 
   // 每 10 分钟获取所有列表，但仅在我们初始化库之后
   // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
