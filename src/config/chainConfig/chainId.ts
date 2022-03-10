@@ -44,4 +44,5 @@ export enum ChainId {
   VLX = '106',
   XDAI = '100',
   XRP = 'XRP',
+  MIKO = '2001',
 }

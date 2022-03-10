@@ -36,6 +36,7 @@ import clv, {CLV_MAIN_CHAINID} from'./clv'
 import crab, {CRAB_MAIN_CHAINID} from './crab'
 import nas, {NAS_MAIN_CHAINID} from './nas'
 import xrp, {XRP_MAIN_CHAINID} from './xrp'
+import milkada, {MIKO_MAIN_CHAINID} from './milkada'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -80,7 +81,8 @@ export const chainInfo:ConFig = {
   ...clv,
   ...crab,
   ...nas,
-  ...xrp
+  ...xrp,
+  ...milkada,
 }
 const allChainList = [
   ETH_MAIN_CHAINID,
@@ -113,6 +115,7 @@ const allChainList = [
   VLX_MAIN_CHAINID,
   CLV_MAIN_CHAINID,
   CRAB_MAIN_CHAINID,
+  MIKO_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
