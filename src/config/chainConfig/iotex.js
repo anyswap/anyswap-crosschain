@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [IOTEX_MAIN_CHAINID]: {
+    wrappedToken: 'io15qr5fzpxsnp7garl4m7k355rafzqn8grrm0grz',
     tokenListUrl: tokenListUrl + IOTEX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [METIS_MAIN_CHAINID]: {
+    wrappedToken: '0x75cb093E4D61d2A2e65D8e0BBb01DE8d89b53481',
     tokenListUrl: tokenListUrl + METIS_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

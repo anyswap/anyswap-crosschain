@@ -45,6 +45,7 @@ const bridgeToken = {
 
 export default {
   [OPTIMISM_MAIN_CHAINID]: {
+    wrappedToken: '0x4200000000000000000000000000000000000006',
     tokenListUrl: tokenListUrl + OPTIMISM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -72,6 +73,7 @@ export default {
     anyToken: ''
   },
   [OPTIMISM_TEST_CHAINID]: {
+    wrappedToken: '0x4200000000000000000000000000000000000006',
     tokenListUrl: tokenListUrl + OPTIMISM_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [ROSE_MAIN_CHAINID]: {
+    wrappedToken: '0x21C718C22D52d0F3a789b752D4c2fD5908a8A733',
     tokenListUrl: tokenListUrl + ROSE_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

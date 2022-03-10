@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [ONE_MAIN_CHAINID]: {
+    wrappedToken: 'one1eanyppa9hvpr0g966e6zs5hvdjxkngn6jtulua',
     tokenListUrl: tokenListUrl + ONE_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

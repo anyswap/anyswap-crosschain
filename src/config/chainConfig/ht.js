@@ -170,6 +170,7 @@ const bridgeToken = {
 
 export default {
   [HT_MAIN_CHAINID]: {
+    wrappedToken: '0x5545153CCFcA01fbd7Dd11C0b23ba694D9509A6F',
     tokenListUrl: tokenListUrl + HT_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -199,6 +200,7 @@ export default {
     anyToken: '0x538cee985e930557d16c383783ca957fa90b63b3'
   },
   [HT_TEST_CHAINID]: {
+    wrappedToken: '0x2cE407eD308FAddCFFBFd9EEc241bB698d29aaDf',
     tokenListUrl: tokenListUrl + HT_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],

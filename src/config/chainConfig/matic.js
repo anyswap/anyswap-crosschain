@@ -78,6 +78,7 @@ const bridgeToken = {
 
 export default {
   [MATIC_MAIN_CHAINID]: {
+    wrappedToken: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     storage: '0x8513A596f66900a463aBDDE4e493ea283e610c4D',
     tokenListUrl: tokenListUrl + MATIC_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
@@ -115,6 +116,7 @@ export default {
     anyToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   },
   [MATIC_TEST_CHAINID]: {
+    wrappedToken: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
     storage: '0x3E75D01fea47910E47Bb5E37599E56D3Ac8356f7',
     tokenListUrl: tokenListUrl + MATIC_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),

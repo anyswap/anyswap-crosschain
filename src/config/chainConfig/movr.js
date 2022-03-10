@@ -41,6 +41,7 @@ const bridgeToken = {
 
 export default {
   [MOVR_MAIN_CHAINID]: {
+    wrappedToken: '0x98878B06940aE243284CA214f92Bb71a2b032B8A',
     tokenListUrl: tokenListUrl + MOVR_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

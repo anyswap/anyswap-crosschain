@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const AURORA_MAIN_CHAINID = 1313161554
 export const AURORA_MAINNET = getLocalRPC(AURORA_MAIN_CHAINID, 'https://mainnet.aurora.dev')
-export const AURORA_MAIN_EXPLORER = 'https://explorer.mainnet.aurora.dev'
+export const AURORA_MAIN_EXPLORER = 'https://aurorascan.dev/'
 
 export const tokenList = []
 export const testTokenList = []
@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [AURORA_MAIN_CHAINID]: {
+    wrappedToken: '0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB',
     tokenListUrl: tokenListUrl + AURORA_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
