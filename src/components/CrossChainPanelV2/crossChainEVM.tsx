@@ -590,6 +590,15 @@ export default function CrossChain({
                     <></>
                   )
                 }
+                {
+                  selectDestCurrency?.symbol?.indexOf('FRAX') !== -1 && !isDestUnderlying ? (
+                    <>
+                      <ConfirmText>
+                      Please use <a href='https://app.frax.finance/crosschain' target='__blank'>https://app.frax.finance/crosschain</a> to swap into native FRAX on destination chain.
+                      </ConfirmText>
+                    </>
+                  ) : ''
+                }
               </>
             )
           }
@@ -821,7 +830,8 @@ export default function CrossChain({
                       </ButtonConfirmed>
                   </>
                 ) : (
-                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  // <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  <ButtonPrimary  onClick={() => {
                     setModalTipOpen(true)
                   }}>
                     {btnTxt}
