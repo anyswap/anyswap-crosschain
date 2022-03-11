@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const TLOS_MAIN_CHAINID = ChainId.TLOS
 export const TLOS_MAINNET = getLocalRPC(TLOS_MAIN_CHAINID, 'https://rpc1.us.telos.net/evm')
-export const TLOS_MAIN_EXPLORER = 'https://rpc1.us.telos.net/v2/explore/evm'
+export const TLOS_MAIN_EXPLORER = 'https://www.teloscan.io'
 
 export const tokenList = []
 export const testTokenList = []
@@ -47,7 +47,7 @@ export default {
       'https://rpc1.eu.telos.net/evm'
     ],
     chainID: TLOS_MAIN_CHAINID,
-    lookHash: TLOS_MAIN_EXPLORER + '/transaction/',
+    lookHash: TLOS_MAIN_EXPLORER + '/tx/',
     lookAddr: TLOS_MAIN_EXPLORER + '/address/',
     lookBlock: TLOS_MAIN_EXPLORER + '/block/',
     explorer: TLOS_MAIN_EXPLORER,
