@@ -830,8 +830,8 @@ export default function CrossChain({
                       </ButtonConfirmed>
                   </>
                 ) : (
-                  // <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  <ButtonPrimary  onClick={() => {
+                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  // <ButtonPrimary  onClick={() => {
                     setModalTipOpen(true)
                   }}>
                     {btnTxt}
