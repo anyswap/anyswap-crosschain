@@ -17,9 +17,6 @@ import config from '../../config'
 import NebPay from 'nebpay.js'
 import { BigNumber } from 'ethers'
 
-const Base58 = require('bs58')
-const cryptoUtils = require('./crypto-utils')
-
 // const NAS_URL = 'https://testnet.nebulas.io'
 const NAS_URL = 'https://mainnet.nebulas.io'
 
@@ -31,57 +28,6 @@ export const toNasBasic = (value: string) => {
   return stringAmount.toString()
 }
 
-const AddressLength = 26;
-const AddressPrefix = 25;
-const NormalType = 87;
-const ContractType = 88;
-
-// const KeyVersion3 = 3;
-// const KeyCurrentVersion = 4;
-const isString = function (obj:any) {
-  return typeof obj === 'string' && obj.constructor === String;
-}
-const isNumber = function (object:any) {
-	return typeof object === 'number';
-}
-export const isValidAddress = function (addr:any, type?:any) {
-  /*jshint maxcomplexity:10 */
-
-  if (isString(addr)) {
-      try {
-          addr = Base58.decode(addr);
-      } catch (e) {
-          console.log("invalid address.");
-          // if address can't be base58 decode, return false.
-          return false;
-      }
-  } else if (!Buffer.isBuffer(addr)) {
-      return false;
-  }
-  // address not equal to 26
-  if (addr.length !== AddressLength) {
-      return false;
-  }
-
-  // check if address start with AddressPrefix
-  const buff = Buffer.from(addr);
-  if (buff.readUIntBE(0, 1) !== AddressPrefix) {
-      return false;
-  }
-
-  // check if address type is NormalType or ContractType
-  const t = buff.readUIntBE(1, 1);
-  if (isNumber(type) && (type === NormalType || type === ContractType)) {
-      if (t !== type) {
-          return false;
-      }
-  } else if (t !== NormalType && t !== ContractType) {
-      return false;
-  }
-  const content = addr.slice(0, 22);
-  const checksum = addr.slice(-4);
-  return Buffer.compare(cryptoUtils.sha3(content).slice(0, 4), checksum) === 0;
-}
 
 export const isExtWalletInstall = () => {
   return 'NasExtWallet' in window
@@ -116,7 +62,7 @@ export const useCurrentWNASBalance = (token?:any) => {
 
   const getWNASBalance = useCallback(async () => {
     try {
-      if (!isValidAddress(address) || !token) {
+      if (!nebulas.Account.isValidAddress(address) || !token) {
         return false
       }
       const tx = await neb.api.call({
@@ -159,7 +105,7 @@ export const useCurrentNasBalance = () => {
   // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
   // console.log(chainId)
   const getNasBalance = useCallback(async () => {
-    if (isValidAddress(address) && chainId === 'NAS') {
+    if (nebulas.Account.isValidAddress(address) && chainId === 'NAS') {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)
@@ -258,8 +204,6 @@ export function useNebBridgeCallback({
 
       const inputError = sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
 
-      // console.log('useNebBridgeCallback inputError', inputError)
-      // console.log(isValidAddress(inputCurrency?.address))
       return {
         inputError,
         wrapType: WrapType.WRAP,
