@@ -143,7 +143,7 @@ export const testTokenList = [
 
 const symbol = 'HT'
 
-const bridgeToken = {
+const bridgeToken:any = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeInitChain: '',

@@ -8,7 +8,7 @@ export const MIKO_MAIN_EXPLORER = 'https://rpc.c1.milkomeda.com:4000'
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'MIKO'
+const symbol = 'milkADA'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -55,7 +55,7 @@ export default {
     type: 'main',
     label: MIKO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'MIKO',
+    suffix: 'milkADA',
     anyToken: ''
   },
 }
