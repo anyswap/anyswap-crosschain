@@ -22,9 +22,10 @@ export function outputValue (inputBridgeValue: any, destConfig:any, selectCurren
         value = Number(inputBridgeValue) - fee
       }
       if (value && Number(value) && Number(value) > 0) {
+        const dec = Math.min(6, selectCurrency.decimals)
         return {
           fee: fee,
-          outputBridgeValue: thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
+          outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
         }
       }
       return {

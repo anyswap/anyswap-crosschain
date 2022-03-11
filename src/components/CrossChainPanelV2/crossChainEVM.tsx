@@ -176,11 +176,6 @@ export default function CrossChain({
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isRouter) ? formatCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
   useEffect(() => {
-    // console.log(isRouter)
-    // console.log(formatInputBridgeValue)
-    // console.log((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined)
-    // console.log(approval)
-    // console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -434,12 +429,13 @@ export default function CrossChain({
           })
         }
       } else if (
-        (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
+        (isDestUnderlying && destChain && destChain.ts !== '' && Number(inputBridgeValue) > Number(destChain.ts))
         || (isDestUnderlying && !destChain)
       ) {
         // if (selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT") {
         //   return undefined
         // }
+        // console.log(destChain)
         return {
           state: 'Warning',
           tip: t('insufficientLiquidity')
@@ -770,7 +766,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && chainId && (isDestUnderlying || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
             <LiquidityPool
               // curChain={curChain}
               destChain={destChain}
