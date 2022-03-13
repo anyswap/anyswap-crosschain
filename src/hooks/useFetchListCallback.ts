@@ -18,8 +18,8 @@ import config from '../config'
 import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
-import jsonTokenList from '../tokenlist.97.json'
-import jsonServerInfo from '../serverinfo.97.json'
+import jsonTokenList from '../tokenlist.80001.json'
+import jsonServerInfo from '../serverinfo.80001.json'
 
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
