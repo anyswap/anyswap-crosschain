@@ -114,6 +114,8 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@babel/core": "7.9.0",
+    "@binance-chain/bsc-connector": "^1.0.0",
+    "@clover-network/clover-connector": "^1.0.0",
     "@makerdao/multicall": "^0.12.0",
     "@svgr/webpack": "4.3.3",
     "@terra-money/terra.js": "^1.5.0",
