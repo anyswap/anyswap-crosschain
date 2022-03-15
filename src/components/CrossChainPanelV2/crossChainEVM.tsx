@@ -476,25 +476,6 @@ export default function CrossChain({
     }
   }
 
-  // console.group('%c Log', 'color: orange; font-size: 14px')
-  // console.log('inputBridgeValue: ', inputBridgeValue)
-  // console.log('selectCurrency: ', selectCurrency)
-  // console.log('selectDestCurrency: ', selectDestCurrency)
-  // console.log('selectDestCurrencyList: ', selectDestCurrencyList)
-  // console.log('selectChain: ', selectChain)
-  // console.log('selectChainList: ', selectChainList)
-  // console.log('recipient: ', recipient)
-  // console.log('swapType: ', swapType)
-  // console.log('intervalCount: ', intervalCount)
-  // console.log('modalOpen: ', modalOpen)
-  // console.log('modalTipOpen: ', modalTipOpen)
-  // console.log('approvalSubmitted: ', approvalSubmitted)
-  // console.log('delayAction: ', delayAction)
-  // console.log('curChain: ', curChain)
-  // console.log('destChain: ', destChain)
-  // console.log('initBridgeToken: ', initBridgeToken)
-  // console.groupEnd()
-
   return (
     <>
       <ModalContent

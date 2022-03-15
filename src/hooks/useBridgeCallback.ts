@@ -23,7 +23,7 @@ import {
 
 import {useTerraSend} from './terra'
 
-import {recordsTxns} from '../utils/bridge/register'
+import { recordsTxns, registerSwap } from '../utils/bridge/register'
 import config from '../config'
 
 import useTerraBalance from './useTerraBalance'
@@ -37,10 +37,10 @@ export enum WrapType {
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
- * 跨链any token
- * 给定选定的输入和输出货币，返回一个wrap回调
- * @param inputCurrency 选定的输入货币
- * @param typedValue 用户输入值
+ * Cross chain any token
+ * Given the selected input and output currencies, a wrap callback is returned
+ * @param inputCurrency: Selected input currency
+ * @param typedValue: User input value
  */
 export function useBridgeCallback(
   routerToken: string | undefined,
@@ -58,7 +58,7 @@ export function useBridgeCallback(
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
-  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  // We can always parse the amount of the input currency because the packaging is 1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
@@ -83,8 +83,10 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
+
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                // registerSwap(txReceipt.hash, chainId)
+                registerSwap(txReceipt.hash, chainId)
+
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash?.toLowerCase(),
@@ -112,10 +114,10 @@ export function useBridgeCallback(
 
 
 /**
- * 跨链underlying
- * 给定选定的输入和输出货币，返回一个wrap回调
- * @param inputCurrency 选定的输入货币
- * @param typedValue 用户输入值
+ * Cross chain underlying
+ * Given the selected input and output currencies, a wrap callback is returned
+ * @param inputCurrency: Selected input currency
+ * @param typedValue: User input value
  */
  export function useBridgeUnderlyingCallback(
   routerToken: string | undefined,
@@ -160,8 +162,10 @@ export function useBridgeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   toChainID
                 )
+
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                // registerSwap(txReceipt.hash, chainId)
+                registerSwap(txReceipt.hash, chainId)
+
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash?.toLowerCase(),
@@ -190,10 +194,10 @@ export function useBridgeCallback(
 
 
 /**
- * 跨链native
- * 给定选定的输入和输出货币，返回一个wrap回调
- * @param inputCurrency 选定的输入货币
- * @param typedValue 用户输入值
+ * Cross chain native
+ * Given the selected input and output currencies, a wrap callback is returned
+ * @param inputCurrency: Selected input currency
+ * @param typedValue: User input value
  */
 export function useBridgeNativeCallback(
   routerToken: string | undefined,
@@ -235,8 +239,10 @@ export function useBridgeNativeCallback(
                   toChainID],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
+
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                // registerSwap(txReceipt.hash, chainId)
+                registerSwap(txReceipt.hash, chainId)
+
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash?.toLowerCase(),

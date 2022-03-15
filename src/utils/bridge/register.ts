@@ -5,10 +5,16 @@ import {CROSSCHAINBRIDGE} from './type'
 
 import config from '../../config'
 
-export function registerSwap (hash:string, chainId:any) {
-  return new Promise(resolve => {
-    console.log(hash)
-    const url = `${config.bridgeApi}/v3/register?hash=${hash}&chainId=${chainId}&type=${USE_VERSION}`
+export function registerSwap(hash: string, chainId: any) {
+  return new Promise((resolve) => {
+    console.log('new swap hash: ', hash)
+
+    resolve(false)
+
+    // const url = `${config.bridgeApi}/v3/register?hash=${hash}&chainId=${chainId}&type=${USE_VERSION}`
+
+    const url = `${config.routerApi}:${config.routerPort}/swap/register/${chainId}/${hash}?logindex=0`
+
     getUrlData(url).then(res => {
       console.log(res)
       resolve(res)
