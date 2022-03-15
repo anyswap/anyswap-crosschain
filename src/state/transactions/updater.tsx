@@ -52,7 +52,7 @@ export default function Updater(): null {
   const addPopup = useAddPopup()
 
   const updateNonEVMTxns = useCallback(() => {
-    console.log(library)
+    // console.log(library)
     if (!chainId) return
     if (chainId === TERRA_MAIN_CHAINID) {
       Object.keys(transactions)

@@ -38,6 +38,7 @@ import config from '../../config'
 import {bridgeApi} from '../../config/constant'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import {getP2PInfo} from '../../utils/bridge/register'
@@ -91,7 +92,7 @@ function getInitToken () {
 
 const BRIDGETYPE = 'bridgeTokenList'
 
-const TERRA_CHAIN = 'TERRA'
+const TERRA_CHAIN = ChainId.TERRA
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()

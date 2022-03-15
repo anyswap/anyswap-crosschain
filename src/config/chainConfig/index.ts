@@ -220,7 +220,7 @@ const useChain:any = {
     LTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
     COLX_MAIN_CHAINID,
-    // NAS_MAIN_CHAINID,
+    NAS_MAIN_CHAINID,
     XRP_MAIN_CHAINID,
   ],
   ALL_MAIN: [

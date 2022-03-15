@@ -17,6 +17,8 @@ import config from '../../config'
 import NebPay from 'nebpay.js'
 import { BigNumber } from 'ethers'
 
+import { ChainId } from '../../config/chainConfig/chainId'
+
 // const NAS_URL = 'https://testnet.nebulas.io'
 const NAS_URL = 'https://mainnet.nebulas.io'
 
@@ -105,7 +107,7 @@ export const useCurrentNasBalance = () => {
   // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
   // console.log(chainId)
   const getNasBalance = useCallback(async () => {
-    if (nebulas.Account.isValidAddress(address) && chainId === 'NAS') {
+    if (nebulas.Account.isValidAddress(address) && chainId === ChainId.NAS) {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)

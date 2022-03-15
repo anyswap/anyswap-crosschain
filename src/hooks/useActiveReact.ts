@@ -5,6 +5,8 @@ import { useMemo } from 'react'
 
 import { useCurrentAddress } from './nas'
 
+import { ChainId } from '../config/chainConfig/chainId'
+
 export function useActiveReact () {
   const { account, chainId } = useActiveWeb3React()
   const connectedWallet = useConnectedWallet()
@@ -13,13 +15,13 @@ export function useActiveReact () {
   return useMemo(() => {
     let useAccount = account
     let useChainId:any = chainId
-    if (selectNetworkInfo?.label === 'TERRA') {
+    if (selectNetworkInfo?.label === ChainId.TERRA) {
       useAccount = connectedWallet?.walletAddress
       useChainId = selectNetworkInfo?.chainId
-    } else if (selectNetworkInfo?.label === 'BTC') {
+    } else if (selectNetworkInfo?.label === ChainId.BTC) {
       useAccount = ''
       useChainId = selectNetworkInfo?.chainId
-    } else if (selectNetworkInfo?.label === 'NAS') {
+    } else if (selectNetworkInfo?.label === ChainId.NAS) {
       useAccount = nebAddress
       useChainId = selectNetworkInfo?.chainId
     }

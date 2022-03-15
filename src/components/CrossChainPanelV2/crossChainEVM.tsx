@@ -33,6 +33,7 @@ import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -498,7 +499,7 @@ export default function CrossChain({
     if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
     } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
-      if (selectChain === 'TERRA' && connectedWallet?.walletAddress) {
+      if (selectChain === ChainId.TERRA && connectedWallet?.walletAddress) {
         setRecipient(connectedWallet?.walletAddress)
       } else {
         setRecipient('')

@@ -23,6 +23,8 @@ import Loader from '../Loader'
 import { RowBetween } from '../Row'
 import WalletModal from '../WalletModal'
 
+import { ChainId } from '../../config/chainConfig/chainId'
+
 const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
@@ -169,7 +171,7 @@ function Web3StatusInner() {
       </Web3StatusError>
     )
   } else {
-    if (chainId === 'TERRA') {
+    if (chainId === ChainId.TERRA) {
       return (
         <Web3StatusConnect id="connect-wallet"  onClick={() => {
           // console.log(connect)

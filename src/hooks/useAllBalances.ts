@@ -6,6 +6,8 @@ import useInterval from './useInterval'
 
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 
+import { ChainId } from '../config/chainConfig/chainId'
+
 export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const connectedWallet = useConnectedWallet()
   const {getTerraBalances} = useTerraBalance()
@@ -15,7 +17,7 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
 
   const fetchBalance = useCallback(() => {
     if (token) {
-      if (selectChainId === 'TERRA' && connectedWallet?.walletAddress) {
+      if (selectChainId === ChainId.TERRA && connectedWallet?.walletAddress) {
         // console.log(token)
         // console.log(connectedWallet?.walletAddress)
         getTerraBalances({

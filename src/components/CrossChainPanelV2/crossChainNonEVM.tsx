@@ -33,6 +33,7 @@ import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -166,12 +167,12 @@ export default function CrossChain({
 
   const useBalance = useMemo(() => {
     // console.log(terraBalance)
-    if (chainId === 'NAS') {
+    if (chainId === ChainId.NAS) {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toSignificant(3)
         return nasBalanceFormat
       }
-    } else if (chainId === 'TERRA') {
+    } else if (chainId === ChainId.TERRA) {
       if (terraBalance) {
         return terraBalance?.toSignificant(3)
       }
@@ -180,9 +181,9 @@ export default function CrossChain({
   }, [terraBalance,chainId,nasBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
-    if (wrapInputErrorTerra && chainId === 'TERRA') {
+    if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
       return wrapInputErrorTerra
-    } else if (wrapInputErrorNeb && chainId === 'NAS') {
+    } else if (wrapInputErrorNeb && chainId === ChainId.NAS) {
       return wrapInputErrorNeb
     } else {
       return false
@@ -375,11 +376,11 @@ export default function CrossChain({
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                 // <ButtonPrimary disabled={delayAction} onClick={() => {
                   onDelay()
-                  if (onTerraWrap && chainId === 'TERRA') {
+                  if (onTerraWrap && chainId === ChainId.TERRA) {
                     onTerraWrap().then(() => {
                       onClear()
                     })
-                  } else if (onNebWrap && chainId === 'NAS') {
+                  } else if (onNebWrap && chainId === ChainId.NAS) {
                     console.log('onNebWrap')
                     onNebWrap().then(() => {
                       onClear()
