@@ -14,8 +14,8 @@ type ChainTokenList = {
 
 export const STORAGE_METHODS = {
   getData: 'getData',
-  setData: 'setData',
-  clearData: 'clearData'
+  setKeyData: 'setKeyData',
+  clearKeyData: 'clearKeyData'
 }
 export interface WalletInfo {
   connector?: AbstractConnector

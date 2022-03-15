@@ -152,7 +152,7 @@ export default function Interface() {
         provider: library?.provider,
         account,
         storageChainId: config.STORAGE_CHAIN_ID,
-        method: STORAGE_METHODS.setData,
+        method: STORAGE_METHODS.setKeyData,
         args: [
           domain,
           {

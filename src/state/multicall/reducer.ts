@@ -77,18 +77,21 @@ export default createReducer(initialState, builder =>
     )
     .addCase(fetchingMulticallResults, (state, { payload: { chainId, fetchingBlockNumber, calls } }) => {
       state.callResults[chainId] = state.callResults[chainId] ?? {}
-      calls.forEach(call => {
-        const callKey = toCallKey(call)
-        const current = state.callResults[chainId][callKey]
-        if (!current) {
-          state.callResults[chainId][callKey] = {
-            fetchingBlockNumber
+
+      if (calls.length) {
+        calls.forEach(call => {
+          const callKey = toCallKey(call)
+          const current = state.callResults[chainId][callKey]
+          if (!current) {
+            state.callResults[chainId][callKey] = {
+              fetchingBlockNumber
+            }
+          } else {
+            if ((current.fetchingBlockNumber ?? 0) >= fetchingBlockNumber) return
+            state.callResults[chainId][callKey].fetchingBlockNumber = fetchingBlockNumber
           }
-        } else {
-          if ((current.fetchingBlockNumber ?? 0) >= fetchingBlockNumber) return
-          state.callResults[chainId][callKey].fetchingBlockNumber = fetchingBlockNumber
-        }
-      })
+        })
+      }
     })
     .addCase(errorFetchingMulticallResults, (state, { payload: { fetchingBlockNumber, chainId, calls } }) => {
       state.callResults[chainId] = state.callResults[chainId] ?? {}

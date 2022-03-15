@@ -51,6 +51,7 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload
+
       if (typeof state.blockNumber[chainId] !== 'number') {
         state.blockNumber[chainId] = blockNumber
       } else {
