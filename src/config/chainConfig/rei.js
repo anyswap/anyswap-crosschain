@@ -1,14 +1,14 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
-export const MIKO_MAIN_CHAINID = 2001
-export const MIKO_MAINNET = getLocalRPC(MIKO_MAIN_CHAINID, 'https://rpc.c1.milkomeda.com:8545')
-export const MIKO_MAIN_EXPLORER = 'https://rpc.c1.milkomeda.com:4000'
+export const REI_MAIN_CHAINID = 47805
+export const REI_MAINNET = getLocalRPC(REI_MAIN_CHAINID, 'https://rpc-mainnet.rei.network')
+export const REI_MAIN_EXPLORER = 'https://scan.rei.network'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'milkADA'
+const symbol = 'REI'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -30,32 +30,32 @@ const bridgeToken = {
 }
 
 export default {
-  [MIKO_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + MIKO_MAIN_CHAINID,
+  [REI_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + REI_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
+    multicalToken: '0x9e8955847586682971a53e1a2428CA7354A655f2',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: MIKO_MAINNET,
+    nodeRpc: REI_MAINNET,
     nodeRpcList: [
-      MIKO_MAINNET,
+      REI_MAINNET,
     ],
-    chainID: MIKO_MAIN_CHAINID,
-    lookHash: MIKO_MAIN_EXPLORER + '/tx/',
-    lookAddr: MIKO_MAIN_EXPLORER + '/address/',
-    lookBlock: MIKO_MAIN_EXPLORER + '/block/',
-    explorer: MIKO_MAIN_EXPLORER,
+    chainID: REI_MAIN_CHAINID,
+    lookHash: REI_MAIN_EXPLORER + '/tx/',
+    lookAddr: REI_MAIN_EXPLORER + '/address/',
+    lookBlock: REI_MAIN_EXPLORER + '/block/',
+    explorer: REI_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Milkomeda',
-    networkName: 'Milkomeda mainnet',
+    name: 'REI',
+    networkName: 'REI mainnet',
     type: 'main',
-    label: MIKO_MAIN_CHAINID,
+    label: REI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'milkADA',
+    suffix: 'REI',
     anyToken: ''
   },
 }
