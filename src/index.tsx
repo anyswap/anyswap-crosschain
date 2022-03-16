@@ -16,6 +16,7 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import PoolsUpdater from './state/pools/updater'
 import WalletUpdater from './state/wallet/updater'
+import RpcUpdater from './state/rpc/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 
@@ -54,6 +55,7 @@ function Updaters() {
       <TransactionUpdater />
       <MulticallUpdater />
       <WalletUpdater />
+      <RpcUpdater />
       <MulticallUpdater type={1}/>
     </>
   )

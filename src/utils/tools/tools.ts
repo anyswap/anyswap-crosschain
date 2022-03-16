@@ -208,7 +208,7 @@ export function fromWei (value:any, decimals?:number, dec?:number) {
     
     return formatDecimal(Number(formatUnits(value.toString(), decimals)), dec)
   }
-  return Number(formatUnits(value.toString(), decimals))
+  return formatUnits(value.toString(), decimals)
 }
 // console.log(formatUnits('18069854444009912311', 18))
 export function toWei (value:any, decimals:number) {

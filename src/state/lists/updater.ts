@@ -86,6 +86,13 @@ export default function Updater(): null {
   // automatically update lists if versions are minor/patch
   useEffect(() => {
     console.log(library)
+    if (library) {
+      const startTime = Date.now()
+      library.getBlockNumber().then(res => {
+        console.log(Date.now() - startTime)
+        console.log(res)
+      })
+    }
     Object.keys(lists).forEach(listUrl => {
       const list = lists[listUrl]
       if (list.current && list.pendingUpdate) {

@@ -5,7 +5,7 @@ const TIMEOUT = 'timeout'
 
 const Web3 = require('web3')
 
-function getWeb3 (rpc) {
+export function getWeb3 (rpc) {
   rpc = rpc ? rpc : ''
   const wFn = new Web3(new Web3.providers.HttpProvider(rpc))
   // wFn.extend({
@@ -16,9 +16,9 @@ function getWeb3 (rpc) {
 }
 
 
-function getContract ({rpc, abi}) {
+export function getContract ({rpc, abi}) {
   const web3 = getWeb3(rpc)
-  // abi = abi ? abi : ERC20_ABI
+  abi = abi ? abi : multicallABI
   return new web3.eth.Contract(abi)
 }
 
