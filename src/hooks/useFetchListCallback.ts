@@ -128,6 +128,103 @@ export function useFetchTokenListCallback(): () => Promise<any> {
   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
   // console.log(lists)
   console.log('>>> useFetchTokenListCallback')
+  const serverList: any = {}
+  // @ts-ignore
+  window.evmcc_pairs.forEach((pairData) => {
+    let mainToken: any = null
+    const pairTokens: any = {}
+    console.log('>>> pair data', pairData)
+    pairData.forEach((tokenData: any) => {
+      if (tokenData.chainId === chainId) {
+        mainToken = tokenData
+      } else {
+        /*
+        "destChains":{
+         "97":{
+            "0x6e9c98a8a481bf038ba7e1d669a0086547dd144e":{
+               "name":"TetherUSD222",
+               "symbol":"USDT",
+               "decimals":8,
+               "address":"0x6e9c98a8a481bf038ba7e1d669a0086547dd144e",
+               "underlying":{
+                 "address":"0xc0c3394781c23faa538a506b3c96fb59c050bed8",
+                 "name":"TetherUSD111",
+                 "symbol":"anyUSDT",
+                 "decimals":8
+              },
+               "swapfeeon":1,
+               "MaximumSwap":"20000000",
+               "MinimumSwap":"12",
+               "BigValueThreshold":"5000000",
+               "SwapFeeRatePerMillion":0.1,
+               "MaximumSwapFee":"0.9",
+               "MinimumSwapFee":"0.9",
+               "type":"STABLEV3",
+               "tokenid":"anyUSDT",
+               "routerToken":"0x20aabbc7752457e980c53ac7bc8c8a72df2aa4eb"
+            }
+         }
+      },
+        */
+        if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
+        pairTokens[tokenData.chainId][tokenData.address] = {
+          name: tokenData.name,
+          symbol: tokenData.symbol,
+          decimals: tokenData.decimals,
+          address: tokenData.decimals,
+          underlying: tokenData.underlying,
+          type: "STABLEV3",
+          tokenid: tokenData.symbol,
+          swapfeeon: 1,
+          MaximumSwap: 20000000,
+          MinimumSwap: 12,
+          BigValueThreshold: 5000000,
+          SwapFeeRatePerMillion: 0.1,
+          MaximumSwapFee: 0.9,
+          MinimumSwapFee: 0.9,
+        }
+      }
+    })
+    
+    if (mainToken !== null) {
+      /*
+      {
+            chainId: 97,
+            address:"0x6e9c98a8a481bf038ba7e1d669a0086547dd144e",
+            name: "TetherUSD",
+            symbol: "USDT",
+            decimals: 8,
+            underlying: {
+               address: "0xd71a1bbabb389f3af78633e040bd994a99210c59",
+               name: "TetherUSD",
+               symbol: "anyUSDT",
+               decimals: 8
+            },
+            routerToken: "0x69558d860103e420013fadde75f81b54a06d728f",
+            swapfeeon: 1,
+            MaximumSwap: 20000000,
+            MinimumSwap: 12,
+            BigValueThreshold: 5000000,
+            SwapFeeRatePerMillion: 0.1,
+            MaximumSwapFee: 0.9,
+            MinimumSwapFee: 0.9
+          },
+          */
+      serverList[mainToken.address] = {
+        address: mainToken.address,
+        name: mainToken.name,
+        symbol: mainToken.symbol,
+        decimals: mainToken.decimals,
+        underlying: mainToken.underlying,
+        destChains:{},
+        price: 1,
+        logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+        chainId,
+      }
+      console.log('>>>>>', mainToken, pairTokens)
+    }
+    
+  })
   return useCallback(
     async () => {
       if (!chainId) return
