@@ -2,8 +2,8 @@ import React from 'react'
 // import { useTranslation } from 'react-i18next'
 // import { useActiveWeb3React } from '../../hooks'
 import DeployAnyERC20 from './DeployERC20'
-import DeployRouter from './DeployRouter'
-import DeployRouterConfig from './DeployRouterConfig'
+// import DeployRouter from './DeployRouter'
+// import DeployRouterConfig from './DeployRouterConfig'
 
 export default function Contracts() {
   // const { library, account, chainId } = useActiveWeb3React()
@@ -12,8 +12,8 @@ export default function Contracts() {
   return (
     <div>
       <DeployAnyERC20 />
-      <DeployRouter />
-      <DeployRouterConfig />
+      {/* <DeployRouter />
+      <DeployRouterConfig /> */}
     </div>
   )
 }

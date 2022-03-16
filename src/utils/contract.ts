@@ -1,6 +1,9 @@
 import { Web3Provider } from '@ethersproject/providers'
 // import { Contract } from '@ethersproject/contracts'
-import { isAddress, toBN } from 'web3-utils'
+import {
+  isAddress
+  // toBN
+} from 'web3-utils'
 import { getWeb3Library } from './getLibrary'
 import InfinityERC20 from '../constants/abis/app/InfinityERC20.json'
 import AnyswapERC20 from '../constants/abis/app/AnyswapV6ERC20.json'
@@ -133,10 +136,10 @@ export const addToken = async (params: {
   onHash?: (hash: string) => void
 }) => {
   const {
-    chainId,
-    toChainId,
-    mpc,
-    mpcPubKey,
+    // chainId,
+    // toChainId,
+    // mpc,
+    // mpcPubKey,
     library,
     account,
     name,
@@ -145,12 +148,12 @@ export const addToken = async (params: {
     underlying,
     vault,
     minter,
-    onHash,
-    routerConfig
+    onHash
+    // routerConfig
   } = params
 
   try {
-    const anyswapERC20 = await deployAnyswapERC20({
+    return await deployAnyswapERC20({
       library,
       account,
       name,
@@ -162,46 +165,58 @@ export const addToken = async (params: {
       onHash
     })
 
-    const web3 = getWeb3Library(library.provider)
-    const { abi } = RouterConfig
-    //@ts-ignore
-    const configContract = new web3.eth.Contract(abi, routerConfig)
+    // const crosschainERC20 = await deployAnyswapERC20({
+    //   library,
+    //   account,
+    //   name,
+    //   symbol,
+    //   decimals,
+    //   underlying,
+    //   vault,
+    //   minter,
+    //   onHash
+    // })
 
-    // what is tokenID format?
-    const sourceTokenId = `${chainId}${name.toUpperCase()}`
-    // (tokenID, chainID, TokenConfig)
-    const tokenConfigResult = await configContract.methods.setTokenConfig(sourceTokenId, chainId, {
-      Decimals: decimals,
-      ContractAddress: anyswapERC20.options.address,
-      ContractVersion: 6
-    })
+    // const web3 = getWeb3Library(library.provider)
+    // const { abi } = RouterConfig
+    // //@ts-ignore
+    // const configContract = new web3.eth.Contract(abi, routerConfig)
 
-    const targetTokenId = `${toChainId}${name.toUpperCase()}`
-    // (tokenID, toChainID, SwapConfig)
-    const multiplier = toBN(10).mul(toBN(18))
-    const swapConfigResult = await configContract.methods.setSwapConfig(targetTokenId, toChainId, {
-      MaximumSwap: toBN(1_000_000)
-        .mul(multiplier)
-        .toString(),
-      MinimumSwap: toBN(100)
-        .mul(multiplier)
-        .toString(),
-      BigValueThreshold: toBN(100_000)
-        .mul(multiplier)
-        .toString(),
-      SwapFeeRatePerMillion: '1000',
-      MaximumSwapFee: toBN(10)
-        .mul(multiplier)
-        .toString(),
-      MinimumSwapFee: toBN(1.5)
-        .mul(multiplier)
-        .toString()
-    })
+    // // what is tokenID format?
+    // const sourceTokenId = `${chainId}${name.toUpperCase()}`
+    // // (tokenID, chainID, TokenConfig)
+    // const tokenConfigResult = await configContract.methods.setTokenConfig(sourceTokenId, chainId, {
+    //   Decimals: decimals,
+    //   ContractAddress: crosschainERC20.options.address,
+    //   ContractVersion: 6
+    // })
 
-    // (addr, pubKey)
-    const mpcKeyResult = await configContract.methods.setMPCPubkey(mpc, mpcPubKey)
+    // const targetTokenId = `${toChainId}${name.toUpperCase()}`
+    // // (tokenID, toChainID, SwapConfig)
+    // const multiplier = toBN(10).mul(toBN(18))
+    // const swapConfigResult = await configContract.methods.setSwapConfig(targetTokenId, toChainId, {
+    //   MaximumSwap: toBN(1_000_000)
+    //     .mul(multiplier)
+    //     .toString(),
+    //   MinimumSwap: toBN(100)
+    //     .mul(multiplier)
+    //     .toString(),
+    //   BigValueThreshold: toBN(100_000)
+    //     .mul(multiplier)
+    //     .toString(),
+    //   SwapFeeRatePerMillion: '1000',
+    //   MaximumSwapFee: toBN(10)
+    //     .mul(multiplier)
+    //     .toString(),
+    //   MinimumSwapFee: toBN(1.5)
+    //     .mul(multiplier)
+    //     .toString()
+    // })
 
-    return !!(tokenConfigResult && swapConfigResult && mpcKeyResult)
+    // // (addr, pubKey)
+    // const mpcKeyResult = await configContract.methods.setMPCPubkey(mpc, mpcPubKey)
+
+    // return !!(tokenConfigResult && swapConfigResult && mpcKeyResult)
   } catch (error) {
     console.error(error)
     return false

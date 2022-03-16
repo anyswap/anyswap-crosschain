@@ -7,13 +7,12 @@ import config from '../../config'
 
 export function registerSwap(hash: string, chainId: any) {
   return new Promise((resolve) => {
-    console.log('new swap hash: ', hash)
-
-    resolve(false)
+    console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
 
     // const url = `${config.bridgeApi}/v3/register?hash=${hash}&chainId=${chainId}&type=${USE_VERSION}`
+    // resolve(false)
 
-    const url = `${config.routerApi}:${config.routerPort}/swap/register/${chainId}/${hash}?logindex=0`
+    const url = `${config.routerApi}/swap/register/${chainId}/${hash}?logindex=0`
 
     getUrlData(url).then(res => {
       console.log(res)
