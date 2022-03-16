@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import { ChainId } from './chainId'
 
-export const REI_MAIN_CHAINID = 47805
+export const REI_MAIN_CHAINID = ChainId.REI
 export const REI_MAINNET = getLocalRPC(REI_MAIN_CHAINID, 'https://rpc-mainnet.rei.network')
 export const REI_MAIN_EXPLORER = 'https://scan.rei.network'
 
