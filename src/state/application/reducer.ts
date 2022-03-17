@@ -40,22 +40,35 @@ const initialState: ApplicationState = {
 export default createReducer(initialState, builder =>
   builder
     .addCase(retrieveAppData, (state, action) => {
-      const data = action.payload
+      if (action.payload) {
+        const {
+          logo,
+          projectName,
+          brandColor,
+          backgroundColorLight,
+          backgroundColorDark,
+          elementsColorLight,
+          elementsColorDark,
+          socialLinks,
+          disableSourceCopyright
+        } = action.payload
 
-      if (data && Object.keys(data).length) {
-        Object.keys(data).forEach((key: string) => {
-          // @ts-ignore
-          state[key] = data[key]
-        })
+        if (logo) state.logo = logo
+        if (projectName) state.projectName = projectName
+        if (brandColor) state.brandColor = brandColor
+        if (backgroundColorLight) state.backgroundColorLight = backgroundColorLight
+        if (backgroundColorDark) state.backgroundColorDark = backgroundColorDark
+        if (elementsColorLight) state.elementsColorLight = elementsColorLight
+        if (elementsColorDark) state.elementsColorDark = elementsColorDark
+        if (Array.isArray(socialLinks) && socialLinks.length) state.socialLinks = socialLinks
+        if (disableSourceCopyright) state.disableSourceCopyright = disableSourceCopyright
       }
     })
     .addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload
 
-      if (typeof state.blockNumber[chainId] !== 'number') {
+      if (typeof state.blockNumber[chainId] !== 'number' || state.blockNumber[chainId] < blockNumber) {
         state.blockNumber[chainId] = blockNumber
-      } else {
-        state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
       }
     })
     .addCase(setAppManagement, (state, action) => {

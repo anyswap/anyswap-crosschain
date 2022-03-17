@@ -78,6 +78,7 @@ export interface Colors {
   red1: Color
   red2: Color
   green1: Color
+  green2: Color
   yellow1: Color
   yellow2: Color
   yellow3: Color

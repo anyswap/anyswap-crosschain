@@ -1,4 +1,4 @@
-// import './wdyr'
+import './wdyr'
 
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
@@ -31,18 +31,18 @@ if ('ethereum' in window) {
 const mainnet = {
   name: 'mainnet',
   chainID: 'columbus-4',
-  lcd: 'https://lcd.terra.dev',
-};
+  lcd: 'https://lcd.terra.dev'
+}
 
 const testnet = {
   name: 'testnet',
   chainID: 'tequila-0004',
-  lcd: 'https://tequila-lcd.terra.dev',
-};
+  lcd: 'https://tequila-lcd.terra.dev'
+}
 
 const walletConnectChainIds: Record<number, NetworkInfo> = {
   0: testnet,
-  1: mainnet,
+  1: mainnet
 }
 
 function Updaters() {
@@ -54,7 +54,7 @@ function Updaters() {
       <ApplicationUpdater />
       <TransactionUpdater />
       <MulticallUpdater />
-      <MulticallUpdater type={1}/>
+      <MulticallUpdater type={1} />
     </>
   )
 }
@@ -62,10 +62,7 @@ function Updaters() {
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <WalletProvider
-      defaultNetwork={mainnet}
-      walletConnectChainIds={walletConnectChainIds}
-    >
+    <WalletProvider defaultNetwork={mainnet} walletConnectChainIds={walletConnectChainIds}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3ProviderNetwork getLibrary={getLibrary}>
           <Provider store={store}>

@@ -9,12 +9,14 @@ import { useActiveWeb3React } from '../../hooks'
 const StyledPolling = styled.div`
   position: fixed;
   display: flex;
-  right: 0;
-  bottom: 0;
+  align-items: center;
+  right: 1vw;
+  bottom: 1vh;
   padding: 1rem;
-  color: white;
   transition: opacity 0.25s ease;
-  color: ${({ theme }) => theme.green1};
+  color: ${({ theme }) => theme.green2};
+  font-weight: 700;
+
   :hover {
     opacity: 1;
   }
@@ -24,12 +26,12 @@ const StyledPolling = styled.div`
   `}
 `
 const StyledPollingDot = styled.div`
-  width: 8px;
-  height: 8px;
-  min-height: 8px;
-  min-width: 8px;
-  margin-left: 0.5rem;
-  margin-top: 3px;
+  width: 12px;
+  height: 12px;
+  min-height: 12px;
+  min-width: 12px;
+  margin-left: 0.6rem;
+  margin-top: 1px;
   border-radius: 50%;
   position: relative;
   background-color: ${({ theme }) => theme.green1};
@@ -53,13 +55,13 @@ const Spinner = styled.div`
   border-bottom: 1px solid transparent;
   border-left: 2px solid ${({ theme }) => theme.green1};
   background: transparent;
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   position: relative;
 
-  left: -3px;
-  top: -3px;
+  left: -5px;
+  top: -5px;
 `
 
 export default function Polling() {
@@ -69,24 +71,19 @@ export default function Polling() {
 
   const [isMounted, setIsMounted] = useState(true)
 
-  useEffect(
-    () => {
-      const timer1 = setTimeout(() => setIsMounted(true), 1000)
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 1000)
 
-      // this will clear Timeout when component unmount like in willComponentUnmount
-      return () => {
-        setIsMounted(false)
-        clearTimeout(timer1)
-      }
-    },
-    [blockNumber] //useEffect will run only one time
-    //if you pass a value to array, like this [data] than clearTimeout will run every time this value changes (useEffect re-run)
-  )
+    return () => {
+      setIsMounted(false)
+      clearTimeout(timer)
+    }
+  }, [blockNumber])
 
   return (
     <ExternalLink href={chainId && blockNumber ? getEtherscanLink(chainId, blockNumber.toString(), 'block') : ''}>
       <StyledPolling>
-        <TYPE.small style={{ opacity: isMounted ? '0.2' : '0.6' }}>{blockNumber}</TYPE.small>
+        <TYPE.small style={{ opacity: isMounted ? '0.5' : '0.9' }}>{blockNumber}</TYPE.small>
         <StyledPollingDot>{!isMounted && <Spinner />}</StyledPollingDot>
       </StyledPolling>
     </ExternalLink>

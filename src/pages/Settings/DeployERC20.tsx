@@ -91,9 +91,7 @@ export default function DeployERC20() {
   const [canDeployToken, setCanDeployToken] = useState(false)
 
   useEffect(() => {
-    setCanDeployToken(
-      Boolean(underlying && name && symbol && Number.isInteger(decimals) && decimals > -1 && vault && minter)
-    )
+    setCanDeployToken(Boolean(underlying && name && symbol && decimals > -1 && vault && minter))
   }, [underlying, name, symbol, decimals, vault, minter])
 
   useEffect(() => {

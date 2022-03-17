@@ -51,7 +51,7 @@ export default createReducer(initialState, builder =>
         listeners[chainId][callKey][blocksPerFetch] = (listeners[chainId][callKey][blocksPerFetch] ?? 0) + 1
       })
     })
-    .addCase(addUseChainId, (state, { payload: { chainId }}) => {
+    .addCase(addUseChainId, (state, { payload: { chainId } }) => {
       state.useChainId = chainId
     })
     .addCase(
@@ -76,7 +76,9 @@ export default createReducer(initialState, builder =>
       }
     )
     .addCase(fetchingMulticallResults, (state, { payload: { chainId, fetchingBlockNumber, calls } }) => {
-      state.callResults[chainId] = state.callResults[chainId] ?? {}
+      if (!state.callResults[chainId]) {
+        state.callResults[chainId] = {}
+      }
 
       if (calls.length) {
         calls.forEach(call => {
@@ -107,7 +109,10 @@ export default createReducer(initialState, builder =>
       })
     })
     .addCase(updateMulticallResults, (state, { payload: { chainId, results, blockNumber } }) => {
-      state.callResults[chainId] = state.callResults[chainId] ?? {}
+      if (!state.callResults[chainId]) {
+        state.callResults[chainId] = {}
+      }
+
       Object.keys(results).forEach(callKey => {
         const current = state.callResults[chainId][callKey]
         if ((current?.blockNumber ?? 0) > blockNumber) return

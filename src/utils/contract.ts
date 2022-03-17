@@ -77,7 +77,7 @@ export const deployInfinityERC20 = async (params: any) => {
   })
 }
 
-export const deployAnyswapERC20 = async (params: any) => {
+export const deployCrosschainERC20 = async (params: any) => {
   const { library, account, onHash, name, symbol, decimals, underlying, vault, minter } = params
   const { abi, bytecode } = AnyswapERC20
 
@@ -153,7 +153,7 @@ export const addToken = async (params: {
   } = params
 
   try {
-    return await deployAnyswapERC20({
+    return await deployCrosschainERC20({
       library,
       account,
       name,
@@ -165,7 +165,7 @@ export const addToken = async (params: {
       onHash
     })
 
-    // const crosschainERC20 = await deployAnyswapERC20({
+    // const crosschainERC20 = await deployCrosschainERC20({
     //   library,
     //   account,
     //   name,
