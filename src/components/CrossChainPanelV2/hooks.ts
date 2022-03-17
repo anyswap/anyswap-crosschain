@@ -8,19 +8,19 @@ export function outputValue (inputBridgeValue: any, destConfig:any, selectCurren
   return useMemo(() => {
     if (inputBridgeValue && destConfig && selectCurrency) {
       const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
-      const baseFee = destConfig.BaseFeePercent ? minFee : 0
+      const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
       let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
+      // console.log(minFee)
+      // console.log(baseFee)
       if (fee < Number(minFee)) {
         fee = Number(minFee)
-        value = Number(inputBridgeValue) - fee
       } else if (fee > destConfig.MaximumSwapFee) {
         fee = Number(destConfig.MaximumSwapFee)
-        value = Number(inputBridgeValue) - fee
       } else {
-        fee = fee + baseFee
-        value = Number(inputBridgeValue) - fee
+        fee = fee
       }
+      value = Number(inputBridgeValue) - fee - baseFee
       if (value && Number(value) && Number(value) > 0) {
         const dec = Math.min(6, selectCurrency.decimals)
         return {

@@ -4,26 +4,28 @@ import { useMemo } from 'react'
 import { useTokenBalanceList } from '../../state/wallet/hooks'
 
 // compare two token amounts with highest one coming first
-function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount, sortA?:any, sortB?:any) {
+function balanceComparator(balanceA?: TokenAmount | any, balanceB?: TokenAmount | any, sortA?:any, sortB?:any) {
+  // console.log(balanceA)
   if (sortA > sortB) {
+    // console.log('balanceA')
     return 1
   } else {
     if (balanceA && balanceB) {
       if ( balanceA instanceof TokenAmount && balanceB instanceof TokenAmount) {
         return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
       } else {
-        return Number(balanceA) > Number(balanceB) ? -1 : Number(balanceA) <= Number(balanceB) ? 0 : 1
+        return Number(balanceA?.balance) > Number(balanceB?.balance) ? -1 : (Number(balanceA?.balance) <= Number(balanceB?.balance) ? 0 : 1)
       }
     } else if (balanceA) {
       if (balanceA instanceof TokenAmount && balanceA.greaterThan('0')) {
         return -1
-      } else if (Number(balanceA) > 0) {
+      } else if (Number(balanceA?.balance) > 0) {
         return -1
       }
     } else if (balanceB) {
       if (balanceB instanceof TokenAmount && balanceB.greaterThan('0')) {
         return 1
-      } else if (Number(balanceA) > 0) {
+      } else if (Number(balanceA?.balance) > 0) {
         return 1
       }
       // return 1
@@ -44,6 +46,7 @@ function getTokenComparator(balances: {
     const balanceB = balances[tokenB.address]
 
     const balanceComp = balanceComparator(balanceA, balanceB, tokenA.sort, tokenB.sort)
+    // console.log(balanceComp)
     if (balanceComp !== 0) return balanceComp
 
     if (tokenA.symbol && tokenB.symbol) {

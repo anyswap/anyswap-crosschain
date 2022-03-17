@@ -122,7 +122,9 @@ export default function Updater(): null {
     for (const item of results) {
       arr.push(getBalance(item))
     }
+    const st = Date.now()
     Promise.all(arr).then(res => {
+      console.log(Date.now() - st)
       console.log(res)
     })
   }, [calls])
