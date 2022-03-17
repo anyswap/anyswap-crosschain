@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { ZERO_ADDRESS } from '../../constants'
 import { ERC20_ABI } from '../../constants/abis/erc20'
+import { useChainConfigContract } from '../../hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, addToken } from '../../utils/contract'
-// import config from '../../config'
+
+const Notice = styled.p`
+  margin: 0.6rem auto;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid ${({ theme }) => theme.yellow3};
+  background-color: ${({ theme }) => theme.yellow1};
+`
 
 const OptionWrapper = styled.div`
   display: flex;
@@ -43,29 +52,47 @@ const Button = styled.button`
 export default function DeployERC20() {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const chainConfig = useChainConfigContract()
 
+  const [deployNewErc20] = useState(process.env.NODE_ENV === 'development')
+
+  const [notice, setNotice] = useState('')
   const [pending, setPending] = useState(false)
   const [underlying, setUnderlying] = useState('')
   const [name, setName] = useState('')
   const [symbol, setSymbol] = useState('')
   const [decimals, setDecimals] = useState(-1)
   const [vault] = useState(account)
+  const [minter, setMinter] = useState('')
 
-  // TODO: get router address somewhere
-  /* 
-  build ONCHAIN_CONFIG contract
-  fetch getChainConfig and take router address
-  */
-  const [minter] = useState('')
+  useEffect(() => {
+    const set = async () => {
+      if (!chainConfig) return
+
+      try {
+        const { RouterContract } = await chainConfig.methods.getChainConfig(chainId).call()
+
+        if (RouterContract !== ZERO_ADDRESS) {
+          setMinter(RouterContract)
+        } else {
+          setMinter('')
+          setNotice(t('youCannotDeployTokenNeedRouterContactUs'))
+        }
+      } catch (error) {
+        console.group('%c Set minter error', 'color: red;')
+        console.error(error)
+        console.groupEnd()
+      }
+    }
+
+    if (chainId) set()
+  }, [chainId, chainConfig])
 
   const [canDeployToken, setCanDeployToken] = useState(false)
 
   useEffect(() => {
     setCanDeployToken(
-      Boolean(
-        underlying && name && symbol && Number.isInteger(decimals) && decimals > -1
-        // && vault && minter
-      )
+      Boolean(underlying && name && symbol && Number.isInteger(decimals) && decimals > -1 && vault && minter)
     )
   }, [underlying, name, symbol, decimals, vault, minter])
 
@@ -156,9 +183,11 @@ export default function DeployERC20() {
 
   return (
     <>
-      {true && (
+      {notice && <Notice>{notice}</Notice>}
+
+      {deployNewErc20 && (
         <OptionWrapper>
-          {t('newERC20')}
+          {t('newERC20')} ({t('optional')})
           <Input
             defaultValue={testERC20Name}
             type="text"
