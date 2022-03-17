@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 import { deployRouterConfig } from '../../utils/contract'
 
-export default function DeployRouterConfig() {
+export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash: string) => void }) {
   const { account, library, active } = useActiveWeb3React()
   const { t } = useTranslation()
   const [canDeploy, setCanDeploy] = useState(false)
@@ -14,24 +14,25 @@ export default function DeployRouterConfig() {
 
   const onDeployment = async () => {
     try {
-      const result = await deployRouterConfig({
+      await deployRouterConfig({
         library,
+        account,
         onHash: (hash: string) => {
           console.log('hash: ', hash)
         },
-        account
+        onDeployment: onNewConfig
       })
-
-      console.log('result of config deployment: ', result)
     } catch (error) {
+      console.group('%c Router config deployment', 'color: red')
       console.error(error)
+      console.groupEnd()
     }
   }
 
   return (
     <>
       <button disabled={!canDeploy} onClick={onDeployment}>
-        {t('deployCrossChainToken')}
+        {t('deployRouterConfig')}
       </button>
     </>
   )

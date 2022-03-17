@@ -6,7 +6,7 @@ import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
-import CHAIN_CONFIG from '../constants/abis/app/RouterConfig.json'
+import ROUTER_CONFIG from '../constants/abis/app/RouterConfig.json'
 import STORAGE from '../constants/abis/app/Storage.json'
 import MasterChef from '../constants/abis/farm/MasterChef.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
@@ -42,17 +42,17 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
-export function useChainConfigContract(): Contract | null {
+export function useRouterConfigContract(address: string, chainId: number): Contract | null {
   return useMemo(() => {
-    const { CHAIN_CONFIG: configAddress, CHAIN_CONFIG_ID } = config
+    if (!address || !chainId) return null
 
     try {
-      const { nodeRpc } = chainInfo[CHAIN_CONFIG_ID]
+      const { nodeRpc } = chainInfo[chainId]
       const web3 = new Web3(nodeRpc)
 
-      return new web3.eth.Contract(CHAIN_CONFIG.abi, configAddress)
+      return new web3.eth.Contract(ROUTER_CONFIG.abi, address)
     } catch (error) {
-      console.error('Failed to get Chain config contract', error)
+      console.error('Failed to get Router config contract', error)
     }
 
     return null

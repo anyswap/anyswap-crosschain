@@ -41,6 +41,8 @@ export type AppData = {
   elementsColorDark: string
   socialLinks: string[]
   disableSourceCopyright: boolean
+  routerConfigChainId: number | undefined
+  routerConfigAddress: string
 }
 
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')

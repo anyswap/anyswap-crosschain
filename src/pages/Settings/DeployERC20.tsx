@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { ZERO_ADDRESS } from '../../constants'
+import { EVM_ADDRESS_REGEXP } from '../../constants'
 import { ERC20_ABI } from '../../constants/abis/erc20'
-import { useChainConfigContract } from '../../hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, addToken } from '../../utils/contract'
@@ -49,14 +48,13 @@ const Button = styled.button`
   padding: 0.3rem;
 `
 
-export default function DeployERC20() {
+export default function DeployERC20({ routerAddress }: { routerAddress: string }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const chainConfig = useChainConfigContract()
 
   const [deployNewErc20] = useState(process.env.NODE_ENV === 'development')
 
-  const [notice, setNotice] = useState('')
+  const [notice] = useState('')
   const [pending, setPending] = useState(false)
   const [underlying, setUnderlying] = useState('')
   const [name, setName] = useState('')
@@ -65,28 +63,7 @@ export default function DeployERC20() {
   const [vault] = useState(account)
   const [minter, setMinter] = useState('')
 
-  useEffect(() => {
-    const set = async () => {
-      if (!chainConfig) return
-
-      try {
-        const { RouterContract } = await chainConfig.methods.getChainConfig(chainId).call()
-
-        if (RouterContract !== ZERO_ADDRESS) {
-          setMinter(RouterContract)
-        } else {
-          setMinter('')
-          setNotice(t('youCannotDeployTokenNeedRouterContactUs'))
-        }
-      } catch (error) {
-        console.group('%c Set minter error', 'color: red;')
-        console.error(error)
-        console.groupEnd()
-      }
-    }
-
-    if (chainId) set()
-  }, [chainId, chainConfig])
+  useEffect(() => setMinter(routerAddress), [routerAddress])
 
   const [canDeployToken, setCanDeployToken] = useState(false)
 
@@ -122,7 +99,7 @@ export default function DeployERC20() {
       setPending(false)
     }
 
-    if (chainId && underlying.match(/^0x[A-Fa-f0-9]{40}$/)) {
+    if (chainId && underlying.match(EVM_ADDRESS_REGEXP)) {
       fetchUnderlyingInfo()
     }
   }, [underlying, chainId])

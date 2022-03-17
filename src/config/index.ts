@@ -21,8 +21,6 @@ const config: ConFig = {
   chainInfo,
   bridgeApi,
   routerApi,
-  CHAIN_CONFIG: '0xf37f50d6bcff79e7f4f45ab87de136e05559c838',
-  CHAIN_CONFIG_ID: 97,
   STORAGE_CHAIN_ID: BNB_TEST_CHAINID,
   oldAppName: 'Anyswap V1',
   appName: 'Cross-chain',

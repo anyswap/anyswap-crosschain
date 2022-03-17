@@ -1,4 +1,5 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
+import { ZERO_ADDRESS } from '../../constants'
 import {
   addPopup,
   PopupContent,
@@ -21,6 +22,8 @@ export type ApplicationState = {
 } & AppData
 
 const initialState: ApplicationState = {
+  routerConfigChainId: undefined,
+  routerConfigAddress: '',
   appManagement: false,
   owner: '',
   logo: '',
@@ -42,6 +45,8 @@ export default createReducer(initialState, builder =>
     .addCase(retrieveAppData, (state, action) => {
       if (action.payload) {
         const {
+          routerConfigChainId,
+          routerConfigAddress,
           logo,
           projectName,
           brandColor,
@@ -53,6 +58,8 @@ export default createReducer(initialState, builder =>
           disableSourceCopyright
         } = action.payload
 
+        if (routerConfigChainId) state.routerConfigChainId = routerConfigChainId
+        if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
         if (logo) state.logo = logo
         if (projectName) state.projectName = projectName
         if (brandColor) state.brandColor = brandColor

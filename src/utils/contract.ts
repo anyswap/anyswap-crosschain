@@ -34,7 +34,7 @@ export const getContractInstance = (library: Web3Provider, address: string, abi:
 }
 
 export const deployContract = async (params: any) => {
-  const { abi, byteCode, library, account, onDeploy = doNothing, onHash = doNothing, deployArguments } = params
+  const { abi, byteCode, library, account, onDeployment = doNothing, onHash = doNothing, deployArguments } = params
 
   let contract
 
@@ -50,14 +50,17 @@ export const deployContract = async (params: any) => {
 
     const gas = await transaction.estimateGas({ from: account })
 
-    return await transaction
+    const contractInstance = await transaction
       .send({
         from: account,
         gas
       })
       .on('transactionHash', (hash: string) => onHash(hash))
       .on('error', (error: any) => console.error(error))
-      .on('receipt', (receipt: any) => onDeploy(receipt))
+
+    onDeployment(contractInstance.options.address)
+
+    return contractInstance
   } catch (error) {
     throw error
   }
@@ -91,8 +94,8 @@ export const deployCrosschainERC20 = async (params: any) => {
   })
 }
 
-export const deployAnyswapRouter = async (params: any) => {
-  const { library, account, onHash, factory, wNative, mpc } = params
+export const deployRouter = async (params: any) => {
+  const { library, account, onHash, onDeployment, factory, wNative, mpc } = params
   const { abi, bytecode } = AnyswapV6Router
 
   return deployContract({
@@ -101,12 +104,13 @@ export const deployAnyswapRouter = async (params: any) => {
     deployArguments: [factory, wNative, mpc],
     library,
     account,
-    onHash
+    onHash,
+    onDeployment
   })
 }
 
 export const deployRouterConfig = async (params: any) => {
-  const { library, onHash, account } = params
+  const { library, onHash, account, onDeployment } = params
   const { abi, bytecode } = RouterConfig
 
   return deployContract({
@@ -115,7 +119,8 @@ export const deployRouterConfig = async (params: any) => {
     deployArguments: [],
     library,
     account,
-    onHash
+    onHash,
+    onDeployment
   })
 }
 

@@ -1,38 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
-import { deployRouterConfig } from '../../utils/contract'
+import { deployRouter } from '../../utils/contract'
 import { chainInfo } from '../../config/chainConfig'
 
-export default function DeployRouter() {
-  // constructor(_factory _wNATIVE _mpc)
-
+export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: string) => void }) {
   const { account, library, active, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  const [mpc] = useState('')
-  const [canDeploy, setCanDeploy] = useState(false)
+  const [wrappedToken, setWrappedToken] = useState('')
 
   useEffect(() => {
-    setCanDeploy(Boolean(active && account && library && mpc))
-  }, [active, account, library, mpc])
+    if (chainId) {
+      const { wrappedToken } = chainInfo[chainId]
+
+      setWrappedToken(wrappedToken || '')
+    }
+  }, [chainId])
+
+  const [canDeploy, setCanDeploy] = useState(false)
+
+  useEffect(() => setCanDeploy(Boolean(active && wrappedToken)), [active, wrappedToken])
 
   const onDeployment = async () => {
-    if (!chainId) return
-
-    const { wrappedToken } = chainInfo[chainId]
-
-    if (!wrappedToken) return
+    if (!chainId || !wrappedToken) return
 
     try {
-      await deployRouterConfig({
+      await deployRouter({
         library,
         account,
         onHash: (hash: string) => {
-          console.log('hash: ', hash)
+          console.log('router hash: ', hash)
         },
+        onDeployment: onNewRouter,
         factory: account,
         wNative: wrappedToken,
-        mpc
+        mpc: account
       })
     } catch (error) {
       console.error(error)
@@ -42,7 +44,7 @@ export default function DeployRouter() {
   return (
     <>
       <button disabled={!canDeploy} onClick={onDeployment}>
-        {t('deployCrossChainToken')}
+        {t('deployRouter')}
       </button>
     </>
   )
