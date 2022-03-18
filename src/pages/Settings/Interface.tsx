@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import validUrl from 'valid-url'
-import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 // import { useTransactionAdder } from '../../state/transactions/hooks'
 import {
@@ -17,12 +16,6 @@ import { OptionWrapper } from './index'
 import { callStorage } from '../../utils/storage'
 import { STORAGE_METHODS } from '../../constants'
 import config from '../../config'
-
-const Button = styled(ButtonPrimary)`
-  max-width: none;
-  font-size: 0.8em;
-  margin-top: 0.3rem;
-`
 
 export default function Interface() {
   const { t } = useTranslation()
@@ -251,9 +244,9 @@ export default function Interface() {
         />
       </OptionWrapper>
 
-      <Button onClick={saveSettings} disabled={!settingsChanged || !isValidLogo}>
+      <ButtonPrimary onClick={saveSettings} disabled={!settingsChanged || !isValidLogo} fullWidth>
         {t('saveSettings')}
-      </Button>
+      </ButtonPrimary>
     </>
   )
 }

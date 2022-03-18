@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 import { deployRouterConfig } from '../../utils/contract'
+import { ButtonPrimary } from '../../components/Button'
 
 export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash: string) => void }) {
   const { account, library, active } = useActiveWeb3React()
@@ -31,9 +32,9 @@ export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash
 
   return (
     <>
-      <button disabled={!canDeploy} onClick={onDeployment}>
+      <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
         {t('deployRouterConfig')}
-      </button>
+      </ButtonPrimary>
     </>
   )
 }

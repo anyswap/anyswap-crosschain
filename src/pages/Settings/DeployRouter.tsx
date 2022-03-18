@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 import { deployRouter } from '../../utils/contract'
 import { chainInfo } from '../../config/chainConfig'
+import { ButtonPrimary } from '../../components/Button'
 
 export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: string) => void }) {
   const { account, library, active, chainId } = useActiveWeb3React()
@@ -43,9 +44,9 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
 
   return (
     <>
-      <button disabled={!canDeploy} onClick={onDeployment}>
+      <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
         {t('deployRouter')}
-      </button>
+      </ButtonPrimary>
     </>
   )
 }

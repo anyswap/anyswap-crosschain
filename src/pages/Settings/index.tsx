@@ -15,13 +15,21 @@ export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
 `
 
+export const Notice = styled.div<{ warning?: boolean; error?: boolean }>`
+  margin: 0.6rem auto;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid ${({ theme, warning, error }) => (warning ? theme.yellow3 : error ? theme.red2 : theme.bg3)};
+  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
+`
+
 export const OptionLabel = styled.label`
   display: flex;
   flex-direction: column;
 `
 
 const SettingsWrapper = styled(MyBalanceBox)`
-  max-width: 35rem;
+  max-width: 50rem;
   margin: 0 auto;
 `
 

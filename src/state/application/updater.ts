@@ -1,13 +1,18 @@
 import { useCallback, useEffect } from 'react'
-import { useActiveWeb3React } from '../../hooks'
-import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import { updateBlockNumber } from './actions'
 import { useDispatch } from 'react-redux'
+import { ZERO_ADDRESS } from '../../constants'
+import { useActiveWeb3React } from '../../hooks'
+import { useRouterConfigContract } from '../../hooks/useContract'
+import useIsWindowVisible from '../../hooks/useIsWindowVisible'
+import { updateBlockNumber, updateRouterData } from './actions'
+import { useAppState } from './hooks'
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
   const windowVisible = useIsWindowVisible()
+  const { routerConfigAddress, routerConfigChainId } = useAppState()
+  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
 
   const blockNumberCallback = useCallback(
     (blockNumber: number) => {
@@ -33,6 +38,22 @@ export default function Updater(): null {
       library.removeListener('block', blockNumberCallback)
     }
   }, [chainId, library, blockNumberCallback, windowVisible])
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!routerConfig || !chainId) return
+
+      const { RouterContract } = await routerConfig.methods.getChainConfig(chainId).call()
+
+      dispatch(updateRouterData({ chainId, routerAddress: RouterContract === ZERO_ADDRESS ? '' : RouterContract }))
+    }
+
+    if (routerConfig && chainId) {
+      fetch()
+    } else {
+      dispatch(updateRouterData({ chainId: chainId || 0, routerAddress: '' }))
+    }
+  }, [chainId, routerConfigAddress, routerConfigChainId, routerConfig])
 
   return null
 }

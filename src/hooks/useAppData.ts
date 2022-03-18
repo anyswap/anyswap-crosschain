@@ -6,6 +6,8 @@ import { ZERO_ADDRESS } from '../constants'
 
 const parseInfo = (info: string) => {
   const parsed: AppData = {
+    routerConfigChainId: undefined,
+    routerConfigAddress: '',
     owner: '',
     logo: '',
     projectName: '',
@@ -21,6 +23,8 @@ const parseInfo = (info: string) => {
 
   if (Object.keys(result)) {
     const {
+      routerConfigChainId,
+      routerConfigAddress,
       logoUrl,
       projectName,
       brandColor,
@@ -32,6 +36,8 @@ const parseInfo = (info: string) => {
       disableSourceCopyright
     } = result
 
+    if (routerConfigChainId) parsed.routerConfigChainId = routerConfigChainId
+    if (routerConfigAddress) parsed.routerConfigAddress = routerConfigAddress
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
     if (brandColor) parsed.brandColor = brandColor

@@ -7,14 +7,6 @@ import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, addToken } from '../../utils/contract'
 
-const Notice = styled.p`
-  margin: 0.6rem auto;
-  padding: 0.4rem 0.6rem;
-  border-radius: 0.4rem;
-  border: 1px solid ${({ theme }) => theme.yellow3};
-  background-color: ${({ theme }) => theme.yellow1};
-`
-
 const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -48,13 +40,12 @@ const Button = styled.button`
   padding: 0.3rem;
 `
 
-export default function DeployERC20({ routerAddress }: { routerAddress: string }) {
+export default function DeployCrosschainToken({ routerAddress }: { routerAddress: string }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
 
   const [deployNewErc20] = useState(process.env.NODE_ENV === 'development')
 
-  const [notice] = useState('')
   const [pending, setPending] = useState(false)
   const [underlying, setUnderlying] = useState('')
   const [name, setName] = useState('')
@@ -158,8 +149,6 @@ export default function DeployERC20({ routerAddress }: { routerAddress: string }
 
   return (
     <>
-      {notice && <Notice>{notice}</Notice>}
-
       {deployNewErc20 && (
         <OptionWrapper>
           {t('newERC20')} ({t('optional')})
