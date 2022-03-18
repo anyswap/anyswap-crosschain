@@ -18,7 +18,7 @@ import {useRpcState} from '../rpc/hooks'
 import {getContract} from '../../utils/tools/multicall'
 
 import config from '../../config'
-import { fromWei } from '../../utils/tools/tools'
+// import { fromWei } from '../../utils/tools/tools'
 // const startTime = Date.now()
 const limit = 80
 
@@ -95,7 +95,9 @@ export default function Updater(): null {
             const dec = arr[i].dec
             const results = res.returnData[i]
             blList[token] = {
-              balance: fromWei(results, dec),
+              // balance: fromWei(results, dec),
+              balance: ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0],
+              dec: dec,
               blocknumber: res.blockNumber
             }
           }
@@ -133,6 +135,7 @@ export default function Updater(): null {
     if (
       library
       && chainId
+      && !isNaN(chainId)
       && account
       && calls.length > 0
       && !tokenListRef.current
