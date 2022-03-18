@@ -49,7 +49,7 @@ function getRpcInfo (rpc:any) {
 
 function getAllRpcInfo (chainId:any) {
   return new Promise(resolve => {
-    const rpcArr = config.getCurChainInfo(chainId)?.nodeRpcList
+    const rpcArr = config.getCurChainInfo(chainId)?.nodeRpcList ? config.getCurChainInfo(chainId)?.nodeRpcList : []
     const arr = []
     for (const rpc of rpcArr) {
       arr.push(getRpcInfo(rpc))
@@ -66,7 +66,7 @@ export default function Updater(): null {
   const { chainId } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   useEffect(() => {
-    if (chainId) {
+    if (chainId && !isNaN(chainId)) {
       getAllRpcInfo(chainId).then(res => {
         // console.log(res)
         dispatch(rpclist({chainId, rpclist: res}))

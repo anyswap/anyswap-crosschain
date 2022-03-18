@@ -67,7 +67,7 @@ function getTokenComparator(balances: {
 export function useTokenComparator(key?: string | undefined, chainId?:any, inverted?: boolean): any {
   // const balances = useBridgeAllTokenBalances(key, chainId)
   const balances = useTokenBalanceList()
-  // console.log(balances)
+  console.log(balances)
   const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
   const tokenComparator = useMemo(() => {
     if (inverted) {

@@ -1,6 +1,7 @@
 // import { useEffect, useMemo, useRef } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
+import { formatUnits } from '@ethersproject/units'
 import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import useInterval from '../../hooks/useInterval'
@@ -65,7 +66,7 @@ export default function Updater(): null {
     const arr = []
     const list = Object.values(allTokens ?? {})
     // console.log(list)
-    if (account) {
+    if (account && !isNaN(chainId)) {
       // for (const obj of list) {
       for (let i = 0, len = list.length; i < len; i++) {
         const obj:any = list[i]
@@ -78,7 +79,7 @@ export default function Updater(): null {
       }
     }
     return arr
-  }, [allTokens, account])
+  }, [allTokens, account, chainId])
   const getBalance = useCallback((arr) => {
     return new Promise(resolve => {
       const rpc = rpcItem ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
@@ -94,9 +95,11 @@ export default function Updater(): null {
             const token = arr[i].target.toLowerCase()
             const dec = arr[i].dec
             const results = res.returnData[i]
+            const bl = ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
             blList[token] = {
               // balance: fromWei(results, dec),
-              balance: ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0],
+              balance: formatUnits(bl, dec),
+              balancestr: bl,
               dec: dec,
               blocknumber: res.blockNumber
             }
