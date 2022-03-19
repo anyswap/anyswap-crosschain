@@ -125,6 +125,16 @@ export default function CrossChain({
     return true
   }, [destConfig])
 
+  const isApprove = useMemo(() => {
+    if (
+      selectCurrency?.underlying
+
+    ) {
+      return true
+    }
+    return false
+  }, [selectCurrency])
+
   const useDestAddress = useMemo(() => {
     if (isRouter) {
       return destConfig?.routerToken
@@ -165,17 +175,26 @@ export default function CrossChain({
   }, [destConfig])
   // console.log(isDestUnderlying)
 
-  const formatCurrency0 = useLocalToken(
-  selectCurrency?.underlying ? {
-    ...selectCurrency,
-    address: selectCurrency.underlying.address,
-    name: selectCurrency.underlying.name,
-    symbol: selectCurrency.underlying?.symbol,
-    decimals: selectCurrency.underlying.decimals
-  } : selectCurrency)
+  const approveSpender = useMemo(() => {
+    if (isRouter) {
+      return destConfig?.routerToken
+    } else {
+      if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
+        return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
+      } else if (selectCurrency?.underlying) {
+        if (typeof selectCurrency?.underlying?.isApprove === 'undefined' || selectCurrency?.underlying?.isApprove) {
+          return selectCurrency?.underlying?.address
+        }
+        return undefined
+      }
+      return undefined
+    }
+  }, [isRouter, selectCurrency, destConfig])
+
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isRouter) ? formatCurrency : undefined)
-  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
+  // const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -409,6 +428,7 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
+        // return undefined
         return {
           state: 'Error',
           tip: isWrapInputError
@@ -448,11 +468,19 @@ export default function CrossChain({
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
+    // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
     } else if (isInputError) {
       return isInputError
-    } else if (recipient && !Boolean(isAddr)) {
+    } else if (
+      // recipient
+      // &&
+       (
+        !Boolean(isAddr) 
+        || (typeof isAddr === 'string' && isAddr.indexOf('invalid address.') !== -1)
+      )
+    ) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
