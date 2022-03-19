@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
-
+import nebulas from 'nebulas'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
@@ -174,22 +174,32 @@ export default function CrossChain({
     return false
   }, [destConfig])
   // console.log(isDestUnderlying)
-
+  const [bridgeAnyToken, setBridgeAnyToken] = useState<any>()
   const approveSpender = useMemo(() => {
+    setBridgeAnyToken('')
     if (isRouter) {
+      // setBridgeAnyToken('')
       return destConfig?.routerToken
     } else {
       if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
+        // setBridgeAnyToken('')
         return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
       } else if (selectCurrency?.underlying) {
         if (typeof selectCurrency?.underlying?.isApprove === 'undefined' || selectCurrency?.underlying?.isApprove) {
+          setBridgeAnyToken(selectCurrency?.underlying?.address)
           return selectCurrency?.underlying?.address
         }
+        // setBridgeAnyToken('')
         return undefined
       }
+      // setBridgeAnyToken('')
       return undefined
     }
   }, [isRouter, selectCurrency, destConfig])
+
+  // useEffect(() => {
+  //   console.log(bridgeAnyToken)
+  // }, [bridgeAnyToken])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
@@ -364,7 +374,7 @@ export default function CrossChain({
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    selectCurrency?.address,
+    bridgeAnyToken ? bridgeAnyToken : selectCurrency?.address ,
     destConfig?.pairid,
     recipient,
     selectCurrency
@@ -467,19 +477,14 @@ export default function CrossChain({
   }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain])
 
   const errorTip = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
+    const isAddr = selectChain === ChainId.NAS ? (recipient ? nebulas.Account.isValidAddress(recipient) : false) : isAddress( recipient, selectChain)
     // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
     } else if (isInputError) {
       return isInputError
     } else if (
-      // recipient
-      // &&
-       (
-        !Boolean(isAddr) 
-        || (typeof isAddr === 'string' && isAddr.indexOf('invalid address.') !== -1)
-      )
+      !Boolean(isAddr) 
     ) {
       return {
         state: 'Error',
@@ -816,7 +821,7 @@ export default function CrossChain({
         }
         {
           (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin') || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))} />
+            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(selectChain === ChainId.NAS ? nebulas.Account.isValidAddress(recipient) : isAddress( recipient, selectChain))} />
           ) : ''
         }
       </AutoColumn>
