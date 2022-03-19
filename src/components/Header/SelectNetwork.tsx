@@ -389,6 +389,7 @@ export function Option ({
                     if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
                   } else {
                     setLocalRPC(curChainId, viewUrl)
+                    console.log('>>> go 3')
                     history.go(0)
                   }
                 } else {

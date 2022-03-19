@@ -35,6 +35,7 @@ export function selectNetwork (chainID:any) {
         // console.log(chainID)
         console.log(res)
         localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
+        console.log('>>> go 7')
         history.go(0)
         resolve({
           msg: 'Success'

@@ -78,6 +78,7 @@ function getParamNode(type: any, INIT_NODE: any) {
       if (k.indexOf('network=') === 0) continue
       paramList.push(k)
     }
+    console.log('>>> go 6')
     history.replace(pathKey + '?' + paramList.join('&'))
     selectNetwork(labelStr)
   }

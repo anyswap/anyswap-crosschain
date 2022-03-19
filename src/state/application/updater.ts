@@ -63,15 +63,19 @@ export default function Updater(): null {
       !windowVisible ||
       !config.getCurChainInfo(destChainId)
     ) {
+      console.log('>>>> App updater >>> skip')
       return
     }
 
-    if (destChainId) {
+    if (destChainId && false) {
+      console.log('>> App updated >>> destChainId', destChainId)
+      
       useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res: any) => {
         dispatch(updateBlockNumber({ chainId: destChainId, blockNumber: res }))
       })
     }
 
+console.log('debouncedState.chainId', debouncedState.chainId, 'destChainId', destChainId)
     dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
   }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])
 

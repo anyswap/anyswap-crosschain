@@ -473,6 +473,7 @@ export default function SwapNative() {
       }
     }
     if (!selectCurrency) {
+      console.log('>>> go 11')
       history.replace(window.location.pathname + '#/pool/add')
     }
     
@@ -549,6 +550,7 @@ export default function SwapNative() {
           currentTab={swapType === 'deposit' ? 0 : 1}
         ></Title>
         <BackBox onClick={() => {
+          console.log('>>> go 11')
           history.go(-1)
         }}>
           &lt;Back

@@ -177,6 +177,7 @@ export default function SettingsTab() {
                   if (window.prompt(t('tip9')) === 'confirm') {
                     toggleExpertMode()
                     setShowConfirmation(false)
+                    console.log('>>> go 4')
                     history.push('#/router')
                     history.go(0)
                   }
@@ -231,6 +232,7 @@ export default function SettingsTab() {
                         console.log(1)
                         toggleExpertMode()
                         setShowConfirmation(false)
+                        console.log('>>> go 5')
                         history.push('#/mergeswap')
                         history.go(0)
                       }
