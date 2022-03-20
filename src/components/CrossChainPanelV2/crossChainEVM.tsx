@@ -184,8 +184,8 @@ export default function CrossChain({
       if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
         // setBridgeAnyToken('')
         return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
-      } else if (selectCurrency?.underlying) {
-        if (typeof selectCurrency?.underlying?.isApprove === 'undefined' || selectCurrency?.underlying?.isApprove) {
+      } else if (selectCurrency?.underlying && destConfig?.type === 'swapout') {
+        if (typeof selectCurrency?.underlying?.isApprove !== 'undefined' && selectCurrency?.underlying?.isApprove) {
           setBridgeAnyToken(selectCurrency?.underlying?.address)
           return selectCurrency?.underlying?.address
         }
@@ -197,9 +197,9 @@ export default function CrossChain({
     }
   }, [isRouter, selectCurrency, destConfig])
 
-  // useEffect(() => {
-  //   console.log(bridgeAnyToken)
-  // }, [bridgeAnyToken])
+  useEffect(() => {
+    console.log(bridgeAnyToken)
+  }, [bridgeAnyToken])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
