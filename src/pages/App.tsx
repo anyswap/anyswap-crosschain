@@ -1,12 +1,12 @@
 import React, { Suspense, useEffect } from 'react'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
+// import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
 import Popups from '../components/Popups'
-import { useActiveWeb3React } from '../hooks'
+// import { useActiveWeb3React } from '../hooks'
 import Web3ReactManager from '../components/Web3ReactManager'
 import URLWarning from '../components/Header/URLWarning'
 // import Pool from './Pool'
@@ -19,7 +19,7 @@ import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
-import Settings from './Settings'
+// import Settings from './Settings'
 // import CrossNFT from './CroseNFT'
 
 // import ANYFarming from './Farms/ANYFarming'
@@ -32,7 +32,7 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 import Footer from '../components/Footer'
 import config from '../config'
 import { retrieveAppData } from '../state/application/actions'
-import { useAppState } from '../state/application/hooks'
+// import { useAppState } from '../state/application/hooks'
 import useAppData from '../hooks/useAppData'
 // import farmlist from '../config/farmlist'
 
@@ -119,7 +119,7 @@ const BodyWrapper = styled.div`
 // }
 
 export default function App() {
-  const { chainId } = useActiveWeb3React()
+  // const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
 
   let initUrl = '/dashboard'
@@ -137,61 +137,64 @@ export default function App() {
     dispatch(retrieveAppData(data ? { ...data } : data))
   }, [data, isLoading, dispatch])
 
-  const { projectName, appManagement } = useAppState()
+  // const {
+  //   projectName
+  //   // appManagement
+  // } = useAppState()
 
   return (
     <Suspense fallback={null}>
-      <HelmetProvider>
+      {/* <HelmetProvider>
         {projectName && (
           <Helmet>
             <title>{projectName}</title>
           </Helmet>
-        )}
+        )} */}
 
-        {isLoading ? (
-          <LoaderWrapper>
-            <Loader size="2.8rem" />
-          </LoaderWrapper>
-        ) : (
-          <AppWrapper>
-            <HeaderWrapper>
-              <URLWarning />
-              <Header />
-            </HeaderWrapper>
+      {isLoading ? (
+        <LoaderWrapper>
+          <Loader size="2.8rem" />
+        </LoaderWrapper>
+      ) : (
+        <AppWrapper>
+          <HeaderWrapper>
+            <URLWarning />
+            <Header />
+          </HeaderWrapper>
 
-            <BodyWrapper>
-              <Popups />
-              <NonApprove />
-              {/* <TopLevelModals /> */}
+          <BodyWrapper>
+            <Popups />
+            <NonApprove />
+            {/* <TopLevelModals /> */}
 
-              <Web3ReactManager>
-                <Switch>
-                  <Route
+            <Web3ReactManager>
+              <Switch>
+                {/* <Route
                     exact
                     strict
                     path="/settings"
                     component={() => (appManagement && chainId === config.STORAGE_CHAIN_ID ? <Settings /> : null)}
-                  />
-                  <Route exact strict path="/dashboard" component={() => <Dashboard />} />
-                  <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
-                  <Route exact strict path="/pool" component={() => <PoolList />} />
-                  <Route exact strict path="/pool/add" component={() => <Pools />} />
-                  <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
-                  <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
-                  <Route
-                    exact
-                    strict
-                    path={config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap'}
-                    component={() => <CrossChain />}
-                  />
-                  {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
-                  {/* <Route exact strict path="/nft" component={() => <CrossNFT />} /> */}
-                  {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
-                  {/* <Route
+                  /> */}
+                <Route exact strict path="/dashboard" component={() => <Dashboard />} />
+                <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
+                <Route exact strict path="/pool" component={() => <PoolList />} />
+                <Route exact strict path="/pool/add" component={() => <Pools />} />
+                <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
+                <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
+                <Route
+                  exact
+                  strict
+                  path={config.getCurConfigInfo().isOpenBridge ? '/router' : '/swap'}
+                  component={() => <CrossChain />}
+                />
+                {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
+                {/* <Route exact strict path="/nft" component={() => <CrossNFT />} /> */}
+                {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
+                {/* <Route
                 path={['/cross-chain-router', '/cross-chain-bridge', '/mergeswap']}
                 component={() => <MergeCrossChain />}
               /> */}
-                  {/* {Object.keys(farmlist).map((key, index) => {
+                {/* {Object.keys(farmlist).map((key, index) => {
                 if (farmlist[key].farmtype === 'noany') {
                   return (
                     <Route
@@ -214,18 +217,18 @@ export default function App() {
                 )
               })} */}
 
-                  <Redirect to={{ pathname: initUrl }} />
-                </Switch>
-              </Web3ReactManager>
-              <NavBottom>
-                <NavList />
-              </NavBottom>
-            </BodyWrapper>
+                <Redirect to={{ pathname: initUrl }} />
+              </Switch>
+            </Web3ReactManager>
+            <NavBottom>
+              <NavList />
+            </NavBottom>
+          </BodyWrapper>
 
-            <Footer />
-          </AppWrapper>
-        )}
-      </HelmetProvider>
+          <Footer />
+        </AppWrapper>
+      )}
+      {/* </HelmetProvider> */}
     </Suspense>
   )
 }
