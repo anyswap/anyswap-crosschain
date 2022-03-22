@@ -1,11 +1,12 @@
 import React, { Suspense, useEffect } from 'react'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
+// import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import Header from '../components/Header'
 import NavList from '../components/Header/NavList'
 import Popups from '../components/Popups'
+// import { useActiveWeb3React } from '../hooks'
 import Web3ReactManager from '../components/Web3ReactManager'
 import URLWarning from '../components/Header/URLWarning'
 // import Pool from './Pool'
@@ -18,7 +19,7 @@ import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
-import Settings from './Settings'
+// import Settings from './Settings'
 // import CrossNFT from './CroseNFT'
 
 // import ANYFarming from './Farms/ANYFarming'
@@ -31,7 +32,7 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 import Footer from '../components/Footer'
 import config from '../config'
 import { retrieveAppData } from '../state/application/actions'
-import { useAppState } from '../state/application/hooks'
+// import { useAppState } from '../state/application/hooks'
 import useAppData from '../hooks/useAppData'
 // import farmlist from '../config/farmlist'
 
@@ -118,6 +119,7 @@ const BodyWrapper = styled.div`
 // }
 
 export default function App() {
+  // const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
 
   let initUrl = '/dashboard'
@@ -135,16 +137,16 @@ export default function App() {
     dispatch(retrieveAppData(data ? { ...data } : data))
   }, [data, isLoading, dispatch])
 
-  const { projectName, appManagement } = useAppState()
+  // const { projectName, appManagement } = useAppState()
 
   return (
     <Suspense fallback={null}>
-      <HelmetProvider>
+      {/* <HelmetProvider>
         {projectName && (
           <Helmet>
             <title>{projectName}</title>
           </Helmet>
-        )}
+        )} */}
 
         {isLoading ? (
           <LoaderWrapper>
@@ -164,7 +166,12 @@ export default function App() {
 
               <Web3ReactManager>
                 <Switch>
-                  <Route exact strict path="/settings" component={() => (appManagement ? <Settings /> : null)} />
+                  {/* <Route
+                    exact
+                    strict
+                    path="/settings"
+                    component={() => (appManagement && chainId === config.STORAGE_CHAIN_ID ? <Settings /> : null)}
+                  /> */}
                   <Route exact strict path="/dashboard" component={() => <Dashboard />} />
                   <Route path={['/v2/mergeswap']} component={() => <MergeCrossChainV2 />} />
                   <Route exact strict path="/pool" component={() => <PoolList />} />
@@ -218,7 +225,7 @@ export default function App() {
             </NavBottom>
           </AppWrapper>
         )}
-      </HelmetProvider>
+      {/* </HelmetProvider> */}
     </Suspense>
   )
 }

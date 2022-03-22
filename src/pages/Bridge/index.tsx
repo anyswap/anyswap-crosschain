@@ -254,6 +254,7 @@ export default function CrossChain() {
       )
       && swapType !== BridgeType.deposit
     ) {
+      console.log('>>> go 9')
       history.go(0)
     }
   }, [chainId, bridgeConfig, swapType])
@@ -385,6 +386,7 @@ export default function CrossChain() {
       } else {
         if (selectCurrency?.chainId) {
           sessionStorage.setItem(SelectBridgeChainIdLabel, selectCurrency.chainId)
+          console.log('>>> go 10')
           history.go(0)
           // setSelectChain(selectCurrency.chainId)
         }

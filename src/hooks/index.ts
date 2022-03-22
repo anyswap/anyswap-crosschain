@@ -75,6 +75,7 @@ export function useInactiveListener(suppress = false) {
         // console.log(parseInt(chainID))
         if (chainID) {
           localStorage.setItem(ENV_NODE_CONFIG, chainInfo[parseInt(chainID)].label)
+          console.log('>>> go 8')
           history.go(0)
         }
         // eat errors

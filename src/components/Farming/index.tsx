@@ -777,6 +777,7 @@ export default function Farming ({
     if (Number(CHAINID) !== Number(chainId)) {
       btnView = <Button1 onClick={() => {
         localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(CHAINID).label)
+        console.log('>>> go 2')
         history.go(0)
       }}  style={{height: '45px', maxWidth: '200px'}}>
         {t('SwitchTo')} {config.getCurChainInfo(CHAINID).name} {t('mainnet')}

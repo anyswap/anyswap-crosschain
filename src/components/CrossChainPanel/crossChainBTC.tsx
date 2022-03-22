@@ -146,6 +146,7 @@ export default function CrossChain({
       } else {
         if (selectCurrency?.chainId) {
           // sessionStorage.setItem(SelectBridgeChainIdLabel, selectCurrency.chainId)
+          console.log('>>> go 1')
           history.go(0)
           // setSelectChain(selectCurrency.chainId)
         }
