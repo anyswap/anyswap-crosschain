@@ -220,7 +220,7 @@ export function useOneTokenBalance(token:any): any {
       return {}
     }
     return {}
-  }, [lists, chainId, account])
+  }, [lists, chainId, account, token])
 }
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[],
