@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveReact } from '../../hooks/useActiveReact'
-// import { useBridgeTokenList } from '../lists/hooks'
+import { tryParseAmount5 } from '../swap/hooks'
 // import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
@@ -16,7 +16,7 @@ import { AppState } from '../index'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useETHBalances(
+export function useETHWalletBalances(
   uncheckedAddresses?: (string | undefined)[],
   chainId?: any
 ): { [address: string]: CurrencyAmount | undefined } {
@@ -181,15 +181,85 @@ export function useTokenBalanceList(): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
   // console.log(lists)
+  // console.log(tryParseAmount5('100', 6))
+  // console.log(tryParseAmount5('100', 6).toSignificant(3))
   return useMemo(() => {
     if (chainId && account && lists) {
-      if (lists[account] && lists[account][chainId]) return lists[account][chainId]
+      if (lists[account] && lists[account][chainId]) {
+        const list:any = {}
+        for (const token in lists[account][chainId]) {
+          const obj = lists[account][chainId][token]
+          list[token] = {
+            ...obj,
+            balances: tryParseAmount5(obj.balancestr, obj.dec)
+          }
+        }
+        return list
+      }
       return {}
     }
     return {}
   }, [lists, chainId, account])
 }
 
+export function useOneTokenBalance(token:any): any {
+  const { chainId, account } = useActiveReact()
+  const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
+  // console.log(lists)
+  // console.log(tryParseAmount5('100', 6))
+  // console.log(tryParseAmount5('100', 6).toSignificant(3))
+  return useMemo(() => {
+    if (chainId && account && lists && token) {
+      if (lists[account] && lists[account][chainId] && lists[account][chainId][token]) {
+        const blItem = lists[account][chainId][token]
+        return {
+          ...blItem,
+          balances: tryParseAmount5(blItem.balancestr, blItem.dec)
+        }
+      }
+      return {}
+    }
+    return {}
+  }, [lists, chainId, account])
+}
+export function useETHBalances(
+  uncheckedAddresses?: (string | undefined)[],
+  chainId?: any
+): { [address: string]: CurrencyAmount | undefined } {
+  const ethBalance = useETHWalletBalances(uncheckedAddresses, chainId)
+  const blItem = useOneTokenBalance('NATIVE')
+  const addresses: string[] = useMemo(
+    () =>
+      uncheckedAddresses
+        ? uncheckedAddresses
+            .map(isAddress)
+            .filter((a): a is string => a !== false)
+            .sort()
+        : [],
+    [uncheckedAddresses]
+  )
+  return useMemo(
+    () => {
+      if (chainId) {
+        // console.log(1)
+        // console.log(ethBalance)
+        return ethBalance
+      } else {
+        // console.log(2)
+        // console.log(blItem.balances)
+        // console.log(ethBalance)
+        return addresses.reduce<{ [address: string]: any }>((memo, address) => {
+          // const value = results?.[i]?.result?.[0]
+          // if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()))
+          if (ethBalance[address]) return ethBalance
+          if (blItem?.balances) return {[address]: blItem?.balances}
+          return memo
+        }, {})
+      }
+    },
+    [ethBalance, blItem, chainId]
+  )
+}
 export function useTokenTotalSupply(
   tokens?: (string | undefined)[],
   chainId?:any
@@ -273,7 +343,19 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency, chainId?:any, isETH?:any): CurrencyAmount | undefined {
   // const balances = useTokenBalanceList()
-  return useCurrencyBalances(account, [currency], chainId, isETH)[0]
+  const balanceWallet  = useCurrencyBalances(account, [currency], chainId, isETH)[0]
+  const blItem = useOneTokenBalance(currency?.address?.toLowerCase())
+  return useMemo(() => {
+    if (chainId || balanceWallet) {
+      return balanceWallet
+    } else {
+      if (blItem && blItem.balances) {
+        return blItem.balances
+      }
+      return undefined
+    }
+  }, [account, currency, chainId, isETH, balanceWallet, blItem])
+  // return useCurrencyBalances(account, [currency], chainId, isETH)[0]
   // if (chainId) {
   // } else {
   //   return currency?.address?.toLowerCase() && balances[currency?.address?.toLowerCase()] ? balances[currency?.address?.toLowerCase()] : undefined

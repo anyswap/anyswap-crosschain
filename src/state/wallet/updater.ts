@@ -82,8 +82,9 @@ export default function Updater(): null {
   }, [allTokens, account, chainId])
   const getBalance = useCallback((arr) => {
     return new Promise(resolve => {
-      const rpc = rpcItem ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
-      const contract = getContract({rpc: rpc, abi: ''})
+      const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
+      const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
+      const contract = getContract({rpc: rpc, abi: '', provider: provider})
       // console.log(rpcItem)
       contract.options.address = config.getCurChainInfo(chainId).multicalToken
       contract.methods.aggregate(arr).call((err:any, res:any) => {
@@ -104,9 +105,6 @@ export default function Updater(): null {
               blocknumber: res.blockNumber
             }
           }
-          // if (blList['0x6f817a0ce8f7640add3bc0c1c2298635043c2423']) {
-          //   console.log(blList['0x6f817a0ce8f7640add3bc0c1c2298635043c2423'])
-          // }
           dispatch(tokenBalanceList({
             chainId,
             account,
@@ -118,12 +116,47 @@ export default function Updater(): null {
     })
   }, [rpcItem, chainId])
 
+  const getETHBalance = useCallback(() => {
+    return new Promise(resolve => {
+      if (account) {
+        
+        const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
+        const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
+        const contract = getContract({rpc: rpc, abi: '', provider: provider})
+        // console.log(rpcItem)
+        contract.options.address = config.getCurChainInfo(chainId).multicalToken
+        contract.methods.getEthBalance(account).call((err:any, res:any) => {
+          // console.log(err)
+          // console.log(res)
+          if (!err) {
+            const blList:any = {}
+            const dec = 18
+            blList['NATIVE'] = {
+              balance: formatUnits(res, dec),
+              balancestr: res,
+              dec: dec,
+              blocknumber: ''
+            }
+            dispatch(tokenBalanceList({
+              chainId,
+              account,
+              tokenList: blList
+            }))
+          }
+          resolve(res)
+        })
+      } else {
+        resolve('')
+      }
+    })
+  }, [rpcItem, chainId, account])
+
   const getAllBalance = useCallback(() => {
     const results = []
     for (let i = 0, len = calls.length; i < len; i += limit) {
       results.push(calls.slice(i, i + limit))
     }
-    const arr = []
+    const arr = [getETHBalance()]
     for (const item of results) {
       arr.push(getBalance(item))
     }
@@ -148,27 +181,11 @@ export default function Updater(): null {
     }
   }, [library, calls, chainId, account, rpcItem])
 
-  useInterval(getAllBalance, 1000 * 30)
+  useEffect(() => {
+    if (account) tokenListRef.current = 0
+  }, [account])
 
-  // useEffect(() => {
-  //   // console.log(balances)
-  //   // console.log(tokenListRef)
-  //   if (chainId && account && Object.keys(balances).length > 0) {
-  //     // console.log(Date.now()- startTime)
-  //     tokenListRef.current.index += 1
-  //     const blList:any = {}
-  //     for (const k in balances) {
-  //       blList[k] = {
-  //         balance: balances[k]?.toSignificant(6)
-  //       }
-  //     }
-  //     dispatch(tokenBalanceList({
-  //       chainId,
-  //       account,
-  //       tokenList: blList
-  //     }))
-  //   }
-  // }, [dispatch, balances, chainId, account])
+  useInterval(getAllBalance, 1000 * 20)
 
   return null
 }

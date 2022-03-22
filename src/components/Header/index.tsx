@@ -13,7 +13,6 @@ import IconNight from '../../assets/images/icon/night.svg'
 import { useBaseBalances } from '../../hooks/useBaseBalance'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { useDarkModeManager } from '../../state/user/hooks'
-// import { useETHBalances } from '../../state/wallet/hooks'
 
 import { ExternalLink } from '../../theme'
 

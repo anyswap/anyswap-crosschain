@@ -25,7 +25,7 @@ function balanceComparator(balanceA?: TokenAmount | any, balanceB?: TokenAmount 
     } else if (balanceB) {
       if (balanceB instanceof TokenAmount && balanceB.greaterThan('0')) {
         return 1
-      } else if (Number(balanceA?.balance) > 0) {
+      } else if (Number(balanceB?.balance) > 0) {
         return 1
       }
       // return 1
@@ -33,6 +33,29 @@ function balanceComparator(balanceA?: TokenAmount | any, balanceB?: TokenAmount 
     return 0
   }
 }
+
+// function balanceComparator(balanceA?: TokenAmount | any, balanceB?: TokenAmount | any, sortA?:any, sortB?:any) {
+//   console.log(balanceA)
+//   if (sortA > sortB) {
+//     // console.log('balanceA')
+//     return 1
+//   } else {
+//     const ba = balanceA && balanceA instanceof TokenAmount ? balanceA : (balanceA & balanceA?.balances ? balanceA.balances : '')
+//     const bb = balanceB && balanceB instanceof TokenAmount ? balanceB : (balanceB && balanceB?.balances ? balanceB.balances : '')
+//     if (ba && bb) {
+//       return ba.greaterThan(bb) ? -1 : ba.equalTo(bb) ? 0 : 1
+//     } else if (ba) {
+//       if (ba.greaterThan('0')) {
+//         return -1
+//       }
+//     } else if (bb) {
+//       if (bb.greaterThan('0')) {
+//         return 1
+//       }
+//     }
+//     return 0
+//   }
+// }
 
 function getTokenComparator(balances: {
   [tokenAddress: string]: TokenAmount | undefined
