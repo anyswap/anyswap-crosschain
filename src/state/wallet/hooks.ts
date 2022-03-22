@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveReact } from '../../hooks/useActiveReact'
-// import { useBridgeTokenList } from '../lists/hooks'
+import { tryParseAmount5 } from '../swap/hooks'
 // import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
@@ -181,9 +181,21 @@ export function useTokenBalanceList(): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
   // console.log(lists)
+  // console.log(tryParseAmount5('100', 6))
+  // console.log(tryParseAmount5('100', 6).toSignificant(3))
   return useMemo(() => {
     if (chainId && account && lists) {
-      if (lists[account] && lists[account][chainId]) return lists[account][chainId]
+      if (lists[account] && lists[account][chainId]) {
+        const list:any = {}
+        for (const token in lists[account][chainId]) {
+          const obj = lists[account][chainId][token]
+          list[token] = {
+            ...obj,
+            balances: tryParseAmount5(obj.balancestr, obj.dec)
+          }
+        }
+        return list
+      }
       return {}
     }
     return {}

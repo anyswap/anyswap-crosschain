@@ -5,19 +5,23 @@ const TIMEOUT = 'timeout'
 
 const Web3 = require('web3')
 
-export function getWeb3 (rpc) {
+export function getWeb3 (rpc, provider) {
   rpc = rpc ? rpc : ''
-  const wFn = new Web3(new Web3.providers.HttpProvider(rpc))
-  // wFn.extend({
-  //   property: 'swap',
-  //   methods: [...web3Extend]
-  // })
-  return wFn
+  if (provider) {
+    // console.log(library)
+    const wFn = new Web3(provider)
+    // console.log(wFn)
+    return wFn
+  } else {
+    // console.log(rpc)
+    const wFn = new Web3(new Web3.providers.HttpProvider(rpc))
+    return wFn
+  }
 }
 
 
-export function getContract ({rpc, abi}) {
-  const web3 = getWeb3(rpc)
+export function getContract ({rpc, abi, provider}) {
+  const web3 = getWeb3(rpc, provider)
   abi = abi ? abi : multicallABI
   return new web3.eth.Contract(abi)
 }

@@ -71,21 +71,21 @@ export default function Updater(): null {
         // console.log(res)
         dispatch(rpclist({chainId, rpclist: res}))
       })
-      // if (library) {
-      //   const startTime = Date.now()
-      //   library.getBlockNumber().then(res => {
-      //     // console.log(Date.now() - startTime)
-      //     // console.log(res)
-      //     const data: RpcInfo = {
-      //       rpc: '',
-      //       time: Date.now() - startTime,
-      //       status: 'Success',
-      //       blocknumber: res,
-      //       origin: 'wallet'
-      //     }
-      //     dispatch(rpclist({chainId, rpclist: data}))
-      //   })
-      // }
+      if (library) {
+        const startTime = Date.now()
+        library.getBlockNumber().then(res => {
+          // console.log(Date.now() - startTime)
+          // console.log(res)
+          const data: RpcInfo = {
+            rpc: '',
+            time: Date.now() - startTime,
+            status: 'Success',
+            blocknumber: res,
+            origin: 'wallet'
+          }
+          dispatch(rpclist({chainId, rpclist: data}))
+        })
+      }
     }
   }, [library, chainId])
   return null
