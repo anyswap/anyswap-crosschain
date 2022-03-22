@@ -9,7 +9,7 @@ export const KCC_MAIN_EXPLORER = 'https://explorer.kcc.io/cn'
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'KCC'
+const symbol = 'KCS'
 
 const bridgeToken = {
   [VERSION.V1]: {
