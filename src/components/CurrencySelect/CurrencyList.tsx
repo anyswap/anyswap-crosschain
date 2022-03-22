@@ -122,7 +122,6 @@ function CurrencyRow({
   && !CROSS_BRIDGE_LIST.includes(bridgeKey)
    ? true : false
   const balance1 = ''
-  // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = useMemo(() => {
     // console.log(currencyObj)
     if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()] && !isNativeToken) {
