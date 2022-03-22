@@ -13,9 +13,7 @@ import InputPanel from '../../components/InputPanel'
 import Toggle from '../../components/Toggle'
 import ListFactory from '../../components/ListFactory'
 import { OptionWrapper } from './index'
-import { callStorage } from '../../utils/storage'
-import { STORAGE_METHODS } from '../../constants'
-import config from '../../config'
+import { updateStorageData } from '../../utils/storage'
 
 export default function Interface() {
   const { t } = useTranslation()
@@ -128,31 +126,20 @@ export default function Interface() {
     if (!account || !library?.provider) return
 
     try {
-      const domain = window.location.hostname || document.location.host
-      const settings = JSON.stringify({
-        projectName,
-        logoUrl,
-        brandColor,
-        backgroundColorLight,
-        backgroundColorDark,
-        elementsColorLight,
-        elementsColorDark,
-        socialLinks,
-        disableSourceCopyright
-      })
-
-      await callStorage({
+      await updateStorageData({
         provider: library?.provider,
-        account,
-        storageChainId: config.STORAGE_CHAIN_ID,
-        method: STORAGE_METHODS.setKeyData,
-        args: [
-          domain,
-          {
-            owner: account,
-            info: settings
-          }
-        ],
+        owner: account,
+        data: {
+          projectName,
+          logoUrl,
+          brandColor,
+          backgroundColorLight,
+          backgroundColorDark,
+          elementsColorLight,
+          elementsColorDark,
+          socialLinks,
+          disableSourceCopyright
+        },
         onHash: (hash: string) => {
           console.group('%c Log', 'color: orange; font-size: 14px')
           console.log('hash: ', hash)

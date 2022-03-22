@@ -34,7 +34,16 @@ export const getContractInstance = (library: Web3Provider, address: string, abi:
 }
 
 export const deployContract = async (params: any) => {
-  const { abi, byteCode, library, account, onDeployment = doNothing, onHash = doNothing, deployArguments } = params
+  const {
+    chainId,
+    abi,
+    byteCode,
+    library,
+    account,
+    onDeployment = doNothing,
+    onHash = doNothing,
+    deployArguments
+  } = params
 
   let contract
 
@@ -58,7 +67,7 @@ export const deployContract = async (params: any) => {
       .on('transactionHash', (hash: string) => onHash(hash))
       .on('error', (error: any) => console.error(error))
 
-    onDeployment(contractInstance.options.address)
+    onDeployment(contractInstance.options.address, chainId)
 
     return contractInstance
   } catch (error) {
@@ -110,10 +119,11 @@ export const deployRouter = async (params: any) => {
 }
 
 export const deployRouterConfig = async (params: any) => {
-  const { library, onHash, account, onDeployment } = params
+  const { chainId, library, onHash, account, onDeployment } = params
   const { abi, bytecode } = RouterConfig
 
   return deployContract({
+    chainId,
     abi,
     byteCode: bytecode,
     deployArguments: [],

@@ -164,11 +164,9 @@ export default function Contracts() {
       </Notice>
 
       {!stateRouterConfigAddress && (
-        <>
-          <ZoneWrapper>
-            <DeployRouterConfig onNewConfig={onNewConfig} />
-          </ZoneWrapper>
-        </>
+        <ZoneWrapper>
+          <DeployRouterConfig onNewConfig={onNewConfig} />
+        </ZoneWrapper>
       )}
 
       {!routerAddress && (
