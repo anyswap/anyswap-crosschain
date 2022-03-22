@@ -199,7 +199,7 @@ export default function CrossChain({
 
   useEffect(() => {
     console.log(bridgeAnyToken)
-  }, [bridgeAnyToken])
+  }, [bridgeAnyToken, inputBridgeValue])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
