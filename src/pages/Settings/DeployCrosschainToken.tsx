@@ -5,7 +5,7 @@ import { EVM_ADDRESS_REGEXP } from '../../constants'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
-import { deployInfinityERC20, addToken } from '../../utils/contract'
+import { deployInfinityERC20, deployCrosschainERC20 } from '../../utils/contract'
 
 const OptionWrapper = styled.div`
   display: flex;
@@ -99,11 +99,8 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     if (!chainId || !account || !vault) return
 
     try {
-      await addToken({
+      await deployCrosschainERC20({
         chainId,
-        toChainId: -1,
-        mpc: '',
-        mpcPubKey: '',
         library,
         account,
         name,
@@ -112,7 +109,6 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         underlying,
         vault,
         minter,
-        routerConfig: '',
         onHash: (hash: string) => {
           console.log('hash: ', hash)
         }

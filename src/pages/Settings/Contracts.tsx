@@ -46,11 +46,6 @@ export default function Contracts() {
   const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
 
   useEffect(() => {
-    console.group('%c addresses was updated', 'color: green')
-    console.log('stateRouterAddress: ', stateRouterAddress)
-    console.log('stateRouterConfigAddress: ', stateRouterConfigAddress)
-    console.groupEnd()
-
     if (chainId !== undefined && stateRouterAddress[chainId]) {
       setRouterAddress(stateRouterAddress[chainId])
     } else {
@@ -61,36 +56,12 @@ export default function Contracts() {
   const onNewRouter = (address: string) => setRouterAddress(address)
   const onNewConfig = (address: string) => setRouterConfigAddress(address)
 
-  useEffect(() => {
-    const fetchRouterAddresses = async () => {
-      // setRouterAddress()
-    }
-
-    if (chainId && stateRouterConfigAddress) fetchRouterAddresses()
-  }, [chainId, stateRouterConfigAddress])
-
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
   // const [canStartAddition] = useState(true)
 
   // useEffect(() => {
   //   setCanStartAddition()
   // }, [])
-
-  const setChainConfig = async () => {
-    if (!routerConfig) return
-
-    try {
-      // setChainConfig(uint256 chainID, ChainConfig config)
-      // source chain id,[base currency symbol, "router address", 3, 0]
-      await routerConfig.methods.setChainConfig().send({
-        from: account
-      })
-      // target chain id,[base currency symbol, "router address", 3, 0]
-      await routerConfig.methods.setChainConfig().send({
-        from: account
-      })
-    } catch (error) {}
-  }
 
   const setTokenConfig = async () => {
     if (!routerConfig) return
@@ -180,14 +151,6 @@ export default function Contracts() {
       </ZoneWrapper>
 
       <ZoneWrapper blocked={!(routerConfigAddress || routerAddress)}>
-        <ButtonPrimary
-          margin=".2rem 0"
-          fullWidth
-          // disabled={pending}
-          onClick={setChainConfig}
-        >
-          {t('setChainConfigs')}
-        </ButtonPrimary>
         <ButtonPrimary
           margin=".2rem 0"
           fullWidth

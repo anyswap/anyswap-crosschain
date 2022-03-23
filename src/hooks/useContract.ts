@@ -42,21 +42,25 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
-export function useRouterConfigContract(address: string, chainId: number): Contract | null {
+export function useRouterConfigContract(address: string, chainId: number, withSigner?: boolean): Contract | null {
+  const { library } = useActiveWeb3React()
+
   return useMemo(() => {
-    if (!address || !chainId) return null
+    if (!address || !chainId || !library) return null
 
     try {
       const { nodeRpc } = chainInfo[chainId]
       const web3 = new Web3(nodeRpc)
 
-      return new web3.eth.Contract(ROUTER_CONFIG.abi, address)
+      return withSigner
+        ? getContract(address, ROUTER_CONFIG.abi, library, undefined)
+        : new web3.eth.Contract(ROUTER_CONFIG.abi, address)
     } catch (error) {
       console.error('Failed to get Router config contract', error)
     }
 
     return null
-  }, [])
+  }, [address, chainId, library])
 }
 
 export function useStorageContract(chainId: number): Contract | null {
