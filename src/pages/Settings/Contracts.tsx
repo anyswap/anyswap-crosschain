@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
-import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
+import { chainInfo } from '../../config/chainConfig'
 import DeployCrosschainToken from './DeployCrosschainToken'
 import DeployRouter from './DeployRouter'
 import DeployRouterConfig from './DeployRouterConfig'
-import { ButtonPrimary } from '../../components/Button'
 import { Notice } from './index'
 
 const ZoneWrapper = styled.div<{ blocked?: boolean }>`
@@ -27,14 +26,8 @@ const ZoneWrapper = styled.div<{ blocked?: boolean }>`
       : ''}
 `
 
-const InstructionsList = styled.ul`
-  margin: 0;
-  padding: 0 0 0 1.2rem;
-  list-style: circle;
-`
-
 export default function Contracts() {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
 
   const {
@@ -56,117 +49,42 @@ export default function Contracts() {
   const onNewRouter = (address: string) => setRouterAddress(address)
   const onNewConfig = (address: string) => setRouterConfigAddress(address)
 
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
-  // const [canStartAddition] = useState(true)
+  const [configNetworkName, setConfigNetworkName] = useState('')
 
-  // useEffect(() => {
-  //   setCanStartAddition()
-  // }, [])
-
-  const setTokenConfig = async () => {
-    if (!routerConfig) return
-
-    try {
-      /* 
-      for the source network
-      setTokenConfig(string tokenID, uint256 chainID, TokenConfig config)
-      tokenId: symbol
-      chainID: source chain id
-      config: [decimals, "crosschain erc20 address", crosschain version]
-
-      for the target network
-      setTokenConfig(string tokenID, uint256 chainID, TokenConfig config)
-      tokenId: symbol
-      chainID: target chain id
-      config: [decimals, "crosschain erc20 address", crosschain version]
-      */
-      await routerConfig.methods.setTokenConfig().send({
-        from: account
-      })
-      await routerConfig.methods.setTokenConfig().send({
-        from: account
-      })
-    } catch (error) {}
-  }
-
-  const setSwapConfig = async () => {
-    if (!routerConfig) return
-
-    try {
-      /* 
-      for the source network
-      setSwapConfig(string tokenID, uint256 toChainID, SwapConfig config)
-      tokenId: symbol
-      chainID: source chain id
-      // WEI value
-      config: [MaximumSwap amount, MinimumSwap amount, BigValueThreshold, SwapFeeRatePerMillion, MaximumSwapFee, MinimumSwapFee]
-
-      for the target network
-      setSwapConfig(string tokenID, uint256 toChainID, SwapConfig config)
-      tokenId: symbol
-      chainID: target chain id
-      config: [MaximumSwap amount, MinimumSwap amount, BigValueThreshold, SwapFeeRatePerMillion, MaximumSwapFee, MinimumSwapFee]
-      */
-      await routerConfig.methods.setSwapConfig().send({
-        from: account
-      })
-      await routerConfig.methods.setSwapConfig().send({
-        from: account
-      })
-    } catch (error) {}
-  }
-
-  /* 
-  user has to switch between networks to configure all in a right way
-  TODO: create some a store area where we can save data from different networks
-  TODO: finally ask the user to switch to RouterConfig network to complete all settings 
-  */
+  useEffect(() => {
+    if (routerConfigChainId) {
+      setConfigNetworkName(chainInfo[routerConfigChainId]?.name)
+    }
+  }, [routerConfigChainId])
 
   return (
     <div>
-      <Notice>
-        <InstructionsList>
-          <li>{t('youNeedToDeployOnlyOneRouterConfigContract')}</li>
-          <li>{t('youNeedToDeployRouterContractForEachNetwork')}</li>
-          <li>{t('youNeedToDeployCrosschainTokenForEachSourceTokenOnEachNetwork')}</li>
-          <li>{t('youNeedToBeOnRouterConfigNetworkToSetSettings')}</li>
-          <li>{t('finallyYouNeedToSwitchToRouterConfigNetworkAndFinishSettingUp')}</li>
-        </InstructionsList>
+      <Notice warning>
+        {/* {t('youNeedToSaveAllDataInTheConfigContract')} */}
+        You have to be on the Config contract network to configure settings. When you deploy anything save deployment
+        information and switch to {configNetworkName || 'Unknown network'} to save it.
       </Notice>
 
       {!stateRouterConfigAddress && (
         <ZoneWrapper>
+          <Notice>{t('youNeedToDeployOnlyOneRouterConfigContract')}</Notice>
           <DeployRouterConfig onNewConfig={onNewConfig} />
         </ZoneWrapper>
       )}
 
       {!routerAddress && (
         <ZoneWrapper blocked={!routerConfigAddress}>
+          <Notice>
+            {/* {t('youNeedToHaveOneRouterForEachNetwork')} */}
+            You need to have one router for each targetnetwork.
+          </Notice>
           <DeployRouter onNewRouter={onNewRouter} />
         </ZoneWrapper>
       )}
 
       <ZoneWrapper blocked={!(routerConfigAddress || routerAddress)}>
+        <Notice>{t('youNeedToDeployCrosschainTokenForEachSourceTokenOnEachNetwork')}</Notice>
         <DeployCrosschainToken routerAddress={routerAddress} />
-      </ZoneWrapper>
-
-      <ZoneWrapper blocked={!(routerConfigAddress || routerAddress)}>
-        <ButtonPrimary
-          margin=".2rem 0"
-          fullWidth
-          // disabled={pending}
-          onClick={setTokenConfig}
-        >
-          {t('setTokenConfigs')}
-        </ButtonPrimary>
-        <ButtonPrimary
-          margin=".2rem 0"
-          fullWidth
-          // disabled={pending}
-          onClick={setSwapConfig}
-        >
-          {t('setSwapConfigs')}
-        </ButtonPrimary>
       </ZoneWrapper>
     </div>
   )

@@ -3,7 +3,10 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { EVM_ADDRESS_REGEXP } from '../../constants'
 import { ERC20_ABI } from '../../constants/abis/erc20'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
+import { useRouterConfigContract } from '../../hooks/useContract'
+import { useAppState } from '../../state/application/hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, deployCrosschainERC20 } from '../../utils/contract'
 
@@ -43,14 +46,21 @@ const Button = styled.button`
 export default function DeployCrosschainToken({ routerAddress }: { routerAddress: string }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const addTransaction = useTransactionAdder()
+  const { routerConfigChainId, routerConfigAddress } = useAppState()
+  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
 
-  const [deployNewErc20] = useState(process.env.NODE_ENV === 'development')
-
+  const [deployNewErc20] = useState(process.env.NODE_ENV === 'development' && false)
   const [pending, setPending] = useState(false)
+
   const [underlying, setUnderlying] = useState('')
+  const [underlyingName, setUnderlyingName] = useState('')
+  const [, setUnderlyingSymbol] = useState('')
+
   const [name, setName] = useState('')
   const [symbol, setSymbol] = useState('')
   const [decimals, setDecimals] = useState(-1)
+
   const [vault] = useState(account)
   const [minter, setMinter] = useState('')
 
@@ -80,7 +90,9 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         const symbol = await contract.methods.symbol().call()
         const decimals = await contract.methods.decimals().call()
 
-        setName(`CROSS${name}`)
+        setUnderlyingName(name)
+        setUnderlyingSymbol(symbol)
+        setName(`Crosschain${name}`)
         setSymbol(`CC${symbol}`)
         setDecimals(decimals)
       } catch (error) {
@@ -94,6 +106,49 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
       fetchUnderlyingInfo()
     }
   }, [underlying, chainId])
+
+  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState<number | undefined>(undefined)
+  const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
+
+  const setTokenConfig = async () => {
+    if (!routerConfig || !underlyingName) return
+
+    const VERSION = 6
+
+    try {
+      await routerConfig.setTokenConfig(underlyingName, crosschainTokenChainId, {
+        Decimals: decimals,
+        ContractAddress: crosschainTokenAddress,
+        ContractVersion: VERSION
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
+  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
+  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(undefined)
+  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(undefined)
+  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(undefined)
+  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(undefined)
+
+  const setSwapConfig = async () => {
+    if (!routerConfig || !underlyingName) return
+
+    try {
+      await routerConfig.setSwapConfig(underlyingName, chainId, {
+        MaximumSwap: 0,
+        MinimumSwap: 0,
+        BigValueThreshold: 0,
+        SwapFeeRatePerMillion: 0,
+        MaximumSwapFee: 0,
+        MinimumSwapFee: 0
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const onTokenDeployment = async () => {
     if (!chainId || !account || !vault) return
@@ -111,17 +166,30 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         minter,
         onHash: (hash: string) => {
           console.log('hash: ', hash)
+        },
+        onDeployment: ({
+          address,
+          chainId,
+          hash,
+          name
+        }: {
+          address: string
+          chainId: number
+          hash: string
+          name: string
+        }) => {
+          setCrosschainTokenAddress(address)
+          setCrosschainTokenChainId(chainId)
+          addTransaction(
+            { hash },
+            {
+              summary: `Deployment: chain ${chainId}; crosschain token ${address}`
+            }
+          )
         }
       })
     } catch (error) {
       console.error(error)
-      // addPopup({
-      //   error: {
-      //     message: error.message,
-      //     code: error.code
-      //   }
-      // })
-      // setAttemptingTxn(false)
     }
   }
 
@@ -165,7 +233,6 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
           </Button>
         </OptionWrapper>
       )}
-
       <OptionWrapper>
         <OptionLabel>
           {t('addressOfERC20Token')}
@@ -178,10 +245,108 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
           />
         </OptionLabel>
       </OptionWrapper>
-
       <Button disabled={!canDeployToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
       </Button>
+
+      <OptionWrapper>
+        <OptionLabel>
+          {/* {t('')} */}
+          ID of the crosschain token network
+          <Input
+            disabled={pending}
+            defaultValue={crosschainTokenChainId}
+            type="number"
+            onChange={event => setCrosschainTokenChainId(Number(event.target.value))}
+          />
+        </OptionLabel>
+      </OptionWrapper>
+      <OptionWrapper>
+        <OptionLabel>
+          {/* {t('')} */}
+          Crosschain token address
+          <Input
+            disabled={pending}
+            defaultValue={crosschainTokenAddress}
+            type="text"
+            placeholder="0x123..."
+            onChange={event => setCrosschainTokenAddress(event.target.value)}
+          />
+        </OptionLabel>
+      </OptionWrapper>
+      <Button disabled={!underlyingName || !chainId || !decimals || pending} onClick={setTokenConfig}>
+        {t('setTokenConfig')}
+      </Button>
+
+      <OptionWrapper>
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Minimum swap amount
+            <Input defaultValue={minimumSwap} type="number" onChange={event => setMinimumSwap(event.target.value)} />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Maximum swap amount
+            <Input defaultValue={maximumSwap} type="number" onChange={event => setMaximumSwap(event.target.value)} />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Minimum swap fee
+            <Input
+              defaultValue={minimumSwapFee}
+              type="number"
+              onChange={event => setMinimumSwapFee(event.target.value)}
+            />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Maximum swap fee
+            <Input
+              defaultValue={maximumSwapFee}
+              type="number"
+              onChange={event => setMaximumSwapFee(event.target.value)}
+            />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Big value threshold (what is this and how does it affect the swap?)
+            <Input
+              defaultValue={bigValueThreshold}
+              type="number"
+              onChange={event => setBigValueThreshold(event.target.value)}
+            />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {/* {t('')} */}
+            Swap fee rate per million (what is this?) swapFeeRatePerMillion
+            <Input
+              defaultValue={swapFeeRatePerMillion}
+              type="number"
+              onChange={event => setSwapFeeRatePerMillion(event.target.value)}
+            />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <Button disabled={pending} onClick={setSwapConfig}>
+          {t('setSwapConfig')}
+        </Button>
+      </OptionWrapper>
     </>
   )
 }

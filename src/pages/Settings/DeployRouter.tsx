@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouter } from '../../utils/contract'
 import { chainInfo } from '../../config/chainConfig'
 import { ButtonPrimary } from '../../components/Button'
@@ -10,6 +11,7 @@ import { useAppState } from '../../state/application/hooks'
 export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: string) => void }) {
   const { account, library, active, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const addTransaction = useTransactionAdder()
   const [wrappedToken, setWrappedToken] = useState('')
   const { routerConfigChainId, routerConfigAddress } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
@@ -55,9 +57,15 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
         onHash: (hash: string) => {
           console.log('router hash: ', hash)
         },
-        onDeployment: (contractAddress: string, chainId: number) => {
+        onDeployment: (contractAddress: string, chainId: number, hash: string) => {
           setChainConfig(contractAddress, chainId)
           onNewRouter(contractAddress)
+          addTransaction(
+            { hash },
+            {
+              summary: `Deployment: chain ${chainId}; router ${contractAddress}`
+            }
+          )
         },
         factory: account,
         wNative: wrappedToken,

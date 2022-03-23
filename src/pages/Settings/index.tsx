@@ -16,6 +16,7 @@ export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
 `
 
 export const Notice = styled.div<{ warning?: boolean; error?: boolean }>`
+  width: 100%;
   margin: 0.6rem auto;
   padding: 0.4rem 0.6rem;
   border-radius: 0.4rem;

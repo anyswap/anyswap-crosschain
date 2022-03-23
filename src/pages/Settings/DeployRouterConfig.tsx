@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouterConfig } from '../../utils/contract'
 import { updateStorageData } from '../../utils/storage'
 import { ButtonPrimary } from '../../components/Button'
@@ -8,6 +9,7 @@ import { ButtonPrimary } from '../../components/Button'
 export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash: string) => void }) {
   const { account, library, active, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const addTransaction = useTransactionAdder()
   const [canDeploy, setCanDeploy] = useState(false)
 
   useEffect(() => {
@@ -30,12 +32,6 @@ export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash
         console.group('%c Log', 'color: orange; font-size: 14px')
         console.log('hash: ', hash)
         console.groupEnd()
-        // addTransaction(
-        //   { hash },
-        //   {
-        //     summary: `Settings saved`
-        //   }
-        // )
       }
     })
   }
@@ -49,10 +45,15 @@ export default function DeployRouterConfig({ onNewConfig }: { onNewConfig: (hash
         onHash: (hash: string) => {
           console.log('hash: ', hash)
         },
-        onDeployment: (contractAddress: string, chainId: number) => {
+        onDeployment: (contractAddress: string, chainId: number, hash: string) => {
           onNewConfig(contractAddress)
           update(contractAddress, chainId)
-          // TODO: add address to the txs history
+          addTransaction(
+            { hash },
+            {
+              summary: `Deployment: chain ${chainId}; router config ${contractAddress}`
+            }
+          )
         }
       })
     } catch (error) {

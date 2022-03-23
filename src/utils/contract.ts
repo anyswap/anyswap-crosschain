@@ -58,16 +58,20 @@ export const deployContract = async (params: any) => {
     })
 
     const gas = await transaction.estimateGas({ from: account })
+    let txHash
 
     const contractInstance = await transaction
       .send({
         from: account,
         gas
       })
-      .on('transactionHash', (hash: string) => onHash(hash))
+      .on('transactionHash', (hash: string) => {
+        txHash = hash
+        onHash(hash)
+      })
       .on('error', (error: any) => console.error(error))
 
-    onDeployment(contractInstance.options.address, chainId)
+    onDeployment(contractInstance.options.address, chainId, txHash)
 
     return contractInstance
   } catch (error) {
@@ -90,7 +94,7 @@ export const deployInfinityERC20 = async (params: any) => {
 }
 
 export const deployCrosschainERC20 = async (params: any) => {
-  const { chainId, library, account, onHash, name, symbol, decimals, underlying, vault, minter } = params
+  const { chainId, library, account, onHash, name, symbol, decimals, underlying, vault, minter, onDeployment } = params
   const { abi, bytecode } = AnyswapERC20
 
   return deployContract({
@@ -100,7 +104,18 @@ export const deployCrosschainERC20 = async (params: any) => {
     deployArguments: [name, symbol, decimals, underlying, vault, minter],
     library,
     account,
-    onHash
+    onHash,
+    onDeployment: (address: string, chainId: number, hash: string) => {
+      // forward name and symbol in case if the user changes smth from it in the form,
+      // but we didn't set token config yet
+      onDeployment({
+        address,
+        chainId,
+        hash,
+        name,
+        symbol
+      })
+    }
   })
 }
 
