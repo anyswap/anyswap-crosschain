@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { EVM_ADDRESS_REGEXP } from '../../constants'
+import { BigNumber } from 'bignumber.js'
+import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS } from '../../constants'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -66,10 +67,14 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
 
   useEffect(() => setMinter(routerAddress), [routerAddress])
 
-  const [canDeployToken, setCanDeployToken] = useState(false)
+  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState<number | undefined>(undefined)
+  const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
+  const [canDeployCrosschainToken, setCanDeployCrosschainToken] = useState(false)
 
   useEffect(() => {
-    setCanDeployToken(Boolean(underlying && name && symbol && decimals > -1 && vault && minter))
+    setCanDeployCrosschainToken(
+      Boolean(underlying && name && symbol && decimals > -1 && vault && minter) && !crosschainTokenAddress
+    )
   }, [underlying, name, symbol, decimals, vault, minter])
 
   useEffect(() => {
@@ -97,9 +102,12 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         setDecimals(decimals)
 
         if (routerConfig) {
-          const swapConfig = await routerConfig.getSwapConfig(underlyingName, chainId)
+          const tokenConfig = await routerConfig.getTokenConfig(name, chainId)
 
-          console.log('swapConfig: ', swapConfig)
+          if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
+            setCrosschainTokenChainId(chainId)
+            setCrosschainTokenAddress(tokenConfig.ContractAddress)
+          }
         }
       } catch (error) {
         console.error(error)
@@ -113,13 +121,12 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     }
   }, [underlying, chainId])
 
-  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState<number | undefined>(undefined)
-  const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
-
   const setTokenConfig = async () => {
     if (!routerConfig || !underlyingName) return
 
     const VERSION = 6
+
+    setPending(true)
 
     try {
       await routerConfig.setTokenConfig(underlyingName, crosschainTokenChainId, {
@@ -130,58 +137,79 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     } catch (error) {
       console.error(error)
     }
+
+    setPending(false)
   }
 
-  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
-  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
-  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(undefined)
-  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(undefined)
-  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(undefined)
-  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(undefined)
-
-  const setSwapConfig = async () => {
-    if (!routerConfig || !underlyingName) return
-
-    /* 
+  /* 
     template data:
 
-    1000000
-    "MaximumSwap": 1000000000000000000000000, 
-
-    100
-    "MinimumSwap": 100000000000000000000,
-
-    100000
-    "BigValueThreshold": 100000000000000000000000,
-
-    0.001
-    "SwapFeeRatePerMillion": 1000,
-    
-    10
-    "MaximumSwapFee": 10000000000000000000,
-
-    1.5
-    "MinimumSwapFee": 1500000000000000000
+    "MinimumSwap": 100 , 
+    "MaximumSwap": 1000000,  
+    "MinimumSwapFee":  1.5 
+    "MaximumSwapFee": 10,
+    "BigValueThreshold": 100000, 
+    "SwapFeeRatePerMillion": 0.001 ,
     */
+  const [minimumSwap, setMinimumSwap] = useState<string | undefined>('100') // (undefined)
+  const [maximumSwap, setMaximumSwap] = useState<string | undefined>('1000000') // (undefined)
+  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>('1.5') // (undefined)
+  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>('10') // (undefined)
+  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>('100000') // (undefined)
+  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>('0.001') // (undefined)
 
-    // TODO: convert values to contract format
+  const [canSetSwapConfig, setCanSetSwapConfig] = useState(false)
+
+  useEffect(() => {
+    setCanSetSwapConfig(
+      Boolean(
+        routerConfig &&
+          underlyingName &&
+          underlyingName &&
+          minimumSwap &&
+          maximumSwap &&
+          minimumSwapFee &&
+          maximumSwapFee &&
+          bigValueThreshold
+      )
+    )
+  }, [routerConfig, underlyingName, minimumSwap, maximumSwap, minimumSwapFee, maximumSwapFee, bigValueThreshold])
+
+  const toUnitValue = (n: number | string | undefined) => {
+    if (!n) return n
+    // prevent from  exponential notation: ex. 1e+24
+    BigNumber.config({ EXPONENTIAL_AT: 1e9 })
+
+    const WEI_DECIMALS = 18
+
+    return new BigNumber(n).times(10 ** WEI_DECIMALS).toString()
+  }
+
+  const setSwapConfig = async () => {
+    if (!routerConfig || !canSetSwapConfig) return
+
+    setPending(true)
 
     try {
       await routerConfig.setSwapConfig(underlyingName, chainId, {
-        MinimumSwap: minimumSwap,
-        MaximumSwap: maximumSwap,
-        MinimumSwapFee: minimumSwapFee,
-        MaximumSwapFee: maximumSwapFee,
-        BigValueThreshold: bigValueThreshold,
-        SwapFeeRatePerMillion: swapFeeRatePerMillion
+        MinimumSwap: toUnitValue(minimumSwap),
+        MaximumSwap: toUnitValue(maximumSwap),
+        MinimumSwapFee: toUnitValue(minimumSwapFee),
+        MaximumSwapFee: toUnitValue(maximumSwapFee),
+        BigValueThreshold: toUnitValue(bigValueThreshold),
+        SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(1_000_000).toString()
       })
     } catch (error) {
       console.error(error)
     }
+
+    setPending(false)
   }
 
   const onTokenDeployment = async () => {
     if (!chainId || !account || !vault) return
+
+    setPending(true)
 
     try {
       await deployCrosschainERC20({
@@ -213,7 +241,7 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
           addTransaction(
             { hash },
             {
-              summary: `Deployment: chain ${chainId}; crosschain token ${address}`
+              summary: `Deployment: chain ${chainId}; crosschain token ${name} ${address}`
             }
           )
         }
@@ -221,12 +249,16 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     } catch (error) {
       console.error(error)
     }
+
+    setPending(false)
   }
 
   const [testERC20Name, setTestERC20Name] = useState('')
   const [testERC20Symbol, setTestERC20Symbol] = useState('')
 
   const onInfinityERC20Deployment = async () => {
+    setPending(true)
+
     try {
       await deployInfinityERC20({
         library,
@@ -239,6 +271,8 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     } catch (error) {
       console.error(error)
     }
+
+    setPending(false)
   }
 
   return (
@@ -275,7 +309,7 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
           />
         </OptionLabel>
       </OptionWrapper>
-      <Button disabled={!canDeployToken || pending} onClick={onTokenDeployment}>
+      <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
       </Button>
 
@@ -364,7 +398,7 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         <OptionWrapper>
           <OptionLabel>
             {/* {t('')} */}
-            Swap fee rate per million (what is this?) swapFeeRatePerMillion
+            Swap fee rate per million (what is this?)
             <Input
               defaultValue={swapFeeRatePerMillion}
               type="number"
@@ -373,7 +407,7 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
           </OptionLabel>
         </OptionWrapper>
 
-        <Button disabled={pending} onClick={setSwapConfig}>
+        <Button disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
           {t('setSwapConfig')}
         </Button>
       </OptionWrapper>
