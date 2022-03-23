@@ -8,6 +8,7 @@ import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import TxnsDtilsModal from '../components/CrossChainPanelV2/txnsDtilsModal'
+import TxnsErrorTipModal from '../components/CrossChainPanelV2/txnsErrorTipModal'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -157,6 +158,7 @@ export default function App() {
           <Popups />
           <Polling />
           <TxnsDtilsModal />
+          <TxnsErrorTipModal />
           <NonApprove />
           {/* <TopLevelModals /> */}
           <Web3ReactManager>
