@@ -33,10 +33,8 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
 
     try {
       const { name } = chainInfo[chainId]
-      //@ts-ignore
-      const signer = routerConfig.connect(library?.getSigner())
 
-      await signer.setChainConfig(chainId, {
+      await routerConfig.setChainConfig(chainId, {
         BlockChain: name,
         RouterContract: routerAddress,
         Confirmations: 3,

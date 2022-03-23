@@ -52,9 +52,13 @@ export function useRouterConfigContract(address: string, chainId: number, withSi
       const { nodeRpc } = chainInfo[chainId]
       const web3 = new Web3(nodeRpc)
 
-      return withSigner
-        ? getContract(address, ROUTER_CONFIG.abi, library, undefined)
-        : new web3.eth.Contract(ROUTER_CONFIG.abi, address)
+      if (withSigner) {
+        const routerConfig = getContract(address, ROUTER_CONFIG.abi, library, undefined)
+
+        return routerConfig.connect(library.getSigner())
+      }
+
+      return new web3.eth.Contract(ROUTER_CONFIG.abi, address)
     } catch (error) {
       console.error('Failed to get Router config contract', error)
     }

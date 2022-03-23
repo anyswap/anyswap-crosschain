@@ -95,6 +95,12 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         setName(`Crosschain${name}`)
         setSymbol(`CC${symbol}`)
         setDecimals(decimals)
+
+        if (routerConfig) {
+          const swapConfig = await routerConfig.getSwapConfig(underlyingName, chainId)
+
+          console.log('swapConfig: ', swapConfig)
+        }
       } catch (error) {
         console.error(error)
       }
@@ -136,14 +142,38 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
   const setSwapConfig = async () => {
     if (!routerConfig || !underlyingName) return
 
+    /* 
+    template data:
+
+    1000000
+    "MaximumSwap": 1000000000000000000000000, 
+
+    100
+    "MinimumSwap": 100000000000000000000,
+
+    100000
+    "BigValueThreshold": 100000000000000000000000,
+
+    0.001
+    "SwapFeeRatePerMillion": 1000,
+    
+    10
+    "MaximumSwapFee": 10000000000000000000,
+
+    1.5
+    "MinimumSwapFee": 1500000000000000000
+    */
+
+    // TODO: convert values to contract format
+
     try {
       await routerConfig.setSwapConfig(underlyingName, chainId, {
-        MaximumSwap: 0,
-        MinimumSwap: 0,
-        BigValueThreshold: 0,
-        SwapFeeRatePerMillion: 0,
-        MaximumSwapFee: 0,
-        MinimumSwapFee: 0
+        MinimumSwap: minimumSwap,
+        MaximumSwap: maximumSwap,
+        MinimumSwapFee: minimumSwapFee,
+        MaximumSwapFee: maximumSwapFee,
+        BigValueThreshold: bigValueThreshold,
+        SwapFeeRatePerMillion: swapFeeRatePerMillion
       })
     } catch (error) {
       console.error(error)
