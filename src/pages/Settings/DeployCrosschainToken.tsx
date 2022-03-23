@@ -44,6 +44,28 @@ const Button = styled.button`
   padding: 0.3rem;
 `
 
+enum Direction {
+  from,
+  to
+}
+
+const formatAmount = (n: string | undefined, direction: Direction) => {
+  if (!n) return n
+  // prevent from  exponential notation: ex. 1e+24
+  BigNumber.config({ EXPONENTIAL_AT: 1e9 })
+
+  const WEI_DECIMALS = 18
+
+  switch (direction) {
+    case Direction.from:
+      return new BigNumber(n).div(10 ** WEI_DECIMALS).toString()
+    case Direction.to:
+      return new BigNumber(n).times(10 ** WEI_DECIMALS).toString()
+    default:
+      return n
+  }
+}
+
 export default function DeployCrosschainToken({ routerAddress }: { routerAddress: string }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -77,6 +99,40 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     )
   }, [underlying, name, symbol, decimals, vault, minter])
 
+  /* 
+    template data:
+
+    "MinimumSwap": 100 , 
+    "MaximumSwap": 1000000,  
+    "MinimumSwapFee":  1.5 
+    "MaximumSwapFee": 10,
+    "BigValueThreshold": 100000, 
+    "SwapFeeRatePerMillion": 0.001 ,
+    */
+  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
+  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
+  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(undefined)
+  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(undefined)
+  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(undefined)
+  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(undefined)
+
+  const [canSetSwapConfig, setCanSetSwapConfig] = useState(false)
+
+  useEffect(() => {
+    setCanSetSwapConfig(
+      Boolean(
+        routerConfig &&
+          underlyingName &&
+          underlyingName &&
+          minimumSwap &&
+          maximumSwap &&
+          minimumSwapFee &&
+          maximumSwapFee &&
+          bigValueThreshold
+      )
+    )
+  }, [routerConfig, underlyingName, minimumSwap, maximumSwap, minimumSwapFee, maximumSwapFee, bigValueThreshold])
+
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
       if (!library || !underlying) return
@@ -108,6 +164,22 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
             setCrosschainTokenChainId(chainId)
             setCrosschainTokenAddress(tokenConfig.ContractAddress)
           }
+
+          const {
+            MaximumSwap,
+            MinimumSwap,
+            BigValueThreshold,
+            SwapFeeRatePerMillion,
+            MaximumSwapFee,
+            MinimumSwapFee
+          } = await routerConfig.getSwapConfig(name, chainId)
+
+          setMinimumSwap(formatAmount(MinimumSwap.toString(), Direction.from))
+          setMaximumSwap(formatAmount(MaximumSwap.toString(), Direction.from))
+          setMinimumSwapFee(formatAmount(MinimumSwapFee.toString(), Direction.from))
+          setMaximumSwapFee(formatAmount(MaximumSwapFee.toString(), Direction.from))
+          setBigValueThreshold(formatAmount(BigValueThreshold.toString(), Direction.from))
+          setSwapFeeRatePerMillion(new BigNumber(SwapFeeRatePerMillion.toString()).div(1_000_000).toString())
         }
       } catch (error) {
         console.error(error)
@@ -141,50 +213,6 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
     setPending(false)
   }
 
-  /* 
-    template data:
-
-    "MinimumSwap": 100 , 
-    "MaximumSwap": 1000000,  
-    "MinimumSwapFee":  1.5 
-    "MaximumSwapFee": 10,
-    "BigValueThreshold": 100000, 
-    "SwapFeeRatePerMillion": 0.001 ,
-    */
-  const [minimumSwap, setMinimumSwap] = useState<string | undefined>('100') // (undefined)
-  const [maximumSwap, setMaximumSwap] = useState<string | undefined>('1000000') // (undefined)
-  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>('1.5') // (undefined)
-  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>('10') // (undefined)
-  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>('100000') // (undefined)
-  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>('0.001') // (undefined)
-
-  const [canSetSwapConfig, setCanSetSwapConfig] = useState(false)
-
-  useEffect(() => {
-    setCanSetSwapConfig(
-      Boolean(
-        routerConfig &&
-          underlyingName &&
-          underlyingName &&
-          minimumSwap &&
-          maximumSwap &&
-          minimumSwapFee &&
-          maximumSwapFee &&
-          bigValueThreshold
-      )
-    )
-  }, [routerConfig, underlyingName, minimumSwap, maximumSwap, minimumSwapFee, maximumSwapFee, bigValueThreshold])
-
-  const toUnitValue = (n: number | string | undefined) => {
-    if (!n) return n
-    // prevent from  exponential notation: ex. 1e+24
-    BigNumber.config({ EXPONENTIAL_AT: 1e9 })
-
-    const WEI_DECIMALS = 18
-
-    return new BigNumber(n).times(10 ** WEI_DECIMALS).toString()
-  }
-
   const setSwapConfig = async () => {
     if (!routerConfig || !canSetSwapConfig) return
 
@@ -192,11 +220,11 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
 
     try {
       await routerConfig.setSwapConfig(underlyingName, chainId, {
-        MinimumSwap: toUnitValue(minimumSwap),
-        MaximumSwap: toUnitValue(maximumSwap),
-        MinimumSwapFee: toUnitValue(minimumSwapFee),
-        MaximumSwapFee: toUnitValue(maximumSwapFee),
-        BigValueThreshold: toUnitValue(bigValueThreshold),
+        MinimumSwap: formatAmount(minimumSwap, Direction.to),
+        MaximumSwap: formatAmount(maximumSwap, Direction.to),
+        MinimumSwapFee: formatAmount(minimumSwapFee, Direction.to),
+        MaximumSwapFee: formatAmount(maximumSwapFee, Direction.to),
+        BigValueThreshold: formatAmount(bigValueThreshold, Direction.to),
         SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(1_000_000).toString()
       })
     } catch (error) {
