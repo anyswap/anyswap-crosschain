@@ -250,7 +250,7 @@ export const controlConfig:any = {
   [VERSION.V5]: {
     bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
-    hiddenChain: [],
+    hiddenChain: ['1030'],
     showCoin: [],
     showChain: [],
     initNode: '1',
