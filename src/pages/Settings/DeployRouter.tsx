@@ -13,7 +13,7 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
   const [wrappedToken, setWrappedToken] = useState('')
-  const { routerConfigChainId, routerConfigAddress } = useAppState()
+  const { routerConfigChainId, routerConfigAddress, routerAddress: stateRouterAddress } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
 
   useEffect(() => {
@@ -21,6 +21,16 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
       const { wrappedToken } = chainInfo[chainId]
 
       setWrappedToken(wrappedToken || '')
+    }
+  }, [chainId])
+
+  const [routerChainId, setRouterChainId] = useState<number | string | undefined>(undefined)
+  const [routerAddress, setRouterAddress] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (chainId && stateRouterAddress[chainId]) {
+      setRouterChainId(chainId)
+      setRouterAddress(stateRouterAddress[chainId])
     }
   }, [chainId])
 
@@ -50,6 +60,7 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
 
     try {
       await deployRouter({
+        chainId,
         library,
         account,
         onHash: (hash: string) => {
@@ -74,10 +85,36 @@ export default function DeployRouter({ onNewRouter }: { onNewRouter: (hash: stri
     }
   }
 
+  const [canModifyChainConfig, setCanModifyChainConfig] = useState(false)
+  const [canSetChainConfig, setCanSetChainConfig] = useState(false)
+
+  useEffect(() => {
+    setCanModifyChainConfig(Boolean(chainId && !stateRouterAddress[chainId]))
+    setCanSetChainConfig(Boolean(routerAddress && routerChainId && chainId && !stateRouterAddress[chainId]))
+  }, [chainId])
+
   return (
     <>
       <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
         {t('deployRouter')}
+      </ButtonPrimary>
+
+      <input
+        type="number"
+        defaultValue={routerChainId}
+        onChange={event => setRouterChainId(event.target.value)}
+        placeholder="Router chain id"
+        disabled={!canModifyChainConfig}
+      />
+      <input
+        type="text"
+        defaultValue={routerAddress}
+        onChange={event => setRouterAddress(event.target.value)}
+        placeholder="Router address"
+        disabled={!canModifyChainConfig}
+      />
+      <ButtonPrimary disabled={!canSetChainConfig} onClick={onDeployment}>
+        {t('setChainConfig')}
       </ButtonPrimary>
     </>
   )
