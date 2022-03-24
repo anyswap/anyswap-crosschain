@@ -73,7 +73,10 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
   const { routerConfigChainId, routerConfigAddress } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
 
-  const [deployNewErc20] = useState(process.env.NODE_ENV === 'development' && false)
+  const [deployNewErc20] = useState(
+    process.env.NODE_ENV === 'development'
+    // && false
+  )
   const [pending, setPending] = useState(false)
 
   const [underlying, setUnderlying] = useState('')
@@ -84,7 +87,10 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
   const [symbol, setSymbol] = useState('')
   const [decimals, setDecimals] = useState(-1)
 
-  const [vault] = useState(account)
+  const [vault, setVault] = useState(account)
+
+  useEffect(() => setVault(account), [account])
+
   const [minter, setMinter] = useState('')
 
   useEffect(() => setMinter(routerAddress), [routerAddress])
