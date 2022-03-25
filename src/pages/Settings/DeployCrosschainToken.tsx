@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { BigNumber } from 'bignumber.js'
 import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS } from '../../constants'
@@ -10,39 +9,7 @@ import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, deployCrosschainERC20 } from '../../utils/contract'
-
-const OptionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem 0;
-  margin: 0.5rem 0;
-  font-size: 1.2rem;
-`
-
-const OptionLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-`
-
-const Input = styled.input`
-  padding: 0.4rem 0;
-  margin: 0.2rem 0;
-  border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.text3};
-  outline: none;
-  font-size: inherit;
-  background-color: transparent;
-  color: inherit;
-`
-
-const Button = styled.button`
-  cursor: pointer;
-  width: 100%;
-  font-size: inherit;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.3rem;
-`
+import { OptionWrapper, OptionLabel, Input, Button } from './Contracts'
 
 enum Direction {
   from,

@@ -12,18 +12,18 @@ import multicall from './multicall/reducer'
 import pools from './pools/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
-const middlewares = []
+const middlewares: any[] = []
 
-if (process.env.NODE_ENV === 'development') {
-  const { createLogger } = require('redux-logger')
+// if (process.env.NODE_ENV === 'development') {
+//   const { createLogger } = require('redux-logger')
 
-  middlewares.push(
-    createLogger({
-      collapsed: true,
-      diff: true
-    })
-  )
-}
+//   middlewares.push(
+//     createLogger({
+//       collapsed: true,
+//       diff: true
+//     })
+//   )
+// }
 
 const store = configureStore({
   reducer: {
