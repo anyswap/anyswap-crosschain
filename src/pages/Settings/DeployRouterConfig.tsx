@@ -9,7 +9,7 @@ import config from '../../config'
 export default function DeployRouterConfig({
   onNewConfig
 }: {
-  onNewConfig: (hash: string, chainId: number, notSavedInStorage?: boolean) => void
+  onNewConfig: (hash: string, chainId: number, saveInStorage?: boolean) => void
 }) {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -47,10 +47,8 @@ export default function DeployRouterConfig({
   }
 
   return (
-    <>
-      <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
-        {t('deployRouterConfig')}
-      </ButtonPrimary>
-    </>
+    <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
+      {t('deployRouterConfig')}
+    </ButtonPrimary>
   )
 }

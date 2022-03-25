@@ -5,6 +5,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
+import { useRouterConfigContract } from '../../hooks/useContract'
 import DeployCrosschainToken from './DeployCrosschainToken'
 import DeployRouter from './DeployRouter'
 import DeployRouterConfig from './DeployRouterConfig'
@@ -71,6 +72,8 @@ export default function Contracts() {
     routerAddress: stateRouterAddress
   } = useAppState()
 
+  const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
+
   const [message, setMessage] = useState<
     | {
         content: string
@@ -115,17 +118,18 @@ export default function Contracts() {
     }
   }
 
+  const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
 
   useEffect(() => {
     if (chainId !== undefined && stateRouterAddress[chainId]) {
+      setRouterChainId(String(chainId))
       setRouterAddress(stateRouterAddress[chainId])
     } else {
+      setRouterChainId('')
       setRouterAddress('')
     }
   }, [chainId])
-
-  const onNewRouter = (address: string) => setRouterAddress(address)
 
   const [configNetworkName, setConfigNetworkName] = useState('')
 
@@ -134,6 +138,38 @@ export default function Contracts() {
       setConfigNetworkName(chainInfo[stateRouterConfigChainId]?.name)
     }
   }, [stateRouterConfigChainId])
+
+  const setChainConfig = async (routerAddress: string, chainId: number) => {
+    if (!routerConfig || stateRouterConfigChainId !== chainId) return
+
+    try {
+      const { name } = chainInfo[chainId]
+
+      await routerConfig.setChainConfig(chainId, {
+        BlockChain: name,
+        RouterContract: routerAddress,
+        Confirmations: 3,
+        InitialHeight: 0
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const onNewRouter = (address: string, chainId: number, setInConfig?: boolean) => {
+    setRouterAddress(address)
+
+    const { name } = chainInfo[config.STORAGE_CHAIN_ID]
+
+    if (setInConfig) {
+      setChainConfig(address, chainId)
+    } else {
+      setMessage({
+        content: t('pleaseSwitchToStorageNetworkAndSaveRouter', { network: name }),
+        important: true
+      })
+    }
+  }
 
   return (
     <div>
@@ -153,42 +189,70 @@ export default function Contracts() {
           </Notice>
           <DeployRouterConfig onNewConfig={onNewConfig} />
 
-          <OptionWrapper>
-            <OptionLabel>
-              {t('configChainId')}
-              <Input
+          {chainId !== Number(routerConfigChainId) && (
+            <>
+              <OptionWrapper>
+                <OptionLabel>
+                  {t('configChainId')}
+                  <Input
+                    // disabled={pending}
+                    type="number"
+                    placeholder="0x..."
+                    onChange={event => setRouterConfigChainId(event.target.value)}
+                  />
+                  {t('configAddress')}
+                  <Input
+                    // disabled={pending}
+                    type="text"
+                    placeholder="0x..."
+                    onChange={event => setRouterConfigAddress(event.target.value)}
+                  />
+                </OptionLabel>
+              </OptionWrapper>
+              <Button
                 // disabled={pending}
-                type="number"
-                placeholder="0x..."
-                onChange={event => setRouterConfigChainId(event.target.value)}
-              />
-              {t('configAddress')}
-              <Input
-                // disabled={pending}
-                type="text"
-                placeholder="0x..."
-                onChange={event => setRouterConfigAddress(event.target.value)}
-              />
-            </OptionLabel>
-          </OptionWrapper>
-          <Button
-            // disabled={pending}
-            onClick={() => {
-              saveRouterConfig(routerConfigAddress, +routerConfigChainId)
-            }}
-          >
-            {t('saveConfig')}
-          </Button>
+                onClick={() => saveRouterConfig(routerConfigAddress, Number(routerConfigChainId))}
+              >
+                {t('saveConfig')}
+              </Button>
+            </>
+          )}
         </ZoneWrapper>
       )}
 
       {!routerAddress && (
         <ZoneWrapper blocked={!routerConfigAddress}>
           <Notice>
-            {/* {t('youNeedToHaveOneRouterForEachNetwork')} */}
-            You need to have one router for each targetnetwork.
+            {t('youNeedToDeployOnlyOneRouterConfigContract')}. {t('youCanDeployConfigToAnyNetwork')}.
+            {t('youNeedToHaveOneRouterForEachNetwork')}
           </Notice>
           <DeployRouter onNewRouter={onNewRouter} />
+
+          {chainId !== Number(routerConfigChainId) && (
+            <>
+              <OptionWrapper>
+                <OptionLabel>
+                  {t('routerChainId')}
+                  <Input
+                    // disabled={pending}
+                    type="number"
+                    placeholder="0x..."
+                    onChange={event => setRouterChainId(event.target.value)}
+                  />
+                  {t('routerAddress')}
+                  <Input
+                    // disabled={pending}
+                    type="text"
+                    placeholder="0x..."
+                    onChange={event => setRouterAddress(event.target.value)}
+                  />
+                </OptionLabel>
+              </OptionWrapper>
+              <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>
+                {t('setChainConfig')}
+              </Button>
+            </>
+          )}
         </ZoneWrapper>
       )}
 
