@@ -10,6 +10,8 @@ import { tokenBalanceList } from './actions'
 // import {useTokenBalances} from './hooks'
 
 import { useBridgeTokenList } from '../lists/hooks'
+import {useAllTransactions, isTransactionRecent} from '../transactions/hooks'
+import { TransactionDetails } from '../transactions/reducer'
 // import { isAddress } from '../../utils'
 
 import ERC20_INTERFACE from '../../constants/abis/erc20'
@@ -29,6 +31,10 @@ const limit = 80
 //   })
 // }
 
+function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+  return b.addedTime - a.addedTime
+}
+
 export default function Updater(): null {
   const { chainId, account } = useActiveReact()
   const { library } = useActiveWeb3React()
@@ -37,6 +43,17 @@ export default function Updater(): null {
   const allTokens = useBridgeTokenList('mergeTokenList', chainId)
   const rpcItem = useRpcState()
   const tokenListRef = useRef<any>(0)
+
+  const allTransactions = useAllTransactions()
+  // console.log(allTransactions)
+  const sortedRecentTransactions = useMemo(() => {
+    const txs = Object.values(allTransactions)
+    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  }, [allTransactions])
+
+  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
+  const pendingLength = pending.length
+  // const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
   
   // useEffect(() => {
   //   tokenListRef.current = {
@@ -185,7 +202,21 @@ export default function Updater(): null {
     if (account) tokenListRef.current = 0
   }, [account])
 
-  useInterval(getAllBalance, 1000 * 20)
+  // console.log(pending)
+  // console.log(pendingLength)
+  useEffect(() => {
+    // console.log('pendingLength')
+    if (
+      chainId
+      && !isNaN(chainId)
+      && account
+      && calls.length > 0
+    ) {
+      getAllBalance()
+    }
+  }, [pendingLength])
+
+  useInterval(getAllBalance, 1000 * 60 * 10)
 
   return null
 }

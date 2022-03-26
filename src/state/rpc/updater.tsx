@@ -42,7 +42,7 @@ function getRpcInfo (rpc:any) {
     }).catch((err:any) => {
       console.error(err)
       data.status = 'Error'
-      resolve(data)
+      // resolve(data)
     })
   })
 }
