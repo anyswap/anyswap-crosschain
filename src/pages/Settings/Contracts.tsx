@@ -220,7 +220,7 @@ export default function Contracts() {
         </ZoneWrapper>
       )}
 
-      {!routerAddress && (
+      {(!routerAddress || true) && (
         <ZoneWrapper blocked={!routerConfigAddress}>
           <Notice>
             {t('youNeedToDeployOnlyOneRouterConfigContract')}. {t('youCanDeployConfigToAnyNetwork')}.

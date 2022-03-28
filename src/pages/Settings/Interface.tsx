@@ -8,6 +8,7 @@ import {
   useAppState
 } from '../../state/application/hooks'
 import { ButtonPrimary } from '../../components/Button'
+import Accordion from '../../components/Accordion'
 import ColorSelector from '../../components/ColorSelector'
 import InputPanel from '../../components/InputPanel'
 import Toggle from '../../components/Toggle'
@@ -195,41 +196,43 @@ export default function Interface() {
         <Toggle isActive={disableSourceCopyright} toggle={() => setDisableSourceCopyright(prevState => !prevState)} />
       </OptionWrapper>
 
-      <OptionWrapper margin={0.5}>
-        <ColorSelector
-          name={t('primaryColor')}
-          defaultColor={stateBrandColor}
-          onColor={color => updateColor(color, ColorType.BRAND)}
-        />
-      </OptionWrapper>
+      <Accordion title={t('colors')} margin="0 0 1rem">
+        <OptionWrapper margin={0.5}>
+          <ColorSelector
+            name={t('primaryColor')}
+            defaultColor={stateBrandColor}
+            onColor={color => updateColor(color, ColorType.BRAND)}
+          />
+        </OptionWrapper>
 
-      <OptionWrapper margin={0.5}>
-        <h4>{t('backgroundColor')}</h4>
-        <ColorSelector
-          name={t('light')}
-          defaultColor={backgroundColorLight}
-          onColor={color => updateColor(color, ColorType.BACKGROUND_LIGHT)}
-        />
-        <ColorSelector
-          name={t('dark')}
-          defaultColor={backgroundColorDark}
-          onColor={color => updateColor(color, ColorType.BACKGROUND_DARK)}
-        />
-      </OptionWrapper>
+        <OptionWrapper margin={0.5}>
+          <h4>{t('backgroundColor')}</h4>
+          <ColorSelector
+            name={t('light')}
+            defaultColor={backgroundColorLight}
+            onColor={color => updateColor(color, ColorType.BACKGROUND_LIGHT)}
+          />
+          <ColorSelector
+            name={t('dark')}
+            defaultColor={backgroundColorDark}
+            onColor={color => updateColor(color, ColorType.BACKGROUND_DARK)}
+          />
+        </OptionWrapper>
 
-      <OptionWrapper margin={0.5}>
-        <h4>{t('elementsColor')}</h4>
-        <ColorSelector
-          name={t('light')}
-          defaultColor={elementsColorLight}
-          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_LIGHT)}
-        />
-        <ColorSelector
-          name={t('dark')}
-          defaultColor={elementsColorDark}
-          onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_DARK)}
-        />
-      </OptionWrapper>
+        <OptionWrapper margin={0.5}>
+          <h4>{t('elementsColor')}</h4>
+          <ColorSelector
+            name={t('light')}
+            defaultColor={elementsColorLight}
+            onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_LIGHT)}
+          />
+          <ColorSelector
+            name={t('dark')}
+            defaultColor={elementsColorDark}
+            onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_DARK)}
+          />
+        </OptionWrapper>
+      </Accordion>
 
       <ButtonPrimary onClick={saveSettings} disabled={!settingsChanged || !isValidLogo} fullWidth>
         {t('saveSettings')}

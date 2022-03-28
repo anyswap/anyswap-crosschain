@@ -10,6 +10,7 @@ import { useAppState } from '../../state/application/hooks'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { deployInfinityERC20, deployCrosschainERC20 } from '../../utils/contract'
 import { OptionWrapper, OptionLabel, Input, Button } from './Contracts'
+import Accordion from '../../components/Accordion'
 
 enum Direction {
   from,
@@ -40,10 +41,7 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
   const { routerConfigChainId, routerConfigAddress } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
 
-  const [deployNewErc20] = useState(
-    process.env.NODE_ENV === 'development'
-    // && false
-  )
+  const [deployNewErc20] = useState(process.env.NODE_ENV === 'development' && false)
   const [pending, setPending] = useState(false)
 
   const [underlying, setUnderlying] = useState('')
@@ -314,104 +312,108 @@ export default function DeployCrosschainToken({ routerAddress }: { routerAddress
         {t('deployCrossChainToken')}
       </Button>
 
-      <OptionWrapper>
-        <OptionLabel>
-          {/* {t('')} */}
-          ID of the crosschain token network
-          <Input
-            disabled={pending}
-            defaultValue={crosschainTokenChainId}
-            type="number"
-            onChange={event => setCrosschainTokenChainId(Number(event.target.value))}
-          />
-        </OptionLabel>
-      </OptionWrapper>
-      <OptionWrapper>
-        <OptionLabel>
-          {/* {t('')} */}
-          Crosschain token address
-          <Input
-            disabled={pending}
-            defaultValue={crosschainTokenAddress}
-            type="text"
-            placeholder="0x123..."
-            onChange={event => setCrosschainTokenAddress(event.target.value)}
-          />
-        </OptionLabel>
-      </OptionWrapper>
-      <Button disabled={!underlyingName || !chainId || !decimals || pending} onClick={setTokenConfig}>
-        {t('setTokenConfig')}
-      </Button>
-
-      <OptionWrapper>
+      <Accordion title={t('Token config')} margin="0.5rem 0">
         <OptionWrapper>
           <OptionLabel>
             {/* {t('')} */}
-            Minimum swap amount
-            <Input defaultValue={minimumSwap} type="number" onChange={event => setMinimumSwap(event.target.value)} />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <OptionWrapper>
-          <OptionLabel>
-            {/* {t('')} */}
-            Maximum swap amount
-            <Input defaultValue={maximumSwap} type="number" onChange={event => setMaximumSwap(event.target.value)} />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <OptionWrapper>
-          <OptionLabel>
-            {/* {t('')} */}
-            Minimum swap fee
+            ID of the crosschain token network
             <Input
-              defaultValue={minimumSwapFee}
+              disabled={pending}
+              defaultValue={crosschainTokenChainId}
               type="number"
-              onChange={event => setMinimumSwapFee(event.target.value)}
+              onChange={event => setCrosschainTokenChainId(Number(event.target.value))}
             />
           </OptionLabel>
         </OptionWrapper>
-
         <OptionWrapper>
           <OptionLabel>
             {/* {t('')} */}
-            Maximum swap fee
+            Crosschain token address
             <Input
-              defaultValue={maximumSwapFee}
-              type="number"
-              onChange={event => setMaximumSwapFee(event.target.value)}
+              disabled={pending}
+              defaultValue={crosschainTokenAddress}
+              type="text"
+              placeholder="0x123..."
+              onChange={event => setCrosschainTokenAddress(event.target.value)}
             />
           </OptionLabel>
         </OptionWrapper>
-
-        <OptionWrapper>
-          <OptionLabel>
-            {/* {t('')} */}
-            Big value threshold (what is this and how does it affect the swap?)
-            <Input
-              defaultValue={bigValueThreshold}
-              type="number"
-              onChange={event => setBigValueThreshold(event.target.value)}
-            />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <OptionWrapper>
-          <OptionLabel>
-            {/* {t('')} */}
-            Swap fee rate per million (what is this?)
-            <Input
-              defaultValue={swapFeeRatePerMillion}
-              type="number"
-              onChange={event => setSwapFeeRatePerMillion(event.target.value)}
-            />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <Button disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
-          {t('setSwapConfig')}
+        <Button disabled={!underlyingName || !chainId || !decimals || pending} onClick={setTokenConfig}>
+          {t('setTokenConfig')}
         </Button>
-      </OptionWrapper>
+      </Accordion>
+
+      <Accordion title={t('Swap config')} margin="0 0 0.5rem">
+        <OptionWrapper>
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Minimum swap amount
+              <Input defaultValue={minimumSwap} type="number" onChange={event => setMinimumSwap(event.target.value)} />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Maximum swap amount
+              <Input defaultValue={maximumSwap} type="number" onChange={event => setMaximumSwap(event.target.value)} />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Minimum swap fee
+              <Input
+                defaultValue={minimumSwapFee}
+                type="number"
+                onChange={event => setMinimumSwapFee(event.target.value)}
+              />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Maximum swap fee
+              <Input
+                defaultValue={maximumSwapFee}
+                type="number"
+                onChange={event => setMaximumSwapFee(event.target.value)}
+              />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Big value threshold (what is this and how does it affect the swap?)
+              <Input
+                defaultValue={bigValueThreshold}
+                type="number"
+                onChange={event => setBigValueThreshold(event.target.value)}
+              />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            <OptionLabel>
+              {/* {t('')} */}
+              Swap fee rate per million (what is this?)
+              <Input
+                defaultValue={swapFeeRatePerMillion}
+                type="number"
+                onChange={event => setSwapFeeRatePerMillion(event.target.value)}
+              />
+            </OptionLabel>
+          </OptionWrapper>
+
+          <Button disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
+            {t('setSwapConfig')}
+          </Button>
+        </OptionWrapper>
+      </Accordion>
     </>
   )
 }
