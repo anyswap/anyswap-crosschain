@@ -464,6 +464,7 @@ export default function CrossChain({
       const arr = []
       for (const c in selectCurrency?.destChains) {
         if (c?.toString() === useChainId?.toString()) continue
+        if (c?.toString() !== config.getCurChainInfo(c).chainID?.toString()) continue
         arr.push(c)
       }
       let useChain:any = selectChain ? selectChain : config.getCurChainInfo(useChainId).bridgeInitChain

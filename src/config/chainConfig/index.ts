@@ -36,6 +36,7 @@ import clv, {CLV_MAIN_CHAINID} from'./clv'
 import crab, {CRAB_MAIN_CHAINID} from './crab'
 import milkada, {MIKO_MAIN_CHAINID} from './milkada'
 import rei, {REI_MAIN_CHAINID} from './rei'
+import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -81,6 +82,7 @@ export const chainInfo:ConFig = {
   ...crab,
   ...milkada,
   ...rei,
+  ...rbtc,
 }
 
 const allChainList = [
@@ -116,6 +118,7 @@ const allChainList = [
   CRAB_MAIN_CHAINID,
   MIKO_MAIN_CHAINID,
   REI_MAIN_CHAINID,
+  RBTC_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
