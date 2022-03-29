@@ -5,12 +5,14 @@ import { useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveReact } from '../../hooks/useActiveReact'
-import { tryParseAmount5 } from '../swap/hooks'
+import { tryParseAmount5,tryParseAmount6 } from '../swap/hooks'
 // import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 import { AppState } from '../index'
+
+import {useToken} from '../../hooks/Tokens'
 // import { tokenBalanceList } from './actions'
 
 /**
@@ -189,9 +191,11 @@ export function useTokenBalanceList(): any {
         const list:any = {}
         for (const token in lists[account][chainId]) {
           const obj = lists[account][chainId][token]
+          // const amount = obj.balancestr ? JSBI.BigInt(obj.balancestr.toString()) : undefined
           list[token] = {
             ...obj,
             balances: tryParseAmount5(obj.balancestr, obj.dec)
+            // balances: amount
           }
         }
         return list
@@ -205,6 +209,7 @@ export function useTokenBalanceList(): any {
 export function useOneTokenBalance(token:any): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
+  const tokens = useToken(token)
   // console.log(lists)
   // console.log(tryParseAmount5('100', 6))
   // console.log(tryParseAmount5('100', 6).toSignificant(3))
@@ -212,15 +217,27 @@ export function useOneTokenBalance(token:any): any {
     if (chainId && account && lists && token) {
       if (lists[account] && lists[account][chainId] && lists[account][chainId][token]) {
         const blItem = lists[account][chainId][token]
+        if (token === 'NATIVE') {
+          return {
+            ...blItem,
+            balances: tryParseAmount6(blItem.balancestr)
+          }
+        }
+        
+        const tokens = new Token(chainId,token,blItem.dec)
+        const amount = blItem.balancestr ? JSBI.BigInt(blItem.balancestr.toString()) : undefined
         return {
           ...blItem,
-          balances: tryParseAmount5(blItem.balancestr, blItem.dec)
+          balances1: tryParseAmount6(blItem.balancestr),
+          balances2: tryParseAmount5(blItem.balancestr, blItem.dec),
+          // balances: tryParseAmount5(blItem.balancestr, blItem.dec),
+          balances: tokens && amount ? new TokenAmount(tokens, amount) : ''
         }
       }
       return {}
     }
     return {}
-  }, [lists, chainId, account, token])
+  }, [lists, chainId, account, token, tokens])
 }
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[],
@@ -345,6 +362,7 @@ export function useCurrencyBalance(account?: string, currency?: Currency, chainI
   // const balances = useTokenBalanceList()
   const balanceWallet  = useCurrencyBalances(account, [currency], chainId, isETH)[0]
   const blItem = useOneTokenBalance(currency?.address?.toLowerCase())
+  // console.log(currency)
   return useMemo(() => {
     if (chainId || balanceWallet) {
       return balanceWallet

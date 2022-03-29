@@ -447,7 +447,7 @@ export default function CrossChain() {
       if (selectCurrency) {
         const arr = []
         for (const c in selectCurrency?.destChains) {
-          if (c?.toString() === chainId?.toString()) continue
+          if (c?.toString() === chainId?.toString() || !config.chainInfo[c]) continue
           arr.push(c)
         }
         // console.log(arr)

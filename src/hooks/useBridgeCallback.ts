@@ -717,6 +717,7 @@ export function useBridgeNativeCallback(
                     txReceipt = hash && hash.toString().indexOf('0x') === 0 ? {hash} : ''
                   }
                 } else {
+                  console.log(toChainID)
                   if (toChainID && isNaN(toChainID)) {
                     if (contractBTC) {
                       txReceipt = await contractBTC.Swapout(`0x${inputAmount.raw.toString(16)}`, toAddress)

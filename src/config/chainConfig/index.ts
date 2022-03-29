@@ -39,6 +39,7 @@ import xrp, {XRP_MAIN_CHAINID} from './xrp'
 import milkada, {MIKO_MAIN_CHAINID} from './milkada'
 import rei, {REI_MAIN_CHAINID} from './rei'
 import cfx, {CFX_MAIN_CHAINID} from './cfx'
+import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -87,6 +88,7 @@ export const chainInfo:ConFig = {
   ...milkada,
   ...rei,
   ...cfx,
+  ...rbtc,
 }
 const allChainList = [
   ETH_MAIN_CHAINID,
@@ -122,6 +124,7 @@ const allChainList = [
   MIKO_MAIN_CHAINID,
   REI_MAIN_CHAINID,
   CFX_MAIN_CHAINID,
+  RBTC_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 

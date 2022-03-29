@@ -137,9 +137,10 @@ export default function Updater(): null {
     return new Promise(resolve => {
       if (account) {
         
-        const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
-        const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
-        const contract = getContract({rpc: rpc, abi: '', provider: provider})
+        // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
+        // const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
+        const provider = library ? library?.provider : ''
+        const contract = getContract({rpc: '', abi: '', provider: provider})
         // console.log(rpcItem)
         contract.options.address = config.getCurChainInfo(chainId).multicalToken
         contract.methods.getEthBalance(account).call((err:any, res:any) => {

@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const CRO_MAIN_CHAINID = ChainId.CRO
 // export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://cronode1.anyswap.exchange')
-export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://evm-cronos.crypto.org')
+export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://evm.cronos.org')
 export const CRO_MAIN_EXPLORER = 'https://cronoscan.com'
 
 export const tokenList = []

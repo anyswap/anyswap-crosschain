@@ -47,4 +47,5 @@ export enum ChainId {
   MIKO = '2001',
   REI = '47805',
   CFX = '1030',
+  RBTC = '30',
 }

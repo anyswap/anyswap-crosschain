@@ -95,6 +95,7 @@ export function useDestChainid (
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
+        // if (c?.toString() === useChainId?.toString() || !config.chainInfo[c]) continue
         if (c?.toString() === useChainId?.toString()) continue
         arr.push(c)
       }

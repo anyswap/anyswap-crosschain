@@ -189,6 +189,9 @@ export default function CrossChain({
           setBridgeAnyToken(selectCurrency?.underlying?.address)
           return selectCurrency?.underlying?.address
         }
+        if (selectCurrency.symbol === 'PRQ') {
+          setBridgeAnyToken(selectCurrency?.underlying?.address)
+        }
         // setBridgeAnyToken('')
         return undefined
       }
