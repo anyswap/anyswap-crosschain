@@ -4,13 +4,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouterConfig } from '../../utils/contract'
 import { ButtonPrimary } from '../../components/Button'
-import config from '../../config'
 
-export default function DeployRouterConfig({
-  onNewConfig
-}: {
-  onNewConfig: (hash: string, chainId: number, saveInStorage?: boolean) => void
-}) {
+export default function DeployRouterConfig() {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -30,11 +25,10 @@ export default function DeployRouterConfig({
           console.log('hash: ', hash)
         },
         onDeployment: (contractAddress: string, chainId: number, hash: string) => {
-          onNewConfig(contractAddress, chainId, currentChainId === config.STORAGE_CHAIN_ID)
           addTransaction(
             { hash },
             {
-              summary: `Deployment: chain ${chainId}; router config ${contractAddress}`
+              summary: `Deployment: chain ${chainId}; CONFIG ${contractAddress}`
             }
           )
         }
@@ -48,7 +42,7 @@ export default function DeployRouterConfig({
 
   return (
     <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
-      {t('deployRouterConfig')}
+      {t('deployConfig')}
     </ButtonPrimary>
   )
 }

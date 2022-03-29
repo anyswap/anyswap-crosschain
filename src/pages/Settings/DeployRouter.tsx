@@ -8,11 +8,7 @@ import { ButtonPrimary } from '../../components/Button'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 
-export default function DeployRouter({
-  onNewRouter
-}: {
-  onNewRouter: (address: string, chainId: number, setInConfig?: boolean) => void
-}) {
+export default function DeployRouter() {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -44,11 +40,10 @@ export default function DeployRouter({
           console.log('router hash: ', hash)
         },
         onDeployment: (contractAddress: string, chainId: number, hash: string) => {
-          onNewRouter(contractAddress, chainId, currentChainId === routerConfigChainId)
           addTransaction(
             { hash },
             {
-              summary: `Deployment: chain ${chainId}; router ${contractAddress}`
+              summary: `Deployment: chain ${chainId}; ROUTER ${contractAddress}`
             }
           )
         },
