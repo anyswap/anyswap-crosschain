@@ -149,7 +149,12 @@ export default function App() {
                   <Route exact strict path="/pool/add" component={Pools} />
                   <Route exact strict path="/cross-chain-txns" component={CrossChainTxns} />
                   <Route exact strict path="/approvals" component={QueryNonApprove} />
-                  <Route path="/settings" component={appManagement ? Settings : undefined} />
+                  <Route
+                    path="/settings"
+                    component={({ match }: { match: { path: string } }) =>
+                      appManagement || match.path === '/settings' ? <Settings /> : null
+                    }
+                  />
                   <Redirect to={{ pathname: initUrl }} />
                 </Switch>
               </Web3ReactManager>

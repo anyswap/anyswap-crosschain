@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
@@ -57,9 +58,10 @@ const ZoneWrapper = styled.div<{ blocked?: boolean }>`
       : ''}
 `
 
-const ConfigInfo = styled.span`
-  padding: 0.2rem;
-  border: 1px solid green;
+const ConfigInfo = styled.p`
+  margin: 0 0 0.5rem;
+  padding: 0;
+  font-weight: 500;
 `
 
 export const Button = styled.button`
@@ -81,7 +83,8 @@ export default function Contracts() {
     routerAddress: stateRouterAddress
   } = useAppState()
 
-  const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
+  const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
+  const routerConfigSigner = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
 
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
@@ -117,13 +120,13 @@ export default function Contracts() {
     }
   }, [chainId])
 
-  const setChainConfig = async (routerAddress: string, chainId: number) => {
-    if (!routerConfig || stateRouterConfigChainId !== chainId) return
+  const setChainConfig = async (routerAddress: string, routerChainId: number) => {
+    if (!chainId || !routerConfigSigner || stateRouterConfigChainId !== chainId) return
 
     try {
       const { name } = chainInfo[chainId]
 
-      await routerConfig.setChainConfig(chainId, {
+      await routerConfigSigner.setChainConfig(routerChainId, {
         BlockChain: name,
         RouterContract: routerAddress,
         Confirmations: 3,
@@ -162,7 +165,7 @@ export default function Contracts() {
         setUnderlyingDecimals(decimals)
 
         if (routerConfig) {
-          const tokenConfig = await routerConfig.getTokenConfig(name, chainId)
+          const tokenConfig = await routerConfig.methods.getTokenConfig(name, chainId).call()
 
           if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
             setCrosschainTokenChainId(chainId)
@@ -180,12 +183,12 @@ export default function Contracts() {
   }, [underlyingToken, chainId])
 
   const setTokenConfig = async () => {
-    if (!routerConfig || !underlyingName) return
+    if (!routerConfigSigner || !underlyingName) return
 
     const VERSION = 6
 
     try {
-      await routerConfig.setTokenConfig(underlyingName, crosschainTokenChainId, {
+      await routerConfigSigner.setTokenConfig(underlyingName, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
@@ -232,26 +235,46 @@ export default function Contracts() {
         </ZoneWrapper>
       )}
 
-      {!routerAddress && (
-        <ZoneWrapper blocked={!routerConfigAddress}>
-          <Notice>{t('youNeedToHaveOneRouterForEachNetwork')}</Notice>
-          <DeployRouter />
+      <ZoneWrapper blocked={!routerConfigAddress}>
+        {chainId && !stateRouterAddress[chainId] && (
+          <>
+            <Notice>{t('youNeedToHaveOneRouterForEachNetwork')}</Notice>
+            <DeployRouter />
+          </>
+        )}
 
-          <OptionWrapper>
-            {t('afterRouterDeploymentFillTheseInputsAndSaveInfo')}
-            <OptionLabel>
-              {t('routerChainId')}
-              <Input type="number" placeholder="0x..." onChange={event => setRouterChainId(event.target.value)} />
-              {t('routerAddress')}
-              <Input type="text" placeholder="0x..." onChange={event => setRouterAddress(event.target.value)} />
-            </OptionLabel>
-          </OptionWrapper>
-          <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>{t('setChainConfig')}</Button>
-        </ZoneWrapper>
-      )}
+        {/* 
+          TODO: block these inputs and show a notification if we're not on the config network
+          TODO: block these inputs if we have router for this network
+        */}
+        <OptionWrapper>
+          {t('afterRouterDeploymentFillTheseInputsAndSaveInfo')}
+          <OptionLabel>
+            {t('routerChainId')}
+            <Input
+              type="number"
+              min="1"
+              step="1"
+              placeholder="0x..."
+              onChange={event => setRouterChainId(event.target.value)}
+            />
+            {t('routerAddress')}
+            <Input type="text" placeholder="0x..." onChange={event => setRouterAddress(event.target.value)} />
+          </OptionLabel>
+        </OptionWrapper>
+        <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>{t('setChainConfig')}</Button>
+      </ZoneWrapper>
 
       <ZoneWrapper blocked={!routerConfigAddress || !routerAddress}>
         <Notice>{t('youNeedToDeployCrosschainTokenForEachSourceTokenOnEachNetwork')}</Notice>
+
+        <OptionWrapper>
+          <OptionLabel>
+            {t('erc20TokenAddress')}
+            <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
+          </OptionLabel>
+        </OptionWrapper>
+
         <DeployCrosschainToken
           routerAddress={routerAddress}
           underlying={{
@@ -262,19 +285,18 @@ export default function Contracts() {
           }}
         />
 
-        <Accordion title={t('Token config')} margin="0.5rem 0">
-          <OptionWrapper>
-            <OptionLabel>
-              {t('erc20TokenAddress')}
-              <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
-            </OptionLabel>
-          </OptionWrapper>
+        {/* 
+          TODO: block these inputs and show a notification if we're not on the config network
+        */}
+        <Accordion title={t('tokenConfig')} margin="0.5rem 0">
           <OptionWrapper>
             <OptionLabel>
               {t('idOfCrosschainTokenNetwork')}
               <Input
                 defaultValue={crosschainTokenChainId}
                 type="number"
+                min="1"
+                step="1"
                 onChange={event => setCrosschainTokenChainId(Number(event.target.value))}
               />
             </OptionLabel>
@@ -292,9 +314,7 @@ export default function Contracts() {
           </OptionWrapper>
           <Button onClick={setTokenConfig}>{t('setTokenConfig')}</Button>
         </Accordion>
-      </ZoneWrapper>
 
-      <ZoneWrapper>
         <SwapSettings
           underlying={{
             address: underlyingToken,

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 import AppBody from '../AppBody'
+import { useAppState } from '../../state/application/hooks'
 import { MyBalanceBox } from '../Dashboard/styleds'
 import Interface from './Interface'
 import Contracts from './Contracts'
@@ -68,9 +69,10 @@ const Content = styled.div`
 
 export default function Settings() {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const [tabs, setTabs] = useState<string[]>([])
   const [tab, setTab] = useState('interface')
+  const { owner } = useAppState()
 
   useEffect(() => {
     if (chainId === config.STORAGE_CHAIN_ID) {
@@ -82,7 +84,13 @@ export default function Settings() {
     }
   }, [chainId])
 
-  return (
+  const [isOwner, setIsOwner] = useState<boolean>(!owner || account?.toLowerCase() === owner?.toLowerCase())
+
+  useEffect(() => {
+    setIsOwner(!owner || account?.toLowerCase() === owner?.toLowerCase())
+  }, [account, owner])
+
+  return isOwner ? (
     <AppBody>
       <SettingsWrapper>
         {tabs.length > 1 ? (
@@ -100,5 +108,5 @@ export default function Settings() {
         </Content>
       </SettingsWrapper>
     </AppBody>
-  )
+  ) : null
 }

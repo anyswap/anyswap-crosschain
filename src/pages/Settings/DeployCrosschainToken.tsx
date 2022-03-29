@@ -29,6 +29,7 @@ export default function DeployCrosschainToken({
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
   const { routerConfigChainId, routerConfigAddress } = useAppState()
+
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
 
   const [pending, setPending] = useState(false)
@@ -63,7 +64,8 @@ export default function DeployCrosschainToken({
         //@ts-ignore
         const contract = new web3.eth.Contract(ERC20_ABI, underlying.address)
         const name = await contract.methods.name().call()
-        const tokenConfig = await routerConfig.getTokenConfig(name, chainId)
+
+        const tokenConfig = await routerConfig.methods.getTokenConfig(name, chainId).call()
 
         if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
           setCrosschainTokenAddress(tokenConfig.ContractAddress)
@@ -88,10 +90,10 @@ export default function DeployCrosschainToken({
         chainId,
         library,
         account,
-        name: underlying.address,
-        symbol: underlying.symbol,
-        decimals: underlying.decimals,
         underlying: underlying.address,
+        name: `Crosschain${underlying.name}`,
+        symbol: `CC${underlying.symbol}`,
+        decimals: underlying.decimals,
         vault,
         minter,
         onDeployment: ({
@@ -144,26 +146,13 @@ export default function DeployCrosschainToken({
 
   return (
     <>
-      {/* {deployNewErc20 && (
-        <OptionWrapper>
-          {t('newERC20')} ({t('optional')})
-          <Input
-            defaultValue={testERC20Name}
-            type="text"
-            placeholder="Name"
-            onChange={event => setTestERC20Name(event.target.value)}
-          />
-          <Input
-            defaultValue={testERC20Symbol}
-            type="text"
-            placeholder="Symbol"
-            onChange={event => setTestERC20Symbol(event.target.value)}
-          />
-          <Button disabled={!(testERC20Name && testERC20Symbol) || pending} onClick={onInfinityERC20Deployment}>
-            {t('deployInfinityERC20')}
-          </Button>
-        </OptionWrapper>
-      )} */}
+      {/* <p>
+        {t('newERC20')}
+        <input type="text" placeholder="Token name" onChange={event => setTestERC20Name(event.target.value)} />
+        <input type="text" placeholder="Token symbol" onChange={event => setTestERC20Symbol(event.target.value)} />
+        <button onClick={onInfinityERC20Deployment}>Deploy ERC20</button>
+      </p> */}
+
       <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
       </Button>

@@ -46,7 +46,8 @@ export default function SwapSettings({
   const { t } = useTranslation()
   // const addTransaction = useTransactionAdder()
   const { routerConfigChainId, routerConfigAddress } = useAppState()
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
+  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
+  const routerConfigSigner = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
   const [pending, setPending] = useState(false)
 
   /* 
@@ -94,7 +95,7 @@ export default function SwapSettings({
           SwapFeeRatePerMillion,
           MaximumSwapFee,
           MinimumSwapFee
-        } = await routerConfig.getSwapConfig(underlying.name, chainId)
+        } = await routerConfig.methods.getSwapConfig(underlying.name, chainId).call()
 
         setMinimumSwap(formatAmount(MinimumSwap.toString(), Direction.from))
         setMaximumSwap(formatAmount(MaximumSwap.toString(), Direction.from))
@@ -109,12 +110,12 @@ export default function SwapSettings({
   }, [underlying, chainId])
 
   const setSwapConfig = async () => {
-    if (!routerConfig || !canSetSwapConfig) return
+    if (!routerConfigSigner || !canSetSwapConfig) return
 
     setPending(true)
 
     try {
-      const result = await routerConfig.setSwapConfig(underlying.name, chainId, {
+      const result = await routerConfigSigner.setSwapConfig(underlying.name, chainId, {
         MinimumSwap: formatAmount(minimumSwap, Direction.to),
         MaximumSwap: formatAmount(maximumSwap, Direction.to),
         MinimumSwapFee: formatAmount(minimumSwapFee, Direction.to),
@@ -146,14 +147,25 @@ export default function SwapSettings({
         <OptionWrapper>
           <OptionLabel>
             {t('minimumSwapAmount')}
-            <Input defaultValue={minimumSwap} type="number" onChange={event => setMinimumSwap(event.target.value)} />
+            <Input
+              defaultValue={minimumSwap}
+              type="number"
+              min="0.00000001"
+              onChange={event => setMinimumSwap(event.target.value)}
+              required
+            />
           </OptionLabel>
         </OptionWrapper>
 
         <OptionWrapper>
           <OptionLabel>
             {t('maximumSwapAmount')}
-            <Input defaultValue={maximumSwap} type="number" onChange={event => setMaximumSwap(event.target.value)} />
+            <Input
+              defaultValue={maximumSwap}
+              type="number"
+              min="0.00000001"
+              onChange={event => setMaximumSwap(event.target.value)}
+            />
           </OptionLabel>
         </OptionWrapper>
 
@@ -163,6 +175,7 @@ export default function SwapSettings({
             <Input
               defaultValue={minimumSwapFee}
               type="number"
+              min="0"
               onChange={event => setMinimumSwapFee(event.target.value)}
             />
           </OptionLabel>
@@ -174,6 +187,7 @@ export default function SwapSettings({
             <Input
               defaultValue={maximumSwapFee}
               type="number"
+              min="0"
               onChange={event => setMaximumSwapFee(event.target.value)}
             />
           </OptionLabel>
@@ -185,6 +199,7 @@ export default function SwapSettings({
             <Input
               defaultValue={bigValueThreshold}
               type="number"
+              min="0"
               onChange={event => setBigValueThreshold(event.target.value)}
             />
           </OptionLabel>
@@ -196,6 +211,7 @@ export default function SwapSettings({
             <Input
               defaultValue={swapFeeRatePerMillion}
               type="number"
+              min="0"
               onChange={event => setSwapFeeRatePerMillion(event.target.value)}
             />
           </OptionLabel>
