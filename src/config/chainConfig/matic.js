@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const MATIC_MAIN_CHAINID = 137
+export const MATIC_MAIN_CHAINID = ChainId.MATIC
 // export const MATIC_MAINNET = 'https://rpc-mainnet.maticvigil.com'
 // export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? 'https://rpc-mainnet.maticvigil.com' : 'https://maticnode1.anyswap.exchange'
 export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(MATIC_MAIN_CHAINID, 'https://polygon-rpc.com/') : getLocalRPC(MATIC_MAIN_CHAINID, 'https://maticnode1.anyswap.exchange')
@@ -56,6 +57,12 @@ const bridgeToken = {
     bridgeInitChain: '56',
     nativeToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     crossBridgeInitToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
+  },
+  [VERSION.V6_1]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '250',
+    nftInitToken: '0x231e9a191598b7eba9c374118c9abcf6d2ba41df',
+    crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
     bridgeInitToken: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',

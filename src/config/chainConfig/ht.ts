@@ -1,11 +1,12 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const HT_MAIN_CHAINID = 128
+export const HT_MAIN_CHAINID = ChainId.HT
 export const HT_MAINNET = getLocalRPC(HT_MAIN_CHAINID, 'https://http-mainnet.hecochain.com')
 export const HT_MAIN_EXPLORER = 'https://hecoinfo.com/'
 
-export const HT_TEST_CHAINID = 256
+export const HT_TEST_CHAINID = ChainId.HT_TEST
 export const HT_TESTNET = getLocalRPC(HT_TEST_CHAINID, 'https://http-testnet.hecochain.com')
 export const HT_TEST_EXPLORER = 'https://testnet.hecoinfo.com'
 
@@ -143,7 +144,7 @@ export const testTokenList = [
 
 const symbol = 'HT'
 
-const bridgeToken = {
+const bridgeToken:any = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeInitChain: '',

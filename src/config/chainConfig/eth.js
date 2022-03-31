@@ -1,17 +1,18 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 const navLang = navigator.language
 
-export const ETH_MAIN_CHAINID = 1
+export const ETH_MAIN_CHAINID = ChainId.ETH
 export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(ETH_MAIN_CHAINID, process.env.REACT_APP_NETWORK_URL) : getLocalRPC(ETH_MAIN_CHAINID, 'https://ethmainnet.anyswap.exchange')
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
-export const ETH_TEST_CHAINID = 4
+export const ETH_TEST_CHAINID = ChainId.RINKEBY
 export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
-export const ETH_TEST1_CHAINID = 5
+export const ETH_TEST1_CHAINID = ChainId.GOERLI
 export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
 export const ETH_TEST1_EXPLORER = 'https://goerli.etherscan.io'
 

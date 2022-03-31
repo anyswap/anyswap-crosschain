@@ -1,11 +1,12 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const OPTIMISM_MAIN_CHAINID = 10
+export const OPTIMISM_MAIN_CHAINID = ChainId.OPTIMISM
 export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, 'https://mainnet.optimism.io')
 export const OPTIMISM_MAIN_EXPLORER = 'https://optimistic.etherscan.io'
 
-export const OPTIMISM_TEST_CHAINID = 69
+export const OPTIMISM_TEST_CHAINID = ChainId.OPTIMISM_TEST
 export const OPTIMISM_TESTNET = getLocalRPC(OPTIMISM_TEST_CHAINID, 'https://kovan.optimism.io')
 export const OPTIMISM_TEST_EXPLORER = 'https://kovan-l2-explorer.surge.sh'
 

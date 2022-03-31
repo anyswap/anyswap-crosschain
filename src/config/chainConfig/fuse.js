@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const FUSE_MAIN_CHAINID = 122
+export const FUSE_MAIN_CHAINID = ChainId.FUSE
 export const FUSE_MAINNET = getLocalRPC(FUSE_MAIN_CHAINID, 'https://rpc.fuse.io')
 export const FUSE_MAIN_EXPLORER = 'https://fuse-mainnet.gateway.pokt.network'
 

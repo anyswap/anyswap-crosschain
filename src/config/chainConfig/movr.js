@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const MOVR_MAIN_CHAINID = 1285
+export const MOVR_MAIN_CHAINID = ChainId.MOVR
 export const MOVR_MAINNET = getLocalRPC(MOVR_MAIN_CHAINID, 'https://rpc.moonriver.moonbeam.network')
 export const MOVR_MAIN_EXPLORER = 'https://moonriver.moonscan.io'
 

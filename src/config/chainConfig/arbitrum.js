@@ -1,11 +1,12 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const ARBITRUM_MAIN_CHAINID = 42161
+export const ARBITRUM_MAIN_CHAINID = ChainId.ARBITRUM
 export const ARBITRUM_MAINNET = getLocalRPC(ARBITRUM_MAIN_CHAINID, 'https://arb1.arbitrum.io/rpc')
 export const ARBITRUM_MAIN_EXPLORER = 'https://arbiscan.io/'
 
-export const ARBITRUM_TEST_CHAINID = 421611
+export const ARBITRUM_TEST_CHAINID = ChainId.ARBITRUM_TEST
 export const ARBITRUM_TESTNET = getLocalRPC(ARBITRUM_TEST_CHAINID, 'https://rinkeby.arbitrum.io/rpc')
 export const ARBITRUM_TEST_EXPLORER = 'https://rinkeby-explorer.arbitrum.io/#'
 

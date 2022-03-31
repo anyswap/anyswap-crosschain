@@ -1,8 +1,9 @@
 import {formatSwapTokenList} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
 export const BTC_MAINNET = ''
-export const BTC_MAIN_CHAINID = 'BTC'
+export const BTC_MAIN_CHAINID = ChainId.BTC
 export const BTC_MAIN_EXPLORER = ''
 
 export const tokenList = [

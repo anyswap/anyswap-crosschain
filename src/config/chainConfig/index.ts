@@ -32,6 +32,14 @@ import glmr, {GLMR_MAIN_CHAINID} from './moonbeam'
 import astar, {ASTAR_MAIN_CHAINID} from './astar'
 import rose, {ROSE_MAIN_CHAINID} from './rose'
 import vlx, {VLX_MAIN_CHAINID} from './vlx'
+import clv, {CLV_MAIN_CHAINID} from'./clv'
+import crab, {CRAB_MAIN_CHAINID} from './crab'
+import nas, {NAS_MAIN_CHAINID} from './nas'
+import xrp, {XRP_MAIN_CHAINID} from './xrp'
+import milkada, {MIKO_MAIN_CHAINID} from './milkada'
+import rei, {REI_MAIN_CHAINID} from './rei'
+import cfx, {CFX_MAIN_CHAINID} from './cfx'
+import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -73,8 +81,15 @@ export const chainInfo:ConFig = {
   ...astar,
   ...rose,
   ...vlx,
+  ...clv,
+  ...crab,
+  ...nas,
+  ...xrp,
+  ...milkada,
+  ...rei,
+  ...cfx,
+  ...rbtc,
 }
-
 const allChainList = [
   ETH_MAIN_CHAINID,
   AVAX_MAIN_CHAINID,
@@ -104,6 +119,12 @@ const allChainList = [
   FUSE_MAIN_CHAINID,
   ASTAR_MAIN_CHAINID,
   VLX_MAIN_CHAINID,
+  CLV_MAIN_CHAINID,
+  CRAB_MAIN_CHAINID,
+  MIKO_MAIN_CHAINID,
+  REI_MAIN_CHAINID,
+  CFX_MAIN_CHAINID,
+  RBTC_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
@@ -192,36 +213,14 @@ const useChain:any = {
   ],
   [VERSION.V5]: [...allChainList],
   [VERSION.V6]: [
-    // ETH_MAIN_CHAINID,
-    // BNB_MAIN_CHAINID,
-    // FSN_MAIN_CHAINID,
     FTM_MAIN_CHAINID,
-    // MATIC_MAIN_CHAINID,
-    // HT_MAIN_CHAINID,
-    // AVAX_MAIN_CHAINID,
-    // XDAI_MAIN_CHAINID,
-    // // ARBITRUM_MAIN_CHAINID,
-    // KCC_MAIN_CHAINID,
-    // OKT_MAIN_CHAINID,
-    // ONE_MAIN_CHAINID,
-    // MOVR_MAIN_CHAINID,
     ETH_TEST_CHAINID
   ],
   [VERSION.V6_1]: [
     ETH_MAIN_CHAINID,
-    // BNB_MAIN_CHAINID,
-    // FSN_MAIN_CHAINID,
     FTM_MAIN_CHAINID,
-    // MATIC_MAIN_CHAINID,
-    // HT_MAIN_CHAINID,
+    MATIC_MAIN_CHAINID,
     AVAX_MAIN_CHAINID,
-    // XDAI_MAIN_CHAINID,
-    // // ARBITRUM_MAIN_CHAINID,
-    // KCC_MAIN_CHAINID,
-    // OKT_MAIN_CHAINID,
-    // ONE_MAIN_CHAINID,
-    // MOVR_MAIN_CHAINID,
-    // ETH_TEST_CHAINID
   ],
   [VERSION.V7]: [
     ...allChainList,
@@ -230,6 +229,8 @@ const useChain:any = {
     LTC_MAIN_CHAINID,
     BLOCK_MAIN_CHAINID,
     COLX_MAIN_CHAINID,
+    NAS_MAIN_CHAINID,
+    XRP_MAIN_CHAINID,
   ],
   ALL_MAIN: [
     ETH_MAIN_CHAINID,
@@ -247,7 +248,8 @@ const useChain:any = {
     MOVR_MAIN_CHAINID,
     TERRA_MAIN_CHAINID,
     AURORA_MAIN_CHAINID,
-    ASTAR_MAIN_CHAINID
+    ASTAR_MAIN_CHAINID,
+    NAS_MAIN_CHAINID
   ]
 }
 

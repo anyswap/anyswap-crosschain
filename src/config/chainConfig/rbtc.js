@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const VLX_MAIN_CHAINID = ChainId.VLX
-export const VLX_MAINNET = getLocalRPC(VLX_MAIN_CHAINID, 'https://evmexplorer.velas.com/rpc')
-export const VLX_MAIN_EXPLORER = 'https://evmexplorer.velas.com'
+export const RBTC_MAIN_CHAINID = ChainId.RBTC
+export const RBTC_MAINNET = getLocalRPC(RBTC_MAIN_CHAINID, 'https://public-node.rsk.co')
+export const RBTC_MAIN_EXPLORER = 'https://explorer.rsk.co'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'VLX'
+const symbol = 'RBTC'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -31,32 +31,33 @@ const bridgeToken = {
 }
 
 export default {
-  [VLX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + VLX_MAIN_CHAINID,
+  [RBTC_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + RBTC_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x624De1690fAf85B3B0b64d5c4ab3d9B195102e78',
+    // multicalToken: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
+    multicalToken: '0xFbdd194376de19a88118e84E279b977f165d01b8',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: VLX_MAINNET,
+    nodeRpc: RBTC_MAINNET,
     nodeRpcList: [
-      VLX_MAINNET,
+      RBTC_MAINNET,
     ],
-    chainID: VLX_MAIN_CHAINID,
-    lookHash: VLX_MAIN_EXPLORER + '/tx/',
-    lookAddr: VLX_MAIN_EXPLORER + '/address/',
-    lookBlock: VLX_MAIN_EXPLORER + '/block/',
-    explorer: VLX_MAIN_EXPLORER,
+    chainID: RBTC_MAIN_CHAINID,
+    lookHash: RBTC_MAIN_EXPLORER + '/tx/',
+    lookAddr: RBTC_MAIN_EXPLORER + '/address/',
+    lookBlock: RBTC_MAIN_EXPLORER + '/block/',
+    explorer: RBTC_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Velas',
-    networkName: 'Velas mainnet',
+    name: 'Rootstock RSK',
+    networkName: 'Rootstock RSK mainnet',
     type: 'main',
-    label: VLX_MAIN_CHAINID,
+    label: RBTC_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'VLX',
+    suffix: '',
     anyToken: ''
   },
 }

@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const METIS_MAIN_CHAINID = 1088
+export const METIS_MAIN_CHAINID = ChainId.METIS
 export const METIS_MAINNET = getLocalRPC(METIS_MAIN_CHAINID, 'https://andromeda.metis.io/?owner=1088')
 export const METIS_MAIN_EXPLORER = 'https://andromeda-explorer.metis.io'
 

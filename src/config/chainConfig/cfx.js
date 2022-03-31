@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const VLX_MAIN_CHAINID = ChainId.VLX
-export const VLX_MAINNET = getLocalRPC(VLX_MAIN_CHAINID, 'https://evmexplorer.velas.com/rpc')
-export const VLX_MAIN_EXPLORER = 'https://evmexplorer.velas.com'
+export const CFX_MAIN_CHAINID = ChainId.CFX
+export const CFX_MAINNET = getLocalRPC(CFX_MAIN_CHAINID, 'https://evm.confluxrpc.com')
+export const CFX_MAIN_EXPLORER = 'https://evm.confluxscan.io'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'VLX'
+const symbol = 'CFX'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -25,38 +25,38 @@ const bridgeToken = {
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '56',
-    nativeToken: '',
+    nativeToken: '0x14b2d3bc65e74dae1030eafd8ac30c533c976a9b',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [VLX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + VLX_MAIN_CHAINID,
+  [CFX_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + CFX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x624De1690fAf85B3B0b64d5c4ab3d9B195102e78',
+    multicalToken: '0xAe8E9F3EA6a5b462b0Ae29aa1a3F6aC072365d9d',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: VLX_MAINNET,
+    nodeRpc: CFX_MAINNET,
     nodeRpcList: [
-      VLX_MAINNET,
+      CFX_MAINNET,
     ],
-    chainID: VLX_MAIN_CHAINID,
-    lookHash: VLX_MAIN_EXPLORER + '/tx/',
-    lookAddr: VLX_MAIN_EXPLORER + '/address/',
-    lookBlock: VLX_MAIN_EXPLORER + '/block/',
-    explorer: VLX_MAIN_EXPLORER,
+    chainID: CFX_MAIN_CHAINID,
+    lookHash: CFX_MAIN_EXPLORER + '/tx/',
+    lookAddr: CFX_MAIN_EXPLORER + '/address/',
+    lookBlock: CFX_MAIN_EXPLORER + '/block/',
+    explorer: CFX_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Velas',
-    networkName: 'Velas mainnet',
+    name: 'Conflux eSpace',
+    networkName: 'Conflux eSpace mainnet',
     type: 'main',
-    label: VLX_MAIN_CHAINID,
+    label: CFX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'VLX',
+    suffix: 'CFX',
     anyToken: ''
   },
 }

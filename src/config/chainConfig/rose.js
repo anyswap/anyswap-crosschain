@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const ROSE_MAIN_CHAINID = 42262
+export const ROSE_MAIN_CHAINID = ChainId.ROSE
 export const ROSE_MAINNET = getLocalRPC(ROSE_MAIN_CHAINID, 'https://emerald.oasis.dev')
 export const ROSE_MAIN_EXPLORER = 'https://explorer.emerald.oasis.dev'
 

@@ -1,15 +1,15 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
-import {ChainId} from './chainId'
+import { ChainId } from './chainId'
 
-export const VLX_MAIN_CHAINID = ChainId.VLX
-export const VLX_MAINNET = getLocalRPC(VLX_MAIN_CHAINID, 'https://evmexplorer.velas.com/rpc')
-export const VLX_MAIN_EXPLORER = 'https://evmexplorer.velas.com'
+export const REI_MAIN_CHAINID = ChainId.REI
+export const REI_MAINNET = getLocalRPC(REI_MAIN_CHAINID, 'https://rpc-mainnet.rei.network')
+export const REI_MAIN_EXPLORER = 'https://scan.rei.network'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'VLX'
+const symbol = 'REI'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -31,32 +31,32 @@ const bridgeToken = {
 }
 
 export default {
-  [VLX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + VLX_MAIN_CHAINID,
+  [REI_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + REI_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x624De1690fAf85B3B0b64d5c4ab3d9B195102e78',
+    multicalToken: '0x9e8955847586682971a53e1a2428CA7354A655f2',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: VLX_MAINNET,
+    nodeRpc: REI_MAINNET,
     nodeRpcList: [
-      VLX_MAINNET,
+      REI_MAINNET,
     ],
-    chainID: VLX_MAIN_CHAINID,
-    lookHash: VLX_MAIN_EXPLORER + '/tx/',
-    lookAddr: VLX_MAIN_EXPLORER + '/address/',
-    lookBlock: VLX_MAIN_EXPLORER + '/block/',
-    explorer: VLX_MAIN_EXPLORER,
+    chainID: REI_MAIN_CHAINID,
+    lookHash: REI_MAIN_EXPLORER + '/tx/',
+    lookAddr: REI_MAIN_EXPLORER + '/address/',
+    lookBlock: REI_MAIN_EXPLORER + '/block/',
+    explorer: REI_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Velas',
-    networkName: 'Velas mainnet',
+    name: 'REI',
+    networkName: 'REI mainnet',
     type: 'main',
-    label: VLX_MAIN_CHAINID,
+    label: REI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'VLX',
+    suffix: 'REI',
     anyToken: ''
   },
 }

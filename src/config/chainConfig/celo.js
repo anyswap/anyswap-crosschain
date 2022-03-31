@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const CELO_MAIN_CHAINID = 42220
+export const CELO_MAIN_CHAINID = ChainId.CELO
 export const CELO_MAINNET = getLocalRPC(CELO_MAIN_CHAINID, 'https://forno.celo.org')
 export const CELO_MAIN_EXPLORER = 'https://explorer.celo.org'
 

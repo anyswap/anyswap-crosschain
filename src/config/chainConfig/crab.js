@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const GLMR_MAIN_CHAINID = ChainId.GLMR
-export const GLMR_MAINNET = getLocalRPC(GLMR_MAIN_CHAINID, 'https://rpc.api.moonbeam.network')
-export const GLMR_MAIN_EXPLORER = 'https://moonscan.io'
+export const CRAB_MAIN_CHAINID = ChainId.CRAB
+export const CRAB_MAINNET = getLocalRPC(CRAB_MAIN_CHAINID, 'http://crab-rpc.darwinia.network')
+export const CRAB_MAIN_EXPLORER = 'https://crab.subscan.io'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'GLMR'
+const symbol = 'CRAB'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -18,21 +18,21 @@ const bridgeToken = {
   },
   [VERSION.V5]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [GLMR_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + GLMR_MAIN_CHAINID,
+  [CRAB_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + CRAB_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
@@ -41,22 +41,22 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: GLMR_MAINNET,
+    nodeRpc: CRAB_MAINNET,
     nodeRpcList: [
-      GLMR_MAINNET,
+      CRAB_MAINNET,
     ],
-    chainID: GLMR_MAIN_CHAINID,
-    lookHash: GLMR_MAIN_EXPLORER + '/tx/',
-    lookAddr: GLMR_MAIN_EXPLORER + '/address/',
-    lookBlock: GLMR_MAIN_EXPLORER + '/block/',
-    explorer: GLMR_MAIN_EXPLORER,
+    chainID: CRAB_MAIN_CHAINID,
+    lookHash: CRAB_MAIN_EXPLORER + '/extrinsic/',
+    lookAddr: CRAB_MAIN_EXPLORER + '/account/',
+    lookBlock: CRAB_MAIN_EXPLORER + '/block/',
+    explorer: CRAB_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Moonbeam',
-    networkName: 'Moonbeam mainnet',
+    name: 'Darwinia Crab smart',
+    networkName: 'Darwinia Crab smart mainnet',
     type: 'main',
-    label: GLMR_MAIN_CHAINID,
+    label: CRAB_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'GLMR',
+    suffix: 'CRAB',
     anyToken: ''
   },
 }

@@ -1,14 +1,15 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const KCC_MAIN_CHAINID = 321
+export const KCC_MAIN_CHAINID = ChainId.KCC
 export const KCC_MAINNET = getLocalRPC(KCC_MAIN_CHAINID, 'https://rpc-mainnet.kcc.network')
 export const KCC_MAIN_EXPLORER = 'https://explorer.kcc.io/cn'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'KCC'
+const symbol = 'KCS'
 
 const bridgeToken = {
   [VERSION.V1]: {

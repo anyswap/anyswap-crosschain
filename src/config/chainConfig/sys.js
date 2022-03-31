@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const SYS_MAIN_CHAINID = 57
+export const SYS_MAIN_CHAINID = ChainId.SYS
 export const SYS_MAINNET = getLocalRPC(SYS_MAIN_CHAINID, 'https://rpc.syscoin.org')
 export const SYS_MAIN_EXPLORER = 'https://explorer.syscoin.org'
 

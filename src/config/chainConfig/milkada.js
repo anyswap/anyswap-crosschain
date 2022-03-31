@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const GLMR_MAIN_CHAINID = ChainId.GLMR
-export const GLMR_MAINNET = getLocalRPC(GLMR_MAIN_CHAINID, 'https://rpc.api.moonbeam.network')
-export const GLMR_MAIN_EXPLORER = 'https://moonscan.io'
+export const MIKO_MAIN_CHAINID = ChainId.MIKO
+export const MIKO_MAINNET = getLocalRPC(MIKO_MAIN_CHAINID, 'https://rpc.c1.milkomeda.com:8545')
+export const MIKO_MAIN_EXPLORER = 'https://rpc.c1.milkomeda.com:4000'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'GLMR'
+const symbol = 'milkADA'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -18,45 +18,45 @@ const bridgeToken = {
   },
   [VERSION.V5]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [GLMR_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + GLMR_MAIN_CHAINID,
+  [MIKO_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + MIKO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C',
+    multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: GLMR_MAINNET,
+    nodeRpc: MIKO_MAINNET,
     nodeRpcList: [
-      GLMR_MAINNET,
+      MIKO_MAINNET,
     ],
-    chainID: GLMR_MAIN_CHAINID,
-    lookHash: GLMR_MAIN_EXPLORER + '/tx/',
-    lookAddr: GLMR_MAIN_EXPLORER + '/address/',
-    lookBlock: GLMR_MAIN_EXPLORER + '/block/',
-    explorer: GLMR_MAIN_EXPLORER,
+    chainID: MIKO_MAIN_CHAINID,
+    lookHash: MIKO_MAIN_EXPLORER + '/tx/',
+    lookAddr: MIKO_MAIN_EXPLORER + '/address/',
+    lookBlock: MIKO_MAIN_EXPLORER + '/block/',
+    explorer: MIKO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Moonbeam',
-    networkName: 'Moonbeam mainnet',
+    name: 'Milkomeda',
+    networkName: 'Milkomeda mainnet',
     type: 'main',
-    label: GLMR_MAIN_CHAINID,
+    label: MIKO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'GLMR',
+    suffix: 'milkADA',
     anyToken: ''
   },
 }

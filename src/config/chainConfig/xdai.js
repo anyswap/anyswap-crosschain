@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const XDAI_MAIN_CHAINID = 100
+export const XDAI_MAIN_CHAINID = ChainId.XDAI
 export const XDAI_MAINNET = getLocalRPC(XDAI_MAIN_CHAINID, 'https://rpc.xdaichain.com')
 export const XDAI_MAIN_EXPLORER = 'https://blockscout.com/xdai/mainnet'
 

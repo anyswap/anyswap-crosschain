@@ -1,7 +1,8 @@
 import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {ChainId} from './chainId'
 
-export const AVAX_MAIN_CHAINID = 43114
+export const AVAX_MAIN_CHAINID = ChainId.AVAX
 export const AVAX_MAINNET = getLocalRPC(AVAX_MAIN_CHAINID, 'https://api.avax.network/ext/bc/C/rpc')
 export const AVAX_MAIN_EXPLORER = 'https://snowtrace.io'
 
