@@ -34,11 +34,7 @@ export default function DeployCrosschainToken({
   useEffect(() => setMinter(routerAddress), [routerAddress])
 
   const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
-  const [
-    ,
-    // canDeployCrosschainToken
-    setCanDeployCrosschainToken
-  ] = useState(false)
+  const [canDeployCrosschainToken, setCanDeployCrosschainToken] = useState(false)
 
   useEffect(() => {
     setCanDeployCrosschainToken(
@@ -141,13 +137,7 @@ export default function DeployCrosschainToken({
         <button onClick={onInfinityERC20Deployment}>Deploy ERC20</button>
       </p> */}
 
-      <Button
-        disabled={
-          // !canDeployCrosschainToken ||
-          pending
-        }
-        onClick={onTokenDeployment}
-      >
+      <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
       </Button>
     </>

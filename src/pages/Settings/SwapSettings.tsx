@@ -130,7 +130,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
   }
 
   return (
-    <Accordion title={t('Swap config')} margin="0 0 0.5rem">
+    <Accordion title={t('swapConfig')} margin="0 0 0.5rem">
       <OptionWrapper>
         <OptionWrapper>
           <OptionLabel>

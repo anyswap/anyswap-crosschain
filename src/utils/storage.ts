@@ -53,9 +53,10 @@ export async function updateStorageData(params: {
   provider: any
   owner: string
   onHash?: (hash: string) => void
+  onReceipt?: (receipt: object) => void
   data: { [k: string]: any }
 }) {
-  const { provider, onHash, data, owner } = params
+  const { provider, onHash, onReceipt, data, owner } = params
   const { storage: storageAddress } = chainInfo[config.STORAGE_CHAIN_ID]
 
   const web3 = new Web3(provider)
@@ -93,6 +94,9 @@ export async function updateStorageData(params: {
           .send({ from: owner })
           .on('transactionHash', (hash: string) => {
             if (typeof onHash === 'function') onHash(hash)
+          })
+          .on('receipt', (receipt: object) => {
+            if (typeof onReceipt === 'function') onReceipt(receipt)
           })
           .then(resolve)
           .catch(reject)

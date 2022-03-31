@@ -46,7 +46,6 @@ const Tab = styled.button<{ active?: boolean }>`
   flex: 1;
   cursor: pointer;
   padding: 0.4rem 0.7rem;
-  //margin: 0.1rem 0 0.4rem;
   font-size: 1em;
   border: none;
   background-color: ${({ theme, active }) => (active ? theme.bg2 : 'transparent')};
@@ -104,7 +103,7 @@ export default function Settings() {
         ) : null}
         <Content>
           {tab === 'contracts' && <Contracts />}
-          {chainId === config.STORAGE_CHAIN_ID && tab === 'interface' && <Interface />}
+          {tab === 'interface' && chainId === config.STORAGE_CHAIN_ID && <Interface />}
         </Content>
       </SettingsWrapper>
     </AppBody>

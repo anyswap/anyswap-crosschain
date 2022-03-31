@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import validUrl from 'valid-url'
 import { useActiveWeb3React } from '../../hooks'
-// import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import {
   // useAddPopup,
   useAppState
@@ -19,7 +19,7 @@ import { updateStorageData } from '../../utils/storage'
 export default function Interface() {
   const { t } = useTranslation()
   const { account, library } = useActiveWeb3React()
-  // const addTransaction = useTransactionAdder()
+  const addTransaction = useTransactionAdder()
   // const addPopup = useAddPopup()
 
   const {
@@ -142,15 +142,12 @@ export default function Interface() {
           disableSourceCopyright
         },
         onHash: (hash: string) => {
-          console.group('%c Log', 'color: orange; font-size: 14px')
-          console.log('hash: ', hash)
-          console.groupEnd()
-          // addTransaction(
-          //   { hash },
-          //   {
-          //     summary: `Settings saved`
-          //   }
-          // )
+          addTransaction(
+            { hash },
+            {
+              summary: `Interface settings are saved`
+            }
+          )
         }
       })
     } catch (error) {
