@@ -14,15 +14,13 @@ import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
 import DeployCrosschainToken from './DeployCrosschainToken'
 import SwapSettings from './SwapSettings'
-import { Notice } from './index'
+import { Notice, Lock } from './index'
 import config from '../../config'
 
 export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0;
-  margin: 0.5rem 0;
-  font-size: 1.2rem;
+  margin: 0.3rem 0;
 `
 
 export const OptionLabel = styled.label`
@@ -89,7 +87,7 @@ export default function Contracts() {
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
 
-  const saveRouterConfig = (routerConfigAddress: string, chainId: number) => {
+  const saveRouterConfig = (routerConfigAddress: string, configChainId: number) => {
     if (!account) return
 
     return updateStorageData({
@@ -97,12 +95,11 @@ export default function Contracts() {
       owner: account,
       data: {
         routerConfigAddress,
-        routerConfigChainId: chainId
+        routerConfigChainId: configChainId
       },
-      onHash: (hash: string) => {
-        console.group('%c Log', 'color: orange; font-size: 14px')
-        console.log('hash: ', hash)
-        console.groupEnd()
+      onReceipt: (receipt: any) => {
+        // we set a new config. Update interface to be able to use other settings
+        console.log('save router config: ', receipt)
       }
     })
   }
@@ -118,7 +115,7 @@ export default function Contracts() {
       setRouterChainId('')
       setRouterAddress('')
     }
-  }, [chainId])
+  }, [chainId, stateRouterAddress[chainId || 0]])
 
   const setChainConfig = async (routerAddress: string, routerChainId: number) => {
     if (!routerChainId || !routerConfigSigner || stateRouterConfigChainId !== chainId) return
@@ -151,9 +148,6 @@ export default function Contracts() {
 
       try {
         if (routerConfig) {
-          console.log('underlyingToken: ', underlyingToken)
-          console.log('underlyingNetworkId: ', underlyingNetworkId)
-
           const tokenConfig = await routerConfig.methods.getTokenConfig(underlyingToken, underlyingNetworkId).call()
 
           console.group('%c token config', 'color: brown')
@@ -214,6 +208,20 @@ export default function Contracts() {
     }
   }
 
+  const [onConfigNetwork, setOnConfigNetwork] = useState(false)
+
+  useEffect(() => {
+    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === stateRouterConfigChainId))
+  }, [chainId, stateRouterConfigChainId])
+
+  const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
+
+  useEffect(() => {
+    setHasUnderlyingInfo(
+      Boolean(underlyingNetworkId && underlyingToken && underlyingName && underlyingSymbol && underlyingDecimals)
+    )
+  }, [underlyingNetworkId, underlyingToken, underlyingName, underlyingSymbol, underlyingDecimals])
+
   const underlying = {
     networkId: underlyingNetworkId,
     address: underlyingToken,
@@ -223,7 +231,7 @@ export default function Contracts() {
   }
 
   return (
-    <div>
+    <>
       <Notice>
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <>
@@ -262,89 +270,94 @@ export default function Contracts() {
         </ZoneWrapper>
       )}
 
-      <ZoneWrapper blocked={!routerConfigAddress}>
-        {chainId && !stateRouterAddress[chainId] && (
-          <>
-            <Notice>{t('youNeedOneRouterForEachNetwork')}</Notice>
-            <DeployRouter />
-          </>
-        )}
+      <Lock enabled={!stateRouterConfigAddress || !stateRouterConfigChainId}>
+        <ZoneWrapper blocked={!routerConfigAddress}>
+          {chainId && !stateRouterAddress[chainId] && (
+            <>
+              <Notice>{t('youNeedOneRouterForEachNetwork')}</Notice>
+              <DeployRouter />
+            </>
+          )}
 
-        {/* 
-          TODO: block these inputs and show a notification if we're not on the config network
-          TODO: block these inputs if we have router for this network
-        */}
-        <OptionWrapper>
-          {t('afterDeploymentFillTheseInputsAndSaveInfo')}
-          {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
-          <OptionLabel>
-            {t('routerChainId')}
-            <Input
-              type="number"
-              min="1"
-              step="1"
-              placeholder="0x..."
-              defaultValue={routerChainId}
-              onChange={event => setRouterChainId(event.target.value)}
-            />
-            {t('routerAddress')}
-            <Input
-              type="text"
-              placeholder="0x..."
-              defaultValue={routerAddress}
-              onChange={event => setRouterAddress(event.target.value)}
-            />
-          </OptionLabel>
-        </OptionWrapper>
-        <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>{t('setChainConfig')}</Button>
-      </ZoneWrapper>
+          <OptionWrapper>
+            <Notice>
+              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
+              {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
+            </Notice>
 
-      <ZoneWrapper blocked={!routerConfigAddress || !routerAddress}>
-        <Notice>{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
+            {chainId && !onConfigNetwork && !stateRouterAddress[chainId] && (
+              <Notice warning>{t('switchToConfigNetworkToSaveRouterInfo')}</Notice>
+            )}
+            <Lock enabled={!chainId || !!stateRouterAddress[chainId] || !onConfigNetwork}>
+              <OptionLabel>
+                {t('routerChainId')}
+                <Input
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="0x..."
+                  defaultValue={routerChainId}
+                  onChange={event => setRouterChainId(event.target.value)}
+                />
+                {t('routerAddress')}
+                <Input
+                  type="text"
+                  placeholder="0x..."
+                  defaultValue={routerAddress}
+                  onChange={event => setRouterAddress(event.target.value)}
+                />
+              </OptionLabel>
+              <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>
+                {t('setChainConfig')}
+              </Button>
+            </Lock>
+          </OptionWrapper>
+        </ZoneWrapper>
 
-        <OptionWrapper>
-          <OptionLabel>
-            {t('erc20ChainId')}
-            <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
-            {t('erc20TokenAddress')}
-            <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <DeployCrosschainToken routerAddress={routerAddress} underlying={underlying} />
-
-        {/* 
-          TODO: block these inputs and show a notification if we're not on the config network
-        */}
-        <Accordion title={t('tokenConfig')} margin="0.5rem 0">
+        <ZoneWrapper blocked={!routerConfigAddress || !routerAddress}>
+          <Notice>{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
           <OptionWrapper>
             <OptionLabel>
-              {t('idOfCrosschainTokenNetwork')}
-              <Input
-                defaultValue={crosschainTokenChainId}
-                type="number"
-                min="1"
-                step="1"
-                onChange={event => setCrosschainTokenChainId(event.target.value)}
-              />
+              {t('erc20ChainId')}
+              <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
+              {t('erc20TokenAddress')}
+              <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
             </OptionLabel>
           </OptionWrapper>
-          <OptionWrapper>
-            <OptionLabel>
-              {t('crosschainTokenAddress')}
-              <Input
-                defaultValue={crosschainToken}
-                type="text"
-                placeholder="0x..."
-                onChange={event => setCrosschainToken(event.target.value)}
-              />
-            </OptionLabel>
-          </OptionWrapper>
-          <Button onClick={setTokenConfig}>{t('setTokenConfig')}</Button>
-        </Accordion>
 
-        <SwapSettings underlying={underlying} />
-      </ZoneWrapper>
-    </div>
+          <DeployCrosschainToken routerAddress={routerAddress} underlying={underlying} />
+
+          {!onConfigNetwork && <Notice warning>{t('switchToConfigNetworkToAccessTheseOptions')}</Notice>}
+          {!hasUnderlyingInfo && <Notice warning>{t('fillErc20InputsToUnlockTheseSettings')}</Notice>}
+
+          <Lock enabled={!hasUnderlyingInfo || !onConfigNetwork}>
+            <Accordion title={t('tokenConfig')} margin="0.5rem 0">
+              <OptionWrapper>
+                <OptionLabel>
+                  {t('idOfCrosschainTokenNetwork')}
+                  <Input
+                    defaultValue={crosschainTokenChainId}
+                    type="number"
+                    min="1"
+                    step="1"
+                    onChange={event => setCrosschainTokenChainId(event.target.value)}
+                  />
+                  {t('crosschainTokenAddress')}
+                  <Input
+                    defaultValue={crosschainToken}
+                    type="text"
+                    placeholder="0x..."
+                    onChange={event => setCrosschainToken(event.target.value)}
+                  />
+                  <Button onClick={setTokenConfig}>{t('setTokenConfig')}</Button>
+                </OptionLabel>
+              </OptionWrapper>
+            </Accordion>
+
+            <SwapSettings underlying={underlying} />
+          </Lock>
+        </ZoneWrapper>
+      </Lock>
+    </>
   )
 }

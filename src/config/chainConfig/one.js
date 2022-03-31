@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import { formatSwapTokenList, getLocalRPC } from './methods'
+import { tokenListUrl, VERSION, USE_VERSION } from '../constant'
 
 export const ONE_MAIN_CHAINID = 1666600000
 export const ONE_MAINNET = getLocalRPC(ONE_MAIN_CHAINID, 'https://api.harmony.one')
@@ -13,7 +13,7 @@ const symbol = 'ONE'
 const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
-    bridgeInitChain: '',
+    bridgeInitChain: ''
   },
   [VERSION.V5]: {
     bridgeInitToken: '',
@@ -26,12 +26,12 @@ const bridgeToken = {
     bridgeInitChain: '56',
     nativeToken: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a',
     crossBridgeInitToken: '0x2bf9b864cdc97b08b6d79ad4663e71b8ab65c45c'
-  },
+  }
 }
 
 export default {
   [ONE_MAIN_CHAINID]: {
-    wrappedToken: 'one1eanyppa9hvpr0g966e6zs5hvdjxkngn6jtulua',
+    wrappedToken: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a',
     tokenListUrl: tokenListUrl + ONE_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -43,10 +43,7 @@ export default {
     v2FactoryToken: '',
     timelock: '',
     nodeRpc: ONE_MAINNET,
-    nodeRpcList: [
-      ONE_MAINNET,
-      'https://api.s0.t.hmny.io'
-    ],
+    nodeRpcList: [ONE_MAINNET, 'https://api.s0.t.hmny.io'],
     chainID: ONE_MAIN_CHAINID,
     lookHash: ONE_MAIN_EXPLORER + '/tx/',
     lookAddr: ONE_MAIN_EXPLORER + '/address/',
@@ -60,5 +57,5 @@ export default {
     isSwitch: 1,
     suffix: '',
     anyToken: ''
-  },
+  }
 }

@@ -402,5 +402,8 @@
   "maximumSwapFee": "Maximum swap fee",
   "bigValueThreshold": "Big value threshold",
   "swapFeeRatePerMillion": "Swap fee rate per million",
-  "setSwapConfig": "Set swap config"
+  "setSwapConfig": "Set swap config",
+  "switchToConfigNetworkToSaveRouterInfo": "Switch to a config network to save router info",
+  "switchToConfigNetworkToAccessTheseOptions": "Switch to a config network to access these options",
+  "fillErc20InputsToUnlockTheseSettings": "Fill ERC20 inputs to unlock these settings"
 }

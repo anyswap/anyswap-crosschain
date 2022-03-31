@@ -9,20 +9,27 @@ import Interface from './Interface'
 import Contracts from './Contracts'
 import config from '../../config'
 
+export const Lock = styled.div<{ enabled?: boolean }>`
+  ${({ enabled }) =>
+    enabled
+      ? `
+      opacity: 0.3;
+      pointer-events: none;
+    `
+      : ''}
+`
+
 export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   margin: ${({ margin }) => margin || 0.2}rem 0;
-  padding: 0.3rem 0;
-
+  padding: 0.2rem;
   ${({ flex }) => (flex ? 'display: flex; align-items: center; justify-content: space-between' : '')}
 `
 
 export const Notice = styled.div<{ warning?: boolean; error?: boolean }>`
   width: 100%;
-  margin: 0.6rem auto;
-  padding: 0.4rem 0.6rem;
+  padding: 0.2rem;
   border-radius: 0.4rem;
-  border: 1px solid ${({ theme, warning, error }) => (warning ? theme.yellow3 : error ? theme.red2 : theme.bg3)};
-  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
+  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg4)};
 `
 
 export const OptionLabel = styled.label`
