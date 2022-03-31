@@ -114,9 +114,11 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@babel/core": "7.9.0",
+    "@binance-chain/bsc-connector": "^1.0.0",
+    "@clover-network/clover-connector": "^1.0.0",
     "@makerdao/multicall": "^0.12.0",
     "@svgr/webpack": "4.3.3",
-    "@terra-money/terra.js": "^2.0.5",
+    "@terra-money/terra.js": "^1.5.0",
     "@terra-money/wallet-provider": "^1.2.4",
     "@web3-react/walletlink-connector": "^6.2.8",
     "anyswap-sdk": "^3.0.11",
@@ -132,6 +134,7 @@
     "css-loader": "3.4.2",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
+    "encode-utf8": "^2.0.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-loader": "3.0.3",
     "eslint-plugin-flowtype": "4.6.0",
@@ -145,8 +148,11 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
+    "jssha": "^3.2.0",
     "mini-css-extract-plugin": "0.9.0",
-    "multichain-bridge": "^1.1.21",
+    "multichain-bridge": "^1.1.27",
+    "nebpay.js": "^0.2.3",
+    "nebulas": "^0.5.7",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "pnp-webpack-plugin": "1.6.4",
     "postcss-flexbugs-fixes": "4.1.0",
@@ -170,7 +176,9 @@
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3",
     "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1"
+    "workbox-webpack-plugin": "4.3.1",
+    "xrpl": "^2.1.1",
+    "xumm-sdk": "^1.0.3"
   },
   "jest": {
     "roots": [
