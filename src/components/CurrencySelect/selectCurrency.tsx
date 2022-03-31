@@ -16,9 +16,6 @@ import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
 import {thousandBit} from '../../utils/tools/tools'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
-// import { useBridgeTokenList } from '../../state/lists/hooks'
-
 import {
   InputRow,
   CurrencySelect,
@@ -117,8 +114,6 @@ export default function SelectCurrencyInputPanel({
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
-  // const allTokensList:any = useBridgeTokenList(bridgeKey, chainId)
-  // const allBalances:any = useBridgeAllTokenBalances(bridgeKey, chainId)
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
@@ -149,12 +144,13 @@ export default function SelectCurrencyInputPanel({
     if (customBalance) {
       return customBalance
     } else if (selectedCurrencyBalance && (!isNativeToken || isRouter === false)) {
-      return selectedCurrencyBalance?.toSignificant(6)
+      // console.log(selectedCurrencyBalance)
+      return selectedCurrencyBalance
     } else if (isNativeToken || !isAddress(currency?.address)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
-        return selectedCurrencyBalance?.toSignificant(6)
+        return selectedCurrencyBalance
       } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
-        return selectedETHBalance?.toSignificant(6)
+        return selectedETHBalance
       }
       return undefined
     } else {
@@ -165,7 +161,9 @@ export default function SelectCurrencyInputPanel({
   const handleMax = useCallback(() => {
     if (onMax) {
       if (useBalance) {
-        onMax(useBalance)
+        // console.log(useBalance)
+        // console.log(useBalance.toSignificant())
+        onMax(useBalance?.toExact())
       } else {
         onMax('')
       }
@@ -179,20 +177,6 @@ export default function SelectCurrencyInputPanel({
   }, [isViewModal])
 
   const logoUrl = useMemo(() => {
-    // console.log(currency)
-    // if (useTokenList && currency?.address) {
-    //   for (const t in useTokenList) {
-    //     if (
-    //       t === currency?.address?.toLowerCase()
-    //       || useTokenList[t]?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
-    //       || useTokenList[t]?.tokenInfo?.underlying?.address?.toLowerCase() === currency?.address?.toLowerCase()
-    //     ) {
-    //       // console.log(useTokenList[t])
-    //       return useTokenList[t]?.tokenInfo?.logoUrl ?? useTokenList[t]?.logoUrl
-    //     }
-    //   }
-    // }
-    // return ''
     return currency?.logoUrl
   }, [useTokenList, currency])
   // console.log(logoUrl)
@@ -223,16 +207,6 @@ export default function SelectCurrencyInputPanel({
                     style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
                   >{modeConent.txt}</TYPE.body>
                 ) : ''
-                // (
-                //   <TYPE.body
-                //     color={theme.text2}
-                //     fontWeight={500}
-                //     fontSize={14}
-                //     style={{ display: 'inline', cursor: 'pointer' }}
-                //   >
-                //     {t('balanceTxt') + ': ' + '-'}
-                //   </TYPE.body>
-                // )
                 }
                 {account && showMaxButton && isViewNetwork ? (
                   <>
@@ -244,7 +218,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance?.toSignificant(6), 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </>
@@ -257,7 +231,7 @@ export default function SelectCurrencyInputPanel({
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
                       {!hideBalance && !!currency && useBalance && account
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance, 2)
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance?.toSignificant(6), 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                     {/* <HideSmallBox>
@@ -352,7 +326,7 @@ export default function SelectCurrencyInputPanel({
                           <h5>{t('balance')}</h5>
                           <p>
                             {!hideBalance && !!currency && useBalance
-                              ? (customBalanceText ?? '') + thousandBit(useBalance, 2)
+                              ? (customBalanceText ?? '') + thousandBit(useBalance?.toSignificant(6), 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>

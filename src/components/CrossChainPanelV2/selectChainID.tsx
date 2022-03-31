@@ -270,6 +270,9 @@ export default function SelectChainIdInputPanel({
                         ) : t('selectToken')
                       }
                       {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
+                      {
+                        ['swapin', 'swapout'].includes(selectDestCurrency?.type) ? '(B)' : '(R)'
+                      }
                     </h3>
                     <p>
                       {

@@ -56,7 +56,7 @@ export default function SearchModal ({
   const {tokenComparator, balances: allBalances} = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [intervalCount, setIntervalCount] = useState<any>(0)
+  // const [intervalCount, setIntervalCount] = useState<any>(0)
 
   const inputRef = useRef<HTMLInputElement>()
 
@@ -113,6 +113,7 @@ export default function SearchModal ({
     if (searchToken) return [searchToken]
     // console.log(filteredTokens)
     const sorted = filteredTokens.sort(tokenComparator)
+    // const sorted = filteredTokens
     // console.log(sorted)
     const symbolMatch = searchQuery
       .toLowerCase()
@@ -126,15 +127,17 @@ export default function SearchModal ({
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
     // console.log(arr)
-    setTimeout(() => {
-      setIntervalCount(1)
-    }, 500)
-    if (arr.length > 50 && intervalCount === 0) {
-      return arr.splice(0, 50)
-    } else {
-      return arr
-    }
-  }, [searchQuery, searchToken, tokenComparator, filteredTokens, intervalCount])
+    // setTimeout(() => {
+    //   setIntervalCount(1)
+    // }, 500)
+    // if (arr.length > 50 && intervalCount === 0) {
+    //   return arr.splice(0, 50)
+    // } else {
+    //   return arr
+    // }
+    return arr
+  // }, [searchQuery, searchToken, tokenComparator, filteredTokens, intervalCount])
+  }, [searchQuery, searchToken, tokenComparator, filteredTokens])
 
   useEffect(() => {
     if (isOpen) setSearchQuery('')

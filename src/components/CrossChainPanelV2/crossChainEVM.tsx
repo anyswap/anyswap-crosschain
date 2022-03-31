@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
-
+import nebulas from 'nebulas'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
@@ -33,6 +33,7 @@ import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -110,6 +111,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
+    console.log(selectDestCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -122,6 +124,18 @@ export default function CrossChain({
       return false
     }
     return true
+  }, [destConfig])
+
+  const isApprove = useMemo(() => {
+    return destConfig.isApprove
+  }, [destConfig])
+
+  const isLiquidity = useMemo(() => {
+    return destConfig.isLiquidity
+  }, [destConfig])
+
+  const useSwapMethods = useMemo(() => {
+    return destConfig.routerABI
   }, [destConfig])
 
   const useDestAddress = useMemo(() => {
@@ -159,24 +173,41 @@ export default function CrossChain({
     return false
   }, [destConfig])
   // console.log(isDestUnderlying)
+  const [bridgeAnyToken, setBridgeAnyToken] = useState<any>()
+  const approveSpender = useMemo(() => {
+    setBridgeAnyToken('')
+    if (isRouter) {
+      // setBridgeAnyToken('')
+      return destConfig?.routerToken
+    } else {
+      if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
+        // setBridgeAnyToken('')
+        return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
+      } else if (selectCurrency?.underlying && destConfig?.type === 'swapout') {
+        if (typeof selectCurrency?.underlying?.isApprove !== 'undefined' && selectCurrency?.underlying?.isApprove) {
+          setBridgeAnyToken(selectCurrency?.underlying?.address)
+          return selectCurrency?.underlying?.address
+        }
+        if (selectCurrency.symbol === 'PRQ') {
+          setBridgeAnyToken(selectCurrency?.underlying?.address)
+        }
+        // setBridgeAnyToken('')
+        return undefined
+      }
+      // setBridgeAnyToken('')
+      return undefined
+    }
+  }, [isRouter, selectCurrency, destConfig])
 
-  const formatCurrency0 = useLocalToken(
-  selectCurrency?.underlying ? {
-    ...selectCurrency,
-    address: selectCurrency.underlying.address,
-    name: selectCurrency.underlying.name,
-    symbol: selectCurrency.underlying?.symbol,
-    decimals: selectCurrency.underlying.decimals
-  } : selectCurrency)
-  const formatCurrency = useLocalToken(selectCurrency ?? undefined)
-  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isRouter) ? formatCurrency : undefined)
-  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
   useEffect(() => {
-    // console.log(isRouter)
-    // console.log(formatInputBridgeValue)
-    // console.log((formatInputBridgeValue && isRouter) ? formatInputBridgeValue : undefined)
-    // console.log(approval)
-    // console.log(ApprovalState)
+    console.log(bridgeAnyToken)
+  }, [bridgeAnyToken, inputBridgeValue])
+
+  const formatCurrency = useLocalToken(selectCurrency ?? undefined)
+  const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
+  // const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
+  useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -223,8 +254,8 @@ export default function CrossChain({
       return
     }
     // console.log(11111)
-    if (selectCurrency && chainId && (isRouter || selectCurrency?.address === 'FTM')) {
-      if (selectCurrency?.underlying?.address && (isRouter || selectCurrency?.address === 'FTM')) {
+    if (selectCurrency && chainId && isRouter) {
+      if (selectCurrency?.underlying?.address && isRouter) {
         const CC:any = await getNodeTotalsupply(
           selectCurrency?.underlying?.address,
           chainId,
@@ -254,7 +285,7 @@ export default function CrossChain({
           bl: ''
         })
       }
-      if (destConfig.underlying?.address) {
+      if (destConfig.underlying?.address && isLiquidity) {
         const DC:any = await getNodeTotalsupply(
           destConfig.underlying?.address,
           selectChain,
@@ -302,7 +333,7 @@ export default function CrossChain({
         bl: ''
       })
     }
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, curFTMChain, destFTMChain])
+  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, curFTMChain, destFTMChain, isLiquidity])
 
 
   useEffect(() => {
@@ -345,7 +376,7 @@ export default function CrossChain({
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    selectCurrency?.address,
+    bridgeAnyToken ? bridgeAnyToken : selectCurrency?.address ,
     destConfig?.pairid,
     recipient,
     selectCurrency
@@ -409,6 +440,7 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
+        // return undefined
         return {
           state: 'Error',
           tip: isWrapInputError
@@ -430,12 +462,16 @@ export default function CrossChain({
           })
         }
       } else if (
-        (isDestUnderlying && destChain && Number(inputBridgeValue) > Number(destChain.ts))
-        || (isDestUnderlying && !destChain)
+        isLiquidity
+        && (
+          (isDestUnderlying && destChain && destChain.ts !== '' && Number(inputBridgeValue) > Number(destChain.ts))
+          || (isDestUnderlying && !destChain)
+        )
       ) {
         // if (selectCurrency.chainId === '1' && selectCurrency.symbol === "BitANT") {
         //   return undefined
         // }
+        // console.log(destChain)
         return {
           state: 'Warning',
           tip: t('insufficientLiquidity')
@@ -443,15 +479,18 @@ export default function CrossChain({
       }
     }
     return undefined
-  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain])
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity])
 
   const errorTip = useMemo(() => {
-    const isAddr = isAddress( recipient, selectChain)
+    const isAddr = selectChain === ChainId.NAS ? (recipient ? nebulas.Account.isValidAddress(recipient) : false) : isAddress( recipient, selectChain)
+    // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
     } else if (isInputError) {
       return isInputError
-    } else if (recipient && !Boolean(isAddr)) {
+    } else if (
+      !Boolean(isAddr) 
+    ) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
@@ -498,7 +537,7 @@ export default function CrossChain({
     if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
     } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
-      if (selectChain === 'TERRA' && connectedWallet?.walletAddress) {
+      if (selectChain === ChainId.TERRA && connectedWallet?.walletAddress) {
         setRecipient(connectedWallet?.walletAddress)
       } else {
         setRecipient('')
@@ -534,6 +573,34 @@ export default function CrossChain({
       setInputBridgeValue('')
     }
   }, [setInputBridgeValue])
+
+  const handleSwap = useCallback(() => {
+    onDelay()
+    if (useSwapMethods) {
+      if (
+        useSwapMethods.indexOf('transfer') !== -1
+        || useSwapMethods.indexOf('sendTransaction') !== -1
+        || useSwapMethods.indexOf('Swapout') !== -1
+      ) {
+        if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
+          onClear()
+        })
+      } else if (useSwapMethods.indexOf('anySwapOutNative') !== -1) {
+        if (onWrapNative) onWrapNative().then(() => {
+          onClear()
+        })
+      } else if (useSwapMethods.indexOf('anySwapOutUnderlying') !== -1) {
+        if (onWrapUnderlying) onWrapUnderlying().then((hash) => {
+          console.log(hash)
+          onClear()
+        })
+      } else if (useSwapMethods.indexOf('anySwapOut') !== -1) {
+        if (onWrap) onWrap().then(() => {
+          onClear()
+        })
+      }
+    }
+  }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap])
 
   return (
     <>
@@ -590,6 +657,15 @@ export default function CrossChain({
                     <></>
                   )
                 }
+                {
+                  selectDestCurrency?.symbol?.indexOf('FRAX') !== -1 && !isDestUnderlying ? (
+                    <>
+                      <ConfirmText>
+                      Please use <a href='https://app.frax.finance/crosschain' target='__blank'>https://app.frax.finance/crosschain</a> to swap into native FRAX on destination chain.
+                      </ConfirmText>
+                    </>
+                  ) : ''
+                }
               </>
             )
           }
@@ -623,33 +699,34 @@ export default function CrossChain({
                 ) : (
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
-                    onDelay()
-                    if (isRouter) {
-                      if (!selectCurrency || !isUnderlying) {
-                        console.log('onWrap')
-                        if (onWrap) onWrap().then(() => {
-                          onClear()
-                        })
-                      } else {
-                        if (isNativeToken) {
-                          console.log('onWrapNative')
-                          if (onWrapNative) onWrapNative().then(() => {
-                            onClear()
-                          })
-                        } else {
-                          console.log('onWrapUnderlying')
-                          if (onWrapUnderlying) onWrapUnderlying().then((hash) => {
-                            console.log(hash)
-                            onClear()
-                          })
-                        }
-                      }
-                    } else {
-                      console.log('onWrapCrossBridge')
-                      if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
-                        onClear()
-                      })
-                    }
+                    handleSwap()
+                    // onDelay()
+                    // if (isRouter) {
+                    //   if (!selectCurrency || !isUnderlying) {
+                    //     console.log('onWrap')
+                    //     if (onWrap) onWrap().then(() => {
+                    //       onClear()
+                    //     })
+                    //   } else {
+                    //     if (isNativeToken) {
+                    //       console.log('onWrapNative')
+                    //       if (onWrapNative) onWrapNative().then(() => {
+                    //         onClear()
+                    //       })
+                    //     } else {
+                    //       console.log('onWrapUnderlying')
+                    //       if (onWrapUnderlying) onWrapUnderlying().then((hash) => {
+                    //         console.log(hash)
+                    //         onClear()
+                    //       })
+                    //     }
+                    //   }
+                    // } else {
+                    //   console.log('onWrapCrossBridge')
+                    //   if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
+                    //     onClear()
+                    //   })
+                    // }
                   }}>
                     {t('Confirm')}
                   </ButtonPrimary>
@@ -766,7 +843,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && chainId && (isDestUnderlying || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
             <LiquidityPool
               // curChain={curChain}
               destChain={destChain}
@@ -777,8 +854,8 @@ export default function CrossChain({
           ) : ''
         }
         {
-          swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress(recipient, selectChain))} />
+          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin') || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
+            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(selectChain === ChainId.NAS ? nebulas.Account.isValidAddress(recipient) : isAddress( recipient, selectChain))} />
           ) : ''
         }
       </AutoColumn>
@@ -822,6 +899,7 @@ export default function CrossChain({
                   </>
                 ) : (
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                  // <ButtonPrimary  onClick={() => {
                     setModalTipOpen(true)
                   }}>
                     {btnTxt}

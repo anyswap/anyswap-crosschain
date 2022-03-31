@@ -7,23 +7,25 @@ import config from '../../config'
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
   return useMemo(() => {
     if (inputBridgeValue && destConfig && selectCurrency) {
-      const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
+      const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+      const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
       let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(destConfig.MinimumSwapFee)) {
-        fee = Number(destConfig.MinimumSwapFee)
-        value = Number(inputBridgeValue) - fee
+      // console.log(minFee)
+      // console.log(baseFee)
+      if (fee < Number(minFee)) {
+        fee = Number(minFee)
       } else if (fee > destConfig.MaximumSwapFee) {
         fee = Number(destConfig.MaximumSwapFee)
-        value = Number(inputBridgeValue) - fee
       } else {
-        fee = fee + baseFee
-        value = Number(inputBridgeValue) - fee
+        fee = fee
       }
+      value = Number(inputBridgeValue) - fee - baseFee
       if (value && Number(value) && Number(value) > 0) {
+        const dec = Math.min(6, selectCurrency.decimals)
         return {
           fee: fee,
-          outputBridgeValue: thousandBit(formatDecimal(value, Math.min(6, selectCurrency.decimals)), 'no')
+          outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
         }
       }
       return {
@@ -93,6 +95,7 @@ export function useDestChainid (
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
+        // if (c?.toString() === useChainId?.toString() || !config.chainInfo[c]) continue
         if (c?.toString() === useChainId?.toString()) continue
         arr.push(c)
       }

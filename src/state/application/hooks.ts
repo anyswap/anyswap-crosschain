@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, viewTxnsDtils } from './actions'
+import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, viewTxnsDtils, viewTxnsErrorTip } from './actions'
 
 export function useBlockNumber(initChainId?:any): number | undefined {
   const { chainId } = useActiveWeb3React()
@@ -118,5 +118,26 @@ export function useTxnsDtilOpen(): any {
       isOpenModal: ''
     }),
     onChangeViewDtil
+  }
+}
+export function useTxnsErrorTipOpen(): any {
+  const viewTxnsErrorTipData = useSelector((state: AppState) => state.application.viewTxnsErrorTip)
+  const dispatch = useDispatch<AppDispatch>()
+  const onChangeViewErrorTip = useCallback(
+    (errorTip: any, isOpenModal: any) => {
+      // console.log(field)
+      // console.log(typedValue)
+      // console.log(typeInput({ field, typedValue }))
+      dispatch(viewTxnsErrorTip({ errorTip, isOpenModal }))
+    },
+    [dispatch]
+  )
+
+  return {
+    ...(viewTxnsErrorTipData ? viewTxnsErrorTipData : {
+      errorTip: '',
+      isOpenModal: ''
+    }),
+    onChangeViewErrorTip
   }
 }

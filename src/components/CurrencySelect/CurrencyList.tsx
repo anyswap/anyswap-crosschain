@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-// import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 
 import Column from '../Column'
@@ -49,8 +48,13 @@ const ListBox = styled.div`
   overflow:auto;
 `
 
-function Balance({ balance }: { balance: CurrencyAmount }) {
-  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
+// function Balance({ balance }: { balance: CurrencyAmount }) {
+//   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
+// }
+function Balance({ balance }: { balance: any }) {
+  const isBl = balance instanceof CurrencyAmount ? true : false
+  // console.log(balance)
+  return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? balance.toSignificant(6) : balance.balance}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
@@ -125,7 +129,6 @@ function CurrencyRow({
   // const ETHBalance = ''
   // const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
   const balance1 = ''
-  // const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const balance = useMemo(() => {
     // console.log(currencyObj)
     if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()] && !isNativeToken) {
@@ -139,6 +142,7 @@ function CurrencyRow({
     return balance1
   }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance, balance1])
   const isDestChainId = selectDestChainId ? selectDestChainId : chainId
+  // console.log(balance)
   return (
     <MenuItem
       style={style}
@@ -152,24 +156,16 @@ function CurrencyRow({
         <Text title={currencyObj.name} fontWeight={500}>
           {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
           {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
+          {currencyObj?.type ? (
+            ['swapin', 'swapout'].includes(currencyObj?.type) ? '(B)' : '(R)'
+          ) : ''}
           {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
           <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
-      {/* {
-        isNativeToken ? (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {ETHBalance ? <Balance balance={ETHBalance} /> : account ? <Loader /> : null}
-          </RowFixed>
-        ) : (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-          </RowFixed>
-        )
-      } */}
       <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+        {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
       </RowFixed>
     </MenuItem>
   )

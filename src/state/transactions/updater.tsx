@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import {updateTerraHash} from '../../hooks/terra'
+import {updateNasHash} from '../../hooks/nas'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
@@ -12,6 +13,7 @@ import {useHashSwapInfo} from './hooks'
 import useInterval from '../../hooks/useInterval'
 
 import {TERRA_MAIN_CHAINID} from '../../config/chainConfig/terra'
+import {NAS_MAIN_CHAINID} from '../../config/chainConfig/nas'
 
 import {END_STATUS} from '../../config/status'
 
@@ -50,6 +52,7 @@ export default function Updater(): null {
   const addPopup = useAddPopup()
 
   const updateNonEVMTxns = useCallback(() => {
+    // console.log(library)
     if (!chainId) return
     if (chainId === TERRA_MAIN_CHAINID) {
       Object.keys(transactions)
@@ -115,15 +118,71 @@ export default function Updater(): null {
             }
           })
         }
-        // else {
-        //   dispatch(
-        //     updateTransaction({
-        //       chainId,
-        //       hash,
-        //       info: ''
-        //     })
-        //   )
-        // }
+      })
+    } else if (chainId === NAS_MAIN_CHAINID) {
+      Object.keys(transactions)
+      .filter(hash => {
+        const tx = transactions[hash]
+        // if (tx.receipt) return false
+        if (tx.info && END_STATUS.includes(tx.info.status)) return false
+        return true
+      })
+      .forEach(hash => {
+        // console.log(hash)
+        const tx = transactions[hash]
+        if (!tx.receipt) {
+          updateNasHash(hash).then((receipt:any) => {
+            console.log(receipt)
+            if (receipt) {
+              dispatch(
+                finalizeTransaction({
+                  chainId,
+                  hash,
+                  receipt: {
+                    blockHash: '',
+                    blockNumber: receipt?.data?.block?.height,
+                    contractAddress: '',
+                    from: tx.from,
+                    status: receipt.msg === "success" ? 1 : 0,
+                    to: tx.toAddress,
+                    transactionHash: hash,
+                    transactionIndex: ''
+                  }
+                })
+              )
+              if (!tx?.version) {
+                addPopup(
+                  {
+                    txn: {
+                      hash,
+                      success: receipt.msg === "success" ? true : false,
+                      summary: transactions[hash]?.summary
+                    }
+                  },
+                  hash
+                )
+              }
+            }
+          })
+        } else if (
+          !(tx.info && END_STATUS.includes(tx?.info?.status))
+          && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+          && tx?.version
+        )  {
+          useHashSwapInfo(hash).then((receipt:any) => {
+            if (receipt && receipt.msg === 'Success' && receipt.info) {
+              dispatch(
+                updateTransaction({
+                  chainId,
+                  hash,
+                  info: {
+                    ...receipt.info
+                  }
+                })
+              )
+            }
+          })
+        }
       })
     } else {
       if (!chainId || !library || !lastBlockNumber || isNaN(chainId)) return

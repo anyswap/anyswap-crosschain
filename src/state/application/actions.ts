@@ -38,3 +38,4 @@ export const addPopup = createAction<{ key?: string; removeAfterMs?: number | nu
 export const removePopup = createAction<{ key: string }>('application/removePopup')
 
 export const viewTxnsDtils = createAction<{ hash: any, isOpenModal: any }>('application/viewTxnsDtils')
+export const viewTxnsErrorTip = createAction<{ errorTip: any, isOpenModal: any }>('application/viewTxnsErrorTip')

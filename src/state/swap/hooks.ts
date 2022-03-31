@@ -173,6 +173,38 @@ export function tryParseAmount4(value?: string, decimals?: number): any | undefi
   // necessary for all paths to return a value
   return undefined
 }
+export function tryParseAmount5(value?: string, decimals?: number): any | undefined {
+  if (!value || !decimals) {
+    return undefined
+  }
+  try {
+    // const typedValueParsed = parseUnits(value, decimals).toString()
+    if (value !== '0') {
+      return new Fraction(JSBI.BigInt(value), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)))
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error)
+  }
+  // necessary for all paths to return a value
+  return undefined
+}
+
+export function tryParseAmount6(value?: string): CurrencyAmount | undefined {
+  if (!value) {
+    return undefined
+  }
+  try {
+    if (value !== '0') {
+      return CurrencyAmount.ether(JSBI.BigInt(value))
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error)
+  }
+  // necessary for all paths to return a value
+  return undefined
+}
 
 const BAD_RECIPIENT_ADDRESSES: string[] = [
   config.v2FactoryToken, // v2 factory

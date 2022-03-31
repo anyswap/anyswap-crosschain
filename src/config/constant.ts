@@ -1,7 +1,7 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
-export const explorer = 'https://anyswap.net'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
+export const explorer = 'https://anyswap.net'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 
@@ -37,7 +37,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.1.25'
+export const version = '0.1.26'
 export const timeout = 1000 * 60 * 30
 
 // export const INIT_VERSION = VERSION.V1_1

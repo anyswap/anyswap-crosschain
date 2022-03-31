@@ -90,11 +90,6 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions, in
   useEffect(() => {
     onSelectChainId(useChainId)
   }, [useChainId])
-  // console.log(chainId)
-  // console.log(useChainId)
-  // console.log(calls)
-  // console.log(serializedCallKeys)
-  // console.log(options)
   // 当实际更改持续至少100毫秒时更新侦听器
   useEffect(() => {
     // console.log(chainId)
@@ -214,7 +209,7 @@ export function useSingleContractMultipleData(
     [callInputs, contract, fragment]
   )
   const results = useCallsData(calls, options, chainId)
-
+          // console.log(results)
   const latestBlockNumber = useBlockNumber()
 
   return useMemo(() => {
