@@ -30,7 +30,6 @@ import Settings from '../../components/Settings'
 import { useWalletModalToggle } from '../../state/application/hooks'
 // import { useAddDestChainId } from '../../state/multicall/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 import {
   tryParseAmount,
   useDerivedSwapInfo,
@@ -92,9 +91,6 @@ export default function CrossChain() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
-  // const toggleNetworkModal = useToggleNetworkModal()
-  // const history = createBrowserHistory()
-  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 

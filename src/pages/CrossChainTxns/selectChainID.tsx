@@ -24,7 +24,6 @@ import { TYPE, CloseIcon } from '../../theme'
 
 import {formatDecimal} from '../../utils/tools/tools'
 
-// import {useCurrencyBalance, useETHBalances} from '../../state/wallet/hooks'
 import {useCurrencyBalance} from '../../state/wallet/hooks'
 
 import config from '../../config'

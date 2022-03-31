@@ -108,11 +108,11 @@ export function useTerraSend () {
           gasPrices: gasPricesFromServer,
         })
         // fee + tax
-        const unsignedTx = await lcd.tx.create(address, {
+        const unsignedTx:any = await lcd.tx.create(address, {
           msgs: [msgs],
           feeDenoms,
         })
-        gas = unsignedTx.fee.gas
+        gas = unsignedTx?.fee.gas
       } catch (err) {
         // gas is just default value
         console.log('error')

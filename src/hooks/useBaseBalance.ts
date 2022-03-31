@@ -6,8 +6,9 @@ import { useETHBalances } from '../state/wallet/hooks'
 import { useUserSelectChainId } from '../state/user/hooks'
 import useInterval from './useInterval'
 import {useTerraBaseBalance} from './useTerraBalance'
+import { useCurrentNasBalance } from './nas'
 // import {fromWei} from '../utils/tools/tools'
-
+import { ChainId } from '../config/chainConfig/chainId'
 
 export function useBaseBalances (
   uncheckedAddresses?: string | null | undefined,
@@ -18,10 +19,17 @@ export function useBaseBalances (
   // const userEthBalance = useETHBalances((uncheckedAddresses) ? [uncheckedAddresses] : [])?.[uncheckedAddresses ?? '']
   const {getTerraBaseBalances} = useTerraBaseBalance()
 
+  const { getNasBalance } = useCurrentNasBalance()
+  // console.log(selectNetworkInfo)
   const [balance, setBalance] = useState<any>()
   const fetchBalancesCallback = useCallback(() => {
-    if (selectNetworkInfo?.label === 'TERRA') {
+    if (selectNetworkInfo?.label === ChainId.TERRA) {
       getTerraBaseBalances().then(res => {
+        setBalance(res)
+      })
+    } else if (selectNetworkInfo?.label === ChainId.NAS) {
+      getNasBalance().then(res => {
+        // console.log(res)
         setBalance(res)
       })
     }
@@ -38,8 +46,17 @@ export function useBaseBalances (
     // console.log(userEthBalance)
     if (!selectNetworkInfo?.label) {
       return userEthBalance
-    } else if (selectNetworkInfo?.label === 'TERRA') {
+    } else if (selectNetworkInfo?.label === ChainId.TERRA) {
       return balance?.uluna ? new Fraction(JSBI.BigInt(balance?.uluna), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6))) : undefined
+    } else if (selectNetworkInfo?.label === ChainId.NAS) {
+      console.log('useBaseBalances nas balance', balance)
+      try {
+        return balance
+          ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)))
+          : undefined
+      } catch (err) {
+        console.error(err)
+      }
     }
     return undefined
   }, [balance, userEthBalance, selectNetworkInfo])

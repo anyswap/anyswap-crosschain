@@ -8,6 +8,7 @@ import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import TxnsDtilsModal from '../components/CrossChainPanelV2/txnsDtilsModal'
+import TxnsErrorTipModal from '../components/CrossChainPanelV2/txnsErrorTipModal'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
 import Dashboard from './Dashboard'
@@ -34,7 +35,10 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
 import config from '../config'
 import farmlist from '../config/farmlist'
-// console.log(ANYFarming)
+
+// import '../hooks/xrp'
+
+// console.log(Sdk)
 const AppWrapper = styled.div`
   // display: flex;
   // flex-flow: column;
@@ -154,6 +158,7 @@ export default function App() {
           <Popups />
           <Polling />
           <TxnsDtilsModal />
+          <TxnsErrorTipModal />
           <NonApprove />
           {/* <TopLevelModals /> */}
           <Web3ReactManager>

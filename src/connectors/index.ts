@@ -2,7 +2,8 @@ import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
-
+import {BscConnector} from '@binance-chain/bsc-connector'
+import {CloverConnector} from '@clover-network/clover-connector'
 import { NetworkConnector } from './NetworkConnector'
 
 // import {spportChainArr} from '../config/chainConfig'
@@ -66,4 +67,13 @@ export const walletlink = new WalletLinkConnector({
   appName: 'Anyswap',
   appLogoUrl: 'https://assets.coingecko.com/coins/images/12242/small/anyswap.jpg',
   supportedChainIds: [...spportChainArr]
+})
+
+
+export const bsc = new BscConnector({
+  supportedChainIds: [...spportChainArr],
+})
+
+export const clover =  new CloverConnector({
+  supportedChainIds: [...spportChainArr],
 })

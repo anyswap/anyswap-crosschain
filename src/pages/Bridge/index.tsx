@@ -33,12 +33,12 @@ import QRcode from '../../components/QRcode'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useBetaMessageManager } from '../../state/user/hooks'
-// import { useBridgeAllTokenBalances } from '../../state/wallet/hooks'
 
 import config from '../../config'
 import {bridgeApi} from '../../config/constant'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import {getP2PInfo} from '../../utils/bridge/register'
@@ -92,7 +92,7 @@ function getInitToken () {
 
 const BRIDGETYPE = 'bridgeTokenList'
 
-const TERRA_CHAIN = 'TERRA'
+const TERRA_CHAIN = ChainId.TERRA
 
 export default function CrossChain() {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -108,8 +108,6 @@ export default function CrossChain() {
   const [showBetaMessage] = useBetaMessageManager()
   // console.log(getTerraBalances)
   
-  // const allBalances = useBridgeAllTokenBalances(BRIDGETYPE, chainId)
-  // console.log(balances)
   const localSelectChain:any = sessionStorage.getItem(SelectBridgeChainIdLabel) ? sessionStorage.getItem(SelectBridgeChainIdLabel) : ''
   const initBridgeToken = getInitToken()
 
@@ -309,7 +307,10 @@ export default function CrossChain() {
 
   const isUsePool = useMemo(() => {
     // console.log(selectCurrency)
-    if (selectCurrency?.symbol?.toLowerCase() === 'prq') {
+    if (
+      selectCurrency?.symbol?.toLowerCase() === 'prq'
+      || selectCurrency?.symbol?.toLowerCase() === 'zeum'
+    ) {
       return false
     }
     return true
@@ -542,13 +543,14 @@ export default function CrossChain() {
   
   const outputBridgeValue = useMemo(() => {
     if (inputBridgeValue && destConfig) {
-      const baseFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : 0
+      const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+      const baseFee = destConfig.BaseFeePercent ? minFee : 0
       const fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion)
       // console.log(destConfig)
       // console.log(baseFee)
       let value = Number(inputBridgeValue) - fee
-      if (fee < Number(destConfig.MinimumSwapFee)) {
-        value = Number(inputBridgeValue) - Number(destConfig.MinimumSwapFee)
+      if (fee < Number(minFee)) {
+        value = Number(inputBridgeValue) - Number(minFee)
       } else if (fee > destConfig.MaximumSwapFee) {
         value = Number(inputBridgeValue) - Number(destConfig.MaximumSwapFee)
       } else {
@@ -735,7 +737,7 @@ export default function CrossChain() {
       if (selectCurrency) {
         const arr = []
         for (const c in selectCurrency?.destChains) {
-          if (c?.toString() === chainId?.toString()) continue
+          if (c?.toString() === chainId?.toString() || !config.chainInfo[c]) continue
           arr.push(c)
         }
         // console.log(arr)

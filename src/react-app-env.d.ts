@@ -95,3 +95,25 @@ declare module 'multihashes' {
   declare function decode(buff: Uint8Array): { code: number; name: string; length: number; digest: Uint8Array }
   declare function toB58String(hash: Uint8Array): string
 }
+
+declare module 'nebulas' {
+  export class Account {
+    static isValidAddress(address: string): boolean
+  }
+
+  export class HttpRequest {
+    constructor(endpoint)
+  }
+
+  export class Neb {
+    setRequest(HttpRequest)
+
+    api: {
+      getAccountState(address)
+    }
+  }
+}
+
+declare const NasExtWallet
+
+declare module 'nebpay.js'
