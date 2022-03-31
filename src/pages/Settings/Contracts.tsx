@@ -137,19 +137,44 @@ export default function Contracts() {
     }
   }
 
+  const [underlyingNetworkId, setUnderlyingNetworkId] = useState('')
   const [underlyingToken, setUnderlyingToken] = useState('')
   const [underlyingName, setUnderlyingName] = useState('')
   const [underlyingSymbol, setUnderlyingSymbol] = useState('')
   const [underlyingDecimals, setUnderlyingDecimals] = useState(-1)
   const [crosschainToken, setCrosschainToken] = useState('')
-  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState(0)
+  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState('')
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!library || !underlyingToken || !chainId) return
+      if (!underlyingToken || !underlyingNetworkId) return
 
       try {
-        const web3 = getWeb3Library(library.provider)
+        if (routerConfig) {
+          console.log('underlyingToken: ', underlyingToken)
+          console.log('underlyingNetworkId: ', underlyingNetworkId)
+
+          const tokenConfig = await routerConfig.methods.getTokenConfig(underlyingToken, underlyingNetworkId).call()
+
+          console.group('%c token config', 'color: brown')
+          console.log(tokenConfig)
+          console.groupEnd()
+
+          if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
+            setCrosschainTokenChainId(underlyingNetworkId)
+            setCrosschainToken(tokenConfig.ContractAddress)
+          } else {
+            setCrosschainTokenChainId('')
+            setCrosschainToken('')
+          }
+        }
+
+        const underlyingConfig = chainInfo[underlyingNetworkId]
+
+        if (!underlyingConfig) return
+
+        const { nodeRpc } = underlyingConfig
+        const web3 = getWeb3Library(nodeRpc)
         const code = await web3.eth.getCode(underlyingToken)
 
         if (code === '0x') return console.log('wrong address for this network')
@@ -163,32 +188,23 @@ export default function Contracts() {
         setUnderlyingName(name)
         setUnderlyingSymbol(symbol)
         setUnderlyingDecimals(decimals)
-
-        if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(name, chainId).call()
-
-          if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
-            setCrosschainTokenChainId(chainId)
-            setCrosschainToken(tokenConfig.ContractAddress)
-          }
-        }
       } catch (error) {
         console.error(error)
       }
     }
 
-    if (chainId && underlyingToken.match(EVM_ADDRESS_REGEXP)) {
+    if (underlyingNetworkId && underlyingToken.match(EVM_ADDRESS_REGEXP)) {
       fetchUnderlyingInfo()
     }
-  }, [underlyingToken, chainId])
+  }, [underlyingToken, chainId, underlyingNetworkId])
 
   const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingName) return
+    if (!routerConfigSigner || !underlyingToken) return
 
     const VERSION = 6
 
     try {
-      await routerConfigSigner.setTokenConfig(underlyingName, crosschainTokenChainId, {
+      await routerConfigSigner.setTokenConfig(underlyingToken, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
@@ -196,6 +212,14 @@ export default function Contracts() {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const underlying = {
+    networkId: underlyingNetworkId,
+    address: underlyingToken,
+    name: underlyingName,
+    symbol: underlyingSymbol,
+    decimals: Number(underlyingDecimals)
   }
 
   return (
@@ -270,20 +294,14 @@ export default function Contracts() {
 
         <OptionWrapper>
           <OptionLabel>
+            {t('erc20NetworkId')}
+            <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
             {t('erc20TokenAddress')}
             <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
           </OptionLabel>
         </OptionWrapper>
 
-        <DeployCrosschainToken
-          routerAddress={routerAddress}
-          underlying={{
-            address: underlyingToken,
-            name: underlyingName,
-            symbol: underlyingSymbol,
-            decimals: Number(underlyingDecimals)
-          }}
-        />
+        <DeployCrosschainToken routerAddress={routerAddress} underlying={underlying} />
 
         {/* 
           TODO: block these inputs and show a notification if we're not on the config network
@@ -297,7 +315,7 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 step="1"
-                onChange={event => setCrosschainTokenChainId(Number(event.target.value))}
+                onChange={event => setCrosschainTokenChainId(event.target.value)}
               />
             </OptionLabel>
           </OptionWrapper>
@@ -315,14 +333,7 @@ export default function Contracts() {
           <Button onClick={setTokenConfig}>{t('setTokenConfig')}</Button>
         </Accordion>
 
-        <SwapSettings
-          underlying={{
-            address: underlyingToken,
-            name: underlyingName,
-            symbol: underlyingSymbol,
-            decimals: Number(underlyingDecimals)
-          }}
-        />
+        <SwapSettings underlying={underlying} />
       </ZoneWrapper>
     </div>
   )

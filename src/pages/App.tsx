@@ -21,6 +21,7 @@ import Footer from '../components/Footer'
 import config from '../config'
 import { retrieveAppData } from '../state/application/actions'
 import { AppState } from '../state'
+import { useActiveWeb3React } from '../hooks'
 import useAppData from '../hooks/useAppData'
 
 const LoaderWrapper = styled.div`
@@ -101,6 +102,7 @@ const BodyWrapper = styled.div`
 
 export default function App() {
   const dispatch = useDispatch()
+  const { active } = useActiveWeb3React()
 
   let initUrl = '/dashboard'
   if (config.getCurConfigInfo().isOpenRouter) {
@@ -152,7 +154,7 @@ export default function App() {
                   <Route
                     path="/settings"
                     component={({ match }: { match: { path: string } }) =>
-                      appManagement || match.path === '/settings' ? <Settings /> : null
+                      active && (appManagement || match.path === '/settings') ? <Settings /> : null
                     }
                   />
                   <Redirect to={{ pathname: initUrl }} />

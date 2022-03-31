@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS } from '../../constants'
-import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
-import { getWeb3Library } from '../../utils/getLibrary'
 import {
   // deployInfinityERC20,
   deployCrosschainERC20
@@ -18,12 +16,7 @@ export default function DeployCrosschainToken({
   underlying
 }: {
   routerAddress: string
-  underlying: {
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-  }
+  underlying: { [k: string]: any }
 }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -41,7 +34,11 @@ export default function DeployCrosschainToken({
   useEffect(() => setMinter(routerAddress), [routerAddress])
 
   const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
-  const [canDeployCrosschainToken, setCanDeployCrosschainToken] = useState(false)
+  const [
+    ,
+    // canDeployCrosschainToken
+    setCanDeployCrosschainToken
+  ] = useState(false)
 
   useEffect(() => {
     setCanDeployCrosschainToken(
@@ -53,19 +50,10 @@ export default function DeployCrosschainToken({
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!library || !underlying.address || !routerConfig) return
+      if (!underlying.address || !underlying.networkId || !routerConfig) return
 
       try {
-        const web3 = getWeb3Library(library.provider)
-        const code = await web3.eth.getCode(underlying.address)
-
-        if (code === '0x') return setPending(false)
-
-        //@ts-ignore
-        const contract = new web3.eth.Contract(ERC20_ABI, underlying.address)
-        const name = await contract.methods.name().call()
-
-        const tokenConfig = await routerConfig.methods.getTokenConfig(name, chainId).call()
+        const tokenConfig = await routerConfig.methods.getTokenConfig(underlying.address, underlying.networkId).call()
 
         if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
           setCrosschainTokenAddress(tokenConfig.ContractAddress)
@@ -78,7 +66,7 @@ export default function DeployCrosschainToken({
     if (chainId && underlying.address.match(EVM_ADDRESS_REGEXP)) {
       fetchUnderlyingInfo()
     }
-  }, [underlying.address, chainId])
+  }, [chainId, underlying.address, underlying.networkId])
 
   const onTokenDeployment = async () => {
     if (!chainId || !account || !vault) return
@@ -153,7 +141,13 @@ export default function DeployCrosschainToken({
         <button onClick={onInfinityERC20Deployment}>Deploy ERC20</button>
       </p> */}
 
-      <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
+      <Button
+        disabled={
+          // !canDeployCrosschainToken ||
+          pending
+        }
+        onClick={onTokenDeployment}
+      >
         {t('deployCrossChainToken')}
       </Button>
     </>

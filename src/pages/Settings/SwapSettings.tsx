@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BigNumber } from 'bignumber.js'
-// import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
@@ -32,33 +32,22 @@ const formatAmount = (n: string | undefined, direction: Direction) => {
 
 const MILLION = 1_000_000
 
-export default function SwapSettings({
-  underlying
-}: {
-  underlying: {
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-  }
-}) {
-  const { library, chainId } = useActiveWeb3React()
+export default function SwapSettings({ underlying }: { underlying: { [k: string]: any } }) {
+  const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
-  // const addTransaction = useTransactionAdder()
+  const addTransaction = useTransactionAdder()
   const { routerConfigChainId, routerConfigAddress } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
   const routerConfigSigner = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
   const [pending, setPending] = useState(false)
 
-  /* 
-    template data:
-
-    "MinimumSwap": 100 , 
-    "MaximumSwap": 1000000,  
-    "MinimumSwapFee":  1.5 
-    "MaximumSwapFee": 10,
-    "BigValueThreshold": 100000, 
-    "SwapFeeRatePerMillion": 0.001 ,
+  /* template:
+    MinimumSwap: 100
+    MaximumSwap: 1000000
+    MinimumSwapFee:  1.5 
+    MaximumSwapFee: 10
+    BigValueThreshold: 100000
+    SwapFeeRatePerMillion: 0.001
     */
   const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
   const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
@@ -85,9 +74,9 @@ export default function SwapSettings({
 
   useEffect(() => {
     const fetchSwapConfig = async () => {
-      if (!library || !underlying.name) return
+      if (!underlying.address || !underlying.networkId || !routerConfig) return
 
-      if (routerConfig) {
+      try {
         const {
           MaximumSwap,
           MinimumSwap,
@@ -95,7 +84,7 @@ export default function SwapSettings({
           SwapFeeRatePerMillion,
           MaximumSwapFee,
           MinimumSwapFee
-        } = await routerConfig.methods.getSwapConfig(underlying.name, chainId).call()
+        } = await routerConfig.methods.getSwapConfig(underlying.address, underlying.networkId).call()
 
         setMinimumSwap(formatAmount(MinimumSwap.toString(), Direction.from))
         setMaximumSwap(formatAmount(MaximumSwap.toString(), Direction.from))
@@ -103,11 +92,13 @@ export default function SwapSettings({
         setMaximumSwapFee(formatAmount(MaximumSwapFee.toString(), Direction.from))
         setBigValueThreshold(formatAmount(BigValueThreshold.toString(), Direction.from))
         setSwapFeeRatePerMillion(new BigNumber(SwapFeeRatePerMillion.toString()).div(MILLION).toString())
+      } catch (error) {
+        console.error(error)
       }
     }
 
     fetchSwapConfig()
-  }, [underlying, chainId])
+  }, [underlying.address, underlying.networkId, chainId])
 
   const setSwapConfig = async () => {
     if (!routerConfigSigner || !canSetSwapConfig) return
@@ -115,25 +106,22 @@ export default function SwapSettings({
     setPending(true)
 
     try {
-      const result = await routerConfigSigner.setSwapConfig(underlying.name, chainId, {
+      const swapConfig = {
         MinimumSwap: formatAmount(minimumSwap, Direction.to),
         MaximumSwap: formatAmount(maximumSwap, Direction.to),
         MinimumSwapFee: formatAmount(minimumSwapFee, Direction.to),
         MaximumSwapFee: formatAmount(maximumSwapFee, Direction.to),
         BigValueThreshold: formatAmount(bigValueThreshold, Direction.to),
         SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(MILLION).toString()
-      })
+      }
+      const { hash } = await routerConfigSigner.setSwapConfig(underlying.address, underlying.networkId, swapConfig)
 
-      console.group('%c set swap config result', 'color: orange;font-size: 20px')
-      console.log('result: ', result)
-      console.groupEnd()
-
-      // addTransaction(
-      //   { hash },
-      //   {
-      //     summary: `Deployment: chain ${chainId}; crosschain token ${name} ${address}`
-      //   }
-      // )
+      addTransaction(
+        { hash },
+        {
+          summary: `Swap config: token chain ${underlying.networkId}; token ${underlying.name}`
+        }
+      )
     } catch (error) {
       console.error(error)
     }
