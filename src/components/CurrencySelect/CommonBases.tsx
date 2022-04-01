@@ -64,7 +64,8 @@ export default function CommonBases({
           </Text>
         </BaseWrapper> */}
         {viewTokenList.length > 0 ? viewTokenList.map((token: any) => {
-          const selected = selectedCurrency.address === token.address
+          // console.log(selectedCurrency)
+          const selected = selectedCurrency?.address === token.address
           return (
             <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token.address}>
               <TokenLogo symbol={token?.symbol} logoUrl={token?.logoUrl} style={{ marginRight: 8 }} />
