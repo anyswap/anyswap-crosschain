@@ -40,6 +40,7 @@ import milkada, {MIKO_MAIN_CHAINID} from './milkada'
 import rei, {REI_MAIN_CHAINID} from './rei'
 import cfx, {CFX_MAIN_CHAINID} from './cfx'
 import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
+import jewel, {JEWEL_MAIN_CHAINID} from './jewel'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -47,6 +48,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...jewel,
   ...arbitrum,
   ...avax,
   ...bsc,
@@ -125,6 +127,7 @@ const allChainList = [
   REI_MAIN_CHAINID,
   CFX_MAIN_CHAINID,
   RBTC_MAIN_CHAINID,
+  JEWEL_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
 ]
 
