@@ -56,10 +56,14 @@ const ZoneWrapper = styled.div<{ blocked?: boolean }>`
       : ''}
 `
 
-const ConfigInfo = styled.p`
+const ConfigInfo = styled.div`
   margin: 0 0 0.5rem;
   padding: 0;
   font-weight: 500;
+
+  h4 {
+    margin: 0 0 0.3rem;
+  }
 `
 
 export const Button = styled.button`
@@ -232,19 +236,26 @@ export default function Contracts() {
 
   return (
     <>
-      <Notice>
+      <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <>
             <ConfigInfo>
-              {t('configInformation')}: {stateRouterConfigChainId} -{' '}
-              {chainInfo[stateRouterConfigChainId]?.networkName || ''}
+              <h4>{t('configInformation')}:</h4>
+              {chainInfo[stateRouterConfigChainId]?.networkName || ''}:{' '}
+              <a
+                href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {stateRouterConfigAddress}
+              </a>
             </ConfigInfo>
-            {t('youHaveToBeOnConfigNetwork')}.{t('saveAllInfoWhenYouDeployAnything')}.{' '}
-            {t('setDeploymentInfoOnConfigNetwork')}
+            {t('youHaveToBeOnConfigNetwork')}. {t('saveAllInfoWhenYouDeployAnything')}.{' '}
+            {t('setDeploymentInfoOnConfigNetwork')}.
           </>
         ) : (
           <>
-            {t('youNeedToDeployConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}
+            {t('youNeedToDeployConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}.
           </>
         )}
       </Notice>
@@ -280,10 +291,12 @@ export default function Contracts() {
           )}
 
           <OptionWrapper>
-            <Notice>
-              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-              {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
-            </Notice>
+            {chainId && !stateRouterAddress[chainId] && (
+              <Notice>
+                {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
+                {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
+              </Notice>
+            )}
 
             {chainId && !onConfigNetwork && !stateRouterAddress[chainId] && (
               <Notice warning>{t('switchToConfigNetworkToSaveRouterInfo')}</Notice>
