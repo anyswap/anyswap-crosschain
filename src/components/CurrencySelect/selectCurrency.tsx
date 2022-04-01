@@ -157,13 +157,29 @@ export default function SelectCurrencyInputPanel({
       return undefined
     }
   }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect, isRouter])
+  // console.log(useBalance)
+  const viewBalance = useMemo(() => {
+    if (useBalance) {
+      // console.log(typeof useBalance)
+      if (typeof useBalance === 'string' || typeof useBalance === 'number') {
+        return useBalance
+      } else {
+        return useBalance.toSignificant(6)
+      }
+    }
+    return undefined
+  }, [useBalance])
 
   const handleMax = useCallback(() => {
     if (onMax) {
       if (useBalance) {
         // console.log(useBalance)
         // console.log(useBalance.toSignificant())
-        onMax(useBalance?.toExact())
+        if (typeof useBalance === 'string' || typeof useBalance === 'number') {
+          onMax(useBalance)
+        } else {
+          onMax(useBalance?.toExact())
+        }
       } else {
         onMax('')
       }
@@ -217,8 +233,8 @@ export default function SelectCurrencyInputPanel({
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
-                      {!hideBalance && !!currency && useBalance
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance?.toSignificant(6), 2)
+                      {!hideBalance && !!currency && viewBalance
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(viewBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                   </>
@@ -230,8 +246,8 @@ export default function SelectCurrencyInputPanel({
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
-                      {!hideBalance && !!currency && useBalance && account
-                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(useBalance?.toSignificant(6), 2)
+                      {!hideBalance && !!currency && viewBalance && account
+                        ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(viewBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
                     {/* <HideSmallBox>
@@ -325,8 +341,8 @@ export default function SelectCurrencyInputPanel({
                         <ExtraText>
                           <h5>{t('balance')}</h5>
                           <p>
-                            {!hideBalance && !!currency && useBalance
-                              ? (customBalanceText ?? '') + thousandBit(useBalance?.toSignificant(6), 2)
+                            {!hideBalance && !!currency && viewBalance
+                              ? (customBalanceText ?? '') + thousandBit(viewBalance, 2)
                               : '-'}{' '}
                           </p>
                         </ExtraText>

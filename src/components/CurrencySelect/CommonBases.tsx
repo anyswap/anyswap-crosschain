@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -34,6 +34,13 @@ export default function CommonBases({
   onSelect: (currency: any) => void
   tokenList: any
 }) {
+  const viewTokenList = useMemo(() => {
+    if (tokenList) {
+      return tokenList
+    }
+    return []
+  }, [tokenList])
+  // console.log(viewTokenList)
   return (
     <AutoColumn gap="md">
       {/* <AutoRow>
@@ -56,8 +63,8 @@ export default function CommonBases({
             {Currency.getNativeCurrencySymbol(chainId)}
           </Text>
         </BaseWrapper> */}
-        {(tokenList ? tokenList : []).map((token: any) => {
-          const selected = selectedCurrency.key === token.key
+        {viewTokenList.length > 0 ? viewTokenList.map((token: any) => {
+          const selected = selectedCurrency.address === token.address
           return (
             <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token?.key}>
               {/* <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={(token?.tokenType ? token?.tokenType : '') + token.address}> */}
@@ -67,7 +74,7 @@ export default function CommonBases({
               </Text>
             </BaseWrapper>
           )
-        })}
+        }) : ''}
       </AutoRow>
     </AutoColumn>
   )
