@@ -182,8 +182,13 @@ export default function CrossChain({
       return destConfig?.routerToken
     } else {
       if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
-        // setBridgeAnyToken('')
+        setBridgeAnyToken(selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address)
         return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
+      }  else if (selectCurrency?.underlying1 && destConfig?.type === 'swapout') {
+        if (typeof selectCurrency?.underlying1?.isApprove !== 'undefined' && selectCurrency?.underlying1?.isApprove) {
+          setBridgeAnyToken(selectCurrency?.underlying1?.address)
+          return selectCurrency?.underlying1?.address
+        }
       } else if (selectCurrency?.underlying && destConfig?.type === 'swapout') {
         if (typeof selectCurrency?.underlying?.isApprove !== 'undefined' && selectCurrency?.underlying?.isApprove) {
           setBridgeAnyToken(selectCurrency?.underlying?.address)
