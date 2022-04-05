@@ -183,7 +183,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
 
         <OptionWrapper>
           <OptionLabel>
-            {t('bigValueThreshold')} (what is this and how does it affect the swap?)
+            {t('bigValueThreshold')}
             <Input
               defaultValue={bigValueThreshold}
               type="number"
@@ -195,7 +195,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
 
         <OptionWrapper>
           <OptionLabel>
-            {t('swapFeeRatePerMillion')} (how does it work?)
+            {t('swapFeeRatePerMillion')}
             <Input
               defaultValue={swapFeeRatePerMillion}
               type="number"
