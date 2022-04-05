@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouterConfig } from '../../utils/contract'
 import { ButtonPrimary } from '../../components/Button'
+
+const Button = styled(ButtonPrimary)`
+  width: 100%;
+`
 
 export default function DeployRouterConfig() {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
@@ -41,8 +46,8 @@ export default function DeployRouterConfig() {
   }
 
   return (
-    <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
+    <Button disabled={!canDeploy} onClick={onDeployment}>
       {t('deployConfig')}
-    </ButtonPrimary>
+    </Button>
   )
 }

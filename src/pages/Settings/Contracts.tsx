@@ -212,11 +212,23 @@ export default function Contracts() {
     }
   }
 
+  const [onStorageNetwork, setOnStorageNetwork] = useState(false)
+
+  useEffect(() => {
+    setOnStorageNetwork(chainId === config.STORAGE_CHAIN_ID)
+  }, [chainId])
+
   const [onConfigNetwork, setOnConfigNetwork] = useState(false)
 
   useEffect(() => {
     setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === stateRouterConfigChainId))
   }, [chainId, stateRouterConfigChainId])
+
+  const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
+
+  useEffect(() => {
+    setCanSaveRouterConfig(Boolean(onStorageNetwork && routerConfigChainId && routerConfigAddress))
+  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress])
 
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
@@ -261,45 +273,53 @@ export default function Contracts() {
       </Notice>
 
       {!stateRouterConfigAddress && (
-        <ZoneWrapper>
+        <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">
           <DeployRouterConfig />
           <OptionWrapper>
-            {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-            {t('beOnStorageNetworkToSaveConfig', {
-              network: chainInfo[config.STORAGE_CHAIN_ID]?.name
-            })}
+            <Notice warning margin="0.4rem 0 0.6rem">
+              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
+              {t('beOnStorageNetworkToSaveConfig', {
+                network: chainInfo[config.STORAGE_CHAIN_ID]?.name
+              })}
+            </Notice>
             <OptionLabel>
               {t('configChainId')}
-              <Input type="number" placeholder="0x..." onChange={event => setRouterConfigChainId(event.target.value)} />
+              <Input
+                type="number"
+                min="1"
+                placeholder="0x..."
+                onChange={event => setRouterConfigChainId(event.target.value)}
+              />
               {t('configAddress')}
               <Input type="text" placeholder="0x..." onChange={event => setRouterConfigAddress(event.target.value)} />
             </OptionLabel>
           </OptionWrapper>
-          <Button onClick={() => saveRouterConfig(routerConfigAddress, Number(routerConfigChainId))}>
+          <Button
+            disabled={!canSaveRouterConfig}
+            onClick={() => saveRouterConfig(routerConfigAddress, Number(routerConfigChainId))}
+          >
             {t('saveConfig')}
           </Button>
-        </ZoneWrapper>
+        </Accordion>
       )}
 
       <Lock enabled={!stateRouterConfigAddress || !stateRouterConfigChainId}>
-        <ZoneWrapper blocked={!routerConfigAddress}>
-          {chainId && !stateRouterAddress[chainId] && (
+        <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
+          {chainId && !stateRouterAddress[chainId] ? (
             <>
-              <Notice>{t('youNeedOneRouterForEachNetwork')}</Notice>
+              <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
               <DeployRouter />
             </>
+          ) : (
+            <span />
           )}
 
           <OptionWrapper>
             {chainId && !stateRouterAddress[chainId] && (
-              <Notice>
+              <Notice warning margin="0.4rem 0">
                 {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
                 {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
               </Notice>
-            )}
-
-            {chainId && !onConfigNetwork && !stateRouterAddress[chainId] && (
-              <Notice warning>{t('switchToConfigNetworkToSaveRouterInfo')}</Notice>
             )}
             <Lock enabled={!chainId || !!stateRouterAddress[chainId] || !onConfigNetwork}>
               <OptionLabel>
@@ -325,10 +345,10 @@ export default function Contracts() {
               </Button>
             </Lock>
           </OptionWrapper>
-        </ZoneWrapper>
+        </Accordion>
 
-        <ZoneWrapper blocked={!routerConfigAddress || !routerAddress}>
-          <Notice>{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
+        <ZoneWrapper blocked={!routerAddress}>
+          <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
           <OptionWrapper>
             <OptionLabel>
               {t('erc20ChainId')}
@@ -340,8 +360,16 @@ export default function Contracts() {
 
           <DeployCrosschainToken routerAddress={routerAddress} underlying={underlying} />
 
-          {!onConfigNetwork && <Notice warning>{t('switchToConfigNetworkToAccessTheseOptions')}</Notice>}
-          {!hasUnderlyingInfo && <Notice warning>{t('fillErc20InputsToUnlockTheseSettings')}</Notice>}
+          {!onConfigNetwork && (
+            <Notice warning margin="0.3rem 0">
+              {t('switchToConfigNetworkToAccessTheseOptions')}
+            </Notice>
+          )}
+          {!hasUnderlyingInfo && (
+            <Notice warning margin="0.3rem 0">
+              {t('fillErc20InputsToUnlockTheseSettings')}
+            </Notice>
+          )}
 
           <Lock enabled={!hasUnderlyingInfo || !onConfigNetwork}>
             <Accordion title={t('tokenConfig')} margin="0.5rem 0">

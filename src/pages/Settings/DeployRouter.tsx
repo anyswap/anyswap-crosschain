@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouter } from '../../utils/contract'
@@ -7,6 +8,10 @@ import { chainInfo } from '../../config/chainConfig'
 import { ButtonPrimary } from '../../components/Button'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
+
+const Button = styled(ButtonPrimary)`
+  width: 100%;
+`
 
 export default function DeployRouter() {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
@@ -57,8 +62,8 @@ export default function DeployRouter() {
   }
 
   return (
-    <ButtonPrimary disabled={!canDeploy} onClick={onDeployment}>
+    <Button disabled={!canDeploy} onClick={onDeployment}>
       {t('deployRouter')}
-    </ButtonPrimary>
+    </Button>
   )
 }

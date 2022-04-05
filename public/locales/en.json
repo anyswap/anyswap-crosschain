@@ -405,5 +405,7 @@
   "setSwapConfig": "Set swap config",
   "switchToConfigNetworkToSaveRouterInfo": "Switch to a config network to save router info",
   "switchToConfigNetworkToAccessTheseOptions": "Switch to a config network to access these options",
-  "fillErc20InputsToUnlockTheseSettings": "Fill ERC20 inputs to unlock these settings"
+  "fillErc20InputsToUnlockTheseSettings": "Fill ERC20 inputs to unlock these settings",
+  "deployAndSaveConfig": "Deploy and save config contract",
+  "deployAndSetRouter": "Deploy and set router contract"
 }

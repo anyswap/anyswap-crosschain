@@ -404,5 +404,7 @@
   "setSwapConfig": "設置交換配置",
   "switchToConfigNetworkToSaveRouterInfo": "切換到配置網絡以保存路由器信息",
   "switchToConfigNetworkToAccessTheseOptions": "切換到配置網絡以訪問這些選項",
-  "fillErc20InputsToUnlockTheseSettings": "充滿 ERC20 解鎖這些設置的輸入"
+  "fillErc20InputsToUnlockTheseSettings": "充滿 ERC20 解鎖這些設置的輸入",
+  "deployAndSaveConfig": "部署和保存配置合約",
+  "deployAndSetRouter": "部署和設置路由器合約"
 }
