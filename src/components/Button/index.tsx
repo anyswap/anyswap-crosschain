@@ -17,7 +17,6 @@ const Base = styled(RebassButton)<{
   padding: ${({ padding }) => (padding ? padding : '1rem')};
   width: ${({ width }) => (width ? width : '100%')};
   height: ${({ height }) => (height ? height : '54px')};
-  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '320px')};
 
   font-weight: 500;
   text-align: center;
@@ -49,9 +48,11 @@ export const CleanButton = styled(Base)`
   color: inherit;
 `
 
-export const ButtonPrimary = styled(Base)`
+export const ButtonPrimary = styled(Base)<{ fullWidth?: boolean; margin?: string }>`
   background: ${({ theme }) => theme.primary1};
   color: white;
+  width: ${({ fullWidth }) => (fullWidth ? 'width: 100%' : 'auto')};
+  margin: ${({ margin }) => (margin ? margin : '')};
   &:focus {
     opacity: 0.91;
   }

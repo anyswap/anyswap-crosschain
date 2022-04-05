@@ -51,6 +51,7 @@ const bridgeToken = {
 export default {
   
   [ARBITRUM_MAIN_CHAINID]: {
+    wrappedToken: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
     tokenListUrl: tokenListUrl + ARBITRUM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -81,6 +82,7 @@ export default {
     anyToken: ''
   },
   [ARBITRUM_TEST_CHAINID]: {
+    wrappedToken: '0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681',
     tokenListUrl: tokenListUrl + ARBITRUM_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

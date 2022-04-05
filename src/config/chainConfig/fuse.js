@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [FUSE_MAIN_CHAINID]: {
+    wrappedToken: '0x0BE9e53fd7EDaC9F859882AfdDa116645287C629',
     tokenListUrl: tokenListUrl + FUSE_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

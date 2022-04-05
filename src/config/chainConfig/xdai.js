@@ -5,6 +5,10 @@ export const XDAI_MAIN_CHAINID = 100
 export const XDAI_MAINNET = getLocalRPC(XDAI_MAIN_CHAINID, 'https://rpc.xdaichain.com')
 export const XDAI_MAIN_EXPLORER = 'https://blockscout.com/xdai/mainnet'
 
+export const XDAI_TEST_CHAINID = 77
+export const XDAI_TESTNET = getLocalRPC(XDAI_TEST_CHAINID, 'https://sokol.poa.network')
+export const XDAI_TEST_EXPLORER = 'https://blockscout.com/poa/sokol'
+
 export const tokenList = []
 export const testTokenList = []
 
@@ -31,6 +35,7 @@ const bridgeToken = {
 
 export default {
   [XDAI_MAIN_CHAINID]: {
+    wrappedToken: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
     tokenListUrl: tokenListUrl + XDAI_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -60,6 +65,7 @@ export default {
     anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
   [77]: {
+    wrappedToken: "0x79D5C019F2515Cbc0596170Da44FCd26412c4f83",
     tokenListUrl: tokenListUrl + 77,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

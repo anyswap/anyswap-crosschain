@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [CELO_MAIN_CHAINID]: {
+    wrappedToken: '0x122013fd7dF1C6F636a5bb8f03108E876548b455',
     tokenListUrl: tokenListUrl + CELO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

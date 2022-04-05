@@ -43,6 +43,7 @@ const bridgeToken = {
 
 export default {
   [AVAX_MAIN_CHAINID]: {
+    wrappedToken: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
     tokenListUrl: tokenListUrl + AVAX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

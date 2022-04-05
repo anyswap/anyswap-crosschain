@@ -24,6 +24,30 @@
     "allowSyntheticDefaultImports": true,
     "types": ["react-spring", "jest"]
   },
+  "paths": {
+    "assets": ["src/assets"],
+    "assets/*": ["src/assets/*"],
+    "components": ["src/components"],
+    "components/*": ["src/components/*"],
+    "config": ["src/config"],
+    "config/*": ["src/config/*"],
+    "connectors": ["src/connectors"],
+    "connectors/*": ["src/connectors/*"],
+    "constants": ["src/constants"],
+    "constants/*": ["src/constants/*"],
+    "data": ["src/data"],
+    "data/*": ["src/data/*"],
+    "hooks": ["src/hooks"],
+    "hooks/*": ["src/hooks/*"],
+    "pages": ["src/pages"],
+    "pages/*": ["src/pages/*"],
+    "state": ["src/state"],
+    "state/*": ["src/state/*"],
+    "theme": ["src/theme"],
+    "theme/*": ["src/theme/*"],
+    "utils": ["src/utils"],
+    "utils/*": ["src/utils/*"]
+  },
   "exclude": ["node_modules", "cypress"],
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/pages/Farms/FarmsList.tsx"]
 }

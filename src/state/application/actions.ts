@@ -41,8 +41,11 @@ export type AppData = {
   elementsColorDark: string
   socialLinks: string[]
   disableSourceCopyright: boolean
+  routerConfigChainId: number | undefined
+  routerConfigAddress: string
 }
 
+export const updateRouterData = createAction<{ chainId: number; routerAddress: string }>('application/updateRouterData')
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')

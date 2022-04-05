@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [OETH_MAIN_CHAINID]: {
+    wrappedToken: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
     tokenListUrl: tokenListUrl + OETH_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [GLMR_MAIN_CHAINID]: {
+    wrappedToken: '0xacc15dc74880c9944775448304b263d191c6077f',
     tokenListUrl: tokenListUrl + GLMR_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

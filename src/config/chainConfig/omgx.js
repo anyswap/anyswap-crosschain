@@ -32,7 +32,6 @@ const bridgeToken = {
 }
 
 export default {
-  
   [OMGX_MAIN_CHAINID]: {
     tokenListUrl: tokenListUrl + OMGX_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),

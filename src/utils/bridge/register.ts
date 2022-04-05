@@ -1,41 +1,48 @@
-import {getUrlData, postUrlData} from '../tools/axios'
-import {USE_VERSION, timeout} from '../../config/constant'
-import {getLocalConfig} from '../tools/tools'
-import {CROSSCHAINBRIDGE} from './type'
-
+import { getUrlData, postUrlData } from '../tools/axios'
+import { USE_VERSION, timeout } from '../../config/constant'
+import { getLocalConfig } from '../tools/tools'
+import { CROSSCHAINBRIDGE } from './type'
 import config from '../../config'
 
-export function registerSwap (hash:string, chainId:any) {
-  return new Promise(resolve => {
-    console.log(hash)
-    const url = `${config.bridgeApi}/v3/register?hash=${hash}&chainId=${chainId}&type=${USE_VERSION}`
-    getUrlData(url).then(res => {
-      console.log(res)
-      resolve(res)
+export function registerSwap(hash: string, chainId: any) {
+  return new Promise((resolve, reject) => {
+    console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
+
+    const url = `${config.routerApi}/swap/register/${chainId}/${hash}`
+
+    postUrlData(url, {
+      logindex: 0
     })
+      .then((res: any) => {
+        console.log('Router response: ', res)
+        resolve(res)
+      })
+      .catch(error => {
+        console.error('Router error: ', error)
+        reject(error)
+      })
   })
 }
 
-
 interface RecordsTxnsProp {
   hash: string
-  chainId:any
-  selectChain:any,
-  account: string | null | undefined,
-  value: string,
-  formatvalue: string,
-  to: string,
-  symbol: string | undefined,
-  version?: string | undefined,
-  pairid?: string | undefined,
-  routerToken?: string | undefined,
+  chainId: any
+  selectChain: any
+  account: string | null | undefined
+  value: string
+  formatvalue: string
+  to: string
+  symbol: string | undefined
+  version?: string | undefined
+  pairid?: string | undefined
+  routerToken?: string | undefined
 }
-const registerList:any = {}
+const registerList: any = {}
 
 // console.log(window?.navigator)
 // console.log(window)
 // getUrlData('https://api.ipify.org/?format=json').then(res => console.log(res))
-export function recordsTxns ({
+export function recordsTxns({
   hash,
   chainId,
   selectChain,
@@ -48,13 +55,13 @@ export function recordsTxns ({
   pairid,
   routerToken
 }: RecordsTxnsProp) {
-  return new Promise(async(resolve) => {
+  return new Promise(async resolve => {
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)
-    const ip:any = await getUrlData('https://api.ipify.org/?format=json')
+    const ip: any = await getUrlData('https://api.ipify.org/?format=json')
     const data = {
       hash: hash,
       srcChainID: chainId,
@@ -68,7 +75,7 @@ export function recordsTxns ({
       symbol: symbol,
       pairid: pairid,
       userAgent: window?.navigator?.userAgent,
-      userIP: window?.returnCitySN ? window?.returnCitySN : (ip?.data?.ip ? {cip: ip?.data?.ip} : '')
+      userIP: window?.returnCitySN ? window?.returnCitySN : ip?.data?.ip ? { cip: ip?.data?.ip } : ''
     }
     if (!registerList[hash]) {
       registerList[hash] = {
@@ -87,12 +94,12 @@ export function recordsTxns ({
         timestamp: Date.now()
       }
     }
-    postUrlData(url, data).then((res:any) => {
+    postUrlData(url, data).then((res: any) => {
       console.log(res)
       if (res.msg === 'Success' || res.data === 'Error') {
         registerList[hash].isRegister = 1
       } else {
-        if ((Date.now() - registerList[hash].timestamp) <= 3000) {
+        if (Date.now() - registerList[hash].timestamp <= 3000) {
           setTimeout(() => {
             recordsTxns(registerList[hash])
           }, 1000)
@@ -103,8 +110,8 @@ export function recordsTxns ({
   })
 }
 
-const approveList:any = {}
-export function recordsApprove ({
+const approveList: any = {}
+export function recordsApprove({
   token,
   spender,
   account,
@@ -113,19 +120,19 @@ export function recordsApprove ({
   decimals,
   hash,
   chainId,
-  type,
+  type
 }: {
-  token: any,
-  spender: any,
-  account: any,
-  amount: any,
-  symbol: any,
-  decimals: any,
-  hash: any,
-  chainId: any,
-  type: any,
+  token: any
+  spender: any
+  account: any
+  amount: any
+  symbol: any
+  decimals: any
+  hash: any
+  chainId: any
+  type: any
 }) {
-  return new Promise(async(resolve) => {
+  return new Promise(async resolve => {
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records/approved`
     const data = {
@@ -137,7 +144,7 @@ export function recordsApprove ({
       decimals,
       hash,
       chainId,
-      type,
+      type
     }
     if (!approveList[hash]) {
       approveList[hash] = {
@@ -154,12 +161,12 @@ export function recordsApprove ({
         timestamp: Date.now()
       }
     }
-    postUrlData(url, data).then((res:any) => {
+    postUrlData(url, data).then((res: any) => {
       console.log(res)
       if (res.msg === 'Success' || res.data === 'Error') {
         approveList[hash].isRegister = 1
       } else {
-        if ((Date.now() - approveList[hash].timestamp) <= 3000) {
+        if (Date.now() - approveList[hash].timestamp <= 3000) {
           setTimeout(() => {
             recordsApprove(approveList[hash])
           }, 1000)
@@ -183,7 +190,7 @@ export function recordsApprove ({
 // hash: ceac140bff1f9d1da04e7ec94ebcef83a8d868ed527149b3a6e842e65a5e5fb4
 // srcChainID: TERRA
 // destChainID: 250
-// token: 
+// token:
 // from: terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws
 // version: swapin
 // value: 50000000
@@ -205,19 +212,19 @@ export function recordsApprove ({
 //   routerToken: ''
 // })
 
-export function getP2PInfo (account:any, chainId:any, symbol:string, token:any) {
+export function getP2PInfo(account: any, chainId: any, symbol: string, token: any) {
   return new Promise(resolve => {
     // console.log(hash)
     const lData = getLocalConfig(account, token, chainId, CROSSCHAINBRIDGE, timeout, undefined)
     if (lData) {
       // console.log(lData)
-      resolve({p2pAddress: lData.p2pAddress})
+      resolve({ p2pAddress: lData.p2pAddress })
     } else {
       const url = `${config.bridgeApi}/v2/register/${account}/${chainId}/${symbol}`
-      getUrlData(url).then((res:any) => {
+      getUrlData(url).then((res: any) => {
         // console.log(res)
         if (res.msg === 'Success') {
-          resolve({p2pAddress: res?.data?.P2shAddress ?? res?.data?.info?.P2shAddress})
+          resolve({ p2pAddress: res?.data?.P2shAddress ?? res?.data?.info?.P2shAddress })
         } else {
           resolve('')
         }

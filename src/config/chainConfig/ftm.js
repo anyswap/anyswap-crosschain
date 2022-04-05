@@ -67,6 +67,7 @@ const bridgeToken = {
 
 export default {
   [FTM_MAIN_CHAINID]: {
+    wrappedToken: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
     tokenListUrl: tokenListUrl + FTM_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

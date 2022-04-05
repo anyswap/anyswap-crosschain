@@ -154,6 +154,7 @@ const bridgeToken = {
 
 export default {
   [ETH_MAIN_CHAINID]: {
+    wrappedToken: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     tokenListUrl: tokenListUrl + ETH_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
@@ -183,6 +184,8 @@ export default {
     anyToken: '0xf99d58e463a2e07e5692127302c20a191861b4d6'
   },
   [ETH_TEST_CHAINID]: {
+    wrappedToken: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    storage: '0xd2baDd65d97549EB8af9B83BcD74768c9ebaeC31',
     tokenListUrl: tokenListUrl + ETH_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],

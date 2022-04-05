@@ -7,6 +7,8 @@ import { injected, walletconnect } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
+export const EVM_ADDRESS_REGEXP = /^0x[A-Fa-f0-9]{40}$/
+
 // a list of tokens by chain
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -14,8 +16,8 @@ type ChainTokenList = {
 
 export const STORAGE_METHODS = {
   getData: 'getData',
-  setData: 'setData',
-  clearData: 'clearData'
+  setKeyData: 'setKeyData',
+  clearKeyData: 'clearKeyData'
 }
 export interface WalletInfo {
   connector?: AbstractConnector

@@ -1,47 +1,31 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { ZERO_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
-import useDebounce from '../../hooks/useDebounce'
+import { useRouterConfigContract } from '../../hooks/useContract'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import { updateBlockNumber } from './actions'
-// import { useDispatch } from 'react-redux'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppState } from '../index'
-import config from '../../config'
-import { useWeb3 } from '../../utils/tools/web3UtilsV2'
+import { updateBlockNumber, updateRouterData } from './actions'
+import { useAppState } from './hooks'
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
-  const stateMt = useSelector<AppState, AppState['multicall']>(state => state.multicall)
-  const destChainId = stateMt.useChainId
-  // console.log(stateMt)
   const windowVisible = useIsWindowVisible()
-
-  const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null }>({
-    chainId,
-    blockNumber: null
-  })
+  const { routerConfigAddress, routerConfigChainId } = useAppState()
+  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
 
   const blockNumberCallback = useCallback(
     (blockNumber: number) => {
-      setState(state => {
-        // console.log('时间', Date.now())
-        // console.log(state)
-        if (chainId === state.chainId) {
-          if (typeof state.blockNumber !== 'number') return { chainId, blockNumber }
-          return { chainId, blockNumber: Math.max(blockNumber, state.blockNumber) }
-        }
-        return state
-      })
+      if (chainId) {
+        dispatch(updateBlockNumber({ chainId, blockNumber }))
+      }
     },
-    [chainId, setState]
+    [chainId]
   )
 
   // attach/detach listeners
   useEffect(() => {
-    if (!library || !chainId || !windowVisible) return undefined
-
-    setState({ chainId, blockNumber: null })
+    if (!library || !chainId || !windowVisible) return
 
     library
       .getBlockNumber()
@@ -49,35 +33,27 @@ export default function Updater(): null {
       .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
 
     library.on('block', blockNumberCallback)
+
     return () => {
       library.removeListener('block', blockNumberCallback)
     }
-  }, [dispatch, chainId, library, blockNumberCallback, windowVisible])
-
-  const debouncedState = useDebounce(state, 10)
+  }, [chainId, library, blockNumberCallback, windowVisible])
 
   useEffect(() => {
-    if (
-      !debouncedState.chainId ||
-      !debouncedState.blockNumber ||
-      !windowVisible ||
-      !config.getCurChainInfo(destChainId)
-    ) {
-      console.log('>>>> App updater >>> skip')
-      return
+    const fetch = async () => {
+      if (!routerConfig || !chainId) return
+
+      const { RouterContract } = await routerConfig.methods.getChainConfig(chainId).call()
+
+      dispatch(updateRouterData({ chainId, routerAddress: RouterContract === ZERO_ADDRESS ? '' : RouterContract }))
     }
 
-    if (destChainId && false) {
-      console.log('>> App updated >>> destChainId', destChainId)
-      
-      useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res: any) => {
-        dispatch(updateBlockNumber({ chainId: destChainId, blockNumber: res }))
-      })
+    if (routerConfig && chainId) {
+      fetch()
+    } else {
+      dispatch(updateRouterData({ chainId: chainId || 0, routerAddress: '' }))
     }
-
-console.log('debouncedState.chainId', debouncedState.chainId, 'destChainId', destChainId)
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
-  }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])
+  }, [chainId, routerConfigAddress, routerConfigChainId, routerConfig])
 
   return null
 }

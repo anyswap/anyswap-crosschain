@@ -3,9 +3,12 @@ import { AppData } from '../state/application/actions'
 import { useStorageContract } from './useContract'
 import config from '../config'
 import { ZERO_ADDRESS } from '../constants'
+import { getCurrentDomain } from '../utils/url'
 
 const parseInfo = (info: string) => {
   const parsed: AppData = {
+    routerConfigChainId: undefined,
+    routerConfigAddress: '',
     owner: '',
     logo: '',
     projectName: '',
@@ -19,8 +22,11 @@ const parseInfo = (info: string) => {
   }
   const result = JSON.parse(info)
 
-  if (Object.keys(result)) {
+  if (Object.keys(result) && result.crossChainSettings) {
+    const { crossChainSettings } = result
     const {
+      routerConfigChainId,
+      routerConfigAddress,
       logoUrl,
       projectName,
       brandColor,
@@ -30,8 +36,10 @@ const parseInfo = (info: string) => {
       elementsColorDark,
       socialLinks,
       disableSourceCopyright
-    } = result
+    } = crossChainSettings
 
+    if (routerConfigChainId) parsed.routerConfigChainId = routerConfigChainId
+    if (routerConfigAddress) parsed.routerConfigAddress = routerConfigAddress
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
     if (brandColor) parsed.brandColor = brandColor
@@ -64,8 +72,7 @@ export default function useAppData(): {
       setIsLoading(true)
 
       try {
-        const domain = window.location.hostname || document.location.host
-        const data = await storage.methods.getData(domain).call()
+        const data = await storage.methods.getData(getCurrentDomain()).call()
         const { owner, info } = data
 
         setData({

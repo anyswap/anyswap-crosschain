@@ -31,6 +31,7 @@ const bridgeToken = {
 
 export default {
   [CRO_MAIN_CHAINID]: {
+    wrappedToken: '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23',
     tokenListUrl: tokenListUrl + CRO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],

@@ -236,9 +236,6 @@ export function useFetchTokenListCallback(): () => Promise<any> {
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-  // console.log(lists)
-  console.log('>>> useFetchTokenListCallback')
-  
   return useCallback(
     async () => {
       if (!chainId) return
@@ -248,10 +245,15 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         const UV:any = USE_VERSION
         const version:any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
         const url = `${config.bridgeApi}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
+
+        // console.group('%c useFetchTokenListCallback', 'color: brown')
+        // console.log('curList: ', curList)
+        // console.groupEnd()
+
         return getUrlData(url)
           .then((tokenList:any) => {
-            // console.log(tokenList)
             const list:any = {}
+
             if (tokenList.msg === 'Success' && tokenList.data) {
               const chainServerList = prepareServerList(chainId)
               const tList = (true) ? chainServerList : tokenList.data
@@ -285,6 +287,8 @@ export function useFetchTokenListCallback(): () => Promise<any> {
                 }
               }
             }
+            // console.log('list: ', list)
+
             dispatch(routerTokenList({ chainId, tokenList:list }))
             return list
           })
