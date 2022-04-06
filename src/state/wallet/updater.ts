@@ -81,7 +81,7 @@ export default function Updater(): null {
 
   const calls = useMemo(() => {
     const arr = []
-    const list = Object.values(allTokens ?? {})
+    const list = allTokens ? Object.values(allTokens ?? {}) : []
     // console.log(list)
     if (account && !isNaN(chainId)) {
       // for (const obj of list) {
