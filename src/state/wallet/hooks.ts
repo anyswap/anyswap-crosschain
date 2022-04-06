@@ -12,7 +12,6 @@ import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 import { AppState } from '../index'
 
-import {useToken} from '../../hooks/Tokens'
 // import { tokenBalanceList } from './actions'
 
 /**
@@ -209,7 +208,6 @@ export function useTokenBalanceList(): any {
 export function useOneTokenBalance(token:any): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
-  const tokens = useToken(token)
   // console.log(lists)
   // console.log(tryParseAmount5('100', 6))
   // console.log(tryParseAmount5('100', 6).toSignificant(3))
@@ -237,7 +235,7 @@ export function useOneTokenBalance(token:any): any {
       return {}
     }
     return {}
-  }, [lists, chainId, account, token, tokens])
+  }, [lists, chainId, account, token])
 }
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[],
