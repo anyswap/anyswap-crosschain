@@ -406,5 +406,9 @@
   "switchToConfigNetworkToAccessTheseOptions": "切換到配置網絡以訪問這些選項",
   "fillErc20InputsToUnlockTheseSettings": "充滿 ERC20 解鎖這些設置的輸入",
   "deployAndSaveConfig": "部署和保存配置合約",
-  "deployAndSetRouter": "部署和設置路由器合約"
+  "deployAndSetRouter": "部署和設置路由器合約",
+  "switchToStorageNetworkToSaveIt": "切換到 {{network}} 保存它",
+  "apiServerAddress": "API 服務器地址",
+  "apiServerAddressDescription": "您可以使用域名 (mydomain.com) 或 IP 地址 (1.2.3.4)",
+  "saveAddress": "保存地址"
 }

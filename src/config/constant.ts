@@ -1,10 +1,7 @@
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 export const bridgeApi = 'https://bridgeapi.anyswap.exchange'
-// export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
-
-export const routerApi = process.env.REACT_APP_ROUTER_API
 
 export enum VERSION {
   V1 = 'UNDERLYING',

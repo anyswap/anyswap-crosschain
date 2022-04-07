@@ -4,11 +4,11 @@ import { getLocalConfig } from '../tools/tools'
 import { CROSSCHAINBRIDGE } from './type'
 import config from '../../config'
 
-export function registerSwap(hash: string, chainId: any) {
+export function registerSwap(hash: string, chainId: any, apiAddress: string) {
   return new Promise((resolve, reject) => {
     console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
 
-    const url = `${config.routerApi}/swap/register/${chainId}/${hash}`
+    const url = `${apiAddress}/swap/register/${chainId}/${hash}`
 
     postUrlData(url, {
       logindex: 0

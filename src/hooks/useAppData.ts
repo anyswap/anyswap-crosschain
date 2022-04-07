@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AppData } from '../state/application/actions'
+// import { getUrlData } from '../utils/tools/axios'
 import { useStorageContract } from './useContract'
 import config from '../config'
 import { ZERO_ADDRESS } from '../constants'
@@ -57,6 +58,12 @@ const parseInfo = (info: string) => {
   return parsed
 }
 
+const errorLog = (error: any) => {
+  console.group('%c app data', 'color: red;')
+  console.error(error)
+  console.groupEnd()
+}
+
 export default function useAppData(): {
   data: AppData | null
   isLoading: boolean
@@ -74,21 +81,36 @@ export default function useAppData(): {
       setError(null)
       setIsLoading(true)
 
-      try {
-        const data = await storage.methods.getData(getCurrentDomain()).call()
-        const { owner, info } = data
+      let parsed
+      let data
 
-        setData({
-          ...parseInfo(info || '{}'),
-          owner: owner === ZERO_ADDRESS ? '' : owner
-        })
+      try {
+        data = await storage.methods.getData(getCurrentDomain()).call()
+        parsed = parseInfo(data.info || '{}')
       } catch (error) {
-        console.group('%c app data', 'color: red;')
-        console.error(error)
-        console.groupEnd()
+        errorLog(error)
         setError(error)
       }
 
+      if (parsed?.apiAddress) {
+        try {
+          // TODO: is node alive?
+          // const response = await getUrlData(`${parsed?.apiAddress}`)
+        } catch (error) {
+          parsed.apiAddress = ''
+          errorLog(error)
+          setError(error)
+        }
+      }
+
+      if (parsed) {
+        const { owner } = data
+
+        setData({
+          ...parsed,
+          owner: owner === ZERO_ADDRESS ? '' : owner
+        })
+      }
       setIsLoading(false)
     }
 

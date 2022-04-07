@@ -303,7 +303,7 @@ export default function Contracts() {
       <OptionWrapper>
         {!onStorageNetwork && (
           <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt')}
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.name })}
           </Notice>
         )}
         <Lock enabled={!onStorageNetwork}>
