@@ -41,6 +41,7 @@ export type AppData = {
   elementsColorDark: string
   socialLinks: string[]
   disableSourceCopyright: boolean
+  apiAddress: string
   routerConfigChainId: number | undefined
   routerConfigAddress: string
 }

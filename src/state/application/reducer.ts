@@ -24,6 +24,7 @@ export type ApplicationState = {
 } & AppData
 
 const initialState: ApplicationState = {
+  apiAddress: '',
   routerConfigChainId: undefined,
   routerConfigAddress: '',
   appManagement: false,
@@ -48,6 +49,7 @@ export default createReducer(initialState, builder =>
     .addCase(retrieveAppData, (state, action) => {
       if (action.payload) {
         const {
+          apiAddress,
           routerConfigChainId,
           routerConfigAddress,
           logo,
@@ -61,6 +63,7 @@ export default createReducer(initialState, builder =>
           disableSourceCopyright
         } = action.payload
 
+        if (apiAddress) state.apiAddress = apiAddress
         if (routerConfigChainId) state.routerConfigChainId = routerConfigChainId
         if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
         if (logo) state.logo = logo

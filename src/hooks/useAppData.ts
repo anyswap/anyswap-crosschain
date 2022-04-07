@@ -7,6 +7,7 @@ import { getCurrentDomain } from '../utils/url'
 
 const parseInfo = (info: string) => {
   const parsed: AppData = {
+    apiAddress: '',
     routerConfigChainId: undefined,
     routerConfigAddress: '',
     owner: '',
@@ -25,6 +26,7 @@ const parseInfo = (info: string) => {
   if (Object.keys(result) && result.crossChainSettings) {
     const { crossChainSettings } = result
     const {
+      apiAddress,
       routerConfigChainId,
       routerConfigAddress,
       logoUrl,
@@ -38,6 +40,7 @@ const parseInfo = (info: string) => {
       disableSourceCopyright
     } = crossChainSettings
 
+    if (apiAddress) parsed.apiAddress = apiAddress
     if (routerConfigChainId) parsed.routerConfigChainId = routerConfigChainId
     if (routerConfigAddress) parsed.routerConfigAddress = routerConfigAddress
     if (logoUrl) parsed.logo = logoUrl
