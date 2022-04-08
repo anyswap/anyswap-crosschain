@@ -8,7 +8,7 @@ import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS } from '../../constants'
+import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS, API_REGEXP } from '../../constants'
 import Accordion from '../../components/Accordion'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
@@ -29,6 +29,7 @@ export const OptionLabel = styled.label`
 `
 
 export const Input = styled.input`
+  width: 100%;
   padding: 0.4rem 0;
   margin: 0.2rem 0;
   border: none;
@@ -80,6 +81,7 @@ export default function Contracts() {
   const { t } = useTranslation()
 
   const {
+    apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
     routerConfigAddress: stateRouterConfigAddress,
     routerAddress: stateRouterAddress
@@ -87,6 +89,38 @@ export default function Contracts() {
 
   const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
   const routerConfigSigner = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
+
+  const [onStorageNetwork, setOnStorageNetwork] = useState(false)
+
+  useEffect(() => {
+    setOnStorageNetwork(chainId === config.STORAGE_CHAIN_ID)
+  }, [chainId])
+
+  const [apiAddress, setApiAddress] = useState(stateApiAddress)
+  const [apiIsValid, setApiIsValid] = useState(false)
+
+  useEffect(() => {
+    setApiIsValid(apiAddress === '' || Boolean(apiAddress && apiAddress.match(API_REGEXP)))
+  }, [apiAddress])
+
+  const saveApiAddress = () => {
+    if (!account) return
+
+    try {
+      updateStorageData({
+        provider: library?.provider,
+        owner: account,
+        data: {
+          apiAddress
+        },
+        onReceipt: (receipt: any) => {
+          console.log('receipt: ', receipt)
+        }
+      })
+    } catch (error) {
+      console.error('API address: ', error)
+    }
+  }
 
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
@@ -212,12 +246,6 @@ export default function Contracts() {
     }
   }
 
-  const [onStorageNetwork, setOnStorageNetwork] = useState(false)
-
-  useEffect(() => {
-    setOnStorageNetwork(chainId === config.STORAGE_CHAIN_ID)
-  }, [chainId])
-
   const [onConfigNetwork, setOnConfigNetwork] = useState(false)
 
   useEffect(() => {
@@ -271,6 +299,23 @@ export default function Contracts() {
           </>
         )}
       </Notice>
+
+      <OptionWrapper>
+        {!onStorageNetwork && (
+          <Notice warning margin="0.3rem 0">
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.name })}
+          </Notice>
+        )}
+        <Lock enabled={!onStorageNetwork}>
+          <div>
+            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+          </div>
+          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
+            {t('saveAddress')}
+          </Button>
+        </Lock>
+      </OptionWrapper>
 
       {!stateRouterConfigAddress && (
         <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">

@@ -4,9 +4,10 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { TokenAmount, CurrencyAmount, ETHER } from 'anyswap-sdk'
 import { useTokenAllowance } from '../data/Allowances'
+import { useAppState } from '../state/application/hooks'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
-import {recordsApprove} from '../utils/bridge/register'
+import { recordsApprove } from '../utils/bridge/register'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
 
@@ -25,13 +26,11 @@ export function useApproveCallback(
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
+  const { apiAddress } = useAppState()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
-  // console.log(spender)
-  // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
-  // console.log(currentAllowance)
-  // check the current approval status
+
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency === ETHER) return ApprovalState.APPROVED
@@ -51,28 +50,29 @@ export function useApproveCallback(
 
   const approve = useCallback(async (): Promise<void> => {
     console.log(amountToApprove ? amountToApprove.raw.toString() : '')
-    if (approvalState !== ApprovalState.NOT_APPROVED) {
-      console.error('approve was called unnecessarily')
-      return
+
+    if (!apiAddress) {
+      return console.error('empty API address for approval')
     }
+
+    if (approvalState !== ApprovalState.NOT_APPROVED) {
+      return console.error('approve was called unnecessarily')
+    }
+
     if (!token) {
-      console.error('no token')
-      return
+      return console.error('no token')
     }
 
     if (!tokenContract) {
-      console.error('tokenContract is null')
-      return
+      return console.error('tokenContract is null')
     }
 
     if (!amountToApprove) {
-      console.error('missing amount to approve')
-      return
+      return console.error('missing amount to approve')
     }
 
     if (!spender) {
-      console.error('no spender')
-      return
+      return console.error('no spender')
     }
 
     let useExact = false
@@ -88,6 +88,7 @@ export function useApproveCallback(
       })
       .then((response: TransactionResponse) => {
         recordsApprove({
+          api: apiAddress,
           token: token?.address,
           spender: spender,
           account: account,
@@ -119,11 +120,10 @@ export function useNonApproveCallback(
 ) {
   const { account, chainId } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
+  const { apiAddress } = useAppState()
   const pendingApproval = useHasPendingApproval(token ?? undefined, spender ?? undefined)
 
   const [isSetApprove, setIsSetApprove] = useState<any>(false)
-
-  // const contract = useTokenContract(token, false)
   const tokenContract = useTokenContract(token)
   // if (!tokenContract || !spender || !account || !symbol || !chainId) return {
   //   isSetApprove: false,
@@ -159,9 +159,11 @@ export function useNonApproveCallback(
   }, [tokenContract, pendingApproval])
 
   const approve = useCallback(async (): Promise<void> => {
-    if (!tokenContract || !spender || !account || !symbol || !chainId) return
+    if (!apiAddress || !tokenContract || !spender || !account || !symbol || !chainId) return
+
     return tokenContract.approve(spender, '0x0').then((response: TransactionResponse) => {
       recordsApprove({
+        api: apiAddress,
         token: token,
         spender: spender,
         account: account,
@@ -183,11 +185,8 @@ export function useNonApproveCallback(
     })
   }, [tokenContract, spender, account, chainId, addTransaction])
 
-  
   return {
     isSetApprove,
     approve
   }
-  // return useMemo(() => {
-  // }, [isSetApprove, approve])
 }

@@ -4,14 +4,16 @@ import useInterval from '../../hooks/useInterval'
 import { useDispatch } from 'react-redux'
 // import axios from 'axios'
 // import config from '../../config'
+// import { useAppState } from '../../state/application/hooks'
 import {poolLiquidity} from './actions'
 
 
 export default function Updater(): null {
   const dispatch = useDispatch()
+  // const { apiAddress } = useAppState()
   const getPools = useCallback(() => {
     /*
-    axios.get(`${config.bridgeApi}/data/router/pools`).then(res => {
+    axios.get(`${apiAddress}/data/router/pools`).then(res => {
       const {status, data } = res
       if (status === 200) {
         const testData = {

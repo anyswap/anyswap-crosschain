@@ -407,5 +407,9 @@
   "switchToConfigNetworkToAccessTheseOptions": "Switch to a config network to access these options",
   "fillErc20InputsToUnlockTheseSettings": "Fill ERC20 inputs to unlock these settings",
   "deployAndSaveConfig": "Deploy and save config contract",
-  "deployAndSetRouter": "Deploy and set router contract"
+  "deployAndSetRouter": "Deploy and set router contract",
+  "switchToStorageNetworkToSaveIt": "Switch to {{network}} to save it",
+  "apiServerAddress": "API server address",
+  "apiServerAddressDescription": "You can use a domain name (mydomain.com) or IP address (1.2.3.4)",
+  "saveAddress": "Save address"
 }

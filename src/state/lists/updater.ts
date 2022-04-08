@@ -17,8 +17,6 @@ export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
 
-  
-
   const isWindowVisible = useIsWindowVisible()
 
   const fetchList = useFetchListCallback()
@@ -31,9 +29,12 @@ export default function Updater(): null {
 
   const fetchAllListsCallback = useCallback(() => {
     if (!isWindowVisible) return
-    Object.keys(lists).forEach(url =>
-      fetchList(url).catch(error => console.debug('interval list fetching error', error))
-    )
+
+    Object.keys(lists).forEach((url) => {
+      if (url) {
+        fetchList(url).catch(error => console.debug('interval list fetching error', error))
+      }
+    })
   }, [fetchList, isWindowVisible, lists])
 
   const fetchAllTokenListsCallback = useCallback(() => {

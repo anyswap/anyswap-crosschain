@@ -77,7 +77,11 @@ export async function updateStorageData(params: {
         crossChainSettings: merge({
           oldData: info.crossChainSettings,
           newData: data,
-          onElement: (key, oldKeyData, newKeyData) => newKeyData || oldKeyData
+          onElement: (key, oldKeyData, newKeyData) => {
+            if (key === 'apiAddress') return newKeyData || ''
+
+            return newKeyData || oldKeyData
+          }
         })
       }
 
