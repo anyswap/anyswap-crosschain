@@ -208,7 +208,6 @@ export function recordsApprove({
 //   routerToken: ''
 // })
 
-// account: any, chainId: any, symbol: string, token: any
 export function getP2PInfo({
   api,
   account,
