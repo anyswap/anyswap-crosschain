@@ -1,3 +1,4 @@
+// seems it's dead
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 
 export enum VERSION {

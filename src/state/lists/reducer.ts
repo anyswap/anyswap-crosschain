@@ -39,7 +39,8 @@ const initialState: ListsState = {
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
   byUrl: {
     ...DEFAULT_LIST_OF_LISTS.reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
-      memo[listUrl] = NEW_LIST_STATE
+      if (listUrl) memo[listUrl] = NEW_LIST_STATE
+
       return memo
     }, {})
   },
@@ -82,9 +83,9 @@ export default createReducer(initialState, builder =>
     })
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
+        ...state.byUrl[url],
         current: null,
         pendingUpdate: null,
-        ...state.byUrl[url],
         loadingRequestId: requestId,
         error: null
       }
