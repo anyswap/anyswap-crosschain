@@ -8,7 +8,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
-
+import { useAppState } from '../../state/application/hooks'
 import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
@@ -46,6 +46,7 @@ export default function CrossChain({
 
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
+  const { apiAddress } = useAppState()
   const [selectNetworkInfo] = useUserSelectChainId()
   const theme = useContext(ThemeContext)
 
@@ -157,8 +158,15 @@ export default function CrossChain({
   // useEffect(() => {
   const onCreateP2pAddress = useCallback(() => {
     setP2pAddress('')
-    if (recipient && selectCurrency && destConfig && selectChain) {
-      getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+
+    if (apiAddress && recipient && selectCurrency && destConfig && selectChain) {
+      getP2PInfo({
+        api: apiAddress,
+        account: recipient,
+        chainId: selectChain,
+        symbol: selectCurrency?.symbol,
+        token: selectCurrency?.address,
+      }).then((res:any) => {
         // console.log(res)
         // console.log(selectCurrency)
         if (res?.p2pAddress) {

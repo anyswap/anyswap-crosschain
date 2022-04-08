@@ -2,7 +2,6 @@ import { getUrlData, postUrlData } from '../tools/axios'
 import { USE_VERSION, timeout } from '../../config/constant'
 import { getLocalConfig } from '../tools/tools'
 import { CROSSCHAINBRIDGE } from './type'
-import config from '../../config'
 
 export function registerSwap(hash: string, chainId: any, apiAddress: string) {
   return new Promise((resolve, reject) => {
@@ -209,17 +208,29 @@ export function recordsApprove({
 //   routerToken: ''
 // })
 
-export function getP2PInfo(account: any, chainId: any, symbol: string, token: any) {
+// account: any, chainId: any, symbol: string, token: any
+export function getP2PInfo({
+  api,
+  account,
+  chainId,
+  symbol,
+  token
+}: {
+  api: string
+  account: any
+  chainId: any
+  symbol: string
+  token: any
+}) {
   return new Promise(resolve => {
-    // console.log(hash)
     const lData = getLocalConfig(account, token, chainId, CROSSCHAINBRIDGE, timeout, undefined)
+
     if (lData) {
-      // console.log(lData)
       resolve({ p2pAddress: lData.p2pAddress })
     } else {
-      const url = `${config.bridgeApi}/v2/register/${account}/${chainId}/${symbol}`
+      const url = `${api}/v2/register/${account}/${chainId}/${symbol}`
+
       getUrlData(url).then((res: any) => {
-        // console.log(res)
         if (res.msg === 'Success') {
           resolve({ p2pAddress: res?.data?.P2shAddress ?? res?.data?.info?.P2shAddress })
         } else {

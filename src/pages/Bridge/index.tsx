@@ -650,18 +650,22 @@ export default function CrossChain() {
 
   useEffect(() => {
     setP2pAddress('')
-    if (account && selectCurrency && destConfig && swapType === BridgeType.deposit && chainId) {
-      // console.log(destConfig)
+
+    if (apiAddress && account && selectCurrency && destConfig && swapType === BridgeType.deposit && chainId) {
       if (selectCurrency?.specChainId === TERRA_CHAIN) {
         setP2pAddress(destConfig?.DepositAddress)
       } else {
-        getP2PInfo(account, chainId, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-          // console.log(res)
-          // console.log(selectCurrency)
+        getP2PInfo({
+          api: apiAddress,
+          account,
+          chainId,
+          symbol: selectCurrency?.symbol,
+          token: selectCurrency?.address,
+        }).then((res:any) => {
           if (res?.p2pAddress) {
             const localAddress = createAddress(account, selectCurrency?.symbol, destConfig?.DepositAddress)
+
             if (res?.p2pAddress === localAddress) {
-              // console.log(localAddress)
               setP2pAddress(localAddress)
               setLocalConfig(account, selectCurrency?.address, chainId, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
             }
