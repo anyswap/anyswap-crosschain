@@ -100,7 +100,7 @@ export default function Contracts() {
   const [apiIsValid, setApiIsValid] = useState(false)
 
   useEffect(() => {
-    setApiIsValid(Boolean(apiAddress && apiAddress.match(API_REGEXP)))
+    setApiIsValid(apiAddress === '' || Boolean(apiAddress && apiAddress.match(API_REGEXP)))
   }, [apiAddress])
 
   const saveApiAddress = () => {
