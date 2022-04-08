@@ -97,7 +97,7 @@ export function recordsTxns({
       } else {
         if (Date.now() - registerList[hash].timestamp <= 3000) {
           setTimeout(() => {
-            recordsTxns(registerList[hash])
+            recordsTxns({ api, ...registerList[hash] })
           }, 1000)
         }
       }
@@ -108,6 +108,7 @@ export function recordsTxns({
 
 const approveList: any = {}
 export function recordsApprove({
+  api,
   token,
   spender,
   account,
@@ -118,6 +119,7 @@ export function recordsApprove({
   chainId,
   type
 }: {
+  api: string
   token: any
   spender: any
   account: any
@@ -129,8 +131,7 @@ export function recordsApprove({
   type: any
 }) {
   return new Promise(async resolve => {
-    // console.log(hash)
-    const url = `${config.bridgeApi}/v3/records/approved`
+    const url = `${api}/v3/records/approved`
     const data = {
       token,
       spender,
@@ -164,7 +165,7 @@ export function recordsApprove({
       } else {
         if (Date.now() - approveList[hash].timestamp <= 3000) {
           setTimeout(() => {
-            recordsApprove(approveList[hash])
+            recordsApprove({ api, ...approveList[hash] })
           }, 1000)
         }
       }
