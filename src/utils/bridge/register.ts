@@ -25,6 +25,7 @@ export function registerSwap(hash: string, chainId: any, apiAddress: string) {
 }
 
 interface RecordsTxnsProp {
+  api: string
   hash: string
   chainId: any
   selectChain: any
@@ -39,8 +40,8 @@ interface RecordsTxnsProp {
 }
 const registerList: any = {}
 
-// getUrlData('https://api.ipify.org/?format=json').then(res => console.log(res))
 export function recordsTxns({
+  api,
   hash,
   chainId,
   selectChain,
@@ -54,11 +55,8 @@ export function recordsTxns({
   routerToken
 }: RecordsTxnsProp) {
   return new Promise(async resolve => {
-    // console.log(hash)
-    const url = `${config.bridgeApi}/v3/records`
-    const useVersion = version ? version : USE_VERSION
-    // console.log(version)
-    // console.log(USE_VERSION)
+    const url = `${api}/v3/records`
+    const useVersion = version || USE_VERSION
     const ip: any = await getUrlData('https://api.ipify.org/?format=json')
     const data = {
       hash: hash,

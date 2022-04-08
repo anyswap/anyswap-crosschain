@@ -7,8 +7,8 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useNFTContract, useNFT721Contract, useNFT1155Contract } from './useContract'
-
-import {recordsTxns} from '../utils/bridge/register'
+import { useAppState } from '../state/application/hooks'
+import { recordsTxns } from '../utils/bridge/register'
 import config from '../config'
 // import { JSBI } from 'anyswap-sdk'
 
@@ -35,15 +35,11 @@ export function useNFT721Callback(
   tokenid: string | undefined,
   toChainID: string | undefined,
   fee: any
-// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-
+  const { apiAddress } = useAppState() 
   const [nftBalance, setNftBalance] = useState<any>()
-  
-
   const contract = useNFTContract(routerToken)
-
   const contract721 = useNFT721Contract(inputCurrency?.address)
 
   const { t } = useTranslation()
@@ -70,8 +66,17 @@ export function useNFT721Callback(
   }, [contract721, tokenid])
 
   return useMemo(() => {
-    
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !(nftBalance?.toLowerCase() === account?.toLowerCase())) return NOT_APPLICABLE
+    if (
+      !contract ||
+      !chainId ||
+      !apiAddress ||
+      !inputCurrency ||
+      !toAddress ||
+      !toChainID ||
+      !(nftBalance?.toLowerCase() === account?.toLowerCase())
+    ) {
+      return NOT_APPLICABLE
+    }      
 
     const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
 
@@ -96,6 +101,7 @@ export function useNFT721Callback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
+                    api: apiAddress,
                     hash: txReceipt.hash?.toLowerCase(),
                     chainId: chainId,
                     selectChain: toChainID,
@@ -133,15 +139,11 @@ export function useNFT721Callback(
   toChainID: string | undefined,
   fee: any,
   amount: any,
-// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-
+  const { apiAddress } = useAppState() 
   const [nftBalance, setNftBalance] = useState<any>()
-  
-
   const contract = useNFTContract(routerToken)
-
   const contract1155 = useNFT1155Contract(inputCurrency?.address)
 
   const { t } = useTranslation()
@@ -170,8 +172,19 @@ export function useNFT721Callback(
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount2(amount, inputCurrency?.decimals ?? 0) : '', [inputCurrency, amount])
 
   return useMemo(() => {
-    // console.log(tokenid)
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !inputAmount || !tokenid || !nftBalance) return NOT_APPLICABLE
+    if (
+      !contract ||
+      !chainId ||
+      !apiAddress ||
+      !inputCurrency ||
+      !toAddress ||
+      !toChainID ||
+      !inputAmount ||
+      !tokenid ||
+      !nftBalance
+    ) {
+      return NOT_APPLICABLE
+    }
 
     const sufficientBalance = ethBalance && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
     const value = Number(inputAmount.raw.toString())
@@ -198,6 +211,7 @@ export function useNFT721Callback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
+                    api: apiAddress,
                     hash: txReceipt.hash?.toLowerCase(),
                     chainId: chainId,
                     selectChain: toChainID,
