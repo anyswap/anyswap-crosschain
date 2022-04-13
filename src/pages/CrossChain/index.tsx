@@ -231,7 +231,8 @@ export default function CrossChain() {
     recipient,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
+    selectCurrency
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
@@ -251,7 +252,8 @@ export default function CrossChain() {
     recipient,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
+    selectCurrency
   )
 
   const outputBridgeValue = useMemo(() => {

@@ -55,6 +55,7 @@ export function useBridgeCallback(
   typedValue: string | undefined,
   toChainID: string | undefined,
   version: string | undefined,
+  selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -62,7 +63,7 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
   // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -148,6 +149,7 @@ export function useBridgeCallback(
   typedValue: string | undefined,
   toChainID: string | undefined,
   version: string | undefined,
+  selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -155,7 +157,7 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -330,13 +332,14 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
+  selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useSwapUnderlyingContract(inputToken)
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
   // console.log(balance?.raw.toString())
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
