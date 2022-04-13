@@ -63,7 +63,10 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -71,12 +74,16 @@ export function useBridgeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(routerToken)
+    // console.log(inputToken)
+    // console.log(selectCurrency)
     // console.log(bridgeContract)
     if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-
+    // console.log(sufficientBalance)
+    // console.log(inputAmount?.toExact())
+    // console.log(balance?.toExact())
     return {
       wrapType: WrapType.WRAP,
       execute:
@@ -131,7 +138,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [bridgeContract, chainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version])
 }
 
 
@@ -157,7 +164,10 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -339,7 +349,10 @@ export function useBridgeNativeCallback(
   const bridgeContract = useSwapUnderlyingContract(inputToken)
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
+  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   // console.log(balance?.raw.toString())
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
