@@ -178,7 +178,8 @@ export default function SwapNative() {
     account ?? undefined,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
+    selectCurrency
   )
     // console.log(wrapType)
     // console.log('wrapInputError', wrapInputError)
@@ -186,7 +187,8 @@ export default function SwapNative() {
     swapType !== 'deposit' ? (anyCurrency ?? undefined) : (underlyingCurrency ?? undefined),
     anyToken?.address,
     inputBridgeValue,
-    swapType
+    swapType,
+    selectCurrency
   )
   // console.log(destConfig)
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useSwapNativeCallback(

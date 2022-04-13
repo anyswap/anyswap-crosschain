@@ -353,7 +353,8 @@ export default function CrossChain({
     recipient,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
+    selectCurrency
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
@@ -363,7 +364,7 @@ export default function CrossChain({
     recipient,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
@@ -373,7 +374,8 @@ export default function CrossChain({
     recipient,
     inputBridgeValue,
     selectChain,
-    destConfig?.type
+    destConfig?.type,
+    selectCurrency
   )
 
   const { wrapType: wrapTypeCrossBridge, execute: onWrapCrossBridge, inputError: wrapInputErrorCrossBridge } = useCrossBridgeCallback(
