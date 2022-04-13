@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AppData } from '../state/application/actions'
-// import { getUrlData } from '../utils/tools/axios'
+import { getUrlData } from '../utils/tools/axios'
 import { useStorageContract } from './useContract'
 import config from '../config'
 import { ZERO_ADDRESS } from '../constants'
@@ -94,8 +94,11 @@ export default function useAppData(): {
 
       if (parsed?.apiAddress) {
         try {
-          // TODO: is node alive?
-          // const response = await getUrlData(`${parsed?.apiAddress}`)
+          const response: any = await getUrlData(`http://${parsed?.apiAddress}/config`)
+
+          if (response?.msg !== 'Success') {
+            parsed.apiAddress = ''
+          }
         } catch (error) {
           parsed.apiAddress = ''
           errorLog(error)

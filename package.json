@@ -95,6 +95,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "start-https": "HTTPS=true SSL_CRT_FILE=./.cert/cert.pem SSL_KEY_FILE=./.cert/key.pem node scripts/start.js",
     "build": "node scripts/build.js",
     "minify-app-contracts-build": "npx minify-json ./src/constants/abis/app",
     "test": "node scripts/test.js --env=jsdom",
