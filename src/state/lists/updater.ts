@@ -7,6 +7,7 @@ import { useFetchListCallback, useFetchTokenListCallback, useFetchTokenList1Call
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { addPopup } from '../application/actions'
+import { useAppState } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import { acceptListUpdate } from './actions'
 
@@ -14,6 +15,7 @@ import { acceptListUpdate } from './actions'
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
+  const { apiAddress } = useAppState()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
 
@@ -41,19 +43,19 @@ export default function Updater(): null {
     if (chainId) {
       fetchTokenList().catch(error => console.debug('interval list fetching error', error))
     }
-  }, [fetchTokenList, chainId])
+  }, [fetchTokenList, chainId, apiAddress])
 
   const fetchAllTokenLists1Callback = useCallback(() => {
     if (chainId) {
       fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
     }
-  }, [fetchTokenList1, chainId])
+  }, [fetchTokenList1, chainId, apiAddress])
 
   const fetchMergeTokenListsCallback = useCallback(() => {
     if (chainId) {
       fetchMergeTokenList().catch(error => console.debug('interval list fetching error', error))
     }
-  }, [fetchMergeTokenList, chainId])
+  }, [fetchMergeTokenList, chainId, apiAddress])
 
   // Get all the lists every 10 minutes, but only after we initialize the library
   const TEN_MINUTES = 1000 * 60 * 10
@@ -76,15 +78,15 @@ export default function Updater(): null {
 
   useEffect(() => {
     fetchAllTokenListsCallback()
-  }, [dispatch, fetchTokenList, chainId])
+  }, [dispatch, fetchTokenList, chainId, apiAddress])
 
   useEffect(() => {
     fetchAllTokenLists1Callback()
-  }, [dispatch, fetchTokenList1, chainId])
+  }, [dispatch, fetchTokenList1, chainId, apiAddress])
 
   useEffect(() => {
     fetchMergeTokenListsCallback()
-  }, [dispatch, fetchMergeTokenList, chainId])
+  }, [dispatch, fetchMergeTokenList, chainId, apiAddress])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {

@@ -364,7 +364,7 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       //return
     }
 
-    //const url = `${apiAddress}/merge/tokenlist/${useChainId}`
+    //const url = `http://${apiAddress}/merge/tokenlist/${useChainId}`
     const url = `${apiAddress}/config`
 console.log('>>>> call getUrlData', url)
 
@@ -400,7 +400,7 @@ console.log('>>>> call getUrlData', url)
         dispatch(mergeTokenList({ chainId: useChainId, tokenList: curList.tokenList }))
         return {}
       })
-  }, [dispatch, useChainId])
+  }, [dispatch, useChainId, apiAddress])
 }
 
 export function useFetchTokenListCallback(): () => Promise<any> {
@@ -424,7 +424,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
 
     const UV: any = USE_VERSION
     const version: any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
-    //const url = `${apiAddress}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
+    //const url = `http://${apiAddress}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
     const url = `${apiAddress}/config`
     // console.group('%c useFetchTokenListCallback', 'color: brown')
     // console.log('curList: ', curList)
@@ -484,7 +484,7 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
         return {}
       })
-  }, [dispatch, chainId])
+  }, [dispatch, chainId, apiAddress])
 }
 
 export function useFetchTokenList1Callback(): () => Promise<any> {
@@ -515,11 +515,15 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
     return GetTokenListByChainID({
       srcChainID: chainId,
       chainList: config.getCurConfigInfo().showChain,
-      bridgeAPI: apiAddress + '/v2/tokenlist'
-    }).then((tokenList: any) => {
-      console.log('>>>> call useFetchTokenList1Callback', tokenList)
-      dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
-      return tokenList
+      bridgeAPI: `http://${apiAddress}/v2/tokenlist`
     })
-  }, [dispatch, chainId])
+      .then((tokenList: any) => {
+        console.log('>>>> call useFetchTokenList1Callback', tokenList)
+        dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
+        return tokenList
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }, [dispatch, chainId, apiAddress])
 }
