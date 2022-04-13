@@ -22,6 +22,9 @@ import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
 import SwapMULTI from './SwapMULTI'
+import Vest from './Vest'
+import CreateLock from './Vest/create'
+import MangerVest from './Vest/manger'
 
 import ANYFarming from './Farms/ANYFarming'
 import NoanyFarming from './Farms/NoanyFarming'
@@ -174,6 +177,9 @@ export default function App() {
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
+              <Route exact strict path="/vest" component={() => <Vest />} />
+              <Route exact strict path="/vest/create" component={() => <CreateLock />} />
+              <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
               <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
   
               <Route

@@ -18,6 +18,8 @@ import { ExternalLink } from '../../theme'
 import {Status} from '../../config/status'
 import config from '../../config'
 
+import {thousandBit} from '../../utils/tools/tools'
+
 // import ScheduleIcon from '../../assets/images/icon/schedule.svg'
 
 const ChainStatusBox = styled.div`
@@ -223,7 +225,7 @@ export default function HistoryDetails ({
             </div>
             <div className="value">
               <div className="cont">
-                - {value + ' ' + symbol}
+                - {thousandBit(value, 2) + ' ' + symbol}
               </div>
             </div>
           </div>
@@ -268,7 +270,7 @@ export default function HistoryDetails ({
             </div>
             <div className="value">
               <div className="cont">
-                {swapvalue ? '+ ' + swapvalue + ' ' + symbol : '-'}
+                {swapvalue ? '+ ' + thousandBit(swapvalue, 2) + ' ' + symbol : '-'}
                 {/* {
                   fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
                     <>
