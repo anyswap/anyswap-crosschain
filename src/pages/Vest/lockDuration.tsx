@@ -15,6 +15,7 @@ import {
   SwapInputContent,
 } from './style'
 
+
 const DateInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
   width: 100%;
@@ -173,7 +174,7 @@ export default function LockAmount ({
 
   const inputEl = useRef<any>(null);
 
-  const [selectedDate, setSelectedDate] = useState(moment().add(8, 'days').format('YYYY-MM-DD'));
+  const [selectedDate, setSelectedDate] = useState(lockEnds ? moment.unix(lockEnds).format('YYYY-MM-DD') : moment().add(7, 'days').format('YYYY-MM-DD'));
   const [selectedValue, setSelectedValue] = useState<any>();
 
   let min = moment().add(7, 'days').format('YYYY-MM-DD')

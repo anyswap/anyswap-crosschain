@@ -56,7 +56,7 @@ export default function Vest () {
     <AppBody>
       <VestContent>
         <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
-        {useVeMultiToken}
+        {useVeMultiToken?.address}
       </VestContent>
 
       <MyBalanceBox>

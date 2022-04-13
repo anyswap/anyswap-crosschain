@@ -4,6 +4,7 @@ import styled, { ThemeContext } from "styled-components"
 import { transparentize } from 'polished'
 import { ArrowDown } from 'react-feather'
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 
 import { AutoRow } from '../../components/Row'
 import {
@@ -12,6 +13,7 @@ import {
 } from '../../components/swap/styleds'
 import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import Loader from '../../components/Loader'
+import ErrorTip from '../../components/CrossChainPanelV2/errorTip'
 
 import {useCurrencyBalances} from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -88,17 +90,19 @@ export default function CreateLock () {
 
   const formatCurrency = useLocalToken(useLockToken)
 
+  const now = moment().add(7, 'days').unix()
+
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
-  const [lockDuration, setLockDuration] = useState<any>()
+  const [lockDuration, setLockDuration] = useState<any>(now)
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  
+  // console.log(lockDuration)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [formatCurrency ?? undefined])
   const formatInputBridgeValue = tryParseAmount(inputValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken?.address)
 
   const { execute: onWrap, inputError: wrapInputError } = useCreateLockCallback(
-    useVeMultiToken,
+    useVeMultiToken?.address,
     formatCurrency ?? undefined,
     inputValue,
     lockDuration
@@ -106,11 +110,6 @@ export default function CreateLock () {
 
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
-      // console.log(balance[0])
-      // console.log(formatInputBridgeValue)
-      // const bl = balance[0]
-      // const sufficientBalance = formatInputBridgeValue && bl && !bl.lessThan(formatInputBridgeValue)
-      // console.log(sufficientBalance)
       if (isNaN(inputValue)) {
         return {
           state: 'Error',
@@ -138,9 +137,33 @@ export default function CreateLock () {
     return false
   }, [isInputError, inputValue])
 
+  const errorTip = useMemo(() => {
+    
+    if (!account || !chainId) {
+      return undefined
+    } else if (isInputError) {
+      return isInputError
+    }
+    return undefined
+  }, [isInputError, account, chainId])
+
+  const futureNFT = useMemo(() => {
+    const now = moment()
+    const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
+    const expiry = moment(selectDate)
+    const dayToExpire = expiry.diff(now, 'days')
+    const tmpNFT = {
+      lockAmount: inputValue,
+      lockValue: new BigNumber(inputValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
+      lockEnds: expiry.unix()
+    }
+    console.log(tmpNFT)
+    return tmpNFT
+  }, [lockDuration, inputValue])
+
   useEffect(() => {
-    console.log(approval)
-    console.log(ApprovalState)
+    // console.log(approval)
+    // console.log(ApprovalState)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(false)
     }
@@ -178,14 +201,6 @@ export default function CreateLock () {
                     }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(item).name}</ButtonLight>
                   })
                 }
-                {/* <ButtonLight onClick={() => {
-                  selectNetwork(supportChain).then((res: any) => {
-                    console.log(res)
-                    if (res.msg === 'Error') {
-                      alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
-                    }
-                  })
-                }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight> */}
               </BottomGrouping>
             </>
           ) : (
@@ -264,25 +279,24 @@ export default function CreateLock () {
             </ArrowWrapper>
           </ArrowBox>
           <LockDuration
-            lockEnds={''}
+            lockEnds={lockDuration}
             updateLockDuration={(date:any) => {
               const expiry = moment(date)
-              console.log(expiry)
+              // console.log(expiry)
+              // console.log(expiry.unix())
               setLockDuration(expiry.unix())
             }}
           ></LockDuration>
 
           <VestingInfo
             // currentNFT={{nft}}
-            futureNFT={{
-              lockAmount: inputValue,
-              lockValue: '',
-              lockEnds: lockDuration,
-            }}
-            // veToken={veToken}
-            showVestingStructure={ false }
+            futureNFT={futureNFT}
+            veToken={useVeMultiToken}
+            govToken={useLockToken}
+            showVestingStructure={ true }
           ></VestingInfo>
         </SwapContentBox>
+        <ErrorTip errorTip={errorTip} />
         {viewBtn(0)}
       </ContentBody>
     </AppBody>

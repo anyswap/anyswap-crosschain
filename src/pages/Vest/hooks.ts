@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
+import {useTxnsErrorTipOpen} from '../../state/application/hooks'
 // import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useVeMULTIContract } from '../../hooks/useContract'
@@ -26,7 +26,7 @@ export function useCreateLockCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const contract = useVeMULTIContract(veMULTI)
-  const {onChangeViewDtil} = useTxnsDtilOpen()
+  // const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -51,10 +51,14 @@ export function useCreateLockCallback(
               const results:any = {}
               try {
                 // console.log(contract)
-                // console.log(inputAmount.raw.toString(16))
+                console.log(contract)
+                console.log(veMULTI)
+                console.log(inputAmount.raw.toString(16))
+                console.log(lockDuration)
+                const time = Number(lockDuration) - parseInt((Date.now() / 1000) + '')
                 const txReceipt = await contract.create_lock(
                   `0x${inputAmount.raw.toString(16)}`,
-                  lockDuration,
+                  time + '',
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}`,
@@ -63,7 +67,7 @@ export function useCreateLockCallback(
                   token: inputCurrency?.address,
                 })
                 results.hash = txReceipt?.hash
-                onChangeViewDtil(txReceipt?.hash, true)
+                // onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.error('Could not swapout', error)
                 onChangeViewErrorTip(error, true)

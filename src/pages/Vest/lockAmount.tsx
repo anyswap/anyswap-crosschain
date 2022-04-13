@@ -18,6 +18,8 @@ import {
   SwapSymbol
 } from './style'
 
+import {BASE_INFO} from './data'
+
 export default function LockAmount ({
   selectCurrency,
   balance,
@@ -40,7 +42,7 @@ export default function LockAmount ({
       <SwapInputBox>
         <CurrencySelect1 selected={true} className="open-currency-select-button">
           <TokenLogoBox1>
-            <TokenLogo symbol={selectCurrency?.symbol ?? 'ANY'} size={'100%'} />
+            <TokenLogo symbol={selectCurrency?.symbol ?? BASE_INFO.symbol} size={'100%'} />
           </TokenLogoBox1>
         </CurrencySelect1>
         <SwapInputContent>
@@ -63,7 +65,7 @@ export default function LockAmount ({
           />
           <SwapSymbol>
             {
-              selectCurrency?.symbol ? selectCurrency?.symbol : 'ANY'
+              selectCurrency?.symbol ? selectCurrency?.symbol : BASE_INFO.symbol
             }
           </SwapSymbol>
         </SwapInputContent>

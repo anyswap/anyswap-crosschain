@@ -6,8 +6,17 @@ export const BASE_INFO = {
   decimals: 18
 }
 
+export const VENFT_BASE_INFO = {
+  name: 'veNFT',
+  symbol: 'veNFT',
+  decimals: 18
+}
+
 export const veMULTI:any = {
-  [ChainId.BNB_TEST]: '0xa88e49CfFd199f77cDbF0B5149E2660A34b8c3D1'
+  [ChainId.BNB_TEST]: {
+    ...VENFT_BASE_INFO,
+    address: '0xa88e49CfFd199f77cDbF0B5149E2660A34b8c3D1'
+  }
 }
 
 export const MULTI_TOKEN:any = {
