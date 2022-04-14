@@ -174,12 +174,13 @@ export default function LockAmount ({
 
   const inputEl = useRef<any>(null);
 
-  const [selectedDate, setSelectedDate] = useState(lockEnds ? moment.unix(lockEnds).format('YYYY-MM-DD') : moment().add(7, 'days').format('YYYY-MM-DD'));
+  const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(7, 'days').format('YYYY-MM-DD'));
   const [selectedValue, setSelectedValue] = useState<any>();
 
   let min = moment().add(7, 'days').format('YYYY-MM-DD')
-  if(lockEnds && new BigNumber(lockEnds).gt(0)) {
-    min = moment.unix(lockEnds).format('YYYY-MM-DD')
+  const lockDuration = lockEnds ? moment(lockEnds).unix() : undefined
+  if(lockDuration && new BigNumber(lockDuration).gt(0)) {
+    min = moment.unix(lockDuration).format('YYYY-MM-DD')
   }
 
   const handleDateChange = (event:any) => {
@@ -269,7 +270,7 @@ export default function LockAmount ({
             id='lockDate'
             value='years'
             selected={selectedValue}
-            label='1 years'
+            label='4 years'
             onRadioChange={handleChange}
           ></RadiosStyle>
         </CheckoutItem>

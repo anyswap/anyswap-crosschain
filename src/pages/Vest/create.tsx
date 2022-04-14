@@ -34,6 +34,7 @@ import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
 import {useCreateLockCallback} from './hooks'
+import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
@@ -50,6 +51,7 @@ const ContentBody = styled.div`
 const ContentTitle = styled.h3`
   color: ${({ theme }) => theme.textColorBold};
   text-align: center;
+  position:relative;
 `
 const SwapContentBox = styled.div`
   width: 100%;
@@ -60,6 +62,13 @@ const ArrowBox = styled(AutoRow)`
   width: 80%;
   margin: auto;
   height:50px;
+`
+
+const BackArrowView = styled.div`
+  ${({ theme }) => theme.flexC};
+  position: absolute;
+  left: 10px;
+  top:5px;
 `
 export default function CreateLock () {
   const { t } = useTranslation()
@@ -90,7 +99,7 @@ export default function CreateLock () {
 
   const formatCurrency = useLocalToken(useLockToken)
 
-  const now = moment().add(7, 'days').unix()
+  const now = moment().add(7, 'days').format('YYYY-MM-DD')
 
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
@@ -105,7 +114,7 @@ export default function CreateLock () {
     useVeMultiToken?.address,
     formatCurrency ?? undefined,
     inputValue,
-    lockDuration
+    lockDuration ? moment(lockDuration).unix() : undefined
   )
 
   const isInputError = useMemo(() => {
@@ -149,8 +158,8 @@ export default function CreateLock () {
 
   const futureNFT = useMemo(() => {
     const now = moment()
-    const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
-    const expiry = moment(selectDate)
+    // const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
+    const expiry = moment(lockDuration)
     const dayToExpire = expiry.diff(now, 'days')
     const tmpNFT = {
       lockAmount: inputValue,
@@ -256,6 +265,7 @@ export default function CreateLock () {
     <AppBody>
       <ContentBody>
         <ContentTitle>
+          <BackArrowView><BackArrow to="/vest"></BackArrow></BackArrowView>
           {t('Create New Lock')}
         </ContentTitle>
 
@@ -281,10 +291,10 @@ export default function CreateLock () {
           <LockDuration
             lockEnds={lockDuration}
             updateLockDuration={(date:any) => {
-              const expiry = moment(date)
-              // console.log(expiry)
+              // console.log(date)
+              // const expiry = moment(date)
               // console.log(expiry.unix())
-              setLockDuration(expiry.unix())
+              setLockDuration(date)
             }}
           ></LockDuration>
 

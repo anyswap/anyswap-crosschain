@@ -129,7 +129,7 @@ const allChainList = [
   RBTC_MAIN_CHAINID,
   JEWEL_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
-  // BNB_TEST_CHAINID,
+  BNB_TEST_CHAINID,
 ]
 
 const useChain:any = {

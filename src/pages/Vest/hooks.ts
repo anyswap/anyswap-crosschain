@@ -18,11 +18,13 @@ export enum WrapType {
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
+
+
 export function useCreateLockCallback(
   veMULTI: string | undefined,
   inputCurrency: Currency | undefined,
   typedValue: string | undefined,
-  lockDuration: string | undefined,
+  lockDuration: number | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const contract = useVeMULTIContract(veMULTI)
