@@ -104,7 +104,20 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    apiAddress
+  ])
 }
 
 
@@ -175,7 +188,20 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    apiAddress
+  ])
 }
 
 
@@ -247,7 +273,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    routerToken,
+    apiAddress
+  ])
 }
 
 /**
@@ -457,7 +497,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    outputAmount,
+    routerPath,
+    toAddress,
+    deadline,
+    toChainID,
+    apiAddress
+  ])
 }
 
 /**
@@ -548,7 +602,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    outputAmount,
+    routerPath,
+    toAddress,
+    deadline,
+    toChainID,
+    apiAddress
+  ])
 }
 
 
@@ -638,7 +706,20 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid])
+  }, [
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    txnsType,
+    toAddress,
+    inputToken,
+    toChainID,
+    pairid,
+    apiAddress
+  ])
 }
 
 /**
@@ -820,5 +901,20 @@ export function useBridgeNativeCallback(
           : undefined,
         inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx])
+  }, [
+    chainId,
+    inputCurrency,
+    inputAmount,
+    t,
+    toAddress,
+    inputToken,
+    toChainID,
+    terraRecipient,
+    connectedWallet,
+    pairid,
+    srcChainid,
+    balance,
+    sendTx,
+    apiAddress
+  ])
 }
