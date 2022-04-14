@@ -819,7 +819,9 @@ export function useBridgeNativeCallback(
 
   const {getTerraFeeList} = useTerraSend()
 
-  // console.log(gasFee)
+  const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? inputCurrency?.address : Unit
+  // const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? 'terra1jsaghv4tsltlk4ka6u3pg0msccdz0xsz0vkhcg' : Unit
+  // console.log(inputCurrency)
   // console.log(connectedWallet)
   const [balance, setBalance] = useState<any>()
   const [fee, setFee] = useState<any>()
@@ -875,17 +877,25 @@ export function useBridgeNativeCallback(
   }, [connectedWallet, toAddress, Unit, inputAmount])
 
   const fetchBalance = useCallback(() => {
-    if (Unit && connectedWallet) {
+    if (terraToken && connectedWallet) {
       getTerraBalances({terraWhiteList: [{
-        token: Unit
+        token: terraToken
       }]}).then((res:any) => {
-        const bl = res[Unit] && inputCurrency ? new Fraction(JSBI.BigInt(res[Unit]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // console.log(res)
+        const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // console.log(bl)
+        // console.log(bl?.toSignificant(inputCurrency?.decimals))
+        // if (bl?.toSignificant(inputCurrency?.decimals) === '0') {
+        //   setBalance(new Fraction(JSBI.BigInt(100000000000), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6))))
+        // } else {
+        //   setBalance(bl)
+        // }
         setBalance(bl)
       })
     } else {
       setBalance('')
     }
-  }, [Unit, connectedWallet])
+  }, [terraToken, connectedWallet])
   useEffect(() => {
     fetchBalance()
   }, [Unit, fetchBalance])
@@ -893,14 +903,13 @@ export function useBridgeNativeCallback(
 
   const sendTx = useCallback(() => {
     // console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit || !fee) return
+    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !terraToken || !fee) return
     const send:any = new MsgSend(
       connectedWallet?.walletAddress,
       toAddress,
-      { [Unit]: 	inputAmount }
+      { [terraToken]: 	inputAmount }
     )
     
-    // const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
     const gasFee:any = fee
 
     return post({
@@ -908,7 +917,7 @@ export function useBridgeNativeCallback(
       fee: gasFee,
       memo: terraRecipient,
     })
-  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit, fee])
+  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, terraToken, fee])
 
   return useMemo(() => {
     // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))

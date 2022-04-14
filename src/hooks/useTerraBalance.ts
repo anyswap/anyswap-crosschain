@@ -59,6 +59,10 @@ query {
 }
 `
 
+const TERRA_RPC = 'https://mantle.terra.dev/'
+// const TERRA_RPC = 'https://tequila-mantle.terra.dev/'
+// const TERRA_RPC = 'https://bombay-lcd.terra.dev/'
+
 const useMantle = (): {
   fetchQuery: ({
     query,
@@ -77,7 +81,7 @@ const useMantle = (): {
     query: string
     variables?: string
   }): Promise<any> | undefined =>
-    fetch('https://mantle.terra.dev/', {
+    fetch(TERRA_RPC, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables }),
