@@ -22,26 +22,28 @@ export enum AssetNativeDenomEnum {
   umnt = 'umnt',
 }
 
-// const terraExt = {
-//   chainID: "columbus-5",
-//   fcd: "https://fcd.terra.dev",
-//   lcd: "https://lcd.terra.dev",
-//   localterra: false,
-//   mantle: "https://mantle.terra.dev",
-//   name: "mainnet",
-//   walletconnectID: 1
-// }
-
-
 export const terraExt = {
-  chainID: "bombay-12",
-  fcd: "https://bombay-fcd.terra.dev",
-  lcd: "https://bombay-lcd.terra.dev",
+  chainID: "columbus-5",
+  fcd: "https://fcd.terra.dev",
+  lcd: "https://lcd.terra.dev",
   localterra: false,
-  mantle: "https://bombay-mantle.terra.dev",
-  name: "testnet",
-  walletconnectID: 0
+  mantle: "https://mantle.terra.dev",
+  name: "mainnet",
+  walletconnectID: 1,
+  queryTx: 'https://fcd.terra.dev/txs/'
 }
+
+
+// export const terraExt = {
+//   chainID: "bombay-12",
+//   fcd: "https://bombay-fcd.terra.dev",
+//   lcd: "https://bombay-lcd.terra.dev",
+//   localterra: false,
+//   mantle: "https://bombay-mantle.terra.dev",
+//   name: "testnet",
+//   walletconnectID: 0,
+//   queryTx: 'https://bombay-fcd.terra.dev/v1/tx/'
+// }
 
 const isNativeTerra = (str: string): boolean =>
   str.startsWith('u') &&
@@ -153,7 +155,7 @@ export function useTerraSend () {
 
 export function updateTerraHash (hash:any): Promise<any> {
   return new Promise(resolve => {
-    const url = `https://fcd.terra.dev/txs/${hash}`
+    const url = `${terraExt.queryTx}${hash}`
     axios.get(url).then(res => {
       const {status, data} = res
       if (status === 200) {
