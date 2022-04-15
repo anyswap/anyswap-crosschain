@@ -17,10 +17,11 @@ import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-
 // import { MsgSend } from '@terra-money/terra.js';
 import {
   MsgSend,
-  // Coins,
-  // MsgExecuteContract,
+  Coins,
+  MsgExecuteContract,
   StdFee,
   // LCDClient,
+  // MsgTransfer,
   // Coin,
   // CreateTxOptions,
 } from '@terra-money/terra.js'
@@ -819,7 +820,9 @@ export function useBridgeNativeCallback(
 
   const {getTerraFeeList} = useTerraSend()
 
-  const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? inputCurrency?.address : Unit
+  // const useNnit = Unit ? Unit : 'uluna'
+  const useNnit = Unit ? Unit : 'uusd'
+  const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? inputCurrency?.address : useNnit
   // const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? 'terra1jsaghv4tsltlk4ka6u3pg0msccdz0xsz0vkhcg' : Unit
   // console.log(inputCurrency)
   // console.log(connectedWallet)
@@ -835,17 +838,18 @@ export function useBridgeNativeCallback(
   // console.log(tryParseAmount3(typedValue, inputCurrency?.decimals)?.toSignificant(6))
 
   useEffect(() => {
+    // console.log(connectedWallet)
     if (
       connectedWallet?.walletAddress
       && toAddress
-      && Unit
+      && useNnit
       && inputAmount
     ) {
       // console.log(inputAmount)
       getTerraFeeList(
         connectedWallet?.walletAddress,
         toAddress,
-        Unit,
+        useNnit,
         inputAmount
       ).then((res) => {
         console.log(res)
@@ -853,7 +857,7 @@ export function useBridgeNativeCallback(
         let tax:any = ''
         let lunaFee:any = ''
         res.map((item:any) => {
-          if (item.denom === Unit) {
+          if (item.denom === useNnit) {
             fee = item.fee
             tax = item.tax
           }
@@ -874,10 +878,11 @@ export function useBridgeNativeCallback(
         setFee(txFee)
       })
     }
-  }, [connectedWallet, toAddress, Unit, inputAmount])
+  }, [connectedWallet, toAddress, useNnit, inputAmount])
 
   const fetchBalance = useCallback(() => {
     if (terraToken && connectedWallet) {
+      // console.log(terraToken)
       getTerraBalances({terraWhiteList: [{
         token: terraToken
       }]}).then((res:any) => {
@@ -898,26 +903,53 @@ export function useBridgeNativeCallback(
   }, [terraToken, connectedWallet])
   useEffect(() => {
     fetchBalance()
-  }, [Unit, fetchBalance])
+  }, [useNnit, fetchBalance])
 
 
   const sendTx = useCallback(() => {
     // console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !terraToken || !fee) return
-    const send:any = new MsgSend(
+    if (
+      !connectedWallet
+      || !inputAmount
+      || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType
+      || !terraRecipient
+      || !terraToken
+      || !fee
+    ) return
+    const send:any = terraToken.indexOf('terra') === 0 ? 
+      new MsgExecuteContract(
+        connectedWallet?.walletAddress,
+        terraToken,
+        { transfer: { recipient: toAddress, amount: inputAmount } },
+        // {"transfer":{"recipient":"terra1v7k0eyn608h6gnkpeaq6ft56su45j6p5xdk9xw","amount":"11000000"}}
+        
+        // {
+        //   "transfer": {
+        //     "amount": "11000000",
+        //     "recipient": "terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws"
+        //   }
+        // }
+        new Coins([])
+      )
+     :
+     new MsgSend(
       connectedWallet?.walletAddress,
       toAddress,
       { [terraToken]: 	inputAmount }
-    )
+      )
     
     const gasFee:any = fee
-
+      console.log(send)
     return post({
+      // gasPrices: [new Coin({
+      //   key: 'sendFeeDenom',
+      //   default: 'uusd',
+      // }, '20000')],
       msgs: [send],
       fee: gasFee,
       memo: terraRecipient,
     })
-  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, terraToken, fee])
+  }, [connectedWallet, inputAmount, toAddress, terraRecipient, terraToken, fee])
 
   return useMemo(() => {
     // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))
