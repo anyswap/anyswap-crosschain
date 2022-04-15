@@ -75,6 +75,10 @@ declare module 'qrcode.react'
 
 declare module '@makerdao/multicall';
 
+declare module 'toformat';
+
+declare module 'big.js';
+
 interface Window {
   ethereum?: {
     isMetaMask?: true

@@ -17,6 +17,14 @@ function getContract(ABI) {
   return new web3.eth.Contract(ABI)
 }
 
+function getErcContract(provider) {
+  if (provider) {
+    const wFn = new Web3(provider)
+    return new wFn.eth.Contract(ERC20_ABI)
+  }
+  return undefined
+}
+
 
 function timeoutWeb3 () {
   return new Promise(resolve => {
@@ -204,5 +212,6 @@ export {
   getWeb3,
   useWeb3,
   useBatchWeb3,
-  getContract
+  getContract,
+  getErcContract
 }

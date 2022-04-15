@@ -141,7 +141,7 @@ export default function SelectCurrencyInputPanel({
   const useBalance = useMemo(() => {
     // console.log(hideBalance)
     // console.log(customBalance)
-    if (customBalance) {
+    if (customBalance || isNaN(useChainId)) {
       return customBalance
     } else if (selectedCurrencyBalance && (!isNativeToken || isRouter === false)) {
       // console.log(selectedCurrencyBalance)

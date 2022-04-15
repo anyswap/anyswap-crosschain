@@ -17,12 +17,14 @@ import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-
 // import { MsgSend } from '@terra-money/terra.js';
 import {
   MsgSend,
-  // Coins,
-  // MsgExecuteContract,
-  StdFee,
+  Coins,
+  MsgExecuteContract,
+  Fee,
   // LCDClient,
+  // MsgTransfer,
   // Coin,
   // CreateTxOptions,
+  // MnemonicKey
 } from '@terra-money/terra.js'
 
 import {useTerraSend} from './terra'
@@ -832,7 +834,11 @@ export function useBridgeNativeCallback(
 
   const {getTerraFeeList} = useTerraSend()
 
-  // console.log(gasFee)
+  const useNnit = Unit ? Unit : 'uluna'
+  // const useNnit = Unit ? Unit : 'uusd'
+  const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? inputCurrency?.address : useNnit
+  // const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? 'terra1jsaghv4tsltlk4ka6u3pg0msccdz0xsz0vkhcg' : Unit
+  // console.log(inputCurrency)
   // console.log(connectedWallet)
   const [balance, setBalance] = useState<any>()
   const [fee, setFee] = useState<any>()
@@ -846,17 +852,18 @@ export function useBridgeNativeCallback(
   // console.log(tryParseAmount3(typedValue, inputCurrency?.decimals)?.toSignificant(6))
 
   useEffect(() => {
+    // console.log(connectedWallet)
     if (
       connectedWallet?.walletAddress
       && toAddress
-      && Unit
+      && useNnit
       && inputAmount
     ) {
       // console.log(inputAmount)
       getTerraFeeList(
         connectedWallet?.walletAddress,
         toAddress,
-        Unit,
+        useNnit,
         inputAmount
       ).then((res) => {
         console.log(res)
@@ -864,7 +871,7 @@ export function useBridgeNativeCallback(
         let tax:any = ''
         let lunaFee:any = ''
         res.map((item:any) => {
-          if (item.denom === Unit) {
+          if (item.denom === useNnit) {
             fee = item.fee
             tax = item.tax
           }
@@ -877,7 +884,7 @@ export function useBridgeNativeCallback(
         }
         const txFee =
           tax?.amount.greaterThan(0) && fee
-            ? new StdFee(fee.gas, fee.amount.add(tax))
+            ? new Fee(fee.gas, fee.amount.add(tax))
             : fee
         // console.log(fee)
         // console.log(txFee)
@@ -885,43 +892,66 @@ export function useBridgeNativeCallback(
         setFee(txFee)
       })
     }
-  }, [connectedWallet, toAddress, Unit, inputAmount])
+  }, [connectedWallet, toAddress, useNnit, inputAmount])
 
   const fetchBalance = useCallback(() => {
-    if (Unit && connectedWallet) {
+    if (terraToken && connectedWallet) {
+      // console.log(terraToken)
       getTerraBalances({terraWhiteList: [{
-        token: Unit
+        token: terraToken
       }]}).then((res:any) => {
-        const bl = res[Unit] && inputCurrency ? new Fraction(JSBI.BigInt(res[Unit]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // console.log(res)
+        const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // console.log(bl)
+        // console.log(bl?.toSignificant(inputCurrency?.decimals))
+        // if (bl?.toSignificant(inputCurrency?.decimals) === '0') {
+        //   setBalance(new Fraction(JSBI.BigInt(100000000000), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6))))
+        // } else {
+        //   setBalance(bl)
+        // }
         setBalance(bl)
       })
     } else {
       setBalance('')
     }
-  }, [Unit, connectedWallet])
+  }, [terraToken, connectedWallet])
   useEffect(() => {
     fetchBalance()
-  }, [Unit, fetchBalance])
+  }, [useNnit, fetchBalance])
 
 
   const sendTx = useCallback(() => {
     // console.log(connectedWallet)
-    if (!connectedWallet || !account || !inputAmount || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType || !terraRecipient || !Unit || !fee) return
-    const send:any = new MsgSend(
+    if (
+      !connectedWallet
+      || !inputAmount
+      || ConnectType.CHROME_EXTENSION !== connectedWallet.connectType
+      || !terraRecipient
+      || !terraToken
+      || !fee
+    ) return
+    const send:any = terraToken.indexOf('terra') === 0 ? 
+      new MsgExecuteContract(
+        connectedWallet?.walletAddress,
+        terraToken,
+        { transfer: { amount: inputAmount, recipient: toAddress } },
+        new Coins([])
+      )
+     :
+     new MsgSend(
       connectedWallet?.walletAddress,
       toAddress,
-      { [Unit]: 	inputAmount }
-    )
+      { [terraToken]: 	inputAmount }
+      )
     
-    // const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
     const gasFee:any = fee
-
+    
     return post({
       msgs: [send],
       fee: gasFee,
       memo: terraRecipient,
     })
-  }, [connectedWallet, account, inputAmount, toAddress, terraRecipient, Unit, fee])
+  }, [connectedWallet, inputAmount, toAddress, terraRecipient, terraToken, fee])
 
   return useMemo(() => {
     // console.log(balance && balance?.toSignificant(inputCurrency?.decimals))
