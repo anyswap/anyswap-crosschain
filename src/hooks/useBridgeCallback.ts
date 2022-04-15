@@ -19,11 +19,12 @@ import {
   MsgSend,
   Coins,
   MsgExecuteContract,
-  StdFee,
+  Fee,
   // LCDClient,
   // MsgTransfer,
   // Coin,
   // CreateTxOptions,
+  // MnemonicKey
 } from '@terra-money/terra.js'
 
 import {useTerraSend} from './terra'
@@ -820,8 +821,8 @@ export function useBridgeNativeCallback(
 
   const {getTerraFeeList} = useTerraSend()
 
-  // const useNnit = Unit ? Unit : 'uluna'
-  const useNnit = Unit ? Unit : 'uusd'
+  const useNnit = Unit ? Unit : 'uluna'
+  // const useNnit = Unit ? Unit : 'uusd'
   const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? inputCurrency?.address : useNnit
   // const terraToken = inputCurrency?.address?.indexOf('terra') === 0 ? 'terra1jsaghv4tsltlk4ka6u3pg0msccdz0xsz0vkhcg' : Unit
   // console.log(inputCurrency)
@@ -870,7 +871,7 @@ export function useBridgeNativeCallback(
         }
         const txFee =
           tax?.amount.greaterThan(0) && fee
-            ? new StdFee(fee.gas, fee.amount.add(tax))
+            ? new Fee(fee.gas, fee.amount.add(tax))
             : fee
         // console.log(fee)
         // console.log(txFee)
@@ -920,15 +921,7 @@ export function useBridgeNativeCallback(
       new MsgExecuteContract(
         connectedWallet?.walletAddress,
         terraToken,
-        { transfer: { recipient: toAddress, amount: inputAmount } },
-        // {"transfer":{"recipient":"terra1v7k0eyn608h6gnkpeaq6ft56su45j6p5xdk9xw","amount":"11000000"}}
-        
-        // {
-        //   "transfer": {
-        //     "amount": "11000000",
-        //     "recipient": "terra19vq4dqkmehun49nr5jmrmrswq476ehgdln4aws"
-        //   }
-        // }
+        { transfer: { amount: inputAmount, recipient: toAddress } },
         new Coins([])
       )
      :
@@ -939,12 +932,8 @@ export function useBridgeNativeCallback(
       )
     
     const gasFee:any = fee
-      console.log(send)
+    
     return post({
-      // gasPrices: [new Coin({
-      //   key: 'sendFeeDenom',
-      //   default: 'uusd',
-      // }, '20000')],
       msgs: [send],
       fee: gasFee,
       memo: terraRecipient,

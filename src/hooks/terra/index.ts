@@ -3,7 +3,7 @@ import {
   MsgSend,
   Coins,
   // MsgExecuteContract,
-  StdFee,
+  Fee,
   LCDClient,
   Coin,
   // CreateTxOptions,
@@ -22,14 +22,25 @@ export enum AssetNativeDenomEnum {
   umnt = 'umnt',
 }
 
-const terraExt = {
-  chainID: "columbus-5",
-  fcd: "https://fcd.terra.dev",
-  lcd: "https://lcd.terra.dev",
+// const terraExt = {
+//   chainID: "columbus-5",
+//   fcd: "https://fcd.terra.dev",
+//   lcd: "https://lcd.terra.dev",
+//   localterra: false,
+//   mantle: "https://mantle.terra.dev",
+//   name: "mainnet",
+//   walletconnectID: 1
+// }
+
+
+export const terraExt = {
+  chainID: "bombay-12",
+  fcd: "https://bombay-fcd.terra.dev",
+  lcd: "https://bombay-lcd.terra.dev",
   localterra: false,
-  mantle: "https://mantle.terra.dev",
-  name: "mainnet",
-  walletconnectID: 1
+  mantle: "https://bombay-mantle.terra.dev",
+  name: "testnet",
+  walletconnectID: 0
 }
 
 const isNativeTerra = (str: string): boolean =>
@@ -86,7 +97,7 @@ export function useTerraSend () {
   ): Promise<
     {
       denom: AssetNativeDenomEnum
-      fee?: StdFee
+      fee?: Fee
       tax?: any
     }[]
   > => {
@@ -125,7 +136,7 @@ export function useTerraSend () {
           .dp(0, BigNumber.ROUND_UP)
           .toString(10)
         const gasFee = new Coins({ [denom]: amount })
-        const fee = new StdFee(gas, gasFee)
+        const fee = new Fee(gas, gasFee)
         return {
           denom,
           fee,

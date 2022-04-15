@@ -266,7 +266,7 @@ export default function CreateLock () {
       <ContentBody>
         <ContentTitle>
           <BackArrowView><BackArrow to="/vest"></BackArrow></BackArrowView>
-          {t('Create New Lock')}
+          {t('Manage Existing Lock')}
         </ContentTitle>
 
         <SwapContentBox>

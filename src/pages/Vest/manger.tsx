@@ -1,25 +1,32 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from 'react-i18next'
 import styled from "styled-components"
 import { transparentize } from 'polished'
 // import { ArrowDown } from 'react-feather'
-import { AutoRow } from '../../components/Row'
+import moment from 'moment';
+import BigNumber from 'bignumber.js';
+
+// import { AutoRow } from '../../components/Row'
 import {
   // ArrowWrapper,
   BottomGrouping
 } from '../../components/swap/styleds'
-import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
-import Loader from '../../components/Loader'
+import { ButtonLight, ButtonPrimary } from '../../components/Button'
+// import Loader from '../../components/Loader'
+import ErrorTip from '../../components/CrossChainPanelV2/errorTip'
 
 import {useCurrencyBalances} from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from '../../hooks'
+import { useVeMULTIContract } from '../../hooks/useContract'
 import {useLocalToken} from '../../hooks/Tokens'
-import { tryParseAmount } from '../../state/swap/hooks'
-import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
+// import { tryParseAmount } from '../../state/swap/hooks'
+// import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
+import {BigAmount} from '../../utils/formatBignumber'
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+import {getParams} from '../../config/tools/getUrlParams'
 
 import AppBody from '../AppBody'
 
@@ -29,6 +36,8 @@ import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
+import {useCreateLockCallback} from './hooks'
+import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
@@ -45,23 +54,25 @@ const ContentBody = styled.div`
 const ContentTitle = styled.h3`
   color: ${({ theme }) => theme.textColorBold};
   text-align: center;
+  position:relative;
 `
 const SwapContentBox = styled.div`
   width: 100%;
   margin:50px 0;
 `
 
-// const ArrowBox = styled(AutoRow)`
-//   width: 80%;
-//   margin: auto;
-//   height:50px;
-// `
+const BackArrowView = styled.div`
+  ${({ theme }) => theme.flexC};
+  position: absolute;
+  left: 10px;
+  top:5px;
+`
 export default function CreateLock () {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   // const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
-
+  const idx = getParams('id')
   const useLockToken = useMemo(() => {
     if (chainId && MULTI_TOKEN[chainId]) {
       return MULTI_TOKEN[chainId]
@@ -85,20 +96,45 @@ export default function CreateLock () {
 
   const formatCurrency = useLocalToken(useLockToken)
 
+  const now = moment().add(7, 'days').format('YYYY-MM-DD')
+
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  
+  const [lockDuration, setLockDuration] = useState<any>(now)
+  const [lockData, setLockData] = useState<any>(now)
+  // console.log(lockDuration)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [formatCurrency ?? undefined])
-  const formatInputBridgeValue = tryParseAmount(inputValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken?.address)
+
+  const { execute: onWrap, inputError: wrapInputError } = useCreateLockCallback(
+    useVeMultiToken?.address,
+    formatCurrency ?? undefined,
+    inputValue,
+    lockDuration ? moment(lockDuration).unix() : undefined
+  )
+
+  const contract = useVeMULTIContract(useVeMultiToken?.address)
+
+  const getNFT = useCallback(async() => {
+    if (contract && idx && account) {
+      const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
+      const locked = await contract.locked(tokenIndex)
+      const lockValue = await contract.balanceOfNFT(tokenIndex)
+  
+      // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
+      setLockData({
+        id: tokenIndex?.toString(),
+        lockEnds: locked.end.toNumber(),
+        lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
+        lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact()
+      })
+    }
+  }, [contract, account, idx])
+  useEffect(() => {
+    getNFT()
+  }, [contract, account, idx])
+
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
-      // console.log(balance[0])
-      // console.log(formatInputBridgeValue)
-      const bl = balance[0]
-      const sufficientBalance = formatInputBridgeValue && bl && !bl.lessThan(formatInputBridgeValue)
-      // console.log(sufficientBalance)
       if (isNaN(inputValue)) {
         return {
           state: 'Error',
@@ -109,7 +145,7 @@ export default function CreateLock () {
           state: 'Error',
           tip: t('noZero')
         }
-      } else if (!sufficientBalance) {
+      } else if (wrapInputError) {
         return {
           state: 'Error',
           tip: t('Insufficient', {symbol: formatCurrency?.symbol})
@@ -117,7 +153,7 @@ export default function CreateLock () {
       }
     }
     return undefined
-  }, [inputValue, balance, formatCurrency, formatInputBridgeValue])
+  }, [inputValue, formatCurrency, wrapInputError])
 
   const isSwap = useMemo(() => {
     if (isInputError || !inputValue) {
@@ -126,13 +162,56 @@ export default function CreateLock () {
     return false
   }, [isInputError, inputValue])
 
-  useEffect(() => {
-    console.log(approval)
-    console.log(ApprovalState)
-    if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(false)
+  const errorTip = useMemo(() => {
+    
+    if (!account || !chainId) {
+      return undefined
+    } else if (isInputError) {
+      return isInputError
     }
-  }, [approval])
+    return undefined
+  }, [isInputError, account, chainId])
+
+  const futureNFT = useMemo(() => {
+    const now = moment()
+    // const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
+    const expiry = moment(lockDuration)
+    const dayToExpire = expiry.diff(now, 'days')
+    const tmpNFT = {
+      lockAmount: inputValue,
+      lockValue: new BigNumber(inputValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
+      lockEnds: expiry.unix()
+    }
+    console.log(tmpNFT)
+    return tmpNFT
+  }, [lockDuration, inputValue])
+
+  const currentNFT = useMemo(() => {
+    console.log(lockData)
+    const tmpNFT = {
+      lockAmount: lockData.lockAmount,
+      lockValue: lockData.lockValue,
+      lockEnds: lockData.lockEnds,
+    }
+
+    const now = moment()
+    const expiry = moment(lockDuration)
+    const dayToExpire = expiry.diff(now, 'days')
+
+    tmpNFT.lockEnds = expiry.unix()
+    tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
+    // const now = moment()
+    // // const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
+    // const expiry = moment(lockDuration)
+    // const dayToExpire = expiry.diff(now, 'days')
+    // const tmpNFT = {
+    //   lockAmount: inputValue,
+    //   lockValue: new BigNumber(inputValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
+    //   lockEnds: expiry.unix()
+    // }
+    console.log(tmpNFT)
+    return tmpNFT
+  }, [lockData, lockDuration])
 
   function onDelay () {
     setDelayAction(true)
@@ -166,14 +245,6 @@ export default function CreateLock () {
                     }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(item).name}</ButtonLight>
                   })
                 }
-                {/* <ButtonLight onClick={() => {
-                  selectNetwork(supportChain).then((res: any) => {
-                    console.log(res)
-                    if (res.msg === 'Error') {
-                      alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(supportChain).networkName}))
-                    }
-                  })
-                }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(supportChain).name}</ButtonLight> */}
               </BottomGrouping>
             </>
           ) : (
@@ -181,36 +252,17 @@ export default function CreateLock () {
               {!account ? (
                   <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
                 ) : (
-                  inputValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                    <ButtonConfirmed
-                      onClick={() => {
-                        onDelay()
-                        approveCallback().then(() => {
-                          onClear()
-                        })
-                      }}
-                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                      width="48%"
-                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                    >
-                      {approval === ApprovalState.PENDING ? (
-                        <AutoRow gap="6px" justify="center">
-                          {t('Approving')} <Loader stroke="white" />
-                        </AutoRow>
-                      ) : approvalSubmitted ? (
-                        t('Approved')
-                      ) : (
-                        t('Approve') + ' ' + formatCurrency?.symbol ?? formatCurrency?.symbol
-                      )}
-                    </ButtonConfirmed>
-                  ) : (
-                    <ButtonPrimary disabled={Boolean(isSwap || delayAction)} onClick={() => {
-                      // setModalTipOpen(true)
-                      // swapAnyToMulti()
-                    }}>
-                      Lock
-                    </ButtonPrimary>
-                  )
+                  <ButtonPrimary disabled={Boolean(isSwap || delayAction)} onClick={() => {
+                      
+                    if (onWrap) {
+                      onDelay()
+                      onWrap().then(() => {
+                        onClear()
+                      })
+                    }
+                  }}>
+                    Lock
+                  </ButtonPrimary>
                 )
               }
             </BottomGrouping>
@@ -224,6 +276,7 @@ export default function CreateLock () {
     <AppBody>
       <ContentBody>
         <ContentTitle>
+          <BackArrowView><BackArrow to="/vest"></BackArrow></BackArrowView>
           {t('Create New Lock')}
         </ContentTitle>
 
@@ -241,18 +294,29 @@ export default function CreateLock () {
             }}
           ></LockAmount>
         </SwapContentBox>
+        <ErrorTip errorTip={errorTip} />
         {viewBtn(0)}
 
         <SwapContentBox>
           <LockDuration
-            lockEnds={''}
+            lockEnds={lockDuration}
             updateLockDuration={(date:any) => {
-              console.log(date)
+              // console.log(date)
+              // const expiry = moment(date)
+              // console.log(expiry.unix())
+              setLockDuration(date)
             }}
           ></LockDuration>
 
-          <VestingInfo></VestingInfo>
+          <VestingInfo
+            currentNFT={currentNFT}
+            futureNFT={futureNFT}
+            veToken={useVeMultiToken}
+            govToken={useLockToken}
+            showVestingStructure={ false }
+          ></VestingInfo>
         </SwapContentBox>
+        <ErrorTip errorTip={errorTip} />
         {viewBtn(0)}
       </ContentBody>
     </AppBody>

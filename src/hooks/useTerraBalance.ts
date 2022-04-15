@@ -10,6 +10,7 @@ import _ from 'lodash'
 
 import { useConnectedWallet } from '@terra-money/wallet-provider'
 import { useCallback } from 'react'
+import {terraExt} from './terra'
 
 const jsonTryParse = <T>(value: string): T | undefined => {
   try {
@@ -59,9 +60,10 @@ query {
 }
 `
 
-const TERRA_RPC = 'https://mantle.terra.dev/'
+// const TERRA_RPC = 'https://mantle.terra.dev/'
 // const TERRA_RPC = 'https://tequila-mantle.terra.dev/'
-// const TERRA_RPC = 'https://bombay-lcd.terra.dev/'
+// const TERRA_RPC = 'https://bombay-fcd.terra.dev/'
+const TERRA_RPC = terraExt.mantle
 
 const useMantle = (): {
   fetchQuery: ({
