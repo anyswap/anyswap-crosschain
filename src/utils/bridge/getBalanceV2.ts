@@ -18,6 +18,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       account
       && token
       && chainID
+      && !isNaN(chainID)
     ) {
       const lObj = getLocalConfig(account, token, chainID, DESTBALANCE, 1000 * 10)
       if (lObj && lObj.balance) {
@@ -143,6 +144,7 @@ export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, accoun
     if (
       token
       && chainId
+      && !isNaN(chainId)
     ) {
       const lObj = getLocalConfig(SRCTOTALSUPPLY, SRCTOTALSUPPLY, chainId, SRCTOTALSUPPLY, 1000 * 10)
       if (lObj && lObj.totalsupply) {
@@ -169,7 +171,7 @@ export function getNodeTotalsupply(token?:string, chainId?:any, dec?:any, accoun
 export function getGroupTotalsupply (tokenList:any, chainId?:any, account?:string | null | undefined) {
   return new Promise(resolve => {
     // console.log(chainId)
-    if (!chainId) resolve(false)
+    if (!chainId || isNaN(chainId)) resolve(false)
     else {
       const lData = getLocalConfig(SRCTOTALSUPPLY, SRCTOTALSUPPLY, chainId, SRCTOTALSUPPLY, 1000 * 10)
       // console.log(lData)
