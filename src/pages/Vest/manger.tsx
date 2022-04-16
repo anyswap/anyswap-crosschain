@@ -17,9 +17,10 @@ import ErrorTip from '../../components/CrossChainPanelV2/errorTip'
 
 import {useCurrencyBalances} from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { useActiveWeb3React } from '../../hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import { useVeMULTIContract } from '../../hooks/useContract'
 import {useLocalToken} from '../../hooks/Tokens'
+import { useUserSelectChainId } from '../../state/user/hooks'
 // import { tryParseAmount } from '../../state/swap/hooks'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import {BigAmount} from '../../utils/formatBignumber'
@@ -69,9 +70,10 @@ const BackArrowView = styled.div`
 `
 export default function CreateLock () {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  const { chainId, evmAccount: account } = useActiveReact()
   // const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const {setUserSelectNetwork} = useUserSelectChainId()
   const idx = getParams('id')
   const useLockToken = useMemo(() => {
     if (chainId && MULTI_TOKEN[chainId]) {
@@ -98,7 +100,7 @@ export default function CreateLock () {
 
   const now = moment().add(7, 'days').format('YYYY-MM-DD')
 
-  const [inputValue, setInputValue] = useState<any>()
+  const [inputValue, setInputValue] = useState<any>('')
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [lockDuration, setLockDuration] = useState<any>(now)
   const [lockData, setLockData] = useState<any>(now)
@@ -221,7 +223,7 @@ export default function CreateLock () {
     setDelayAction(false)
   }
 
-  function viewBtn (type:any) {
+  function viewBtn (type:any, btnName: string) {
     if (type) {
       return <BottomGrouping>
       <ButtonLight disabled>Coming Soon</ButtonLight>
@@ -236,6 +238,12 @@ export default function CreateLock () {
                 {
                   Object.keys(veMULTI).map((item, index) => {
                     return <ButtonLight key={index} style={{margin: '0 5px'}} onClick={() => {
+                      if (setUserSelectNetwork) {
+                        setUserSelectNetwork({
+                          chainId: config.getCurChainInfo(item).chainID,
+                          label: config.getCurChainInfo(item)?.chainType
+                        })
+                      }
                       selectNetwork(item).then((res: any) => {
                         console.log(res)
                         if (res.msg === 'Error') {
@@ -261,7 +269,7 @@ export default function CreateLock () {
                       })
                     }
                   }}>
-                    Lock
+                    {btnName}
                   </ButtonPrimary>
                 )
               }
@@ -277,7 +285,7 @@ export default function CreateLock () {
       <ContentBody>
         <ContentTitle>
           <BackArrowView><BackArrow to="/vest"></BackArrow></BackArrowView>
-          {t('Create New Lock')}
+          {t('Manage Existing Lock')}
         </ContentTitle>
 
         <SwapContentBox>
@@ -295,7 +303,7 @@ export default function CreateLock () {
           ></LockAmount>
         </SwapContentBox>
         <ErrorTip errorTip={errorTip} />
-        {viewBtn(0)}
+        {viewBtn(0, t('Increase Lock Amount'))}
 
         <SwapContentBox>
           <LockDuration
@@ -317,7 +325,7 @@ export default function CreateLock () {
           ></VestingInfo>
         </SwapContentBox>
         <ErrorTip errorTip={errorTip} />
-        {viewBtn(0)}
+        {viewBtn(0, t('Increase Duration'))}
       </ContentBody>
     </AppBody>
   )

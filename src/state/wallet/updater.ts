@@ -100,10 +100,20 @@ export default function Updater(): null {
   }, [allTokens, account, chainId])
   const getBalance = useCallback((arr) => {
     return new Promise(resolve => {
+      if (
+        !chainId
+        || !isNaN(chainId)
+        || !config.getCurChainInfo(chainId)?.multicalToken
+        || arr.length <= 0
+      ) {
+        resolve('')
+        return
+      }
       const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
       const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
       const contract = getContract({rpc: rpc, abi: '', provider: provider})
       // console.log(arr)
+      // console.log(config.getCurChainInfo(chainId))
       contract.options.address = config.getCurChainInfo(chainId).multicalToken
       contract.methods.aggregate(arr.map(({callData, target}: {callData:string, target:string}) => ({callData, target}))).call((err:any, res:any) => {
         // console.log(err)
@@ -143,7 +153,14 @@ export default function Updater(): null {
   const getETHBalance = useCallback(() => {
     return new Promise(resolve => {
       if (account) {
-        
+        if (
+          !chainId
+          || !isNaN(chainId)
+          || !config.getCurChainInfo(chainId)?.multicalToken
+        ) {
+          resolve('')
+          return
+        }
         // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
         // const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
         const provider = library ? library?.provider : ''
