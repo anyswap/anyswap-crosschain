@@ -44,12 +44,13 @@ const prepareServerList = (chainId: any, pairs: any) => {
       if (mainToken !== null) {
         pairData.multichainTokens.forEach((tokenData: any) => {
           if (tokenData.chainId !== chainId) {
-            if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
-            pairTokens[tokenData.chainId][tokenData.anyswapToken.Underlying] = {
+            //if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
+            pairTokens[tokenData.chainId]/*[tokenData.anyswapToken.Underlying]*/ = {
               name: tokenID,
               symbol: tokenID,
               decimals: tokenData.anyswapToken.Decimals,
               address: tokenData.anyswapToken.Underlying,
+              source: "SERVERLIST",
               underlying: {
                 address: tokenData.anyswapToken.ContractAddress,
                 decimals: tokenData.anyswapToken.Decimals,
@@ -110,11 +111,12 @@ const prepareTokenList = (chainId: any, pairs: any) => {
         pairData.multichainTokens.forEach((tokenData: any) => {
           if (tokenData.chainId !== chainId) {
             if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
-            pairTokens[tokenData.chainId][tokenData.anyswapToken.ContractAddress] = {
+            pairTokens[tokenData.chainId][tokenData.anyswapToken.Underlying] = {
               name: tokenID,
               symbol: tokenID,
               decimals: tokenData.anyswapToken.Decimals,
-              address: tokenData.anyswapToken.ContractAddress,
+              address: tokenData.anyswapToken.Underlying,
+              source: "TOKENLIST",
               underlying: {
                 address: tokenData.anyswapToken.ContractAddress,
                 decimals: tokenData.anyswapToken.Decimals,
@@ -134,8 +136,8 @@ const prepareTokenList = (chainId: any, pairs: any) => {
             }
           }
         })
-        tokenList[mainToken.anyswapToken.ContractAddress] = {
-          address: mainToken.anyswapToken.ContractAddress,
+        tokenList[mainToken.anyswapToken.Underlying] = {
+          address: mainToken.anyswapToken.Underlying,
           name: tokenID,
           symbol: tokenID,
           decimals: mainToken.anyswapToken.Decimals,
@@ -320,8 +322,8 @@ export function useFetchTokenListCallback(): () => Promise<any> {
   }, [dispatch, chainId, apiAddress])
 }
 
+// deprecated - not used isOpenBridge = false
 export function useFetchTokenList1Callback(): () => Promise<any> {
-  console.log('>>>> call useFetchTokenList1Callback')
   const { chainId } = useActiveWeb3React()
   const { apiAddress } = useAppState()
   const dispatch = useDispatch<AppDispatch>()
@@ -330,7 +332,6 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
 
   return useCallback(async () => {
     if (!chainId || !apiAddress || !config.getCurConfigInfo().isOpenBridge) {
-      console.log('>>>> call useFetchTokenList1Callback return 1', chainId, apiAddress, config.getCurConfigInfo().isOpenBridge)
       return
     }
     if (
@@ -340,17 +341,14 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
       curList?.tokenList &&
       Object.keys(curList?.tokenList).length > 0
     ) {
-      console.log('>>>> call useFetchTokenList1Callback return 2')
       return
     }
-    console.log('>>> Call GetTokenListByChainID')
     return GetTokenListByChainID({
       srcChainID: chainId,
       chainList: config.getCurConfigInfo().showChain,
       bridgeAPI: `http://${apiAddress}/v2/tokenlist`
     })
       .then((tokenList: any) => {
-        console.log('>>>> call useFetchTokenList1Callback', tokenList)
         dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
         return tokenList
       })
