@@ -179,44 +179,41 @@ export default function CreateLock () {
   }, [isInputError, account, chainId])
 
   const futureNFT = useMemo(() => {
-    const now = moment()
-    // const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
-    const expiry = moment(lockDuration)
-    const dayToExpire = expiry.diff(now, 'days')
-    const tmpNFT = {
-      lockAmount: inputValue,
-      lockValue: new BigNumber(inputValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
-      lockEnds: expiry.unix()
+    if (lockData) {
+      const now = moment()
+      const selectDate = moment.unix(lockData.lockEnds).format('YYYY-MM-DD')
+      const expiry = moment(selectDate)
+      const dayToExpire = expiry.diff(now, 'days')
+      const tmpNFT = {
+        lockAmount: lockData.lockAmount,
+        lockValue: new BigNumber(lockData.lockValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
+        lockEnds: expiry.unix()
+      }
+      // console.log(tmpNFT)
+      return tmpNFT
     }
-    console.log(tmpNFT)
-    return tmpNFT
-  }, [lockDuration, inputValue])
+    return undefined
+  }, [lockData, inputValue])
 
   const currentNFT = useMemo(() => {
-    console.log(lockData)
-    const tmpNFT = {
-      lockAmount: lockData.lockAmount,
-      lockValue: lockData.lockValue,
-      lockEnds: lockData.lockEnds,
+    // console.log(lockData)
+    if (lockData) {
+      const tmpNFT = {
+        lockAmount: lockData.lockAmount,
+        lockValue: lockData.lockValue,
+        lockEnds: lockData.lockEnds,
+      }
+  
+      const now = moment()
+      const expiry = moment(lockDuration)
+      const dayToExpire = expiry.diff(now, 'days')
+  
+      tmpNFT.lockEnds = expiry.unix()
+      tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
+      console.log(tmpNFT)
+      return tmpNFT
     }
-
-    const now = moment()
-    const expiry = moment(lockDuration)
-    const dayToExpire = expiry.diff(now, 'days')
-
-    tmpNFT.lockEnds = expiry.unix()
-    tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
-    // const now = moment()
-    // // const selectDate = moment.unix(lockDuration).format('YYYY-MM-DD')
-    // const expiry = moment(lockDuration)
-    // const dayToExpire = expiry.diff(now, 'days')
-    // const tmpNFT = {
-    //   lockAmount: inputValue,
-    //   lockValue: new BigNumber(inputValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
-    //   lockEnds: expiry.unix()
-    // }
-    console.log(tmpNFT)
-    return tmpNFT
+    return undefined
   }, [lockData, lockDuration])
 
   function onDelay () {
