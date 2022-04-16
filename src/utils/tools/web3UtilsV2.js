@@ -103,6 +103,7 @@ function getWeb3Result (rpc, property, name, params) {
 const useNode = {}
 
 async function useBatchWeb3 (chainId, list) {
+  if (isNaN(chainId)) return undefined
   const rpcArr = config.getCurChainInfo(chainId).nodeRpcList
   const len = rpcArr.length - 1
   if (!useNode[chainId]) {
@@ -146,6 +147,7 @@ async function useBatchWeb3 (chainId, list) {
 }
 
 async function useWeb3 (chainId, property, name, params) {
+  if (isNaN(chainId)) return undefined
   params = params ? params : []
   const rpcArr = config.getCurChainInfo(chainId).nodeRpcList
   const len = rpcArr.length - 1

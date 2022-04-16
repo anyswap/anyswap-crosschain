@@ -16,6 +16,7 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const savedBalance = useRef<any>()
 
   const fetchBalance = useCallback(() => {
+    // console.log(token)
     if (token) {
       if (selectChainId === ChainId.TERRA && connectedWallet?.walletAddress) {
         // console.log(token)
@@ -33,6 +34,7 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         })
       }
     } else {
+      savedBalance.current = ''
       // setBalance('')
     }
   }, [token, connectedWallet, selectChainId])

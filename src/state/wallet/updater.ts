@@ -95,16 +95,27 @@ export default function Updater(): null {
         })
       }
     }
+    // console.log(arr)
     return arr
   }, [allTokens, account, chainId])
   const getBalance = useCallback((arr) => {
     return new Promise(resolve => {
+      if (
+        !chainId
+        || !isNaN(chainId)
+        || !config.getCurChainInfo(chainId)?.multicalToken
+        || arr.length <= 0
+      ) {
+        resolve('')
+        return
+      }
       const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
       const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
       const contract = getContract({rpc: rpc, abi: '', provider: provider})
-      // console.log(rpcItem)
+      // console.log(arr)
+      // console.log(config.getCurChainInfo(chainId))
       contract.options.address = config.getCurChainInfo(chainId).multicalToken
-      contract.methods.aggregate(arr).call((err:any, res:any) => {
+      contract.methods.aggregate(arr.map(({callData, target}: {callData:string, target:string}) => ({callData, target}))).call((err:any, res:any) => {
         // console.log(err)
         // console.log(res)
         if (!err) {
@@ -113,10 +124,16 @@ export default function Updater(): null {
             const token = arr[i].target.toLowerCase()
             const dec = arr[i].dec
             const results = res.returnData[i]
-            const bl = ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
+            let bl = ''
+            try {
+              // console.log(results)
+              bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
+            } catch (error) {
+              // console.error(error)
+            }
             blList[token] = {
               // balance: fromWei(results, dec),
-              balance: formatUnits(bl, dec),
+              balance: bl ? formatUnits(bl, dec) : '',
               balancestr: bl,
               dec: dec,
               blocknumber: res.blockNumber
@@ -136,7 +153,14 @@ export default function Updater(): null {
   const getETHBalance = useCallback(() => {
     return new Promise(resolve => {
       if (account) {
-        
+        if (
+          !chainId
+          || !isNaN(chainId)
+          || !config.getCurChainInfo(chainId)?.multicalToken
+        ) {
+          resolve('')
+          return
+        }
         // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
         // const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
         const provider = library ? library?.provider : ''
@@ -171,9 +195,15 @@ export default function Updater(): null {
 
   const getAllBalance = useCallback(() => {
     const results = []
-    for (let i = 0, len = calls.length; i < len; i += limit) {
-      results.push(calls.slice(i, i + limit))
+    if (calls.length > limit) {
+      for (let i = 0, len = calls.length; i < len; i += limit) {
+        results.push(calls.slice(i, i + limit))
+      }
+    } else {
+      results.push(calls)
     }
+    // console.log(calls)
+    // console.log(results)
     const arr = [getETHBalance()]
     for (const item of results) {
       arr.push(getBalance(item))

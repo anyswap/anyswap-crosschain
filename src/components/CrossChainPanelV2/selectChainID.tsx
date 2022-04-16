@@ -187,9 +187,13 @@ export default function SelectChainIdInputPanel({
   }, [evmAccount, chainId, bridgeConfig, selectChainId])
 
   const useBalance = useMemo(() => {
+    // console.log(nonEVMbl)
     if (isNaN(selectChainId)) {
       // console.log(nonEVMbl?.toSignificant(6))
-      return nonEVMbl?.toSignificant(6)
+      if (nonEVMbl) {
+        return nonEVMbl?.toSignificant(6)
+      }
+      return ''
     }
     return destBalance
   }, [destBalance, nonEVMbl, selectChainId])

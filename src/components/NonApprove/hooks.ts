@@ -49,7 +49,7 @@ export function useAllApproved () {
         const arr = []
         const arr1 = []
         for (const c in nonApproveList) {
-          const list = res[i]
+          const list:any = res[i] ? res[i] : []
           i ++
           for (let j = 0, len = list.length; j < len; j++) {
             const value = list[j]

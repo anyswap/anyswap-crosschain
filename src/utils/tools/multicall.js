@@ -75,6 +75,7 @@ function getMulticallResult (chainId, rpc, list) {
 const useNode = {}
 
 async function useMulticall (chainId, list) {
+  if (isNaN(chainId)) return undefined
   const rpcArr = config.getCurChainInfo(chainId)?.nodeRpcList
   if (!rpcArr) return ''
   const len = rpcArr.length - 1
