@@ -78,7 +78,19 @@ export function useBridgeCallback(
                   toChainID
                 )
 
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                const registerSwapOnMined = {
+                  hash: txReceipt.hash,
+                  chainId,
+                  apiAddress
+                }
+                console.log('>>> useBridgeCallback', registerSwapOnMined)
+                addTransaction(
+                  txReceipt,
+                  {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    registerSwapOnMined
+                  }
+                )
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 
                 if (txReceipt?.hash && account) {
@@ -162,8 +174,21 @@ export function useBridgeCallback(
                   toChainID
                 )
 
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                registerSwap(txReceipt.hash, chainId, apiAddress)
+                console.log('>>> useBridgeUnderlyingCallback')
+                const registerSwapOnMined = {
+                  hash: txReceipt.hash,
+                  chainId,
+                  apiAddress
+                }
+                addTransaction(
+                  txReceipt,
+                  {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    registerSwapOnMined
+                  }
+                )
+                console.log('>>> do register')
+                // registerSwap(txReceipt.hash, chainId, apiAddress)
 
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -247,6 +272,7 @@ export function useBridgeNativeCallback(
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
 
+                console.log('>>> useBridgeNativeCallback')
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 
@@ -576,6 +602,7 @@ export function useBridgeNativeCallback(
                   parseInt((Date.now()/1000 + deadline).toString()),
                   toChainID
                 )
+                console.log('>>> useBridgeSwapUnderlyingCallback')
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 

@@ -10,6 +10,7 @@ import {poolLiquidity} from './actions'
 
 export default function Updater(): null {
   const dispatch = useDispatch()
+  console.log('>>> call state/pools/update')
   // const { apiAddress } = useAppState()
   const getPools = useCallback(() => {
     /*
@@ -103,6 +104,16 @@ export default function Updater(): null {
           "liquidity": "5756135762036213167560"
         }
       },
+      "97": {
+        "0x6e9c98a8a481BF038Ba7e1d669a0086547dd144E": {
+          "logoUrl": "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+          "name": "TetherUSD",
+          "symbol": "USDT",
+          "decimals": 8,
+          "anyToken": "0xc0c3394781c23faa538a506b3c96fb59c050bed8",
+          "liquidity": "5756135762036213167560"
+        }
+      },
       "66": {
         "0x382bb369d343125bfb2117af9c149795c6c65c50": {
           "logoUrl": "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
@@ -144,7 +155,8 @@ export default function Updater(): null {
         }
       }
     }
-    dispatch(poolLiquidity({poolLiquidity: testData}))
+    console.log('>>>> pools', testData)
+    dispatch(poolLiquidity({poolLiquidity: {}/*testData*/}))
   }, [dispatch])
 
   useInterval(getPools, 1000 * 30)
