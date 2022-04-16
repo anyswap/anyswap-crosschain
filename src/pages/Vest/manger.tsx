@@ -117,18 +117,22 @@ export default function CreateLock () {
   const contract = useVeMULTIContract(useVeMultiToken?.address)
 
   const getNFT = useCallback(async() => {
+    // console.log(contract)
+    // console.log(idx)
+    // console.log(account)
     if (contract && idx && account) {
       const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
       const locked = await contract.locked(tokenIndex)
       const lockValue = await contract.balanceOfNFT(tokenIndex)
-  
-      // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
-      setLockData({
+      const data = {
         id: tokenIndex?.toString(),
         lockEnds: locked.end.toNumber(),
         lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
         lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact()
-      })
+      }
+      console.log(data)
+      // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
+      setLockData(data)
     }
   }, [contract, account, idx])
   useEffect(() => {

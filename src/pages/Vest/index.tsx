@@ -92,7 +92,8 @@ export default function Vest () {
     ) {
       const nftsLength = await contract.balanceOf(account)
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
-  
+      console.log(nftsLength)
+      console.log(arr)
       const nfts = await Promise.all(
         arr.map(async (idx) => {
   
@@ -102,6 +103,7 @@ export default function Vest () {
   
           // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
           return {
+            index: idx,
             id: tokenIndex?.toString(),
             lockEnds: locked.end.toNumber(),
             lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
@@ -157,7 +159,7 @@ export default function Vest () {
                   <DBTd className="l">{item.lockValue}</DBTd>
                   <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
                   <DBTd className="c">
-                    <TokenActionBtn2 to={"/vest/manger?id=" + item.id}>Manger</TokenActionBtn2>  
+                    <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>  
                   </DBTd>
                 </tr>
               })
