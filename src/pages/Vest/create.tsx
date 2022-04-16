@@ -118,7 +118,7 @@ export default function CreateLock () {
     useVeMultiToken?.address,
     formatCurrency ?? undefined,
     inputValue,
-    lockDuration ? moment(lockDuration).unix() : undefined
+    lockDuration ? moment(lockDuration).add(1, 'days').unix() : undefined
   )
 
   const isInputError = useMemo(() => {

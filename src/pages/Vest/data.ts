@@ -15,7 +15,7 @@ export const VENFT_BASE_INFO = {
 export const veMULTI:any = {
   [ChainId.BNB_TEST]: {
     ...VENFT_BASE_INFO,
-    address: '0xa88e49CfFd199f77cDbF0B5149E2660A34b8c3D1'
+    address: '0x27C03bDc9ec0945a4ab06DDC11CC0e8946eC4Aab'
   }
 }
 
@@ -27,12 +27,14 @@ export const MULTI_TOKEN:any = {
 }
 
 export const REWARD_TOKEN:any = {
-  [ChainId.BNB_TEST]: '0xB608035D8555ba924EceBb6239b148f99224A36C'
+  [ChainId.BNB_TEST]: {
+    address: '0xB608035D8555ba924EceBb6239b148f99224A36C'
+  }
 }
 
 export const REWARD:any = {
   [ChainId.BNB_TEST]: {
     // ...BASE_INFO,
-    address: '0xF43F9f7c87D4c2BD8868251661470a07E229E477'
+    address: '0x25c5Cc9082d7d87B3321868bA2C64e0C969072a4'
   }
 }

@@ -20,6 +20,7 @@ import RouterAction from '../constants/abis/bridge/RouterAction.json'
 import swapBTCABI from '../constants/abis/bridge/swapBTCABI.json'
 import swapETHABI from '../constants/abis/bridge/swapETHABI.json'
 import veMULTI from '../constants/abis/veMULTI.json'
+import veMultiReward from '../constants/abis/veMULTIReward.json'
 
 import NFT from '../constants/abis/bridge/nft.json'
 import NFT721 from '../constants/abis/bridge/erc721.json'
@@ -81,6 +82,9 @@ export function useBridgeContract(routerToken?:any, withSignerIfPossible?: boole
 }
 export function useVeMULTIContract(veToken?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(veToken ? veToken : undefined, veMULTI, withSignerIfPossible)
+}
+export function useVeMULTIRewardContract(veToken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(veToken ? veToken : undefined, veMultiReward, withSignerIfPossible)
 }
 
 export function useNFTContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {

@@ -37,7 +37,7 @@ import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
-import {useCreateLockCallback} from './hooks'
+import {useInCreaseAmountCallback, useInCreaseUnlockTimeCallback} from './hooks'
 import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
@@ -107,11 +107,18 @@ export default function CreateLock () {
   // console.log(lockDuration)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [formatCurrency ?? undefined])
 
-  const { execute: onWrap, inputError: wrapInputError } = useCreateLockCallback(
+  const { execute: onWrap, inputError: wrapInputError } = useInCreaseAmountCallback(
     useVeMultiToken?.address,
     formatCurrency ?? undefined,
     inputValue,
-    lockDuration ? moment(lockDuration).unix() : undefined
+    lockData?.id
+  )
+  const { execute: onInCreaseUnlockWrap } = useInCreaseUnlockTimeCallback(
+    useVeMultiToken?.address,
+    formatCurrency ?? undefined,
+    lockDuration ? moment(lockDuration).add(1, 'days').unix() : undefined,
+    lockData?.id,
+    lockData?.lockEnds
   )
 
   const contract = useVeMULTIContract(useVeMultiToken?.address)
@@ -180,24 +187,16 @@ export default function CreateLock () {
 
   const futureNFT = useMemo(() => {
     if (lockData) {
-      const now = moment()
-      const selectDate = moment.unix(lockData.lockEnds).format('YYYY-MM-DD')
-      const expiry = moment(selectDate)
-      const dayToExpire = expiry.diff(now, 'days')
-      const tmpNFT = {
-        lockAmount: lockData.lockAmount,
-        lockValue: new BigNumber(lockData.lockValue).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18),
-        lockEnds: expiry.unix()
+      if(inputValue === '') {
+        const tmpNFT = {
+          lockAmount: lockData.lockAmount,
+          lockValue: lockData.lockValue,
+          lockEnds: lockData.lockEnds,
+        }
+  
+        return tmpNFT
       }
-      // console.log(tmpNFT)
-      return tmpNFT
-    }
-    return undefined
-  }, [lockData, inputValue])
-
-  const currentNFT = useMemo(() => {
-    // console.log(lockData)
-    if (lockData) {
+  
       const tmpNFT = {
         lockAmount: lockData.lockAmount,
         lockValue: lockData.lockValue,
@@ -205,16 +204,38 @@ export default function CreateLock () {
       }
   
       const now = moment()
-      const expiry = moment(lockDuration)
-      const dayToExpire = expiry.diff(now, 'days')
+      const expiry = moment.unix(tmpNFT.lockEnds)
+      const dayToExpire:any = expiry.diff(now, 'days')
   
-      tmpNFT.lockEnds = expiry.unix()
-      tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
-      console.log(tmpNFT)
+      tmpNFT.lockAmount = new BigNumber(tmpNFT.lockAmount).plus(inputValue).toFixed(18)
+      tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18)
       return tmpNFT
     }
     return undefined
-  }, [lockData, lockDuration])
+    
+    // setFutureNFT(tmpNFT)
+  }, [lockData, inputValue])
+
+  // const currentNFT = useMemo(() => {
+  //   // console.log(lockData)
+  //   if (lockData) {
+  //     const tmpNFT = {
+  //       lockAmount: lockData.lockAmount,
+  //       lockValue: lockData.lockValue,
+  //       lockEnds: lockData.lockEnds,
+  //     }
+  
+  //     const now = moment()
+  //     const expiry = moment(lockDuration)
+  //     const dayToExpire = expiry.diff(now, 'days')
+  
+  //     tmpNFT.lockEnds = expiry.unix()
+  //     tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
+  //     console.log(tmpNFT)
+  //     return tmpNFT
+  //   }
+  //   return undefined
+  // }, [lockData, lockDuration])
 
   function onDelay () {
     setDelayAction(true)
@@ -224,11 +245,17 @@ export default function CreateLock () {
     setDelayAction(false)
   }
 
-  function viewBtn (type:any, btnName: string) {
+  function viewBtn (type:any, btnName: string, methodsType: string) {
     if (type) {
       return <BottomGrouping>
       <ButtonLight disabled>Coming Soon</ButtonLight>
     </BottomGrouping>
+    }
+    let isDisabled = true
+    if (methodsType === 'increase_amount') {
+      isDisabled = Boolean(isSwap || delayAction)
+    } else if (methodsType === 'increase_unlock_time') {
+      isDisabled = Boolean(!lockDuration || delayAction)
     }
     return (
       <>
@@ -261,13 +288,21 @@ export default function CreateLock () {
               {!account ? (
                   <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
                 ) : (
-                  <ButtonPrimary disabled={Boolean(isSwap || delayAction)} onClick={() => {
-                      
-                    if (onWrap) {
-                      onDelay()
-                      onWrap().then(() => {
-                        onClear()
-                      })
+                  <ButtonPrimary disabled={isDisabled} onClick={() => {
+                    if (methodsType === 'increase_amount') {
+                      if (onWrap) {
+                        onDelay()
+                        onWrap().then(() => {
+                          onClear()
+                        })
+                      }
+                    } else if (methodsType === 'increase_unlock_time') {
+                      if (onInCreaseUnlockWrap) {
+                        onDelay()
+                        onInCreaseUnlockWrap().then(() => {
+                          onClear()
+                        })
+                      }
                     }
                   }}>
                     {btnName}
@@ -304,7 +339,7 @@ export default function CreateLock () {
           ></LockAmount>
         </SwapContentBox>
         <ErrorTip errorTip={errorTip} />
-        {viewBtn(0, t('Increase Lock Amount'))}
+        {viewBtn(0, t('Increase Lock Amount'), 'increase_amount')}
 
         <SwapContentBox>
           <LockDuration
@@ -318,7 +353,8 @@ export default function CreateLock () {
           ></LockDuration>
 
           <VestingInfo
-            currentNFT={currentNFT}
+            // currentNFT={currentNFT}
+            currentNFT={lockData}
             futureNFT={futureNFT}
             veToken={useVeMultiToken}
             govToken={useLockToken}
@@ -326,7 +362,7 @@ export default function CreateLock () {
           ></VestingInfo>
         </SwapContentBox>
         <ErrorTip errorTip={errorTip} />
-        {viewBtn(0, t('Increase Duration'))}
+        {viewBtn(0, t('Increase Duration'), 'increase_unlock_time')}
       </ContentBody>
     </AppBody>
   )
