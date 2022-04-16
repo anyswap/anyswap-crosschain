@@ -102,7 +102,7 @@ export default function Updater(): null {
     return new Promise(resolve => {
       if (
         !chainId
-        || !isNaN(chainId)
+        || isNaN(chainId)
         || !config.getCurChainInfo(chainId)?.multicalToken
         || arr.length <= 0
       ) {
@@ -155,7 +155,7 @@ export default function Updater(): null {
       if (account) {
         if (
           !chainId
-          || !isNaN(chainId)
+          || isNaN(chainId)
           || !config.getCurChainInfo(chainId)?.multicalToken
         ) {
           resolve('')
