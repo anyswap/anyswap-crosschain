@@ -6,14 +6,20 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment';
 
 import { useActiveWeb3React } from '../../hooks'
-import { useVeMULTIContract } from '../../hooks/useContract'
+import { useVeMULTIContract, useVeMULTIRewardContract } from '../../hooks/useContract'
 
 import {BigAmount} from '../../utils/formatBignumber'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 
 import TokenLogo from '../../components/TokenLogo'
-// import { ButtonLight } from '../../components/Button'
+import { ButtonLight } from '../../components/Button'
+// import Modal from "../../components/Modal";
+import ModalContent from "../../components/Modal/ModalContent";
 
+import {
+  BottomGrouping
+} from '../../components/swap/styleds'
+import { ButtonPrimary } from '../../components/Button'
 
 import AppBody from '../AppBody'
 
@@ -28,11 +34,13 @@ import {
   TokenNameBox,
   MyBalanceBox,
   TokenActionBtn,
-  // Flex,
+  Flex,
   // ChainCardList
 } from '../Dashboard/styleds'
 
-import {veMULTI,MULTI_TOKEN} from './data'
+import {veMULTI,MULTI_TOKEN,REWARD} from './data'
+
+import {useClaimRewardCallback} from './hooks'
 
 const VestContent = styled.div`
   width: 100%;
@@ -40,10 +48,8 @@ const VestContent = styled.div`
 `
 
 const CreateLock = styled(TokenActionBtn)`
-  // color: rgb(6, 211, 215);
-  // width: 100%;
-  // background: rgb(23, 52, 72);
-  // font-weight: 700;
+  background:${({ theme }) => theme.primary1};
+  color:#fff;
   margin-bottom:10px;
   &.disabled {
     opacity: 0.2;
@@ -54,7 +60,34 @@ const CreateLock = styled(TokenActionBtn)`
   `}
 `
 
-const TokenActionBtn2 = styled(TokenActionBtn)`
+const TokenActionBtn1 = styled(ButtonLight)`
+  ${({ theme }) => theme.flexC};
+  font-family: 'Manrope';
+  min-width: auto!important;
+  max-width: auto!important;
+  width: auto;
+  height: 38px;
+  padding: 0 15px;
+  word-break:break-all!important;
+
+  border-radius: 0.5625rem;
+  background: ${({ theme }) => theme.selectedBg};
+  margin-right: 0.125rem;
+
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  line-height: 1;
+
+  color: ${({ theme }) => theme.textColorBold};
+  box-shadow: none;
+  // padding: 0 8px;
+  text-decoration: none;
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${({ theme }) => theme.selectedBg};
+  }
   &.disabled {
     opacity: 0.2;
   }
@@ -64,16 +97,48 @@ const TokenActionBtn2 = styled(TokenActionBtn)`
   `}
 `
 
+const TokenActionBtn2 = styled(TokenActionBtn)`
+  min-width: auto!important;
+  max-width: auto!important;
+  width: auto;
+  height: 38px;
+  padding: 0 15px;
+  &.disabled {
+    opacity: 0.2;
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 28px;
+    margin-bottom: 10px;
+  `}
+`
+
+const RewardView = styled.div`
+  width:100%;
+  ${({ theme }) => theme.flexC};
+  padding: 30px 0;
+`
+
 export default function Vest () {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
 
   const [vestNFTs, setvestNFTs] = useState<any>()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [nfts, setNfts] = useState<any>()
+  const [loadingStatus, setLoadingStatus] = useState<any>(0)
+  const [rewradNumber, setRewradNumber] = useState<any>()
+  const [epoch, setEpoch] = useState<any>()
 
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
     return undefined
   }, [chainId, account])
+  
+  const useVeMultiRewardToken = useMemo(() => {
+    if (chainId && REWARD[chainId]) return REWARD[chainId]
+    return undefined
+  }, [chainId, account])
+
   const useLockToken = useMemo(() => {
     if (chainId && MULTI_TOKEN[chainId]) {
       return MULTI_TOKEN[chainId]
@@ -82,7 +147,31 @@ export default function Vest () {
   }, [chainId])
 
   const contract = useVeMULTIContract(useVeMultiToken?.address)
+  const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
+
+  const {execute: onWrap} = useClaimRewardCallback(
+    useVeMultiRewardToken?.address,
+    nfts?.id,
+    epoch && epoch[0] ? epoch[0] : undefined,
+    epoch && epoch[1] ? epoch[1] : undefined,
+  )
   // const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken)
+  const getPendingReward = useCallback((nfts) => {
+    if (rewardContract && nfts?.id) {
+      setNfts(nfts)
+      setModalOpen(true)
+      console.log(nfts.id)
+      rewardContract.pendingReward(nfts.id).then((res:any) => {
+        console.log(res)
+        setLoadingStatus(1)
+        setRewradNumber(res)
+        setEpoch(res)
+      }).catch((err:any) => {
+        console.log(err)
+        setLoadingStatus(2)
+      })
+    }
+  }, [rewardContract])
 
   const getVestNFTs = useCallback(async() => {
     // console.log(useVeMultiToken)
@@ -119,8 +208,44 @@ export default function Vest () {
     getVestNFTs()
   }, [contract, account, useLockToken])
 
+  function ClaimView (stutus:number) {
+    if (stutus === 0) {
+      return (
+        <>Loading</>
+      )
+    } else if (stutus === 2) {
+      return (
+        <>Error</>
+      )
+    } else {
+      return (
+        <>
+          <RewardView>{rewradNumber}</RewardView>
+          <BottomGrouping>
+            <ButtonPrimary onClick={() => {
+              if (onWrap) {
+                onWrap()
+              }
+            }}>
+              {t('Claim Reward')}
+            </ButtonPrimary>
+          </BottomGrouping>
+        </>
+      )
+    }
+  }
   return (
     <AppBody>
+      <ModalContent
+        isOpen={modalOpen}
+        onDismiss={() => {
+          setModalOpen(false)
+        }}
+        title={t('Claim Reward')}
+      >
+        {nfts?.id}
+        {ClaimView(loadingStatus)}
+      </ModalContent>
       <VestContent>
         <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
       </VestContent>
@@ -159,7 +284,13 @@ export default function Vest () {
                   <DBTd className="l">{item.lockValue}</DBTd>
                   <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
                   <DBTd className="c">
-                    <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>  
+                    <Flex>
+                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>
+                      <TokenActionBtn1 onClick={() => {
+                        
+                        getPendingReward(item)
+                      }}>{t('Claim Reward')}</TokenActionBtn1>
+                    </Flex>
                   </DBTd>
                 </tr>
               })
