@@ -178,6 +178,9 @@ export default function CrossChain({
     setBridgeAnyToken('')
     if (isRouter) {
       // setBridgeAnyToken('')
+      if (selectCurrency?.liquidityType === "NO_POOL") {
+        return selectCurrency?.underlying?.address
+      }
       return destConfig?.routerToken
     } else {
       if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
