@@ -160,7 +160,6 @@ const prepareTokenList = (chainId: any, pairs: any) => {
 }
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
-  console.log('>>>>>> useFetchListCallback')
   const { chainId, library } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -182,7 +181,6 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
 
   return useCallback(
     async (listUrl: string) => {
-      console.log('>>>>>>>>>>>> listUrl', listUrl)
       const requestId = nanoid()
       dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
 
@@ -233,7 +231,6 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
     }
 
     const url = `http://${apiAddress}/config`
-    console.log('>>>> call getUrlData', url)
 
     return getUrlData(url)
       .then((tokenList: any) => {

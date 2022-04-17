@@ -83,6 +83,7 @@ export default function Updater(): null {
       }
     })
     */
+    /*
     const testData = {
       "1": {
         "0xdac17f958d2ee523a2206206994597c13d831ec7": {
@@ -155,7 +156,7 @@ export default function Updater(): null {
         }
       }
     }
-    console.log('>>>> pools', testData)
+*/
     dispatch(poolLiquidity({poolLiquidity: {}/*testData*/}))
   }, [dispatch])
 
