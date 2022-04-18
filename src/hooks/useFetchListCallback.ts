@@ -90,7 +90,9 @@ const prepareServerList = (chainId: any, pairs: any) => {
       }
     })
     return serverList
-  } catch (err) { console.log('>>>> prepareServerList ERROR', err) }
+  } catch (err) {
+    console.error('>>>> prepareServerList', err)
+  }
 }
 
 
@@ -156,7 +158,9 @@ const prepareTokenList = (chainId: any, pairs: any) => {
     })
 
     return tokenList
-  } catch (err) { console.log('>>>> ERROR 2', err) }
+  } catch (err) {
+    console.error('>>>> prepareTokenList', err)
+  }
 }
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
