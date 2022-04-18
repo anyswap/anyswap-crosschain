@@ -167,6 +167,7 @@ export default function Vest () {
         setRewradNumber(res)
         setEpoch(res)
       }).catch((err:any) => {
+        console.log('err')
         console.log(err)
         setLoadingStatus(2)
       })
@@ -174,12 +175,15 @@ export default function Vest () {
   }, [rewardContract])
 
   const getVestNFTs = useCallback(async() => {
-    // console.log(useVeMultiToken)
+    console.log(useVeMultiToken)
     if (
       contract
       && account
     ) {
+      console.log(contract)
+      console.log(account)
       const nftsLength = await contract.balanceOf(account)
+      console.log(nftsLength)
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       console.log(nftsLength)
       console.log(arr)
@@ -207,6 +211,17 @@ export default function Vest () {
   useEffect(() => {
     getVestNFTs()
   }, [contract, account, useLockToken])
+
+  // const getAPR = useCallback(async() => {
+  //   if (
+  //     rewardContract
+  //   ) {
+  //     const EpochId = await rewardContract.getCurrentEpochId()
+  //     const EpochInfo = await rewardContract.getEpochInfo(EpochId.toString())
+  //     const TotalPower = await rewardContract.getTotalPower(EpochId.toString())
+  //     const apr = EpochInfo?.totalReward * 4 / (endTime - startTime) / TotalPower
+  //   }
+  // }, [rewardContract])
 
   function ClaimView (stutus:number) {
     if (stutus === 0) {
