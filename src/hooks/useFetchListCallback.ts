@@ -7,6 +7,7 @@ import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
 import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { nftlist } from '../state/nft/actions'
 import { AppState } from '../state'
 
 import { useUserSelectChainId } from '../state/user/hooks'
@@ -198,5 +199,79 @@ export function useFetchTokenList1Callback(): () => Promise<any> {
       }
     },
     [dispatch, chainId]
+  )
+}
+
+
+export function useFetchNFTTokenListCallback(): () => Promise<any> {
+  const { chainId, account } = useActiveWeb3React()
+  const [selectNetworkInfo] = useUserSelectChainId()
+  const dispatch = useDispatch<AppDispatch>()
+  const lists = useSelector<AppState, AppState['nft']['nftlist']>(state => state.nft.nftlist)
+  const useChainId = useMemo(() => {
+    if (selectNetworkInfo?.chainId) {
+      return selectNetworkInfo?.chainId
+    }
+    return chainId
+  }, [selectNetworkInfo, chainId])
+
+  const curList = useChainId && lists && lists[useChainId] ? lists[useChainId] : {}
+
+  // console.log(lists)
+  return useCallback(
+    async () => {
+      if (!useChainId) return
+      if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
+        return
+      } else {
+        const UV:any = USE_VERSION
+        const version:any = [VERSION.V6_1].includes(UV) ? 'all' : USE_VERSION
+        const url = `${config.bridgeApi}/v3/nft?chainId=${useChainId}&version=${version}`
+        return getUrlData(url)
+          .then((tokenList:any) => {
+            // console.log(tokenList)
+            const list:any = {}
+            if (tokenList.msg === 'Success' && tokenList.data) {
+              const tList = tokenList.data
+              if (version === 'all') {
+                for (const version in tList) {
+                  // if (version.indexOf('ARB') !== -1) continue
+                  for (const token in tList[version]) {
+                    // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
+                    // let sort = 0
+                    // if (version.toLowerCase().indexOf('stable') !== -1) {
+                    //   sort = 0
+                    // } else if (version.toLowerCase().indexOf('native') !== -1) {
+                    //   sort = 1
+                    // } else if (version.toLowerCase().indexOf('underlying') !== -1) {
+                    //   sort = 2
+                    // }
+                    list[token] = {
+                      ...tList[version][token],
+                      // sort: sort
+                    }
+                  }
+                }
+              } else {
+                for (const token in tList) {
+                  // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
+                  list[token] = {
+                    ...tList[token],
+                    // sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+                  }
+                }
+              }
+            }
+            dispatch(nftlist({ chainId: useChainId, account, nftlist:list }))
+            return list
+          })
+          .catch(error => {
+            console.debug(`Failed to get list at url `, error)
+            dispatch(nftlist({ chainId: useChainId,account, nftlist: curList.tokenList }))
+            return {}
+          })
+      }
+    },
+    [dispatch, useChainId]
   )
 }
