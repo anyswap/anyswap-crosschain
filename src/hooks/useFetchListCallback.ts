@@ -3,10 +3,9 @@ import { ChainId } from 'anyswap-sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { fetchTokenList, routerTokenList, mergeTokenList } from '../state/lists/actions'
 // @ts-ignore
 import { useAppState } from '../state/application/hooks'
 import { AppState } from '../state'
@@ -18,10 +17,6 @@ import { useActiveWeb3React } from './index'
 import config from '../config'
 import { timeout, USE_VERSION, VERSION } from '../config/constant'
 import { getUrlData } from '../utils/tools/axios'
-// @ts-ignore
-import jsonTokenList from '../tokenlist.80001.json'
-// @ts-ignore
-import jsonServerInfo from '../serverinfo.80001.json'
 
 const prepareServerList = (chainId: any, pairs: any) => {
   try {
@@ -319,42 +314,6 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         console.debug(`Failed to get list at url `, error)
         dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
         return {}
-      })
-  }, [dispatch, chainId, apiAddress])
-}
-
-// deprecated - not used isOpenBridge = false
-export function useFetchTokenList1Callback(): () => Promise<any> {
-  const { chainId } = useActiveWeb3React()
-  const { apiAddress } = useAppState()
-  const dispatch = useDispatch<AppDispatch>()
-  const lists = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-
-  return useCallback(async () => {
-    if (!chainId || !apiAddress || !config.getCurConfigInfo().isOpenBridge) {
-      return
-    }
-    if (
-      lists &&
-      curList?.timestamp &&
-      Date.now() - curList?.timestamp <= timeout &&
-      curList?.tokenList &&
-      Object.keys(curList?.tokenList).length > 0
-    ) {
-      return
-    }
-    return GetTokenListByChainID({
-      srcChainID: chainId,
-      chainList: config.getCurConfigInfo().showChain,
-      bridgeAPI: `http://${apiAddress}/v2/tokenlist`
-    })
-      .then((tokenList: any) => {
-        dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
-        return tokenList
-      })
-      .catch(error => {
-        console.error(error)
       })
   }, [dispatch, chainId, apiAddress])
 }

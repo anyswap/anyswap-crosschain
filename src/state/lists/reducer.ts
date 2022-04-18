@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList, mergeTokenList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, mergeTokenList } from './actions'
 
 import config from '../../config'
 
@@ -52,15 +52,6 @@ const initialState: ListsState = {
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(bridgeTokenList, (state, { payload: { chainId, tokenList } }) => {
-      if (state.bridgeTokenList) {
-        state.bridgeTokenList[chainId] = {tokenList, timestamp: Date.now()}
-      } else {
-        state.bridgeTokenList = {
-          [chainId]: {tokenList, timestamp: Date.now()}
-        }
-      }
-    })
     .addCase(routerTokenList, (state, { payload: { chainId, tokenList } }) => {
       // console.log(state)
       if (state.routerTokenList) {
