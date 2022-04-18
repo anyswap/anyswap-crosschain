@@ -2,7 +2,7 @@ import {
   MsgSend,
   Coins,
   // MsgExecuteContract,
-  StdFee,
+  Fee,
   LCDClient,
   // Coin,
   // CreateTxOptions,
@@ -40,7 +40,7 @@ export function useTerraSend () {
   ): Promise<
     {
       denom: AssetNativeDenomEnum
-      fee?: StdFee
+      fee?: Fee
     }[]
   > => {
     if (terraExt) {
@@ -64,7 +64,7 @@ export function useTerraSend () {
         })
         
         // fee + tax
-        const unsignedTx = await lcd.tx.create(address, {
+        const unsignedTx:any = await lcd.tx.create(address, {
           msgs: [msgs],
           feeDenoms,
         })
@@ -80,7 +80,7 @@ export function useTerraSend () {
           .dp(0, BigNumber.ROUND_UP)
           .toString(10)
         const gasFee = new Coins({ [denom]: amount })
-        const fee = new StdFee(gas, gasFee)
+        const fee = new Fee(gas, gasFee)
         return {
           denom,
           fee,

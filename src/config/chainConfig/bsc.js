@@ -96,6 +96,12 @@ const bridgeToken = {
     nativeToken: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     crossBridgeInitToken: 'BNB'
   },
+  [VERSION.V6_1]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '25',
+    nftInitToken: '0xe11d4b1f698a457b15ca4401a8f0d80d528d512e',
+    crossBridgeInitToken: ''
+  },
   [VERSION.V7]: {
     bridgeInitToken: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
     bridgeInitChain: '137',

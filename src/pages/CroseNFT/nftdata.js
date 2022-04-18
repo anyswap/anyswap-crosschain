@@ -343,6 +343,60 @@ const tokenList = {
         "logoUrl" : "", 
         "nfttype" : "erc721"
       }
+    },
+    "56": {
+      "0xe11d4b1f698a457b15ca4401a8f0d80d528d512e": { 
+        "address" : "0xe11d4b1f698a457b15ca4401a8f0d80d528d512e", 
+        "chainId" : "56", 
+        "decimals" : null, 
+        "destChains" : {
+            "25" : {
+                "name" : "Annex Iron Wolf", 
+                "symbol" : "AIW", 
+                "decimals" : null, 
+                "address" : "0xf0e4a9a9977dd1a05443eb92e6f588c335cff017"
+            }
+        }, 
+        "fee" : {
+            "feePerTransaction" : "0", 
+            "feePerUnitInBatch" : "0"
+        }, 
+        "name" : "Annex Iron Wolf", 
+        "priceLabel" : "", 
+        "routerToken" : "0xf2d0fa5d973edf443d43719c444ddb28a74fbb56", 
+        "symbol" : "AIW", 
+        "tokenid" : "AIW", 
+        "version" : "NFTV1", 
+        "logoUrl" : "", 
+        "nfttype" : "erc721"
+      }
+    },
+    "25": {
+      "0xf0e4a9a9977dd1a05443eb92e6f588c335cff017": { 
+        "address" : "0xf0e4a9a9977dd1a05443eb92e6f588c335cff017", 
+        "chainId" : "25", 
+        "decimals" : null, 
+        "destChains" : {
+            "56" : {
+                "name" : "Annex Iron Wolf", 
+                "symbol" : "AIW", 
+                "decimals" : null, 
+                "address" : "0xe11d4b1f698a457b15ca4401a8f0d80d528d512e"
+            }
+        }, 
+        "fee" : {
+            "feePerTransaction" : "0", 
+            "feePerUnitInBatch" : "0"
+        }, 
+        "name" : "Annex Iron Wolf", 
+        "priceLabel" : "", 
+        "routerToken" : "0x1d7ca62f6af49ec66f6680b8606e634e55ef22c1", 
+        "symbol" : "AIW", 
+        "tokenid" : "AIW", 
+        "version" : "NFTV1", 
+        "logoUrl" : "", 
+        "nfttype" : "erc721"
+      }
     }
   }
 }

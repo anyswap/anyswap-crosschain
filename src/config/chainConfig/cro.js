@@ -21,6 +21,12 @@ const bridgeToken = {
     nativeToken: '',
     crossBridgeInitToken: ''
   },
+  [VERSION.V6_1]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '56',
+    nftInitToken: '0xf0e4a9a9977dd1a05443eb92e6f588c335cff017',
+    crossBridgeInitToken: ''
+  },
   [VERSION.V7]: {
     bridgeInitToken: '0xfa9343c3897324496a05fc75abed6bac29f8a40f',
     bridgeInitChain: '56',

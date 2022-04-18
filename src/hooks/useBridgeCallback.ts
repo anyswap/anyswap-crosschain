@@ -18,7 +18,7 @@ import {
   MsgSend,
   Coins,
   // MsgExecuteContract,
-  StdFee,
+  Fee,
   // LCDClient,
   // Coin,
   // CreateTxOptions,
@@ -771,7 +771,7 @@ export function useBridgeNativeCallback(
       toAddress,
       { [Unit]: 	inputAmount.raw.toString() }
     )
-    const gasFee:any = new StdFee(fee, new Coins({ [Unit]: fee }))
+    const gasFee:any = new Fee(fee, new Coins({ [Unit]: fee }))
 
     return post({
       msgs: [send],
