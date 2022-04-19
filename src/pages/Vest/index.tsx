@@ -39,7 +39,7 @@ import {
   // ChainCardList
 } from '../Dashboard/styleds'
 
-import {veMULTI,MULTI_TOKEN,REWARD} from './data'
+import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 
 import {useClaimRewardCallback} from './hooks'
 
@@ -125,21 +125,29 @@ export default function Vest () {
 
   const [vestNFTs, setvestNFTs] = useState<any>()
   const [modalOpen, setModalOpen] = useState(false)
-  const [nfts, setNfts] = useState<any>()
+  const [rewardInfo, setRewardInfo] = useState<any>()
   const [loadingStatus, setLoadingStatus] = useState<any>(0)
-  const [rewradNumber, setRewradNumber] = useState<any>()
-  const [epoch, setEpoch] = useState<any>()
+  // const [rewradNumber, setRewradNumber] = useState<any>()
+  // const [epoch, setEpoch] = useState<any>()
   const [epochId, setEpochId] = useState<any>()
+  const [rewardList, setRewardList] = useState<any>()
 
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
     return undefined
-  }, [chainId, account])
+  }, [chainId])
   
   const useVeMultiRewardToken = useMemo(() => {
     if (chainId && REWARD[chainId]) return REWARD[chainId]
     return undefined
-  }, [chainId, account])
+  }, [chainId])
+
+  const useRewardToken = useMemo(() => {
+    if (chainId && REWARD_TOKEN[chainId]) return REWARD_TOKEN[chainId]
+    return undefined
+  }, [chainId])
+
+  
 
   const useLockToken = useMemo(() => {
     if (chainId && MULTI_TOKEN[chainId]) {
@@ -153,28 +161,69 @@ export default function Vest () {
 
   const {execute: onWrap} = useClaimRewardCallback(
     useVeMultiRewardToken?.address,
-    nfts?.id,
-    epoch && epoch[0] ? epoch[0] : undefined,
-    epoch && epoch[1] ? epoch[1] : undefined,
+    rewardInfo?.id,
+    rewardInfo?.list
   )
   // const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken)
-  const getPendingReward = useCallback((nfts) => {
-    if (rewardContract && nfts?.id) {
-      setNfts(nfts)
-      setModalOpen(true)
-      console.log(nfts.id)
-      rewardContract.pendingReward(nfts.id).then((res:any) => {
-        console.log(res)
-        setLoadingStatus(1)
-        setRewradNumber(res)
-        setEpoch(res)
-      }).catch((err:any) => {
-        console.log('err')
-        console.log(err)
-        setLoadingStatus(2)
-      })
+  const getPendingReward = useCallback(async(nfts) => {
+    if (rewardContract && nfts?.id && epochId) {
+      // console.log(nfts.id)
+      const arr = []
+      let totalReward:any = ''
+      const limit = 30
+      const len = Number(epochId)
+      for (let i = 0; i < len; i+=limit) {
+        // console.log(nfts.id, i, i + limit > len ? len : i + limit)
+        try {
+          let data = await rewardContract.pendingReward(nfts.id, i, i + limit > len ? len : i + limit)
+          data = data && data[0] ? data[0] : ''
+          if (!data) continue
+          if (!totalReward && data.reward) totalReward = data.reward
+          else if (data.reward) {
+            totalReward.add(data.reward)
+          }
+          // console.log(data)
+          // console.log('endEpoch',data.endEpoch.toString())
+          // console.log('reward',data.reward.toString())
+          // console.log('startEpoch',data.startEpoch.toString())
+          arr.push({
+            startEpoch: data.startEpoch.toString(),
+            endEpoch: data.endEpoch.toString(),
+            reward: data.reward.toString(),
+          })
+        } catch (error) {
+          
+        }
+      }
+      console.log(arr)
+      console.log(totalReward)
+      // setLoadingStatus(1)
+      // setRewradNumber('res')
+      // setEpoch([])
+      return {list: arr, totalReward: totalReward?.toString()}
     }
-  }, [rewardContract])
+    return undefined
+  }, [rewardContract, epochId])
+  const getAllRewards = useCallback(async() => {
+    if (
+      epochId
+      && vestNFTs
+      && vestNFTs.length > 0
+    ) {
+      const list:any = {}
+      for (const obj of vestNFTs) {
+        const data:any = await getPendingReward(obj)
+        if (data) {
+          list[obj.id] = data
+        }
+      }
+      console.log(list)
+      setRewardList(list)
+    }
+  }, [epochId, vestNFTs])
+  useEffect(() => {
+    getAllRewards()
+  }, [epochId, vestNFTs])
 
   const getVestNFTs = useCallback(async() => {
     // console.log(useVeMultiToken)
@@ -185,7 +234,8 @@ export default function Vest () {
       // console.log(contract)
       // console.log(account)
       const nftsLength = await contract.balanceOf(account)
-      // console.log(nftsLength)
+      const totalSupply = await contract.totalSupply()
+      console.log('totalSupply',totalSupply.toString())
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       // console.log(nftsLength)
       // console.log(arr)
@@ -218,7 +268,7 @@ export default function Vest () {
   const getCurrentEpochId = useCallback(() => {
     if (rewardContract) {
       rewardContract.getCurrentEpochId().then((res:any) => {
-        // console.log(res.toString())
+        console.log(res.toString())
         setEpochId(res.toString())
       })
     }
@@ -234,10 +284,16 @@ export default function Vest () {
       && epochId
     ) {
       // const EpochId = await rewardContract.getCurrentEpochId()
-      const EpochInfo = await rewardContract.getEpochInfo(epochId)
-      const TotalPower = await rewardContract.getTotalPower(epochId)
-      console.log(EpochInfo)
-      console.log(TotalPower)
+      try {
+        const EpochInfo = await rewardContract.getEpochInfo(epochId)
+        const TotalPower = await rewardContract.getEpochTotalPower(epochId)
+        console.log(EpochInfo[0].toString())
+        console.log(EpochInfo[1].toString())
+        console.log(EpochInfo[2].toString())
+        console.log(TotalPower.toString())
+      } catch (error) {
+        console.error(error)
+      }
       // const apr = EpochInfo?.totalReward * 4 / (endTime - startTime) / TotalPower
     }
   }, [rewardContract, epochId])
@@ -255,9 +311,11 @@ export default function Vest () {
         <>Error</>
       )
     } else {
+      const totalReward = rewardInfo?.totalReward && useRewardToken ? BigAmount.format(useRewardToken?.decimals, rewardInfo?.totalReward).toSignificant(6) : ''
       return (
         <>
-          <RewardView>{rewradNumber}</RewardView>
+          <TokenLogo symbol={rewardInfo?.symbol}></TokenLogo>
+          <RewardView>{totalReward}</RewardView>
           <BottomGrouping>
             <ButtonPrimary onClick={() => {
               if (onWrap) {
@@ -280,7 +338,7 @@ export default function Vest () {
         }}
         title={t('Claim Reward')}
       >
-        {nfts?.id}
+        {rewardInfo?.id}
         {ClaimView(loadingStatus)}
       </ModalContent>
       <VestContent>
@@ -325,7 +383,12 @@ export default function Vest () {
                       <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
                         
-                        getPendingReward(item)
+                        // getPendingReward(item)
+                        if (rewardList && rewardList[item.id]) {
+                          setRewardInfo({...rewardList[item.id], id: item.id})
+                          setModalOpen(true)
+                          setLoadingStatus(1)
+                        }
                       }}>{t('Claim Reward')}</TokenActionBtn1>
                     </Flex>
                   </DBTd>

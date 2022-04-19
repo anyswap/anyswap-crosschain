@@ -1,103 +1,5 @@
 [{
 	"inputs": [{
-		"internalType": "address",
-		"name": "_ve_",
-		"type": "address"
-	}, {
-		"internalType": "address",
-		"name": "rewardToken_",
-		"type": "address"
-	}],
-	"stateMutability": "nonpayable",
-	"type": "constructor"
-}, {
-	"anonymous": false,
-	"inputs": [{
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "epochId",
-		"type": "uint256"
-	}, {
-		"components": [{
-			"internalType": "uint256",
-			"name": "startTime",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "endTime",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "rewardPerSecond",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "totalPower",
-			"type": "uint256"
-		}, {
-			"internalType": "uint256",
-			"name": "startBlock",
-			"type": "uint256"
-		}],
-		"indexed": false,
-		"internalType": "struct Reward.EpochInfo",
-		"name": "epochInfo",
-		"type": "tuple"
-	}],
-	"name": "LogAddEpoch",
-	"type": "event"
-}, {
-	"anonymous": false,
-	"inputs": [{
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "startTime",
-		"type": "uint256"
-	}, {
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "endTime",
-		"type": "uint256"
-	}, {
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "epochLength",
-		"type": "uint256"
-	}, {
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "startEpochId",
-		"type": "uint256"
-	}],
-	"name": "LogAddEpoch",
-	"type": "event"
-}, {
-	"anonymous": false,
-	"inputs": [{
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "tokenId",
-		"type": "uint256"
-	}, {
-		"indexed": false,
-		"internalType": "uint256",
-		"name": "reward",
-		"type": "uint256"
-	}],
-	"name": "LogClaimReward",
-	"type": "event"
-}, {
-	"inputs": [],
-	"name": "_ve",
-	"outputs": [{
-		"internalType": "address",
-		"name": "",
-		"type": "address"
-	}],
-	"stateMutability": "view",
-	"type": "function"
-}, {
-	"inputs": [{
 		"internalType": "uint256",
 		"name": "startTime",
 		"type": "uint256"
@@ -157,16 +59,6 @@
 	"stateMutability": "nonpayable",
 	"type": "function"
 }, {
-	"inputs": [],
-	"name": "admin",
-	"outputs": [{
-		"internalType": "address",
-		"name": "",
-		"type": "address"
-	}],
-	"stateMutability": "view",
-	"type": "function"
-}, {
 	"inputs": [{
 		"internalType": "uint256",
 		"name": "epochId",
@@ -191,7 +83,7 @@
 			"name": "endEpoch",
 			"type": "uint256"
 		}],
-		"internalType": "struct Reward.Interval[]",
+		"internalType": "structReward.Interval[]",
 		"name": "intervals",
 		"type": "tuple[]"
 	}],
@@ -203,29 +95,7 @@
 	}],
 	"stateMutability": "nonpayable",
 	"type": "function"
-}, {
-	"inputs": [{
-		"internalType": "uint256",
-		"name": "tokenId",
-		"type": "uint256"
-	}, {
-		"internalType": "uint256",
-		"name": "startEpoch",
-		"type": "uint256"
-	}, {
-		"internalType": "uint256",
-		"name": "endEpoch",
-		"type": "uint256"
-	}],
-	"name": "claimReward",
-	"outputs": [{
-		"internalType": "uint256",
-		"name": "reward",
-		"type": "uint256"
-	}],
-	"stateMutability": "nonpayable",
-	"type": "function"
-}, {
+},{
 	"inputs": [{
 		"internalType": "uint256[]",
 		"name": "tokenIds",
@@ -240,7 +110,7 @@
 			"name": "endEpoch",
 			"type": "uint256"
 		}],
-		"internalType": "struct Reward.Interval[][]",
+		"internalType": "structReward.Interval[][]",
 		"name": "intervals",
 		"type": "tuple[][]"
 	}],
@@ -251,6 +121,148 @@
 		"type": "uint256[]"
 	}],
 	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "address",
+		"name": "_admin",
+		"type": "address"
+	}],
+	"name": "transferAdmin",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "address",
+		"name": "_ve_",
+		"type": "address"
+	}, {
+		"internalType": "address",
+		"name": "rewardToken_",
+		"type": "address"
+	}],
+	"stateMutability": "nonpayable",
+	"type": "constructor"
+}, {
+	"anonymous": false,
+	"inputs": [{
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "epochId",
+		"type": "uint256"
+	}, {
+		"components": [{
+			"internalType": "uint256",
+			"name": "startTime",
+			"type": "uint256"
+		}, {
+			"internalType": "uint256",
+			"name": "endTime",
+			"type": "uint256"
+		}, {
+			"internalType": "uint256",
+			"name": "rewardPerSecond",
+			"type": "uint256"
+		}, {
+			"internalType": "uint256",
+			"name": "totalPower",
+			"type": "uint256"
+		}, {
+			"internalType": "uint256",
+			"name": "startBlock",
+			"type": "uint256"
+		}],
+		"indexed": false,
+		"internalType": "structReward.EpochInfo",
+		"name": "epochInfo",
+		"type": "tuple"
+	}],
+	"name": "LogAddEpoch",
+	"type": "event"
+}, {
+	"anonymous": false,
+	"inputs": [{
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "startTime",
+		"type": "uint256"
+	}, {
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "endTime",
+		"type": "uint256"
+	}, {
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "epochLength",
+		"type": "uint256"
+	}, {
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "startEpochId",
+		"type": "uint256"
+	}],
+	"name": "LogAddEpoch",
+	"type": "event"
+}, {
+	"anonymous": false,
+	"inputs": [{
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "tokenId",
+		"type": "uint256"
+	}, {
+		"indexed": false,
+		"internalType": "uint256",
+		"name": "reward",
+		"type": "uint256"
+	}],
+	"name": "LogClaimReward",
+	"type": "event"
+}, {
+	"inputs": [{
+		"internalType": "uint256",
+		"name": "epochId",
+		"type": "uint256"
+	}, {
+		"internalType": "uint256",
+		"name": "totalReward",
+		"type": "uint256"
+	}],
+	"name": "updateEpochReward",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [{
+		"internalType": "uint256",
+		"name": "amount",
+		"type": "uint256"
+	}],
+	"name": "withdrawFee",
+	"outputs": [],
+	"stateMutability": "nonpayable",
+	"type": "function"
+}, {
+	"inputs": [],
+	"name": "_ve",
+	"outputs": [{
+		"internalType": "address",
+		"name": "",
+		"type": "address"
+	}],
+	"stateMutability": "view",
+	"type": "function"
+}, {
+	"inputs": [],
+	"name": "admin",
+	"outputs": [{
+		"internalType": "address",
+		"name": "",
+		"type": "address"
+	}],
+	"stateMutability": "view",
 	"type": "function"
 }, {
 	"inputs": [{
@@ -407,6 +419,14 @@
 		"internalType": "uint256",
 		"name": "tokenId",
 		"type": "uint256"
+	}, {
+		"internalType": "uint256",
+		"name": "start",
+		"type": "uint256"
+	}, {
+		"internalType": "uint256",
+		"name": "end",
+		"type": "uint256"
 	}],
 	"name": "pendingReward",
 	"outputs": [{
@@ -423,7 +443,7 @@
 			"name": "reward",
 			"type": "uint256"
 		}],
-		"internalType": "struct Reward.IntervalReward[]",
+		"internalType": "structReward.IntervalReward[]",
 		"name": "intervalRewards",
 		"type": "tuple[]"
 	}],
@@ -481,30 +501,6 @@
 	"type": "function"
 }, {
 	"inputs": [{
-		"internalType": "address",
-		"name": "_admin",
-		"type": "address"
-	}],
-	"name": "transferAdmin",
-	"outputs": [],
-	"stateMutability": "nonpayable",
-	"type": "function"
-}, {
-	"inputs": [{
-		"internalType": "uint256",
-		"name": "epochId",
-		"type": "uint256"
-	}, {
-		"internalType": "uint256",
-		"name": "totalReward",
-		"type": "uint256"
-	}],
-	"name": "updateEpochReward",
-	"outputs": [],
-	"stateMutability": "nonpayable",
-	"type": "function"
-}, {
-	"inputs": [{
 		"internalType": "uint256",
 		"name": "",
 		"type": "uint256"
@@ -520,15 +516,5 @@
 		"type": "uint256"
 	}],
 	"stateMutability": "view",
-	"type": "function"
-}, {
-	"inputs": [{
-		"internalType": "uint256",
-		"name": "amount",
-		"type": "uint256"
-	}],
-	"name": "withdrawFee",
-	"outputs": [],
-	"stateMutability": "nonpayable",
 	"type": "function"
 }]

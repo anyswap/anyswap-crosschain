@@ -36,6 +36,9 @@ export const MULTI_TOKEN:any = {
 
 export const REWARD_TOKEN:any = {
   [ChainId.RINKEBY]: {
+    name: 'USDT',
+    symbol: 'USDT',
+    decimals: 18,
     address: '0x1241aeCFb79B1e2c0cac7A83B47b11303968d695'
   },
   [ChainId.BNB_TEST]: {
