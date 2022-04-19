@@ -235,7 +235,8 @@ export default function CreateLock () {
                       onClick={() => {
                         onDelay()
                         approveCallback().then(() => {
-                          onClear()
+                          // onClear()
+                          setDelayAction(false)
                         })
                       }}
                       disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
@@ -309,6 +310,7 @@ export default function CreateLock () {
               // console.log(expiry.unix())
               setLockDuration(date)
             }}
+            type='create'
           ></LockDuration>
 
           <VestingInfo

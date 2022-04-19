@@ -39,18 +39,15 @@ export const REWARD_TOKEN:any = {
     address: '0x1241aeCFb79B1e2c0cac7A83B47b11303968d695'
   },
   [ChainId.BNB_TEST]: {
-    ...BASE_INFO,
     address: '0x74e8e6eb31ef6970d2623a1c700cbe6f56f20f43'
   }
 }
 
 export const REWARD:any = {
   [ChainId.RINKEBY]: {
-    // ...BASE_INFO,
     address: '0x06De03C78A81A05b05141bbA9cF5271fBdbbAa88'
   },
   [ChainId.BNB_TEST]: {
-    // ...BASE_INFO,
     address: '0x25c5Cc9082d7d87B3321868bA2C64e0C969072a4'
   }
 }

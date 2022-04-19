@@ -167,9 +167,11 @@ function RadiosStyle ({
 export default function LockAmount ({
   lockEnds,
   updateLockDuration,
+  type
 }: {
   lockEnds:any
-  updateLockDuration: (value: any) => void
+  updateLockDuration: (value: any) => void,
+  type: string
 }) {
 
   const inputEl = useRef<any>(null);
@@ -205,7 +207,7 @@ export default function LockAmount ({
         days = 365;
         break;
       case 'years':
-        days = 1461;
+        days = type === 'create' ? 1460 : 1461;
         break;
       default:
     }

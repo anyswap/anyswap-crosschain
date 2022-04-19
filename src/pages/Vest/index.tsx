@@ -7,6 +7,7 @@ import moment from 'moment';
 
 import { useActiveWeb3React } from '../../hooks'
 import { useVeMULTIContract, useVeMULTIRewardContract } from '../../hooks/useContract'
+import useInterval from '../../hooks/useInterval'
 
 import {BigAmount} from '../../utils/formatBignumber'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -128,6 +129,7 @@ export default function Vest () {
   const [loadingStatus, setLoadingStatus] = useState<any>(0)
   const [rewradNumber, setRewradNumber] = useState<any>()
   const [epoch, setEpoch] = useState<any>()
+  const [epochId, setEpochId] = useState<any>()
 
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
@@ -175,18 +177,18 @@ export default function Vest () {
   }, [rewardContract])
 
   const getVestNFTs = useCallback(async() => {
-    console.log(useVeMultiToken)
+    // console.log(useVeMultiToken)
     if (
       contract
       && account
     ) {
-      console.log(contract)
-      console.log(account)
+      // console.log(contract)
+      // console.log(account)
       const nftsLength = await contract.balanceOf(account)
-      console.log(nftsLength)
+      // console.log(nftsLength)
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
-      console.log(nftsLength)
-      console.log(arr)
+      // console.log(nftsLength)
+      // console.log(arr)
       const nfts = await Promise.all(
         arr.map(async (idx) => {
   
@@ -211,17 +213,37 @@ export default function Vest () {
   useEffect(() => {
     getVestNFTs()
   }, [contract, account, useLockToken])
+  useInterval(getVestNFTs, 1000 * 10)
 
-  // const getAPR = useCallback(async() => {
-  //   if (
-  //     rewardContract
-  //   ) {
-  //     const EpochId = await rewardContract.getCurrentEpochId()
-  //     const EpochInfo = await rewardContract.getEpochInfo(EpochId.toString())
-  //     const TotalPower = await rewardContract.getTotalPower(EpochId.toString())
-  //     const apr = EpochInfo?.totalReward * 4 / (endTime - startTime) / TotalPower
-  //   }
-  // }, [rewardContract])
+  const getCurrentEpochId = useCallback(() => {
+    if (rewardContract) {
+      rewardContract.getCurrentEpochId().then((res:any) => {
+        // console.log(res.toString())
+        setEpochId(res.toString())
+      })
+    }
+  }, [rewardContract])
+  useEffect(() => {
+    getCurrentEpochId()
+  }, [rewardContract])
+  useInterval(getCurrentEpochId, 1000 * 10)
+
+  const getAPR = useCallback(async() => {
+    if (
+      rewardContract
+      && epochId
+    ) {
+      // const EpochId = await rewardContract.getCurrentEpochId()
+      const EpochInfo = await rewardContract.getEpochInfo(epochId)
+      const TotalPower = await rewardContract.getTotalPower(epochId)
+      console.log(EpochInfo)
+      console.log(TotalPower)
+      // const apr = EpochInfo?.totalReward * 4 / (endTime - startTime) / TotalPower
+    }
+  }, [rewardContract, epochId])
+  useEffect(() => {
+    getAPR()
+  }, [rewardContract, epochId])
 
   function ClaimView (stutus:number) {
     if (stutus === 0) {
