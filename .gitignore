@@ -22,6 +22,7 @@
 /movr
 /app
 /multichain
+/conflux
 *.zip
 
 # misc
