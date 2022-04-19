@@ -367,7 +367,7 @@ const tokenList = {
         "symbol" : "AIW", 
         "tokenid" : "AIW", 
         "version" : "NFTV1", 
-        "logoUrl" : "", 
+        "logoUrl" : "https://www.annex.finance/images/aiw_logo_2.png", 
         "nfttype" : "erc721"
       }
     },
@@ -394,7 +394,7 @@ const tokenList = {
         "symbol" : "AIW", 
         "tokenid" : "AIW", 
         "version" : "NFTV1", 
-        "logoUrl" : "", 
+        "logoUrl" : "https://www.annex.finance/images/aiw_logo_2.png", 
         "nfttype" : "erc721"
       }
     }
