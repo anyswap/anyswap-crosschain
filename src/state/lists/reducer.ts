@@ -20,7 +20,6 @@ export interface ListsState {
   readonly lastInitializedDefaultListOfLists?: string[]
   readonly selectedListUrl: string | undefined
   readonly routerTokenList: any
-  readonly bridgeTokenList: any
   readonly mergeTokenList: any
 }
 
@@ -46,7 +45,6 @@ const initialState: ListsState = {
   },
   selectedListUrl: DEFAULT_TOKEN_LIST_URL,
   routerTokenList: {},
-  bridgeTokenList: {},
   mergeTokenList: {},
 }
 

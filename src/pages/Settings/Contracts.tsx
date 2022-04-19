@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import CROSSCHAIN_ERC20_ABI from '../../constants/abis/crosschainErc20.json'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { useAppState } from '../../state/application/hooks'
@@ -8,7 +9,7 @@ import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS, API_REGEXP } from '../../constants'
+import { ZERO_ADDRESS, API_REGEXP } from '../../constants'
 import Accordion from '../../components/Accordion'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
@@ -182,61 +183,63 @@ export default function Contracts() {
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!underlyingToken || !underlyingNetworkId) return
+      if (!underlyingName || !underlyingNetworkId) return
 
       try {
         if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(underlyingToken, underlyingNetworkId).call()
-
-          console.group('%c token config', 'color: brown')
-          console.log(tokenConfig)
-          console.groupEnd()
+          const tokenConfig = await routerConfig.methods.getTokenConfig(underlyingName, underlyingNetworkId).call()
 
           if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
+            const { ContractAddress } = tokenConfig
+            const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
+
+            if (!underlyingNetworkConfig) return
+
+            const { nodeRpc } = underlyingNetworkConfig
+            const web3 = getWeb3Library(nodeRpc)
+            const code = await web3.eth.getCode(ContractAddress)
+
+            if (code === '0x') return console.error('wrong address for this network')
+            //@ts-ignore
+            const crosschainErc20 = new web3.eth.Contract(CROSSCHAIN_ERC20_ABI, ContractAddress)
+            const underlyingAddress = await crosschainErc20.methods.underlying().call()
+            //@ts-ignore
+            const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingAddress)
+
+            const name = await underlyingErc20.methods.name().call()
+            const symbol = await underlyingErc20.methods.symbol().call()
+            const decimals = await underlyingErc20.methods.decimals().call()
+
+            setUnderlyingToken(underlyingAddress)
+            setUnderlyingName(name)
+            setUnderlyingSymbol(symbol)
+            setUnderlyingDecimals(decimals)
             setCrosschainTokenChainId(underlyingNetworkId)
-            setCrosschainToken(tokenConfig.ContractAddress)
+            setCrosschainToken(ContractAddress)
           } else {
             setCrosschainTokenChainId('')
             setCrosschainToken('')
           }
+
+          console.groupEnd()
         }
-
-        const underlyingConfig = chainInfo[underlyingNetworkId]
-
-        if (!underlyingConfig) return
-
-        const { nodeRpc } = underlyingConfig
-        const web3 = getWeb3Library(nodeRpc)
-        const code = await web3.eth.getCode(underlyingToken)
-
-        if (code === '0x') return console.log('wrong address for this network')
-
-        //@ts-ignore
-        const contract = new web3.eth.Contract(ERC20_ABI, underlyingToken)
-        const name = await contract.methods.name().call()
-        const symbol = await contract.methods.symbol().call()
-        const decimals = await contract.methods.decimals().call()
-
-        setUnderlyingName(name)
-        setUnderlyingSymbol(symbol)
-        setUnderlyingDecimals(decimals)
       } catch (error) {
         console.error(error)
       }
     }
 
-    if (underlyingNetworkId && underlyingToken.match(EVM_ADDRESS_REGEXP)) {
+    if (underlyingNetworkId && underlyingName) {
       fetchUnderlyingInfo()
     }
-  }, [underlyingToken, chainId, underlyingNetworkId])
+  }, [underlyingName, chainId, underlyingNetworkId])
 
   const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingToken) return
+    if (!routerConfigSigner || !underlyingName || !crosschainToken || !crosschainTokenChainId) return
 
     const VERSION = 6
 
     try {
-      await routerConfigSigner.setTokenConfig(underlyingToken, crosschainTokenChainId, {
+      await routerConfigSigner.setTokenConfig(underlyingName, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
@@ -398,8 +401,10 @@ export default function Contracts() {
             <OptionLabel>
               {t('erc20ChainId')}
               <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
-              {t('erc20TokenAddress')}
-              <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
+              {/* {t('erc20TokenAddress')}
+              <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} /> */}
+              {t('erc20TokenName')}
+              <Input type="text" onChange={event => setUnderlyingName(event.target.value)} />
             </OptionLabel>
           </OptionWrapper>
 
