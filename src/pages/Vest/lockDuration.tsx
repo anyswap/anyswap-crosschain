@@ -167,15 +167,17 @@ function RadiosStyle ({
 export default function LockAmount ({
   lockEnds,
   updateLockDuration,
+  type
 }: {
   lockEnds:any
-  updateLockDuration: (value: any) => void
+  updateLockDuration: (value: any) => void,
+  type: string
 }) {
 
   const inputEl = useRef<any>(null);
 
   const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(7, 'days').format('YYYY-MM-DD'));
-  const [selectedValue, setSelectedValue] = useState<any>();
+  const [selectedValue, setSelectedValue] = useState<any>(type === 'create' ? 'week' : '');
 
   let min = moment().add(7, 'days').format('YYYY-MM-DD')
   const lockDuration = lockEnds ? moment(lockEnds).unix() : undefined
@@ -196,7 +198,7 @@ export default function LockAmount ({
     let days = 0;
     switch (event.target.value) {
       case 'week':
-        days = 8;
+        days = type === 'create' ? 7 : 8;
         break;
       case 'month':
         days = 30;
@@ -205,7 +207,7 @@ export default function LockAmount ({
         days = 365;
         break;
       case 'years':
-        days = 1461;
+        days = type === 'create' ? 1460 : 1461;
         break;
       default:
     }

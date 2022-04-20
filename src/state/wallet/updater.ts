@@ -53,32 +53,7 @@ export default function Updater(): null {
 
   const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
   const pendingLength = pending.length
-  // const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
   
-  // useEffect(() => {
-  //   tokenListRef.current = {
-  //     index: 0,
-  //     list: []
-  //   }
-  // }, [chainId, account])
-  // useEffect(() => {
-  //   const list = Object.values(allTokens ?? {})
-  //   const index = tokenListRef.current.index * limit
-  //   const endIndes = index + limit
-  //   if (index < list.length && !isNaN(chainId)) {
-  //     // console.log(list.length)
-  //     // console.log(index)
-  //     // console.log(endIndes)
-  //     tokenListRef.current.list = list.slice(index, endIndes)
-  //   }
-  // }, [allTokens, tokenListRef.current.index, chainId])
-  // console.log(allTokensArray)
-  // const balances = useTokenBalances(account ?? undefined, allTokensArray.slice(0,10))
-  // const balances = useTokenBalances(account && isAddress(account) ? account : undefined, tokenListRef?.current?.list && !isNaN(chainId) ? tokenListRef?.current?.list : [])
-
-  // 每 10 分钟获取所有列表，但仅在我们初始化库之后
-  // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
-
   const calls = useMemo(() => {
     const arr = []
     const list = allTokens ? Object.values(allTokens ?? {}) : []

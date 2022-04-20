@@ -2,10 +2,11 @@ import React, { useMemo } from 'react';
 import moment from 'moment';
 // import { formatCurrency } from '../../utils';
 import styled from 'styled-components';
+import BigNumber from "bignumber.js";
 
 import {BASE_INFO, VENFT_BASE_INFO} from './data'
 
-import {thousandBit} from '../../utils/tools/tools'
+// import {thousandBit} from '../../utils/tools/tools'
 
 const VestingInfoBox = styled.div``
 
@@ -33,8 +34,25 @@ font-style: italic;
 padding: 3px 0 !important;
 `
 
-function formatCurrency (value:any) {
-  return value ? thousandBit(value, 2) : 0
+// function formatCurrency (value:any) {
+//   return value ? thousandBit(value, 2) : 0
+// }
+export function formatCurrency(amount:any, decimals = 2) {
+  if (!isNaN(amount)) {
+
+    if(new BigNumber(amount).gt(0) && new BigNumber(amount).lt(0.01)) {
+      return '< 0.01'
+    }
+
+    const formatter = new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+
+    return formatter.format(amount);
+  } else {
+    return 0;
+  }
 }
 
 export default function VestingInfo({

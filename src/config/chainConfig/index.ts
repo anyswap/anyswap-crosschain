@@ -130,6 +130,7 @@ const allChainList = [
   JEWEL_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
   BNB_TEST_CHAINID,
+  ETH_TEST_CHAINID,
 ]
 
 const useChain:any = {

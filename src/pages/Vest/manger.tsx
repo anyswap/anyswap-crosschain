@@ -350,6 +350,7 @@ export default function CreateLock () {
               // console.log(expiry.unix())
               setLockDuration(date)
             }}
+            type="manger"
           ></LockDuration>
 
           <VestingInfo

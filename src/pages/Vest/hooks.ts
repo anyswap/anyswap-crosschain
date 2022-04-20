@@ -197,8 +197,7 @@ export function useInCreaseUnlockTimeCallback(
 export function useClaimRewardCallback(
   rewardToken: string | undefined,
   tokenid: number | undefined,
-  startEpoch: number | undefined,
-  endEpoch: number | undefined,
+  epoch: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId } = useActiveWeb3React()
   const contract = useVeMULTIRewardContract(rewardToken)
@@ -212,7 +211,7 @@ export function useClaimRewardCallback(
   return useMemo(() => {
     // console.log(veMULTI)
     // console.log(contract)
-    if (!contract || !chainId || !tokenid || !endEpoch || !startEpoch) return NOT_APPLICABLE
+    if (!contract || !chainId || !tokenid || !epoch) return NOT_APPLICABLE
     // console.log(typedValue)
     return {
       wrapType: WrapType.WRAP,
@@ -222,8 +221,7 @@ export function useClaimRewardCallback(
           try {
             const txReceipt = await contract.claimReward(
               tokenid + '',
-              startEpoch + '',
-              endEpoch
+              epoch.map(({startEpoch, endEpoch}: {startEpoch:any, endEpoch:any}) => [startEpoch, endEpoch])
             )
             addTransaction(txReceipt, {
               summary: `Claim Reward`,
@@ -238,5 +236,5 @@ export function useClaimRewardCallback(
         },
       inputError: undefined
     }
-  }, [contract, chainId, startEpoch, addTransaction, t, tokenid, endEpoch])
+  }, [contract, chainId, epoch, addTransaction, t, tokenid])
 }
