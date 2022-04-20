@@ -189,7 +189,6 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
           return tokenList
         })
         .catch(error => {
-          // console.log(error)
           console.debug(`Failed to get list at url ${listUrl}`, error)
           // dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
           // throw error
@@ -229,7 +228,7 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       //return
     }
 
-    const url = `http://${apiAddress}/config`
+    const url = `${apiAddress}/config`
 
     return getUrlData(url)
       .then((tokenList: any) => {
@@ -266,15 +265,14 @@ export function useFetchTokenListCallback(): () => Promise<any> {
 
     const UV: any = USE_VERSION
     const version: any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
-    const url = `http://${apiAddress}/config`
-    console.log('>>>> URL', url)
+    const url = `${apiAddress}/config`
 
     return getUrlData(url)
       .then((tokenList: any) => {
         const list: any = {}
         const parsedServerList = prepareServerList(chainId, tokenList.data)
 
-        const tList = parsedServerList // true ? chainServerList : tokenList.data
+        const tList = parsedServerList
           
 
         if (version === 'all') {
