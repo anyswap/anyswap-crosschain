@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // import { Token } from 'anyswap-sdk'
 // import { NavLink } from 'react-router-dom'
 import styled from "styled-components"
@@ -6,7 +6,12 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment';
 
 import { useActiveWeb3React } from '../../hooks'
-import { useVeMULTIContract, useVeMULTIRewardContract } from '../../hooks/useContract'
+import { 
+  useVeMULTIContract,
+  useVeMULTIRewardContract,
+  useTokenContract,
+  // useMulticallContract
+} from '../../hooks/useContract'
 import useInterval from '../../hooks/useInterval'
 
 import {BigAmount} from '../../utils/formatBignumber'
@@ -42,6 +47,11 @@ import {
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 
 import {useClaimRewardCallback} from './hooks'
+import axios from "axios";
+import {thousandBit} from '../../utils/tools/tools'
+// import config from "../../config";
+
+// import {VE_MULTI_REWARD_INTERFACE} from '../../constants/abis/veMULTIReward'
 
 const VestContent = styled.div`
   width: 100%;
@@ -54,6 +64,12 @@ const CreateLock = styled(TokenActionBtn)`
   margin-bottom:10px;
   &.disabled {
     opacity: 0.2;
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${({ theme }) => theme.primary1};
+    opacity: 0.99
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 28px;
@@ -119,19 +135,87 @@ const RewardView = styled.div`
   padding: 30px 0;
 `
 
+const RewardLoading = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 100%;
+  padding: 50px 0;
+  color: ${({ theme }) => theme.textColorBold};
+`
+
+const LogoBox = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+  border: solid 0.5px rgba(0, 0, 0, 0.1);
+  border-radius:100%;
+  margin: auto;
+
+  img{
+    // height: 24px;
+    // width: 24px;
+    display:block;
+  }
+`
+
+const DataViews = styled.div`
+  width:100%;
+  .list {
+    width:100%;
+    ${({ theme }) => theme.flexBC};
+    flex-wrap:wrap;
+    .item {
+      width: 32%;
+      padding: 10px 0;
+      .content {
+        width:100%;
+        box-shadow: 0.4375rem 0.125rem 1.625rem 0 rgba(0, 0, 0, 0.06);
+        background-color: ${({ theme }) => theme.contentBg};
+        border-radius: 0.5625rem;
+        padding: 1rem 2.5rem;
+        .title {
+          font-size: 14px;
+          color:${({ theme }) => theme.text1};
+          margin: 0 0 15px;
+          font-weight:500;
+        }
+        .value {
+          font-size:16px;
+          color:${({ theme }) => theme.textColorBold};
+          margin-bottom:0;
+          font-weight:bold;
+          text-align:center;
+        }
+        .loading {
+          font-size:14px;
+          color:${({ theme }) => theme.text1};
+          margin-bottom:0;
+          text-align:center;
+        }
+      }
+    }
+  }
+`
+
 export default function Vest () {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
 
   const [vestNFTs, setvestNFTs] = useState<any>()
   const [modalOpen, setModalOpen] = useState(false)
-  const [rewardInfo, setRewardInfo] = useState<any>()
+  const [claimRewardId, setClaimRewardId] = useState<any>()
   const [loadingStatus, setLoadingStatus] = useState<any>(0)
-  // const [rewradNumber, setRewradNumber] = useState<any>()
-  // const [epoch, setEpoch] = useState<any>()
+
+  const [veMultiTotalSupply, setVeMultiTotalSupply] = useState<any>()
+  const [LockedMULTI, setLockedMULTI] = useState<any>()
+  const [circulatingsupply, setCirculatingsupply] = useState<any>()
+  const [yieldPerWeek, setYieldPerWeek] = useState<any>()
+  const [totalPower, setTotalPower] = useState<any>()
   const [epochId, setEpochId] = useState<any>()
   const [rewardList, setRewardList] = useState<any>()
-
+  const [latestEpochInfo, setlatestEpochInfo] = useState<any>()
+  // const viewDatas = useRef<any>({})
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
     return undefined
@@ -149,21 +233,34 @@ export default function Vest () {
 
   
 
-  const useLockToken = useMemo(() => {
+  const useLockToken:any = useMemo(() => {
     if (chainId && MULTI_TOKEN[chainId]) {
       return MULTI_TOKEN[chainId]
     }
     return undefined
   }, [chainId])
 
+  const rewardInfo = useMemo(() => {
+    if (claimRewardId && rewardList && rewardList[claimRewardId]) {
+      setLoadingStatus(1)
+      return {...rewardList[claimRewardId], id: claimRewardId}
+    }
+    setLoadingStatus(0)
+    return undefined
+  }, [claimRewardId, rewardList])
+
   const contract = useVeMULTIContract(useVeMultiToken?.address)
   const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
+  const ercContract = useTokenContract(useLockToken?.address)
+  // const multicallContract = useMulticallContract()
+
 
   const {execute: onWrap} = useClaimRewardCallback(
     useVeMultiRewardToken?.address,
     rewardInfo?.id,
     rewardInfo?.list
   )
+  const rewardEpochIdList = useRef<any>({})
   // const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken)
   const getPendingReward = useCallback(async(nfts) => {
     if (rewardContract && nfts?.id && epochId) {
@@ -172,10 +269,12 @@ export default function Vest () {
       let totalReward:any = ''
       const limit = 30
       const len = Number(epochId)
-      for (let i = 0; i < len; i+=limit) {
-        // console.log(nfts.id, i, i + limit > len ? len : i + limit)
+      const initStart = rewardEpochIdList?.current && rewardEpochIdList?.current[nfts?.id] ? rewardEpochIdList.current[nfts?.id] : 0
+      for (let i = initStart; i < len; i+=limit) {
+        const nextIndex = i + limit > len ? len : i + limit
+        console.log(nfts.id, i, nextIndex)
         try {
-          let data = await rewardContract.pendingReward(nfts.id, i, i + limit > len ? len : i + limit)
+          let data = await rewardContract.pendingReward(nfts.id, i, nextIndex)
           data = data && data[0] ? data[0] : ''
           if (!data) continue
           if (!totalReward && data.reward) totalReward = data.reward
@@ -192,11 +291,15 @@ export default function Vest () {
             reward: data.reward.toString(),
           })
         } catch (error) {
-          
+          // console.log(i)
+          if (!rewardEpochIdList.current[nfts?.id]) rewardEpochIdList.current[nfts?.id] = nextIndex
+          else rewardEpochIdList.current[nfts?.id] = nextIndex
         }
       }
-      console.log(arr)
-      console.log(totalReward)
+      
+      // console.log(arr)
+      // console.log(totalReward)
+      // console.log(rewardEpochIdList.current)
       // setLoadingStatus(1)
       // setRewradNumber('res')
       // setEpoch([])
@@ -204,6 +307,29 @@ export default function Vest () {
     }
     return undefined
   }, [rewardContract, epochId])
+
+  // useEffect(() => {
+  //   if (multicallContract && useVeMultiRewardToken?.address) {
+
+  //     multicallContract.aggregate([
+  //       [useVeMultiRewardToken?.address, 
+  //         VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,0,30])],
+  //       [useVeMultiRewardToken?.address, 
+  //       VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,240,270])]
+  //     ]
+  //     ).then((res:any) => {
+  //       console.log(res)
+  //       console.log(ercContract)
+  //     })
+  //     // multicallContract.aggregate([
+  //     //   [useVeMultiRewardToken?.address, 
+  //     //   VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,0,30])]
+  //     // ]
+  //     // ).then((res:any) => {
+  //     //   console.log(res)
+  //     // })
+  //   }
+  // }, [multicallContract, useVeMultiRewardToken])
   const getAllRewards = useCallback(async() => {
     if (
       epochId
@@ -235,6 +361,12 @@ export default function Vest () {
       // console.log(account)
       const nftsLength = await contract.balanceOf(account)
       const totalSupply = await contract.totalSupply()
+      // viewDatas.current['veMultiTotalSupply'] = totalSupply?.toString()
+      // setViewDatas({
+      //   ...viewDatas,
+      //   veMultiTotalSupply: totalSupply?.toString()
+      // })
+      setVeMultiTotalSupply(totalSupply?.toString())
       console.log('totalSupply',totalSupply.toString())
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       // console.log(nftsLength)
@@ -268,8 +400,10 @@ export default function Vest () {
   const getCurrentEpochId = useCallback(() => {
     if (rewardContract) {
       rewardContract.getCurrentEpochId().then((res:any) => {
-        console.log(res.toString())
+        // console.log(res.toString())
         setEpochId(res.toString())
+      }).catch(() => {
+        setEpochId('')
       })
     }
   }, [rewardContract])
@@ -278,7 +412,134 @@ export default function Vest () {
   }, [rewardContract])
   useInterval(getCurrentEpochId, 1000 * 10)
 
-  const getAPR = useCallback(async() => {
+  const getCirc = useCallback(() => {
+    axios.get(`https://tokeninfo.multichain.org/multi/circulatingsupply`).then((res:any) => {
+      console.log(res)
+      if (res.data) {
+        // viewDatas.current['circulatingsupply'] = res.data
+        // setViewDatas({
+        //   ...viewDatas,
+        //   circulatingsupply: res.data
+        // })
+        setCirculatingsupply(res.data)
+      }
+    })
+  }, [])
+  useEffect(() => {
+    getCirc()
+  }, [])
+
+  const DataList = useMemo(() => {
+    const list = []
+    if (veMultiTotalSupply) {
+      list.push({
+        name: 'veMULTI Supply',
+        value: BigAmount.format(useVeMultiToken.decimals, veMultiTotalSupply).toSignificant(2),
+        loading: false
+      })
+    } else {
+      list.push({
+        name: 'veMULTI Supply',
+        value: '',
+        loading: true
+      })
+    }
+    if (LockedMULTI) {
+      list.push({
+        name: 'Locked MULTI',
+        value: BigAmount.format(useLockToken.decimals,LockedMULTI).toSignificant(2),
+        loading: false
+      })
+    } else {
+      list.push({
+        name: 'Locked MULTI',
+        value: '',
+        loading: true
+      })
+    }
+    if (LockedMULTI && circulatingsupply) {
+      const value:any = Number(BigAmount.format(useLockToken.decimals,LockedMULTI).toExact()) / circulatingsupply
+      list.push({
+        name: '% Circ. MULTI Locked',
+        value: thousandBit(value * 100, 2) + '%',
+        loading: false
+      })
+    } else {
+      list.push({
+        name: '% Circ. MULTI Locked',
+        value: '',
+        loading: true
+      })
+    }
+    if (totalPower && LockedMULTI) {
+      const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
+      const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
+      const fourYear:any = 60*60*24*1460
+      const value = tp.divide(lm).divide(BigAmount.format(1, fourYear))
+      list.push({
+        name: 'Avg. Lock Time (years)',
+        value: value.toSignificant(2),
+        loading: false
+      })
+    } else {
+      list.push({
+        name: 'Avg. Lock Time (years)',
+        value: '',
+        loading: true
+      })
+    }
+    if (yieldPerWeek) {
+      list.push({
+        name: 'Est. Yield Per Week',
+        value: BigAmount.format(useRewardToken.decimals, yieldPerWeek).toSignificant(2),
+        loading: false
+      })
+    } else {
+      list.push({
+        name: 'Est. Yield Per Week',
+        value: '',
+        loading: true
+      })
+    }
+    if (latestEpochInfo && totalPower) {
+      const tr = BigAmount.format(useRewardToken.decimals, latestEpochInfo.totalReward)
+      const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
+      const price = BigAmount.format(1, '12')
+      const oneYear = BigAmount.format(1, (60*60*24*365) + '')
+      const time = BigAmount.format(1, (Number(latestEpochInfo.endTime)-Number(latestEpochInfo.startTime)) + '')
+      const per = BigAmount.format(1, '100')
+      const apr = tr.divide(price).multiply(oneYear).divide(time).divide(tp).multiply(per)
+      list.push({
+        name: 'APR',
+        value: apr.toSignificant(2) + '%',
+        loading: false
+      })
+    } else {
+      list.push({
+        name: 'APR',
+        value: '',
+        loading: true
+      })
+    }
+    console.log(list)
+    return list
+  }, [totalPower, yieldPerWeek, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo])
+
+  const getMultiInfo = useCallback(() => {
+    if (ercContract) {
+      if (useVeMultiToken?.address) {
+        ercContract.balanceOf(useVeMultiToken?.address).then((res:any) => {
+          setLockedMULTI(res?.toString())
+        })
+      }
+    }
+  }, [ercContract, useVeMultiToken])
+
+  useEffect(() => {
+    getMultiInfo()
+  }, [ercContract])
+
+  const getEpochInfo = useCallback(async() => {
     if (
       rewardContract
       && epochId
@@ -286,25 +547,34 @@ export default function Vest () {
       // const EpochId = await rewardContract.getCurrentEpochId()
       try {
         const EpochInfo = await rewardContract.getEpochInfo(epochId)
+        const nextEpochInfo = await rewardContract.getEpochInfo(Number(epochId) + 1)
         const TotalPower = await rewardContract.getEpochTotalPower(epochId)
-        console.log(EpochInfo[0].toString())
-        console.log(EpochInfo[1].toString())
-        console.log(EpochInfo[2].toString())
+        
+        setlatestEpochInfo({
+          startTime: nextEpochInfo[0].toString(),
+          endTime: nextEpochInfo[1].toString(),
+          totalReward: nextEpochInfo[2].toString(),
+        })
+        
+        setTotalPower(TotalPower.toString())
+        setYieldPerWeek(EpochInfo[2].toString())
         console.log(TotalPower.toString())
       } catch (error) {
         console.error(error)
       }
-      // const apr = EpochInfo?.totalReward * 4 / (endTime - startTime) / TotalPower
+      
     }
   }, [rewardContract, epochId])
   useEffect(() => {
-    getAPR()
+    getEpochInfo()
   }, [rewardContract, epochId])
 
   function ClaimView (stutus:number) {
     if (stutus === 0) {
       return (
-        <>Loading</>
+        <>
+          <RewardLoading>{t('Reward query in progress...')}</RewardLoading>
+        </>
       )
     } else if (stutus === 2) {
       return (
@@ -312,10 +582,19 @@ export default function Vest () {
       )
     } else {
       const totalReward = rewardInfo?.totalReward && useRewardToken ? BigAmount.format(useRewardToken?.decimals, rewardInfo?.totalReward).toSignificant(6) : ''
+      if (!totalReward) {
+        return (
+          <>
+            <RewardLoading>{t('No reward.')}</RewardLoading>
+          </>
+        )
+      }
       return (
         <>
-          <TokenLogo symbol={rewardInfo?.symbol}></TokenLogo>
-          <RewardView>{totalReward}</RewardView>
+        <LogoBox>
+          <TokenLogo symbol={useRewardToken?.symbol} size={'3rem'}></TokenLogo>
+        </LogoBox>
+          <RewardView>{totalReward} {useRewardToken?.symbol}</RewardView>
           <BottomGrouping>
             <ButtonPrimary onClick={() => {
               if (onWrap) {
@@ -334,13 +613,36 @@ export default function Vest () {
       <ModalContent
         isOpen={modalOpen}
         onDismiss={() => {
+          setClaimRewardId('')
           setModalOpen(false)
         }}
         title={t('Claim Reward')}
       >
-        {rewardInfo?.id}
+        {/* {rewardInfo?.id} */}
         {ClaimView(loadingStatus)}
       </ModalContent>
+      <DataViews>
+        <div className="list">
+          {
+            DataList.map((item:any, index:any) => {
+              return (
+                <div className="item" key={index}>
+                  <div className="content">
+                    <h3 className="title">{item.name}</h3>
+                    {
+                      item.loading ? (
+                        <p className="loading">Loading</p>
+                      ) : (
+                        <p className="value">{item.value}</p>
+                      )
+                    }
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div>
+      </DataViews>
       <VestContent>
         <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
       </VestContent>
@@ -349,7 +651,7 @@ export default function Vest () {
         <DBTables>
           <DBThead>
             <tr>
-              <DBTh className="l">{t('tokens')}</DBTh>
+              <DBTh className="l">{t('Pairs')}</DBTh>
               <DBTh className="l">{t('Vest Amount')}</DBTh>
               <DBTh className="l">{t('Vest Value')}</DBTh>
               <DBTh className="c">{t('Vest Expires')}</DBTh>
@@ -382,13 +684,8 @@ export default function Vest () {
                     <Flex>
                       <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
-                        
-                        // getPendingReward(item)
-                        if (rewardList && rewardList[item.id]) {
-                          setRewardInfo({...rewardList[item.id], id: item.id})
-                          setModalOpen(true)
-                          setLoadingStatus(1)
-                        }
+                        setClaimRewardId(item.id)
+                        setModalOpen(true)
                       }}>{t('Claim Reward')}</TokenActionBtn1>
                     </Flex>
                   </DBTd>
