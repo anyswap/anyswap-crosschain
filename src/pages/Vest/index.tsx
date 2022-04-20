@@ -475,7 +475,7 @@ export default function Vest () {
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
       const fourYear:any = 60*60*24*1460
-      const value = tp.divide(lm).divide(BigAmount.format(1, fourYear))
+      const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear))
       list.push({
         name: 'Avg. Lock Time (years)',
         value: value.toSignificant(2),
