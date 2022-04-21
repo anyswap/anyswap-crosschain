@@ -777,7 +777,7 @@ export default function Vest () {
                   <DBTd className="l">{getUserAPR(item.lockValue, item.lockAmount)}</DBTd>
                   <DBTd className="c">
                     <Flex>
-                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Mange</TokenActionBtn2>
+                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manage</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
                         setClaimRewardId(item.id)
                         setModalOpen(true)
