@@ -21,6 +21,7 @@ import TokenLogo from '../../components/TokenLogo'
 import { ButtonLight } from '../../components/Button'
 // import Modal from "../../components/Modal";
 import ModalContent from "../../components/Modal/ModalContent";
+import QuestionHelper from '../../components/QuestionHelper'
 
 import {
   BottomGrouping
@@ -491,6 +492,7 @@ export default function Vest () {
     }
     if (curEpochInfo) {
       // const oneYear = BigAmount.format(1, (60*60*24*365) + '')
+      console.log(curEpochInfo)
       list.push({
         name: 'Est. Yield Per Week',
         value: BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toSignificant(2),
@@ -515,13 +517,15 @@ export default function Vest () {
       list.push({
         name: 'APR',
         value: apr.toSignificant(2) + '%',
-        loading: false
+        loading: false,
+        question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
       })
     } else {
       list.push({
         name: 'APR',
         value: '',
-        loading: true
+        loading: true,
+        question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
       })
     }
     console.log(list)
@@ -663,7 +667,7 @@ export default function Vest () {
               return (
                 <div className="item" key={index}>
                   <div className="content">
-                    <h3 className="title">{item.name}</h3>
+                    <h3 className="title">{item.name}{item.question ? <QuestionHelper text={item.question} /> : ''}</h3>
                     {
                       item.loading ? (
                         <p className="loading">Loading</p>
@@ -686,10 +690,11 @@ export default function Vest () {
         <DBTables>
           <DBThead>
             <tr>
-              <DBTh className="l">{t('Pairs')}</DBTh>
+              <DBTh className="l">{t('NFT ID')}</DBTh>
               <DBTh className="l">{t('Vest Amount')}</DBTh>
               <DBTh className="l">{t('Vest Value')}</DBTh>
               <DBTh className="c">{t('Vest Expires')}</DBTh>
+              <DBTh className="c">{t('APR')}</DBTh>
               <DBTh className="c">{t('Action')}</DBTh>
             </tr>
           </DBThead>
@@ -712,16 +717,16 @@ export default function Vest () {
                       </TokenNameBox>
                     </TokenTableCoinBox>
                   </DBTd>
-                  <DBTd className="l">{item.lockAmount}</DBTd>
-                  <DBTd className="l">{item.lockValue}</DBTd>
+                  <DBTd className="l">{thousandBit(item.lockAmount, 2)}</DBTd>
+                  <DBTd className="l">{thousandBit(item.lockValue, 2)}</DBTd>
                   <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
                   <DBTd className="c">
                     <Flex>
-                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manger</TokenActionBtn2>
+                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Mange</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
                         setClaimRewardId(item.id)
                         setModalOpen(true)
-                      }}>{t('Claim Reward')}</TokenActionBtn1>
+                      }}>{t('Claim')}</TokenActionBtn1>
                     </Flex>
                   </DBTd>
                 </tr>

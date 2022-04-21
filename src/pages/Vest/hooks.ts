@@ -59,7 +59,7 @@ export function useCreateLockCallback(
                   time + '',
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}`,
+                  summary: `Create lock ${typedValue} ${inputCurrency?.symbol}`,
                   value: inputAmount.toSignificant(6),
                   symbol: inputCurrency?.symbol,
                   token: inputCurrency?.address,
@@ -117,7 +117,7 @@ export function useInCreaseAmountCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}`,
+                  summary: `Increase amount ${typedValue} ${inputCurrency?.symbol}`,
                   value: inputAmount.toSignificant(6),
                   symbol: inputCurrency?.symbol,
                   token: inputCurrency?.address,
