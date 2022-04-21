@@ -381,7 +381,7 @@ export default function Contracts() {
         </>
       )}
 
-      <Lock enabled={!stateRouterConfigAddress || !stateRouterConfigChainId}>
+      <Lock>
         <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
           {chainId && !stateRouterAddress[chainId] ? (
             <>
@@ -393,13 +393,11 @@ export default function Contracts() {
           )}
 
           <OptionWrapper>
-            {chainId && !stateRouterAddress[chainId] && (
-              <Notice warning margin="0.4rem 0">
-                {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-                {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
-              </Notice>
-            )}
-            <Lock enabled={!chainId || !!stateRouterAddress[chainId] || !onConfigNetwork}>
+            <Notice warning margin="0.4rem 0">
+              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
+              {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
+            </Notice>
+            <Lock enabled={!chainId || !onConfigNetwork}>
               <OptionLabel>
                 {t('routerChainId')}
                 <Input
