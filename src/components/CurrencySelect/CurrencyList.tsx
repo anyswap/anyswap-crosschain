@@ -54,7 +54,7 @@ const ListBox = styled.div`
 function Balance({ balance }: { balance: any }) {
   const isBl = balance instanceof CurrencyAmount ? true : false
   // console.log(balance)
-  return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? balance.toSignificant(6) : balance.balance}</StyledBalanceText>
+  return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? balance.toSignificant(6) : balance.balances.toSignificant(6)}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
