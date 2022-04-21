@@ -3,7 +3,8 @@ import { ChainId } from "../../config/chainConfig/chainId"
 export const BASE_INFO = {
   name: 'Multichain',
   symbol: 'MULTI',
-  decimals: 18
+  decimals: 18,
+  label: 'multichain'
 }
 
 export const VENFT_BASE_INFO = {
@@ -12,10 +13,16 @@ export const VENFT_BASE_INFO = {
   decimals: 18
 }
 
+export const REWARD_BASE_INFO = {
+  name: 'USDCoin',
+  symbol: 'USDC',
+  decimals: 18
+}
+
 export const veMULTI:any = {
   [ChainId.RINKEBY]: {
     ...VENFT_BASE_INFO,
-    address: '0x21dbD7562981cC4bafeA14dBec82eD24Cdba8E3F'
+    address: '0x1E1A9090c8F2adF292042a89639d7a54Ab523Ad7'
   },
   // [ChainId.BNB_TEST]: {
   //   ...VENFT_BASE_INFO,
@@ -26,7 +33,7 @@ export const veMULTI:any = {
 export const MULTI_TOKEN:any = {
   [ChainId.RINKEBY]: {
     ...BASE_INFO,
-    address: '0xf58C8B9E2645Ff2dF78ED3C0A15ef04E0CCA2567'
+    address: '0x5aD702B98194046b0998c552F04Fd74A582560A1'
   },
   // [ChainId.BNB_TEST]: {
   //   ...BASE_INFO,
@@ -36,10 +43,8 @@ export const MULTI_TOKEN:any = {
 
 export const REWARD_TOKEN:any = {
   [ChainId.RINKEBY]: {
-    name: 'USDT',
-    symbol: 'USDT',
-    decimals: 18,
-    address: '0x1241aeCFb79B1e2c0cac7A83B47b11303968d695'
+    ...REWARD_BASE_INFO,
+    address: '0xD723a26Da0CB4C0044f99da34dd2a5Ba0F884Eb4'
   },
   // [ChainId.BNB_TEST]: {
   //   address: '0x74e8e6eb31ef6970d2623a1c700cbe6f56f20f43'
@@ -48,7 +53,7 @@ export const REWARD_TOKEN:any = {
 
 export const REWARD:any = {
   [ChainId.RINKEBY]: {
-    address: '0x06De03C78A81A05b05141bbA9cF5271fBdbbAa88'
+    address: '0x9fe7497ef6243649212b0BA3e185d75e14f1F1e7'
   },
   // [ChainId.BNB_TEST]: {
   //   address: '0x25c5Cc9082d7d87B3321868bA2C64e0C969072a4'
