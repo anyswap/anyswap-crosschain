@@ -1,0 +1,36 @@
+name: Deploy to Pinata
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build
+      run: |
+        npm i --legacy-peer-deps
+        npm run build
+    - name: IPFS Pinata deploy GitHub action
+      uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
+      with:
+        pin-name: 'CrossChainFront'
+        path: './app'
+        pinata-api-key: ${{ secrets.PINATAAPI }}
+        pinata-secret-api-key: ${{ secrets.PINATASECRET }}
+        verbose: true
+        remove-old: false
