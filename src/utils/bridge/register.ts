@@ -7,7 +7,7 @@ export function registerSwap(hash: string, chainId: any, apiAddress: string) {
   return new Promise((resolve, reject) => {
     console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
 
-    const url = `http://${apiAddress}/swap/register/${chainId}/${hash}`
+    const url = `${apiAddress}/swap/register/${chainId}/${hash}`
 
     postUrlData(url, {
       logindex: 0
