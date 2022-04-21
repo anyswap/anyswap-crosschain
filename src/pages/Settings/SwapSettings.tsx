@@ -74,7 +74,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
 
   useEffect(() => {
     const fetchSwapConfig = async () => {
-      if (!underlying.address || !underlying.networkId || !routerConfig) return
+      if (!underlying.name || !underlying.networkId || !routerConfig) return
 
       try {
         const {
@@ -84,7 +84,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
           SwapFeeRatePerMillion,
           MaximumSwapFee,
           MinimumSwapFee
-        } = await routerConfig.methods.getSwapConfig(underlying.address, underlying.networkId).call()
+        } = await routerConfig.methods.getSwapConfig(underlying.name, underlying.networkId).call()
 
         setMinimumSwap(formatAmount(MinimumSwap.toString(), Direction.from))
         setMaximumSwap(formatAmount(MaximumSwap.toString(), Direction.from))
@@ -98,7 +98,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
     }
 
     fetchSwapConfig()
-  }, [underlying.address, underlying.networkId, chainId])
+  }, [underlying.name, underlying.networkId, chainId])
 
   const setSwapConfig = async () => {
     if (!routerConfigSigner || !canSetSwapConfig) return
@@ -114,7 +114,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
         BigValueThreshold: formatAmount(bigValueThreshold, Direction.to),
         SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(MILLION).toString()
       }
-      const { hash } = await routerConfigSigner.setSwapConfig(underlying.address, underlying.networkId, swapConfig)
+      const { hash } = await routerConfigSigner.setSwapConfig(underlying.name, underlying.networkId, swapConfig)
 
       addTransaction(
         { hash },
