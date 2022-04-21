@@ -4,6 +4,8 @@ import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
 
+import { useInitUserSelectCurrency } from '../../state/lists/hooks'
+
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
   return useMemo(() => {
     if (inputBridgeValue && destConfig && selectCurrency) {
@@ -46,8 +48,19 @@ export function useInitSelectCurrency (
   useChainId: any,
   initToken?: any
 ) {
+  const {userInit} = useInitUserSelectCurrency(useChainId)
   return useMemo(() => {
-    const t = initToken ? [initToken] : [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
+    // console.log(allTokensList)
+    // console.log(useChainId)
+    // console.log(initToken)
+    let t = []
+    if (initToken) {
+      t = [initToken]
+    } else if (userInit?.token) {
+      t = [userInit?.token]
+    } else {
+      t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
+    }
 
     const list:any = {}
 
@@ -89,6 +102,7 @@ export function useDestChainid (
   selectChain:any,
   useChainId:any,
 ) {
+  const {userInit} = useInitUserSelectCurrency(useChainId)
   return useMemo(() => {
     let initChainId:any = '',
         initChainList:any = []
@@ -100,11 +114,23 @@ export function useDestChainid (
         arr.push(c)
       }
       // console.log(arr)
-      let useChain:any = selectChain ? selectChain : config.getCurChainInfo(selectChain).bridgeInitChain
+      let useChain:any = ''
+      if (userInit?.toChainId) {
+        useChain = userInit?.toChainId
+        // console.log('useChain1', userInit)
+        // console.log('useChain1', useChain)
+        // console.log('useChain1', useChainId)
+      } else if (selectChain) {
+        useChain = selectChain
+        // console.log('useChain2', useChain)
+      } else {
+        useChain = config.getCurChainInfo(selectChain).bridgeInitChain
+        // console.log('useChain3', useChain)
+      }
       if (arr.length > 0) {
         if (
           !useChain
-          || (useChain && !arr.includes(useChain))
+          || (useChain && !arr.includes(useChain.toString()))
         ) {
           for (const c of arr) {
             if (config.getCurConfigInfo()?.hiddenChain?.includes(c)) continue
@@ -115,6 +141,8 @@ export function useDestChainid (
       }
       // console.log('useChain', useChain)
       // setSelectChain(useChain)
+      // console.log('useChain4', useChain)
+      // console.log(arr)
       initChainId = useChain
       initChainList = arr
       // setSelectChainList(arr)

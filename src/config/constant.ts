@@ -39,6 +39,7 @@ export const env:any = 'pro'
 
 export const version = '0.1.28'
 export const timeout = 1000 * 60 * 30
+// export const timeout = 1000 * 60
 
 // export const INIT_VERSION = VERSION.V1_1
 // export const INIT_VERSION = VERSION.V3_1

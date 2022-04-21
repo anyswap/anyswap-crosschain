@@ -51,6 +51,7 @@ export default function Updater(): null {
   // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
   useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
   useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 10 : null)
+  // useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 : null)
 
   // whenever a list is not loaded and not loading, try again to load it
   // useEffect(() => {
@@ -73,7 +74,7 @@ export default function Updater(): null {
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {
-    console.log(library)
+    // console.log(library)
     if (library) {
       const startTime = Date.now()
       library.getBlockNumber().then(res => {

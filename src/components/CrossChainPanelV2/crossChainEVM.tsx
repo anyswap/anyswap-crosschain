@@ -28,7 +28,7 @@ import ModalContent from '../Modal/ModalContent'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
-import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
+import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../state/lists/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -76,6 +76,7 @@ export default function CrossChain({
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -205,9 +206,9 @@ export default function CrossChain({
     }
   }, [isRouter, selectCurrency, destConfig])
 
-  useEffect(() => {
-    console.log(bridgeAnyToken)
-  }, [bridgeAnyToken, inputBridgeValue])
+  // useEffect(() => {
+  //   console.log(bridgeAnyToken)
+  // }, [bridgeAnyToken, inputBridgeValue])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
@@ -534,7 +535,6 @@ export default function CrossChain({
   const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
   useEffect(() => {
-    // console.log(initCurrency)
     setSelectCurrency(initCurrency)
   }, [initCurrency])
 
@@ -566,6 +566,20 @@ export default function CrossChain({
   useEffect(() => {
     setSelectDestCurrency(initDestCurrency)
   }, [initDestCurrency])
+
+  useEffect(() => {
+    setInitUserSelect({useChainId: selectChain, toChainId: chainId, token: selectDestCurrency?.address})
+    // setSelectDestCurrency(initDestCurrency)
+  }, [selectDestCurrency, selectChain, chainId])
+
+  useEffect(() => {
+    // console.log('chainId',chainId)
+    // console.log('selectChain',selectChain)
+    if (chainId && selectChain && selectCurrency?.address) {
+      setInitUserSelect({useChainId: chainId, toChainId: selectChain, token: selectCurrency?.address})
+    }
+    // setSelectDestCurrency(initDestCurrency)
+  }, [selectCurrency, selectChain, chainId])
 
   useEffect(() => {
     setSelectDestCurrencyList(initDestCurrencyList)
@@ -723,7 +737,6 @@ export default function CrossChain({
             setInputBridgeValue(value)
           }}
           onCurrencySelect={(inputCurrency) => {
-            // console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
           }}
           onMax={(value) => {
@@ -807,7 +820,6 @@ export default function CrossChain({
           selectChainId={selectChain}
           id="selectChainID"
           onCurrencySelect={(inputCurrency) => {
-            console.log(inputCurrency)
             setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
