@@ -11,23 +11,23 @@ function balanceComparator(balanceA?: TokenAmount | any, balanceB?: TokenAmount 
     return 1
   } else {
     if (balanceA && balanceB) {
-      if ( balanceA instanceof TokenAmount && balanceB instanceof TokenAmount) {
-        return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
-      } else {
-        return Number(balanceA?.balance) > Number(balanceB?.balance) ? -1 : (Number(balanceA?.balance) <= Number(balanceB?.balance) ? 0 : 1)
-      }
+      return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
+      // if ( balanceA instanceof TokenAmount && balanceB instanceof TokenAmount) {
+      // } else {
+      //   return Number(balanceA?.balance) > Number(balanceB?.balance) ? -1 : (Number(balanceA?.balance) <= Number(balanceB?.balance) ? 0 : 1)
+      // }
     } else if (balanceA) {
-      if (balanceA instanceof TokenAmount && balanceA.greaterThan('0')) {
-        return -1
-      } else if (Number(balanceA?.balance) > 0) {
-        return -1
-      }
+      return -1
+      // if (balanceA instanceof TokenAmount && balanceA.greaterThan('0')) {
+      // } else if (Number(balanceA?.balance) > 0) {
+      //   return -1
+      // }
     } else if (balanceB) {
-      if (balanceB instanceof TokenAmount && balanceB.greaterThan('0')) {
-        return 1
-      } else if (Number(balanceB?.balance) > 0) {
-        return 1
-      }
+      return 1
+      // if (balanceB instanceof TokenAmount && balanceB.greaterThan('0')) {
+      // } else if (Number(balanceB?.balance) > 0) {
+      //   return 1
+      // }
       // return 1
     }
     return 0
@@ -65,10 +65,10 @@ function getTokenComparator(balances: {
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[tokenA.address]
-    const balanceB = balances[tokenB.address]
+    const balanceA:any = balances[tokenA.address]
+    const balanceB:any = balances[tokenB.address]
 
-    const balanceComp = balanceComparator(balanceA, balanceB, tokenA.sort, tokenB.sort)
+    const balanceComp = balanceComparator(balanceA?.balances, balanceB?.balances, tokenA.sort, tokenB.sort)
     // console.log(balanceComp)
     if (balanceComp !== 0) return balanceComp
 

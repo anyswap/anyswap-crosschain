@@ -20,3 +20,4 @@ export const rejectVersionUpdate = createAction<Version>('lists/rejectVersionUpd
 export const routerTokenList = createAction<{chainId: any, tokenList:any}>('lists/routerTokenList')
 export const bridgeTokenList = createAction<{chainId: any, tokenList:any}>('lists/bridgeTokenList')
 export const mergeTokenList = createAction<{chainId: any, tokenList:any}>('lists/mergeTokenList')
+export const userSelectCurrency = createAction<{chainId: any, token?:any, toChainId?:any}>('lists/userSelectCurrency')

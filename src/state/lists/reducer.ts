@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList, mergeTokenList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList, routerTokenList, bridgeTokenList, mergeTokenList, userSelectCurrency } from './actions'
 
 import config from '../../config'
 
@@ -22,6 +22,7 @@ export interface ListsState {
   readonly routerTokenList: any
   readonly bridgeTokenList: any
   readonly mergeTokenList: any
+  readonly userSelectCurrency: any
 }
 
 type ListState = ListsState['byUrl'][string]
@@ -47,6 +48,7 @@ const initialState: ListsState = {
   routerTokenList: {},
   bridgeTokenList: {},
   mergeTokenList: {},
+  userSelectCurrency: {},
 }
 
 export default createReducer(initialState, builder =>
@@ -77,6 +79,47 @@ export default createReducer(initialState, builder =>
       } else {
         state.mergeTokenList = {
           [chainId]: {tokenList, timestamp: Date.now()}
+        }
+      }
+    })
+    .addCase(userSelectCurrency, (state, { payload: { chainId, token, toChainId } }) => {
+      // console.log(state)
+      if (chainId) {
+        if (state.userSelectCurrency) {
+          if (state.userSelectCurrency[chainId]) {
+            if (token) {
+              state.userSelectCurrency[chainId].token = token
+            }
+            if (toChainId) {
+              state.userSelectCurrency[chainId].toChainId = toChainId
+            }
+          } else {
+            state.userSelectCurrency[chainId] = {}
+            if (token) {
+              state.userSelectCurrency[chainId].token = token
+            }
+            if (toChainId) {
+              state.userSelectCurrency[chainId].toChainId = toChainId
+            }
+          }
+        } else {
+          state.userSelectCurrency = {}
+          if (state.userSelectCurrency[chainId]) {
+            if (token) {
+              state.userSelectCurrency[chainId].token = token
+            }
+            if (toChainId) {
+              state.userSelectCurrency[chainId].toChainId = toChainId
+            }
+          } else {
+            state.userSelectCurrency[chainId] = {}
+            if (token) {
+              state.userSelectCurrency[chainId].token = token
+            }
+            if (toChainId) {
+              state.userSelectCurrency[chainId].toChainId = toChainId
+            }
+          }
         }
       }
     })

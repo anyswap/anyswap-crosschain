@@ -1,10 +1,12 @@
 import { ChainId, Token } from 'anyswap-sdk'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import { AppState } from '../index'
+import { useCallback, useMemo } from 'react'
+
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, AppState } from '../index'
 import config from '../../config'
 import { isAddress } from 'ethers/lib/utils'
+import {userSelectCurrency} from './actions'
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
@@ -325,3 +327,22 @@ export function useAllLists(): TokenList[] {
   )
 }
 
+
+export function useInitUserSelectCurrency(chainId?: any) {
+  const userInit = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
+  const dispatch = useDispatch<AppDispatch>()
+  // console.log(userInit)
+  // console.log(chainId)
+  // console.log(userInit && chainId && userInit[chainId] ? userInit[chainId] : {})
+  const setInitUserSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
+    const id = useChainId ? useChainId : chainId
+    if (id && toChainId && id?.toString() !== toChainId?.toString()){
+      dispatch(userSelectCurrency({chainId: useChainId ? useChainId : chainId, token, toChainId}))
+    }
+  }, [dispatch])
+
+  return {
+    userInit: userInit && chainId && userInit[chainId] ? userInit[chainId] : {},
+    setInitUserSelect
+  }
+}

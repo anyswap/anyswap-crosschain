@@ -9,6 +9,7 @@ import { tryParseAmount5,tryParseAmount6 } from '../swap/hooks'
 // import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
+import { BigAmount } from '../../utils/formatBignumber'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 import { AppState } from '../index'
 
@@ -182,8 +183,6 @@ export function useTokenBalanceList(): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
   // console.log(lists)
-  // console.log(tryParseAmount5('100', 6))
-  // console.log(tryParseAmount5('100', 6).toSignificant(3))
   return useMemo(() => {
     if (chainId && account && lists) {
       if (lists[account] && lists[account][chainId]) {
@@ -193,7 +192,7 @@ export function useTokenBalanceList(): any {
           // const amount = obj.balancestr ? JSBI.BigInt(obj.balancestr.toString()) : undefined
           list[token] = {
             ...obj,
-            balances: tryParseAmount5(obj.balancestr, obj.dec)
+            balances: BigAmount.format(obj.dec, obj.balancestr)
             // balances: amount
           }
         }
@@ -209,8 +208,6 @@ export function useOneTokenBalance(token:any): any {
   const { chainId, account } = useActiveReact()
   const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
   // console.log(lists)
-  // console.log(tryParseAmount5('100', 6))
-  // console.log(tryParseAmount5('100', 6).toSignificant(3))
   return useMemo(() => {
     if (chainId && account && lists && token) {
       if (lists[account] && lists[account][chainId] && lists[account][chainId][token]) {
@@ -228,7 +225,6 @@ export function useOneTokenBalance(token:any): any {
           ...blItem,
           balances1: tryParseAmount6(blItem.balancestr),
           balances2: tryParseAmount5(blItem.balancestr, blItem.dec),
-          // balances: tryParseAmount5(blItem.balancestr, blItem.dec),
           balances: tokens && amount ? new TokenAmount(tokens, amount) : ''
         }
       }
