@@ -28,6 +28,8 @@ import {
 } from '../../components/swap/styleds'
 import { ButtonPrimary } from '../../components/Button'
 
+import {getLabelPrice} from '../../utils/tools/getPrice'
+
 import AppBody from '../AppBody'
 
 import {
@@ -216,6 +218,7 @@ export default function Vest () {
   const [epochId, setEpochId] = useState<any>()
   const [rewardList, setRewardList] = useState<any>()
   const [latestEpochInfo, setlatestEpochInfo] = useState<any>()
+  const [price, setPrice] = useState<any>(12)
   // const viewDatas = useRef<any>({})
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
@@ -278,10 +281,15 @@ export default function Vest () {
           let data = await rewardContract.pendingReward(nfts.id, i, nextIndex)
           data = data && data[0] ? data[0] : ''
           if (!data) continue
-          if (!totalReward && data.reward) totalReward = data.reward
-          else if (data.reward) {
-            totalReward.add(data.reward)
+          if (!totalReward && data.reward) {
+            // console.log(1)
+            totalReward = data.reward
+          } else if (data.reward) {
+            // console.log(2)
+            totalReward = totalReward.add(data.reward)
           }
+          // console.log(totalReward)
+          // console.log(data.reward)
           // console.log(data)
           // console.log('endEpoch',data.endEpoch.toString())
           // console.log('reward',data.reward.toString())
@@ -425,7 +433,12 @@ export default function Vest () {
         setCirculatingsupply(res.data)
       }
     })
-  }, [])
+    getLabelPrice(useLockToken?.label).then(res => {
+      if (res) {
+        setPrice(res)
+      }
+    })
+  }, [useLockToken])
   useEffect(() => {
     getCirc()
   }, [])
@@ -495,7 +508,7 @@ export default function Vest () {
       console.log(curEpochInfo)
       list.push({
         name: 'Est. Yield Per Week',
-        value: BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toSignificant(2),
+        value: thousandBit(BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toExact(), 2) + ' ' +  useRewardToken.symbol,
         loading: false
       })
     } else {
@@ -505,21 +518,37 @@ export default function Vest () {
         loading: true
       })
     }
-    if ((latestEpochInfo || curEpochInfo) && totalPower) {
+    if ((latestEpochInfo || curEpochInfo) && totalPower && price) {
       const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
       const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward)
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
-      const price = BigAmount.format(1, '12')
+      const tokenPrice = BigAmount.format(1, parseInt(price) + '')
       const oneYear = BigAmount.format(1, (60*60*24*365) + '')
       const time = BigAmount.format(1, (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '')
       const per = BigAmount.format(1, '100')
-      const apr = tr.divide(price).multiply(oneYear).divide(time).divide(tp).multiply(per)
-      list.push({
-        name: 'APR',
-        value: apr.toSignificant(2) + '%',
-        loading: false,
-        question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
-      })
+      // console.log(useRewardToken)
+      // console.log(useVeMultiToken)
+      if (
+        tr.greaterThan('0')
+        && tokenPrice.greaterThan('0')
+        && time.greaterThan('0')
+        && tp.greaterThan('0')
+      ) {
+        const apr = tr.divide(tokenPrice).multiply(oneYear).divide(time).divide(tp).multiply(per)
+        list.push({
+          name: 'APR',
+          value: apr.toSignificant(2) + '%',
+          loading: false,
+          question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
+        })
+      } else {
+        list.push({
+          name: 'APR',
+          value: '- %',
+          loading: true,
+          question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
+        })
+      }
     } else {
       list.push({
         name: 'APR',
@@ -530,7 +559,7 @@ export default function Vest () {
     }
     console.log(list)
     return list
-  }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo])
+  }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo, price])
 
   const getMultiInfo = useCallback(() => {
     if (ercContract) {
@@ -580,33 +609,34 @@ export default function Vest () {
         console.log(err)
         setTotalPower('')
       })
-      // try {
-      //   console.log(1)
-      //   const EpochInfo = await rewardContract.getEpochInfo(epochId)
-      //   console.log(2)
-      //   console.log(epochId)
-      //   const nextEpochInfo = await rewardContract.getEpochInfo(Number(epochId) + 1)
-      //   console.log(3)
-      //   const TotalPower = await rewardContract.getEpochTotalPower(epochId)
-      //   console.log(nextEpochInfo)
-      //   setlatestEpochInfo({
-      //     startTime: nextEpochInfo[0].toString(),
-      //     endTime: nextEpochInfo[1].toString(),
-      //     totalReward: nextEpochInfo[2].toString(),
-      //   })
-        
-      //   setTotalPower(TotalPower.toString())
-      //   setCurEpochInfo(EpochInfo[2].toString())
-      //   console.log(TotalPower.toString())
-      // } catch (error) {
-      //   console.error(error)
-      // }
       
     }
   }, [rewardContract, epochId])
   useEffect(() => {
     getEpochInfo()
   }, [rewardContract, epochId])
+
+  function getUserAPR (UserPower:any, UserMulti:any) {
+    const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
+    const tr = usrEpochInfo ? BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward).toExact() : ''
+    const time = usrEpochInfo ? Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime) : ''
+    const tokenPrice = price ? Number(price) : ''
+    const tp = totalPower ? BigAmount.format(useVeMultiToken.decimals, totalPower).toExact() : ''
+    const oneYear = 60*60*24*365
+    if (
+      tr
+      && tokenPrice
+      && tp
+      && UserPower
+      && UserMulti
+      && time
+    ) {
+      const apr = (((Number(tr) / tokenPrice) * Number(UserPower) / Number(tp))*oneYear/time/Number(UserMulti)) * 100
+      // console.log(apr)
+      return thousandBit(apr, 2) + '%'
+    }
+    return '-'
+  }
 
   function ClaimView (stutus:number) {
     if (stutus === 0) {
@@ -621,7 +651,31 @@ export default function Vest () {
       )
     } else {
       const totalReward = rewardInfo?.totalReward && useRewardToken ? BigAmount.format(useRewardToken?.decimals, rewardInfo?.totalReward).toSignificant(6) : ''
-      if (!totalReward) {
+      if (latestEpochInfo?.startTime && !totalReward) {
+        const time = Number(latestEpochInfo?.startTime) - parseInt(Date.now() / 1000 + '')
+        let timeView = ''
+        if (time < 60 && time > 0) {
+          timeView = time + 's'
+        } else if (time >= 60 && time < 60 * 60) {
+          timeView = (time / 60).toFixed(2) + 'min'
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          timeView = (time / (60 * 60)).toFixed(2) + 'h'
+        } else if (time >= 60 * 60 * 24) {
+          timeView = (time / (60 * 60 * 24)).toFixed(2) + 'D'
+        }
+        if (!timeView) {
+          return (
+            <>
+              <RewardLoading>{t('No reward.')}</RewardLoading>
+            </>
+          )
+        }
+        return (
+          <>
+            <RewardLoading>Remaining time for next collection:{timeView}</RewardLoading>
+          </>
+        )
+      } else if (!totalReward) {
         return (
           <>
             <RewardLoading>{t('No reward.')}</RewardLoading>
@@ -720,6 +774,7 @@ export default function Vest () {
                   <DBTd className="l">{thousandBit(item.lockAmount, 2)}</DBTd>
                   <DBTd className="l">{thousandBit(item.lockValue, 2)}</DBTd>
                   <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
+                  <DBTd className="l">{getUserAPR(item.lockValue, item.lockAmount)}</DBTd>
                   <DBTd className="c">
                     <Flex>
                       <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Mange</TokenActionBtn2>
