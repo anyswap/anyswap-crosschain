@@ -210,7 +210,7 @@ export default function Vest () {
   const [veMultiTotalSupply, setVeMultiTotalSupply] = useState<any>()
   const [LockedMULTI, setLockedMULTI] = useState<any>()
   const [circulatingsupply, setCirculatingsupply] = useState<any>()
-  const [yieldPerWeek, setYieldPerWeek] = useState<any>()
+  const [curEpochInfo, setCurEpochInfo] = useState<any>()
   const [totalPower, setTotalPower] = useState<any>()
   const [epochId, setEpochId] = useState<any>()
   const [rewardList, setRewardList] = useState<any>()
@@ -272,7 +272,7 @@ export default function Vest () {
       const initStart = rewardEpochIdList?.current && rewardEpochIdList?.current[nfts?.id] ? rewardEpochIdList.current[nfts?.id] : 0
       for (let i = initStart; i < len; i+=limit) {
         const nextIndex = i + limit > len ? len : i + limit
-        console.log(nfts.id, i, nextIndex)
+        // console.log(nfts.id, i, nextIndex)
         try {
           let data = await rewardContract.pendingReward(nfts.id, i, nextIndex)
           data = data && data[0] ? data[0] : ''
@@ -367,7 +367,7 @@ export default function Vest () {
       //   veMultiTotalSupply: totalSupply?.toString()
       // })
       setVeMultiTotalSupply(totalSupply?.toString())
-      console.log('totalSupply',totalSupply.toString())
+      // console.log('totalSupply',totalSupply.toString())
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       // console.log(nftsLength)
       // console.log(arr)
@@ -475,7 +475,8 @@ export default function Vest () {
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
       const fourYear:any = 60*60*24*1460
-      const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear))
+      const oneYear = BigAmount.format(1, (60*60*24*365) + '')
+      const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear)).divide(oneYear)
       list.push({
         name: 'Avg. Lock Time (years)',
         value: value.toSignificant(2),
@@ -488,10 +489,11 @@ export default function Vest () {
         loading: true
       })
     }
-    if (yieldPerWeek) {
+    if (curEpochInfo) {
+      // const oneYear = BigAmount.format(1, (60*60*24*365) + '')
       list.push({
         name: 'Est. Yield Per Week',
-        value: BigAmount.format(useRewardToken.decimals, yieldPerWeek).toSignificant(2),
+        value: BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toSignificant(2),
         loading: false
       })
     } else {
@@ -501,12 +503,13 @@ export default function Vest () {
         loading: true
       })
     }
-    if (latestEpochInfo && totalPower) {
-      const tr = BigAmount.format(useRewardToken.decimals, latestEpochInfo.totalReward)
+    if ((latestEpochInfo || curEpochInfo) && totalPower) {
+      const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
+      const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward)
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       const price = BigAmount.format(1, '12')
       const oneYear = BigAmount.format(1, (60*60*24*365) + '')
-      const time = BigAmount.format(1, (Number(latestEpochInfo.endTime)-Number(latestEpochInfo.startTime)) + '')
+      const time = BigAmount.format(1, (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '')
       const per = BigAmount.format(1, '100')
       const apr = tr.divide(price).multiply(oneYear).divide(time).divide(tp).multiply(per)
       list.push({
@@ -523,7 +526,7 @@ export default function Vest () {
     }
     console.log(list)
     return list
-  }, [totalPower, yieldPerWeek, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo])
+  }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo])
 
   const getMultiInfo = useCallback(() => {
     if (ercContract) {
@@ -545,23 +548,55 @@ export default function Vest () {
       && epochId
     ) {
       // const EpochId = await rewardContract.getCurrentEpochId()
-      try {
-        const EpochInfo = await rewardContract.getEpochInfo(epochId)
-        const nextEpochInfo = await rewardContract.getEpochInfo(Number(epochId) + 1)
-        const TotalPower = await rewardContract.getEpochTotalPower(epochId)
-        
-        setlatestEpochInfo({
-          startTime: nextEpochInfo[0].toString(),
-          endTime: nextEpochInfo[1].toString(),
-          totalReward: nextEpochInfo[2].toString(),
+      rewardContract.getEpochInfo(epochId).then((res:any) => {
+        console.log(res)
+        setCurEpochInfo({
+          startTime: res[0].toString(),
+          endTime: res[1].toString(),
+          totalReward: res[2].toString(),
         })
+      }).catch((err:any) => {
+        console.log(err)
+        setCurEpochInfo('')
+      })
+      rewardContract.getEpochInfo(Number(epochId) + 1).then((res:any) => {
+        console.log(res)
+        setlatestEpochInfo({
+          startTime: res[0].toString(),
+          endTime: res[1].toString(),
+          totalReward: res[2].toString(),
+        })
+      }).catch((err:any) => {
+        console.log(err)
+      })
+      rewardContract.getEpochTotalPower(epochId).then((res:any) => {
+        console.log(res)
+        setTotalPower(res.toString())
+      }).catch((err:any) => {
+        console.log(err)
+        setTotalPower('')
+      })
+      // try {
+      //   console.log(1)
+      //   const EpochInfo = await rewardContract.getEpochInfo(epochId)
+      //   console.log(2)
+      //   console.log(epochId)
+      //   const nextEpochInfo = await rewardContract.getEpochInfo(Number(epochId) + 1)
+      //   console.log(3)
+      //   const TotalPower = await rewardContract.getEpochTotalPower(epochId)
+      //   console.log(nextEpochInfo)
+      //   setlatestEpochInfo({
+      //     startTime: nextEpochInfo[0].toString(),
+      //     endTime: nextEpochInfo[1].toString(),
+      //     totalReward: nextEpochInfo[2].toString(),
+      //   })
         
-        setTotalPower(TotalPower.toString())
-        setYieldPerWeek(EpochInfo[2].toString())
-        console.log(TotalPower.toString())
-      } catch (error) {
-        console.error(error)
-      }
+      //   setTotalPower(TotalPower.toString())
+      //   setCurEpochInfo(EpochInfo[2].toString())
+      //   console.log(TotalPower.toString())
+      // } catch (error) {
+      //   console.error(error)
+      // }
       
     }
   }, [rewardContract, epochId])
