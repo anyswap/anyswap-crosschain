@@ -48,5 +48,6 @@ export enum ChainId {
   REI = '47805',
   CFX = '1030',
   RBTC = '30',
-  JEWEL = '53935'
+  JEWEL = '53935',
+  BTT = '199',
 }
