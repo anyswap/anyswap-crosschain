@@ -244,6 +244,7 @@ export default function PoolLists ({
         }
         for (const chainID in tObj.destChains) {
           if (chainID?.toString() === tObj.chainId?.toString()) continue
+          if (chainID?.toString() !== config.getCurChainInfo(chainID).chainID?.toString()) continue
           if (!destList[chainID]) destList[chainID] = []
           destList[chainID].push({
             token: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
@@ -285,6 +286,7 @@ export default function PoolLists ({
         objExtend.bl = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
         objExtend.totalV += objExtend.ts
         for (const objChild in obj.destChains) {
+          if (objChild?.toString() !== config.getCurChainInfo(objChild).chainID?.toString()) continue
           const c2 = objChild
           const t2 = obj.destChains[c2].underlying ? obj.destChains[c2].underlying.address : obj.destChains[c2].address
           const tu2 = obj.destChains[c2].address
