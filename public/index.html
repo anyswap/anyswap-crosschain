@@ -11,6 +11,13 @@
     <meta name="fortmatic-site-verification" content="j93LgcVZk79qcgyo" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Cross-chain</title>
+    <script>
+      const { hostname, protocol, href } = window.location
+
+      if (hostname !== 'localhost' && protocol !== 'https:') {
+        location.replace(`https:${href.substring(protocol.length)}`)
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
