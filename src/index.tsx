@@ -46,18 +46,6 @@ const walletConnectChainIds: Record<number, NetworkInfo> = {
 }
 
 function Updaters() {
-  if (false) {
-    return (
-      <>
-        <ListsUpdater />
-        <UserUpdater />
-        <PoolsUpdater />
-        <TransactionUpdater />
-        <MulticallUpdater />
-        <MulticallUpdater type={1}/>
-      </>
-    )
-  }
   return (
     <>
       <ListsUpdater />

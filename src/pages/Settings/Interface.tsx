@@ -151,8 +151,8 @@ export default function Interface() {
         }
       })
     } catch (error) {
-      console.group('%c Log', 'color: orange; font-size: 14px')
-      console.log('error: ', error)
+      console.group('%c storage data', 'color: red;')
+      console.error(error)
       console.groupEnd()
       // addPopup({
       //   error: {

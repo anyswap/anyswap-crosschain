@@ -13,7 +13,8 @@ function getWeb3 (rpc) {
 
 function getContract(ABI) {
   const web3 = getWeb3()
-  ABI = ABI ? ABI : ERC20_ABI
+  ABI = ABI || ERC20_ABI
+
   return new web3.eth.Contract(ABI)
 }
 

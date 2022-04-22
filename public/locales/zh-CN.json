@@ -410,5 +410,11 @@
   "switchToStorageNetworkToSaveIt": "切換到 {{network}} 保存它",
   "apiServerAddress": "API 服務器地址",
   "apiServerAddressDescription": "您可以使用域名 (mydomain.com) 或 IP 地址 (1.2.3.4)",
-  "saveAddress": "保存地址"
+  "saveAddress": "保存地址",
+  "adminAddress": "管理员地址（与您的服务器上相同）",
+  "adminPublicKey": "管理员公钥（管理员地址的公钥）",
+  "saveAdminAddressData": "保存管理员地址数据",
+  "mainConfig": "主配置",
+  "networkRouter": "网络路由器",
+  "erc20Token": "ERC20令牌"
 }

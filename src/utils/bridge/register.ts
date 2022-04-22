@@ -7,7 +7,7 @@ export function registerSwap(hash: string, chainId: any, apiAddress: string) {
   return new Promise((resolve, reject) => {
     console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
 
-    const url = `https://${apiAddress}/swap/register/${chainId}/${hash}`
+    const url = `${apiAddress}/swap/register/${chainId}/${hash}`
 
     postUrlData(url, {
       logindex: 0
@@ -129,6 +129,7 @@ export function recordsApprove({
   chainId: any
   type: any
 }) {
+  console.log('>>> call utils/bridge -> approve')
   return new Promise(async resolve => {
     const url = `${api}/v3/records/approved`
     const data = {
@@ -142,6 +143,7 @@ export function recordsApprove({
       chainId,
       type
     }
+    console.log('>>> approve data', data)
     if (!approveList[hash]) {
       approveList[hash] = {
         token,
@@ -221,6 +223,7 @@ export function getP2PInfo({
   symbol: string
   token: any
 }) {
+  console.log('>>>> getP2PInfo')
   return new Promise(resolve => {
     const lData = getLocalConfig(account, token, chainId, CROSSCHAINBRIDGE, timeout, undefined)
 

@@ -2,7 +2,7 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useFetchListCallback, useFetchTokenListCallback, useFetchTokenList1Callback, useFetchMergeTokenListCallback } from '../../hooks/useFetchListCallback'
+import { useFetchListCallback, useFetchTokenListCallback, useFetchMergeTokenListCallback } from '../../hooks/useFetchListCallback'
 // import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
@@ -23,7 +23,6 @@ export default function Updater(): null {
 
   const fetchList = useFetchListCallback()
   const fetchTokenList = useFetchTokenListCallback()
-  const fetchTokenList1 = useFetchTokenList1Callback()
   const fetchMergeTokenList = useFetchMergeTokenListCallback()
 
   // console.log(fetchTokenList)
@@ -45,12 +44,6 @@ export default function Updater(): null {
     }
   }, [fetchTokenList, chainId, apiAddress])
 
-  const fetchAllTokenLists1Callback = useCallback(() => {
-    if (chainId) {
-      fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
-    }
-  }, [fetchTokenList1, chainId, apiAddress])
-
   const fetchMergeTokenListsCallback = useCallback(() => {
     if (chainId) {
       fetchMergeTokenList().catch(error => console.debug('interval list fetching error', error))
@@ -63,7 +56,6 @@ export default function Updater(): null {
 
   useInterval(fetchAllListsCallback, interval)
   useInterval(fetchAllTokenListsCallback, interval)
-  useInterval(fetchAllTokenLists1Callback, interval)
   useInterval(fetchMergeTokenListsCallback, interval)
 
   // whenever a list is not loaded and not loading, try again to load it
@@ -79,10 +71,6 @@ export default function Updater(): null {
   useEffect(() => {
     fetchAllTokenListsCallback()
   }, [dispatch, fetchTokenList, chainId, apiAddress])
-
-  useEffect(() => {
-    fetchAllTokenLists1Callback()
-  }, [dispatch, fetchTokenList1, chainId, apiAddress])
 
   useEffect(() => {
     fetchMergeTokenListsCallback()

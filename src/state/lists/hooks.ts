@@ -149,10 +149,9 @@ export function listsMergeToTokenMap(list:any): TokenAddressMap {
   return map
 }
 
-export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any): TokenAddressMap {
-
-  // console.log(list)
+export function allListsToTokenMap(rlist:any, mlist:any, chainId:any): TokenAddressMap {
   const map:any = {}
+
   if (config.getCurChainInfo(chainId).anyToken) {
     map[config.getCurChainInfo(chainId).anyToken] = new WrappedAllTokenInfo({
       chainId: chainId,
@@ -177,17 +176,7 @@ export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any)
     }
     map[t] = new WrappedAllTokenInfo(mlist[t])
   }
-  // console.log(map)
-  // console.log(rlist)
-  // console.log(blist)
-  for (const t in blist) {
-    if(!isAddress(t) || map[t]) continue
-    if (blist[t].underlying) {
-      map[blist[t].underlying.address] = new WrappedAllTokenInfo(blist[t].underlying)
-    }
-    map[t] = new WrappedAllTokenInfo(blist[t])
-  }
-  // console.log(map)
+
   return map
 }
 
@@ -266,24 +255,23 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
 
 export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
   const routerLists:any = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
-  const bridgeLists:any = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
   const mergeLists:any = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
   // console.log(lists)
   return useMemo(() => {
     if (!chainId) return EMPTY_LIST
     const rcurrent = routerLists[chainId]?.tokenList
-    const bcurrent = bridgeLists[chainId]?.tokenList
     const mcurrent = mergeLists[chainId]?.tokenList
     // console.log(current)
-    if (!rcurrent && !bcurrent && !mcurrent) return EMPTY_LIST
+    if (!rcurrent && !mcurrent) return EMPTY_LIST
+
     try {
-      return allListsToTokenMap(rcurrent, bcurrent, mcurrent, chainId)
+      return allListsToTokenMap(rcurrent, mcurrent, chainId)
       // return current
     } catch (error) {
       console.error('Could not show token list due to error', error)
       return EMPTY_LIST
     }
-  }, [routerLists, bridgeLists, chainId])
+  }, [routerLists, chainId])
 }
 
 export function useSelectedListUrl(): string | undefined {

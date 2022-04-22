@@ -4,6 +4,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import { checkedTransaction, finalizeTransaction } from './actions'
+import { registerSwap } from '../../utils/bridge/register'
+
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -66,6 +68,12 @@ export default function Updater(): null {
                 })
               )
 
+              const txData = transactions[hash]
+              console.log('>>> finalizeTransaction',  transactions, hash, txData)
+              if (txData.registerSwapOnMined) {
+                console.log('>>> do registerSwap')
+                registerSwap(txData.registerSwapOnMined.hash, txData.registerSwapOnMined.chainId, txData.registerSwapOnMined.apiAddress)
+              }
               addPopup(
                 {
                   txn: {
@@ -77,6 +85,12 @@ export default function Updater(): null {
                 hash
               )
             } else {
+              console.log('>>>> checkedTransaction', transactions)
+              const txData = transactions[hash]
+              if (txData.registerSwapOnMined) {
+                console.log('>>> do registerSwap')
+                // registerSwap(txData.registerSwapOnMined.hash, txData.registerSwapOnMined.chainId, txData.registerSwapOnMined.apiAddress)
+              }
               dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
             }
           })

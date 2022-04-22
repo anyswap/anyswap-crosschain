@@ -3,10 +3,10 @@ import { ChainId } from 'anyswap-sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { fetchTokenList, routerTokenList, mergeTokenList } from '../state/lists/actions'
+// @ts-ignore
 import { useAppState } from '../state/application/hooks'
 import { AppState } from '../state'
 import { useUserSelectChainId } from '../state/user/hooks'
@@ -18,116 +18,144 @@ import config from '../config'
 import { timeout, USE_VERSION, VERSION } from '../config/constant'
 import { getUrlData } from '../utils/tools/axios'
 
-import jsonTokenList from '../tokenlist.80001.json'
-import jsonServerInfo from '../serverinfo.80001.json'
+const prepareServerList = (chainId: any, pairs: any) => {
+  try {
+    const serverList: any = {
+      STABLEV3: {},
+      UNDERLYINGV2: {},
+      NATIVE: {}
+    }
+    pairs.forEach((pairData: any) => {
+      let mainToken: any = null
+      const pairTokens: any = {}
+      const tokenID = pairData.tokenID
 
-const prepareServerList = (chainId: any) => {
-  const serverList: any = {
-    STABLEV3: {},
-    UNDERLYINGV2: {},
-    NATIVE: {}
+      pairData.multichainTokens.forEach((tokenData: any) => {
+        if (tokenData.chainId == chainId) {
+          mainToken = tokenData
+        }
+      })
+
+      if (mainToken !== null) {
+        pairData.multichainTokens.forEach((tokenData: any) => {
+          if (tokenData.chainId !== chainId) {
+            //if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
+            pairTokens[tokenData.chainId]/*[tokenData.anyswapToken.Underlying]*/ = {
+              name: tokenID,
+              symbol: tokenID,
+              decimals: tokenData.anyswapToken.Decimals,
+              address: tokenData.anyswapToken.Underlying,
+              source: "SERVERLIST",
+              underlying: {
+                address: tokenData.anyswapToken.ContractAddress,
+                decimals: tokenData.anyswapToken.Decimals,
+                name: tokenID,
+                symbol: tokenID,
+              },
+              type: "STABLEV3",
+              tokenid: tokenID,
+              swapfeeon: 1,
+              MaximumSwap: 20000000,
+              MinimumSwap: 12,
+              BigValueThreshold: 5000000,
+              SwapFeeRatePerMillion: 0.1,
+              MaximumSwapFee: 0.9,
+              MinimumSwapFee: 0.9,
+              routerToken: mainToken.router.RouterContract,
+            }
+          }
+        })
+
+        serverList.STABLEV3[mainToken.anyswapToken.Underlying] = {
+          address: mainToken.anyswapToken.Underlying,
+          name: tokenID,
+          symbol: tokenID,
+          decimals: mainToken.anyswapToken.Decimals,
+          underlying: {
+            address: mainToken.anyswapToken.ContractAddress,
+            decimals: mainToken.anyswapToken.Decimals,
+            name: tokenID,
+            symbol: tokenID,
+          },
+          destChains: pairTokens,
+          price: 1,
+          logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+          chainId,
+        }
+      }
+    })
+    return serverList
+  } catch (err) {
+    console.error('>>>> prepareServerList', err)
   }
-  // @ts-ignore
-  window.evmcc_pairs.forEach((pairData) => {
-    let mainToken: any = null
-    const pairTokens: any = {}
-    console.log('>>> pair data', pairData)
-    pairData.forEach((tokenData: any) => {
-      if (tokenData.chainId === chainId) {
-        mainToken = tokenData
-      }
-    })
-    if (mainToken !== null) {
-      pairData.forEach((tokenData: any) => {
-        if (tokenData.chainId !== chainId) {
-          if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
-          pairTokens[tokenData.chainId][tokenData.address] = {
-            name: tokenData.name,
-            symbol: tokenData.symbol,
-            decimals: tokenData.decimals,
-            address: tokenData.address,
-            underlying: tokenData.underlying,
-            type: "STABLEV3",
-            tokenid: tokenData.symbol,
-            swapfeeon: 1,
-            MaximumSwap: 20000000,
-            MinimumSwap: 12,
-            BigValueThreshold: 5000000,
-            SwapFeeRatePerMillion: 0.1,
-            MaximumSwapFee: 0.9,
-            MinimumSwapFee: 0.9,
-            routerToken: mainToken.routerToken,
-          }
-        }
-      })
-
-      serverList.STABLEV3[mainToken.address] = {
-        address: mainToken.address,
-        name: mainToken.name,
-        symbol: mainToken.symbol,
-        decimals: mainToken.decimals,
-        underlying: mainToken.underlying,
-        destChains: pairTokens,
-        price: 1,
-        logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
-        chainId,
-      }
-      console.log('>>>>>', mainToken, pairTokens, serverList)
-    }
-  })
-  return serverList
 }
-const prepareTokenList = (chainId: any) => {
-  const tokenList: any = {}
-  // @ts-ignore
-  window.evmcc_pairs.forEach((pairData) => {
-    let mainToken: any = null
-    const pairTokens: any = {}
-    console.log('>>> pair data', pairData)
-    pairData.forEach((tokenData: any) => {
-      if (tokenData.chainId === chainId) {
-        mainToken = tokenData
-      }
-    })
-    if (mainToken !== null) {
-      pairData.forEach((tokenData: any) => {
-        if (tokenData.chainId !== chainId) {
-          if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
-          pairTokens[tokenData.chainId][tokenData.address] = {
-            name: tokenData.name,
-            symbol: tokenData.symbol,
-            decimals: tokenData.decimals,
-            address: tokenData.address,
-            underlying: tokenData.underlying,
-            type: "STABLEV3",
-            tokenid: tokenData.symbol,
-            swapfeeon: 1,
-            MaximumSwap: 20000000,
-            MinimumSwap: 12,
-            BigValueThreshold: 5000000,
-            SwapFeeRatePerMillion: 0.1,
-            MaximumSwapFee: 0.9,
-            MinimumSwapFee: 0.9,
-            routerToken: mainToken.routerToken,
-          }
+
+
+const prepareTokenList = (chainId: any, pairs: any) => {
+  try {
+    const tokenList: any = {}
+    pairs.forEach((pairData: any) => {
+      let mainToken: any = null
+      const pairTokens: any = {}
+      // @ts-ignore
+      const tokenID = pairData.tokenID
+      pairData.multichainTokens.forEach((tokenData: any) => {
+        if (tokenData.chainId == chainId) {
+          mainToken = tokenData
         }
       })
-
-      tokenList[mainToken.address] = {
-        address: mainToken.address,
-        name: mainToken.name,
-        symbol: mainToken.symbol,
-        decimals: mainToken.decimals,
-        underlying: mainToken.underlying,
-        destChains: pairTokens,
-        price: 1,
-        logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
-        chainId,
+      if (mainToken !== null) {
+        pairData.multichainTokens.forEach((tokenData: any) => {
+          if (tokenData.chainId !== chainId) {
+            if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
+            pairTokens[tokenData.chainId][tokenData.anyswapToken.Underlying] = {
+              name: tokenID,
+              symbol: tokenID,
+              decimals: tokenData.anyswapToken.Decimals,
+              address: tokenData.anyswapToken.Underlying,
+              source: "TOKENLIST",
+              underlying: {
+                address: tokenData.anyswapToken.ContractAddress,
+                decimals: tokenData.anyswapToken.Decimals,
+                name: tokenID,
+                symbol: tokenID,
+              },
+              type: "STABLEV3",
+              tokenid: tokenID,
+              swapfeeon: 1,
+              MaximumSwap: 20000000,
+              MinimumSwap: 12,
+              BigValueThreshold: 5000000,
+              SwapFeeRatePerMillion: 0.1,
+              MaximumSwapFee: 0.9,
+              MinimumSwapFee: 0.9,
+              routerToken: mainToken.router.RouterContract,
+            }
+          }
+        })
+        tokenList[mainToken.anyswapToken.Underlying] = {
+          address: mainToken.anyswapToken.Underlying,
+          name: tokenID,
+          symbol: tokenID,
+          decimals: mainToken.anyswapToken.Decimals,
+          underlying: {
+            address: mainToken.anyswapToken.ContractAddress,
+            decimals: mainToken.anyswapToken.Decimals,
+            name: tokenID,
+            symbol: tokenID,
+          },
+          destChains: pairTokens,
+          price: 1,
+          logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+          chainId,
+        }
       }
-      console.log('>>>>>', mainToken, pairTokens, tokenList)
-    }
-  })
-  return tokenList
+    })
+
+    return tokenList
+  } catch (err) {
+    console.error('>>>> prepareTokenList', err)
+  }
 }
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
@@ -154,22 +182,13 @@ export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> 
     async (listUrl: string) => {
       const requestId = nanoid()
       dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
-      const chainTokenList = prepareTokenList(chainId)
+
       return getTokenList(listUrl, ensResolver)
         .then(tokenList => {
-          console.log(tokenList)
-          console.log(jsonTokenList, chainTokenList)
-          if (true) {
-            // @ts-ignore
-            dispatch(fetchTokenList.fulfilled({ url: listUrl, chainTokenList, requestId }))
-            return chainTokenList
-          } else {
-            dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
-            return tokenList
-          }
+          dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
+          return tokenList
         })
         .catch(error => {
-          // console.log(error)
           console.debug(`Failed to get list at url ${listUrl}`, error)
           // dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
           // throw error
@@ -196,35 +215,27 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
 
   const curList = useChainId && lists && lists[useChainId] ? lists[useChainId] : {}
 
-  // console.log(lists)
   return useCallback(async () => {
-    if (!useChainId || !apiAddress) return
+    if (!useChainId || !apiAddress) {
+      return
+    }
     if (
       Date.now() - curList?.timestamp <= timeout &&
       curList?.tokenList &&
       Object.keys(curList?.tokenList).length > 0
     ) {
-      return
+      console.log(">>> useFetchMergeTokenListCallback return call", curList) 
+      //return
     }
 
-    const url = `http://${apiAddress}/merge/tokenlist/${useChainId}`
+    const url = `${apiAddress}/config`
 
     return getUrlData(url)
       .then((tokenList: any) => {
-        const chainTokenList = prepareTokenList(chainId)
-        console.log('>>> useFetchMergeTokenListCallback', tokenList, chainTokenList, jsonTokenList)
-        let list: any = {}
-        if (tokenList.msg === 'Success' && tokenList.data) {
-          list = tokenList.data
-        }
-        if (true) {
-          // @ts-ignore
-          dispatch(mergeTokenList({ chainId: useChainId, tokenList: chainTokenList }))
-          return chainTokenList
-        } else {
-          dispatch(mergeTokenList({ chainId: useChainId, tokenList: list }))
-          return list
-        }
+        const resultTokenList = prepareTokenList(chainId, tokenList.data)
+        
+        dispatch(mergeTokenList({ chainId: useChainId, tokenList: resultTokenList }))
+        return resultTokenList
       })
       .catch(error => {
         console.debug(`Failed to get list at url `, error)
@@ -248,58 +259,51 @@ export function useFetchTokenListCallback(): () => Promise<any> {
       curList?.tokenList &&
       Object.keys(curList?.tokenList).length > 0
     ) {
-      return
+      console.log('>>> use cached')
+      //return
     }
 
     const UV: any = USE_VERSION
     const version: any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
-    const url = `http://${apiAddress}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
-
-    // console.group('%c useFetchTokenListCallback', 'color: brown')
-    // console.log('curList: ', curList)
-    // console.groupEnd()
+    const url = `${apiAddress}/config`
 
     return getUrlData(url)
       .then((tokenList: any) => {
         const list: any = {}
+        const parsedServerList = prepareServerList(chainId, tokenList.data)
 
-        if (tokenList.msg === 'Success' && tokenList.data) {
-          const chainServerList = prepareServerList(chainId)
-          const tList = true ? chainServerList : tokenList.data
-          console.log('>>>> chainServerList', chainServerList, jsonServerInfo)
+        const tList = parsedServerList
+          
 
-          if (version === 'all') {
-            for (const version in tList) {
-              if (version.indexOf('ARB') !== -1) continue
+        if (version === 'all') {
+          for (const version in tList) {
+            if (version.indexOf('ARB') !== -1) continue
 
-              for (const token in tList[version]) {
-                if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI')
-                  continue
-                let sort = 0
-                if (version.toLowerCase().indexOf('stable') !== -1) {
-                  sort = 0
-                } else if (version.toLowerCase().indexOf('native') !== -1) {
-                  sort = 1
-                } else if (version.toLowerCase().indexOf('underlying') !== -1) {
-                  sort = 2
-                }
-                list[token] = {
-                  ...tList[version][token],
-                  sort: sort
-                }
+            for (const token in tList[version]) {
+              if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI')
+                continue
+              let sort = 0
+              if (version.toLowerCase().indexOf('stable') !== -1) {
+                sort = 0
+              } else if (version.toLowerCase().indexOf('native') !== -1) {
+                sort = 1
+              } else if (version.toLowerCase().indexOf('underlying') !== -1) {
+                sort = 2
               }
-            }
-          } else {
-            for (const token in tList) {
-              // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
               list[token] = {
-                ...tList[token],
-                sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+                ...tList[version][token],
+                sort: sort
               }
             }
           }
+        } else {
+          for (const token in tList) {
+            list[token] = {
+              ...tList[token],
+              sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+            }
+          }
         }
-        // console.log('list: ', list)
 
         dispatch(routerTokenList({ chainId, tokenList: list }))
         return list
@@ -308,41 +312,6 @@ export function useFetchTokenListCallback(): () => Promise<any> {
         console.debug(`Failed to get list at url `, error)
         dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
         return {}
-      })
-  }, [dispatch, chainId, apiAddress])
-}
-
-export function useFetchTokenList1Callback(): () => Promise<any> {
-  const { chainId } = useActiveWeb3React()
-  const { apiAddress } = useAppState()
-  const dispatch = useDispatch<AppDispatch>()
-  const lists = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-
-  return useCallback(async () => {
-    if (!chainId || !apiAddress || !config.getCurConfigInfo().isOpenBridge) return
-    if (
-      lists &&
-      curList?.timestamp &&
-      Date.now() - curList?.timestamp <= timeout &&
-      curList?.tokenList &&
-      Object.keys(curList?.tokenList).length > 0
-    ) {
-      return
-    }
-
-    return GetTokenListByChainID({
-      srcChainID: chainId,
-      chainList: config.getCurConfigInfo().showChain,
-      bridgeAPI: `http://${apiAddress}/v2/tokenlist`
-    })
-      .then((tokenList: any) => {
-        console.log('>>>> call useFetchTokenList1Callback', tokenList)
-        dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
-        return tokenList
-      })
-      .catch(error => {
-        console.error(error)
       })
   }, [dispatch, chainId, apiAddress])
 }

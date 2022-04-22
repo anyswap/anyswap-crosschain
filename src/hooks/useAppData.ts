@@ -94,7 +94,7 @@ export default function useAppData(): {
 
       if (parsed?.apiAddress) {
         try {
-          const response: any = await getUrlData(`http://${parsed?.apiAddress}/config`)
+          const response: any = await getUrlData(`${parsed?.apiAddress}/config`)
 
           if (response?.msg !== 'Success') {
             parsed.apiAddress = ''

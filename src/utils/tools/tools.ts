@@ -40,16 +40,12 @@ export function getLocalConfig (
   } else {
     const lboj = JSON.parse(lstr)
     // console.log(lboj)
-    if (!lboj[chainID]) {
-      return false
-    } else if (!lboj[chainID][account]) {
-      return false
-    } else if (!lboj[chainID][account][token] && token !== 'all') {
+    if (!lboj[chainID]?.[account]?.[token] && token !== 'all') {
       return false
     } else if (
       (lboj[chainID][account].timestamp < config.localDataDeadline && token !== 'all')
       || (lboj[chainID][account].timestamp < config.localDataDeadline && token === 'all')
-    ) { // 在某个时间之前的数据无效
+    ) { // Data before a certain time is invalid
       lStorage.setItem(version + '_' + type, '')
       return false
     } else if (token === 'all') {

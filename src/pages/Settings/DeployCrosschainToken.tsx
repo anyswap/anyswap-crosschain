@@ -5,10 +5,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
-import {
-  // deployInfinityERC20,
-  deployCrosschainERC20
-} from '../../utils/contract'
+import { deployCrosschainERC20 } from '../../utils/contract'
 import { Button } from './Contracts'
 
 export default function DeployCrosschainToken({
@@ -106,37 +103,8 @@ export default function DeployCrosschainToken({
     setPending(false)
   }
 
-  // const [testERC20Name, setTestERC20Name] = useState('')
-  // const [testERC20Symbol, setTestERC20Symbol] = useState('')
-
-  // const onInfinityERC20Deployment = async () => {
-  //   setPending(true)
-
-  //   try {
-  //     await deployInfinityERC20({
-  //       library,
-  //       account,
-  //       onHash: (hash: string) => console.log('deploy new ERC20: ', hash),
-  //       name: testERC20Name,
-  //       symbol: testERC20Symbol,
-  //       decimals: 18
-  //     })
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-
-  //   setPending(false)
-  // }
-
   return (
     <>
-      {/* <p>
-        {t('newERC20')}
-        <input type="text" placeholder="Token name" onChange={event => setTestERC20Name(event.target.value)} />
-        <input type="text" placeholder="Token symbol" onChange={event => setTestERC20Symbol(event.target.value)} />
-        <button onClick={onInfinityERC20Deployment}>Deploy ERC20</button>
-      </p> */}
-
       <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
       </Button>

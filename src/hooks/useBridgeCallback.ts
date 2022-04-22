@@ -78,7 +78,19 @@ export function useBridgeCallback(
                   toChainID
                 )
 
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                const registerSwapOnMined = {
+                  hash: txReceipt.hash,
+                  chainId,
+                  apiAddress
+                }
+                console.log('>>> useBridgeCallback', registerSwapOnMined)
+                addTransaction(
+                  txReceipt,
+                  {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    registerSwapOnMined
+                  }
+                )
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 
                 if (txReceipt?.hash && account) {
@@ -104,7 +116,20 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    apiAddress
+  ])
 }
 
 
@@ -149,8 +174,21 @@ export function useBridgeCallback(
                   toChainID
                 )
 
-                addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
-                registerSwap(txReceipt.hash, chainId, apiAddress)
+                console.log('>>> useBridgeUnderlyingCallback')
+                const registerSwapOnMined = {
+                  hash: txReceipt.hash,
+                  chainId,
+                  apiAddress
+                }
+                addTransaction(
+                  txReceipt,
+                  {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                    registerSwapOnMined
+                  }
+                )
+                console.log('>>> do register')
+                // registerSwap(txReceipt.hash, chainId, apiAddress)
 
                 if (txReceipt?.hash && account) {
                   const data = {
@@ -175,7 +213,20 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    apiAddress
+  ])
 }
 
 
@@ -221,6 +272,7 @@ export function useBridgeNativeCallback(
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
 
+                console.log('>>> useBridgeNativeCallback')
                 addTransaction(txReceipt, { summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 
@@ -247,7 +299,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    inputToken,
+    toAddress,
+    toChainID,
+    version,
+    routerToken,
+    apiAddress
+  ])
 }
 
 /**
@@ -457,7 +523,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    outputAmount,
+    routerPath,
+    toAddress,
+    deadline,
+    toChainID,
+    apiAddress
+  ])
 }
 
 /**
@@ -522,6 +602,7 @@ export function useBridgeNativeCallback(
                   parseInt((Date.now()/1000 + deadline).toString()),
                   toChainID
                 )
+                console.log('>>> useBridgeSwapUnderlyingCallback')
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 registerSwap(txReceipt.hash, chainId, apiAddress)
 
@@ -548,7 +629,21 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [
+    bridgeContract,
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    outputAmount,
+    routerPath,
+    toAddress,
+    deadline,
+    toChainID,
+    apiAddress
+  ])
 }
 
 
@@ -638,7 +733,20 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid])
+  }, [
+    chainId,
+    inputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    t,
+    txnsType,
+    toAddress,
+    inputToken,
+    toChainID,
+    pairid,
+    apiAddress
+  ])
 }
 
 /**
@@ -820,5 +928,20 @@ export function useBridgeNativeCallback(
           : undefined,
         inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx])
+  }, [
+    chainId,
+    inputCurrency,
+    inputAmount,
+    t,
+    toAddress,
+    inputToken,
+    toChainID,
+    terraRecipient,
+    connectedWallet,
+    pairid,
+    srcChainid,
+    balance,
+    sendTx,
+    apiAddress
+  ])
 }

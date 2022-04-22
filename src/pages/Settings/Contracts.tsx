@@ -8,7 +8,7 @@ import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS, API_REGEXP } from '../../constants'
+import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP, EVM_PUB_KEY_REGEXP } from '../../constants'
 import Accordion from '../../components/Accordion'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
@@ -40,6 +40,14 @@ export const Input = styled.input`
   color: inherit;
 `
 
+const Title = styled.h2`
+  margin: 1.6rem 0 0.8rem;
+
+  :first-child {
+    margin-top: 1rem;
+  }
+`
+
 const ZoneWrapper = styled.div<{ blocked?: boolean }>`
   margin: 0.4rem 0;
   padding: 0.3rem;
@@ -65,6 +73,10 @@ const ConfigInfo = styled.div`
   h4 {
     margin: 0 0 0.3rem;
   }
+`
+
+const ConfigLink = styled.a`
+  word-break: break-all;
 `
 
 export const Button = styled.button`
@@ -142,6 +154,24 @@ export default function Contracts() {
     })
   }
 
+  const [mpcAddress, setMpcAddress] = useState('')
+  const [mpcPubKey, setMpcPubKey] = useState('')
+  const [validMpcOptions, setValidMpcOptions] = useState(false)
+
+  useEffect(() => {
+    setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP) && mpcPubKey.match(EVM_PUB_KEY_REGEXP)))
+  }, [mpcAddress, mpcPubKey])
+
+  const addMpcPubKey = async () => {
+    try {
+      if (routerConfigSigner && validMpcOptions) {
+        await routerConfigSigner.setMPCPubkey(mpcAddress, mpcPubKey)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
 
@@ -182,61 +212,58 @@ export default function Contracts() {
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!underlyingToken || !underlyingNetworkId) return
+      if (!underlyingToken?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
 
       try {
-        if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(underlyingToken, underlyingNetworkId).call()
+        const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
 
-          console.group('%c token config', 'color: brown')
-          console.log(tokenConfig)
-          console.groupEnd()
+        if (!underlyingNetworkConfig) return
 
-          if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
-            setCrosschainTokenChainId(underlyingNetworkId)
-            setCrosschainToken(tokenConfig.ContractAddress)
-          } else {
-            setCrosschainTokenChainId('')
-            setCrosschainToken('')
-          }
-        }
-
-        const underlyingConfig = chainInfo[underlyingNetworkId]
-
-        if (!underlyingConfig) return
-
-        const { nodeRpc } = underlyingConfig
+        const { nodeRpc } = underlyingNetworkConfig
         const web3 = getWeb3Library(nodeRpc)
-        const code = await web3.eth.getCode(underlyingToken)
-
-        if (code === '0x') return console.log('wrong address for this network')
-
         //@ts-ignore
-        const contract = new web3.eth.Contract(ERC20_ABI, underlyingToken)
-        const name = await contract.methods.name().call()
-        const symbol = await contract.methods.symbol().call()
-        const decimals = await contract.methods.decimals().call()
+        const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingToken)
+
+        const name = await underlyingErc20.methods.name().call()
+        const symbol = await underlyingErc20.methods.symbol().call()
+        const decimals = await underlyingErc20.methods.decimals().call()
 
         setUnderlyingName(name)
         setUnderlyingSymbol(symbol)
         setUnderlyingDecimals(decimals)
+
+        if (routerConfig) {
+          const tokenConfig = await routerConfig.methods.getTokenConfig(name, underlyingNetworkId).call()
+
+          if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
+            const { ContractAddress } = tokenConfig
+
+            setCrosschainTokenChainId(underlyingNetworkId)
+            setCrosschainToken(ContractAddress)
+          } else {
+            setCrosschainTokenChainId('')
+            setCrosschainToken('')
+          }
+
+          console.groupEnd()
+        }
       } catch (error) {
         console.error(error)
       }
     }
 
-    if (underlyingNetworkId && underlyingToken.match(EVM_ADDRESS_REGEXP)) {
+    if (underlyingNetworkId && underlyingToken) {
       fetchUnderlyingInfo()
     }
   }, [underlyingToken, chainId, underlyingNetworkId])
 
   const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingToken) return
+    if (!routerConfigSigner || !underlyingName || !crosschainToken || !crosschainTokenChainId) return
 
     const VERSION = 6
 
     try {
-      await routerConfigSigner.setTokenConfig(underlyingToken, crosschainTokenChainId, {
+      await routerConfigSigner.setTokenConfig(underlyingName, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
@@ -261,10 +288,8 @@ export default function Contracts() {
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
   useEffect(() => {
-    setHasUnderlyingInfo(
-      Boolean(underlyingNetworkId && underlyingToken && underlyingName && underlyingSymbol && underlyingDecimals)
-    )
-  }, [underlyingNetworkId, underlyingToken, underlyingName, underlyingSymbol, underlyingDecimals])
+    setHasUnderlyingInfo(Boolean(underlyingNetworkId && underlyingName))
+  }, [underlyingNetworkId, underlyingName])
 
   const underlying = {
     networkId: underlyingNetworkId,
@@ -276,19 +301,20 @@ export default function Contracts() {
 
   return (
     <>
+      <Title>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <>
             <ConfigInfo>
               <h4>{t('configInformation')}:</h4>
               {chainInfo[stateRouterConfigChainId]?.networkName || ''}:{' '}
-              <a
+              <ConfigLink
                 href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 {stateRouterConfigAddress}
-              </a>
+              </ConfigLink>
             </ConfigInfo>
             {t('youHaveToBeOnConfigNetwork')}. {t('saveAllInfoWhenYouDeployAnything')}.{' '}
             {t('setDeploymentInfoOnConfigNetwork')}.
@@ -303,7 +329,7 @@ export default function Contracts() {
       <OptionWrapper>
         {!onStorageNetwork && (
           <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.name })}
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
           </Notice>
         )}
         <Lock enabled={!onStorageNetwork}>
@@ -317,14 +343,14 @@ export default function Contracts() {
         </Lock>
       </OptionWrapper>
 
-      {!stateRouterConfigAddress && (
+      {!stateRouterConfigAddress ? (
         <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">
           <DeployRouterConfig />
           <OptionWrapper>
             <Notice warning margin="0.4rem 0 0.6rem">
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
               {t('beOnStorageNetworkToSaveConfig', {
-                network: chainInfo[config.STORAGE_CHAIN_ID]?.name
+                network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName
               })}
             </Notice>
             <OptionLabel>
@@ -346,9 +372,30 @@ export default function Contracts() {
             {t('saveConfig')}
           </Button>
         </Accordion>
+      ) : (
+        <>
+          {t('adminAddress')}
+          <Input
+            type="text"
+            placeholder="0x..."
+            defaultValue={mpcAddress}
+            onChange={event => setMpcAddress(event.target.value)}
+          />
+          {t('adminPublicKey')}
+          <Input
+            type="text"
+            placeholder="0x..."
+            defaultValue={mpcPubKey}
+            onChange={event => setMpcPubKey(event.target.value)}
+          />
+          <Button onClick={addMpcPubKey} disabled={!validMpcOptions}>
+            {t('saveAdminAddressData')}
+          </Button>
+        </>
       )}
 
-      <Lock enabled={!stateRouterConfigAddress || !stateRouterConfigChainId}>
+      <Title>{t('networkRouter')}</Title>
+      <Lock>
         <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
           {chainId && !stateRouterAddress[chainId] ? (
             <>
@@ -360,13 +407,11 @@ export default function Contracts() {
           )}
 
           <OptionWrapper>
-            {chainId && !stateRouterAddress[chainId] && (
-              <Notice warning margin="0.4rem 0">
-                {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-                {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
-              </Notice>
-            )}
-            <Lock enabled={!chainId || !!stateRouterAddress[chainId] || !onConfigNetwork}>
+            <Notice warning margin="0.4rem 0">
+              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
+              {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
+            </Notice>
+            <Lock enabled={!chainId || !onConfigNetwork}>
               <OptionLabel>
                 {t('routerChainId')}
                 <Input
@@ -392,6 +437,7 @@ export default function Contracts() {
           </OptionWrapper>
         </Accordion>
 
+        <Title>{t('erc20Token')}</Title>
         <ZoneWrapper blocked={!routerAddress}>
           <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
           <OptionWrapper>
@@ -400,6 +446,8 @@ export default function Contracts() {
               <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
               {t('erc20TokenAddress')}
               <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
+              {/* {t('erc20TokenName')}
+              <Input type="text" onChange={event => setUnderlyingName(event.target.value)} /> */}
             </OptionLabel>
           </OptionWrapper>
 
