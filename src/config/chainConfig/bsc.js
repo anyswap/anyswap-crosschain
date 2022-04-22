@@ -26,7 +26,7 @@ export const BNB_MAINNET =
 export const BNB_MAIN_EXPLORER = 'https://bscscan.com'
 // console.log(BNB_MAINNET)
 export const BNB_TEST_CHAINID = 97
-export const BNB_TESTNET = getLocalRPC(BNB_TEST_CHAINID, 'https://data-seed-prebsc-1-s1.binance.org:8545')
+export const BNB_TESTNET = getLocalRPC(BNB_TEST_CHAINID, 'https://data-seed-prebsc-1-s2.binance.org:8545')
 export const BNB_TEST_EXPLORER = 'https://testnet.bscscan.com'
 
 export const tokenList = [
