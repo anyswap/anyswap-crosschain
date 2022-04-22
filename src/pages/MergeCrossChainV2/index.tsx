@@ -1,9 +1,9 @@
-import React, {Suspense} from 'react'
+import React, { Suspense } from 'react'
 // import styled from 'styled-components'
 import { Switch, Route, Redirect } from 'react-router-dom'
 // import { Switch, Route } from 'react-router-dom'
 // import { useTranslation } from 'react-i18next'
-
+import { BRIDGE_KEY } from '../../config/constant'
 import CrossChainPanel from '../../components/CrossChainPanelV2'
 // import Title from '../../components/Title'
 // import {
@@ -11,8 +11,6 @@ import CrossChainPanel from '../../components/CrossChainPanelV2'
 // } from '../../state/user/hooks'
 
 import AppBody from '../AppBody'
-
-const BRIDGETYPE = 'mergeTokenList'
 
 export default function CrossChainBox() {
   // const { t } = useTranslation()
@@ -42,10 +40,15 @@ export default function CrossChainBox() {
           ]}
         >
         </Title> */}
-        
+
         <Suspense fallback={null}>
           <Switch>
-            <Route exact strict path="/v2/mergeswap" component={() => <CrossChainPanel bridgeKey={BRIDGETYPE} />} />
+            <Route
+              exact
+              strict
+              path="/v2/mergeswap"
+              component={() => <CrossChainPanel bridgeKey={BRIDGE_KEY.mergeTokenList} />}
+            />
             <Redirect to="/v2/mergeswap" />
           </Switch>
         </Suspense>
