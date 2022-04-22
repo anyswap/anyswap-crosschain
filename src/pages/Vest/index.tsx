@@ -433,6 +433,7 @@ export default function Vest () {
       }
     })
     getLabelPrice(useLockToken?.label).then(res => {
+      // console.log(res)
       if (res) {
         setPrice(res)
       }
@@ -514,9 +515,15 @@ export default function Vest () {
     if (curEpochInfo) {
       // const oneYear = BigAmount.format(1, (60*60*24*365) + '')
       // console.log(curEpochInfo)
+      const time = Number(curEpochInfo.endTime) - Number(curEpochInfo.startTime)
+      const weektime = 60*60*24*7
+      const per = weektime / time
+      const value = BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toExact()
+      // console.log(time)
+      // console.log(per)
       list.push({
         name: 'Est. Yield Per Week',
-        value: thousandBit(BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toExact(), 2) + ' ' +  useRewardToken.symbol,
+        value: thousandBit(Number(value) * per, 2) + ' ' +  useRewardToken.symbol,
         loading: false
       })
     } else {
