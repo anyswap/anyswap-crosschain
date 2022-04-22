@@ -487,12 +487,18 @@ export default function Vest () {
         loading: true
       })
     }
-    if (totalPower && LockedMULTI) {
-      const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
+    if (veMultiTotalSupply && LockedMULTI) {
+    // if (totalPower && LockedMULTI) {
+      // const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
+      // const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
+      // const fourYear:any = 60*60*24*1460
+      // const oneYear = BigAmount.format(0, (60*60*24*365) + '')
+      // const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear)).divide(oneYear)
+      const vms = BigAmount.format(useVeMultiToken.decimals, veMultiTotalSupply)
       const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
-      const fourYear:any = 60*60*24*1460
+      const fourYear:any = BigAmount.format(0, (60*60*24*1460) + '')
       const oneYear = BigAmount.format(0, (60*60*24*365) + '')
-      const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear)).divide(oneYear)
+      const value = vms.divide(lm).multiply(fourYear).divide(oneYear)
       list.push({
         name: 'Avg. Lock Time (years)',
         value: value.toSignificant(2),
