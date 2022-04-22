@@ -194,6 +194,50 @@ export function useInCreaseUnlockTimeCallback(
   }, [contract, chainId, inputCurrency, addTransaction, t, tokenid, lockEnds])
 }
 
+export function useWithdrawCallback(
+  veMULTI: string | undefined,
+): { wrapType: WrapType; execute?: undefined | ((tokenid: number | undefined) => Promise<any>); inputError?: string } {
+  const { chainId } = useActiveWeb3React()
+  const contract = useVeMULTIContract(veMULTI)
+  // const {onChangeViewDtil} = useTxnsDtilOpen()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const { t } = useTranslation()
+  // console.log(balance?.raw.toString(16))
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  // console.log(veMULTI)
+  // console.log(contract)
+  // console.log(tokenid)
+  const addTransaction = useTransactionAdder()
+  return useMemo(() => {
+    if (!contract || !chainId) return NOT_APPLICABLE
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+        async (tokenid: number | undefined) => {
+          const results:any = {}
+          try {
+            const txReceipt = await contract.withdraw(
+              tokenid + '',
+            )
+            addTransaction(txReceipt, {
+              summary: `Withdraw`,
+            })
+            results.hash = txReceipt?.hash
+            // onChangeViewDtil(txReceipt?.hash, true)
+          } catch (error) {
+            // console.log(error)
+            console.error('Could not swapout', error)
+            onChangeViewErrorTip(error, true)
+          }
+          return results
+        },
+      inputError: undefined
+    }
+  }, [contract, chainId, addTransaction, t])
+}
+
+
 export function useClaimRewardCallback(
   rewardToken: string | undefined,
   tokenid: number | undefined,

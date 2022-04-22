@@ -41,6 +41,7 @@ import rei, {REI_MAIN_CHAINID} from './rei'
 import cfx, {CFX_MAIN_CHAINID} from './cfx'
 import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
 import jewel, {JEWEL_MAIN_CHAINID} from './jewel'
+import btt, {BTT_MAIN_CHAINID} from './btt'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -48,6 +49,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...btt,
   ...jewel,
   ...arbitrum,
   ...avax,
@@ -128,8 +130,9 @@ const allChainList = [
   CFX_MAIN_CHAINID,
   RBTC_MAIN_CHAINID,
   JEWEL_MAIN_CHAINID,
+  BTT_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
-  BNB_TEST_CHAINID,
+  // BNB_TEST_CHAINID,
   ETH_TEST_CHAINID,
 ]
 

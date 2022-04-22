@@ -49,7 +49,7 @@ import {
 
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 
-import {useClaimRewardCallback} from './hooks'
+import {useClaimRewardCallback, useWithdrawCallback} from './hooks'
 import axios from "axios";
 import {thousandBit} from '../../utils/tools/tools'
 // import config from "../../config";
@@ -264,6 +264,10 @@ export default function Vest () {
     rewardInfo?.id,
     rewardInfo?.list
   )
+
+  const {execute: onWithdrarWrap} = useWithdrawCallback(
+    useVeMultiToken?.address
+  )
   const rewardEpochIdList = useRef<any>({})
   // const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken)
   const getPendingReward = useCallback(async(nfts) => {
@@ -425,11 +429,6 @@ export default function Vest () {
     axios.get(`https://tokeninfo.multichain.org/multi/circulatingsupply`).then((res:any) => {
       console.log(res)
       if (res.data) {
-        // viewDatas.current['circulatingsupply'] = res.data
-        // setViewDatas({
-        //   ...viewDatas,
-        //   circulatingsupply: res.data
-        // })
         setCirculatingsupply(res.data)
       }
     })
@@ -505,7 +504,7 @@ export default function Vest () {
     }
     if (curEpochInfo) {
       // const oneYear = BigAmount.format(1, (60*60*24*365) + '')
-      console.log(curEpochInfo)
+      // console.log(curEpochInfo)
       list.push({
         name: 'Est. Yield Per Week',
         value: thousandBit(BigAmount.format(useRewardToken.decimals, curEpochInfo.totalReward).toExact(), 2) + ' ' +  useRewardToken.symbol,
@@ -582,7 +581,7 @@ export default function Vest () {
     ) {
       // const EpochId = await rewardContract.getCurrentEpochId()
       rewardContract.getEpochInfo(epochId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         setCurEpochInfo({
           startTime: res[0].toString(),
           endTime: res[1].toString(),
@@ -593,7 +592,7 @@ export default function Vest () {
         setCurEpochInfo('')
       })
       rewardContract.getEpochInfo(Number(epochId) + 1).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         setlatestEpochInfo({
           startTime: res[0].toString(),
           endTime: res[1].toString(),
@@ -603,7 +602,7 @@ export default function Vest () {
         console.log(err)
       })
       rewardContract.getEpochTotalPower(epochId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         setTotalPower(res.toString())
       }).catch((err:any) => {
         console.log(err)
@@ -627,6 +626,7 @@ export default function Vest () {
       tr
       && tokenPrice
       && tp
+      && Number(tp) > 0
       && UserPower
       && UserMulti
       && time
@@ -775,13 +775,23 @@ export default function Vest () {
                   <DBTd className="l">{thousandBit(item.lockValue, 2)}</DBTd>
                   <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
                   <DBTd className="l">{getUserAPR(item.lockValue, item.lockAmount)}</DBTd>
-                  <DBTd className="c">
+                  <DBTd className="c" width={'260px'}>
                     <Flex>
-                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Mange</TokenActionBtn2>
+                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manage</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
                         setClaimRewardId(item.id)
                         setModalOpen(true)
                       }}>{t('Claim')}</TokenActionBtn1>
+                      <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)} onClick={() => {
+                        // console.log(onWithdrarWrap)
+                        const now = parseInt(Date.now() / 1000 + '')
+                        if (now >= Number(item.lockEnds)) {
+                          if (onWithdrarWrap) {
+                            // console.log(1)
+                            onWithdrarWrap(item.id)
+                          }
+                        }
+                      }}>{t('Withdraw')}</TokenActionBtn1>
                     </Flex>
                   </DBTd>
                 </tr>
