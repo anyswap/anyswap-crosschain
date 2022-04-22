@@ -125,10 +125,10 @@ export function useTxnsErrorTipOpen(): any {
   const dispatch = useDispatch<AppDispatch>()
   const onChangeViewErrorTip = useCallback(
     (errorTip: any, isOpenModal: any) => {
-      // console.log(field)
+      // console.log(errorTip)
       // console.log(typedValue)
       // console.log(typeInput({ field, typedValue }))
-      dispatch(viewTxnsErrorTip({ errorTip, isOpenModal }))
+      dispatch(viewTxnsErrorTip({ errorTip: errorTip?.message ?? errorTip.toString(), isOpenModal }))
     },
     [dispatch]
   )
