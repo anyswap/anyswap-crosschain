@@ -15,6 +15,8 @@ export default function TxnsErrorTipModal () {
   const errorTxt = useMemo(() => {
     if (errorTip?.toString().indexOf('cannot estimate gas; transaction may fail or may require manual gas limit') !== -1) {
       return 'cannot estimate gas; transaction may fail or may require manual gas limit'
+    } else if (errorTip?.toString().indexOf('replacement transaction underpriced') !== -1) {
+      return 'replacement transaction underpriced'
     } else {
       return errorTip.toString()
     }
