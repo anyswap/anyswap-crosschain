@@ -99,7 +99,6 @@ function formatHiddenCoin(list?: Array<any>) {
 }
 export const controlConfig: any = {
   [VERSION.V1]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -110,7 +109,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V1_1]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -121,7 +119,6 @@ export const controlConfig: any = {
     isOpenBridge: env === 'dev' ? 1 : 0
   },
   [VERSION.V2]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -132,7 +129,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V2_1]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -143,7 +139,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V2_2]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -154,7 +149,6 @@ export const controlConfig: any = {
     isOpenBridge: env === 'dev' ? 1 : 0
   },
   [VERSION.V2_T1]: {
-    bridgeInitDataChain: '256',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -165,7 +159,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V2_T2]: {
-    bridgeInitDataChain: '4',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -176,7 +169,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V2_T3]: {
-    bridgeInitDataChain: '4',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -187,7 +179,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V3]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -198,7 +189,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V3_1]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -209,7 +199,6 @@ export const controlConfig: any = {
     isOpenBridge: 0
   },
   [VERSION.V4]: {
-    bridgeInitDataChain: '',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -220,7 +209,6 @@ export const controlConfig: any = {
     isOpenBridge: 1
   },
   [VERSION.V4_OKT]: {
-    bridgeInitDataChain: '',
     hiddenCoin: [],
     hiddenChain: [],
     showCoin: [],
@@ -231,7 +219,6 @@ export const controlConfig: any = {
     isOpenBridge: 1
   },
   [VERSION.V4_MOVR]: {
-    bridgeInitDataChain: '',
     hiddenCoin: [],
     hiddenChain: [],
     showCoin: [],
@@ -242,7 +229,6 @@ export const controlConfig: any = {
     isOpenBridge: 1
   },
   [VERSION.V5]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -253,7 +239,6 @@ export const controlConfig: any = {
     isOpenBridge: 1
   },
   [VERSION.V6]: {
-    bridgeInitDataChain: '4',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -265,7 +250,6 @@ export const controlConfig: any = {
     isOpenNFT: 1
   },
   [VERSION.V6_1]: {
-    bridgeInitDataChain: '1',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
@@ -277,7 +261,6 @@ export const controlConfig: any = {
     isOpenNFT: 1
   },
   [VERSION.V7]: {
-    bridgeInitDataChain: '56',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],

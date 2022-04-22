@@ -301,6 +301,23 @@ export default function Contracts() {
 
   return (
     <>
+      <OptionWrapper>
+        {!onStorageNetwork && (
+          <Notice warning margin="0.3rem 0">
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
+          </Notice>
+        )}
+        <Lock enabled={!onStorageNetwork}>
+          <div>
+            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+          </div>
+          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
+            {t('saveAddress')}
+          </Button>
+        </Lock>
+      </OptionWrapper>
+
       <Title>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
@@ -325,23 +342,6 @@ export default function Contracts() {
           </>
         )}
       </Notice>
-
-      <OptionWrapper>
-        {!onStorageNetwork && (
-          <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-          </Notice>
-        )}
-        <Lock enabled={!onStorageNetwork}>
-          <div>
-            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
-          </div>
-          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
-            {t('saveAddress')}
-          </Button>
-        </Lock>
-      </OptionWrapper>
 
       {!stateRouterConfigAddress ? (
         <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">

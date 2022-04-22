@@ -1,25 +1,25 @@
 import { chainInfo } from './chainConfig'
 import { ENV_NODE_CONFIG, INIT_NODE, USE_VERSION, env, version, controlConfig } from './constant'
-import { BNB_TEST_CHAINID } from './chainConfig/bsc'
+import { BNB_MAIN_CHAINID, BNB_TEST_CHAINID } from './chainConfig/bsc'
 import { getNetwork, getInitBridgeChain } from './tools/getUrlParams'
 
-interface ConFig {
+interface Config {
   [key: string]: any
 }
 
 const ENV = getNetwork(ENV_NODE_CONFIG, INIT_NODE)
-const netConfig: ConFig = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
-// console.log(ENV)
+const netConfig: Config = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
+const STORAGE_CHAIN_ID = process.env.NODE_ENV === 'production' ? BNB_MAIN_CHAINID : BNB_TEST_CHAINID
 
-const config: ConFig = {
+const config: Config = {
   ...netConfig,
   ...INITBRIDGE,
   env,
   version,
   ENV_NODE_CONFIG,
   chainInfo,
-  STORAGE_CHAIN_ID: BNB_TEST_CHAINID,
+  STORAGE_CHAIN_ID,
   oldAppName: 'Anyswap V1',
   appName: 'Cross-chain',
   baseCurrency: 'ANY',
@@ -28,7 +28,6 @@ const config: ConFig = {
   explorerUrl: 'https://anyswap.net/explorer',
   isStopSystem: 0,
   getBaseCoin(value: any, chainId: any, type?: number, name?: string) {
-    // console.log(value)
     if (
       value &&
       (value === 'BASECURRENCY' ||
@@ -36,19 +35,11 @@ const config: ConFig = {
     ) {
       if (type) {
         return this.getCurChainInfo(chainId).name
-      } else {
-        return this.getCurChainInfo(chainId).symbol
       }
-    }
-    // else if (value && value === 'WETH') {
-    //   return 'W' + this.getCurChainInfo(chainId).symbol
-    // }
-    else {
-      if (type) {
-        return name
-      } else {
-        return value
-      }
+
+      return this.getCurChainInfo(chainId).symbol
+    } else {
+      return type ? name : value
     }
   },
   getCurConfigInfo(version?: any) {
@@ -63,5 +54,11 @@ const config: ConFig = {
     }
   }
 }
-console.log('config', config)
+
+if (process.env.NODE_ENV === 'development') {
+  console.group('%c config', 'color: brown')
+  console.log(config)
+  console.groupEnd()
+}
+
 export default config

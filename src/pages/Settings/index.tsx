@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
 import AppBody from '../AppBody'
+import { chainInfo } from '../../config/chainConfig'
 import { useAppState } from '../../state/application/hooks'
 import { MyBalanceBox } from '../Dashboard/styleds'
 import Interface from './Interface'
@@ -36,6 +37,10 @@ export const Notice = styled.div<{ warning?: boolean; error?: boolean; margin?: 
 export const OptionLabel = styled.label`
   display: flex;
   flex-direction: column;
+`
+
+const StorageNotice = styled.div`
+  margin-bottom: 0.6rem;
 `
 
 const SettingsWrapper = styled(MyBalanceBox)`
@@ -100,6 +105,10 @@ export default function Settings() {
   return isOwner ? (
     <AppBody>
       <SettingsWrapper>
+        <StorageNotice>
+          {t('storageNetwork')}: {chainInfo[config.STORAGE_CHAIN_ID]?.networkName}. {t('useThisNetworkToSaveSettings')}.{' '}
+          {t('interfaceSettingsAreVisibleOnlyForThisNetwork')}.
+        </StorageNotice>
         {tabs.length > 1 ? (
           <Tabs>
             {tabs.map((name, index) => (
