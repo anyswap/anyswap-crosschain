@@ -14,7 +14,7 @@
     <script>
       const { hostname, protocol, href } = window.location
 
-      if (hostname !== 'localhost' && protocol !== 'https:') {
+      if (hostname !== 'localhost' && !/localhost.(.*)/.test(hostname) && protocol !== 'https:') {
         location.replace(`https:${href.substring(protocol.length)}`)
       }
     </script>
