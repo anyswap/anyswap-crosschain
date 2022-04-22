@@ -411,5 +411,11 @@
   "switchToStorageNetworkToSaveIt": "Switch to {{network}} to save it",
   "apiServerAddress": "API server address",
   "apiServerAddressDescription": "You can use a domain name (mydomain.com) or IP address (1.2.3.4)",
-  "saveAddress": "Save address"
+  "saveAddress": "Save address",
+  "adminAddress": "Admin address (the same as on your server)",
+  "adminPublicKey": "Admin public key (public key for the admin address)",
+  "saveAdminAddressData": "Save admin address data",
+  "mainConfig": "Main config",
+  "networkRouter": "Network router",
+  "erc20Token": "ERC20 Token"
 }

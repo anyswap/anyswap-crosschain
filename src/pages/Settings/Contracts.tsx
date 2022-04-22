@@ -40,6 +40,14 @@ export const Input = styled.input`
   color: inherit;
 `
 
+const Title = styled.h2`
+  margin: 1.6rem 0 0.8rem;
+
+  :first-child {
+    margin-top: 0;
+  }
+`
+
 const ZoneWrapper = styled.div<{ blocked?: boolean }>`
   margin: 0.4rem 0;
   padding: 0.3rem;
@@ -289,6 +297,7 @@ export default function Contracts() {
 
   return (
     <>
+      <Title>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <>
@@ -316,7 +325,7 @@ export default function Contracts() {
       <OptionWrapper>
         {!onStorageNetwork && (
           <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.name })}
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
           </Notice>
         )}
         <Lock enabled={!onStorageNetwork}>
@@ -337,7 +346,7 @@ export default function Contracts() {
             <Notice warning margin="0.4rem 0 0.6rem">
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
               {t('beOnStorageNetworkToSaveConfig', {
-                network: chainInfo[config.STORAGE_CHAIN_ID]?.name
+                network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName
               })}
             </Notice>
             <OptionLabel>
@@ -376,11 +385,12 @@ export default function Contracts() {
             onChange={event => setMpcPubKey(event.target.value)}
           />
           <Button onClick={addMpcPubKey} disabled={!validMpcOptions}>
-            {t('setAdminPubKey')}
+            {t('saveAdminAddressData')}
           </Button>
         </>
       )}
 
+      <Title>{t('networkRouter')}</Title>
       <Lock>
         <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
           {chainId && !stateRouterAddress[chainId] ? (
@@ -423,6 +433,7 @@ export default function Contracts() {
           </OptionWrapper>
         </Accordion>
 
+        <Title>{t('erc20Token')}</Title>
         <ZoneWrapper blocked={!routerAddress}>
           <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
           <OptionWrapper>

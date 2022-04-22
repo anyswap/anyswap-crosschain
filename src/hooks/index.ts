@@ -15,17 +15,7 @@ import {
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
-  const EVM_CONTEXT = context.active ? context : contextNetwork
-  // const connectedWallet = useConnectedWallet()
-  // const { connect } = useWallet()
-  // console.log(context)
-  // console.log(contextNetwork)
-  // console.log(connectedWallet)
-  return EVM_CONTEXT
-  // return {
-  //   ...EVM_CONTEXT,
-  //   account: connectedWallet?.walletAddress
-  // }
+  return context.active ? context : contextNetwork
 }
 
 export function useEagerConnect() {
