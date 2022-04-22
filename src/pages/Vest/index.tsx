@@ -447,7 +447,7 @@ export default function Vest () {
     if (veMultiTotalSupply) {
       list.push({
         name: 'veMULTI Supply',
-        value: BigAmount.format(useVeMultiToken.decimals, veMultiTotalSupply).toSignificant(2),
+        value: thousandBit(BigAmount.format(useVeMultiToken.decimals, veMultiTotalSupply).toExact(), 2),
         loading: false
       })
     } else {
@@ -458,9 +458,12 @@ export default function Vest () {
       })
     }
     if (LockedMULTI) {
+      // console.log(BigAmount.format(0,'10').toExact())
+      const value = BigAmount.format(useLockToken.decimals,LockedMULTI).toExact()
       list.push({
         name: 'Locked MULTI',
-        value: BigAmount.format(useLockToken.decimals,LockedMULTI).toSignificant(2),
+        value: thousandBit(value, 2),
+        // value: value.toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString(),
         loading: false
       })
     } else {
@@ -488,7 +491,7 @@ export default function Vest () {
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
       const fourYear:any = 60*60*24*1460
-      const oneYear = BigAmount.format(1, (60*60*24*365) + '')
+      const oneYear = BigAmount.format(0, (60*60*24*365) + '')
       const value = tp.divide(lm).multiply(BigAmount.format(1, fourYear)).divide(oneYear)
       list.push({
         name: 'Avg. Lock Time (years)',
@@ -521,10 +524,10 @@ export default function Vest () {
       const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
       const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward)
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
-      const tokenPrice = BigAmount.format(1, parseInt(price) + '')
-      const oneYear = BigAmount.format(1, (60*60*24*365) + '')
-      const time = BigAmount.format(1, (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '')
-      const per = BigAmount.format(1, '100')
+      const tokenPrice = BigAmount.format(0, parseInt(price) + '')
+      const oneYear = BigAmount.format(0, (60*60*24*365) + '')
+      const time = BigAmount.format(0, (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '')
+      const per = BigAmount.format(0, '100')
       // console.log(useRewardToken)
       // console.log(useVeMultiToken)
       if (
@@ -544,7 +547,7 @@ export default function Vest () {
         list.push({
           name: 'APR',
           value: '- %',
-          loading: true,
+          loading: false,
           question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
         })
       }
