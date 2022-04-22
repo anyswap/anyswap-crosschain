@@ -167,15 +167,26 @@ export function thousandBit (num:any, dec:any = 8) {
     } else {
       if (isNaN(dec)) {
         if (num.toString().indexOf('.') === -1) {
-          num = Number(num).toLocaleString()
+          num = Number(num).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+            return s+','
+          })
         } else {
           const numSplit = num.toString().split('.')
           numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
           num = Number(numSplit[0]).toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+          // num = Number(numSplit[0]).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+          //   return s+','
+          // })
           num = num.toString().split('.')[0] + '.' + numSplit[1]
         }
       } else {
-        num = formatDecimal(num, dec).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+        if (num.toString().indexOf('.') === -1) {
+          num = formatDecimal(num, dec).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+            return s+','
+          })
+        } else {
+          num = formatDecimal(num, dec).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+        }
       }
     }
     if (_num < 0 && num.toString().indexOf('-') < 0) {
