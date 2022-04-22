@@ -23,16 +23,16 @@ export function formatSwapTokenList (name, tokenlist) {
 const LOCAL_RPC = 'LOCAL_RPC'
 export function getLocalRPC (chainId, initRpc) {
   const lStr = localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
+
   if (lStr) {
     const lObj = JSON.parse(lStr)
+
     if (lObj[chainId]) {
       return lObj[chainId]
-    } else {
-      return initRpc
     }
-  } else {
-    return initRpc
   }
+
+  return initRpc
 }
 
 export function setLocalRPC (chainId, initRpc) {
