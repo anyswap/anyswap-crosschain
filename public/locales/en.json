@@ -417,5 +417,8 @@
   "saveAdminAddressData": "Save admin address data",
   "mainConfig": "Main config",
   "networkRouter": "Network router",
-  "erc20Token": "ERC20 Token"
+  "erc20Token": "ERC20 Token",
+  "storageNetwork": "Storage network",
+  "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
+  "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
 }

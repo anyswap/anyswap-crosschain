@@ -416,5 +416,8 @@
   "saveAdminAddressData": "保存管理员地址数据",
   "mainConfig": "主配置",
   "networkRouter": "网络路由器",
-  "erc20Token": "ERC20令牌"
+  "erc20Token": "ERC20令牌",
+  "storageNetwork": "存储网络",
+  "useThisNetworkToSaveSettings": "使用此网络保存设置（接口、合同配置、API地址）",
+  "interfaceSettingsAreVisibleOnlyForThisNetwork": "接口设置仅对此网络可见"
 }
