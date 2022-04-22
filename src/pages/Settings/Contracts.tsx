@@ -44,7 +44,7 @@ const Title = styled.h2`
   margin: 1.6rem 0 0.8rem;
 
   :first-child {
-    margin-top: 0;
+    margin-top: 1rem;
   }
 `
 
@@ -73,6 +73,10 @@ const ConfigInfo = styled.div`
   h4 {
     margin: 0 0 0.3rem;
   }
+`
+
+const ConfigLink = styled.a`
+  word-break: break-all;
 `
 
 export const Button = styled.button`
@@ -304,13 +308,13 @@ export default function Contracts() {
             <ConfigInfo>
               <h4>{t('configInformation')}:</h4>
               {chainInfo[stateRouterConfigChainId]?.networkName || ''}:{' '}
-              <a
+              <ConfigLink
                 href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 {stateRouterConfigAddress}
-              </a>
+              </ConfigLink>
             </ConfigInfo>
             {t('youHaveToBeOnConfigNetwork')}. {t('saveAllInfoWhenYouDeployAnything')}.{' '}
             {t('setDeploymentInfoOnConfigNetwork')}.
