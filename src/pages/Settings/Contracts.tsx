@@ -8,7 +8,7 @@ import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP, EVM_PUB_KEY_REGEXP } from '../../constants'
+import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP /*, EVM_PUB_KEY_REGEXP */} from '../../constants'
 import Accordion from '../../components/Accordion'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
@@ -155,17 +155,16 @@ export default function Contracts() {
   }
 
   const [mpcAddress, setMpcAddress] = useState('')
-  const [mpcPubKey, setMpcPubKey] = useState('')
   const [validMpcOptions, setValidMpcOptions] = useState(false)
 
   useEffect(() => {
-    setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP) && mpcPubKey.match(EVM_PUB_KEY_REGEXP)))
-  }, [mpcAddress, mpcPubKey])
+    setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP)))
+  }, [mpcAddress])
 
   const addMpcPubKey = async () => {
     try {
       if (routerConfigSigner && validMpcOptions) {
-        await routerConfigSigner.setMPCPubkey(mpcAddress, mpcPubKey)
+        await routerConfigSigner.setMPCPubkey(mpcAddress, ``)
       }
     } catch (error) {
       console.error(error)
@@ -310,6 +309,13 @@ export default function Contracts() {
     setRouterChainId(`${chainId}`)
     setRouterAddress(contractAddress)
   }
+
+  const onDeployCrosschainToken = (contractAddress: string, chainId: number, hash: string) => {
+    console.log('>>> onDeployCrosschainToken', contractAddress, chainId, hash)
+    setCrosschainTokenChainId(`${chainId}`)
+    setCrosschainToken(contractAddress)
+  }
+
   return (
     <>
       <OptionWrapper>
@@ -398,13 +404,6 @@ export default function Contracts() {
             defaultValue={mpcAddress}
             onChange={event => setMpcAddress(event.target.value)}
           />
-          {t('adminPublicKey')}
-          <Input
-            type="text"
-            placeholder="0x..."
-            defaultValue={mpcPubKey}
-            onChange={event => setMpcPubKey(event.target.value)}
-          />
           <Button onClick={addMpcPubKey} disabled={!validMpcOptions}>
             {t('saveAdminAddressData')}
           </Button>
@@ -470,7 +469,11 @@ export default function Contracts() {
             </OptionLabel>
           </OptionWrapper>
 
-          <DeployCrosschainToken routerAddress={routerAddress} underlying={underlying} />
+          <DeployCrosschainToken
+            routerAddress={routerAddress}
+            underlying={underlying}
+            onDeploymentCallback={onDeployCrosschainToken}
+          />
 
           {!onConfigNetwork && (
             <Notice warning margin="0.3rem 0">
@@ -490,6 +493,7 @@ export default function Contracts() {
                   {t('idOfCrosschainTokenNetwork')}
                   <Input
                     defaultValue={crosschainTokenChainId}
+                    value={crosschainTokenChainId}
                     type="number"
                     min="1"
                     step="1"
@@ -498,6 +502,7 @@ export default function Contracts() {
                   {t('crosschainTokenAddress')}
                   <Input
                     defaultValue={crosschainToken}
+                    value={crosschainToken}
                     type="text"
                     placeholder="0x..."
                     onChange={event => setCrosschainToken(event.target.value)}

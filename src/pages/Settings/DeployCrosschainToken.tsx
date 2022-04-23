@@ -10,10 +10,12 @@ import { Button } from './Contracts'
 
 export default function DeployCrosschainToken({
   routerAddress,
-  underlying
+  underlying,
+  onDeploymentCallback
 }: {
   routerAddress: string
   underlying: { [k: string]: any }
+  onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
 }) {
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -94,6 +96,7 @@ export default function DeployCrosschainToken({
               summary: `Deployment: chain ${chainId}; CROSSCHAIN TOKEN ${name} ${address}`
             }
           )
+          onDeploymentCallback(address, chainId, hash)
         }
       })
     } catch (error) {
