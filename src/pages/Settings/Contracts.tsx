@@ -299,6 +299,12 @@ export default function Contracts() {
     decimals: Number(underlyingDecimals)
   }
 
+  const onDeployRouterConfig = (contractAddress: string, chainId: number, hash: string) => {
+    console.log('>>> onDeployRouterConfig', contractAddress, chainId, hash)
+    setRouterConfigChainId(`${chainId}`)
+    setRouterConfigAddress(contractAddress)
+  }
+
   return (
     <>
       <OptionWrapper>
@@ -345,7 +351,7 @@ export default function Contracts() {
 
       {!stateRouterConfigAddress ? (
         <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">
-          <DeployRouterConfig />
+          <DeployRouterConfig onDeploymentCallback={onDeployRouterConfig} />
           <OptionWrapper>
             <Notice warning margin="0.4rem 0 0.6rem">
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
@@ -359,10 +365,16 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 placeholder="0x..."
+                value={routerConfigChainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
-              <Input type="text" placeholder="0x..." onChange={event => setRouterConfigAddress(event.target.value)} />
+              <Input
+                type="text"
+                placeholder="0x..."
+                value={routerConfigAddress}
+                onChange={event => setRouterConfigAddress(event.target.value)}
+              />
             </OptionLabel>
           </OptionWrapper>
           <Button

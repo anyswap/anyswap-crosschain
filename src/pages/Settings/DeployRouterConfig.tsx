@@ -10,7 +10,11 @@ const Button = styled(ButtonPrimary)`
   width: 100%;
 `
 
-export default function DeployRouterConfig() {
+export default function DeployRouterConfig({
+  onDeploymentCallback
+} : {
+  onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
+}) {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -36,6 +40,7 @@ export default function DeployRouterConfig() {
               summary: `Deployment: chain ${chainId}; CONFIG ${contractAddress}`
             }
           )
+          onDeploymentCallback(contractAddress, chainId, hash)
         }
       })
     } catch (error) {
