@@ -27,6 +27,7 @@ const initialState: ApplicationState = {
   apiAddress: '',
   routerConfigChainId: undefined,
   routerConfigAddress: '',
+  serverAdminAddress: '',
   appManagement: false,
   owner: '',
   logo: '',
@@ -52,6 +53,7 @@ export default createReducer(initialState, builder =>
           apiAddress,
           routerConfigChainId,
           routerConfigAddress,
+          serverAdminAddress,
           logo,
           projectName,
           brandColor,
@@ -66,6 +68,7 @@ export default createReducer(initialState, builder =>
         if (apiAddress) state.apiAddress = apiAddress
         if (routerConfigChainId) state.routerConfigChainId = routerConfigChainId
         if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
+        if (serverAdminAddress && serverAdminAddress !== ZERO_ADDRESS) state.serverAdminAddress = serverAdminAddress
         if (logo) state.logo = logo
         if (projectName) state.projectName = projectName
         if (brandColor) state.brandColor = brandColor

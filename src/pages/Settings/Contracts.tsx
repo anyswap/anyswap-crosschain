@@ -96,7 +96,8 @@ export default function Contracts() {
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
     routerConfigAddress: stateRouterConfigAddress,
-    routerAddress: stateRouterAddress
+    routerAddress: stateRouterAddress,
+    serverAdminAddress: stateServerAdminAddress
   } = useAppState()
 
   const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
@@ -134,6 +135,7 @@ export default function Contracts() {
     }
   }
 
+
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
 
@@ -154,13 +156,33 @@ export default function Contracts() {
     })
   }
 
-  const [mpcAddress, setMpcAddress] = useState('')
+  const [mpcAddress, setMpcAddress] = useState(stateServerAdminAddress)
   const [validMpcOptions, setValidMpcOptions] = useState(false)
 
   useEffect(() => {
     setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP)))
   }, [mpcAddress])
 
+  const saveServerAdminAddress = (serverAdminAddress: string) => {
+    if (!account) return
+
+    if (validMpcOptions) {
+      return updateStorageData({
+        provider: library?.provider,
+        owner: account,
+        data: {
+          serverAdminAddress,
+        },
+        onReceipt: (receipt: any) => {
+          // we set a new config. Update interface to be able to use other settings
+          console.log('save router config: ', receipt)
+        }
+      })
+    } else {
+      return
+    }
+  }
+/*
   const addMpcPubKey = async () => {
     try {
       if (routerConfigSigner && validMpcOptions) {
@@ -170,6 +192,7 @@ export default function Contracts() {
       console.error(error)
     }
   }
+  */
 
   const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
@@ -318,22 +341,6 @@ export default function Contracts() {
 
   return (
     <>
-      <OptionWrapper>
-        {!onStorageNetwork && (
-          <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-          </Notice>
-        )}
-        <Lock enabled={!onStorageNetwork}>
-          <div>
-            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
-          </div>
-          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
-            {t('saveAddress')}
-          </Button>
-        </Lock>
-      </OptionWrapper>
 
       <Title>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
@@ -404,7 +411,10 @@ export default function Contracts() {
             defaultValue={mpcAddress}
             onChange={event => setMpcAddress(event.target.value)}
           />
-          <Button onClick={addMpcPubKey} disabled={!validMpcOptions}>
+          <Button
+            onClick={() => saveServerAdminAddress(mpcAddress)}
+            disabled={!validMpcOptions}
+          >
             {t('saveAdminAddressData')}
           </Button>
         </>
@@ -516,6 +526,23 @@ export default function Contracts() {
           </Lock>
         </ZoneWrapper>
       </Lock>
+
+      <OptionWrapper>
+        {!onStorageNetwork && (
+          <Notice warning margin="0.3rem 0">
+            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
+          </Notice>
+        )}
+        <Lock enabled={!onStorageNetwork}>
+          <div>
+            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+          </div>
+          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
+            {t('saveAddress')}
+          </Button>
+        </Lock>
+      </OptionWrapper>
     </>
   )
 }

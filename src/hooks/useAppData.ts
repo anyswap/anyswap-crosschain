@@ -11,6 +11,7 @@ const parseInfo = (info: string) => {
     apiAddress: '',
     routerConfigChainId: undefined,
     routerConfigAddress: '',
+    serverAdminAddress: '',
     owner: '',
     logo: '',
     projectName: '',
@@ -30,6 +31,7 @@ const parseInfo = (info: string) => {
       apiAddress,
       routerConfigChainId,
       routerConfigAddress,
+      serverAdminAddress,
       logoUrl,
       projectName,
       brandColor,
@@ -44,6 +46,7 @@ const parseInfo = (info: string) => {
     if (apiAddress) parsed.apiAddress = apiAddress
     if (routerConfigChainId) parsed.routerConfigChainId = routerConfigChainId
     if (routerConfigAddress) parsed.routerConfigAddress = routerConfigAddress
+    if (serverAdminAddress) parsed.serverAdminAddress = serverAdminAddress
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
     if (brandColor) parsed.brandColor = brandColor

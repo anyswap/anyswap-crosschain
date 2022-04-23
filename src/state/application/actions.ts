@@ -44,6 +44,7 @@ export type AppData = {
   apiAddress: string
   routerConfigChainId: number | undefined
   routerConfigAddress: string
+  serverAdminAddress: string
 }
 
 export const updateRouterData = createAction<{ chainId: number; routerAddress: string }>('application/updateRouterData')
