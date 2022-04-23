@@ -13,7 +13,11 @@ const Button = styled(ButtonPrimary)`
   width: 100%;
 `
 
-export default function DeployRouter() {
+export default function DeployRouter({
+  onDeploymentCallback
+} : {
+  onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
+}) {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -51,6 +55,7 @@ export default function DeployRouter() {
               summary: `Deployment: chain ${chainId}; ROUTER ${contractAddress}`
             }
           )
+          onDeploymentCallback(contractAddress, chainId, hash)
         },
         factory: account,
         wNative: wrappedToken,

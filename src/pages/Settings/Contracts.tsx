@@ -305,6 +305,11 @@ export default function Contracts() {
     setRouterConfigAddress(contractAddress)
   }
 
+  const onDeployRouter = (contractAddress: string, chainId: number, hash: string) => {
+    console.log('>>> onDeployRouter', contractAddress, chainId, hash)
+    setRouterChainId(`${chainId}`)
+    setRouterAddress(contractAddress)
+  }
   return (
     <>
       <OptionWrapper>
@@ -412,7 +417,7 @@ export default function Contracts() {
           {chainId && !stateRouterAddress[chainId] ? (
             <>
               <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
-              <DeployRouter />
+              <DeployRouter onDeploymentCallback={onDeployRouter} />
             </>
           ) : (
             <span />
@@ -431,6 +436,7 @@ export default function Contracts() {
                   min="1"
                   step="1"
                   placeholder="0x..."
+                  value={routerChainId}
                   defaultValue={routerChainId}
                   onChange={event => setRouterChainId(event.target.value)}
                 />
@@ -438,6 +444,7 @@ export default function Contracts() {
                 <Input
                   type="text"
                   placeholder="0x..."
+                  value={routerAddress}
                   defaultValue={routerAddress}
                   onChange={event => setRouterAddress(event.target.value)}
                 />
