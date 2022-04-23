@@ -244,7 +244,7 @@ export default function Contracts() {
         setUnderlyingDecimals(decimals)
 
         if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(name, underlyingNetworkId).call()
+          const tokenConfig = await routerConfig.methods.getTokenConfig(symbol.toUpperCase(), underlyingNetworkId).call()
 
           if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
             const { ContractAddress } = tokenConfig
@@ -269,12 +269,12 @@ export default function Contracts() {
   }, [underlyingToken, chainId, underlyingNetworkId])
 
   const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingName || !crosschainToken || !crosschainTokenChainId) return
+    if (!routerConfigSigner || !underlyingSymbol || !crosschainToken || !crosschainTokenChainId) return
 
     const VERSION = 6
 
     try {
-      await routerConfigSigner.setTokenConfig(underlyingName, crosschainTokenChainId, {
+      await routerConfigSigner.setTokenConfig(underlyingSymbol.toUpperCase(), crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION

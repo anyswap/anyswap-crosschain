@@ -45,10 +45,10 @@ export default function DeployCrosschainToken({
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!underlying.address || !underlying.networkId || !routerConfig) return
+      if (!underlying.symbol || !underlying.networkId || !routerConfig) return
 
       try {
-        const tokenConfig = await routerConfig.methods.getTokenConfig(underlying.address, underlying.networkId).call()
+        const tokenConfig = await routerConfig.methods.getTokenConfig(underlying.symbol.toUpperCase(), underlying.networkId).call()
 
         if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
           setCrosschainTokenAddress(tokenConfig.ContractAddress)
@@ -106,6 +106,7 @@ export default function DeployCrosschainToken({
     setPending(false)
   }
 
+console.log('>>>> DeployCrosschainToken', canDeployCrosschainToken, pending)
   return (
     <>
       <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
