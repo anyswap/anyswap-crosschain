@@ -14,9 +14,11 @@ const Button = styled(ButtonPrimary)`
 `
 
 export default function DeployRouter({
-  onDeploymentCallback
+  onDeploymentCallback,
+  serverAdminAddress
 } : {
   onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
+  serverAdminAddress: string
 }) {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -59,7 +61,7 @@ export default function DeployRouter({
         },
         factory: account,
         wNative: wrappedToken,
-        mpc: account
+        mpc: serverAdminAddress // https://github.com/noxonsu/CrossChain-Router/blob/main/README.md?plain=1#L19
       })
     } catch (error) {
       console.error(error)

@@ -182,17 +182,6 @@ export default function Contracts() {
       return
     }
   }
-/*
-  const addMpcPubKey = async () => {
-    try {
-      if (routerConfigSigner && validMpcOptions) {
-        await routerConfigSigner.setMPCPubkey(mpcAddress, ``)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-  */
 
   const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
@@ -426,7 +415,7 @@ export default function Contracts() {
           {chainId && !stateRouterAddress[chainId] ? (
             <>
               <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
-              <DeployRouter onDeploymentCallback={onDeployRouter} />
+              <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={mpcAddress} />
             </>
           ) : (
             <span />

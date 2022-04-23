@@ -26,11 +26,11 @@ export default function DeployCrosschainToken({
 
   const [pending, setPending] = useState(false)
 
-  const [vault, setVault] = useState(account)
+  const [vault, setVault] = useState('')
   const [minter, setMinter] = useState('')
 
-  useEffect(() => setVault(account), [account])
-  useEffect(() => setMinter(routerAddress), [routerAddress])
+  useEffect(() => setVault(routerAddress), [routerAddress]) // https://github.com/noxonsu/CrossChain-Router/blob/main/README.md?plain=1#L44
+  useEffect(() => setMinter(routerAddress), [routerAddress]) // https://github.com/noxonsu/CrossChain-Router/blob/main/README.md?plain=1#L45
 
   const [crosschainTokenAddress, setCrosschainTokenAddress] = useState<string | undefined>(undefined)
   const [canDeployCrosschainToken, setCanDeployCrosschainToken] = useState(false)
