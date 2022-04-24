@@ -7,7 +7,7 @@ export const AVAX_MAINNET = getLocalRPC(AVAX_MAIN_CHAINID, 'https://api.avax.net
 export const AVAX_MAIN_EXPLORER = 'https://snowtrace.io'
 
 export const AVAX_TEST_CHAINID = ChainId.AVAX_TEST
-export const AVAX_TESTNET = getLocalRPC(AVAX_TEST_CHAINID, 'https://api.avax-test.network/ext/bc/C/rpc	')
+export const AVAX_TESTNET = getLocalRPC(AVAX_TEST_CHAINID, 'https://api.avax-test.network/ext/bc/C/rpc')
 export const AVAX_TEST_EXPLORER = 'https://testnet.snowtrace.io'
 
 export const tokenList = [
