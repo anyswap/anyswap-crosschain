@@ -1,47 +1,49 @@
-import arbitrum, {ARBITRUM_MAIN_CHAINID, ARBITRUM_TEST_CHAINID} from './arbitrum'
-import avax, {AVAX_MAIN_CHAINID} from './avax'
-import bsc, {BNB_MAIN_CHAINID, BNB_TEST_CHAINID} from './bsc'
-import eth, {ETH_MAIN_CHAINID, ETH_TEST_CHAINID, ETH_TEST1_CHAINID} from './eth'
-import fsn, {FSN_MAIN_CHAINID} from './fsn'
-import ftm, {FTM_MAIN_CHAINID} from './ftm'
-import ht, {HT_MAIN_CHAINID, HT_TEST_CHAINID} from './ht'
-import matic, {MATIC_MAIN_CHAINID} from './matic'
-import xdai, {XDAI_MAIN_CHAINID} from './xdai'
-import kcc, {KCC_MAIN_CHAINID} from './kcc'
-import okt, {OKT_MAIN_CHAINID} from './okt'
-import one, {ONE_MAIN_CHAINID} from './one'
-import omgx, {OMGX_TEST_CHAINID} from './omgx'
-import optimism, {OPTIMISM_TEST_CHAINID, OPTIMISM_MAIN_CHAINID} from './optimism'
-import movr, {MOVR_MAIN_CHAINID} from './movr'
-import iotex, {IOTEX_MAIN_CHAINID} from './iotex'
-import sdn, {SDN_MAIN_CHAINID} from './sdn'
-import ltc, {LTC_MAIN_CHAINID} from './ltc'
-import btc, {BTC_MAIN_CHAINID} from './btc'
-import block, {BLOCK_MAIN_CHAINID} from './block'
-import colx, {COLX_MAIN_CHAINID} from './colx'
-import celo, {CELO_MAIN_CHAINID} from './celo'
-import cro, {CRO_MAIN_CHAINID} from './cro'
-import oeth, {OETH_MAIN_CHAINID} from './oeth'
-import tlos, {TLOS_MAIN_CHAINID} from './tlos'
-import terra, {TERRA_MAIN_CHAINID} from './terra'
-import fuse, {FUSE_MAIN_CHAINID} from './fuse'
-import aurora, {AURORA_MAIN_CHAINID} from './aurora'
-import sys, {SYS_MAIN_CHAINID} from './sys'
-import metis, {METIS_MAIN_CHAINID} from './metis'
-import glmr, {GLMR_MAIN_CHAINID} from './moonbeam'
-import astar, {ASTAR_MAIN_CHAINID} from './astar'
-import rose, {ROSE_MAIN_CHAINID} from './rose'
-import vlx, {VLX_MAIN_CHAINID} from './vlx'
-import clv, {CLV_MAIN_CHAINID} from'./clv'
-import crab, {CRAB_MAIN_CHAINID} from './crab'
-import nas, {NAS_MAIN_CHAINID} from './nas'
-import xrp, {XRP_MAIN_CHAINID} from './xrp'
-import milkada, {MIKO_MAIN_CHAINID} from './milkada'
-import rei, {REI_MAIN_CHAINID} from './rei'
-import cfx, {CFX_MAIN_CHAINID} from './cfx'
-import rbtc, {RBTC_MAIN_CHAINID} from './rbtc'
-import jewel, {JEWEL_MAIN_CHAINID} from './jewel'
-import btt, {BTT_MAIN_CHAINID} from './btt'
+import arbitrum from './arbitrum'
+import avax from './avax'
+import bsc from './bsc'
+import eth from './eth'
+import fsn from './fsn'
+import ftm from './ftm'
+import ht from './ht'
+import matic from './matic'
+import xdai from './xdai'
+import kcc from './kcc'
+import okt from './okt'
+import one from './one'
+import omgx from './omgx'
+import optimism from './optimism'
+import movr from './movr'
+import iotex from './iotex'
+import sdn from './sdn'
+import ltc from './ltc'
+import btc from './btc'
+import block from './block'
+import colx from './colx'
+import celo from './celo'
+import cro from './cro'
+import oeth from './oeth'
+import tlos from './tlos'
+import terra from './terra'
+import fuse from './fuse'
+import aurora from './aurora'
+import sys from './sys'
+import metis from './metis'
+import glmr from './moonbeam'
+import astar from './astar'
+import rose from './rose'
+import vlx from './vlx'
+import clv from'./clv'
+import crab from './crab'
+import nas from './nas'
+import xrp from './xrp'
+import milkada from './milkada'
+import rei from './rei'
+import cfx from './cfx'
+import rbtc from './rbtc'
+import jewel from './jewel'
+import btt from './btt'
+
+import { ChainId } from './chainId'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -95,169 +97,182 @@ export const chainInfo:ConFig = {
   ...rbtc,
 }
 const allChainList = [
-  ETH_MAIN_CHAINID,
-  AVAX_MAIN_CHAINID,
-  ARBITRUM_MAIN_CHAINID,
-  BNB_MAIN_CHAINID,
-  FTM_MAIN_CHAINID,
-  MATIC_MAIN_CHAINID,
-  GLMR_MAIN_CHAINID,
-  MOVR_MAIN_CHAINID,
-  ONE_MAIN_CHAINID,
-  OPTIMISM_MAIN_CHAINID,
-  AURORA_MAIN_CHAINID,
-  OETH_MAIN_CHAINID,
-  CRO_MAIN_CHAINID,
-  OKT_MAIN_CHAINID,
-  HT_MAIN_CHAINID,
-  XDAI_MAIN_CHAINID,
-  CELO_MAIN_CHAINID,
-  KCC_MAIN_CHAINID,
-  FSN_MAIN_CHAINID,
-  METIS_MAIN_CHAINID,
-  TLOS_MAIN_CHAINID,
-  ROSE_MAIN_CHAINID,
-  SYS_MAIN_CHAINID,
-  IOTEX_MAIN_CHAINID,
-  SDN_MAIN_CHAINID,
-  FUSE_MAIN_CHAINID,
-  ASTAR_MAIN_CHAINID,
-  VLX_MAIN_CHAINID,
-  CLV_MAIN_CHAINID,
-  CRAB_MAIN_CHAINID,
-  MIKO_MAIN_CHAINID,
-  REI_MAIN_CHAINID,
-  CFX_MAIN_CHAINID,
-  RBTC_MAIN_CHAINID,
-  JEWEL_MAIN_CHAINID,
-  BTT_MAIN_CHAINID,
-  ETH_TEST1_CHAINID,
-  // BNB_TEST_CHAINID,
-  ETH_TEST_CHAINID,
+  ChainId.ETH,
+  ChainId.AVAX,
+  ChainId.ARBITRUM,
+  ChainId.BNB,
+  ChainId.FTM,
+  ChainId.MATIC,
+  ChainId.GLMR,
+  ChainId.MOVR,
+  ChainId.ONE,
+  ChainId.OPTIMISM,
+  ChainId.AURORA,
+  ChainId.BOBA,
+  ChainId.CRO,
+  ChainId.OKT,
+  ChainId.HT,
+  ChainId.XDAI,
+  ChainId.CELO,
+  ChainId.KCC,
+  ChainId.FSN,
+  ChainId.METIS,
+  ChainId.TLOS,
+  ChainId.ROSE,
+  ChainId.SYS,
+  ChainId.IOTEX,
+  ChainId.SDN,
+  ChainId.FUSE,
+  ChainId.ASTAR,
+  ChainId.VLX,
+  ChainId.CLV,
+  ChainId.CRAB,
+  ChainId.MIKO,
+  ChainId.REI,
+  ChainId.CFX,
+  ChainId.RBTC,
+  ChainId.JEWEL,
+  ChainId.BTT,
+  ChainId.GOERLI,
+  // ChainId.BNB_TEST,
+  ChainId.RINKEBY,
+]
+
+const testChainList = [
+  ChainId.RINKEBY,
+  ChainId.FTM_TEST,
+  ChainId.BNB_TEST,
+  ChainId.MATIC_TEST,
+  ChainId.AVAX_TEST,
+  ChainId.ARBITRUM_TEST,
+  ChainId.BAS_TEST,
 ]
 
 const useChain:any = {
   [VERSION.V1]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
+    ChainId.ETH,
+    ChainId.BNB,
   ],
   [VERSION.V1_1]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID,
-    AVAX_MAIN_CHAINID,
-    HT_MAIN_CHAINID,
-    OKT_MAIN_CHAINID,
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.MATIC,
+    ChainId.AVAX,
+    ChainId.HT,
+    ChainId.OKT,
   ],
   [VERSION.V2]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.FTM,
+    ChainId.MATIC
   ],
   [VERSION.V2_1]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.FTM,
+    ChainId.MATIC
   ],
   [VERSION.V2_2]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID,
-    OKT_MAIN_CHAINID,
-    AVAX_MAIN_CHAINID,
-    ARBITRUM_MAIN_CHAINID,
-    MOVR_MAIN_CHAINID,
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.FTM,
+    ChainId.MATIC,
+    ChainId.OKT,
+    ChainId.AVAX,
+    ChainId.ARBITRUM,
+    ChainId.MOVR,
   ],
   [VERSION.V2_T1]: [
-    ETH_TEST_CHAINID,
-    BNB_TEST_CHAINID,
-    HT_TEST_CHAINID,
+    ChainId.RINKEBY,
+    ChainId.BNB_TEST,
+    ChainId.HT_TEST,
   ],
   [VERSION.V2_T2]: [
-    ETH_TEST_CHAINID,
-    ARBITRUM_TEST_CHAINID,
-    OMGX_TEST_CHAINID,
-    OPTIMISM_TEST_CHAINID
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_TEST,
+    ChainId.OMGX_TEST,
+    ChainId.OPTIMISM_TEST
   ],
   [VERSION.V2_T3]: [
-    ETH_TEST_CHAINID,
-    ARBITRUM_TEST_CHAINID,
-    OMGX_TEST_CHAINID,
-    OPTIMISM_TEST_CHAINID
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_TEST,
+    ChainId.OMGX_TEST,
+    ChainId.OPTIMISM_TEST
   ],
   [VERSION.V3]: [
-    ETH_MAIN_CHAINID,
-    ARBITRUM_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.ARBITRUM
   ],
   [VERSION.V3_1]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    ARBITRUM_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.ARBITRUM
   ],
   [VERSION.V4]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    FSN_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID,
-    HT_MAIN_CHAINID,
-    AVAX_MAIN_CHAINID,
-    XDAI_MAIN_CHAINID,
-    KCC_MAIN_CHAINID,
-    OKT_MAIN_CHAINID,
-    ONE_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.FSN,
+    ChainId.FTM,
+    ChainId.MATIC,
+    ChainId.HT,
+    ChainId.AVAX,
+    ChainId.XDAI,
+    ChainId.KCC,
+    ChainId.OKT,
+    ChainId.ONE
   ],
   [VERSION.V4_OKT]: [
-    BNB_MAIN_CHAINID,
-    OKT_MAIN_CHAINID
+    ChainId.BNB,
+    ChainId.OKT
   ],
   [VERSION.V4_MOVR]: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    MOVR_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.MOVR
   ],
   [VERSION.V5]: [...allChainList],
   [VERSION.V6]: [
-    FTM_MAIN_CHAINID,
-    ETH_TEST_CHAINID
+    ChainId.FTM,
+    ChainId.RINKEBY
   ],
   [VERSION.V6_1]: [
-    ETH_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID,
-    AVAX_MAIN_CHAINID,
+    ChainId.ETH,
+    ChainId.FTM,
+    ChainId.MATIC,
+    ChainId.AVAX,
   ],
   [VERSION.V7]: [
     ...allChainList,
-    BTC_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID,
-    LTC_MAIN_CHAINID,
-    BLOCK_MAIN_CHAINID,
-    COLX_MAIN_CHAINID,
-    NAS_MAIN_CHAINID,
-    XRP_MAIN_CHAINID,
+    ChainId.BTC,
+    ChainId.TERRA,
+    ChainId.LTC,
+    ChainId.BLOCK,
+    ChainId.COLX,
+    ChainId.NAS,
+    ChainId.XRP,
+  ],
+  [VERSION.V7_TEST]: [
+    ...testChainList
   ],
   ALL_MAIN: [
-    ETH_MAIN_CHAINID,
-    BNB_MAIN_CHAINID,
-    FSN_MAIN_CHAINID,
-    FTM_MAIN_CHAINID,
-    MATIC_MAIN_CHAINID,
-    HT_MAIN_CHAINID,
-    AVAX_MAIN_CHAINID,
-    XDAI_MAIN_CHAINID,
-    ARBITRUM_MAIN_CHAINID,
-    KCC_MAIN_CHAINID,
-    OKT_MAIN_CHAINID,
-    ONE_MAIN_CHAINID,
-    MOVR_MAIN_CHAINID,
-    TERRA_MAIN_CHAINID,
-    AURORA_MAIN_CHAINID,
-    ASTAR_MAIN_CHAINID,
-    NAS_MAIN_CHAINID
+    ChainId.ETH,
+    ChainId.BNB,
+    ChainId.FSN,
+    ChainId.FTM,
+    ChainId.MATIC,
+    ChainId.HT,
+    ChainId.AVAX,
+    ChainId.XDAI,
+    ChainId.ARBITRUM,
+    ChainId.KCC,
+    ChainId.OKT,
+    ChainId.ONE,
+    ChainId.MOVR,
+    ChainId.TERRA,
+    ChainId.AURORA,
+    ChainId.ASTAR,
+    ChainId.NAS
   ]
 }
 

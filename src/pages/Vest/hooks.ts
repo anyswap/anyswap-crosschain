@@ -54,6 +54,7 @@ export function useCreateLockCallback(
               try {
                 // console.log(contract)
                 const time = Number(lockDuration) - parseInt((Date.now() / 1000) + '')
+                console.log(lockDuration)
                 const txReceipt = await contract.create_lock(
                   `0x${inputAmount.raw.toString(16)}`,
                   time + '',
