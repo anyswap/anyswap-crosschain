@@ -11,6 +11,10 @@ const useNode = 'https://rpc.ftm.tools/'
 export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(FTM_MAIN_CHAINID, useNode) : getLocalRPC(FTM_MAIN_CHAINID, 'https://rpc.ftm.tools/')
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
+export const FTM_TEST_CHAINID = ChainId.FTM_TEST
+export const FTM_TESTNET = getLocalRPC(FTM_TEST_CHAINID, 'https://rpc.testnet.fantom.network')
+export const FTM_TEST_EXPLORER = 'https://testnet.ftmscan.com/'
+
 export const tokenList = [
   {
     "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
@@ -65,6 +69,12 @@ const bridgeToken = {
     nativeToken: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
     crossBridgeInitToken: 'FTM'
   },
+  [VERSION.V7_TEST]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
+  },
 }
 
 export default {
@@ -100,5 +110,33 @@ export default {
     isSwitch: 1,
     suffix: 'FRC20',
     anyToken: '0xddcb3ffd12750b45d32e084887fdf1aabab34239'
+  },
+  [FTM_TEST_CHAINID]: {
+    tokenListUrl: tokenListUrl + FTM_TEST_CHAINID,
+    tokenList: formatSwapTokenList(symbol, tokenList),
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    swapInitToken: '',
+    multicalToken: '0x5aF9b9de61F645C08eA4540C177737C6c6622060',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    timelock: '',
+    nodeRpc: FTM_TESTNET,
+    nodeRpcList: [
+      FTM_TESTNET,
+    ],
+    chainID: FTM_TEST_CHAINID,
+    lookHash: FTM_TEST_CHAINID + '/tx/',
+    lookAddr: FTM_TEST_CHAINID + '/address/',
+    lookBlock: FTM_TEST_CHAINID + '/block/',
+    explorer: FTM_TEST_CHAINID,
+    symbol: symbol,
+    name: 'Fantom',
+    networkName: 'Fantom testnet',
+    type: 'test',
+    label: FTM_TEST_CHAINID,
+    isSwitch: 1,
+    suffix: 'FRC20',
+    anyToken: ''
   },
 }

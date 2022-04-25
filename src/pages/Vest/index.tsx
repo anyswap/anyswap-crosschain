@@ -13,6 +13,7 @@ import {
   // useMulticallContract
 } from '../../hooks/useContract'
 import useInterval from '../../hooks/useInterval'
+import { useUserSelectChainId } from '../../state/user/hooks'
 
 import {BigAmount} from '../../utils/formatBignumber'
 // import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -52,7 +53,10 @@ import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 import {useClaimRewardCallback, useWithdrawCallback} from './hooks'
 import axios from "axios";
 import {thousandBit} from '../../utils/tools/tools'
-// import config from "../../config";
+
+
+import config from '../../config'
+import {selectNetwork} from '../../config/tools/methods'
 
 // import {VE_MULTI_REWARD_INTERFACE} from '../../constants/abis/veMULTIReward'
 
@@ -65,6 +69,29 @@ const CreateLock = styled(TokenActionBtn)`
   background:${({ theme }) => theme.primary1};
   color:#fff;
   margin-bottom:10px;
+  &.disabled {
+    opacity: 0.2;
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${({ theme }) => theme.primary1};
+    opacity: 0.99
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 28px;
+    margin-bottom: 10px;
+  `}
+`
+
+const CreateLock1 = styled(ButtonLight)`
+  width: auto;
+  height: 38px;
+  border-radius: 0.5625rem;
+  background: ${({ theme }) => theme.primary1};
+  margin: 0 5px 10px;
+  font-size:0.75rem;
+  color:#fff;
   &.disabled {
     opacity: 0.2;
   }
@@ -204,6 +231,7 @@ const DataViews = styled.div`
 export default function Vest () {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
+  const {setUserSelectNetwork} = useUserSelectChainId()
 
   const [vestNFTs, setvestNFTs] = useState<any>()
   const [modalOpen, setModalOpen] = useState(false)
@@ -252,6 +280,13 @@ export default function Vest () {
     setLoadingStatus(0)
     return undefined
   }, [claimRewardId, rewardList])
+
+  const isSupport = useMemo(() => {
+    if (!useLockToken) {
+      return false
+    }
+    return true
+  }, [useLockToken])
 
   const contract = useVeMULTIContract(useVeMultiToken?.address)
   const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
@@ -753,7 +788,32 @@ export default function Vest () {
         </div>
       </DataViews>
       <VestContent>
-        <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
+        {
+          !isSupport ? (
+            <>
+              {
+                Object.keys(veMULTI).map((item, index) => {
+                  return <CreateLock1 key={index} onClick={() => {
+                    if (setUserSelectNetwork) {
+                      setUserSelectNetwork({
+                        chainId: config.getCurChainInfo(item).chainID,
+                        label: config.getCurChainInfo(item)?.chainType
+                      })
+                    }
+                    selectNetwork(item).then((res: any) => {
+                      console.log(res)
+                      if (res.msg === 'Error') {
+                        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(item).networkName}))
+                      }
+                    })
+                  }}>{t('ConnectedWith') + ' ' + config.getCurChainInfo(item).name}</CreateLock1>
+                })
+              }
+            </>
+          ) : (
+            <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
+          )
+        }
       </VestContent>
 
       <MyBalanceBox>

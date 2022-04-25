@@ -47,6 +47,12 @@ const bridgeToken = {
     nativeToken: '',
     crossBridgeInitToken: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'
   },
+  [VERSION.V7_TEST]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
+  },
 }
 
 export default {
@@ -104,7 +110,7 @@ export default {
     name: 'Arbitrum',
     networkName: 'Arbitrum Rinkeby',
     networkLogo: 'ARBITRUM',
-    type: 'main',
+    type: 'test',
     label: ARBITRUM_TEST_CHAINID,
     isSwitch: 1,
     suffix: 'ARBITRUM'

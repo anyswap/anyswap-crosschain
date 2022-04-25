@@ -23,6 +23,7 @@
 /app
 /multichain
 /conflux
+/test
 *.zip
 
 # misc

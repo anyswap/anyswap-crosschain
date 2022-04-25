@@ -8,6 +8,11 @@ export const MATIC_MAIN_CHAINID = ChainId.MATIC
 export const MATIC_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(MATIC_MAIN_CHAINID, 'https://polygon-rpc.com/') : getLocalRPC(MATIC_MAIN_CHAINID, 'https://maticnode1.anyswap.exchange')
 // export const MATIC_MAIN_EXPLORER = 'https://explorer-mainnet.maticvigil.com'
 export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
+
+
+export const MATIC_TEST_CHAINID = ChainId.MATIC_TEST
+export const MATIC_TESTNET = getLocalRPC(MATIC_TEST_CHAINID, 'https://rpc-mumbai.maticvigil.com')
+export const MATIC_TEST_EXPLORER = 'https://testnet.polygonscan.com'
 // console.log(MATIC_MAINNET)
 export const tokenList = [
   {
@@ -69,6 +74,12 @@ const bridgeToken = {
     bridgeInitChain: '56',
     nativeToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     crossBridgeInitToken: ''
+  },
+  [VERSION.V7_TEST]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
   }
 }
 
@@ -108,5 +119,33 @@ export default {
     isSwitch: 1,
     suffix: 'MATIC',
     anyToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
+  },
+  [MATIC_TEST_CHAINID]: {
+    tokenListUrl: tokenListUrl + MATIC_TEST_CHAINID,
+    tokenList: formatSwapTokenList(symbol, tokenList),
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    swapInitToken: '',
+    multicalToken: '0xE9058a6685fB99b1dDA6a8aab2865b59f7095C3d',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    timelock: '',
+    nodeRpc: MATIC_TESTNET,
+    nodeRpcList: [
+      MATIC_TESTNET,
+    ],
+    chainID: MATIC_TEST_CHAINID,
+    lookHash: MATIC_TEST_EXPLORER + '/tx/',
+    lookAddr: MATIC_TEST_EXPLORER + '/address/',
+    lookBlock: MATIC_TEST_EXPLORER + '/block/',
+    explorer: MATIC_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Mumbai',
+    networkName: 'Mumbai testnet',
+    type: 'test',
+    label: MATIC_TEST_CHAINID,
+    isSwitch: 1,
+    suffix: 'MATIC',
+    anyToken: ''
   },
 }
