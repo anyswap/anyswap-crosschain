@@ -400,34 +400,36 @@ export default function Contracts() {
         </Accordion>
       ) : (
         <>
-          {t('adminAddress')}
-          <Input
-            type="text"
-            placeholder="0x..."
-            defaultValue={mpcAddress}
-            onChange={event => setMpcAddress(event.target.value)}
-          />
-          <Button onClick={() => saveServerAdminAddress(mpcAddress)} disabled={!validMpcOptions}>
-            {t('saveAdminAddressData')}
-          </Button>
-
           <Title>{t('validatorNodeSettings')}</Title>
-          <OptionWrapper>
-            {!onStorageNetwork && (
-              <Notice warning margin="0.3rem 0">
-                {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-              </Notice>
-            )}
-            <Lock enabled={!onStorageNetwork}>
+          {!onStorageNetwork && (
+            <Notice warning margin="0.3rem 0">
+              {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
+            </Notice>
+          )}
+          <Lock enabled={!onStorageNetwork}>
+            <OptionWrapper>
               <div>
-                {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+                {t('validatorNodeAddress')} ({t('validatorNodeAddressDescription')}).
               </div>
               <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
               <Button disabled={!apiIsValid} onClick={saveApiAddress}>
                 {t('saveAddress')}
               </Button>
-            </Lock>
-          </OptionWrapper>
+            </OptionWrapper>
+
+            <OptionWrapper>
+              {t('validatorNodeNetworkAddress')}. {t('validatorNodeNetworkAddressDescription')}.
+              <Input
+                type="text"
+                placeholder="0x..."
+                defaultValue={mpcAddress}
+                onChange={event => setMpcAddress(event.target.value)}
+              />
+              <Button onClick={() => saveServerAdminAddress(mpcAddress)} disabled={!validMpcOptions}>
+                {t('saveAdminAddressData')}
+              </Button>
+            </OptionWrapper>
+          </Lock>
         </>
       )}
 
