@@ -18,6 +18,7 @@ export enum VERSION {
   V6_1 = 'NFT',
   V7 = 'SOURCE_CHAIN',
   V7_TEST = 'SOURCE_CHAIN_TEST',
+  V7_BAS_TEST = 'SOURCE_CHAIN_BAS_TEST',
 }
 
 
@@ -30,6 +31,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
 export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
+// export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -60,6 +63,8 @@ function getUrlVersion (init:any) {
     version = VERSION.V7
   } else if (url.indexOf('https://test.multichain.org') === 0) {
     version = VERSION.V7_TEST
+  } else if (url.indexOf('https://bas.multichain.org') === 0) {
+    version = VERSION.V7_BAS_TEST
   } else {
     version = init
   }
@@ -310,6 +315,18 @@ export const controlConfig:any = {
     isOpenMerge: 1
   },
   [VERSION.V7_TEST]: {
+    bridgeInitDataChain: '97',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '1',
+    isOpenRouter: 0,
+    isOpenRouterTxns: env === 'dev' ? 1 : 0,
+    isOpenBridge: 0,
+    isOpenMerge: 1
+  },
+  [VERSION.V7_BAS_TEST]: {
     bridgeInitDataChain: '97',
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],

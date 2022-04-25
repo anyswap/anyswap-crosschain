@@ -42,6 +42,7 @@ import cfx from './cfx'
 import rbtc from './rbtc'
 import jewel from './jewel'
 import btt from './btt'
+import bas from './bas'
 
 import { ChainId } from './chainId'
 
@@ -51,6 +52,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...bas,
   ...btt,
   ...jewel,
   ...arbitrum,
@@ -254,6 +256,10 @@ const useChain:any = {
   ],
   [VERSION.V7_TEST]: [
     ...testChainList
+  ],
+  [VERSION.V7_BAS_TEST]: [
+    ChainId.BNB_TEST,
+    ChainId.BAS_TEST
   ],
   ALL_MAIN: [
     ChainId.ETH,
