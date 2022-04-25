@@ -8,7 +8,7 @@ import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP /*, EVM_PUB_KEY_REGEXP */} from '../../constants'
+import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP /*, EVM_PUB_KEY_REGEXP */ } from '../../constants'
 import Accordion from '../../components/Accordion'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
@@ -135,7 +135,6 @@ export default function Contracts() {
     }
   }
 
-
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
 
@@ -171,7 +170,7 @@ export default function Contracts() {
         provider: library?.provider,
         owner: account,
         data: {
-          serverAdminAddress,
+          serverAdminAddress
         },
         onReceipt: (receipt: any) => {
           // we set a new config. Update interface to be able to use other settings
@@ -244,7 +243,9 @@ export default function Contracts() {
         setUnderlyingDecimals(decimals)
 
         if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(symbol.toUpperCase(), underlyingNetworkId).call()
+          const tokenConfig = await routerConfig.methods
+            .getTokenConfig(symbol.toUpperCase(), underlyingNetworkId)
+            .call()
 
           if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
             const { ContractAddress } = tokenConfig
@@ -330,7 +331,6 @@ export default function Contracts() {
 
   return (
     <>
-
       <Title>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
@@ -351,7 +351,8 @@ export default function Contracts() {
           </>
         ) : (
           <>
-            {t('youNeedToDeployConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}.
+            {t('youNeedToDeployAndSaveConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}
+            .
           </>
         )}
       </Notice>
@@ -400,10 +401,7 @@ export default function Contracts() {
             defaultValue={mpcAddress}
             onChange={event => setMpcAddress(event.target.value)}
           />
-          <Button
-            onClick={() => saveServerAdminAddress(mpcAddress)}
-            disabled={!validMpcOptions}
-          >
+          <Button onClick={() => saveServerAdminAddress(mpcAddress)} disabled={!validMpcOptions}>
             {t('saveAdminAddressData')}
           </Button>
         </>
@@ -516,22 +514,27 @@ export default function Contracts() {
         </ZoneWrapper>
       </Lock>
 
-      <OptionWrapper>
-        {!onStorageNetwork && (
-          <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-          </Notice>
-        )}
-        <Lock enabled={!onStorageNetwork}>
-          <div>
-            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
-          </div>
-          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
-            {t('saveAddress')}
-          </Button>
-        </Lock>
-      </OptionWrapper>
+      {!!(stateRouterConfigChainId && stateRouterConfigAddress) && (
+        <>
+          <Title>{t('server')}</Title>
+          <OptionWrapper>
+            {!onStorageNetwork && (
+              <Notice warning margin="0.3rem 0">
+                {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
+              </Notice>
+            )}
+            <Lock enabled={!onStorageNetwork}>
+              <div>
+                {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+              </div>
+              <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+              <Button disabled={!apiIsValid} onClick={saveApiAddress}>
+                {t('saveAddress')}
+              </Button>
+            </Lock>
+          </OptionWrapper>
+        </>
+      )}
     </>
   )
 }

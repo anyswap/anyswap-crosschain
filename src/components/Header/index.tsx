@@ -205,11 +205,7 @@ export default function Header() {
         <HeaderElement>
           <SelectNetwork />
           <ViewAccountInfo />
-          <StyleDarkToggle
-            onClick={() => {
-              toggleDarkMode()
-            }}
-          >
+          <StyleDarkToggle onClick={toggleDarkMode}>
             {isDark ? <img src={IconDay} alt="" /> : <img src={IconNight} alt="" />}
           </StyleDarkToggle>
         </HeaderElement>

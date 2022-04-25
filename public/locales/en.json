@@ -366,13 +366,14 @@
   "dark": "Dark",
   "saveSettings": "Save settings",
   "settings": "Settings",
+  "adminPanel": "Admin panel",
   "interface": "Interface",
   "contracts": "Contracts",
   "configInformation": "Config information",
   "youHaveToBeOnConfigNetwork": "You have to be on a config network",
   "saveAllInfoWhenYouDeployAnything": "Save all information when you deploy anything",
   "setDeploymentInfoOnConfigNetwork": "Set deployment info on a config network",
-  "youNeedToDeployConfigFirst": "First you need to deploy the config",
+  "youNeedToDeployAndSaveConfigFirst": "First you need to deploy and save the config",
   "youCanDeployConfigToAnyNetwork": "You can deploy the config to any network",
   "youNeedOnlyOneConfig": "You only need one config",
   "beOnStorageNetworkToSaveConfig": "Be on {{network}} to save config info",
@@ -419,6 +420,7 @@
   "networkRouter": "Network router",
   "erc20Token": "ERC20 Token",
   "storageNetwork": "Storage network",
+  "server": "Server",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
 }

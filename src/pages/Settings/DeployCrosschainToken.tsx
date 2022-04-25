@@ -106,7 +106,6 @@ export default function DeployCrosschainToken({
     setPending(false)
   }
 
-console.log('>>>> DeployCrosschainToken', canDeployCrosschainToken, pending)
   return (
     <>
       <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>

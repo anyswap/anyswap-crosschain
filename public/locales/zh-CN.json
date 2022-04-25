@@ -365,13 +365,14 @@
   "dark": "黑暗",
   "saveSettings": "保存设置",
   "settings": "设置",
+  "adminPanel": "管理面板",
   "interface": "界面",
   "contracts": "合同",
   "configInformation": "配置信息",
   "youHaveToBeOnConfigNetwork": "您必須在配置網絡上",
   "saveAllInfoWhenYouDeployAnything": "部署任何內容時保存所有信息",
   "setDeploymentInfoOnConfigNetwork": "在配置網絡上設置部署信息",
-  "youNeedToDeployConfigFirst": "首先你需要部署配置",
+  "youNeedToDeployAndSaveConfigFirst": "首先，您需要部署并保存配置",
   "youCanDeployConfigToAnyNetwork": "您可以將配置部署到任何網絡",
   "youNeedOnlyOneConfig": "你只需要一個配置",
   "beOnStorageNetworkToSaveConfig": "繼續 {{network}} 保存配置信息",
@@ -418,6 +419,7 @@
   "networkRouter": "网络路由器",
   "erc20Token": "ERC20令牌",
   "storageNetwork": "存储网络",
+  "server": "服务器",
   "useThisNetworkToSaveSettings": "使用此网络保存设置（接口、合同配置、API地址）",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "接口设置仅对此网络可见"
 }

@@ -333,7 +333,7 @@ export default function NavList() {
 
         {active && isOwner && (
           <StyledNavLink id={`settings-nav-link`} to={'/settings'} onClick={openSettings}>
-            {t('settings')}
+            {t('adminPanel')}
           </StyledNavLink>
         )}
 
