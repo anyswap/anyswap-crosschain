@@ -40,8 +40,8 @@ export const Input = styled.input`
   color: inherit;
 `
 
-const Title = styled.h2`
-  margin: 1.6rem 0 0.8rem;
+const Title = styled.h2<{ noMargin?: boolean }>`
+  margin: ${({ noMargin }) => (!noMargin ? '1.6rem 0 0.8rem' : '0')};
 
   :first-child {
     margin-top: 1rem;
@@ -331,7 +331,13 @@ export default function Contracts() {
 
   return (
     <>
-      <Title>{t('mainConfig')}</Title>
+      <Notice margin="0.5rem 0 1rem">
+        {t('networksInfo')}:{' '}
+        <a href="https://chainlist.org/" target="_blank" rel="noreferrer">
+          chainlist.org
+        </a>
+      </Notice>
+      <Title noMargin>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <>
@@ -372,7 +378,7 @@ export default function Contracts() {
               <Input
                 type="number"
                 min="1"
-                placeholder="0x..."
+                placeholder=""
                 value={routerConfigChainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
@@ -404,6 +410,24 @@ export default function Contracts() {
           <Button onClick={() => saveServerAdminAddress(mpcAddress)} disabled={!validMpcOptions}>
             {t('saveAdminAddressData')}
           </Button>
+
+          <Title>{t('validatorNodeSettings')}</Title>
+          <OptionWrapper>
+            {!onStorageNetwork && (
+              <Notice warning margin="0.3rem 0">
+                {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
+              </Notice>
+            )}
+            <Lock enabled={!onStorageNetwork}>
+              <div>
+                {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
+              </div>
+              <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+              <Button disabled={!apiIsValid} onClick={saveApiAddress}>
+                {t('saveAddress')}
+              </Button>
+            </Lock>
+          </OptionWrapper>
         </>
       )}
 
@@ -431,7 +455,7 @@ export default function Contracts() {
                   type="number"
                   min="1"
                   step="1"
-                  placeholder="0x..."
+                  placeholder=""
                   value={routerChainId}
                   defaultValue={routerChainId}
                   onChange={event => setRouterChainId(event.target.value)}
@@ -513,28 +537,6 @@ export default function Contracts() {
           </Lock>
         </ZoneWrapper>
       </Lock>
-
-      {!!(stateRouterConfigChainId && stateRouterConfigAddress) && (
-        <>
-          <Title>{t('server')}</Title>
-          <OptionWrapper>
-            {!onStorageNetwork && (
-              <Notice warning margin="0.3rem 0">
-                {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-              </Notice>
-            )}
-            <Lock enabled={!onStorageNetwork}>
-              <div>
-                {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
-              </div>
-              <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-              <Button disabled={!apiIsValid} onClick={saveApiAddress}>
-                {t('saveAddress')}
-              </Button>
-            </Lock>
-          </OptionWrapper>
-        </>
-      )}
     </>
   )
 }

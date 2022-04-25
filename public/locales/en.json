@@ -421,6 +421,8 @@
   "erc20Token": "ERC20 Token",
   "storageNetwork": "Storage network",
   "server": "Server",
+  "validatorNodeSettings": "Validator node settings",
+  "networksInfo": "Networks info",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
 }
