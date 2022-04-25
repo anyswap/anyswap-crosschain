@@ -5,7 +5,8 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
-import { OptionWrapper, OptionLabel, Input, Button } from './Contracts'
+import { OptionWrapper, Input, Button } from './Contracts'
+import OptionLabel from './OptionLabel'
 import Accordion from '../../components/Accordion'
 
 enum Direction {
@@ -114,7 +115,11 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
         BigValueThreshold: formatAmount(bigValueThreshold, Direction.to),
         SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(MILLION).toString()
       }
-      const { hash } = await routerConfigSigner.setSwapConfig(underlying.symbol.toUpperCase(), underlying.networkId, swapConfig)
+      const { hash } = await routerConfigSigner.setSwapConfig(
+        underlying.symbol.toUpperCase(),
+        underlying.networkId,
+        swapConfig
+      )
 
       addTransaction(
         { hash },

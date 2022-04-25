@@ -14,6 +14,7 @@ import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
 import DeployCrosschainToken from './DeployCrosschainToken'
 import SwapSettings from './SwapSettings'
+import OptionLabel from './OptionLabel'
 import { Notice, Lock } from './index'
 import config from '../../config'
 
@@ -21,11 +22,6 @@ export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0.3rem 0;
-`
-
-export const OptionLabel = styled.label`
-  display: flex;
-  flex-direction: column;
 `
 
 export const Input = styled.input`
@@ -331,12 +327,6 @@ export default function Contracts() {
 
   return (
     <>
-      <Notice margin="0.5rem 0 1rem">
-        {t('networksInfo')}:{' '}
-        <a href="https://chainlist.org/" target="_blank" rel="noreferrer">
-          chainlist.org
-        </a>
-      </Notice>
       <Title noMargin>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
@@ -373,7 +363,7 @@ export default function Contracts() {
                 network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName
               })}
             </Notice>
-            <OptionLabel>
+            <OptionLabel displayChainsLink>
               {t('configChainId')}
               <Input
                 type="number"
@@ -451,7 +441,7 @@ export default function Contracts() {
               {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
             </Notice>
             <Lock enabled={!chainId || !onConfigNetwork}>
-              <OptionLabel>
+              <OptionLabel displayChainsLink>
                 {t('routerChainId')}
                 <Input
                   type="number"
@@ -482,7 +472,7 @@ export default function Contracts() {
         <ZoneWrapper blocked={!routerAddress}>
           <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
           <OptionWrapper>
-            <OptionLabel>
+            <OptionLabel displayChainsLink>
               {t('erc20ChainId')}
               <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
               {t('erc20TokenAddress')}

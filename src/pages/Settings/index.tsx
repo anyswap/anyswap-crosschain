@@ -34,11 +34,6 @@ export const Notice = styled.div<{ warning?: boolean; error?: boolean; margin?: 
   background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
 `
 
-export const OptionLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-`
-
 const StorageNotice = styled.div`
   margin-bottom: 0.6rem;
 `
