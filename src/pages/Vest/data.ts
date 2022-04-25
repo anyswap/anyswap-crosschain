@@ -22,7 +22,7 @@ export const REWARD_BASE_INFO = {
 export const veMULTI:any = {
   [ChainId.RINKEBY]: {
     ...VENFT_BASE_INFO,
-    address: '0x1E1A9090c8F2adF292042a89639d7a54Ab523Ad7'
+    address: '0xF0dA9470fe5C1df563F89a56a5238150295468D5'
   },
   // [ChainId.BNB_TEST]: {
   //   ...VENFT_BASE_INFO,
@@ -53,7 +53,7 @@ export const REWARD_TOKEN:any = {
 
 export const REWARD:any = {
   [ChainId.RINKEBY]: {
-    address: '0x9fe7497ef6243649212b0BA3e185d75e14f1F1e7'
+    address: '0x45f529b815716B8bd40606b9E43c1251CF43987D'
   },
   // [ChainId.BNB_TEST]: {
   //   address: '0x25c5Cc9082d7d87B3321868bA2C64e0C969072a4'
