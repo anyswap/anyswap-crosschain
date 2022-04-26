@@ -3,21 +3,18 @@ import STORAGE from '../constants/abis/app/Storage.json'
 import { chainInfo } from '../config/chainConfig'
 import config from '../config'
 import { getCurrentDomain } from '../utils/url'
-import { STORAGE_METHODS } from '../constants'
+import { STORAGE_METHODS, STORAGE_APP_KEY } from '../constants'
 
-const merge = ({
-  oldData,
-  newData,
-  onElement
-}: {
-  oldData: any
-  newData: any
-  onElement: (k: string, oldKeyData: any, newKeyData: any) => any
-}) => {
-  return [...new Set([...Object.keys(oldData), ...Object.keys(newData)])].reduce(
-    (acc, key) => ({ ...acc, [key]: onElement(key, oldData[key], newData[key]) }),
-    {}
-  )
+type Data = { [k: string]: any }
+
+const updateData = (oldData: Data, newData: Data) => {
+  return {
+    ...oldData,
+    [STORAGE_APP_KEY]: {
+      ...oldData[STORAGE_APP_KEY],
+      ...newData
+    }
+  }
 }
 
 export async function callStorage(params: {
@@ -54,7 +51,7 @@ export async function updateStorageData(params: {
   owner: string
   onHash?: (hash: string) => void
   onReceipt?: (receipt: object, success: boolean) => void
-  data: { [k: string]: any }
+  data: Data
 }) {
   const { provider, onHash, onReceipt, data, owner } = params
   const { storage: storageAddress } = chainInfo[config.STORAGE_CHAIN_ID]
@@ -70,31 +67,15 @@ export async function updateStorageData(params: {
       const { info: strInfo } = currentData
       const info = JSON.parse(strInfo || '{}')
 
-      if (!info.crossChainSettings) info.crossChainSettings = {}
+      if (!info[STORAGE_APP_KEY]) info[STORAGE_APP_KEY] = {}
 
-      const result = {
-        ...info,
-        crossChainSettings: merge({
-          oldData: info.crossChainSettings,
-          newData: data,
-          onElement: (key, oldKeyData, newKeyData) => {
-            if (key === 'apiAddress') return newKeyData || ''
-
-            return newKeyData || oldKeyData
-          }
-        })
-      }
+      const newData = updateData(info, data)
 
       return new Promise((resolve, reject) => {
-        storage.methods[STORAGE_METHODS.setKeyData](
-          ...[
-            domain,
-            {
-              owner,
-              info: JSON.stringify(result)
-            }
-          ]
-        )
+        storage.methods[STORAGE_METHODS.setKeyData](domain, {
+          owner,
+          info: JSON.stringify(newData)
+        })
           .send({ from: owner })
           .on('transactionHash', (hash: string) => {
             if (typeof onHash === 'function') onHash(hash)
