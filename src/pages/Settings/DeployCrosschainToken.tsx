@@ -6,7 +6,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { deployCrosschainERC20 } from '../../utils/contract'
-import { Button } from './Contracts'
+import { ButtonPrimary } from '../../components/Button'
 
 export default function DeployCrosschainToken({
   routerAddress,
@@ -48,7 +48,9 @@ export default function DeployCrosschainToken({
       if (!underlying.symbol || !underlying.networkId || !routerConfig) return
 
       try {
-        const tokenConfig = await routerConfig.methods.getTokenConfig(underlying.symbol.toUpperCase(), underlying.networkId).call()
+        const tokenConfig = await routerConfig.methods
+          .getTokenConfig(underlying.symbol.toUpperCase(), underlying.networkId)
+          .call()
 
         if (tokenConfig.ContractAddress && tokenConfig.ContractAddress !== ZERO_ADDRESS) {
           setCrosschainTokenAddress(tokenConfig.ContractAddress)
@@ -108,9 +110,9 @@ export default function DeployCrosschainToken({
 
   return (
     <>
-      <Button disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
+      <ButtonPrimary disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
         {t('deployCrossChainToken')}
-      </Button>
+      </ButtonPrimary>
     </>
   )
 }

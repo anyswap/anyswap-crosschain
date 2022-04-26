@@ -20,8 +20,7 @@ const Base = styled(RebassButton)<{
 
   font-weight: 500;
   text-align: center;
-  border-radius: 12px;
-  border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
+  border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '12px')};
   outline: none;
   border: 1px solid transparent;
   color: white;
@@ -33,8 +32,9 @@ const Base = styled(RebassButton)<{
   cursor: pointer;
   position: relative;
   z-index: 1;
+
   &:disabled {
-    cursor: auto;
+    cursor: not-allowed;
   }
 
   > * {
@@ -65,7 +65,6 @@ export const ButtonPrimary = styled(Base)<{ fullWidth?: boolean; margin?: string
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : theme.bg3)};
     color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.text3)};
-    cursor: auto;
     box-shadow: none;
     border: 1px solid transparent;
     outline: none;
@@ -99,22 +98,6 @@ export const ButtonLight = styled(Base)`
   }
 `
 
-export const ButtonGray = styled(Base)`
-  background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text2};
-  font-size: 16px;
-  font-weight: 500;
-  &:focus {
-    opacity: 0.91;
-  }
-  &:hover {
-    opacity: 0.92;
-  }
-  &:active {
-    opacity: 0.93;
-  }
-`
-
 export const ButtonSecondary = styled(Base)`
   border: 1px solid ${({ theme }) => theme.primary4};
   color: ${({ theme }) => theme.primary4};
@@ -141,26 +124,6 @@ export const ButtonSecondary = styled(Base)`
   }
 `
 
-export const ButtonPink = styled(Base)`
-  background-color: ${({ theme }) => theme.primary1};
-  color: white;
-
-  &:focus {
-    opacity: 0.91;
-  }
-  &:hover {
-    opacity: 0.92;
-  }
-  &:active {
-    opacity: 0.93;
-  }
-  &:disabled {
-    background-color: ${({ theme }) => theme.primary1};
-    opacity: 50%;
-    cursor: auto;
-  }
-`
-
 export const ButtonOutlined = styled(Base)`
   border: 1px solid ${({ theme }) => theme.bg2};
   background-color: transparent;
@@ -174,28 +137,6 @@ export const ButtonOutlined = styled(Base)`
   }
   &:active {
     opacity: 0.93;
-  }
-  &:disabled {
-    opacity: 50%;
-    cursor: auto;
-  }
-`
-
-export const ButtonEmpty = styled(Base)`
-  background-color: transparent;
-  color: ${({ theme }) => theme.primary4};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:focus {
-    text-decoration: underline;
-  }
-  &:hover {
-    text-decoration: underline;
-  }
-  &:active {
-    text-decoration: underline;
   }
   &:disabled {
     opacity: 50%;
@@ -308,17 +249,6 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
         <ChevronDown size={24} />
       </RowBetween>
     </ButtonPrimary>
-  )
-}
-
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonOutlined {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonOutlined>
   )
 }
 

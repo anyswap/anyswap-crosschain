@@ -10,16 +10,6 @@ import Interface from './Interface'
 import Contracts from './Contracts'
 import config from '../../config'
 
-export const Lock = styled.div<{ enabled?: boolean }>`
-  ${({ enabled }) =>
-    enabled
-      ? `
-      opacity: 0.3;
-      pointer-events: none;
-    `
-      : ''}
-`
-
 export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   margin: ${({ margin }) => margin || 0.2}rem 0;
   padding: 0.2rem;

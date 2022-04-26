@@ -16,7 +16,7 @@ const Button = styled(ButtonPrimary)`
 export default function DeployRouter({
   onDeploymentCallback,
   serverAdminAddress
-} : {
+}: {
   onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
   serverAdminAddress: string
 }) {
@@ -37,7 +37,11 @@ export default function DeployRouter({
 
   const [canDeploy, setCanDeploy] = useState(false)
 
-  useEffect(() => setCanDeploy(Boolean(active && wrappedToken)), [active, wrappedToken])
+  useEffect(() => setCanDeploy(Boolean(active && wrappedToken && serverAdminAddress)), [
+    active,
+    wrappedToken,
+    serverAdminAddress
+  ])
 
   const onDeployment = async () => {
     if (!currentChainId || !wrappedToken || !routerConfig) return
@@ -70,7 +74,7 @@ export default function DeployRouter({
 
   return (
     <Button disabled={!canDeploy} onClick={onDeployment}>
-      {t('deployRouter')}
+      {t(serverAdminAddress ? 'deployRouter' : 'saveValidatorNodeNetworkAddress')}
     </Button>
   )
 }

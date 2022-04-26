@@ -422,6 +422,8 @@
   "storageNetwork": "存储网络",
   "server": "服务器",
   "validatorNodeSettings": "验证器节点设置",
+  "switchToNetwork": "切换到{{network}}",
+  "saveValidatorNodeNetworkAddress": "保存验证器节点网络地址",
   "networksInfo": "网络信息",
   "useThisNetworkToSaveSettings": "使用此网络保存设置（接口、合同配置、API地址）",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "接口设置仅对此网络可见"
