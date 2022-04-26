@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
+import { resetAppData } from '../../utils/storage'
 import AppBody from '../AppBody'
 import { chainInfo } from '../../config/chainConfig'
 import { useAppState } from '../../state/application/hooks'
@@ -9,16 +10,6 @@ import { MyBalanceBox } from '../Dashboard/styleds'
 import Interface from './Interface'
 import Contracts from './Contracts'
 import config from '../../config'
-
-export const Lock = styled.div<{ enabled?: boolean }>`
-  ${({ enabled }) =>
-    enabled
-      ? `
-      opacity: 0.3;
-      pointer-events: none;
-    `
-      : ''}
-`
 
 export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
   margin: ${({ margin }) => margin || 0.2}rem 0;
@@ -28,15 +19,10 @@ export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
 
 export const Notice = styled.div<{ warning?: boolean; error?: boolean; margin?: string }>`
   width: 100%;
-  padding: 0.3rem;
+  padding: 0.5rem;
   ${({ margin }) => (margin ? `margin: ${margin};` : '')}
   border-radius: 0.4rem;
   background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
-`
-
-export const OptionLabel = styled.label`
-  display: flex;
-  flex-direction: column;
 `
 
 const StorageNotice = styled.div`
@@ -81,13 +67,19 @@ const Content = styled.div`
 
 export default function Settings() {
   const { t } = useTranslation()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const [tabs, setTabs] = useState<string[]>([])
   const [tab, setTab] = useState('interface')
   const { owner } = useAppState()
 
+  const [onStorageChain, setOnStorageChain] = useState(false)
+
   useEffect(() => {
-    if (chainId === config.STORAGE_CHAIN_ID) {
+    setOnStorageChain(!!chainId && chainId === config.STORAGE_CHAIN_ID)
+  }, [chainId])
+
+  useEffect(() => {
+    if (onStorageChain) {
       setTabs(['interface', 'contracts'])
       setTab('interface')
     } else {
@@ -101,6 +93,13 @@ export default function Settings() {
   useEffect(() => {
     setIsOwner(!owner || account?.toLowerCase() === owner?.toLowerCase())
   }, [account, owner])
+
+  const reset = async () => {
+    await resetAppData({
+      library,
+      owner: account || ''
+    })
+  }
 
   return isOwner ? (
     <AppBody>
@@ -122,6 +121,12 @@ export default function Settings() {
           {tab === 'contracts' && <Contracts />}
           {tab === 'interface' && chainId === config.STORAGE_CHAIN_ID && <Interface />}
         </Content>
+
+        {process.env.NODE_ENV === 'development' && (
+          <button onClick={reset} disabled={!account || !onStorageChain}>
+            Reset app data
+          </button>
+        )}
       </SettingsWrapper>
     </AppBody>
   ) : null

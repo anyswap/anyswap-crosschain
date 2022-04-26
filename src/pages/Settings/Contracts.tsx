@@ -2,30 +2,30 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
+import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
+import { updateAppOptions, updateRouterData } from '../../state/application/actions'
 import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
-import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP /*, EVM_PUB_KEY_REGEXP */} from '../../constants'
+import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
+import { ButtonPrimary } from '../../components/Button'
 import Accordion from '../../components/Accordion'
+import Lock from '../../components/Lock'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
 import DeployCrosschainToken from './DeployCrosschainToken'
 import SwapSettings from './SwapSettings'
-import { Notice, Lock } from './index'
+import OptionLabel from './OptionLabel'
+import { Notice } from './index'
 import config from '../../config'
 
 export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0.3rem 0;
-`
-
-export const OptionLabel = styled.label`
-  display: flex;
-  flex-direction: column;
 `
 
 export const Input = styled.input`
@@ -40,8 +40,8 @@ export const Input = styled.input`
   color: inherit;
 `
 
-const Title = styled.h2`
-  margin: 1.6rem 0 0.8rem;
+const Title = styled.h2<{ noMargin?: boolean }>`
+  margin: ${({ noMargin }) => (!noMargin ? '1.6rem 0 0.8rem' : '0')};
 
   :first-child {
     margin-top: 1rem;
@@ -66,8 +66,6 @@ const ZoneWrapper = styled.div<{ blocked?: boolean }>`
 `
 
 const ConfigInfo = styled.div`
-  margin: 0 0 0.5rem;
-  padding: 0;
   font-weight: 500;
 
   h4 {
@@ -79,19 +77,10 @@ const ConfigLink = styled.a`
   word-break: break-all;
 `
 
-export const Button = styled.button`
-  cursor: pointer;
-  width: 100%;
-  font-size: inherit;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.3rem;
-`
-
 export default function Contracts() {
   const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
-
+  const dispatch = useDispatch()
   const {
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
@@ -99,6 +88,17 @@ export default function Contracts() {
     routerAddress: stateRouterAddress,
     serverAdminAddress: stateServerAdminAddress
   } = useAppState()
+
+  const [storageNetworkName] = useState(chainInfo[config.STORAGE_CHAIN_ID]?.networkName)
+  const [configNetworkName, setConfigNetworkName] = useState(
+    stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : ''
+  )
+
+  useEffect(() => {
+    if (stateRouterConfigChainId) {
+      setConfigNetworkName(chainInfo[stateRouterConfigChainId]?.networkName || '')
+    }
+  }, [stateRouterConfigChainId])
 
   const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
   const routerConfigSigner = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
@@ -121,13 +121,15 @@ export default function Contracts() {
 
     try {
       updateStorageData({
-        provider: library?.provider,
+        library,
         owner: account,
         data: {
           apiAddress
         },
-        onReceipt: (receipt: any) => {
-          console.log('receipt: ', receipt)
+        onReceipt: (receipt, success) => {
+          if (success) {
+            dispatch(updateAppOptions([{ key: 'apiAddress', value: apiAddress }]))
+          }
         }
       })
     } catch (error) {
@@ -135,52 +137,56 @@ export default function Contracts() {
     }
   }
 
-
-  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
-  const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
-
-  const saveRouterConfig = (routerConfigAddress: string, configChainId: number) => {
-    if (!account) return
-
-    return updateStorageData({
-      provider: library?.provider,
-      owner: account,
-      data: {
-        routerConfigAddress,
-        routerConfigChainId: configChainId
-      },
-      onReceipt: (receipt: any) => {
-        // we set a new config. Update interface to be able to use other settings
-        console.log('save router config: ', receipt)
-      }
-    })
-  }
-
-  const [mpcAddress, setMpcAddress] = useState(stateServerAdminAddress)
+  const [mpcAddress, setMpcAddress] = useState(stateServerAdminAddress || '')
   const [validMpcOptions, setValidMpcOptions] = useState(false)
 
   useEffect(() => {
-    setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP)))
+    setValidMpcOptions(Boolean(mpcAddress?.match(EVM_ADDRESS_REGEXP)))
   }, [mpcAddress])
 
-  const saveServerAdminAddress = (serverAdminAddress: string) => {
+  const saveServerAdminAddress = async () => {
     if (!account) return
 
     if (validMpcOptions) {
-      return updateStorageData({
-        provider: library?.provider,
+      await updateStorageData({
+        library,
         owner: account,
         data: {
-          serverAdminAddress,
+          serverAdminAddress: mpcAddress
         },
-        onReceipt: (receipt: any) => {
-          // we set a new config. Update interface to be able to use other settings
-          console.log('save router config: ', receipt)
+        onReceipt: (receipt, success) => {
+          if (success) {
+            dispatch(updateAppOptions([{ key: 'serverAdminAddress', value: mpcAddress }]))
+          }
         }
       })
-    } else {
-      return
     }
+  }
+
+  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
+  const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
+
+  const saveRouterConfig = () => {
+    if (!account) return
+
+    return updateStorageData({
+      library,
+      owner: account,
+      data: {
+        routerConfigAddress,
+        routerConfigChainId
+      },
+      onReceipt: (receipt, success) => {
+        if (success) {
+          dispatch(
+            updateAppOptions([
+              { key: 'routerConfigAddress', value: routerConfigAddress },
+              { key: 'routerConfigChainId', value: routerConfigChainId }
+            ])
+          )
+        }
+      }
+    })
   }
 
   const [routerChainId, setRouterChainId] = useState('')
@@ -196,18 +202,24 @@ export default function Contracts() {
     }
   }, [chainId, stateRouterAddress[chainId || 0]])
 
-  const setChainConfig = async (routerAddress: string, routerChainId: number) => {
-    if (!routerChainId || !routerConfigSigner || stateRouterConfigChainId !== chainId) return
+  const setChainConfig = async () => {
+    if (!routerConfigSigner) return
 
     try {
       const { name } = chainInfo[routerChainId]
 
-      await routerConfigSigner.setChainConfig(routerChainId, {
+      const tx = await routerConfigSigner.setChainConfig(routerChainId, {
         BlockChain: name,
         RouterContract: routerAddress,
         Confirmations: 3,
         InitialHeight: 0
       })
+
+      const receipt = tx.wait()
+
+      if (receipt.status) {
+        dispatch(updateRouterData({ chainId: Number(routerChainId), routerAddress: routerAddress }))
+      }
     } catch (error) {
       console.error(error)
     }
@@ -244,7 +256,9 @@ export default function Contracts() {
         setUnderlyingDecimals(decimals)
 
         if (routerConfig) {
-          const tokenConfig = await routerConfig.methods.getTokenConfig(symbol.toUpperCase(), underlyingNetworkId).call()
+          const tokenConfig = await routerConfig.methods
+            .getTokenConfig(symbol.toUpperCase(), underlyingNetworkId)
+            .call()
 
           if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
             const { ContractAddress } = tokenConfig
@@ -287,7 +301,7 @@ export default function Contracts() {
   const [onConfigNetwork, setOnConfigNetwork] = useState(false)
 
   useEffect(() => {
-    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === stateRouterConfigChainId))
+    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === Number(stateRouterConfigChainId)))
   }, [chainId, stateRouterConfigChainId])
 
   const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
@@ -330,28 +344,24 @@ export default function Contracts() {
 
   return (
     <>
-
-      <Title>{t('mainConfig')}</Title>
+      <Title noMargin>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
-          <>
-            <ConfigInfo>
-              <h4>{t('configInformation')}:</h4>
-              {chainInfo[stateRouterConfigChainId]?.networkName || ''}:{' '}
-              <ConfigLink
-                href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {stateRouterConfigAddress}
-              </ConfigLink>
-            </ConfigInfo>
-            {t('youHaveToBeOnConfigNetwork')}. {t('saveAllInfoWhenYouDeployAnything')}.{' '}
-            {t('setDeploymentInfoOnConfigNetwork')}.
-          </>
+          <ConfigInfo>
+            <h4>{t('configInformation')}</h4>
+            {configNetworkName}:{' '}
+            <ConfigLink
+              href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {stateRouterConfigAddress}
+            </ConfigLink>
+          </ConfigInfo>
         ) : (
           <>
-            {t('youNeedToDeployConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}.
+            {t('youNeedToDeployAndSaveConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}
+            .
           </>
         )}
       </Notice>
@@ -362,176 +372,152 @@ export default function Contracts() {
           <OptionWrapper>
             <Notice warning margin="0.4rem 0 0.6rem">
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-              {t('beOnStorageNetworkToSaveConfig', {
-                network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName
-              })}
             </Notice>
-            <OptionLabel>
+            <OptionLabel displayChainsLink>
               {t('configChainId')}
               <Input
                 type="number"
                 min="1"
-                placeholder="0x..."
-                value={routerConfigChainId}
+                placeholder=""
+                defaultValue={routerConfigChainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
               <Input
                 type="text"
                 placeholder="0x..."
-                value={routerConfigAddress}
+                defaultValue={routerConfigAddress}
                 onChange={event => setRouterConfigAddress(event.target.value)}
               />
             </OptionLabel>
           </OptionWrapper>
-          <Button
-            disabled={!canSaveRouterConfig}
-            onClick={() => saveRouterConfig(routerConfigAddress, Number(routerConfigChainId))}
-          >
-            {t('saveConfig')}
-          </Button>
+          <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
+            {t(onStorageNetwork ? 'saveConfig' : 'switchToNetwork', { network: storageNetworkName })}
+          </ButtonPrimary>
         </Accordion>
       ) : (
         <>
-          {t('adminAddress')}
-          <Input
-            type="text"
-            placeholder="0x..."
-            defaultValue={mpcAddress}
-            onChange={event => setMpcAddress(event.target.value)}
-          />
-          <Button
-            onClick={() => saveServerAdminAddress(mpcAddress)}
-            disabled={!validMpcOptions}
-          >
-            {t('saveAdminAddressData')}
-          </Button>
+          <Title>{t('validatorNodeSettings')}</Title>
+          <OptionWrapper>
+            <div>
+              {t('validatorNodeAddress')} ({t('validatorNodeAddressDescription')}).
+            </div>
+            <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+            <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid || !onStorageNetwork}>
+              {t(onStorageNetwork ? 'saveAddress' : 'switchToNetwork', { network: storageNetworkName })}
+            </ButtonPrimary>
+          </OptionWrapper>
+
+          <OptionWrapper>
+            {t('validatorNodeNetworkAddress')}. {t('validatorNodeNetworkAddressDescription')}.
+            <Input
+              type="text"
+              placeholder="0x..."
+              defaultValue={mpcAddress}
+              onChange={event => setMpcAddress(event.target.value)}
+            />
+            <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions || !onStorageNetwork}>
+              {t(onStorageNetwork ? 'saveAdminAddressData' : 'switchToNetwork', { network: storageNetworkName })}
+            </ButtonPrimary>
+          </OptionWrapper>
         </>
       )}
 
       <Title>{t('networkRouter')}</Title>
-      <Lock>
-        <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
-          {chainId && !stateRouterAddress[chainId] ? (
-            <>
-              <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
-              <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={mpcAddress} />
-            </>
-          ) : (
-            <span />
-          )}
+      <Accordion title={t('deployAndSetRouter')} margin="0.5rem 0">
+        {chainId && !stateRouterAddress[chainId] ? (
+          <>
+            <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
+            <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={stateServerAdminAddress} />
+          </>
+        ) : (
+          <span />
+        )}
 
-          <OptionWrapper>
-            <Notice warning margin="0.4rem 0">
-              {t('afterDeploymentFillTheseInputsAndSaveInfo')}.{' '}
-              {t('beOnConfigNetworkToSaveRouterInfo', { network: chainInfo[routerConfigChainId]?.networkName })}
-            </Notice>
-            <Lock enabled={!chainId || !onConfigNetwork}>
+        <OptionWrapper>
+          <Notice warning margin="0.4rem 0">
+            {t('afterDeploymentFillTheseInputsAndSaveInfo')}
+          </Notice>
+          <OptionLabel displayChainsLink>
+            {t('routerChainId')}
+            <Input
+              type="number"
+              min="1"
+              step="1"
+              placeholder=""
+              defaultValue={routerChainId}
+              onChange={event => setRouterChainId(event.target.value)}
+            />
+            {t('routerAddress')}
+            <Input
+              type="text"
+              placeholder="0x..."
+              defaultValue={routerAddress}
+              onChange={event => setRouterAddress(event.target.value)}
+            />
+          </OptionLabel>
+          <ButtonPrimary onClick={setChainConfig} disabled={!onConfigNetwork || !routerChainId || !routerAddress}>
+            {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
+          </ButtonPrimary>
+        </OptionWrapper>
+      </Accordion>
+
+      <Title>{t('erc20Token')}</Title>
+      <ZoneWrapper blocked={!routerAddress}>
+        <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
+        <OptionWrapper>
+          <OptionLabel displayChainsLink>
+            {t('erc20ChainId')}
+            <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
+            {t('erc20TokenAddress')}
+            <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
+          </OptionLabel>
+        </OptionWrapper>
+
+        <DeployCrosschainToken
+          routerAddress={routerAddress}
+          underlying={underlying}
+          onDeploymentCallback={onDeployCrosschainToken}
+        />
+
+        {!onConfigNetwork && (
+          <Notice warning margin="0.3rem 0">
+            {t('switchToConfigNetworkToAccessTheseOptions')}
+          </Notice>
+        )}
+        {!hasUnderlyingInfo && (
+          <Notice warning margin="0.3rem 0">
+            {t('fillErc20InputsToUnlockTheseSettings')}
+          </Notice>
+        )}
+
+        <Lock enabled={!hasUnderlyingInfo || !onConfigNetwork}>
+          <Accordion title={t('tokenConfig')} margin="0.5rem 0">
+            <OptionWrapper>
               <OptionLabel>
-                {t('routerChainId')}
+                {t('idOfCrosschainTokenNetwork')}
                 <Input
+                  defaultValue={crosschainTokenChainId}
                   type="number"
                   min="1"
                   step="1"
-                  placeholder="0x..."
-                  value={routerChainId}
-                  defaultValue={routerChainId}
-                  onChange={event => setRouterChainId(event.target.value)}
+                  onChange={event => setCrosschainTokenChainId(event.target.value)}
                 />
-                {t('routerAddress')}
+                {t('crosschainTokenAddress')}
                 <Input
+                  defaultValue={crosschainToken}
                   type="text"
                   placeholder="0x..."
-                  value={routerAddress}
-                  defaultValue={routerAddress}
-                  onChange={event => setRouterAddress(event.target.value)}
+                  onChange={event => setCrosschainToken(event.target.value)}
                 />
+                <ButtonPrimary onClick={setTokenConfig}>{t('setTokenConfig')}</ButtonPrimary>
               </OptionLabel>
-              <Button onClick={() => setChainConfig(routerAddress, Number(routerChainId))}>
-                {t('setChainConfig')}
-              </Button>
-            </Lock>
-          </OptionWrapper>
-        </Accordion>
+            </OptionWrapper>
+          </Accordion>
 
-        <Title>{t('erc20Token')}</Title>
-        <ZoneWrapper blocked={!routerAddress}>
-          <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
-          <OptionWrapper>
-            <OptionLabel>
-              {t('erc20ChainId')}
-              <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
-              {t('erc20TokenAddress')}
-              <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
-              {/* {t('erc20TokenName')}
-              <Input type="text" onChange={event => setUnderlyingName(event.target.value)} /> */}
-            </OptionLabel>
-          </OptionWrapper>
-
-          <DeployCrosschainToken
-            routerAddress={routerAddress}
-            underlying={underlying}
-            onDeploymentCallback={onDeployCrosschainToken}
-          />
-
-          {!onConfigNetwork && (
-            <Notice warning margin="0.3rem 0">
-              {t('switchToConfigNetworkToAccessTheseOptions')}
-            </Notice>
-          )}
-          {!hasUnderlyingInfo && (
-            <Notice warning margin="0.3rem 0">
-              {t('fillErc20InputsToUnlockTheseSettings')}
-            </Notice>
-          )}
-
-          <Lock enabled={!hasUnderlyingInfo || !onConfigNetwork}>
-            <Accordion title={t('tokenConfig')} margin="0.5rem 0">
-              <OptionWrapper>
-                <OptionLabel>
-                  {t('idOfCrosschainTokenNetwork')}
-                  <Input
-                    defaultValue={crosschainTokenChainId}
-                    value={crosschainTokenChainId}
-                    type="number"
-                    min="1"
-                    step="1"
-                    onChange={event => setCrosschainTokenChainId(event.target.value)}
-                  />
-                  {t('crosschainTokenAddress')}
-                  <Input
-                    defaultValue={crosschainToken}
-                    value={crosschainToken}
-                    type="text"
-                    placeholder="0x..."
-                    onChange={event => setCrosschainToken(event.target.value)}
-                  />
-                  <Button onClick={setTokenConfig}>{t('setTokenConfig')}</Button>
-                </OptionLabel>
-              </OptionWrapper>
-            </Accordion>
-
-            <SwapSettings underlying={underlying} />
-          </Lock>
-        </ZoneWrapper>
-      </Lock>
-
-      <OptionWrapper>
-        {!onStorageNetwork && (
-          <Notice warning margin="0.3rem 0">
-            {t('switchToStorageNetworkToSaveIt', { network: chainInfo[config.STORAGE_CHAIN_ID]?.networkName })}
-          </Notice>
-        )}
-        <Lock enabled={!onStorageNetwork}>
-          <div>
-            {t('apiServerAddress')}. {t('apiServerAddressDescription')}.
-          </div>
-          <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-          <Button disabled={!apiIsValid} onClick={saveApiAddress}>
-            {t('saveAddress')}
-          </Button>
+          <SwapSettings underlying={underlying} />
         </Lock>
-      </OptionWrapper>
+      </ZoneWrapper>
     </>
   )
 }

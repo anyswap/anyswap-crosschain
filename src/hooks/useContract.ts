@@ -42,7 +42,7 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
-export function useRouterConfigContract(address: string, chainId: number, withSigner?: boolean): Contract | null {
+export function useRouterConfigContract(address?: string, chainId?: number, withSigner?: boolean): Contract | null {
   const { library } = useActiveWeb3React()
 
   return useMemo(() => {

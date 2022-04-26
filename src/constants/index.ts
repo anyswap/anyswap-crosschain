@@ -5,6 +5,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 // import { injected, walletconnect, walletlink } from '../connectors'
 import { injected, walletconnect } from '../connectors'
 
+export const STORAGE_APP_KEY = 'crossChainSettings'
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const EVM_ADDRESS_REGEXP = /^0x[A-Fa-f0-9]{40}$/
 export const EVM_PUB_KEY_REGEXP = /^0x[A-Fa-f0-9]{128}$/

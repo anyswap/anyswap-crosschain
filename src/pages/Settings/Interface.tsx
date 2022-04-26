@@ -128,7 +128,7 @@ export default function Interface() {
 
     try {
       await updateStorageData({
-        provider: library?.provider,
+        library,
         owner: account,
         data: {
           projectName,

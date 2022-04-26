@@ -1,67 +1,42 @@
-import Web3 from 'web3'
+import { Web3Provider } from '@ethersproject/providers'
 import STORAGE from '../constants/abis/app/Storage.json'
 import { chainInfo } from '../config/chainConfig'
 import config from '../config'
 import { getCurrentDomain } from '../utils/url'
-import { STORAGE_METHODS } from '../constants'
+import { getContractInstance } from './contract'
+import { STORAGE_METHODS, STORAGE_APP_KEY } from '../constants'
 
-const merge = ({
-  oldData,
-  newData,
-  onElement
-}: {
-  oldData: any
-  newData: any
-  onElement: (k: string, oldKeyData: any, newKeyData: any) => any
-}) => {
-  return [...new Set([...Object.keys(oldData), ...Object.keys(newData)])].reduce(
-    (acc, key) => ({ ...acc, [key]: onElement(key, oldData[key], newData[key]) }),
-    {}
-  )
+const storageAddress = (): string => {
+  const { storage } = chainInfo[config.STORAGE_CHAIN_ID]
+
+  return storage || ''
 }
 
-export async function callStorage(params: {
-  provider: any
-  owner: string
-  method: string
-  args: any[]
-  onHash?: (hash: string) => void
-}) {
-  const { provider, method, args, onHash, owner } = params
-  const { storage: storageAddress } = chainInfo[config.STORAGE_CHAIN_ID]
+export const getStorage = (library: Web3Provider, address: string) => {
+  return getContractInstance(library, address, STORAGE.abi)
+}
 
-  const web3 = new Web3(provider)
-  //@ts-ignore
-  const storage = new web3.eth.Contract(STORAGE.abi, storageAddress)
+type Data = { [k: string]: any }
 
-  if (method && storage) {
-    return new Promise((resolve, reject) => {
-      storage.methods[method](...args)
-        .send({ from: owner })
-        .on('transactionHash', (hash: string) => {
-          if (typeof onHash === 'function') onHash(hash)
-        })
-        .then(resolve)
-        .catch(reject)
-    })
+const updateData = (oldData: Data, newData: Data) => {
+  return {
+    ...oldData,
+    [STORAGE_APP_KEY]: {
+      ...oldData[STORAGE_APP_KEY],
+      ...newData
+    }
   }
-
-  return false
 }
 
 export async function updateStorageData(params: {
-  provider: any
+  library: any
   owner: string
   onHash?: (hash: string) => void
-  onReceipt?: (receipt: object) => void
-  data: { [k: string]: any }
+  onReceipt?: (receipt: object, success: boolean) => void
+  data: Data
 }) {
-  const { provider, onHash, onReceipt, data, owner } = params
-  const { storage: storageAddress } = chainInfo[config.STORAGE_CHAIN_ID]
-
-  const web3 = new Web3(provider)
-  //@ts-ignore
-  const storage = new web3.eth.Contract(STORAGE.abi, storageAddress)
+  const { library, onHash, onReceipt, data, owner } = params
+  const storage = getStorage(library, storageAddress())
 
   if (storage) {
     try {
@@ -70,37 +45,21 @@ export async function updateStorageData(params: {
       const { info: strInfo } = currentData
       const info = JSON.parse(strInfo || '{}')
 
-      if (!info.crossChainSettings) info.crossChainSettings = {}
+      if (!info[STORAGE_APP_KEY]) info[STORAGE_APP_KEY] = {}
 
-      const result = {
-        ...info,
-        crossChainSettings: merge({
-          oldData: info.crossChainSettings,
-          newData: data,
-          onElement: (key, oldKeyData, newKeyData) => {
-            if (key === 'apiAddress') return newKeyData || ''
-
-            return newKeyData || oldKeyData
-          }
-        })
-      }
+      const newData = updateData(info, data)
 
       return new Promise((resolve, reject) => {
-        storage.methods[STORAGE_METHODS.setKeyData](
-          ...[
-            domain,
-            {
-              owner,
-              info: JSON.stringify(result)
-            }
-          ]
-        )
+        storage.methods[STORAGE_METHODS.setKeyData](domain, {
+          owner,
+          info: JSON.stringify(newData)
+        })
           .send({ from: owner })
           .on('transactionHash', (hash: string) => {
             if (typeof onHash === 'function') onHash(hash)
           })
-          .on('receipt', (receipt: object) => {
-            if (typeof onReceipt === 'function') onReceipt(receipt)
+          .on('receipt', (receipt: { [k: string]: any }) => {
+            if (typeof onReceipt === 'function') onReceipt(receipt, receipt?.status)
           })
           .then(resolve)
           .catch(reject)
@@ -112,4 +71,26 @@ export async function updateStorageData(params: {
   }
 
   return false
+}
+
+export const resetAppData = async ({ library, owner }: { library: any; owner: string }) => {
+  try {
+    const storage = getStorage(library, storageAddress())
+    const domain = getCurrentDomain()
+
+    const { info } = await storage.methods[STORAGE_METHODS.getData](domain).call()
+
+    const parsedData = JSON.parse(info)
+    const newData = { ...parsedData, [STORAGE_APP_KEY]: {} }
+
+    await storage.methods[STORAGE_METHODS.setKeyData](domain, {
+      owner,
+      info: JSON.stringify(newData)
+    }).send({
+      from: owner
+    })
+  } catch (error) {
+    console.error('Reset app data')
+    console.error(error)
+  }
 }
