@@ -22,7 +22,7 @@ export const Notice = styled.div<{ warning?: boolean; error?: boolean; margin?: 
   padding: 0.5rem;
   ${({ margin }) => (margin ? `margin: ${margin};` : '')}
   border-radius: 0.4rem;
-  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg2)};
+  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
 `
 
 const StorageNotice = styled.div`

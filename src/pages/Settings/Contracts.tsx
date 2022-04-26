@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { updateAppOptions } from '../../state/application/actions'
+import { updateAppOptions, updateRouterData } from '../../state/application/actions'
 import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
@@ -90,7 +90,15 @@ export default function Contracts() {
   } = useAppState()
 
   const [storageNetworkName] = useState(chainInfo[config.STORAGE_CHAIN_ID]?.networkName)
-  const [configNetworkName] = useState(stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : '')
+  const [configNetworkName, setConfigNetworkName] = useState(
+    stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : ''
+  )
+
+  useEffect(() => {
+    if (stateRouterConfigChainId) {
+      setConfigNetworkName(chainInfo[stateRouterConfigChainId]?.networkName || '')
+    }
+  }, [stateRouterConfigChainId])
 
   const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
   const routerConfigSigner = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
@@ -194,18 +202,24 @@ export default function Contracts() {
     }
   }, [chainId, stateRouterAddress[chainId || 0]])
 
-  const setChainConfig = async (routerAddress: string, routerChainId: number) => {
-    if (!routerChainId || !routerConfigSigner || stateRouterConfigChainId !== chainId) return
+  const setChainConfig = async () => {
+    if (!routerConfigSigner) return
 
     try {
       const { name } = chainInfo[routerChainId]
 
-      await routerConfigSigner.setChainConfig(routerChainId, {
+      const tx = await routerConfigSigner.setChainConfig(routerChainId, {
         BlockChain: name,
         RouterContract: routerAddress,
         Confirmations: 3,
         InitialHeight: 0
       })
+
+      const receipt = tx.wait()
+
+      if (receipt.status) {
+        dispatch(updateRouterData({ chainId: Number(routerChainId), routerAddress: routerAddress }))
+      }
     } catch (error) {
       console.error(error)
     }
@@ -287,7 +301,7 @@ export default function Contracts() {
   const [onConfigNetwork, setOnConfigNetwork] = useState(false)
 
   useEffect(() => {
-    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === stateRouterConfigChainId))
+    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === Number(stateRouterConfigChainId)))
   }, [chainId, stateRouterConfigChainId])
 
   const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
@@ -365,14 +379,14 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 placeholder=""
-                value={routerConfigChainId}
+                defaultValue={routerConfigChainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
               <Input
                 type="text"
                 placeholder="0x..."
-                value={routerConfigAddress}
+                defaultValue={routerConfigAddress}
                 onChange={event => setRouterConfigAddress(event.target.value)}
               />
             </OptionLabel>
@@ -414,7 +428,7 @@ export default function Contracts() {
         {chainId && !stateRouterAddress[chainId] ? (
           <>
             <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
-            <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={mpcAddress} />
+            <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={stateServerAdminAddress} />
           </>
         ) : (
           <span />
@@ -431,7 +445,6 @@ export default function Contracts() {
               min="1"
               step="1"
               placeholder=""
-              value={routerChainId}
               defaultValue={routerChainId}
               onChange={event => setRouterChainId(event.target.value)}
             />
@@ -439,15 +452,11 @@ export default function Contracts() {
             <Input
               type="text"
               placeholder="0x..."
-              value={routerAddress}
               defaultValue={routerAddress}
               onChange={event => setRouterAddress(event.target.value)}
             />
           </OptionLabel>
-          <ButtonPrimary
-            onClick={() => setChainConfig(routerAddress, Number(routerChainId))}
-            disabled={!onConfigNetwork}
-          >
+          <ButtonPrimary onClick={setChainConfig} disabled={!onConfigNetwork || !routerChainId || !routerAddress}>
             {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
           </ButtonPrimary>
         </OptionWrapper>
@@ -462,8 +471,6 @@ export default function Contracts() {
             <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
             {t('erc20TokenAddress')}
             <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
-            {/* {t('erc20TokenName')}
-              <Input type="text" onChange={event => setUnderlyingName(event.target.value)} /> */}
           </OptionLabel>
         </OptionWrapper>
 
@@ -491,7 +498,6 @@ export default function Contracts() {
                 {t('idOfCrosschainTokenNetwork')}
                 <Input
                   defaultValue={crosschainTokenChainId}
-                  value={crosschainTokenChainId}
                   type="number"
                   min="1"
                   step="1"
@@ -500,7 +506,6 @@ export default function Contracts() {
                 {t('crosschainTokenAddress')}
                 <Input
                   defaultValue={crosschainToken}
-                  value={crosschainToken}
                   type="text"
                   placeholder="0x..."
                   onChange={event => setCrosschainToken(event.target.value)}
