@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
+import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
+import { updateAppOptions } from '../../state/application/actions'
 import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
@@ -64,8 +66,6 @@ const ZoneWrapper = styled.div<{ blocked?: boolean }>`
 `
 
 const ConfigInfo = styled.div`
-  margin: 0 0 0.5rem;
-  padding: 0;
   font-weight: 500;
 
   h4 {
@@ -80,6 +80,7 @@ const ConfigLink = styled.a`
 export default function Contracts() {
   const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const {
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
@@ -117,8 +118,10 @@ export default function Contracts() {
         data: {
           apiAddress
         },
-        onReceipt: (receipt: any) => {
-          console.log('receipt: ', receipt)
+        onReceipt: (receipt, success) => {
+          if (success) {
+            dispatch(updateAppOptions([{ key: 'apiAddress', value: apiAddress }]))
+          }
         }
       })
     } catch (error) {
@@ -126,10 +129,36 @@ export default function Contracts() {
     }
   }
 
-  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
-  const [routerConfigAddress, setRouterConfigAddress] = useState<string>(stateRouterConfigAddress)
+  const [mpcAddress, setMpcAddress] = useState(stateServerAdminAddress || '')
+  const [validMpcOptions, setValidMpcOptions] = useState(false)
 
-  const saveRouterConfig = (routerConfigAddress: string, configChainId: number) => {
+  useEffect(() => {
+    setValidMpcOptions(Boolean(mpcAddress?.match(EVM_ADDRESS_REGEXP)))
+  }, [mpcAddress])
+
+  const saveServerAdminAddress = async () => {
+    if (!account) return
+
+    if (validMpcOptions) {
+      await updateStorageData({
+        provider: library?.provider,
+        owner: account,
+        data: {
+          serverAdminAddress: mpcAddress
+        },
+        onReceipt: (receipt, success) => {
+          if (success) {
+            dispatch(updateAppOptions([{ key: 'serverAdminAddress', value: mpcAddress }]))
+          }
+        }
+      })
+    }
+  }
+
+  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
+  const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
+
+  const saveRouterConfig = () => {
     if (!account) return
 
     return updateStorageData({
@@ -137,40 +166,19 @@ export default function Contracts() {
       owner: account,
       data: {
         routerConfigAddress,
-        routerConfigChainId: configChainId
+        routerConfigChainId
       },
-      onReceipt: (receipt: any) => {
-        // we set a new config. Update interface to be able to use other settings
-        console.log('save router config: ', receipt)
+      onReceipt: (receipt, success) => {
+        if (success) {
+          dispatch(
+            updateAppOptions([
+              { key: 'routerConfigAddress', value: routerConfigAddress },
+              { key: 'routerConfigChainId', value: routerConfigChainId }
+            ])
+          )
+        }
       }
     })
-  }
-
-  const [mpcAddress, setMpcAddress] = useState(stateServerAdminAddress)
-  const [validMpcOptions, setValidMpcOptions] = useState(false)
-
-  useEffect(() => {
-    setValidMpcOptions(Boolean(mpcAddress.match(EVM_ADDRESS_REGEXP)))
-  }, [mpcAddress])
-
-  const saveServerAdminAddress = (serverAdminAddress: string) => {
-    if (!account) return
-
-    if (validMpcOptions) {
-      return updateStorageData({
-        provider: library?.provider,
-        owner: account,
-        data: {
-          serverAdminAddress
-        },
-        onReceipt: (receipt: any) => {
-          // we set a new config. Update interface to be able to use other settings
-          console.log('save router config: ', receipt)
-        }
-      })
-    } else {
-      return
-    }
   }
 
   const [routerChainId, setRouterChainId] = useState('')
@@ -325,21 +333,17 @@ export default function Contracts() {
       <Title noMargin>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
-          <>
-            <ConfigInfo>
-              <h4>{t('configInformation')}:</h4>
-              {configNetworkName}:{' '}
-              <ConfigLink
-                href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {stateRouterConfigAddress}
-              </ConfigLink>
-            </ConfigInfo>
-            {t('youHaveToBeOnConfigNetwork')}. {t('saveAllInfoWhenYouDeployAnything')}.{' '}
-            {t('setDeploymentInfoOnConfigNetwork')}.
-          </>
+          <ConfigInfo>
+            <h4>{t('configInformation')}</h4>
+            {configNetworkName}:{' '}
+            <ConfigLink
+              href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {stateRouterConfigAddress}
+            </ConfigLink>
+          </ConfigInfo>
         ) : (
           <>
             {t('youNeedToDeployAndSaveConfigFirst')}. {t('youCanDeployConfigToAnyNetwork')}. {t('youNeedOnlyOneConfig')}
@@ -373,10 +377,7 @@ export default function Contracts() {
               />
             </OptionLabel>
           </OptionWrapper>
-          <ButtonPrimary
-            disabled={!canSaveRouterConfig}
-            onClick={() => saveRouterConfig(routerConfigAddress, Number(routerConfigChainId))}
-          >
+          <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
             {t(onStorageNetwork ? 'saveConfig' : 'switchToNetwork', { network: storageNetworkName })}
           </ButtonPrimary>
         </Accordion>
@@ -401,10 +402,7 @@ export default function Contracts() {
               defaultValue={mpcAddress}
               onChange={event => setMpcAddress(event.target.value)}
             />
-            <ButtonPrimary
-              onClick={() => saveServerAdminAddress(mpcAddress)}
-              disabled={!validMpcOptions || !onStorageNetwork}
-            >
+            <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions || !onStorageNetwork}>
               {t(onStorageNetwork ? 'saveAdminAddressData' : 'switchToNetwork', { network: storageNetworkName })}
             </ButtonPrimary>
           </OptionWrapper>

@@ -18,7 +18,7 @@ export default function DeployRouter({
   serverAdminAddress
 }: {
   onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
-  serverAdminAddress: string
+  serverAdminAddress: string | undefined
 }) {
   const { account, library, active, chainId: currentChainId } = useActiveWeb3React()
   const { t } = useTranslation()

@@ -8,6 +8,7 @@ import {
   ApplicationModal,
   setOpenModal,
   retrieveAppData,
+  updateAppOptions,
   setAppManagement,
   updateRouterData,
   AppData
@@ -48,7 +49,7 @@ const initialState: ApplicationState = {
 export default createReducer(initialState, builder =>
   builder
     .addCase(retrieveAppData, (state, action) => {
-      if (action.payload) {
+      if (action.payload && Object.keys(action.payload).length) {
         const {
           apiAddress,
           routerConfigChainId,
@@ -78,6 +79,14 @@ export default createReducer(initialState, builder =>
         if (elementsColorDark) state.elementsColorDark = elementsColorDark
         if (Array.isArray(socialLinks) && socialLinks.length) state.socialLinks = socialLinks
         if (disableSourceCopyright) state.disableSourceCopyright = disableSourceCopyright
+      }
+    })
+    .addCase(updateAppOptions, (state, action) => {
+      if (action.payload?.length) {
+        action.payload.forEach(({ key, value }) => {
+          // @ts-ignore
+          if (key) state[key] = value
+        })
       }
     })
     .addCase(updateRouterData, (state, action) => {

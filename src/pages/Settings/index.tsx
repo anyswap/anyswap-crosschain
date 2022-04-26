@@ -18,10 +18,10 @@ export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
 
 export const Notice = styled.div<{ warning?: boolean; error?: boolean; margin?: string }>`
   width: 100%;
-  padding: 0.3rem;
+  padding: 0.5rem;
   ${({ margin }) => (margin ? `margin: ${margin};` : '')}
   border-radius: 0.4rem;
-  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg3)};
+  background-color: ${({ theme, warning, error }) => (warning ? theme.yellow1 : error ? theme.red1 : theme.bg2)};
 `
 
 const StorageNotice = styled.div`

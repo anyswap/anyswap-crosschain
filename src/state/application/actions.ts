@@ -47,9 +47,14 @@ export type AppData = {
   serverAdminAddress: string
 }
 
+export type AppDataKeys = keyof AppData
+
 export const updateRouterData = createAction<{ chainId: number; routerAddress: string }>('application/updateRouterData')
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
+export const updateAppOptions = createAction<{ key: AppDataKeys; value: AppData[AppDataKeys] }[]>(
+  'application/updateAppOptions'
+)
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(

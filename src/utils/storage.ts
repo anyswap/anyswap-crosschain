@@ -53,7 +53,7 @@ export async function updateStorageData(params: {
   provider: any
   owner: string
   onHash?: (hash: string) => void
-  onReceipt?: (receipt: object) => void
+  onReceipt?: (receipt: object, success: boolean) => void
   data: { [k: string]: any }
 }) {
   const { provider, onHash, onReceipt, data, owner } = params
@@ -99,8 +99,8 @@ export async function updateStorageData(params: {
           .on('transactionHash', (hash: string) => {
             if (typeof onHash === 'function') onHash(hash)
           })
-          .on('receipt', (receipt: object) => {
-            if (typeof onReceipt === 'function') onReceipt(receipt)
+          .on('receipt', (receipt: { [k: string]: any }) => {
+            if (typeof onReceipt === 'function') onReceipt(receipt, receipt?.status)
           })
           .then(resolve)
           .catch(reject)

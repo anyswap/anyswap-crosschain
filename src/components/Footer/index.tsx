@@ -94,7 +94,7 @@ export default function Footer() {
         {copyright && <Copyright>{copyright}</Copyright>}
         {!disableSourceCopyright && <Copyright pale>{SourceCopyright}</Copyright>}
 
-        {!!socialLinks.length && (
+        {!!socialLinks?.length && (
           <SocialLinks>
             {socialLinks.map((link: string, index: number) => {
               if (validUrl.isUri(link)) {
