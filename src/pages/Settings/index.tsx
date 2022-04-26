@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from '../../hooks'
+import { resetAppData } from '../../utils/storage'
 import AppBody from '../AppBody'
 import { chainInfo } from '../../config/chainConfig'
 import { useAppState } from '../../state/application/hooks'
@@ -66,13 +67,19 @@ const Content = styled.div`
 
 export default function Settings() {
   const { t } = useTranslation()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const [tabs, setTabs] = useState<string[]>([])
   const [tab, setTab] = useState('interface')
   const { owner } = useAppState()
 
+  const [onStorageChain, setOnStorageChain] = useState(false)
+
   useEffect(() => {
-    if (chainId === config.STORAGE_CHAIN_ID) {
+    setOnStorageChain(!!chainId && chainId === config.STORAGE_CHAIN_ID)
+  }, [chainId])
+
+  useEffect(() => {
+    if (onStorageChain) {
       setTabs(['interface', 'contracts'])
       setTab('interface')
     } else {
@@ -86,6 +93,13 @@ export default function Settings() {
   useEffect(() => {
     setIsOwner(!owner || account?.toLowerCase() === owner?.toLowerCase())
   }, [account, owner])
+
+  const reset = async () => {
+    await resetAppData({
+      library,
+      owner: account || ''
+    })
+  }
 
   return isOwner ? (
     <AppBody>
@@ -107,6 +121,12 @@ export default function Settings() {
           {tab === 'contracts' && <Contracts />}
           {tab === 'interface' && chainId === config.STORAGE_CHAIN_ID && <Interface />}
         </Content>
+
+        {process.env.NODE_ENV === 'development' && (
+          <button onClick={reset} disabled={!account || !onStorageChain}>
+            Reset app data
+          </button>
+        )}
       </SettingsWrapper>
     </AppBody>
   ) : null

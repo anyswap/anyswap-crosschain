@@ -113,7 +113,7 @@ export default function Contracts() {
 
     try {
       updateStorageData({
-        provider: library?.provider,
+        library,
         owner: account,
         data: {
           apiAddress
@@ -141,7 +141,7 @@ export default function Contracts() {
 
     if (validMpcOptions) {
       await updateStorageData({
-        provider: library?.provider,
+        library,
         owner: account,
         data: {
           serverAdminAddress: mpcAddress
@@ -162,7 +162,7 @@ export default function Contracts() {
     if (!account) return
 
     return updateStorageData({
-      provider: library?.provider,
+      library,
       owner: account,
       data: {
         routerConfigAddress,
