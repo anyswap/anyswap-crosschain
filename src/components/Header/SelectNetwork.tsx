@@ -520,7 +520,7 @@ export default function SelectNetwork () {
           <PaddedColumn gap="14px">
             <RowBetween>
               <Text fontWeight={500} fontSize={16}>
-                {t('SwitchTo')}
+                {/* {t('SwitchTo')} */}
               </Text>
               <CloseIcon onClick={() => {toggleNetworkModal()}} />
             </RowBetween>

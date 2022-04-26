@@ -468,7 +468,7 @@ export default function Vest () {
       }
     })
     getLabelPrice(useLockToken?.label).then(res => {
-      // console.log(res)
+      console.log(res)
       if (res) {
         setPrice(res)
       }

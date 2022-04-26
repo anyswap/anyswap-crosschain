@@ -52,7 +52,7 @@ export default {
     explorer: CLV_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Clover',
-    networkName: 'Clover mainnet',
+    networkName: 'Clover parachain mainnet',
     type: 'main',
     label: CLV_MAIN_CHAINID,
     isSwitch: 1,

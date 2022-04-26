@@ -6,7 +6,7 @@ import {BscConnector} from '@binance-chain/bsc-connector'
 import {CloverConnector} from '@clover-network/clover-connector'
 import { NetworkConnector } from './NetworkConnector'
 
-// import {spportChainArr} from '../config/chainConfig'
+import {spportChainArr as sc} from '../config/chainConfig'
 import config from '../config'
 
 const NETWORK_URL = config.nodeRpc
@@ -19,9 +19,14 @@ for (const chainID in config.chainInfo) {
 // for (const chainID of spportChainArr) {
   if (isNaN(Number(chainID))) continue
   if (chainID && config.chainInfo[chainID]?.nodeRpc) {
-    spportChainArr.push(Number(chainID))
+    // spportChainArr.push(Number(chainID))
     spportChain[chainID] = config.chainInfo[chainID].nodeRpc
   }
+}
+// const sc1:any = sc
+for (const c of sc) {
+  if (isNaN(Number(c))) continue
+  spportChainArr.push(Number(c))
 }
 // spportChainArr.push(Number(NETWORK_CHAIN_ID))
 // spportChain[NETWORK_CHAIN_ID] = config.chainInfo[NETWORK_CHAIN_ID].nodeRpc

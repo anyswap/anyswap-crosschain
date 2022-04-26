@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../../config'
+// import config from '../../config'
 
 
 function getApiUrlData (url:string, token:string, address?:string) {
@@ -106,7 +106,7 @@ export const getPrice = (coin:string) => {
 export const getLabelPrice = (label:string) => {
   return new Promise(resolve => {
     // coin = coin ? coin : config.symbol
-    const url = `${config.bridgeApi}/token/price?label=${label}`
+    const url = `https://bridgeapi.anyswap.exchange/token/price?label=${label}`
     // console.log(url)
     getApiData(url, label + '_PRICE', 1000 * 60 * 60).then((res:any) => {
       // console.log(res)

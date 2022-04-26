@@ -46,7 +46,7 @@ import bas from './bas'
 
 import { ChainId } from './chainId'
 
-import {VERSION, USE_VERSION, env} from '../constant'
+import {VERSION, USE_VERSION} from '../constant'
 
 interface ConFig {
   [key: string]: any
@@ -282,5 +282,6 @@ const useChain:any = {
   ]
 }
 
-const envType:any = env
-export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+// const envType:any = env
+// export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+export const spportChainArr:any = useChain[USE_VERSION]

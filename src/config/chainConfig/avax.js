@@ -102,7 +102,7 @@ export default {
     explorer: AVAX_TEST_EXPLORER,
     symbol: symbol,
     name: 'Avalanche',
-    networkName: 'Avalanche mainnet',
+    networkName: 'Avalanche testnet',
     type: 'test',
     label: AVAX_TEST_CHAINID,
     isSwitch: 1,
