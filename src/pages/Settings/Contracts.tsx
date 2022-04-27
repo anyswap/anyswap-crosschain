@@ -409,14 +409,14 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 placeholder=""
-                defaultValue={routerConfigChainId}
+                value={routerConfigChainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
               <Input
                 type="text"
                 placeholder="0x..."
-                defaultValue={routerConfigAddress}
+                value={routerConfigAddress}
                 onChange={event => setRouterConfigAddress(event.target.value)}
               />
             </OptionLabel>
@@ -430,7 +430,7 @@ export default function Contracts() {
           <Title>{t('validatorNodeSettings')}</Title>
           <OptionWrapper>
             {t('validatorNodeAddress')}: {t('validatorNodeAddressDescription')}
-            <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
+            <Input type="text" value={apiAddress} onChange={event => setApiAddress(event.target.value)} />
             <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid || !onStorageNetwork}>
               {t(onStorageNetwork ? 'saveAddress' : 'switchToNetwork', { network: storageNetworkName })}
             </ButtonPrimary>
@@ -441,7 +441,7 @@ export default function Contracts() {
             <Input
               type="text"
               placeholder="0x..."
-              defaultValue={mpcAddress}
+              value={mpcAddress}
               onChange={event => setMpcAddress(event.target.value)}
             />
             <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions || !onStorageNetwork}>
@@ -496,14 +496,14 @@ export default function Contracts() {
                 min="1"
                 step="1"
                 placeholder=""
-                defaultValue={routerChainId}
+                value={routerChainId}
                 onChange={event => setRouterChainId(event.target.value)}
               />
               {t('routerAddress')}
               <Input
                 type="text"
                 placeholder="0x..."
-                defaultValue={routerAddress}
+                value={routerAddress}
                 onChange={event => setRouterAddress(event.target.value)}
               />
             </OptionLabel>
