@@ -358,11 +358,7 @@ export default function Contracts() {
 
   useEffect(() => {
     const command = [
-      `./swaprouter --datadir ./ --config config.toml`,
-      `--configchain ${stateRouterConfigChainId}`,
-      `--configaddress ${stateRouterConfigAddress}`,
-      `--privatekey <YOUR PRIVATE KEY>`,
-      `--runserver`
+      `/root/setup ${stateRouterConfigChainId} ${stateRouterConfigAddress} <YOUR PRIVATE KEY>`
     ]
 
     setCommandToStartServer(command.join(' '))
@@ -372,6 +368,7 @@ export default function Contracts() {
     window.navigator.clipboard.writeText(commandToStartServer)
   }
 
+  console.log('>>>>>> apiAddress, mpcAddress', apiAddress, mpcAddress)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
