@@ -11,7 +11,7 @@ import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
-import { ButtonPrimary } from '../../components/Button'
+import { ButtonPrimary, CleanButton } from '../../components/Button'
 import Accordion from '../../components/Accordion'
 import Lock from '../../components/Lock'
 import DeployRouterConfig from './DeployRouterConfig'
@@ -58,6 +58,27 @@ const ConfigInfo = styled.div`
 
 const ConfigLink = styled.a`
   word-break: break-all;
+`
+
+const Textarea = styled.textarea`
+  resize: vertical;
+  padding: 0.3rem;
+  margin: 0 0 0.3rem;
+  font-size: inherit;
+  border-radius: 0.4rem;
+  border: 1px solid ${({ theme }) => theme.text3};
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg2};
+`
+
+const CopyButton = styled(CleanButton)`
+  border: 1px solid ${({ theme }) => theme.text2};
+  transition: 0.1s;
+
+  :hover {
+    opacity: 0.6;
+    background-color: ${({ theme }) => theme.bg2};
+  }
 `
 
 export default function Contracts() {
@@ -325,6 +346,24 @@ export default function Contracts() {
     setCrosschainToken(contractAddress)
   }
 
+  const [commandToStartServer, setCommandToStartServer] = useState('')
+
+  useEffect(() => {
+    const command = [
+      `./swaprouter --datadir ./ --config config.toml`,
+      `--configchain ${stateRouterConfigChainId}`,
+      `--configaddress ${stateRouterConfigAddress}`,
+      `--privatekey <YOUR PRIVATE KEY>`,
+      `--runserver`
+    ]
+
+    setCommandToStartServer(command.join(' '))
+  }, [stateRouterConfigAddress, stateRouterConfigChainId])
+
+  const copyServerCommand = () => {
+    window.navigator.clipboard.writeText(commandToStartServer)
+  }
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -382,9 +421,7 @@ export default function Contracts() {
         <>
           <Title>{t('validatorNodeSettings')}</Title>
           <OptionWrapper>
-            <div>
-              {t('validatorNodeAddress')} ({t('validatorNodeAddressDescription')}).
-            </div>
+            {t('validatorNodeAddress')}: {t('validatorNodeAddressDescription')}
             <Input type="text" defaultValue={apiAddress} onChange={event => setApiAddress(event.target.value)} />
             <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid || !onStorageNetwork}>
               {t(onStorageNetwork ? 'saveAddress' : 'switchToNetwork', { network: storageNetworkName })}
@@ -392,7 +429,7 @@ export default function Contracts() {
           </OptionWrapper>
 
           <OptionWrapper>
-            {t('validatorNodeNetworkAddress')}. {t('validatorNodeNetworkAddressDescription')}.
+            {t('validatorNodeNetworkAddress')}. {t('validatorNodeNetworkAddressDescription')}
             <Input
               type="text"
               placeholder="0x..."
@@ -403,6 +440,18 @@ export default function Contracts() {
               {t(onStorageNetwork ? 'saveAdminAddressData' : 'switchToNetwork', { network: storageNetworkName })}
             </ButtonPrimary>
           </OptionWrapper>
+
+          {stateRouterConfigAddress && stateServerAdminAddress && (
+            <OptionWrapper>
+              <Notice warning margin="0.4rem 0 0.6rem">
+                {t('replaceKeyWithValidatorNodeKey', {
+                  privateKey: '<YOUR PRIVATE KEY>'
+                })}
+              </Notice>
+              <Textarea value={commandToStartServer} onChange={event => setCommandToStartServer(event.target.value)} />
+              <CopyButton onClick={copyServerCommand}>{t('copy')}</CopyButton>
+            </OptionWrapper>
+          )}
         </>
       )}
 

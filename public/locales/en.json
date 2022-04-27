@@ -423,6 +423,7 @@
   "saveValidatorNodeNetworkAddress": "Save validator node network address",
   "networksInfo": "Networks info",
   "deployRouterFirst": "Deploy router first",
+  "replaceKeyWithValidatorNodeKey": "Replace {{privateKey}} with a private key from the validator node network address",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
 }
