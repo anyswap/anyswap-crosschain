@@ -11,7 +11,7 @@ import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
-import { ButtonPrimary, CleanButton } from '../../components/Button'
+import { ButtonPrimary, ButtonOutlined, CleanButton } from '../../components/Button'
 import Accordion from '../../components/Accordion'
 import Lock from '../../components/Lock'
 import DeployRouterConfig from './DeployRouterConfig'
@@ -48,12 +48,12 @@ const Title = styled.h2<{ noMargin?: boolean }>`
   }
 `
 
+const SubTitle = styled.h4<{ margin?: string }>`
+  margin: ${({ margin }) => margin || '0 0 0.5rem'};
+`
+
 const ConfigInfo = styled.div`
   font-weight: 500;
-
-  h4 {
-    margin: 0 0 0.3rem;
-  }
 `
 
 const ConfigLink = styled.a`
@@ -205,6 +205,14 @@ export default function Contracts() {
       setRouterAddress('')
     }
   }, [chainId, stateRouterAddress[chainId || 0]])
+
+  const [displayRouterSettings, setDisplayRouterSettings] = useState(!!stateRouterAddress[chainId || 0])
+
+  useEffect(() => {
+    setDisplayRouterSettings(!!stateRouterAddress[chainId || 0])
+  }, [chainId, stateRouterAddress])
+
+  const showRouterSettings = () => setDisplayRouterSettings(true)
 
   const setChainConfig = async () => {
     if (!routerConfigSigner) return
@@ -370,7 +378,7 @@ export default function Contracts() {
       <Notice margin="0.5rem 0 0">
         {stateRouterConfigChainId && stateRouterConfigAddress ? (
           <ConfigInfo>
-            <h4>{t('configInformation')}</h4>
+            <SubTitle>{t('configInformation')}</SubTitle>
             {configNetworkName}:{' '}
             <ConfigLink
               href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
@@ -442,15 +450,21 @@ export default function Contracts() {
           </OptionWrapper>
 
           {stateRouterConfigAddress && stateServerAdminAddress && (
-            <OptionWrapper>
-              <Notice warning margin="0.4rem 0 0.6rem">
-                {t('replaceKeyWithValidatorNodeKey', {
-                  privateKey: '<YOUR PRIVATE KEY>'
-                })}
-              </Notice>
-              <Textarea value={commandToStartServer} onChange={event => setCommandToStartServer(event.target.value)} />
-              <CopyButton onClick={copyServerCommand}>{t('copy')}</CopyButton>
-            </OptionWrapper>
+            <>
+              <SubTitle margin="1.4rem 0 0.5rem">{t('startServerWithThisCommand')}</SubTitle>
+              <OptionWrapper>
+                <Notice warning margin="0.4rem 0 0.6rem">
+                  {t('replaceKeyWithValidatorNodeKey', {
+                    privateKey: '<YOUR PRIVATE KEY>'
+                  })}
+                </Notice>
+                <Textarea
+                  value={commandToStartServer}
+                  onChange={event => setCommandToStartServer(event.target.value)}
+                />
+                <CopyButton onClick={copyServerCommand}>{t('copy')}</CopyButton>
+              </OptionWrapper>
+            </>
           )}
         </>
       )}
@@ -466,32 +480,38 @@ export default function Contracts() {
           <span />
         )}
 
-        <OptionWrapper>
-          <Notice warning margin="0.4rem 0">
-            {t('afterDeploymentFillTheseInputsAndSaveInfo')}
-          </Notice>
-          <OptionLabel displayChainsLink>
-            {t('routerChainId')}
-            <Input
-              type="number"
-              min="1"
-              step="1"
-              placeholder=""
-              defaultValue={routerChainId}
-              onChange={event => setRouterChainId(event.target.value)}
-            />
-            {t('routerAddress')}
-            <Input
-              type="text"
-              placeholder="0x..."
-              defaultValue={routerAddress}
-              onChange={event => setRouterAddress(event.target.value)}
-            />
-          </OptionLabel>
-          <ButtonPrimary onClick={setChainConfig} disabled={!onConfigNetwork || !routerChainId || !routerAddress}>
-            {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
-          </ButtonPrimary>
-        </OptionWrapper>
+        {!displayRouterSettings ? (
+          <OptionWrapper>
+            <ButtonOutlined onClick={showRouterSettings}>{t('iHaveAlreadyDeployedNetworkRouter')}</ButtonOutlined>
+          </OptionWrapper>
+        ) : (
+          <OptionWrapper>
+            <Notice warning margin="0.4rem 0">
+              {t('afterDeploymentFillTheseInputsAndSaveInfo')}
+            </Notice>
+            <OptionLabel displayChainsLink>
+              {t('routerChainId')}
+              <Input
+                type="number"
+                min="1"
+                step="1"
+                placeholder=""
+                defaultValue={routerChainId}
+                onChange={event => setRouterChainId(event.target.value)}
+              />
+              {t('routerAddress')}
+              <Input
+                type="text"
+                placeholder="0x..."
+                defaultValue={routerAddress}
+                onChange={event => setRouterAddress(event.target.value)}
+              />
+            </OptionLabel>
+            <ButtonPrimary onClick={setChainConfig} disabled={!onConfigNetwork || !routerChainId || !routerAddress}>
+              {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
+            </ButtonPrimary>
+          </OptionWrapper>
+        )}
       </Accordion>
 
       <Title>{t('erc20Token')}</Title>

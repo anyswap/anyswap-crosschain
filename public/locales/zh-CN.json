@@ -422,6 +422,8 @@
   "saveValidatorNodeNetworkAddress": "保存验证器节点网络地址",
   "networksInfo": "网络信息",
   "deployRouterFirst": "展开路由器",
+  "iHaveAlreadyDeployedNetworkRouter": "我已经部署了网络路由器",
+  "startServerWithThisCommand": "使用此命令启动服务器",
   "replaceKeyWithValidatorNodeKey": "将{{privateKey}}替换为验证者节点网络地址中的私钥",
   "useThisNetworkToSaveSettings": "使用此网络保存设置（接口、合同配置、API地址）",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "接口设置仅对此网络可见"
