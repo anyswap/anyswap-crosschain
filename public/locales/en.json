@@ -402,8 +402,7 @@
   "swapFeeRatePerMillion": "Swap fee rate per million",
   "setSwapConfig": "Set swap config",
   "switchToConfigNetworkToSaveRouterInfo": "Switch to a config network to save router info",
-  "switchToConfigNetworkToAccessTheseOptions": "Switch to a config network to access these options",
-  "fillErc20InputsToUnlockTheseSettings": "Fill ERC20 inputs to unlock these settings",
+  "fillErc20Inputs": "Fill ERC20 inputs",
   "deployAndSaveConfig": "Deploy and save config contract",
   "deployAndSetRouter": "Deploy and set router contract",
   "switchToStorageNetworkToSaveIt": "Switch to {{network}} to save it",
@@ -423,6 +422,10 @@
   "switchToNetwork": "Switch to {{network}}",
   "saveValidatorNodeNetworkAddress": "Save validator node network address",
   "networksInfo": "Networks info",
+  "deployRouterFirst": "Deploy router first",
+  "iHaveAlreadyDeployedNetworkRouter": "I've already deployed the network router",
+  "startServerWithThisCommand": "Start your server with this command",
+  "replaceKeyWithValidatorNodeKey": "Replace {{privateKey}} with a private key from the validator node network address",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
 }
