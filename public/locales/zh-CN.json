@@ -401,8 +401,7 @@
   "swapFeeRatePerMillion": "每百萬的掉期費率",
   "setSwapConfig": "設置交換配置",
   "switchToConfigNetworkToSaveRouterInfo": "切換到配置網絡以保存路由器信息",
-  "switchToConfigNetworkToAccessTheseOptions": "切換到配置網絡以訪問這些選項",
-  "fillErc20InputsToUnlockTheseSettings": "充滿 ERC20 解鎖這些設置的輸入",
+  "fillErc20Inputs": "填写ERC20输入",
   "deployAndSaveConfig": "部署和保存配置合約",
   "deployAndSetRouter": "部署和設置路由器合約",
   "switchToStorageNetworkToSaveIt": "切換到 {{network}} 保存它",
@@ -422,6 +421,7 @@
   "switchToNetwork": "切换到{{network}}",
   "saveValidatorNodeNetworkAddress": "保存验证器节点网络地址",
   "networksInfo": "网络信息",
+  "deployRouterFirst": "展开路由器",
   "useThisNetworkToSaveSettings": "使用此网络保存设置（接口、合同配置、API地址）",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "接口设置仅对此网络可见"
 }

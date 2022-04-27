@@ -48,23 +48,6 @@ const Title = styled.h2<{ noMargin?: boolean }>`
   }
 `
 
-const ZoneWrapper = styled.div<{ blocked?: boolean }>`
-  margin: 0.4rem 0;
-  padding: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.5rem;
-  border: 1px solid ${({ theme }) => theme.text4};
-
-  ${({ blocked }) =>
-    blocked
-      ? `
-      opacity: 0.5;
-      pointer-events: none;
-    `
-      : ''}
-`
-
 const ConfigInfo = styled.div`
   font-weight: 500;
 
@@ -463,7 +446,7 @@ export default function Contracts() {
       </Accordion>
 
       <Title>{t('erc20Token')}</Title>
-      <ZoneWrapper blocked={!routerAddress}>
+      <Lock enabled={!stateRouterAddress[chainId || 0]} reason={t('deployRouterFirst')}>
         <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
         <OptionWrapper>
           <OptionLabel displayChainsLink>
@@ -480,44 +463,36 @@ export default function Contracts() {
           onDeploymentCallback={onDeployCrosschainToken}
         />
 
-        {!onConfigNetwork && (
-          <Notice warning margin="0.3rem 0">
-            {t('switchToConfigNetworkToAccessTheseOptions')}
-          </Notice>
-        )}
-        {!hasUnderlyingInfo && (
-          <Notice warning margin="0.3rem 0">
-            {t('fillErc20InputsToUnlockTheseSettings')}
-          </Notice>
-        )}
+        <Accordion title={t('tokenConfig')} margin="0.5rem 0">
+          <OptionWrapper>
+            <OptionLabel>
+              {t('idOfCrosschainTokenNetwork')}
+              <Input
+                defaultValue={crosschainTokenChainId}
+                type="number"
+                min="1"
+                step="1"
+                onChange={event => setCrosschainTokenChainId(event.target.value)}
+              />
+              {t('crosschainTokenAddress')}
+              <Input
+                defaultValue={crosschainToken}
+                type="text"
+                placeholder="0x..."
+                onChange={event => setCrosschainToken(event.target.value)}
+              />
+              <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
+                {t(
+                  !onConfigNetwork ? 'switchToNetwork' : !hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig',
+                  { network: configNetworkName }
+                )}
+              </ButtonPrimary>
+            </OptionLabel>
+          </OptionWrapper>
+        </Accordion>
 
-        <Lock enabled={!hasUnderlyingInfo || !onConfigNetwork}>
-          <Accordion title={t('tokenConfig')} margin="0.5rem 0">
-            <OptionWrapper>
-              <OptionLabel>
-                {t('idOfCrosschainTokenNetwork')}
-                <Input
-                  defaultValue={crosschainTokenChainId}
-                  type="number"
-                  min="1"
-                  step="1"
-                  onChange={event => setCrosschainTokenChainId(event.target.value)}
-                />
-                {t('crosschainTokenAddress')}
-                <Input
-                  defaultValue={crosschainToken}
-                  type="text"
-                  placeholder="0x..."
-                  onChange={event => setCrosschainToken(event.target.value)}
-                />
-                <ButtonPrimary onClick={setTokenConfig}>{t('setTokenConfig')}</ButtonPrimary>
-              </OptionLabel>
-            </OptionWrapper>
-          </Accordion>
-
-          <SwapSettings underlying={underlying} />
-        </Lock>
-      </ZoneWrapper>
+        <SwapSettings underlying={underlying} />
+      </Lock>
     </>
   )
 }
