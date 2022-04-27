@@ -128,7 +128,7 @@ function Web3StatusInner() {
   const { connector, error } = useWeb3React()
   const { connect } = useWallet()
   const {account, chainId} = useActiveReact()
-
+  // console.log(error)
   const { ENSName } = useENSName(account && !isNaN(chainId) ? account : undefined)
   // console.log(ENSName)
   const allTransactions = useAllTransactions()

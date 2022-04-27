@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 // import { useTranslation } from 'react-i18next'
 import styled from "styled-components"
-
+import { Clock } from 'react-feather'
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 
@@ -15,7 +15,11 @@ import {
   SwapInputContent,
 } from './style'
 
-
+const DateInputBox = styled.div`
+  width: 100%;
+  height:56.8px;
+  position: relative;
+`
 const DateInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
   width: 100%;
@@ -35,22 +39,32 @@ const DateInput = styled.input<{ error?: boolean; fontSize?: string; align?: str
   height:56.8px;
   border-bottom:none;
   background: none;
-  margin-right: 1.875rem;
-
+  // margin-right: 1.875rem;
   ::-webkit-search-decoration {
     -webkit-appearance: none;
   }
 
-  [type='number'] {
-    -moz-appearance: textfield;
-  }
+  &[type="date" i] {
+    // display:none;
+    color: ${({ theme }) => theme.textColorBold};
+    ::-webkit-outer-spin-button,
+    ::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      visibility: hidden!important;
+    }
 
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    visibility: hidden!important;
-  }
+    ::-webkit-datetime-edit { } /*控制编辑区域的*/
 
+    ::-webkit-datetime-edit-fields-wrapper { } /*控制年月日这个区域的*/
+
+    ::-webkit-datetime-edit-text {  } /*这是控制年月日之间的斜线或短横线的*/
+
+    ::-webkit-datetime-edit-year-field {  } /*控制年文字, 如2013四个字母占据的那片地方*/
+
+    ::-webkit-datetime-edit-month-field {  } /*控制月份*/
+
+    ::-webkit-datetime-edit-day-field { } /*控制具体日子*/
+  }
   ::placeholder {
     // color: ${({ theme }) => theme.text4};
     color:#DADADA;
@@ -61,10 +75,83 @@ const DateInput = styled.input<{ error?: boolean; fontSize?: string; align?: str
     height: 50px;
     font-size: 24px;
   `};
-  &.error {
-    color: ${({ theme }) => theme.red1};
-  }
 `
+
+const DateInput1 = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
+  color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
+  width: 56.8px;
+  position: absolute;
+  top:0;right:0;bottom:0;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  background-color: ${({ theme }) => theme.bg1};
+  font-size: ${({ fontSize }) => fontSize ?? '44px'};
+  text-align: ${({ align }) => align && align};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px;
+  -webkit-appearance: textfield;
+  height:56.8px;
+  border-bottom:none;
+  background: none;
+  opacity: 0;
+  // margin-right: 1.875rem;
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  &[type="date" i] {
+    // display:none;
+    color: ${({ theme }) => theme.textColorBold};
+    ::-webkit-outer-spin-button,
+    ::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      visibility: hidden!important;
+    }
+
+    ::-webkit-datetime-edit {display:none } /*控制编辑区域的*/
+
+    ::-webkit-datetime-edit-fields-wrapper { } /*控制年月日这个区域的*/
+
+    ::-webkit-datetime-edit-text {  } /*这是控制年月日之间的斜线或短横线的*/
+
+    ::-webkit-datetime-edit-year-field {  } /*控制年文字, 如2013四个字母占据的那片地方*/
+
+    ::-webkit-datetime-edit-month-field {  } /*控制月份*/
+
+    ::-webkit-datetime-edit-day-field { } /*控制具体日子*/
+  }
+  ::placeholder {
+    // color: ${({ theme }) => theme.text4};
+    color:#DADADA;
+  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 100%;
+    margin-right: 0;
+    height: 50px;
+    font-size: 24px;
+  `};
+`
+
+const DateInputIcon = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 56.8px;
+  height:56.8px;
+  position: absolute;
+  top:0;right:0;bottom:0;
+  background-color: ${({ theme }) => theme.bodyBg};
+`
+
+const ClockIcon = styled(Clock)`
+  font-size: 48px;
+  width: 36.8px;
+  height:36.8px;
+  color: ${({ theme }) => theme.textColorBold};
+`
+
 const CheckoutGroup = styled.div`
 ${({ theme }) => theme.flexSC};
 // padding: 0 20px;
@@ -231,17 +318,33 @@ export default function LockAmount ({
             <TokenLogo symbol={'DATE'} size={'100%'} />
           </TokenLogoBox1>
         </CurrencySelect1>
-        <SwapInputContent>
-          <DateInput
-            value={ selectedDate }
-            ref={inputEl}
-            onChange={ handleDateChange }
-            type="date"
-            placeholder='Expiry Date'
-            min={min}
-            max={moment().add(1460, 'days').format('YYYY-MM-DD')}
-            disabled={false}
-          />
+        <SwapInputContent style={{width: '100%'}}>
+          <DateInputBox>
+
+            <DateInput
+              value={ selectedDate }
+              ref={inputEl}
+              onChange={ handleDateChange }
+              type="date"
+              placeholder='Expiry Date'
+              min={min}
+              max={moment().add(1460, 'days').format('YYYY-MM-DD')}
+              disabled={false}
+            />
+            <DateInputIcon>
+              <ClockIcon />
+            </DateInputIcon>
+            <DateInput1
+              value={ selectedDate }
+              // ref={inputEl}
+              onChange={ handleDateChange }
+              type="date"
+              placeholder='Expiry Date'
+              min={min}
+              max={moment().add(1460, 'days').format('YYYY-MM-DD')}
+              disabled={false}
+            />
+          </DateInputBox>
         </SwapInputContent>
       </SwapInputBox>
       <CheckoutGroup>

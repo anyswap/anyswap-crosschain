@@ -247,6 +247,10 @@ export default function Vest () {
   const [rewardList, setRewardList] = useState<any>()
   const [latestEpochInfo, setlatestEpochInfo] = useState<any>()
   const [price, setPrice] = useState<any>(12)
+  const [nftLogoModel, setNftLogoModel] = useState<any>(false)
+  const [nftLogo, setNftLogo] = useState<any>()
+
+  const [disabled, setDisabled] = useState(false)
   // const viewDatas = useRef<any>({})
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
@@ -344,14 +348,31 @@ export default function Vest () {
           else rewardEpochIdList.current[nfts?.id] = nextIndex
         }
       }
-      
+      const arr1 = []
+      for (const item of arr) {
+        if (arr1.length === 0) {
+          arr1.push({startEpoch: item.startEpoch, endEpoch: item.endEpoch})
+        } else {
+          const len = arr1.length -1
+          const obj = arr1[len]
+          if ((Number(obj.endEpoch) + 1) === Number(item.startEpoch)) {
+            if (Number(item.startEpoch) - Number(arr1[len].startEpoch) <= limit) {
+              arr1[len].endEpoch = item.startEpoch
+            } else {
+              arr1.push({startEpoch: item.startEpoch, endEpoch: item.endEpoch})
+            }
+          } else {
+            arr1.push({startEpoch: item.startEpoch, endEpoch: item.endEpoch})
+          }
+        }
+      }
       // console.log(arr)
       // console.log(totalReward)
       // console.log(rewardEpochIdList.current)
       // setLoadingStatus(1)
       // setRewradNumber('res')
       // setEpoch([])
-      return {list: arr, totalReward: totalReward?.toString()}
+      return {list: arr1, totalReward: totalReward?.toString()}
     }
     return undefined
   }, [rewardContract, epochId])
@@ -425,14 +446,18 @@ export default function Vest () {
           const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
           const locked = await contract.locked(tokenIndex)
           const lockValue = await contract.balanceOfNFT(tokenIndex)
-  
+          const tokenURI = await contract.tokenURI(tokenIndex)
+          const {data} = await axios.get(tokenURI)
+          // console.log(tokenURI)
+          // console.log(data)
           // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
           return {
+            ...data,
             index: idx,
             id: tokenIndex?.toString(),
             lockEnds: locked.end.toNumber(),
             lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
-            lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact()
+            lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
           }
         })
       )
@@ -740,9 +765,13 @@ export default function Vest () {
         </LogoBox>
           <RewardView>{totalReward} {useRewardToken?.symbol}</RewardView>
           <BottomGrouping>
-            <ButtonPrimary onClick={() => {
+            <ButtonPrimary disabled={disabled} onClick={() => {
               if (onWrap) {
-                onWrap()
+                setDisabled(true)
+                onWrap().then(() => {
+                  setDisabled(false)
+                  setModalOpen(false)
+                })
               }
             }}>
               {t('Claim Reward')}
@@ -765,6 +794,18 @@ export default function Vest () {
         {/* {rewardInfo?.id} */}
         {ClaimView(loadingStatus)}
       </ModalContent>
+
+      <ModalContent
+        isOpen={nftLogoModel}
+        onDismiss={() => {
+          setNftLogo('')
+          setNftLogoModel(false)
+        }}
+        title={t('NFT')}
+      >
+        <img src={nftLogo} style={{width: '100%'}} />
+      </ModalContent>
+
       <DataViews>
         <div className="list">
           {
@@ -834,12 +875,16 @@ export default function Vest () {
                 return <tr key={index}>
                   <DBTd>
                     <TokenTableCoinBox>
-                      <TokenTableLogo>
-                        <TokenLogo
+                      <TokenTableLogo onClick={() => {
+                        setNftLogo(item?.image)
+                        setNftLogoModel(true)
+                      }} style={{cursor: 'pointer'}}>
+                        {/* <TokenLogo
                           symbol={'MULTI'}
                           // logoUrl={item.logoUrl}
                           size={'1.625rem'}
-                        ></TokenLogo>
+                        ></TokenLogo> */}
+                        <img src={item?.image} />
                       </TokenTableLogo>
                       <TokenNameBox>
                         <h3>{item.id}</h3>
@@ -858,13 +903,16 @@ export default function Vest () {
                         setClaimRewardId(item.id)
                         setModalOpen(true)
                       }}>{t('Claim')}</TokenActionBtn1>
-                      <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)} onClick={() => {
+                      <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled} onClick={() => {
                         // console.log(onWithdrarWrap)
                         const now = parseInt(Date.now() / 1000 + '')
                         if (now >= Number(item.lockEnds)) {
                           if (onWithdrarWrap) {
                             // console.log(1)
-                            onWithdrarWrap(item.id)
+                            setDisabled(true)
+                            onWithdrarWrap(item.id).then(() => {
+                              setDisabled(false)
+                            })
                           }
                         }
                       }}>{t('Withdraw')}</TokenActionBtn1>
