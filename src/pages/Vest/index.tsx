@@ -314,7 +314,8 @@ export default function Vest () {
       // console.log(nfts.id)
       const arr = []
       let totalReward:any = ''
-      const limit = 30
+      // const limit = 30
+      const limit = 10
       const len = Number(epochId)
       const initStart = rewardEpochIdList?.current && rewardEpochIdList?.current[nfts?.id] ? rewardEpochIdList.current[nfts?.id] : 0
       for (let i = initStart; i < len; i+=limit) {
@@ -355,9 +356,13 @@ export default function Vest () {
         } else {
           const len = arr1.length -1
           const obj = arr1[len]
-          if ((Number(obj.endEpoch) + 1) === Number(item.startEpoch)) {
-            if (Number(item.startEpoch) - Number(arr1[len].startEpoch) <= limit) {
-              arr1[len].endEpoch = item.startEpoch
+          if ((Number(obj.endEpoch)) === Number(item.startEpoch)) {
+            if (Number(item.endEpoch) - Number(arr1[len].startEpoch) <= limit) {
+              arr1[len].endEpoch = item.endEpoch
+            } else if (Number(item.endEpoch) - Number(arr1[len].startEpoch) > limit) {
+              const a1s:any = Number(arr1[len].startEpoch)
+              arr1[len].endEpoch = a1s + limit + ''
+              arr1.push({startEpoch: a1s + limit + '', endEpoch: item.endEpoch})
             } else {
               arr1.push({startEpoch: item.startEpoch, endEpoch: item.endEpoch})
             }
@@ -367,6 +372,7 @@ export default function Vest () {
         }
       }
       // console.log(arr)
+      // console.log(arr1)
       // console.log(totalReward)
       // console.log(rewardEpochIdList.current)
       // setLoadingStatus(1)
@@ -632,7 +638,7 @@ export default function Vest () {
         question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
       })
     }
-    console.log(list)
+    // console.log(list)
     return list
   }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo, price])
 

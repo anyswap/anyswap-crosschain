@@ -34,6 +34,11 @@ font-style: italic;
 padding: 3px 0 !important;
 `
 
+const TypographyBold = styled.span`
+  font-weight: bold;
+  font-size:14px;
+`
+
 // function formatCurrency (value:any) {
 //   return value ? thousandBit(value, 2) : 0
 // }
@@ -125,7 +130,7 @@ export default function VestingInfo({
             <TypographyLabel>{ formatCurrency(futureTime?.value) } { veSymbol}</TypographyLabel>
             <div>
               <Typography>{ formatCurrency(futureNFT.lockAmount) } { govSymbol } locked expires { moment.unix(futureNFT?.lockEnds).fromNow() } </Typography>
-              <Typography>Locked until { futureTime ? moment.unix(futureTime.ends).format('YYYY / MM / DD') : ''}</Typography>
+              <Typography>Locked until <TypographyBold>{ futureTime ? moment.unix(futureTime.ends).format('YYYY / MM / DD') : ''}</TypographyBold></Typography>
             </div>
           </TypographyContent>
         </>
