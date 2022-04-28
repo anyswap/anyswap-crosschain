@@ -254,22 +254,28 @@ function RadiosStyle ({
 export default function LockAmount ({
   lockEnds,
   updateLockDuration,
-  type
+  type,
+  minDate,
 }: {
   lockEnds:any
   updateLockDuration: (value: any) => void,
   type: string
+  minDate?: string
 }) {
 
   const inputEl = useRef<any>(null);
 
   const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(7, 'days').format('YYYY-MM-DD'));
   const [selectedValue, setSelectedValue] = useState<any>(type === 'create' ? 'week' : '');
-
-  let min = moment().add(7, 'days').format('YYYY-MM-DD')
+// console.log(minDate)
+  let min = minDate ? minDate : moment().add(7, 'days').format('YYYY-MM-DD')
   const lockDuration = lockEnds ? moment(lockEnds).unix() : undefined
   if(lockDuration && new BigNumber(lockDuration).gt(0)) {
-    min = moment.unix(lockDuration).format('YYYY-MM-DD')
+    if (minDate && moment(minDate).unix() > lockDuration) {
+      min = minDate
+    } else {
+      min = moment.unix(lockDuration).format('YYYY-MM-DD')
+    }
   }
 
   const handleDateChange = (event:any) => {

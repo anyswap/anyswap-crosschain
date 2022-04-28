@@ -93,9 +93,15 @@ export default function VestingInfo({
     if (futureNFT?.lockEnds) {
       const day = 60*60*24
       const week = day*7
-      const cycle = parseInt(Number(futureNFT?.lockEnds) / week + '')
-      const useEnds = cycle * week
       const now = moment()
+      const cycle = parseInt(Number(futureNFT?.lockEnds) / week + '')
+      // console.log(cycle)
+      const latestEnds = cycle * week
+      const useEnds = now.unix() > latestEnds ? futureNFT?.lockEnds : latestEnds
+      // console.log(useEnds)
+      // console.log(futureNFT?.lockEnds)
+      // console.log(futureNFT?.lockEnds - useEnds)
+      // console.log(now.unix())
       const expiry = moment.unix(useEnds)
       // const expiry = moment.unix(futureNFT?.lockEnds)
       const dayToExpire = expiry.diff(now, 'days')

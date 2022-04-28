@@ -117,8 +117,9 @@ export default function CreateLock () {
     useVeMultiToken?.address,
     formatCurrency ?? undefined,
     lockDuration ? moment(lockDuration).add(1, 'days').unix() : undefined,
+    // lockDuration ? lockDuration : undefined,
     lockData?.id,
-    lockData?.lockEnds
+    lockData?.lockEnds,
   )
 
   const contract = useVeMULTIContract(useVeMultiToken?.address)
@@ -215,27 +216,6 @@ export default function CreateLock () {
     
     // setFutureNFT(tmpNFT)
   }, [lockData, inputValue])
-
-  // const currentNFT = useMemo(() => {
-  //   // console.log(lockData)
-  //   if (lockData) {
-  //     const tmpNFT = {
-  //       lockAmount: lockData.lockAmount,
-  //       lockValue: lockData.lockValue,
-  //       lockEnds: lockData.lockEnds,
-  //     }
-  
-  //     const now = moment()
-  //     const expiry = moment(lockDuration)
-  //     const dayToExpire = expiry.diff(now, 'days')
-  
-  //     tmpNFT.lockEnds = expiry.unix()
-  //     tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')).div(1460).toFixed(18)
-  //     console.log(tmpNFT)
-  //     return tmpNFT
-  //   }
-  //   return undefined
-  // }, [lockData, lockDuration])
 
   function onDelay () {
     setDelayAction(true)
@@ -344,10 +324,11 @@ export default function CreateLock () {
         <SwapContentBox>
           <LockDuration
             lockEnds={lockDuration}
+            minDate={lockData?.lockEnds ? moment.unix(lockData?.lockEnds).add(7, 'days').format('YYYY-MM-DD') : undefined}
             updateLockDuration={(date:any) => {
-              // console.log(date)
-              // const expiry = moment(date)
-              // console.log(expiry.unix())
+              console.log(date)
+              const expiry = moment(date)
+              console.log(expiry.unix())
               setLockDuration(date)
             }}
             type="manger"

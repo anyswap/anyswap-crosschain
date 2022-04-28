@@ -1,6 +1,7 @@
 import { Currency } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment';
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -151,13 +152,13 @@ export function useInCreaseUnlockTimeCallback(
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
   // console.log(balance?.raw.toString(16))
-  // console.log(inputCurrency)
+  // console.log(lockDuration)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(veMULTI)
     // console.log(contract)
-    if (!contract || !chainId || !inputCurrency || !tokenid || !lockEnds || !lockDuration) return NOT_APPLICABLE
+    if (!contract || !chainId || !inputCurrency || !tokenid || !lockDuration || !lockEnds) return NOT_APPLICABLE
     // console.log(typedValue)
     return {
       wrapType: WrapType.WRAP,
@@ -165,11 +166,17 @@ export function useInCreaseUnlockTimeCallback(
         async () => {
           const results:any = {}
           try {
+            console.log(lockDuration)
             const now = parseInt((Date.now() / 1000) + '')
             const time = Number(lockDuration) - now
-            console.log(lockEnds-now)
-            console.log(lockDuration-now)
-            console.log(lockDuration)
+            const oldtime = lockEnds - now
+            if ((time - oldtime) < (60*60*24*7)) {
+              onChangeViewErrorTip('Selection time must be greater than:' + moment.unix(lockEnds).add(7, 'days').format('YYYY-MM-DD'), true)
+              return results
+            }
+            // console.log(lockDuration)
+            // console.log(now)
+            // console.log(lockDuration-now)
             // const now = moment()
             // const expiry = moment(selectedDate).add(1, 'days')
             // const secondsToExpire = expiry.diff(now, 'seconds')
@@ -192,7 +199,7 @@ export function useInCreaseUnlockTimeCallback(
         },
       inputError: undefined
     }
-  }, [contract, chainId, inputCurrency, addTransaction, t, tokenid, lockEnds])
+  }, [contract, chainId, inputCurrency, addTransaction, t, tokenid, lockDuration, lockEnds])
 }
 
 export function useWithdrawCallback(
