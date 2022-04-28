@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationState } from './reducer'
-import { AppSettingsData } from './actions'
+import { AppSettingsData, RouterConfigDataList, ERC20TokenDataList, CrossChainTokenDataList } from './actions'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
 
 export function useBlockNumber(initChainId?: any): number | undefined {
@@ -100,7 +100,50 @@ export function useActivePopups(): AppState['application']['popupList'] {
 
 
 // Settings page
-
+/*
+  apiAddress: string
+  serverAdminAddress: string
+  mainConfigChainId: number | undefined
+  mainConfigAddress: string
+  routerConfigs: RouterConfigDataList
+  erc20Tokens: ERC20TokenDataList
+  crosschainTokens: CrossChainTokenDataList
+*/
 export function useAppSettings(): AppSettingsData {
   return useSelector((state: AppState) => state.application.appSettings)
+}
+
+// URL бек-энда
+export function useAppSettingsApiAddress(): string {
+  return useSelector((state: AppState) => state.application.appSettings.apiAddress)
+}
+
+// Eth адресс бек-энда
+export function useAppSettingsServerAddress(): string {
+  return useSelector((state: AppState) => state.application.appSettings.serverAdminAddress)
+}
+
+// ChainId где лежит конфиг бек-энда
+export function useAppSettingsConfigChainId(): number | undefined {
+  return useSelector((state: AppState) => state.application.appSettings.mainConfigChainId)
+}
+
+// Eth адрес конфига бек-энда
+export function useAppSettingsConfigAddress(): string {
+  return useSelector((state: AppState) => state.application.appSettings.mainConfigAddress)
+}
+
+// Список известных роутеров 
+export function useAppSettingsRouterConfigs(): RouterConfigDataList {
+  return useSelector((state: AppState) => state.application.appSettings.routerConfigs)
+}
+
+// Список известных токенов
+export function useAppSettingsERC20Tokens(): ERC20TokenDataList {
+  return useSelector((state: AppState) => state.application.appSettings.erc20Tokens)
+}
+
+// Список известных крос-чейн токенов
+export function useAppSettingsCrosschainTokens(): CrossChainTokenDataList {
+  return useSelector((state: AppState) => state.application.appSettings.crosschainTokens)
 }
