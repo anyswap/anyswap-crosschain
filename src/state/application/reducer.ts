@@ -43,7 +43,16 @@ const initialState: ApplicationState = {
   routerAddress: {},
   blockNumber: {},
   popupList: [],
-  openModal: null
+  openModal: null,
+  appSettings: {
+    apiAddress: '',
+    serverAdminAddress: '',
+    mainConfigChainId: undefined,
+    mainConfigAddress: '',
+    routerConfigs: {},
+    erc20Tokens: {},
+    crosschainTokens: {}
+  }
 }
 
 export default createReducer(initialState, builder =>

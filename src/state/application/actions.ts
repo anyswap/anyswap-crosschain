@@ -30,6 +30,48 @@ export enum ApplicationModal {
   NETWORK
 }
 
+export type RouterConfigData = {
+  chainId: number | undefined
+  address: string
+}
+
+export type ERC20TokenData = {
+  chainId: number
+  address: string
+  decimals: number
+  symbol: string
+  name: string
+  icon: string
+}
+
+export type CrossChainTokenData = {
+  chainId: number
+  address: string
+  erc20address: string
+}
+
+export type RouterConfigDataList = {
+  [ key: string ]: RouterConfigData
+}
+
+export type ERC20TokenDataList = {
+  [ key: string ]: ERC20TokenData
+}
+
+export type CrossChainTokenDataList = {
+  [ key: string ]: CrossChainTokenData
+}
+
+export type AppSettingsData = {
+  apiAddress: string
+  serverAdminAddress: string
+  mainConfigChainId: number | undefined
+  mainConfigAddress: string
+  routerConfigs: RouterConfigDataList
+  erc20Tokens: ERC20TokenDataList
+  crosschainTokens: CrossChainTokenDataList
+}
+
 export type AppData = {
   owner: string
   logo: string
@@ -45,6 +87,7 @@ export type AppData = {
   routerConfigChainId: number | undefined
   routerConfigAddress: string
   serverAdminAddress: string
+  appSettings: AppSettingsData
 }
 
 export type AppDataKeys = keyof AppData

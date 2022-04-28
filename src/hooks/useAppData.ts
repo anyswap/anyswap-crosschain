@@ -21,7 +21,16 @@ const parseInfo = (info: string) => {
     elementsColorLight: '',
     elementsColorDark: '',
     socialLinks: [],
-    disableSourceCopyright: false
+    disableSourceCopyright: false,
+    appSettings: {
+      apiAddress: '',
+      serverAdminAddress: '',
+      mainConfigChainId: undefined,
+      mainConfigAddress: '',
+      routerConfigs: {},
+      erc20Tokens: {},
+      crosschainTokens: {}
+    }
   }
   const result = JSON.parse(info)
 
