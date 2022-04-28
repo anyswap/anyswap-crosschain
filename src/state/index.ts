@@ -11,7 +11,7 @@ import nft from './nft/reducer'
 import multicall from './multicall/reducer'
 import pools from './pools/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'application']
 const middlewares: any[] = []
 
 // if (process.env.NODE_ENV === 'development') {

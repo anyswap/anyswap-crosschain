@@ -4,8 +4,11 @@ import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { updateAppOptions, updateRouterData } from '../../state/application/actions'
-import { useAppState } from '../../state/application/hooks'
+import { updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
+
+import {
+  useAppState,
+} from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
@@ -81,6 +84,24 @@ const CopyButton = styled(CleanButton)`
   }
 `
 
+
+const UpdateAppSetupSettings = (appSettings: any, setAppSettings: any, dispatch: any, newAppSettings: any) => {
+  setAppSettings({
+    ...appSettings,
+    ...newAppSettings
+  })
+
+  dispatch(
+    updateAppSettings({
+      appSettings: {
+        ...appSettings,
+        ...newAppSettings
+      }
+    })
+  )
+
+}
+
 export default function Contracts() {
   const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -90,8 +111,11 @@ export default function Contracts() {
     routerConfigChainId: stateRouterConfigChainId,
     routerConfigAddress: stateRouterConfigAddress,
     routerAddress: stateRouterAddress,
-    serverAdminAddress: stateServerAdminAddress
+    serverAdminAddress: stateServerAdminAddress,
+    appSettings: stateAppSettings
   } = useAppState()
+
+  const [appSettings, setAppSettings] = useState( stateAppSettings )
 
   const [storageNetworkName] = useState(chainInfo[config.STORAGE_CHAIN_ID]?.networkName)
   const [configNetworkName, setConfigNetworkName] = useState(
@@ -249,6 +273,7 @@ export default function Contracts() {
     const fetchUnderlyingInfo = async () => {
       if (!underlyingToken?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
 
+      console.log('>>> fetchUnderlyingInfo', appSettings)
       try {
         const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
 
@@ -266,6 +291,25 @@ export default function Contracts() {
         setUnderlyingName(name)
         setUnderlyingSymbol(symbol)
         setUnderlyingDecimals(decimals)
+
+        UpdateAppSetupSettings(
+          appSettings,
+          setAppSettings,
+          dispatch,
+          {
+            erc20Tokens: {
+              ...appSettings.erc20Tokens,
+              [`${underlyingNetworkId}:${underlyingToken}`]: {
+                chainId: underlyingNetworkId,
+                address: underlyingToken,
+                decimals,
+                symbol,
+                name,
+                icon: ''
+              }
+            }
+          }
+        )
 
         if (routerConfig) {
           const tokenConfig = await routerConfig.methods
@@ -368,7 +412,7 @@ export default function Contracts() {
     window.navigator.clipboard.writeText(commandToStartServer)
   }
 
-  console.log('>>>>>> apiAddress, mpcAddress', apiAddress, mpcAddress)
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>

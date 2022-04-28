@@ -31,12 +31,12 @@ export enum ApplicationModal {
 }
 
 export type RouterConfigData = {
-  chainId: number | undefined
+  chainId: string | undefined
   address: string
 }
 
 export type ERC20TokenData = {
-  chainId: number
+  chainId: string
   address: string
   decimals: number
   symbol: string
@@ -45,7 +45,7 @@ export type ERC20TokenData = {
 }
 
 export type CrossChainTokenData = {
-  chainId: number
+  chainId: string
   address: string
   erc20address: string
 }
@@ -97,6 +97,9 @@ export const setAppManagement = createAction<{ status: boolean }>('application/s
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateAppOptions = createAction<{ key: AppDataKeys; value: AppData[AppDataKeys] }[]>(
   'application/updateAppOptions'
+)
+export const updateAppSettings = createAction<{ appSettings: AppSettingsData }>(
+  'application/updateAppSettings'
 )
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
