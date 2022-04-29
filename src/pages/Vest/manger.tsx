@@ -189,6 +189,7 @@ export default function CreateLock () {
   const futureNFT = useMemo(() => {
     if (lockData) {
       if(inputValue === '') {
+        // console.log(inputValue)
         const tmpNFT = {
           lockAmount: lockData.lockAmount,
           lockValue: lockData.lockValue,

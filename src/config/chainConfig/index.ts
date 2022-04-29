@@ -137,7 +137,7 @@ const allChainList = [
   ChainId.BTT,
   ChainId.GOERLI,
   // ChainId.BNB_TEST,
-  ChainId.RINKEBY,
+  // ChainId.RINKEBY,
 ]
 
 const testChainList = [
