@@ -59,6 +59,7 @@ function getUrlVersion (init:any) {
   } else if (
     url.indexOf('https://app.multichain.org') === 0
     || url.indexOf('https://app.multichain.tools') === 0
+    || url.indexOf('https://conflux.multichain.tools') === 0
   ) {
     version = VERSION.V7
   } else if (url.indexOf('https://test.multichain.org') === 0) {
