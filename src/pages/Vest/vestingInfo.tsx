@@ -34,6 +34,11 @@ font-style: italic;
 padding: 3px 0 !important;
 `
 
+const TypographyBold = styled.span`
+  font-weight: bold;
+  font-size:14px;
+`
+
 // function formatCurrency (value:any) {
 //   return value ? thousandBit(value, 2) : 0
 // }
@@ -82,6 +87,33 @@ export default function VestingInfo({
     }
     return VENFT_BASE_INFO.symbol
   }, [veToken?.symbol, VENFT_BASE_INFO.symbol])
+
+
+  const futureTime = useMemo(() => {
+    if (futureNFT?.lockEnds) {
+      const day = 60*60*24
+      const week = day*7
+      const now = moment()
+      const cycle = parseInt(Number(futureNFT?.lockEnds) / week + '')
+      // console.log(cycle)
+      const latestEnds = cycle * week
+      const useEnds = now.unix() > latestEnds ? futureNFT?.lockEnds : latestEnds
+      // console.log(useEnds)
+      // console.log(futureNFT?.lockEnds)
+      // console.log(futureNFT?.lockEnds - useEnds)
+      // console.log(now.unix())
+      const expiry = moment.unix(useEnds)
+      // const expiry = moment.unix(futureNFT?.lockEnds)
+      const dayToExpire = expiry.diff(now, 'days')
+      const value = new BigNumber(futureNFT?.lockAmount).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18)
+      return {ends: useEnds, value: value}
+    }
+    return undefined
+  }, [futureNFT])
+  // const futureLockValue = useMemo(() => {
+
+  // }, [futureTime, ])
+
   return (
     <VestingInfoBox>
       { currentNFT &&
@@ -101,10 +133,10 @@ export default function VestingInfo({
         <>
           <TypographyTitle>Your voting power will be:</TypographyTitle>
           <TypographyContent>
-            <TypographyLabel>{ formatCurrency(futureNFT?.lockValue) } { veSymbol}</TypographyLabel>
+            <TypographyLabel>{ formatCurrency(futureTime?.value) } { veSymbol}</TypographyLabel>
             <div>
               <Typography>{ formatCurrency(futureNFT.lockAmount) } { govSymbol } locked expires { moment.unix(futureNFT?.lockEnds).fromNow() } </Typography>
-              <Typography>Locked until { moment.unix(futureNFT?.lockEnds).format('YYYY / MM / DD') }</Typography>
+              <Typography>Locked until <TypographyBold>{ futureTime ? moment.unix(futureTime.ends).format('YYYY / MM / DD') : ''}</TypographyBold></Typography>
             </div>
           </TypographyContent>
         </>

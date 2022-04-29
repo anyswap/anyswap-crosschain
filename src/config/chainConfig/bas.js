@@ -82,6 +82,12 @@ const bridgeToken = {
     nativeToken: '',
     crossBridgeInitToken: ''
   },
+  [VERSION.V7_BAS_TEST]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
+  },
 }
 
 export default {
@@ -121,7 +127,7 @@ export default {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '',
+    multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',

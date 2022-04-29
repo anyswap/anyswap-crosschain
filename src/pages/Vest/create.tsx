@@ -305,7 +305,7 @@ export default function CreateLock () {
           <LockDuration
             lockEnds={lockDuration}
             updateLockDuration={(date:any) => {
-              // console.log(date)
+              console.log(date)
               // const expiry = moment(date)
               // console.log(expiry.unix())
               setLockDuration(date)

@@ -18,6 +18,7 @@ export enum VERSION {
   V6_1 = 'NFT',
   V7 = 'SOURCE_CHAIN',
   V7_TEST = 'SOURCE_CHAIN_TEST',
+  V7_BAS_TEST = 'SOURCE_CHAIN_BAS_TEST',
 }
 
 
@@ -30,6 +31,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
 export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
+// export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
   const url = window.location.href
@@ -60,6 +63,8 @@ function getUrlVersion (init:any) {
     version = VERSION.V7
   } else if (url.indexOf('https://test.multichain.org') === 0) {
     version = VERSION.V7_TEST
+  } else if (url.indexOf('https://bas.multichain.org') === 0) {
+    version = VERSION.V7_BAS_TEST
   } else {
     version = init
   }
@@ -70,7 +75,7 @@ export const USE_VERSION:any = getUrlVersion(INIT_VERSION)
 
 
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
-export const bridgeApi = USE_VERSION === VERSION.V7_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'
+export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
@@ -315,7 +320,19 @@ export const controlConfig:any = {
     hiddenChain: [],
     showCoin: [],
     showChain: [],
-    initNode: '1',
+    initNode: '97',
+    isOpenRouter: 0,
+    isOpenRouterTxns: env === 'dev' ? 1 : 0,
+    isOpenBridge: 0,
+    isOpenMerge: 1
+  },
+  [VERSION.V7_BAS_TEST]: {
+    bridgeInitDataChain: '97',
+    hiddenCoin: formatHiddenCoin([]),
+    hiddenChain: [],
+    showCoin: [],
+    showChain: [],
+    initNode: '97',
     isOpenRouter: 0,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,

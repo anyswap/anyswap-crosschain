@@ -103,6 +103,12 @@ const bridgeToken = {
     nativeToken: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     crossBridgeInitToken: ''
   },
+  [VERSION.V7_BAS_TEST]: {
+    bridgeInitToken: '',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
+  },
 }
 
 export default {
@@ -167,8 +173,8 @@ export default {
     lookBlock: BNB_TEST_EXPLORER + '/block/',
     explorer: BNB_TEST_EXPLORER,
     symbol: symbol,
-    name: 'BSC',
-    networkName: 'BSC testnet',
+    name: 'BNB CHAIN',
+    networkName: 'BNB CHAIN testnet',
     type: 'test',
     label: BNB_TEST_CHAINID,
     isSwitch: 1,

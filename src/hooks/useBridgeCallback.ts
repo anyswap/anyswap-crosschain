@@ -768,7 +768,7 @@ export function useBridgeNativeCallback(
                   })
                   let srcChainID = chainId
                   let destChainID = toChainID
-                  if (toChainID === ChainId.TERRA && txnsType === 'swapout') {
+                  if (toChainID === ChainId.TERRA || txnsType === 'swapout') {
                     srcChainID = toChainID
                     destChainID = chainId
                   }

@@ -108,7 +108,7 @@ export default {
     explorer: ARBITRUM_TEST_EXPLORER,
     symbol: symbol,
     name: 'Arbitrum',
-    networkName: 'Arbitrum Rinkeby',
+    networkName: 'Arbitrum testnet',
     networkLogo: 'ARBITRUM',
     type: 'test',
     label: ARBITRUM_TEST_CHAINID,
