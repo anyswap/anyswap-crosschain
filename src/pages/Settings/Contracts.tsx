@@ -20,6 +20,7 @@ import DeployCrosschainToken from './DeployCrosschainToken'
 import SwapSettings from './SwapSettings'
 import OptionLabel from './OptionLabel'
 import { Notice } from './index'
+import { selectNetwork } from '../../config/tools/methods'
 import config from '../../config'
 
 export const OptionWrapper = styled.div`
@@ -93,7 +94,9 @@ export default function Contracts() {
     serverAdminAddress: stateServerAdminAddress
   } = useAppState()
 
-  const [storageNetworkName] = useState(chainInfo[config.STORAGE_CHAIN_ID]?.networkName)
+  const { STORAGE_CHAIN_ID, getCurChainInfo } = config
+
+  const [storageNetworkName] = useState(chainInfo[STORAGE_CHAIN_ID]?.networkName)
   const [configNetworkName, setConfigNetworkName] = useState(
     stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : ''
   )
@@ -368,6 +371,24 @@ export default function Contracts() {
     window.navigator.clipboard.writeText(commandToStartServer)
   }
 
+
+  const changeNetwork = (chainID: any) => {
+    selectNetwork(chainID).then((res: any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: getCurChainInfo(chainID).networkName}))
+      }
+    })
+  }
+
+  const switchToStorageNetwork = () => changeNetwork(STORAGE_CHAIN_ID)
+
+  const SwitchToStorageNetworkButton = () => (
+    <ButtonPrimary onClick={switchToStorageNetwork}>
+      {t('switchToNetwork', { network: storageNetworkName })}
+    </ButtonPrimary>
+  )
+
   console.log('>>>>>> apiAddress, mpcAddress', apiAddress, mpcAddress)
   return (
     <>
@@ -418,9 +439,13 @@ export default function Contracts() {
               />
             </OptionLabel>
           </OptionWrapper>
-          <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
-            {t(onStorageNetwork ? 'saveConfig' : 'switchToNetwork', { network: storageNetworkName })}
-          </ButtonPrimary>
+          {onStorageNetwork
+            ? (
+              <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
+                {t('saveConfig')}
+              </ButtonPrimary>
+            ) : <SwitchToStorageNetworkButton />
+          }
         </Accordion>
       ) : (
         <>
@@ -428,9 +453,13 @@ export default function Contracts() {
           <OptionWrapper>
             {t('validatorNodeAddress')}: {t('validatorNodeAddressDescription')}
             <Input type="text" value={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-            <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid || !onStorageNetwork}>
-              {t(onStorageNetwork ? 'saveAddress' : 'switchToNetwork', { network: storageNetworkName })}
-            </ButtonPrimary>
+            {onStorageNetwork
+              ? (
+                <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid}>
+                  {t('saveAddress')}
+                </ButtonPrimary>
+              ) : <SwitchToStorageNetworkButton />
+            }
           </OptionWrapper>
 
           <OptionWrapper>
@@ -441,9 +470,13 @@ export default function Contracts() {
               value={mpcAddress}
               onChange={event => setMpcAddress(event.target.value)}
             />
-            <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions || !onStorageNetwork}>
-              {t(onStorageNetwork ? 'saveAdminAddressData' : 'switchToNetwork', { network: storageNetworkName })}
-            </ButtonPrimary>
+            {onStorageNetwork
+              ? (
+                <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions}>
+                  {t('saveAdminAddressData')}
+                </ButtonPrimary>
+              ) : <SwitchToStorageNetworkButton />
+            }
           </OptionWrapper>
 
           {stateRouterConfigAddress && stateServerAdminAddress && (
