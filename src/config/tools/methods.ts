@@ -13,11 +13,14 @@ export function selectNetwork (chainID:any) {
     if (ethereumFN && ethereumFN.request) {
       // console.log(ethereumFN)
       // console.log(ethereumFN.chainId)
-      const data = {
+
+      const chainId = '0x' + Number(chainID).toString(16) // A 0x-prefixed hexadecimal string
+
+      const addChainData = {
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: '0x' + Number(chainID).toString(16), // A 0x-prefixed hexadecimal string
+            chainId,
             chainName: chainInfo[chainID].networkName,
             nativeCurrency: {
               name: chainInfo[chainID].name,
@@ -30,22 +33,43 @@ export function selectNetwork (chainID:any) {
           }
         ],
       }
-      // console.log(data)
-      ethereumFN.request(data).then((res: any) => {
-        // console.log(chainID)
-        console.log(res)
-        localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
-        console.log('>>> go 7')
-        history.go(0)
-        resolve({
-          msg: 'Success'
-        })
-      }).catch((err: any) => {
+
+      const switchChainData = {
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId }]
+      }
+
+      const onSuccess = (res: any) => {
+         // console.log(chainID)
+         console.log(res)
+         localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
+         console.log('>>> go 7')
+         history.go(0)
+         resolve({
+           msg: 'Success'
+         })
+      }
+
+      const onError = (err: any) => {
         console.log(err)
         resolve({
           msg: 'Error'
         })
+      }
+
+      ethereumFN.request(switchChainData)
+      .then(onSuccess)
+      .catch((switchError: any) => {
+        if (switchError.code === 4902) {
+
+          ethereumFN.request(addChainData)
+          .then(onSuccess)
+          .catch(onError)
+        } else {
+          onError(switchError)
+        }
       })
+
     } else {
       resolve({
         msg: 'Error'
