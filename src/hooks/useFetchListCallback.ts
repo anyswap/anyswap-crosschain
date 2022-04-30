@@ -79,7 +79,7 @@ const prepareServerList = (chainId: any, pairs: any) => {
           },
           destChains: pairTokens,
           price: 1,
-          logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+          // logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
           chainId,
         }
       }
@@ -146,7 +146,7 @@ const prepareTokenList = (chainId: any, pairs: any) => {
           },
           destChains: pairTokens,
           price: 1,
-          logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
+          // logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
           chainId,
         }
       }

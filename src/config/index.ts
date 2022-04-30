@@ -1,6 +1,7 @@
 import { chainInfo } from './chainConfig'
 import { ENV_NODE_CONFIG, INIT_NODE, USE_VERSION, env, version, controlConfig } from './constant'
-import { BNB_MAIN_CHAINID, BNB_TEST_CHAINID } from './chainConfig/bsc'
+import { BNB_MAIN_CHAINID } from './chainConfig/bsc'
+import { MATIC_TEST_CHAINID } from './chainConfig/matic'
 import { getNetwork, getInitBridgeChain } from './tools/getUrlParams'
 
 interface Config {
@@ -10,7 +11,7 @@ interface Config {
 const ENV = getNetwork(ENV_NODE_CONFIG, INIT_NODE)
 const netConfig: Config = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
-const STORAGE_CHAIN_ID = process.env.NODE_ENV === 'production' ? BNB_MAIN_CHAINID : BNB_TEST_CHAINID
+const STORAGE_CHAIN_ID = process.env.NODE_ENV === 'production' ? BNB_MAIN_CHAINID : MATIC_TEST_CHAINID
 
 const config: Config = {
   ...netConfig,
