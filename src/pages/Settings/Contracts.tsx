@@ -450,8 +450,46 @@ export default function Contracts() {
       ) : (
         <>
           <Title>{t('validatorNodeSettings')}</Title>
+          <div>
+            1. Sign up to{" "}
+            <ConfigLink
+              href="https://aws.amazon.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              aws.amazon.com
+            </ConfigLink>{" "}
+            and go to{" "}
+            <ConfigLink
+              href="https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#AMICatalog"
+              target="_blank"
+              rel="noreferrer"
+            >
+              AMI Catalog
+            </ConfigLink>
+          </div>
+          <div>
+            2. Find <strong>ami-0e44c502f03f004f4</strong> (in &quot;community ami&quot;) -&gt; select -&gt; run instance
+          </div>
+          <div>
+            3. Run instance based on this AMI (no keypair, allow http port).
+          </div>
+          <div>
+            4. Add your domain to{" "}
+            <ConfigLink
+              href="https://cloudflare.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              cloudflare.com
+            </ConfigLink>{" "}
+            and add subdomain &quot;api.your-domain.com&quot; (in the &quot;DNS&quot; section) linked to the IP you&apos;ve got from amazon (&quot;public IP of your instance&quot;. Enable orange cloud, enable SSL -&gt; flexible SSL).<br />
+          </div>
+          <div>
+            5. Save &quot;https://api.your-domain.com&quot; as &quot;Validator Node Address&quot; to the below field:
+          </div>
           <OptionWrapper>
-            {t('validatorNodeAddress')}: {t('validatorNodeAddressDescription')}
+            <strong>{t('validatorNodeAddress')}</strong>
             <Input type="text" value={apiAddress} onChange={event => setApiAddress(event.target.value)} />
             {onStorageNetwork
               ? (
@@ -461,9 +499,12 @@ export default function Contracts() {
               ) : <SwitchToStorageNetworkButton />
             }
           </OptionWrapper>
-
+          <div>
+            6. Create a new address in Metamask (or you can use an existing private key at your own risk) and export its private key (it will be used as &lt; YOUR PRIVATE KEY &gt; in 7 step){" "}
+            and save this new address as &quot;Validator Node Address&quot; to bellow field:
+          </div>
           <OptionWrapper>
-            {t('validatorNodeNetworkAddress')}. {t('validatorNodeNetworkAddressDescription')}
+            <strong>{t('validatorNodeNetworkAddress')}</strong>
             <Input
               type="text"
               placeholder="0x..."
@@ -481,7 +522,7 @@ export default function Contracts() {
 
           {stateRouterConfigAddress && stateServerAdminAddress && (
             <>
-              <SubTitle margin="1.4rem 0 0.5rem">{t('startServerWithThisCommand')}</SubTitle>
+              <SubTitle margin="1.4rem 0 0.5rem">7. {t('startServerWithThisCommand')}</SubTitle>
               <OptionWrapper>
                 <Notice warning margin="0.4rem 0 0.6rem">
                   {t('replaceKeyWithValidatorNodeKey', {
@@ -494,6 +535,10 @@ export default function Contracts() {
                 />
                 <CopyButton onClick={copyServerCommand}>{t('copy')}</CopyButton>
               </OptionWrapper>
+
+              <div>
+                8. Top-up for at least 0.12 in every network you plan to use (BSC, Polygon, etc)
+              </div>
             </>
           )}
         </>
