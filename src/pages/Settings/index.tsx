@@ -86,7 +86,7 @@ export default function Settings() {
       setTabs(['contracts'])
       setTab('contracts')
     }
-  }, [chainId])
+  }, [onStorageChain])
 
   const [isOwner, setIsOwner] = useState<boolean>(!owner || account?.toLowerCase() === owner?.toLowerCase())
 
