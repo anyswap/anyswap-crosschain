@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const EVMOS_MAIN_CHAINID = ChainId.EVMOS
 export const EVMOS_MAINNET = getLocalRPC(EVMOS_MAIN_CHAINID, 'https://eth.bd.evmos.org:8545')
-export const EVMOS_MAIN_EXPLORER = 'https://evm.evmos.org/blocks'
+export const EVMOS_MAIN_EXPLORER = 'https://evm.evmos.org'
 
 export const tokenList = []
 export const testTokenList = []
