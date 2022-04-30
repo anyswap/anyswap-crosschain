@@ -328,8 +328,8 @@ export default function Contracts() {
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
   useEffect(() => {
-    setHasUnderlyingInfo(Boolean(underlyingNetworkId && underlyingName))
-  }, [underlyingNetworkId, underlyingName])
+    setHasUnderlyingInfo(Boolean(underlyingNetworkId && underlyingName && underlyingSymbol))
+  }, [underlyingNetworkId, underlyingName, underlyingSymbol])
 
   const underlying = {
     networkId: underlyingNetworkId,

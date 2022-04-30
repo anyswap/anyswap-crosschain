@@ -56,6 +56,7 @@ export default createReducer(initialState, builder =>
           routerConfigAddress,
           serverAdminAddress,
           logo,
+          owner,
           projectName,
           brandColor,
           backgroundColorLight,
@@ -71,6 +72,7 @@ export default createReducer(initialState, builder =>
         if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
         if (serverAdminAddress && serverAdminAddress !== ZERO_ADDRESS) state.serverAdminAddress = serverAdminAddress
         if (logo) state.logo = logo
+        if (owner) state.owner = owner
         if (projectName) state.projectName = projectName
         if (brandColor) state.brandColor = brandColor
         if (backgroundColorLight) state.backgroundColorLight = backgroundColorLight
