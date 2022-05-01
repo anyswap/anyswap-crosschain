@@ -35,7 +35,7 @@ import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
-import {useCreateLockCallback} from './hooks'
+import {useCreateLockCallback, useLockDurationTip} from './hooks'
 import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
@@ -121,6 +121,8 @@ export default function CreateLock () {
     lockDuration ? moment(lockDuration).add(1, 'days').unix() : undefined
   )
 
+  const selectTimeTip = useLockDurationTip(lockDuration)
+
   const isInputError = useMemo(() => {
     // console.log(inputValue)
     // console.log(inputValue !== '')
@@ -147,21 +149,26 @@ export default function CreateLock () {
   }, [inputValue, formatCurrency, wrapInputError])
 
   const isSwap = useMemo(() => {
-    if (isInputError || !inputValue) {
+    if (isInputError || !inputValue || selectTimeTip) {
       return true
     }
     return false
-  }, [isInputError, inputValue])
+  }, [isInputError, inputValue, selectTimeTip])
 
   const errorTip = useMemo(() => {
-    
+    // console.log(selectTimeTip)
     if (!account || !chainId) {
       return undefined
     } else if (isInputError) {
       return isInputError
+    } else if (selectTimeTip) {
+      return {
+        state: 'Error',
+        tip: selectTimeTip
+      }
     }
     return undefined
-  }, [isInputError, account, chainId])
+  }, [isInputError, account, chainId, selectTimeTip])
 
   const futureNFT = useMemo(() => {
     const now = moment()

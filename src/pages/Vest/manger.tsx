@@ -37,7 +37,7 @@ import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
-import {useInCreaseAmountCallback, useInCreaseUnlockTimeCallback} from './hooks'
+import {useInCreaseAmountCallback, useInCreaseUnlockTimeCallback, useLockDurationTip} from './hooks'
 import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
@@ -122,6 +122,8 @@ export default function CreateLock () {
     lockData?.lockEnds,
   )
 
+  const selectTimeTip = useLockDurationTip(lockDuration, lockData?.lockEnds)
+
   const contract = useVeMULTIContract(useVeMultiToken?.address)
 
   const getNFT = useCallback(async() => {
@@ -186,6 +188,16 @@ export default function CreateLock () {
     return undefined
   }, [isInputError, account, chainId])
 
+  const errorTimeTip = useMemo(() => {
+    if (selectTimeTip) {
+      return {
+        state: 'Error',
+        tip: selectTimeTip
+      }
+    }
+    return undefined
+  }, [selectTimeTip])
+
   const futureNFT = useMemo(() => {
     if (lockData) {
       if(inputValue === '') {
@@ -236,7 +248,7 @@ export default function CreateLock () {
     if (methodsType === 'increase_amount') {
       isDisabled = Boolean(isSwap || delayAction)
     } else if (methodsType === 'increase_unlock_time') {
-      isDisabled = Boolean(!lockDuration || delayAction)
+      isDisabled = Boolean(!lockDuration || delayAction || errorTimeTip)
     }
     return (
       <>
@@ -344,7 +356,7 @@ export default function CreateLock () {
             showVestingStructure={ false }
           ></VestingInfo>
         </SwapContentBox>
-        <ErrorTip errorTip={errorTip} />
+        <ErrorTip errorTip={errorTimeTip} />
         {viewBtn(0, t('Increase Duration'), 'increase_unlock_time')}
       </ContentBody>
     </AppBody>

@@ -30,8 +30,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-export const INIT_VERSION = VERSION.V7
-// export const INIT_VERSION = VERSION.V7_TEST
+// export const INIT_VERSION = VERSION.V7
+export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {

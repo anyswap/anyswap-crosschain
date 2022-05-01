@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 // import { useTranslation } from 'react-i18next'
 import styled from "styled-components"
 import { Clock } from 'react-feather'
@@ -266,17 +266,58 @@ export default function LockAmount ({
   const inputEl = useRef<any>(null);
 
   const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(7, 'days').format('YYYY-MM-DD'));
-  const [selectedValue, setSelectedValue] = useState<any>(type === 'create' ? 'week' : '');
+  const [selectedValue, setSelectedValue] = useState<any>(type === 'create' ? 'week' : 'week');
 // console.log(minDate)
-  let min = minDate ? minDate : moment().add(7, 'days').format('YYYY-MM-DD')
-  const lockDuration = lockEnds ? moment(lockEnds).unix() : undefined
-  if(lockDuration && new BigNumber(lockDuration).gt(0)) {
-    if (minDate && moment(minDate).unix() > lockDuration) {
-      min = minDate
-    } else {
-      min = moment.unix(lockDuration).format('YYYY-MM-DD')
+  // let min = minDate ? minDate : moment().add(7, 'days').format('YYYY-MM-DD')
+  // const lockDuration = lockEnds ? moment(lockEnds).unix() : undefined
+  // if(lockDuration && new BigNumber(lockDuration).gt(0)) {
+  //   if (minDate && moment(minDate).unix() > lockDuration) {
+  //     min = minDate
+  //   } else {
+  //     min = moment.unix(lockDuration).format('YYYY-MM-DD')
+  //   }
+  // }
+
+  const lockDuration = useMemo(() => {
+    return lockEnds ? moment(lockEnds).unix() : undefined
+  }, [lockEnds])
+
+  const min = useMemo(() => {
+    // console.log(minDate)
+    // console.log(lockDuration ? moment.unix(lockDuration).format('YYYY-MM-DD') : '')
+    if (lockDuration && !minDate) {
+      if (new BigNumber(lockDuration).gt(0)) {
+        return moment.unix(lockDuration).format('YYYY-MM-DD')
+      }
+      return moment().add(7, 'days').format('YYYY-MM-DD')
+    } else if (minDate && !lockDuration) {
+      if (minDate) {
+        return minDate
+      } else {
+        return moment().add(7, 'days').format('YYYY-MM-DD')
+      }
+    } else if (lockDuration && minDate) {
+      const md = moment(minDate).unix()
+      if (md > lockDuration) {
+        // setSelectedDate(minDate)
+        // updateLockDuration(minDate)
+        return minDate
+      } else {
+        return moment.unix(lockDuration).format('YYYY-MM-DD')
+      }
     }
-  }
+    return moment().add(7, 'days').format('YYYY-MM-DD')
+  }, [lockDuration, minDate])
+
+  useEffect(() => {
+    if (lockDuration && minDate) {
+      const md = moment(minDate).unix()
+      if (md > lockDuration) {
+        setSelectedDate(minDate)
+        updateLockDuration(minDate)
+      }
+    }
+  }, [lockDuration, minDate])
 
   const handleDateChange = (event:any) => {
     setSelectedDate(event.target.value);
@@ -304,7 +345,17 @@ export default function LockAmount ({
         break;
       default:
     }
-    const newDate = moment().add(days, 'days').format('YYYY-MM-DD');
+    // const mt = minDate ? minDate : ''
+    const useDate = moment().add(days, 'days')
+    let selectDate = moment().add(days, 'days')
+    if (minDate) {
+      const ut = useDate.unix()
+      const mt = moment(minDate).unix()
+      if (mt > ut){
+        selectDate = moment(minDate)
+      }
+    }
+    const newDate = selectDate.format('YYYY-MM-DD')
 
     setSelectedDate(newDate);
     updateLockDuration(newDate)
