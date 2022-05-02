@@ -87,6 +87,7 @@ export default function Contracts() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
+    owner,
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
     routerConfigAddress: stateRouterConfigAddress,
@@ -178,6 +179,19 @@ export default function Contracts() {
 
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
+  const [routerConfigOwner, setRouterConfigOwner] = useState('')
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!stateRouterConfigAddress || !stateRouterConfigChainId || !routerConfig) return setRouterConfigOwner('')
+
+      const owner = await routerConfig.methods.owner().call()
+
+      setRouterConfigOwner(owner)
+    }
+
+    fetch()
+  }, [stateRouterConfigAddress, stateRouterConfigChainId, routerConfig])
 
   const saveRouterConfig = () => {
     if (!account) return
@@ -350,8 +364,16 @@ export default function Contracts() {
   const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
 
   useEffect(() => {
-    setCanSaveRouterConfig(Boolean(onStorageNetwork && routerConfigChainId && routerConfigAddress))
-  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress])
+    setCanSaveRouterConfig(
+      Boolean(
+        onStorageNetwork &&
+          routerConfigChainId &&
+          routerConfigAddress &&
+          routerConfigOwner &&
+          routerConfigOwner.toLowerCase() === owner.toLowerCase()
+      )
+    )
+  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress, routerConfigOwner])
 
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
