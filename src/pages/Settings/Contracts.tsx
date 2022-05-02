@@ -87,6 +87,7 @@ export default function Contracts() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
+    owner,
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
     routerConfigAddress: stateRouterConfigAddress,
@@ -115,6 +116,12 @@ export default function Contracts() {
   useEffect(() => {
     setOnStorageNetwork(chainId === config.STORAGE_CHAIN_ID)
   }, [chainId])
+
+  const [onConfigNetwork, setOnConfigNetwork] = useState(false)
+
+  useEffect(() => {
+    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === Number(stateRouterConfigChainId)))
+  }, [chainId, stateRouterConfigChainId])
 
   const [apiAddress, setApiAddress] = useState(stateApiAddress)
   const [apiIsValid, setApiIsValid] = useState(false)
@@ -172,6 +179,19 @@ export default function Contracts() {
 
   const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
   const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
+  const [routerConfigOwner, setRouterConfigOwner] = useState('')
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!stateRouterConfigAddress || !stateRouterConfigChainId || !routerConfig) return setRouterConfigOwner('')
+
+      const owner = await routerConfig.methods.owner().call()
+
+      setRouterConfigOwner(owner)
+    }
+
+    fetch()
+  }, [stateRouterConfigAddress, stateRouterConfigChainId, routerConfig])
 
   const saveRouterConfig = () => {
     if (!account) return
@@ -216,6 +236,12 @@ export default function Contracts() {
   }, [chainId, stateRouterAddress])
 
   const showRouterSettings = () => setDisplayRouterSettings(true)
+
+  const [canSaveChainConfig, setCanSaveChainConfig] = useState(false)
+
+  useEffect(() => {
+    setCanSaveChainConfig(Boolean(onConfigNetwork && routerChainId && routerAddress))
+  }, [onConfigNetwork, routerChainId, routerAddress])
 
   const setChainConfig = async () => {
     if (!routerConfigSigner) return
@@ -313,17 +339,19 @@ export default function Contracts() {
     }
   }
 
-  const [onConfigNetwork, setOnConfigNetwork] = useState(false)
-
-  useEffect(() => {
-    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === Number(stateRouterConfigChainId)))
-  }, [chainId, stateRouterConfigChainId])
-
   const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
 
   useEffect(() => {
-    setCanSaveRouterConfig(Boolean(onStorageNetwork && routerConfigChainId && routerConfigAddress))
-  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress])
+    setCanSaveRouterConfig(
+      Boolean(
+        onStorageNetwork &&
+          routerConfigChainId &&
+          routerConfigAddress &&
+          routerConfigOwner &&
+          routerConfigOwner.toLowerCase() === owner.toLowerCase()
+      )
+    )
+  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress, routerConfigOwner])
 
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
@@ -360,23 +388,20 @@ export default function Contracts() {
   const [commandToStartServer, setCommandToStartServer] = useState('')
 
   useEffect(() => {
-    const command = [
-      `/root/setup ${stateRouterConfigChainId} ${stateRouterConfigAddress} <YOUR PRIVATE KEY>`
-    ]
+    const command = `/root/setup ${stateRouterConfigChainId} ${stateRouterConfigAddress} <YOUR PRIVATE KEY>`
 
-    setCommandToStartServer(command.join(' '))
+    setCommandToStartServer(command)
   }, [stateRouterConfigAddress, stateRouterConfigChainId])
 
   const copyServerCommand = () => {
     window.navigator.clipboard.writeText(commandToStartServer)
   }
 
-
   const changeNetwork = (chainID: any) => {
     selectNetwork(chainID).then((res: any) => {
       console.log(res)
       if (res.msg === 'Error') {
-        alert(t('changeMetamaskNetwork', {label: getCurChainInfo(chainID).networkName}))
+        alert(t('changeMetamaskNetwork', { label: getCurChainInfo(chainID).networkName }))
       }
     })
   }
@@ -389,7 +414,6 @@ export default function Contracts() {
     </ButtonPrimary>
   )
 
-  console.log('>>>>>> apiAddress, mpcAddress', apiAddress, mpcAddress)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -439,27 +463,23 @@ export default function Contracts() {
               />
             </OptionLabel>
           </OptionWrapper>
-          {onStorageNetwork
-            ? (
-              <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
-                {t('saveConfig')}
-              </ButtonPrimary>
-            ) : <SwitchToStorageNetworkButton />
-          }
+          {onStorageNetwork ? (
+            <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
+              {t('saveConfig')}
+            </ButtonPrimary>
+          ) : (
+            <SwitchToStorageNetworkButton />
+          )}
         </Accordion>
       ) : (
         <>
           <Title>{t('validatorNodeSettings')}</Title>
           <div>
-            1. Sign up to{" "}
-            <ConfigLink
-              href="https://aws.amazon.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
+            1. Sign up to{' '}
+            <ConfigLink href="https://aws.amazon.com/" target="_blank" rel="noreferrer">
               aws.amazon.com
-            </ConfigLink>{" "}
-            and go to{" "}
+            </ConfigLink>{' '}
+            and go to{' '}
             <ConfigLink
               href="https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#AMICatalog"
               target="_blank"
@@ -469,21 +489,19 @@ export default function Contracts() {
             </ConfigLink>
           </div>
           <div>
-            2. Find <strong>ami-0e44c502f03f004f4</strong> (in &quot;community ami&quot;) -&gt; select -&gt; run instance
+            2. Find <strong>ami-0e44c502f03f004f4</strong> (in &quot;community ami&quot;) -&gt; select -&gt; run
+            instance
           </div>
+          <div>3. Run instance based on this AMI (no keypair, allow http port).</div>
           <div>
-            3. Run instance based on this AMI (no keypair, allow http port).
-          </div>
-          <div>
-            4. Add your domain to{" "}
-            <ConfigLink
-              href="https://cloudflare.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
+            4. Add your domain to{' '}
+            <ConfigLink href="https://cloudflare.com/" target="_blank" rel="noreferrer">
               cloudflare.com
-            </ConfigLink>{" "}
-            and add subdomain &quot;api.your-domain.com&quot; (in the &quot;DNS&quot; section) linked to the IP you&apos;ve got from amazon (&quot;public IP of your instance&quot;. Enable orange cloud, enable SSL -&gt; flexible SSL).<br />
+            </ConfigLink>{' '}
+            and add subdomain &quot;api.your-domain.com&quot; (in the &quot;DNS&quot; section) linked to the IP
+            you&apos;ve got from amazon (&quot;public IP of your instance&quot;. Enable orange cloud, enable SSL -&gt;
+            flexible SSL).
+            <br />
           </div>
           <div>
             5. Save &quot;https://api.your-domain.com&quot; as &quot;Validator Node Address&quot; to the below field:
@@ -491,17 +509,18 @@ export default function Contracts() {
           <OptionWrapper>
             <strong>{t('validatorNodeAddress')}</strong>
             <Input type="text" value={apiAddress} onChange={event => setApiAddress(event.target.value)} />
-            {onStorageNetwork
-              ? (
-                <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid}>
-                  {t('saveAddress')}
-                </ButtonPrimary>
-              ) : <SwitchToStorageNetworkButton />
-            }
+            {onStorageNetwork ? (
+              <ButtonPrimary onClick={saveApiAddress} disabled={!apiIsValid}>
+                {t('saveAddress')}
+              </ButtonPrimary>
+            ) : (
+              <SwitchToStorageNetworkButton />
+            )}
           </OptionWrapper>
           <div>
-            6. Create a new address in Metamask (or you can use an existing private key at your own risk) and export its private key (it will be used as &lt; YOUR PRIVATE KEY &gt; in 7 step){" "}
-            and save this new address as &quot;Validator Node Address&quot; to bellow field:
+            6. Create a new address in Metamask (or you can use an existing private key at your own risk) and export its
+            private key (it will be used as &lt; YOUR PRIVATE KEY &gt; in 7 step) and save this new address as
+            &quot;Validator Node Address&quot; to bellow field:
           </div>
           <OptionWrapper>
             <strong>{t('validatorNodeNetworkAddress')}</strong>
@@ -511,13 +530,13 @@ export default function Contracts() {
               value={mpcAddress}
               onChange={event => setMpcAddress(event.target.value)}
             />
-            {onStorageNetwork
-              ? (
-                <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions}>
-                  {t('saveAdminAddressData')}
-                </ButtonPrimary>
-              ) : <SwitchToStorageNetworkButton />
-            }
+            {onStorageNetwork ? (
+              <ButtonPrimary onClick={saveServerAdminAddress} disabled={!validMpcOptions}>
+                {t('saveAdminAddressData')}
+              </ButtonPrimary>
+            ) : (
+              <SwitchToStorageNetworkButton />
+            )}
           </OptionWrapper>
 
           {stateRouterConfigAddress && stateServerAdminAddress && (
@@ -536,9 +555,7 @@ export default function Contracts() {
                 <CopyButton onClick={copyServerCommand}>{t('copy')}</CopyButton>
               </OptionWrapper>
 
-              <div>
-                8. Top-up for at least 0.12 in every network you plan to use (BSC, Polygon, etc)
-              </div>
+              <div>8. Top-up for at least 0.12 in every network you plan to use (BSC, Polygon, etc)</div>
             </>
           )}
         </>
@@ -582,7 +599,7 @@ export default function Contracts() {
                 onChange={event => setRouterAddress(event.target.value)}
               />
             </OptionLabel>
-            <ButtonPrimary onClick={setChainConfig} disabled={!onConfigNetwork || !routerChainId || !routerAddress}>
+            <ButtonPrimary onClick={setChainConfig} disabled={!canSaveChainConfig}>
               {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
             </ButtonPrimary>
           </OptionWrapper>
