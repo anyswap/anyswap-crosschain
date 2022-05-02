@@ -9,7 +9,7 @@ import { useAppState } from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
-import { useRouterConfigContract, useRouterContract } from '../../hooks/useContract'
+import { useRouterConfigContract } from '../../hooks/useContract'
 import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
 import { ButtonPrimary, ButtonOutlined, CleanButton } from '../../components/Button'
 import Accordion from '../../components/Accordion'
@@ -218,8 +218,6 @@ export default function Contracts() {
 
   const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
-  const [routerOwner, setRouterOwner] = useState('')
-  const router = useRouterContract(chainId || 0, routerAddress)
 
   useEffect(() => {
     if (chainId !== undefined && stateRouterAddress[chainId]) {
@@ -230,18 +228,6 @@ export default function Contracts() {
       setRouterAddress('')
     }
   }, [chainId, stateRouterAddress[chainId || 0]])
-
-  useEffect(() => {
-    const fetch = async () => {
-      if (!routerAddress || !router) return setRouterOwner('')
-
-      const owner = await router.methods.mpc().call()
-
-      setRouterOwner(owner)
-    }
-
-    fetch()
-  }, [chainId, routerAddress, router])
 
   const [displayRouterSettings, setDisplayRouterSettings] = useState(!!stateRouterAddress[chainId || 0])
 
@@ -254,16 +240,8 @@ export default function Contracts() {
   const [canSaveChainConfig, setCanSaveChainConfig] = useState(false)
 
   useEffect(() => {
-    setCanSaveChainConfig(
-      Boolean(
-        onConfigNetwork &&
-          routerChainId &&
-          routerAddress &&
-          routerOwner &&
-          stateServerAdminAddress?.toLowerCase() === routerOwner.toLowerCase()
-      )
-    )
-  }, [onConfigNetwork, routerChainId, routerAddress, stateServerAdminAddress, routerOwner])
+    setCanSaveChainConfig(Boolean(onConfigNetwork && routerChainId && routerAddress))
+  }, [onConfigNetwork, routerChainId, routerAddress])
 
   const setChainConfig = async () => {
     if (!routerConfigSigner) return
