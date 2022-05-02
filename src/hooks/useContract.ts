@@ -8,6 +8,7 @@ import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ROUTER_CONFIG from '../constants/abis/app/RouterConfig.json'
 import STORAGE from '../constants/abis/app/Storage.json'
+import ROUTER from '../constants/abis/app/AnyswapV6Router.json'
 import MasterChef from '../constants/abis/farm/MasterChef.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import WETH_ABI from '../constants/abis/weth.json'
@@ -22,7 +23,6 @@ import RouterAction from '../constants/abis/bridge/RouterAction.json'
 import NFT from '../constants/abis/bridge/nft.json'
 import NFT721 from '../constants/abis/bridge/erc721.json'
 import NFT1155 from '../constants/abis/bridge/erc1155.json'
-
 import config from '../config/index'
 
 const Web3 = require('web3')
@@ -65,6 +65,23 @@ export function useRouterConfigContract(address?: string, chainId?: number, with
 
     return null
   }, [address, chainId, library])
+}
+
+export function useRouterContract(chainId: number, address?: string) {
+  return useMemo(() => {
+    if (!address || !chainId) return null
+
+    try {
+      const { nodeRpc } = chainInfo[chainId]
+      const web3 = new Web3(nodeRpc)
+
+      return new web3.eth.Contract(ROUTER.abi, address)
+    } catch (error) {
+      console.error('Failed to get Router contract', error)
+    }
+
+    return null
+  }, [chainId, address])
 }
 
 export function useStorageContract(chainId: number): Contract | null {
