@@ -34,7 +34,17 @@ const formatAmount = (n: string | undefined, direction: Direction) => {
 
 const MILLION = 1_000_000
 
-export default function SwapSettings({ underlying }: { underlying: { [k: string]: any } }) {
+export default function SwapSettings({
+  underlying,
+  onConfigNetwork,
+  configNetworkName
+}: {
+  underlying: {
+    [k: string]: any
+  }
+  onConfigNetwork: boolean
+  configNetworkName: string
+}) {
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -211,8 +221,11 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
           </OptionLabel>
         </OptionWrapper>
 
-        <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
-          {t('setSwapConfig')}
+        <ButtonPrimary disabled={pending || !canSetSwapConfig || !onConfigNetwork} onClick={setSwapConfig}>
+          {t(
+            !onConfigNetwork ? 'switchToNetwork' : 'setSwapConfig',
+            { network: configNetworkName }
+          )}
         </ButtonPrimary>
       </OptionWrapper>
     </Accordion>
