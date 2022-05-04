@@ -21,6 +21,8 @@
 /l2
 /movr
 /app
+/conflux
+/test
 *.zip
 
 # misc
