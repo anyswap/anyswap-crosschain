@@ -51,12 +51,12 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
     BigValueThreshold: 100000
     SwapFeeRatePerMillion: 0.001
     */
-  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
-  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
-  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(undefined)
-  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(undefined)
-  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(undefined)
-  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(undefined)
+  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(`1`)
+  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(`1000`)
+  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(`1`)
+  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(`10`)
+  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(`1000000`)
+  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(`0.001`)
 
   const [canSetSwapConfig, setCanSetSwapConfig] = useState(false)
 
