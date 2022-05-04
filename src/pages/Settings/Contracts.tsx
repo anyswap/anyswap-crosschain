@@ -32,6 +32,30 @@ export const OptionWrapper = styled.div`
   margin: 0.3rem 0;
 `
 
+export const Select = styled.select`
+  width: 100%;
+  padding: 0.4rem 0;
+  margin: 0.2rem 0;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.text3};
+  outline: none;
+  font-size: inherit;
+  background-color: transparent;
+  color: inherit;
+`
+
+export const SelectOption = styled.option`
+  width: 100%;
+  padding: 0.4rem 0;
+  margin: 0.2rem 0;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.text3};
+  outline: none;
+  font-size: inherit;
+  background-color: rgb(21,26,47);
+  color: inherit;
+`
+
 export const Input = styled.input`
   width: 100%;
   padding: 0.4rem 0;
@@ -428,6 +452,51 @@ export default function Contracts() {
     console.log('>>> onDeployCrosschainToken', contractAddress, chainId, hash)
     setCrosschainTokenChainId(`${chainId}`)
     setCrosschainToken(contractAddress)
+    UpdateAppSetupSettings(
+      appSettings,
+      setAppSettings,
+      dispatch,
+      {
+        crosschainTokens: {
+          ...appSettings.crosschainTokens,
+          [`${chainId}:${contractAddress}`]: {
+            chainId,
+            contractAddress,
+            underlying,
+          }
+        }
+      }
+    )
+  }
+
+  const setCrosschainTokenData = (selectedContract: any) => {
+    console.log('>>> setCrosschainTokenData', selectedContract)
+    if (selectedContract !== `-`) {
+      const {
+        chainId,
+        contractAddress,
+        underlying
+      } = appSettings.crosschainTokens[selectedContract]
+
+      setCrosschainTokenChainId(`${chainId}`)
+      setCrosschainToken(contractAddress)
+      
+      setUnderlyingNetworkId(underlying.networkId)
+      setUnderlyingToken(underlying.address)
+      setUnderlyingDecimals(underlying.decimals)
+      setUnderlyingName(underlying.name)
+      setUnderlyingSymbol(underlying.symbol)
+
+    } else {
+      setCrosschainTokenChainId(``)
+      setCrosschainToken(``)
+      
+      setUnderlyingNetworkId(``)
+      setUnderlyingToken(``)
+      setUnderlyingDecimals(0)
+      setUnderlyingName(``)
+      setUnderlyingSymbol(``)
+    }
   }
 
   const [commandToStartServer, setCommandToStartServer] = useState('')
@@ -657,9 +726,9 @@ export default function Contracts() {
         <OptionWrapper>
           <OptionLabel displayChainsLink>
             {t('erc20ChainId')}
-            <Input type="number" min="1" onChange={event => setUnderlyingNetworkId(event.target.value)} />
+            <Input type="number" min="1" value={underlyingNetworkId} onChange={event => setUnderlyingNetworkId(event.target.value)} />
             {t('erc20TokenAddress')}
-            <Input type="text" placeholder="0x..." onChange={event => setUnderlyingToken(event.target.value)} />
+            <Input type="text" placeholder="0x..." value={underlyingToken} onChange={event => setUnderlyingToken(event.target.value)} />
           </OptionLabel>
         </OptionWrapper>
 
@@ -672,9 +741,24 @@ export default function Contracts() {
         <Accordion title={t('tokenConfig')} margin="0.5rem 0">
           <OptionWrapper>
             <OptionLabel>
+              <span>Use deployed</span>
+              <Select onChange={event => setCrosschainTokenData(event.target.value)}>
+                <SelectOption value="-">Select deployed contract</SelectOption>
+                {Object.keys(appSettings.crosschainTokens).map((ccTokenKey) => {
+                  const ccTokenInfo = appSettings.crosschainTokens[ccTokenKey]
+
+                  return (
+                    <SelectOption key={ccTokenKey} value={ccTokenKey}>
+                      Chain {ccTokenInfo.chainId} ({ccTokenInfo.underlying.symbol}) {ccTokenInfo.contractAddress}
+                    </SelectOption>
+                  )
+                })}
+              </Select>
+            </OptionLabel>
+            <OptionLabel>
               {t('idOfCrosschainTokenNetwork')}
               <Input
-                defaultValue={crosschainTokenChainId}
+                value={crosschainTokenChainId}
                 type="number"
                 min="1"
                 step="1"
@@ -682,7 +766,7 @@ export default function Contracts() {
               />
               {t('crosschainTokenAddress')}
               <Input
-                defaultValue={crosschainToken}
+                value={crosschainToken}
                 type="text"
                 placeholder="0x..."
                 onChange={event => setCrosschainToken(event.target.value)}

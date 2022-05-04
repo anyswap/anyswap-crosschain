@@ -45,9 +45,15 @@ export type ERC20TokenData = {
 }
 
 export type CrossChainTokenData = {
-  chainId: string
-  address: string
-  erc20address: string
+  chainId: number
+  contractAddress: string
+  underlying: {
+    networkId: string
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+  }
 }
 
 export type RouterConfigDataList = {
