@@ -51,9 +51,6 @@ export default function DeployRouter({
         chainId: currentChainId,
         library,
         account,
-        onHash: (hash: string) => {
-          console.log('router hash: ', hash)
-        },
         onDeployment: (contractAddress: string, chainId: number, hash: string) => {
           addTransaction(
             { hash },

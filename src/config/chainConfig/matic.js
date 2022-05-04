@@ -121,7 +121,6 @@ export default {
     tokenListUrl: tokenListUrl + MATIC_TEST_CHAINID,
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
-    storage: '0x4ccEC45Db8B91F28C9f311FDCA8Cf7eB5E4061FF',
     swapRouterToken: '',
     swapInitToken: '',
     multicalToken: '0x168154c58270b3236eec45e10f3a9c35a5016495',

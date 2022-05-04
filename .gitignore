@@ -20,7 +20,7 @@
 /oec
 /l2
 /movr
-/app
+# /app
 *.zip
 
 # misc

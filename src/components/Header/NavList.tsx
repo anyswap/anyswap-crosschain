@@ -242,9 +242,11 @@ export default function NavList() {
   return (
     <>
       <HeaderLinks>
+        {/*
         <StyledNavLink id={`dashboard-nav-link`} to={'/dashboard'}>
           {t('dashboard')}
         </StyledNavLink>
+        */}
 
         {config.getCurConfigInfo().isOpenRouter ? (
           <StyledNavLink
