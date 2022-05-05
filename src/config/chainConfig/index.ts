@@ -140,7 +140,7 @@ const allChainList = [
   ChainId.JEWEL,
   ChainId.BTT,
   ChainId.EVMOS,
-  ChainId.RON,
+  // ChainId.RON,
   ChainId.GOERLI,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
