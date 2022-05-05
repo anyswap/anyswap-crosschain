@@ -132,6 +132,7 @@ export default function Contracts() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
+    // @ts-ignore ToDo - need save to storage (interface) first
     owner,
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
@@ -273,6 +274,7 @@ export default function Contracts() {
       setRouterChainId(String(chainId))
       setRouterAddress(stateRouterAddress[chainId])
     } else {
+      console.log('>>> use effect - reset router chain id and address', chainId, stateRouterAddress)
       setRouterChainId('')
       setRouterAddress('')
     }
@@ -305,7 +307,7 @@ export default function Contracts() {
         InitialHeight: 0
       })
 
-      const receipt = tx.wait()
+      const receipt = await tx.wait()
 
       if (receipt.status) {
         dispatch(updateRouterData({ chainId: Number(routerChainId), routerAddress: routerAddress }))
@@ -415,9 +417,11 @@ export default function Contracts() {
       Boolean(
         onStorageNetwork &&
           routerConfigChainId &&
-          routerConfigAddress &&
+          routerConfigAddress/* && */
+          /* To-Do - need fix
           routerConfigOwner &&
           routerConfigOwner.toLowerCase() === owner.toLowerCase()
+          */
       )
     )
   }, [onStorageNetwork, routerConfigChainId, routerConfigAddress, routerConfigOwner])
@@ -566,6 +570,7 @@ export default function Contracts() {
     </ButtonPrimary>
   )
 
+  console.log(stateRouterAddress, routerAddress)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -778,7 +783,7 @@ export default function Contracts() {
       </Accordion>
 
       <Title>{t('erc20Token')}</Title>
-      <Lock enabled={!stateRouterAddress[chainId || 0]} reason={t('deployRouterFirst')}>
+      <Lock enabled={!routerAddress} reason={t('deployRouterFirst')}>
         <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
         <OptionWrapper>
           <OptionLabel displayChainsLink>
