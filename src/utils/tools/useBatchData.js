@@ -45,7 +45,8 @@ function getBatchWeb3Data ({rpc, calls, provider}) {
       if (obj.callData) {
         batch.add(web3.eth.call.request({data: obj.callData, to: obj.target}, 'latest'))
       } else {
-        batch.add(web3.eth[obj.methods].request(...obj.input))
+        const property = obj.property ? obj.property : 'eth'
+        batch.add(web3[property][obj.methods].request(...obj.input))
       }
     }
     batch.requestManager.sendBatch(batch.requests, (err, res) => {
