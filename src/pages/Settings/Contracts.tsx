@@ -440,6 +440,15 @@ export default function Contracts() {
     console.log('>>> onDeployRouterConfig', contractAddress, chainId, hash)
     setRouterConfigChainId(`${chainId}`)
     setRouterConfigAddress(contractAddress)
+    UpdateAppSetupSettings(
+      appSettings,
+      setAppSettings,
+      dispatch,
+      {
+        mainConfigChainId: chainId,
+        mainConfigAddress: contractAddress
+      }
+    )
   }
 
   const onDeployRouter = (contractAddress: string, chainId: number, hash: string) => {
