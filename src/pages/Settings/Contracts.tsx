@@ -446,6 +446,20 @@ export default function Contracts() {
     console.log('>>> onDeployRouter', contractAddress, chainId, hash)
     setRouterChainId(`${chainId}`)
     setRouterAddress(contractAddress)
+    UpdateAppSetupSettings(
+      appSettings,
+      setAppSettings,
+      dispatch,
+      {
+        routerConfigs: {
+          ...appSettings.routerConfigs,
+          [`${chainId}:${contractAddress}`]: {
+            chainId,
+            address: contractAddress
+          }
+        }
+      }
+    )
   }
 
   const onDeployCrosschainToken = (contractAddress: string, chainId: number, hash: string) => {
@@ -467,6 +481,21 @@ export default function Contracts() {
         }
       }
     )
+  }
+
+  const setRouterData = (selectedContract: any) => {
+    console.log('>>> setRouterData', selectedContract)
+    if (selectedContract !== `-`) {
+      const {
+        chainId,
+        address
+      } = appSettings.routerConfigs[selectedContract]
+      setRouterChainId(`${chainId}`)
+      setRouterAddress(address)
+    } else {
+      setRouterChainId(``)
+      setRouterAddress(``)
+    }
   }
 
   const setCrosschainTokenData = (selectedContract: any) => {
@@ -695,6 +724,21 @@ export default function Contracts() {
             <Notice warning margin="0.4rem 0">
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}
             </Notice>
+            <OptionLabel>
+              <span>Use deployed</span>
+              <Select onChange={event => setRouterData(event.target.value)}>
+                <SelectOption value="-">Select deployed contract</SelectOption>
+                {Object.keys(appSettings.routerConfigs).map((routerKey) => {
+                  const routerInfo = appSettings.routerConfigs[routerKey]
+
+                  return (
+                    <SelectOption key={routerKey} value={routerKey}>
+                      Chain {routerInfo.chainId} ({routerInfo.address})
+                    </SelectOption>
+                  )
+                })}
+              </Select>
+            </OptionLabel>
             <OptionLabel displayChainsLink>
               {t('routerChainId')}
               <Input
@@ -713,9 +757,13 @@ export default function Contracts() {
                 onChange={event => setRouterAddress(event.target.value)}
               />
             </OptionLabel>
-            <ButtonPrimary onClick={setChainConfig} disabled={!canSaveChainConfig}>
-              {t(onConfigNetwork ? 'setChainConfig' : 'switchToNetwork', { network: configNetworkName })}
-            </ButtonPrimary>
+            {onConfigNetwork ? (
+              <ButtonPrimary onClick={setChainConfig} disabled={!canSaveChainConfig}>
+                {t('setChainConfig')}
+              </ButtonPrimary>
+            ) : (
+              <SwitchToStorageNetworkButton />
+            )}
           </OptionWrapper>
         )}
       </Accordion>
