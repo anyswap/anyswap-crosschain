@@ -19,6 +19,10 @@ const DateInputBox = styled.div`
   width: 100%;
   height:56.8px;
   position: relative;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height:56.8px;
+    `
+  }
 `
 const DateInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
   color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
@@ -131,8 +135,9 @@ const DateInput1 = styled.input<{ error?: boolean; fontSize?: string; align?: st
   ${({ theme }) => theme.mediaWidth.upToLarge`
     width: 100%;
     margin-right: 0;
-    height: 50px;
-    font-size: 24px;
+    // height: 50px;
+    // line-height: 50px;
+    // font-size: 24px;
   `};
 `
 
@@ -154,14 +159,23 @@ const ClockIcon = styled(Clock)`
 
 const CheckoutGroup = styled.div`
 ${({ theme }) => theme.flexSC};
+flex-wrap:wrap;
 // padding: 0 20px;
 margin-top:10px;
+  // ${({ theme }) => theme.mediaWidth.upToMedium`
+  //   height: 28px;
+  //   margin-bottom: 10px;
+  // `}
 `
 const CheckoutLabel = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width:100%;
+  `}
 
 `
 const CheckoutItem = styled.div`
 ${({ theme }) => theme.flexSC};
+flex-wrap:wrap;
 `
 const RadioStyle = styled.input`
   top: 0;
@@ -216,7 +230,13 @@ const RadioLabel = styled.label`
   .radioTxt {
     font-size:12px;
     color: ${({ theme }) => theme.text1};
+    white-space:nowrap;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    // width:100%;
+    margin-right:5px;
+  `}
 `
 
 function RadiosStyle ({

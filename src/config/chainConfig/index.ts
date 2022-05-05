@@ -44,6 +44,7 @@ import jewel from './jewel'
 import btt from './btt'
 import bas from './bas'
 import evmos from './evmos'
+import ron from './ron'
 
 import { ChainId } from './chainId'
 
@@ -53,6 +54,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...ron,
   ...evmos,
   ...bas,
   ...btt,
@@ -138,6 +140,7 @@ const allChainList = [
   ChainId.JEWEL,
   ChainId.BTT,
   ChainId.EVMOS,
+  ChainId.RON,
   ChainId.GOERLI,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,

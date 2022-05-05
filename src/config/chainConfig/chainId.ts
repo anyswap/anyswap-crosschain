@@ -55,4 +55,5 @@ export enum ChainId {
   JEWEL = '53935',
   BTT = '199',
   EVMOS = '9001',
+  RON = '2020',
 }

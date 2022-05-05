@@ -50,10 +50,13 @@ export default function LockAmount ({
             <TYPE.body
               color={theme.text2}
               fontWeight={500}
-              fontSize={14}
+              // fontSize={theme.mediaWidth.upToMedium ? 12 : 14}
               style={{ display: 'inline', cursor: 'pointer' }}
               onClick={() => onMax(balance?.toExact())}
-            >{t('balanceTxt') + ': ' + (balance ? thousandBit(balance?.toSignificant(6), 'no') : '-')}</TYPE.body>
+              className="balance"
+            >
+              {t('balanceTxt') + ': ' + (balance ? thousandBit(balance?.toSignificant(6), 'no') : '-')}
+            </TYPE.body>
           </SwapInputLabel>
           <VeNumericalInput
             className={isInputError ? 'error' : ''}
