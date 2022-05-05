@@ -570,7 +570,6 @@ export default function Contracts() {
     </ButtonPrimary>
   )
 
-  console.log(stateRouterAddress, routerAddress)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
