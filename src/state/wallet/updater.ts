@@ -19,6 +19,7 @@ import ERC20_INTERFACE from '../../constants/abis/erc20'
 import {useRpcState} from '../rpc/hooks'
 
 import {getContract} from '../../utils/tools/multicall'
+import {useBatchData} from '../../utils/tools/useBatchData'
 
 import config from '../../config'
 // import { fromWei } from '../../utils/tools/tools'
@@ -84,24 +85,24 @@ export default function Updater(): null {
         resolve('')
         return
       }
-      const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
+      // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
       const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
-      const contract = getContract({rpc: rpc, abi: '', provider: provider})
-      // console.log(arr)
-      // console.log(config.getCurChainInfo(chainId))
-      contract.options.address = config.getCurChainInfo(chainId).multicalToken
-      contract.methods.aggregate(arr.map(({callData, target}: {callData:string, target:string}) => ({callData, target}))).call((err:any, res:any) => {
-        // console.log(err)
+      // const contract = getContract({rpc: rpc, abi: '', provider: provider})
+      useBatchData({
+        chainId, 
+        calls: arr.map(({callData, target}: {callData:string, target:string}) => ({type: 'TOKEN', callData, target})), 
+        provider
+      }).then((res) => {
         // console.log(res)
-        if (!err) {
+        if (res) {
           const blList:any = {}
           for (let i = 0, len = arr.length; i < len; i++) {
             const token = arr[i].target.toLowerCase()
             const dec = arr[i].dec
-            const results = res.returnData[i]
+            const results = res[i]
             let bl = ''
             try {
-              // console.log(results)
+              // console.log(ERC20_INTERFACE.decodeFunctionResult('balanceOf', results))
               bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
             } catch (error) {
               // console.error(error)
@@ -111,7 +112,7 @@ export default function Updater(): null {
               balance: bl ? formatUnits(bl, dec) : '',
               balancestr: bl,
               dec: dec,
-              blocknumber: res.blockNumber
+              // blocknumber: res.blockNumber
             }
           }
           dispatch(tokenBalanceList({
@@ -122,6 +123,41 @@ export default function Updater(): null {
         }
         resolve(res)
       })
+      // console.log(arr)
+      // console.log(config.getCurChainInfo(chainId))
+      // contract.options.address = config.getCurChainInfo(chainId).multicalToken
+      // contract.methods.aggregate(arr.map(({callData, target}: {callData:string, target:string}) => ({callData, target}))).call((err:any, res:any) => {
+      //   // console.log(err)
+      //   // console.log(res)
+      //   if (!err) {
+      //     const blList:any = {}
+      //     for (let i = 0, len = arr.length; i < len; i++) {
+      //       const token = arr[i].target.toLowerCase()
+      //       const dec = arr[i].dec
+      //       const results = res.returnData[i]
+      //       let bl = ''
+      //       try {
+      //         // console.log(results)
+      //         bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
+      //       } catch (error) {
+      //         // console.error(error)
+      //       }
+      //       blList[token] = {
+      //         // balance: fromWei(results, dec),
+      //         balance: bl ? formatUnits(bl, dec) : '',
+      //         balancestr: bl,
+      //         dec: dec,
+      //         blocknumber: res.blockNumber
+      //       }
+      //     }
+      //     dispatch(tokenBalanceList({
+      //       chainId,
+      //       account,
+      //       tokenList: blList
+      //     }))
+      //   }
+      //   resolve(res)
+      // })
     })
   }, [rpcItem, chainId])
 

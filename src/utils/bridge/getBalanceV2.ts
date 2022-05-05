@@ -1,6 +1,7 @@
 
 import { useWeb3, getContract } from '../tools/web3UtilsV2'
-import { useMulticall } from '../tools/multicall'
+// import { useMulticall } from '../tools/multicall'
+import { useBatchData } from '../tools/useBatchData'
 import {setLocalConfig, getLocalConfig, fromWei} from '../tools/tools'
 // import config from '../../config'
 import { isAddress } from '..'
@@ -120,7 +121,13 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
       }
     }
     
-    useMulticall(chainId, arr).then((res:any) => {
+    useBatchData({chainId, calls: arr.map((item:any) => ({
+      callData: item.data,
+      target: item.token,
+      methods: item.methods,
+      input: item.inputFormatter
+    })), provider: ''}).then((res:any) => {
+    // useMulticall(chainId, arr).then((res:any) => {
       // console.log(res)
       if (res) {
         try {
