@@ -841,7 +841,12 @@ export default function Contracts() {
           </OptionWrapper>
         </Accordion>
 
-        <SwapSettings underlying={underlying} onConfigNetwork={onConfigNetwork} configNetworkName={configNetworkName} />
+        <SwapSettings
+          underlying={underlying}
+          onConfigNetwork={onConfigNetwork}
+          configNetworkName={configNetworkName}
+          switchToStorageNetwork={switchToStorageNetwork}
+        />
       </Lock>
     </>
   )
