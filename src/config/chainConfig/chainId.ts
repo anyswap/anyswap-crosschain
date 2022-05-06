@@ -56,4 +56,8 @@ export enum ChainId {
   BTT = '199',
   EVMOS = '9001',
   RON = '2020',
+  ETC = '61',
+  GT = '86',
+  DOGE = '2000',
+  CMP = '256256',
 }

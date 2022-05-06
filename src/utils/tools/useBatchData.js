@@ -123,7 +123,10 @@ export async function useBatchData ({chainId, calls, provider}) {
   } catch (error) {
     console.log('error')
     console.log(error.toString())
-    if (
+    if ( error.toString().indexOf('Error: Returned error: execution reverted: Multicall aggregate: call failed') !== -1) {
+      // logger.error(error.toString(), 11111)
+      results = ''
+    } else if (
       error.toString().indexOf('Invalid JSON RPC response') !== -1
       || error.toString().indexOf('Error: Returned error') !== -1
       || error === TIMEOUT
@@ -134,7 +137,7 @@ export async function useBatchData ({chainId, calls, provider}) {
           rpc: rpcArr[index],
           index: index
         }
-        results = await useBatchWeb3(chainId, calls)
+        results = await useBatchData({chainId, calls, provider})
       } else {
         useNode[chainId] = {
           rpc: rpcArr[0],
