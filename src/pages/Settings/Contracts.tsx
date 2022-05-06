@@ -377,9 +377,6 @@ export default function Contracts() {
 
             setCrosschainTokenChainId(underlyingNetworkId)
             setCrosschainToken(ContractAddress)
-          } else {
-            setCrosschainTokenChainId('')
-            setCrosschainToken('')
           }
 
           console.groupEnd()
