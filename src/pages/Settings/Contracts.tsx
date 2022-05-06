@@ -829,12 +829,14 @@ export default function Contracts() {
                 placeholder="0x..."
                 onChange={event => setCrosschainToken(event.target.value)}
               />
-              <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
-                {t(
-                  !onConfigNetwork ? 'switchToNetwork' : !hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig',
-                  { network: configNetworkName }
-                )}
-              </ButtonPrimary>
+              
+              {onConfigNetwork ? (
+                <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
+                  {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
+                </ButtonPrimary>
+              ) : (
+                <SwitchToStorageNetworkButton />
+              )}
             </OptionLabel>
           </OptionWrapper>
         </Accordion>
