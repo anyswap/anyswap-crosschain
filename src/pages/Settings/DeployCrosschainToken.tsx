@@ -74,9 +74,11 @@ export default function DeployCrosschainToken({
   }
 
   const onTokenDeployment = async () => {
+    console.log('>>> onTokenDeployment', chainId, account, vault, hasCrosschainTokenOnChain())
     if (!chainId || !account || !vault) return
 
-    const breakDeployment = !(hasCrosschainTokenOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : false)
+    const breakDeployment = !(hasCrosschainTokenOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : true)
+    console.log('>>> breakDeployment', breakDeployment)
     if (breakDeployment) return
 
     setPending(true)

@@ -54,7 +54,7 @@ export default function DeployRouter({
   const onDeployment = async () => {
     if (!currentChainId || !wrappedToken || !routerConfig) return
 
-    const breakDeployment = !(hasRouterOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : false)
+    const breakDeployment = !(hasRouterOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : true)
     if (breakDeployment) return
 
     try {
