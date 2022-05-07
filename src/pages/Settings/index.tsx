@@ -9,6 +9,7 @@ import { useAppState } from '../../state/application/hooks'
 import { MyBalanceBox } from '../Dashboard/styleds'
 import Interface from './Interface'
 import Contracts from './Contracts'
+import FirstSetup from './FirstSetup'
 import config from '../../config'
 
 export const OptionWrapper = styled.div<{ margin?: number; flex?: boolean }>`
@@ -70,21 +71,28 @@ export default function Settings() {
   const { chainId, account, library } = useActiveWeb3React()
   const [tabs, setTabs] = useState<string[]>([])
   const [tab, setTab] = useState('interface')
+
   const { owner } = useAppState()
 
   const [onStorageChain, setOnStorageChain] = useState(false)
+  const [isInstalledOnDomain] = useState<boolean>(!!owner)
 
   useEffect(() => {
     setOnStorageChain(!!chainId && chainId === config.STORAGE_CHAIN_ID)
   }, [chainId])
 
   useEffect(() => {
-    if (onStorageChain) {
-      setTabs(['interface', 'contracts'])
-      setTab('interface')
+    if (!isInstalledOnDomain) {
+      setTabs(['install'])
+      setTab('install')
     } else {
-      setTabs(['contracts'])
-      setTab('contracts')
+      if (onStorageChain) {
+        setTabs(['interface', 'contracts'])
+        setTab('interface')
+      } else {
+        setTabs(['contracts'])
+        setTab('contracts')
+      }
     }
   }, [onStorageChain])
 
@@ -118,6 +126,7 @@ export default function Settings() {
           </Tabs>
         ) : null}
         <Content>
+          {tab === 'install' && <FirstSetup />}
           {tab === 'contracts' && <Contracts />}
           {tab === 'interface' && chainId === config.STORAGE_CHAIN_ID && <Interface />}
         </Content>
