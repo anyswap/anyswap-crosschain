@@ -137,7 +137,7 @@ export default function SwapSettings({
       addTransaction(
         { hash },
         {
-          summary: `Swap config: token chain ${underlying.networkId}; token ${underlying.symbol.toUpperCase()}`
+          summary: `Swap config saved: token chain ${underlying.networkId}; token ${underlying.symbol.toUpperCase()}`
         }
       )
     } catch (error) {
