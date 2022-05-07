@@ -113,17 +113,17 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
             token: tokenObj.token,
             property: 'eth',
             methods: 'getBalance',
-            inputFormatter: [account, 'latest'],
+            inputFormatter: [account],
             key: 'balance',
             dec: tokenObj.dec
           })
         }
       }
     }
-    
+    // console.log(arr)
     useBatchData({chainId, calls: arr.map((item:any) => ({
       callData: item.data,
-      target: item.token,
+      target: item.to,
       methods: item.methods,
       input: item.inputFormatter
     })), provider: ''}).then((res:any) => {

@@ -66,14 +66,30 @@ export function getMulticallData ({chainId, rpc, calls, provider}) {
   return new Promise((resolve, reject) => {
     const contract = getContract({abi: multicallABI, rpc: rpc, provider})
     contract.options.address = config.getCurChainInfo(chainId).multicalToken
+    // console.log(contract.methods.getEthBalance('0xC03033d8b833fF7ca08BF2A58C9BC9d711257249'))
     const arr = []
     for (const obj of calls) {
-      arr.push({
-        target: obj.target,
-        callData: obj.callData
-      })
+      if (obj.target) {
+        arr.push({
+          target: obj.target,
+          callData: obj.callData
+        })
+      } else {
+        if (obj.methods === 'getBalance') {
+          // contract.methods.getEthBalance(...obj.input)
+          arr.push({
+            target: config.getCurChainInfo(chainId).multicalToken,
+            callData: contract.methods.getEthBalance(...obj.input).encodeABI()
+          })
+        }
+      }
     }
+    // arr.push({
+    //   target: config.getCurChainInfo(chainId).multicalToken,
+    //   callData: contract.methods.getEthBalance('0xC03033d8b833fF7ca08BF2A58C9BC9d711257249').encodeABI()
+    // })
     contract.methods.aggregate(arr).call((err, res) => {
+      // console.log(res)
       if (err) {
         reject(err)
       } else {
