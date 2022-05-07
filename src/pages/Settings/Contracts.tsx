@@ -5,10 +5,9 @@ import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
+import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useAppState } from '../../state/application/hooks'
 
-import {
-  useAppState,
-} from '../../state/application/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
@@ -140,6 +139,7 @@ export default function Contracts() {
     serverAdminAddress: stateServerAdminAddress,
     appSettings: stateAppSettings
   } = useAppState()
+  const addTransaction = useTransactionAdder()
 
   const [appSettings, setAppSettings] = useState( stateAppSettings )
 
@@ -193,6 +193,14 @@ export default function Contracts() {
           if (success) {
             dispatch(updateAppOptions([{ key: 'apiAddress', value: apiAddress }]))
           }
+        },
+        onHash: (hash) => {
+          addTransaction(
+            { hash },
+            {
+              summary: `Server API address successfully saved`
+            }
+          )
         }
       })
     } catch (error) {
@@ -221,6 +229,14 @@ export default function Contracts() {
           if (success) {
             dispatch(updateAppOptions([{ key: 'serverAdminAddress', value: mpcAddress }]))
           }
+        },
+        onHash: (hash) => {
+          addTransaction(
+            { hash },
+            {
+              summary: `Validator node address saved`
+            }
+          )
         }
       })
     }
@@ -263,6 +279,14 @@ export default function Contracts() {
             ])
           )
         }
+      },
+      onHash: (hash) => {
+        addTransaction(
+          { hash },
+          {
+            summary: `Swap router ${routerConfigAddress} saved to node config`
+          }
+        )
       }
     })
   }
@@ -311,13 +335,19 @@ export default function Contracts() {
 
       if (receipt.status) {
         dispatch(updateRouterData({ chainId: Number(routerChainId), routerAddress: routerAddress }))
+        addTransaction(
+          { hash: receipt.transactionHash },
+          {
+            summary: `onChain swap router ${routerAddress} saved to node config`
+          }
+        )
       }
     } catch (error) {
       console.error(error)
     }
   }
 
-  const [underlyingNetworkId, setUnderlyingNetworkId] = useState('')
+  const [underlyingNetworkId, setUnderlyingNetworkId] = useState(`${chainId}`)
   const [underlyingToken, setUnderlyingToken] = useState('')
   const [underlyingName, setUnderlyingName] = useState('')
   const [underlyingSymbol, setUnderlyingSymbol] = useState('')
@@ -597,6 +627,7 @@ export default function Contracts() {
                 min="1"
                 placeholder=""
                 value={routerConfigChainId}
+                defaultValue={chainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
@@ -749,6 +780,7 @@ export default function Contracts() {
                 step="1"
                 placeholder=""
                 value={routerChainId}
+                defaultValue={chainId}
                 onChange={event => setRouterChainId(event.target.value)}
               />
               {t('routerAddress')}
@@ -777,7 +809,7 @@ export default function Contracts() {
         <OptionWrapper>
           <OptionLabel displayChainsLink>
             {t('erc20ChainId')}
-            <Input type="number" min="1" value={underlyingNetworkId} onChange={event => setUnderlyingNetworkId(event.target.value)} />
+            <Input type="number" min="1" defaultValue={chainId} value={underlyingNetworkId || chainId} onChange={event => setUnderlyingNetworkId(event.target.value)} />
             {t('erc20TokenAddress')}
             <Input type="text" placeholder="0x..." value={underlyingToken} onChange={event => setUnderlyingToken(event.target.value)} />
           </OptionLabel>
