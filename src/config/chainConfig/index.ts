@@ -153,6 +153,7 @@ const allChainList = [
   ChainId.DOGE,
   ChainId.CMP,
   ChainId.GOERLI,
+  ChainId.GT,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

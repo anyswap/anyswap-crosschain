@@ -492,12 +492,14 @@ export default function Vest () {
   useInterval(getVestNFTs, 1000 * 10)
 
   const getCurrentEpochId = useCallback(() => {
+    console.log(rewardContract)
     if (rewardContract) {
       rewardContract.getCurrentEpochId().then((res:any) => {
-        // console.log(res.toString())
+        console.log(res.toString())
         setEpochId(res.toString())
-      }).catch(() => {
-        setEpochId('')
+      }).catch((err:any) => {
+        console.log(err)
+        setEpochId('0')
       })
     }
   }, [rewardContract])
@@ -674,6 +676,7 @@ export default function Vest () {
   }, [ercContract])
 
   const getEpochInfo = useCallback(async() => {
+    console.log(epochId)
     if (
       rewardContract
       && epochId
@@ -717,10 +720,10 @@ export default function Vest () {
   function getUserAPR (UserPower:any, UserMulti:any) {
     // const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
     const usrEpochInfo = latestEpochInfo && latestEpochInfo?.totalReward !== '0' ? latestEpochInfo : curEpochInfo
-    const tr = usrEpochInfo?.totalReward ? BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward).toExact() : ''
+    const tr = usrEpochInfo?.totalReward && useRewardToken.decimals ? BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward).toExact() : ''
     const time = usrEpochInfo ? Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime) : ''
     const tokenPrice = price ? Number(price) : ''
-    const tp = totalPower ? BigAmount.format(useVeMultiToken.decimals, totalPower).toExact() : ''
+    const tp = totalPower && useVeMultiToken.decimals ? BigAmount.format(useVeMultiToken.decimals, totalPower).toExact() : ''
     const oneYear = 60*60*24*365
     if (
       tr

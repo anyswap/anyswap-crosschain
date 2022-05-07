@@ -271,6 +271,8 @@ function RadiosStyle ({
   )
 }
 
+const initweek = 14
+
 export default function LockAmount ({
   lockEnds,
   updateLockDuration,
@@ -285,7 +287,7 @@ export default function LockAmount ({
 
   const inputEl = useRef<any>(null);
 
-  const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(7, 'days').format('YYYY-MM-DD'));
+  const [selectedDate, setSelectedDate] = useState(lockEnds ? lockEnds : moment().add(initweek, 'days').format('YYYY-MM-DD'));
   const [selectedValue, setSelectedValue] = useState<any>(type === 'create' ? 'week' : 'week');
 // console.log(minDate)
   // let min = minDate ? minDate : moment().add(7, 'days').format('YYYY-MM-DD')
@@ -309,12 +311,12 @@ export default function LockAmount ({
       if (new BigNumber(lockDuration).gt(0)) {
         return moment.unix(lockDuration).format('YYYY-MM-DD')
       }
-      return moment().add(7, 'days').format('YYYY-MM-DD')
+      return moment().add(initweek, 'days').format('YYYY-MM-DD')
     } else if (minDate && !lockDuration) {
       if (minDate) {
         return minDate
       } else {
-        return moment().add(7, 'days').format('YYYY-MM-DD')
+        return moment().add(initweek, 'days').format('YYYY-MM-DD')
       }
     } else if (lockDuration && minDate) {
       const md = moment(minDate).unix()
@@ -326,7 +328,7 @@ export default function LockAmount ({
         return moment.unix(lockDuration).format('YYYY-MM-DD')
       }
     }
-    return moment().add(7, 'days').format('YYYY-MM-DD')
+    return moment().add(initweek, 'days').format('YYYY-MM-DD')
   }, [lockDuration, minDate])
 
   useEffect(() => {
@@ -352,7 +354,7 @@ export default function LockAmount ({
     let days = 0;
     switch (event.target.value) {
       case 'week':
-        days = type === 'create' ? 7 : 8;
+        days = type === 'create' ? initweek : initweek + 1;
         break;
       case 'month':
         days = 30;
@@ -431,7 +433,7 @@ export default function LockAmount ({
             id='lockDate'
             value='week'
             selected={selectedValue}
-            label='1 week'
+            label='2 week'
             onRadioChange={handleChange}
           ></RadiosStyle>
           <RadiosStyle

@@ -72,6 +72,8 @@ const BackArrowView = styled.div`
   left: 10px;
   top:5px;
 `
+
+const initweek = 14
 export default function CreateLock () {
   const { t } = useTranslation()
   // const { account, chainId } = useActiveWeb3React()
@@ -103,7 +105,7 @@ export default function CreateLock () {
 
   const formatCurrency = useLocalToken(useLockToken)
 
-  const now = moment().add(7, 'days').format('YYYY-MM-DD')
+  const now = moment().add(initweek, 'days').format('YYYY-MM-DD')
 
   const [inputValue, setInputValue] = useState<any>('')
   const [delayAction, setDelayAction] = useState<boolean>(false)
