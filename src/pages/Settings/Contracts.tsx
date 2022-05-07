@@ -711,6 +711,7 @@ export default function Contracts() {
         {chainId && !stateRouterAddress[chainId] ? (
           <>
             <Notice margin="0 0 0.5rem">{t('youNeedOneRouterForEachNetwork')}</Notice>
+            <Notice margin="0 0 0.5rem">{t('networkRouterUseDeployed')}</Notice>
             <DeployRouter onDeploymentCallback={onDeployRouter} serverAdminAddress={stateServerAdminAddress} />
           </>
         ) : (
@@ -727,7 +728,6 @@ export default function Contracts() {
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}
             </Notice>
             <OptionLabel>
-              {t('networkRouterUseDeployed')}
               <Select onChange={event => setRouterData(event.target.value)}>
                 <SelectOption value="-">{t('networkRouterSelectDeployedOption')}</SelectOption>
                 {Object.keys(appSettings.routerConfigs).map((routerKey) => {

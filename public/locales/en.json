@@ -412,7 +412,7 @@
   "validatorNodeNetworkAddress": "Validator node network address (The same as in the server config. EVM format: 0x123...)",
   "validatorNodeNetworkAddressDescription": "It is recommended to use new address with only neccessary amount of native currency",
   "adminPublicKey": "Admin public key (public key for the admin address)",
-  "saveAdminAddressData": "Save admin address data",
+  "saveAdminAddressData": "Save validator node address data",
   "mainConfig": "Main config",
   "networkRouter": "Network router",
   "erc20Token": "ERC20 Token",
