@@ -426,11 +426,21 @@ export default function Contracts() {
     const VERSION = 6
 
     try {
-      await routerConfigSigner.setTokenConfig(underlyingSymbol.toUpperCase(), crosschainTokenChainId, {
+      const tx = await routerConfigSigner.setTokenConfig(underlyingSymbol.toUpperCase(), crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
       })
+      const receipt = await tx.wait()
+
+      if (receipt.status) {
+        addTransaction(
+          { hash: receipt.transactionHash },
+          {
+            summary: `Crosschain token config ${crosschainToken} for chain ${crosschainTokenChainId} saved to main router`
+          }
+        )
+      }
     } catch (error) {
       console.error(error)
     }
