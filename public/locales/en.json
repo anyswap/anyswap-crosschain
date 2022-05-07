@@ -427,5 +427,11 @@
   "startServerWithThisCommand": "Start your server with this command",
   "replaceKeyWithValidatorNodeKey": "Replace {{privateKey}} with a private key from the validator node network address",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
-  "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network"
+  "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network",
+  "installOnDomainTitle": "First startup. Setup on domain",
+  "installOnDomainDo": "Deploy config storage for this domain",
+  "networkRouterUseDeployed": "You can use already deployed contract or deploy new",
+  "networkRouterSelectDeployedOption": "Select deployed contract",
+  "crosschainTokenUseDeployed": "You can use already deployed contract or deploy new",
+  "crosschainTokenSelectDeployedOption": "Select deployed contract"
 }

@@ -132,7 +132,6 @@ export default function Contracts() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
-    // @ts-ignore ToDo - need save to storage (interface) first
     owner,
     apiAddress: stateApiAddress,
     routerConfigChainId: stateRouterConfigChainId,
@@ -158,8 +157,8 @@ export default function Contracts() {
     }
   }, [stateRouterConfigChainId])
 
-  const routerConfig = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0)
-  const routerConfigSigner = useRouterConfigContract(stateRouterConfigAddress, stateRouterConfigChainId || 0, true)
+  const routerConfig = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0)
+  const routerConfigSigner = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0, true)
 
   const [onStorageNetwork, setOnStorageNetwork] = useState(false)
 
@@ -227,13 +226,15 @@ export default function Contracts() {
     }
   }
 
-  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${stateRouterConfigChainId}` || '')
-  const [routerConfigAddress, setRouterConfigAddress] = useState(stateRouterConfigAddress)
+  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${appSettings.mainConfigChainId}` || '')
+  const [routerConfigAddress, setRouterConfigAddress] = useState(appSettings.mainConfigAddress)
   const [routerConfigOwner, setRouterConfigOwner] = useState('')
 
   useEffect(() => {
     const fetch = async () => {
-      if (!stateRouterConfigAddress || !stateRouterConfigChainId || !routerConfig) return setRouterConfigOwner('')
+      if (!routerConfigAddress || !routerConfigChainId || !routerConfig) {
+        return setRouterConfigOwner('')
+      }
 
       const owner = await routerConfig.methods.owner().call()
 
@@ -241,7 +242,7 @@ export default function Contracts() {
     }
 
     fetch()
-  }, [stateRouterConfigAddress, stateRouterConfigChainId, routerConfig])
+  }, [routerConfigAddress, routerConfigChainId, routerConfig])
 
   const saveRouterConfig = () => {
     if (!account) return
@@ -274,7 +275,6 @@ export default function Contracts() {
       setRouterChainId(String(chainId))
       setRouterAddress(stateRouterAddress[chainId])
     } else {
-      console.log('>>> use effect - reset router chain id and address', chainId, stateRouterAddress)
       setRouterChainId('')
       setRouterAddress('')
     }
@@ -329,7 +329,6 @@ export default function Contracts() {
     const fetchUnderlyingInfo = async () => {
       if (!underlyingToken?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
 
-      console.log('>>> fetchUnderlyingInfo', appSettings)
       try {
         const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
 
@@ -414,11 +413,9 @@ export default function Contracts() {
       Boolean(
         onStorageNetwork &&
           routerConfigChainId &&
-          routerConfigAddress/* && */
-          /* To-Do - need fix
+          routerConfigAddress &&
           routerConfigOwner &&
           routerConfigOwner.toLowerCase() === owner.toLowerCase()
-          */
       )
     )
   }, [onStorageNetwork, routerConfigChainId, routerConfigAddress, routerConfigOwner])
@@ -437,8 +434,7 @@ export default function Contracts() {
     decimals: Number(underlyingDecimals)
   }
 
-  const onDeployRouterConfig = (contractAddress: string, chainId: number, hash: string) => {
-    console.log('>>> onDeployRouterConfig', contractAddress, chainId, hash)
+  const onDeployRouterConfig = (contractAddress: string, chainId: number) => {
     setRouterConfigChainId(`${chainId}`)
     setRouterConfigAddress(contractAddress)
     UpdateAppSetupSettings(
@@ -452,8 +448,7 @@ export default function Contracts() {
     )
   }
 
-  const onDeployRouter = (contractAddress: string, chainId: number, hash: string) => {
-    console.log('>>> onDeployRouter', contractAddress, chainId, hash)
+  const onDeployRouter = (contractAddress: string, chainId: number) => {
     setRouterChainId(`${chainId}`)
     setRouterAddress(contractAddress)
     UpdateAppSetupSettings(
@@ -472,8 +467,7 @@ export default function Contracts() {
     )
   }
 
-  const onDeployCrosschainToken = (contractAddress: string, chainId: number, hash: string) => {
-    console.log('>>> onDeployCrosschainToken', contractAddress, chainId, hash)
+  const onDeployCrosschainToken = (contractAddress: string, chainId: number) => {
     setCrosschainTokenChainId(`${chainId}`)
     setCrosschainToken(contractAddress)
     UpdateAppSetupSettings(
@@ -494,7 +488,6 @@ export default function Contracts() {
   }
 
   const setRouterData = (selectedContract: any) => {
-    console.log('>>> setRouterData', selectedContract)
     if (selectedContract !== `-`) {
       const {
         chainId,
@@ -509,7 +502,6 @@ export default function Contracts() {
   }
 
   const setCrosschainTokenData = (selectedContract: any) => {
-    console.log('>>> setCrosschainTokenData', selectedContract)
     if (selectedContract !== `-`) {
       const {
         chainId,
@@ -735,9 +727,9 @@ export default function Contracts() {
               {t('afterDeploymentFillTheseInputsAndSaveInfo')}
             </Notice>
             <OptionLabel>
-              <span>Use deployed</span>
+              {t('networkRouterUseDeployed')}
               <Select onChange={event => setRouterData(event.target.value)}>
-                <SelectOption value="-">Select deployed contract</SelectOption>
+                <SelectOption value="-">{t('networkRouterSelectDeployedOption')}</SelectOption>
                 {Object.keys(appSettings.routerConfigs).map((routerKey) => {
                   const routerInfo = appSettings.routerConfigs[routerKey]
 
@@ -781,6 +773,7 @@ export default function Contracts() {
       <Title>{t('erc20Token')}</Title>
       <Lock enabled={!routerAddress} reason={t('deployRouterFirst')}>
         <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
+        <Notice margin="0.4rem 0">{t('crosschainTokenUseDeployed')}</Notice>
         <OptionWrapper>
           <OptionLabel displayChainsLink>
             {t('erc20ChainId')}
@@ -799,9 +792,8 @@ export default function Contracts() {
         <Accordion title={t('tokenConfig')} margin="0.5rem 0">
           <OptionWrapper>
             <OptionLabel>
-              <span>Use deployed</span>
               <Select onChange={event => setCrosschainTokenData(event.target.value)}>
-                <SelectOption value="-">Select deployed contract</SelectOption>
+                <SelectOption value="-">{t('crosschainTokenSelectDeployedOption')}</SelectOption>
                 {Object.keys(appSettings.crosschainTokens).map((ccTokenKey) => {
                   const ccTokenInfo = appSettings.crosschainTokens[ccTokenKey]
 
