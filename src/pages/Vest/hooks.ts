@@ -290,3 +290,41 @@ export function useClaimRewardCallback(
     }
   }, [contract, chainId, epoch, addTransaction, t, tokenid])
 }
+
+export function useLockDurationTip (
+  selectTime:any,
+  min?:any,
+  max?:any
+) {
+  return useMemo(() => {
+    // const now = moment()
+    if ( selectTime ) {
+      const st = moment(selectTime).unix()
+      if (min) {
+        const mt = moment.unix(min).add(6, 'days').unix()
+        if (st < mt) {
+          return 'Locking time is too short'
+        }
+      } else {
+        const now = moment().add(6, 'days').unix()
+        if (st < now) {
+          return 'Locking time is too short'
+        }
+      }
+      if (max) {
+        const mt = moment.unix(max).add(1461, 'days').unix()
+        if (st > mt) {
+          return 'The maximum locking time is 4 years'
+        }
+        return undefined
+      }
+      //  else {
+      //   const now = moment().add(1461, 'days').unix()
+      //   if (st > now) {
+      //     return 'The maximum locking time is 4 years'
+      //   }
+      // }
+    }
+    return undefined
+  }, [min, selectTime, max])
+}

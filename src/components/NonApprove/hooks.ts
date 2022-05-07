@@ -1,6 +1,7 @@
 import { useEffect, useCallback,useState, useMemo } from "react"
 import { JSBI } from 'anyswap-sdk'
-import {useMulticall} from '../../utils/tools/multicall'
+// import {useMulticall} from '../../utils/tools/multicall'
+import {useBatchData} from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import {useActiveWeb3React} from '../../hooks'
 import {nonApproveList} from './nonApproveList'
@@ -37,11 +38,12 @@ export function useAllApproved () {
         const arr1 = []
         for (const item of list) {
           arr1.push({
-            data: ERC20_INTERFACE.encodeFunctionData(framekey, [account, item.spender]),
-            to: item.token
+            callData: ERC20_INTERFACE.encodeFunctionData(framekey, [account, item.spender]),
+            target: item.token
           })
         }
-        arr.push(useMulticall(c, arr1))
+        // arr.push(useMulticall(c, arr1))
+        arr.push(useBatchData({chainId: c, calls: arr1, provider: ''}))
       }
       Promise.all(arr).then(res => {
         // console.log(res)

@@ -36,11 +36,22 @@ margin:50px 0;
 export const SwapInputLabel = styled.div`
 width: 100%;
 text-align:right;
+.balance {
+  font-size:14px;
+}
+${({ theme }) => theme.mediaWidth.upToMedium`
+.balance {
+  font-size:12px;
+}
+`}
 `
 
 export const SwapSymbol = styled.div`
 width: 100%;
 color: ${({ theme }) => theme.textColorBold};
+${({ theme }) => theme.mediaWidth.upToMedium`
+  font-size:12px;
+`}
 `
 
 export const SwapInputBox = styled.div`
@@ -50,7 +61,7 @@ width: 100%;
 border-radius: 10px;
 background: ${({ theme }) => theme.bodyBg};
 ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: 0;
+  padding: 10px;
 `}
 `
 
@@ -67,6 +78,13 @@ height: 100px;
 padding:10px;
 margin-left:0;
 margin-right:20px;
+${({ theme }) => theme.mediaWidth.upToMedium`
+  width: 60px;
+  min-width: 60px;
+  height: 60px;
+  padding: 0 0.625rem;
+  margin: 0 5px;
+`}
 `
 
 export const TokenLogoBox1 = styled(TokenLogoBox)`
@@ -89,4 +107,7 @@ height:50px;
 export const VeNumericalInput = styled(NumericalInput)`
 height:56.8px;
 border-bottom:none;
+${({ theme }) => theme.mediaWidth.upToMedium`
+  height:28px;
+`}
 `

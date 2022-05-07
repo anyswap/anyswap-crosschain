@@ -35,7 +35,7 @@ import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
 import VestingInfo from './vestingInfo'
 
-import {useCreateLockCallback} from './hooks'
+import {useCreateLockCallback, useLockDurationTip} from './hooks'
 import { BackArrow } from "../../theme"
 
 const ContentBody = styled.div`
@@ -72,6 +72,8 @@ const BackArrowView = styled.div`
   left: 10px;
   top:5px;
 `
+
+const initweek = 14
 export default function CreateLock () {
   const { t } = useTranslation()
   // const { account, chainId } = useActiveWeb3React()
@@ -103,7 +105,7 @@ export default function CreateLock () {
 
   const formatCurrency = useLocalToken(useLockToken)
 
-  const now = moment().add(7, 'days').format('YYYY-MM-DD')
+  const now = moment().add(initweek, 'days').format('YYYY-MM-DD')
 
   const [inputValue, setInputValue] = useState<any>('')
   const [delayAction, setDelayAction] = useState<boolean>(false)
@@ -120,6 +122,8 @@ export default function CreateLock () {
     inputValue,
     lockDuration ? moment(lockDuration).add(1, 'days').unix() : undefined
   )
+
+  const selectTimeTip = useLockDurationTip(lockDuration)
 
   const isInputError = useMemo(() => {
     // console.log(inputValue)
@@ -147,21 +151,26 @@ export default function CreateLock () {
   }, [inputValue, formatCurrency, wrapInputError])
 
   const isSwap = useMemo(() => {
-    if (isInputError || !inputValue) {
+    if (isInputError || !inputValue || selectTimeTip) {
       return true
     }
     return false
-  }, [isInputError, inputValue])
+  }, [isInputError, inputValue, selectTimeTip])
 
   const errorTip = useMemo(() => {
-    
+    // console.log(selectTimeTip)
     if (!account || !chainId) {
       return undefined
     } else if (isInputError) {
       return isInputError
+    } else if (selectTimeTip) {
+      return {
+        state: 'Error',
+        tip: selectTimeTip
+      }
     }
     return undefined
-  }, [isInputError, account, chainId])
+  }, [isInputError, account, chainId, selectTimeTip])
 
   const futureNFT = useMemo(() => {
     const now = moment()

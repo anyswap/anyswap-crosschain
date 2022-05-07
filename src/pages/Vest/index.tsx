@@ -209,6 +209,7 @@ const DataViews = styled.div`
           color:${({ theme }) => theme.text1};
           margin: 0 0 15px;
           font-weight:500;
+          white-space:nowrap;
         }
         .value {
           font-size:16px;
@@ -216,6 +217,7 @@ const DataViews = styled.div`
           margin-bottom:0;
           font-weight:bold;
           text-align:center;
+          white-space:nowrap;
         }
         .loading {
           font-size:14px;
@@ -226,6 +228,19 @@ const DataViews = styled.div`
       }
     }
   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    .list {
+      .item {
+        width: 48%;
+        .content {
+          padding: 1rem 1rem;
+          .title {
+            white-space:nowrap;
+          }
+        }
+      }
+    }
+  `}
 `
 
 export default function Vest () {
@@ -314,15 +329,15 @@ export default function Vest () {
       // console.log(nfts.id)
       const arr = []
       let totalReward:any = ''
-      // const limit = 30
-      const limit = 10
+      const limit = 30
+      // const limit = 10
       const len = Number(epochId)
       const initStart = rewardEpochIdList?.current && rewardEpochIdList?.current[nfts?.id] ? rewardEpochIdList.current[nfts?.id] : 0
       for (let i = initStart; i < len; i+=limit) {
         const nextIndex = i + limit > len ? len : i + limit
-        // console.log(nfts.id, i, nextIndex)
+        // console.log(nfts.id, i, nextIndex - 1)
         try {
-          let data = await rewardContract.pendingReward(nfts.id, i, nextIndex)
+          let data = await rewardContract.pendingReward(nfts.id, i, nextIndex - 1)
           data = data && data[0] ? data[0] : ''
           if (!data) continue
           if (!totalReward && data.reward) {
@@ -356,12 +371,12 @@ export default function Vest () {
         } else {
           const len = arr1.length -1
           const obj = arr1[len]
-          if ((Number(obj.endEpoch)) === Number(item.startEpoch)) {
+          if ((Number(obj.endEpoch)) === Number(item.startEpoch) -1) {
             if (Number(item.endEpoch) - Number(arr1[len].startEpoch) <= limit) {
               arr1[len].endEpoch = item.endEpoch
             } else if (Number(item.endEpoch) - Number(arr1[len].startEpoch) > limit) {
               const a1s:any = Number(arr1[len].startEpoch)
-              arr1[len].endEpoch = a1s + limit + ''
+              arr1[len].endEpoch = a1s + limit - 1 + ''
               arr1.push({startEpoch: a1s + limit + '', endEpoch: item.endEpoch})
             } else {
               arr1.push({startEpoch: item.startEpoch, endEpoch: item.endEpoch})
@@ -477,12 +492,14 @@ export default function Vest () {
   useInterval(getVestNFTs, 1000 * 10)
 
   const getCurrentEpochId = useCallback(() => {
+    console.log(rewardContract)
     if (rewardContract) {
       rewardContract.getCurrentEpochId().then((res:any) => {
-        // console.log(res.toString())
+        console.log(res.toString())
         setEpochId(res.toString())
-      }).catch(() => {
-        setEpochId('')
+      }).catch((err:any) => {
+        console.log(err)
+        setEpochId('0')
       })
     }
   }, [rewardContract])
@@ -600,15 +617,17 @@ export default function Vest () {
       })
     }
     if ((latestEpochInfo || curEpochInfo) && totalPower && price) {
-      const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
-      const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward)
+      const usrEpochInfo = latestEpochInfo && latestEpochInfo?.totalReward !== '0' ? latestEpochInfo : curEpochInfo
+      const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo?.totalReward ? usrEpochInfo?.totalReward : '0')
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       const tokenPrice = BigAmount.format(0, parseInt(price) + '')
       const oneYear = BigAmount.format(0, (60*60*24*365) + '')
-      const time = BigAmount.format(0, (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '')
+      const time = BigAmount.format(0, usrEpochInfo?.endTime ? (Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime)) + '' : '0')
       const per = BigAmount.format(0, '100')
-      // console.log(useRewardToken)
-      // console.log(useVeMultiToken)
+      // console.log(latestEpochInfo)
+      // console.log(curEpochInfo)
+      // console.log(tr.toExact())
+      // console.log(tp.toExact())
       if (
         tr.greaterThan('0')
         && tokenPrice.greaterThan('0')
@@ -657,6 +676,7 @@ export default function Vest () {
   }, [ercContract])
 
   const getEpochInfo = useCallback(async() => {
+    console.log(epochId)
     if (
       rewardContract
       && epochId
@@ -698,11 +718,12 @@ export default function Vest () {
   }, [rewardContract, epochId])
 
   function getUserAPR (UserPower:any, UserMulti:any) {
-    const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
-    const tr = usrEpochInfo ? BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward).toExact() : ''
+    // const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
+    const usrEpochInfo = latestEpochInfo && latestEpochInfo?.totalReward !== '0' ? latestEpochInfo : curEpochInfo
+    const tr = usrEpochInfo?.totalReward && useRewardToken.decimals ? BigAmount.format(useRewardToken.decimals, usrEpochInfo.totalReward).toExact() : ''
     const time = usrEpochInfo ? Number(usrEpochInfo.endTime)-Number(usrEpochInfo.startTime) : ''
     const tokenPrice = price ? Number(price) : ''
-    const tp = totalPower ? BigAmount.format(useVeMultiToken.decimals, totalPower).toExact() : ''
+    const tp = totalPower && useVeMultiToken.decimals ? BigAmount.format(useVeMultiToken.decimals, totalPower).toExact() : ''
     const oneYear = 60*60*24*365
     if (
       tr
@@ -911,14 +932,28 @@ export default function Vest () {
                       }}>{t('Claim')}</TokenActionBtn1>
                       <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled} onClick={() => {
                         // console.log(onWithdrarWrap)
-                        const now = parseInt(Date.now() / 1000 + '')
-                        if (now >= Number(item.lockEnds)) {
-                          if (onWithdrarWrap) {
-                            // console.log(1)
-                            setDisabled(true)
-                            onWithdrarWrap(item.id).then(() => {
-                              setDisabled(false)
-                            })
+                        // const ri = rewardList[item.id]
+                        if (
+                          !rewardList
+                          || !rewardList[item.id]
+                          || !rewardList[item.id].list
+                          || rewardList[item.id].list.length > 0
+                        ) {
+                          if (rewardList[item.id].list.length > 0) {
+                            alert('Please claim the reward first')
+                          } else {
+                            alert('Loading')
+                          }
+                        } else {
+                          const now = parseInt(Date.now() / 1000 + '')
+                          if (now >= Number(item.lockEnds)) {
+                            if (onWithdrarWrap) {
+                              // console.log(1)
+                              setDisabled(true)
+                              onWithdrarWrap(item.id).then(() => {
+                                setDisabled(false)
+                              })
+                            }
                           }
                         }
                       }}>{t('Withdraw')}</TokenActionBtn1>
