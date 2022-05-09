@@ -34,14 +34,15 @@ export const LinkList = [
     isView: 1,
     isActive: ['/add', '/remove']
   },
-  // {
-  //   path: '/vest',
-  //   textKey: 'veMULTI',
-  //   regex: /\/vest/,
-  //   className: 'otherInfo',
-  //   isOutLink: false,
-  //   isView: config.getCurConfigInfo().isOpenMerge,
-  // },
+  {
+    path: '/vest',
+    textKey: 'veMULTI',
+    regex: /\/vest/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: config.getCurConfigInfo().isOpenMerge && Date.now() > 1652090400000 ? true : false,
+    // isView: config.getCurConfigInfo().isOpenMerge && Date.now() > 1652077736000 ? true : false,
+  },
   {
     path: '/v1/router',
     textKey: 'router',
