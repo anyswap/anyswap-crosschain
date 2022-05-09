@@ -79,10 +79,11 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       } else {
         // const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
         // const url = `${config.bridgeApi}/v4/tokenlistv3/${chainId}`
-        const url = `${config.bridgeApi}/cfx/v4/tokenlistv3/${chainId}`
+        // const url = `${config.bridgeApi}/cfx/v4/tokenlistv3/${chainId}`
+        const url = `${config.bridgeApi}/v4/tokenlistv4/${chainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
-            // console.log(tokenList)
+            console.log(tokenList)
             let list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data

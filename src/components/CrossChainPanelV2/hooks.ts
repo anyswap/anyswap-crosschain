@@ -69,10 +69,12 @@ export function useInitSelectCurrency (
     if (Object.keys(allTokensList).length > 0) {
       let useToken = ''
       let noMatchInitToken = ''
-      for (const token in allTokensList) {
+      for (const tokenKey in allTokensList) {
+        const item = allTokensList[tokenKey]
+        const token = item.address
         if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
-          ...(allTokensList[token].tokenInfo ? allTokensList[token].tokenInfo : allTokensList[token]),
+          ...(item.tokenInfo ? item.tokenInfo : item),
         }
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
@@ -172,34 +174,24 @@ export function useDestCurrency (
       }
       // console.log(formatDl)
       const destTokenList = Object.keys(formatDl)
-      let destToken = ''
-      if (destTokenList.length === 1) {
-        destToken = destTokenList[0]
-      } else if (destTokenList.length > 1) {
-        const typeArr = ['swapin', 'swapout']
-        let bridgeToken = '',
-            routerToken = '',
-            isRouterUnderlying = false
-        for (const t of destTokenList) {
-          if (typeArr.includes(formatDl[t].type)) {
-            bridgeToken = t
-          }
-          if (!typeArr.includes(formatDl[t].type)) {
-            routerToken = t
-            if (formatDl[t].underlying) {
-              isRouterUnderlying = true
-            }
-          }
-        }
-        if (isRouterUnderlying) {
-          destToken = routerToken
-        } else {
-          destToken = bridgeToken
+      let destTokenKey = ''
+      const typeArr = ['swapin', 'swapout']
+      for (const tokenKey of destTokenList) {
+        if (!destTokenKey) destTokenKey = tokenKey
+        // console.log(destTokenKey)
+        if (
+          Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
+          || (
+            Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
+            && typeArr.includes(formatDl[tokenKey].type)
+          )
+        ) {
+          // console.log(destTokenKey)
+          destTokenKey = tokenKey
         }
       }
-      // setSelectDestCurrency(formatDl[destToken])
-      // setSelectDestCurrencyList(formatDl)
-      initDestCurrency = formatDl[destToken]
+      
+      initDestCurrency = formatDl[destTokenKey]
       initDestCurrencyList = formatDl
     }
     return {
@@ -233,7 +225,7 @@ export function getFTMSelectPool (
       selectCurrency
       && chainId
       && (isUnderlying || isDestUnderlying)
-      && (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM')
+      && (destConfig.anytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
       const curChain = isUnderlying ? chainId : selectChain
@@ -242,7 +234,7 @@ export function getFTMSelectPool (
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        tokenA?.underlying1 ? tokenA?.underlying1?.address : tokenA?.underlying?.address,
+        destConfig.anytoken?.address,
         tokenA?.address,
         curChain,
         dec,
