@@ -203,8 +203,6 @@ export function useDestCurrency (
 
 export function getFTMSelectPool (
   selectCurrency: any,
-  isUnderlying: any,
-  isDestUnderlying: any,
   chainId: any,
   selectChain: any,
   destConfig: any,
@@ -220,22 +218,21 @@ export function getFTMSelectPool (
     bl: ''
   })
   const getFTMSelectPool = useCallback(async() => {
-
     if (
       selectCurrency
       && chainId
-      && (isUnderlying || isDestUnderlying)
-      && (destConfig.anytoken?.address === 'FTM')
+      && (destConfig.isLiquidity || destConfig.isViewFromPool)
+      && (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
-      const curChain = isUnderlying ? chainId : selectChain
-      const destChain = isUnderlying ? selectChain : chainId
-      const tokenA = isUnderlying ? selectCurrency : destConfig
+      const curChain = destConfig.isViewFromPool ? chainId : selectChain
+      const destChain = destConfig.isViewFromPool ? selectChain : chainId
+      // const tokenA = destConfig.isViewFromPool ? selectCurrency : destConfig
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        destConfig.anytoken?.address,
-        tokenA?.address,
+        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig.anytoken?.address,
+        chainId?.toString() === '1' ? selectCurrency?.address : destConfig?.address,
         curChain,
         dec,
       )
@@ -247,12 +244,12 @@ export function getFTMSelectPool (
         destChain,
         dec,
       )
-      // console.log(curChain)
-      // console.log(CC)
-      // console.log(destChain)
-      // console.log(DC)
+      console.log(curChain)
+      console.log(CC)
+      console.log(destChain)
+      console.log(DC)
       if (CC) {
-        if (isUnderlying) {
+        if (chainId?.toString() === '1') {
           setCurChain({
             chain: chainId,
             ts: CC,
@@ -266,7 +263,7 @@ export function getFTMSelectPool (
       }
       // console.log(DC)
       if (DC) {
-        if (isUnderlying) {
+        if (chainId?.toString() === '1') {
           setDestChain({
             chain: selectChain,
             ts: DC,
@@ -279,10 +276,10 @@ export function getFTMSelectPool (
         }
       }
     }
-  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  }, [selectCurrency, chainId, selectChain, destConfig])
   useEffect(() => {
     getFTMSelectPool()
-  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  }, [selectCurrency, chainId, selectChain, destConfig])
   return {
     curChain,
     destChain

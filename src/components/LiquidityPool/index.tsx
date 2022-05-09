@@ -62,8 +62,8 @@ interface LiquidityPoolProps {
 export default function LiquidityPool ({
   curChain,
   destChain,
-  isUnderlying,
-  isDestUnderlying,
+  // isUnderlying,
+  // isDestUnderlying,
   isViewAll,
   selectCurrency
 }: LiquidityPoolProps) {
@@ -81,7 +81,8 @@ export default function LiquidityPool ({
       <LiquidityView>
         {/* {t('pool') + ': '} */}
         {
-          curChain && (isUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
+          // curChain && (isUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
+          curChain?.ts ? (
             <>
               <div className='item'>
                 <span className="label">
@@ -124,7 +125,8 @@ export default function LiquidityPool ({
           ) : ''
         }
         {
-          destChain && (isDestUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
+          // destChain && (isDestUnderlying || isViewAll || selectCurrency?.address === 'FTM') ? (
+          destChain?.ts ? (
             <>
               <div className='item'>
                 <span className="label">

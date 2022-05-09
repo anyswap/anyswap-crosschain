@@ -166,12 +166,12 @@ export default function CrossChain({
     return undefined
   }, [destConfig.fromanytoken])
 
-  const isUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
-    }
-    return false
-  }, [selectCurrency])
+  // const isUnderlying = useMemo(() => {
+  //   if (selectCurrency && selectCurrency?.underlying) {
+  //     return true
+  //   }
+  //   return false
+  // }, [selectCurrency])
 
   const isDestUnderlying = useMemo(() => {
     // console.log(destConfig)
@@ -223,11 +223,11 @@ export default function CrossChain({
   useEffect(() => {
     setDestChain('')
   }, [selectChain, selectCurrency])
-  const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, isUnderlying, isDestUnderlying, chainId, selectChain, destConfig)
+  const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, chainId, selectChain, destConfig)
   // console.log(curChain)
   // console.log(destChain)
   const getSelectPool = useCallback(async() => {
-    if (destConfig.anytoken?.address === 'FTM') {
+    if (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM') {
       setCurChain({
         ...curFTMChain
       })
@@ -246,7 +246,7 @@ export default function CrossChain({
           evmAccount,
           selectCurrency?.address
         )
-        // console.log(CC)
+        console.log(CC)
         // console.log(selectCurrency)
         if (CC) {
           setCurChain({
@@ -278,7 +278,7 @@ export default function CrossChain({
           destConfig.address
         )
         // console.log(selectCurrency)
-        // console.log(DC)
+        console.log(DC)
         if (DC) {
           setDestChain({
             chain: selectChain,
@@ -743,12 +743,13 @@ export default function CrossChain({
           isRouter={isRouter}
         />
         {
-          evmAccount && chainId && (isUnderlying || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') && (isRouter || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') ? (
+          // evmAccount && chainId && (isUnderlying || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') && (isRouter || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && curChain?.ts ? (
             <>
               <LiquidityPool
                 curChain={curChain}
                 // destChain={destChain}
-                isUnderlying={isUnderlying}
+                // isUnderlying={isUnderlying}
                 selectCurrency={selectCurrency}
                 // isDestUnderlying={isDestUnderlying}
               />
@@ -814,10 +815,11 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
+          // evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && destChain?.ts ? (
             <LiquidityPool
               destChain={destChain}
-              isDestUnderlying={isDestUnderlying}
+              // isDestUnderlying={isDestUnderlying}
               selectCurrency={destConfig}
             />
           ) : ''
