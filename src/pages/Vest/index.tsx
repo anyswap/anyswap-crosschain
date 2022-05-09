@@ -446,6 +446,7 @@ export default function Vest () {
     if (
       contract
       && account
+      && useLockToken
     ) {
       // console.log(contract)
       // console.log(account)
@@ -485,7 +486,7 @@ export default function Vest () {
       console.log(nfts)
       setvestNFTs(nfts)
     }
-  }, [contract, account])
+  }, [contract, account, useLockToken])
   useEffect(() => {
     getVestNFTs()
   }, [contract, account, useLockToken])
@@ -528,7 +529,7 @@ export default function Vest () {
 
   const DataList = useMemo(() => {
     const list = []
-    if (veMultiTotalSupply) {
+    if (veMultiTotalSupply && useVeMultiToken) {
       list.push({
         name: 'veMULTI Supply',
         value: thousandBit(BigAmount.format(useVeMultiToken.decimals, veMultiTotalSupply).toExact(), 2),
@@ -541,7 +542,7 @@ export default function Vest () {
         loading: true
       })
     }
-    if (LockedMULTI) {
+    if (LockedMULTI && useLockToken) {
       // console.log(BigAmount.format(0,'10').toExact())
       const value = BigAmount.format(useLockToken.decimals,LockedMULTI).toExact()
       list.push({
@@ -557,7 +558,7 @@ export default function Vest () {
         loading: true
       })
     }
-    if (LockedMULTI && circulatingsupply) {
+    if (LockedMULTI && circulatingsupply && useLockToken) {
       const value:any = Number(BigAmount.format(useLockToken.decimals,LockedMULTI).toExact()) / circulatingsupply
       list.push({
         name: '% Circ. MULTI Locked',
@@ -571,7 +572,7 @@ export default function Vest () {
         loading: true
       })
     }
-    if (veMultiTotalSupply && LockedMULTI) {
+    if (veMultiTotalSupply && LockedMULTI && useVeMultiToken && useLockToken) {
     // if (totalPower && LockedMULTI) {
       // const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
       // const lm = BigAmount.format(useLockToken.decimals, LockedMULTI)
@@ -595,7 +596,7 @@ export default function Vest () {
         loading: true
       })
     }
-    if (curEpochInfo) {
+    if (curEpochInfo && useRewardToken) {
       // const oneYear = BigAmount.format(1, (60*60*24*365) + '')
       // console.log(curEpochInfo)
       const time = Number(curEpochInfo.endTime) - Number(curEpochInfo.startTime)
@@ -616,7 +617,7 @@ export default function Vest () {
         loading: true
       })
     }
-    if ((latestEpochInfo || curEpochInfo) && totalPower && price) {
+    if ((latestEpochInfo || curEpochInfo) && totalPower && price && useRewardToken && useVeMultiToken) {
       const usrEpochInfo = latestEpochInfo && latestEpochInfo?.totalReward !== '0' ? latestEpochInfo : curEpochInfo
       const tr = BigAmount.format(useRewardToken.decimals, usrEpochInfo?.totalReward ? usrEpochInfo?.totalReward : '0')
       const tp = BigAmount.format(useVeMultiToken.decimals, totalPower)
@@ -659,7 +660,7 @@ export default function Vest () {
     }
     // console.log(list)
     return list
-  }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo, price])
+  }, [totalPower, curEpochInfo, circulatingsupply, LockedMULTI, veMultiTotalSupply, latestEpochInfo, price, useVeMultiToken, useLockToken])
 
   const getMultiInfo = useCallback(() => {
     if (ercContract) {
@@ -674,6 +675,8 @@ export default function Vest () {
   useEffect(() => {
     getMultiInfo()
   }, [ercContract])
+
+  useInterval(getMultiInfo, 1000 * 10)
 
   const getEpochInfo = useCallback(async() => {
     console.log(epochId)
@@ -716,6 +719,8 @@ export default function Vest () {
   useEffect(() => {
     getEpochInfo()
   }, [rewardContract, epochId])
+
+  useInterval(getEpochInfo, 1000 * 10)
 
   function getUserAPR (UserPower:any, UserMulti:any) {
     // const usrEpochInfo = latestEpochInfo ? latestEpochInfo : curEpochInfo
