@@ -167,13 +167,20 @@ export default function CrossChain({
   }, [destConfig])
   const approveSpender = useMemo(() => {
     if (destConfig.isApprove) {
-      return destConfig.fromanytoken.address
+      if (isRouter) {
+        // setBridgeAnyToken('')
+        return destConfig?.routerToken
+      } else {
+        return destConfig.fromanytoken.address
+      }
     }
     return undefined
-  }, [destConfig])
+  }, [destConfig, isRouter])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
+  // console.log(formatCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
+  // console.log((formatCurrency && isApprove) ? formatCurrency : undefined)
 
   const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
   useEffect(() => {
