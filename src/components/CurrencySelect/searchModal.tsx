@@ -23,6 +23,8 @@ import { isAddress } from '../../utils'
 import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
+import {MAIN_COIN} from '../../config/constant'
+
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
@@ -96,7 +98,7 @@ export default function SearchModal ({
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
       
-      if (['USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH', 'fUSDT'].includes(obj.symbol)) {
+      if (MAIN_COIN.includes(obj.symbol)) {
         arr.push(obj)
       }
     }

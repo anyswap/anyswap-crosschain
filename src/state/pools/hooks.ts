@@ -16,4 +16,10 @@ export function usePoolsState(): any {
   return poolLiquidity
 }
 
+export function usePoolListState(): any {
+  const poolList:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)
+  // console.log(poolLiquidity)
+  if (!poolList) return {}
 
+  return poolList
+}

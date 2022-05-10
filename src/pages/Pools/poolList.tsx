@@ -217,6 +217,7 @@ export default function PoolLists ({
 
 
   useEffect(() => {
+    console.log(allTokensList)
     if (allTokensList) {
       // const list:any = []
       const destList:any = {}
