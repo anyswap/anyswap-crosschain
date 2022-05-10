@@ -140,13 +140,6 @@ export default function CrossChain({
     return destConfig.routerABI
   }, [destConfig])
 
-  const useDestAddress = useMemo(() => {
-    if (isRouter) {
-      return destConfig?.routerToken
-    }
-    return destConfig?.DepositAddress
-  }, [destConfig, isRouter])
-
   const isNativeToken = useMemo(() => {
     console.log(selectCurrency)
     if (
@@ -166,23 +159,12 @@ export default function CrossChain({
     return undefined
   }, [destConfig.fromanytoken])
 
-  // const isUnderlying = useMemo(() => {
-  //   if (selectCurrency && selectCurrency?.underlying) {
-  //     return true
-  //   }
-  //   return false
-  // }, [selectCurrency])
-
   const isDestUnderlying = useMemo(() => {
-    // console.log(destConfig)
-    // console.log(destConfig?.underlying)
     if (destConfig?.underlying) {
       return true
     }
     return false
   }, [destConfig])
-  // console.log(isDestUnderlying)
-  // const [bridgeAnyToken, setBridgeAnyToken] = useState<any>()
   const approveSpender = useMemo(() => {
     if (destConfig.isApprove) {
       return destConfig.fromanytoken.address
@@ -192,7 +174,7 @@ export default function CrossChain({
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
-  // const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+
   const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -317,8 +299,7 @@ export default function CrossChain({
         bl: ''
       })
     }
-  // }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, curFTMChain, destFTMChain, isLiquidity, anyToken])
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, isLiquidity, anyToken])
+  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isLiquidity, anyToken])
 
 
   useEffect(() => {
@@ -326,7 +307,7 @@ export default function CrossChain({
   }, [getSelectPool])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    isRouter ? useDestAddress : undefined,
+    destConfig?.routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -337,7 +318,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    isRouter ? useDestAddress : undefined,
+    destConfig?.routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -347,7 +328,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    isRouter ? useDestAddress : undefined,
+    destConfig?.routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -359,7 +340,7 @@ export default function CrossChain({
 
   const { wrapType: wrapTypeCrossBridge, execute: onWrapCrossBridge, inputError: wrapInputErrorCrossBridge } = useCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
-    destConfig?.type === 'swapin' ? useDestAddress : recipient,
+    destConfig?.type === 'swapin' ? destConfig?.DepositAddress : recipient,
     inputBridgeValue,
     selectChain,
     destConfig?.type,

@@ -102,14 +102,13 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
-  
-  const isUnderlying = useMemo(() => {
-    console.log(selectCurrency)
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
+
+  const anyToken = useMemo(() => {
+    if (destConfig?.fromanytoken) {
+      return destConfig.fromanytoken
     }
-    return false
-  }, [selectCurrency])
+    return undefined
+  }, [destConfig.fromanytoken])
 
   const isDestUnderlying = useMemo(() => {
     if (destConfig?.underlying) {
@@ -339,13 +338,13 @@ export default function CrossChain({
             fee={fee}
           />
           {
-            isUnderlying && isDestUnderlying ? (
+            isDestUnderlying ? (
               <>
                 <ConfirmText>
                   {
                     t('swapTip', {
-                      symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                      symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                      symbol: anyToken?.symbol,
+                      symbol1: selectCurrency?.symbol,
                       chainName: config.getCurChainInfo(selectChain).name
                     })
                   }
@@ -355,20 +354,6 @@ export default function CrossChain({
               <></>
             )
           }
-          {/* <TxnsInfoText>{inputBridgeValue + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
-          {
-            isUnderlying && isDestUnderlying ? (
-              <ConfirmText>
-                {
-                  t('swapTip', {
-                    symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                    symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
-                    chainName: config.getCurChainInfo(selectChain).name
-                  })
-                }
-              </ConfirmText>
-            ) : ''
-          } */}
           <BottomGrouping>
             {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>

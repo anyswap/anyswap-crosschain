@@ -75,6 +75,7 @@ export function useInitSelectCurrency (
         if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
           ...(item.tokenInfo ? item.tokenInfo : item),
+          key: tokenKey,
         }
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
@@ -169,6 +170,7 @@ export function useDestCurrency (
       for (const t in dl) {
         formatDl[t] = {
           ...dl[t],
+          key: t,
           logoUrl: selectCurrency?.logoUrl
         }
       }

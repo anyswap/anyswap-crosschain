@@ -65,7 +65,7 @@ export default function CommonBases({
         </BaseWrapper> */}
         {viewTokenList.length > 0 ? viewTokenList.map((token: any) => {
           // console.log(selectedCurrency)
-          const selected = selectedCurrency?.address === token.address
+          const selected = selectedCurrency?.key === token.key
           return (
             <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token?.key}>
               {/* <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={(token?.tokenType ? token?.tokenType : '') + token.address}> */}
