@@ -636,8 +636,7 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 placeholder=""
-                value={routerConfigChainId}
-                defaultValue={chainId}
+                value={routerConfigChainId || chainId}
                 onChange={event => setRouterConfigChainId(event.target.value)}
               />
               {t('configAddress')}
@@ -789,8 +788,7 @@ export default function Contracts() {
                 min="1"
                 step="1"
                 placeholder=""
-                value={routerChainId}
-                defaultValue={chainId}
+                value={routerChainId || chainId}
                 onChange={event => setRouterChainId(event.target.value)}
               />
               {t('routerAddress')}
@@ -819,7 +817,12 @@ export default function Contracts() {
         <OptionWrapper>
           <OptionLabel displayChainsLink>
             {t('erc20ChainId')}
-            <Input type="number" min="1" defaultValue={chainId} value={underlyingNetworkId || chainId} onChange={event => setUnderlyingNetworkId(event.target.value)} />
+            <Input
+              type="number"
+              min="1"
+              value={underlyingNetworkId || chainId}
+              onChange={event => setUnderlyingNetworkId(event.target.value)}
+            />
             {t('erc20TokenAddress')}
             <Input type="text" placeholder="0x..." value={underlyingToken} onChange={event => setUnderlyingToken(event.target.value)} />
           </OptionLabel>
@@ -850,7 +853,7 @@ export default function Contracts() {
             <OptionLabel>
               {t('idOfCrosschainTokenNetwork')}
               <Input
-                value={crosschainTokenChainId}
+                value={crosschainTokenChainId || chainId}
                 type="number"
                 min="1"
                 step="1"
