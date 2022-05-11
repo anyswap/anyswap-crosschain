@@ -109,7 +109,7 @@ const CopyButton = styled(CleanButton)`
 `
 
 
-const UpdateAppSetupSettings = (appSettings: any, setAppSettings: any, dispatch: any, newAppSettings: any) => {
+const updateAppSetupSettings = (appSettings: any, setAppSettings: any, dispatch: any, newAppSettings: any) => {
   setAppSettings({
     ...appSettings,
     ...newAppSettings
@@ -377,7 +377,7 @@ export default function Contracts() {
         setUnderlyingSymbol(symbol)
         setUnderlyingDecimals(decimals)
 
-        UpdateAppSetupSettings(
+        updateAppSetupSettings(
           appSettings,
           setAppSettings,
           dispatch,
@@ -477,7 +477,7 @@ export default function Contracts() {
   const onDeployRouterConfig = (contractAddress: string, chainId: number) => {
     setRouterConfigChainId(`${chainId}`)
     setRouterConfigAddress(contractAddress)
-    UpdateAppSetupSettings(
+    updateAppSetupSettings(
       appSettings,
       setAppSettings,
       dispatch,
@@ -491,7 +491,7 @@ export default function Contracts() {
   const onDeployRouter = (contractAddress: string, chainId: number) => {
     setRouterChainId(`${chainId}`)
     setRouterAddress(contractAddress)
-    UpdateAppSetupSettings(
+    updateAppSetupSettings(
       appSettings,
       setAppSettings,
       dispatch,
@@ -510,7 +510,7 @@ export default function Contracts() {
   const onDeployCrosschainToken = (contractAddress: string, chainId: number) => {
     setCrosschainTokenChainId(`${chainId}`)
     setCrosschainToken(contractAddress)
-    UpdateAppSetupSettings(
+    updateAppSetupSettings(
       appSettings,
       setAppSettings,
       dispatch,
