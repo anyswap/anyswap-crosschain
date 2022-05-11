@@ -14,6 +14,7 @@ import Pools from './Pools'
 import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
 import Settings from './Settings'
+import TxInfo from './TxInfo'
 import Loader from '../components/Loader'
 import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
@@ -151,6 +152,7 @@ export default function App() {
                   <Route exact strict path="/pool/add" component={Pools} />
                   <Route exact strict path="/cross-chain-txns" component={CrossChainTxns} />
                   <Route exact strict path="/approvals" component={QueryNonApprove} />
+                  <Route exact strict path="/txinfo" component={TxInfo} />
                   <Route
                     path="/settings"
                     component={({ match }: { match: { path: string } }) =>
