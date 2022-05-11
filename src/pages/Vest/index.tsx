@@ -696,7 +696,8 @@ export default function Vest () {
         console.log(err)
         setCurEpochInfo('')
       })
-      rewardContract.getEpochInfo(Number(epochId) + 1).then((res:any) => {
+      rewardContract.getEpochInfo(Number(epochId) === 0 && Date.now() < 1652925600000 ? 0 : Number(epochId) + 1).then((res:any) => {
+        // console.log(res)
         setlatestEpochInfo({
           startTime: res[0].toString(),
           endTime: res[1].toString(),
