@@ -11,7 +11,8 @@ import { ButtonLight } from '../../components/Button'
 // import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { useBridgeTokenList } from '../../state/lists/hooks'
+// import { useBridgeTokenList } from '../../state/lists/hooks'
+import { usePoolListState } from '../../state/pools/hooks'
 // import { useUserSelectChainId } from '../../state/user/hooks'
 import {usePoolsState} from '../../state/pools/hooks'
 import AppBody from '../AppBody'
@@ -41,7 +42,7 @@ import {
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
-import { isAddress } from '@ethersproject/address'
+// import { isAddress } from '@ethersproject/address'
 
 const BalanceTxt = styled.div`
 .p1 {
@@ -180,7 +181,7 @@ ${({ theme }) => theme.flexSC};
 `
 
 let intervalFN:any
-const BRIDGETYPE = 'routerTokenList'
+// const BRIDGETYPE = 'routerTokenList'
 export default function PoolLists ({
 
 }) {
@@ -188,7 +189,8 @@ export default function PoolLists ({
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
 
-  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
+  // const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
+  const allTokensList:any = usePoolListState(chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   const poolInfo = usePoolsState()
   // console.log(poolInfo)
@@ -198,54 +200,73 @@ export default function PoolLists ({
   // const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
+  // const 
 
-
-  async function getOutChainInfo (destList:any) {
+  function getOutChainInfo (destList:any) {
     const list:any = {}
     // console.log(destList)
+    const arr = []
+    const chainarr:any = []
     for (const chainID in destList) {
-      list[chainID] = await getGroupTotalsupply(destList[chainID], chainID, evmAccount)
+      // list[chainID] = await getGroupTotalsupply(destList[chainID], chainID, evmAccount)
+      chainarr.push(chainID)
+      arr.push(getGroupTotalsupply(destList[chainID], chainID, evmAccount))
     }
-    setPoolData(list)
-    // console.log(list)
-    if (intervalFN) clearTimeout(intervalFN)
-    intervalFN = setTimeout(() => {
-      setIntervalCount(intervalCount + 1)
-    }, 1000 * 10)
+    Promise.all(arr).then((res:any) => {
+      // console.log(res)
+      for (let i = 0; i < chainarr.length; i++) {
+        const chainID = chainarr[i]
+        list[chainID] = res[i]
+      }
+      setPoolData(list)
+      // console.log(list)
+      if (intervalFN) clearTimeout(intervalFN)
+      intervalFN = setTimeout(() => {
+        setIntervalCount(intervalCount + 1)
+      }, 1000 * 10)
+    })
     // return list
   }
 
 
   useEffect(() => {
-    console.log(allTokensList)
+    // console.log(allTokensList)
     if (allTokensList) {
       // const list:any = []
       const destList:any = {}
       const allToken = []
-      for (const token in allTokensList) {
-        if (!isAddress(token)) continue
-        const tObj = allTokensList[token].tokenInfo
-        if (tObj.chainId) {
-          // console.log(tObj)
-          if (!destList[tObj.chainId]) destList[tObj.chainId] = []
-          const curData = {
-            token: tObj?.underlying ? tObj?.underlying?.address : token,
-            dec: tObj.decimals,
-            underlying: tObj?.underlying ? token : ''
-          }
-          destList[tObj.chainId].push(curData)
-        }
+      for (const tokenKey in allTokensList) {
+        // if (!isAddress(token)) continue
+        const tObj = allTokensList[tokenKey]
+        const token = tObj.address
+        const curPoolTokenSet:any = []
+        const curPoolTokenArr:any = []
+        // if (tObj.chainId) {
+        //   // console.log(tObj)
+        if (!destList[tObj.chainId]) destList[tObj.chainId] = []
         for (const chainID in tObj.destChains) {
           if (chainID?.toString() === tObj.chainId?.toString()) continue
           if (!config.chainInfo[chainID]) continue
           if (!destList[chainID]) destList[chainID] = []
-          destList[chainID].push({
-            token: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID]?.underlying?.address : tObj.destChains[chainID].address,
-            dec: tObj.destChains[chainID].decimals,
-            underlying: tObj.destChains[chainID]?.underlying ? tObj.destChains[chainID].address : ''
-          })
+          const destTokenList = tObj.destChains[chainID]
+          for (const destTokenKey in destTokenList) {
+            const destTokenItem = destTokenList[destTokenKey]
+            if (!curPoolTokenSet.includes(destTokenItem.fromanytoken.address)) {
+              curPoolTokenArr.push({
+                token: destTokenItem.fromanytoken.address,
+                dec: tObj.decimals,
+                underlying: destTokenItem.isFromLiquidity ? tObj.address : ''
+              })
+            }
+            destList[chainID].push({
+              token: destTokenItem.anytoken.address,
+              dec: destTokenItem.decimals,
+              underlying: destTokenItem?.underlying ? destTokenItem.address : ''
+            })
+          }
           // console.log(chainID)
         }
+        destList[tObj.chainId].push(...curPoolTokenArr)
         allToken.push({
           ...tObj,
           token: token
@@ -260,6 +281,7 @@ export default function PoolLists ({
   const tokenList = useMemo(() => {
     // console.log(poolInfo)
     // console.log(poolList)
+    // console.log(poolData)
     const arr = []
     const list:any = {}
     const sortArr:any = []
@@ -267,32 +289,43 @@ export default function PoolLists ({
       for (const obj of poolList) {
         const objExtend:any = {
           ...obj,
-          ts: '',
-          bl: '',
+          curPool: [],
           destChains: {},
           totalV: 0
         }
-        const c1 = objExtend.chainId
-        const t1 = objExtend.underlying ? objExtend.underlying.address : objExtend.address
-        const tu1 = objExtend.address
-        objExtend.ts = poolInfo && poolInfo[c1] && poolInfo[c1][tu1] && poolInfo[c1][tu1].liquidity ? fromWei(poolInfo[c1][tu1].liquidity, objExtend.decimals) : 0
-        objExtend.bl = poolData && poolData[c1] && poolData[c1][t1] && poolData[c1][t1].balance ? poolData[c1][t1].balance : 0
-        objExtend.totalV += objExtend.ts
-        for (const objChild in obj.destChains) {
-          if (!config.chainInfo[objChild]) continue
-          const c2 = objChild
-          const t2 = obj.destChains[c2].underlying ? obj.destChains[c2].underlying.address : obj.destChains[c2].address
-          const tu2 = obj.destChains[c2].address
-          const dObj = {
-            ...obj.destChains[c2],
-            ts: '',
-            bl: ''
+        const curPoolArr:any = []
+        for (const destChainId in obj.destChains) {
+          const destTokenList:any = {...obj.destChains[destChainId]}
+          if (!config.chainInfo[destChainId]) continue
+          for (const destTokenKey in destTokenList) {
+            const destTokenItem:any = {...destTokenList[destTokenKey], ts: '', bl: ''}
+            // const destToken = destTokenItem.address
+            const destAnyToken = destTokenItem.anytoken.address
+            const poolValue = poolInfo?.[destChainId]?.[destAnyToken] ? poolInfo[destChainId][destAnyToken] : {}
+            const poolLocalValue = poolData?.[destChainId]?.[destAnyToken] ? poolData?.[destChainId]?.[destAnyToken] : {}
+            const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : poolLocalValue?.anyts
+            const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+            objExtend.totalV += ts ? ts : 0
+            destTokenItem.ts = ts
+            destTokenItem.bl = bl
+            if (!objExtend.destChains[destChainId]) objExtend.destChains[destChainId] = {}
+            if (!objExtend.destChains[destChainId][destTokenKey]) objExtend.destChains[destChainId][destTokenKey] = destTokenItem
+
+            const curAnyToken =  destTokenItem.fromanytoken.address
+            if (!curPoolArr.includes(curAnyToken) && destTokenItem.isFromLiquidity) {
+              curPoolArr.push(curAnyToken)
+              const poolValue = poolInfo?.[obj.chainId]?.[curAnyToken] ? poolInfo[obj.chainId][curAnyToken] : {}
+              const poolLocalValue = poolData?.[obj.chainId]?.[curAnyToken] ? poolData?.[obj.chainId]?.[curAnyToken] : {}
+              const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : poolLocalValue?.anyts
+              const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+              objExtend.curPool.push({
+                ts,
+                bl
+              })
+            }
           }
-          dObj.ts = poolInfo && poolInfo[c2] && poolInfo[c2][tu2] && poolInfo[c2][tu2].liquidity ? fromWei(poolInfo[c2][tu2].liquidity,obj.destChains[c2].decimals) : 0
-          dObj.bl = poolData && poolData[c2] && poolData[c2][t2] && poolData[c2][t2].balance ? poolData[c2][t2].balance : 0
-          objExtend.totalV += dObj.ts
-          objExtend.destChains[c2] = dObj
         }
+        // console.log(curPoolArr)
         if (!list[obj.sort]) list[obj.sort] = []
         if (!sortArr.includes(obj.sort)) sortArr.push(obj.sort)
         list[obj.sort].push(objExtend)
@@ -306,7 +339,7 @@ export default function PoolLists ({
     }
     // console.log(arr)
     return arr
-  }, [poolData, poolList, bigToSmallSort, poolInfo])
+  }, [poolData, poolList, poolInfo])
   
 
   function changeNetwork (chainID:any) {
@@ -330,214 +363,205 @@ export default function PoolLists ({
       </>
     )
   }
-  function viewTd2 (item:any, c?:any) {
-    // console.log(item)
-    let listView:any = ''
-    if (c) {
-      const ts = item.ts ? item.ts : '0.00'
-      const bl = item.bl ? item.bl : '0.00'
-      // console.log(ts)
-      listView = <TokenList className='l'>
-          <div className="chain">
-            <TokenLogo
-              symbol={config.getCurChainInfo(c).networkLogo ?? config.getCurChainInfo(c).symbol}
-              size={'1.2rem'}
-            ></TokenLogo>
-            <span className="label">{config.getCurChainInfo(c).name}</span>
-          </div>
-          <div className="dtil">
-            <p className='p'>{t('yourPoolShare')}: {item.underlying ? thousandBit(bl, 2) : '0.00'}</p>
-            <p className='p'>{t('pool')}: {item.underlying ? thousandBit(ts, 2) : 'Unlimited'}</p>
-            {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
-          </div>
-          <div className="action">
-            {
-              config.isStopSystem ? (
-                <Flex>
-                  <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
-                </Flex>
-              ) : (
-                <Flex>
-                  {
-                    evmAccount ? (
-                      <>
-                        <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=deposit' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                        <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.token + '&bridgetype=withdraw' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
-                      </>
-                    ) : (
-                      <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
-                    )
-                  }
-                </Flex>
-              )
-            }
-          </div>
-        </TokenList>
-    }
-    return (
-      <>
-        {listView}
-        {
-          item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (chainID?.toString() === chainId?.toString()) return ''
-            // const token = item.destChains[chainID]?.address
-            // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
-            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : '0.00'
-            // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
-            const bl = item.destChains[chainID].bl ? item.destChains[chainID].bl : '0.00'
 
-            return (
-              <TokenList className='l' key={indexs}>
-                <div className="chain">
-                  <TokenLogo
-                    symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol}
-                    size={'1.2rem'}
-                  ></TokenLogo>
-                  <span className="label">{config.getCurChainInfo(chainID).name}</span>
-                </div>
-                <div className="dtil">
-                  <p className='p'>{t('yourPoolShare')}: {item?.destChains[chainID]?.underlying ? thousandBit(bl, 2) : '0.00'}</p>
-                  <p className='p'>{t('pool')}: {item?.destChains[chainID]?.underlying ? thousandBit(ts, 2) : 'Unlimited'}</p>
-                  {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
-                </div>
-                <div className="action">
-                  {
-                    config.isStopSystem ? (
-                      <Flex>
-                        <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
-                      </Flex>
-                    ) : (
-                    <Flex>
-                      {
-                        evmAccount ? (
-                          <TokenActionBtn1 onClick={() => {
-                            if (item?.destChains[chainID]?.underlying) {
-                              changeNetwork(chainID)
-                            }
-                          }} className={item?.destChains[chainID]?.underlying ? '' : 'disabled'}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionBtn1>
-                        ) : (
-                          <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
-                        )
-                      }
-                    </Flex>
-                    )
-                  }
-                </div>
-              </TokenList>
-            )
-          })
-        }
-      </>
-    )
-  }
-
-  function viewCard2 (item:any, c?:any) {
-    let listView:any = ''
-    if (c) {
-      const ts = item.ts ? item.ts : '0.00'
-      const bl = item.bl ? item.bl : '0.00'
-      // console.log(ts)
-      listView = <ChainCardList className='l'>
-          <div className="chain">
-            <TokenLogo symbol={config.getCurChainInfo(c).networkLogo ?? config.getCurChainInfo(c).symbol} size={'1.2rem'} ></TokenLogo>
-            <span className="label">{config.getCurChainInfo(c).name}</span>
-          </div>
-          <div className="dtil">
-            <p className='p'>
-              <span className='txt'>{t('yourPoolShare')}:</span>
-              <span className='txt'>{item?.underlying ? thousandBit(bl, 2) : '0.00'}</span>
-            </p>
-            <p className='p'>
-              <span className='txt'>{t('pool')}:</span>
-              <span className='txt'>{thousandBit(ts, 2)}</span>
-            </p>
-            {/* <p className='p'>
-              <span className='txt'>{t('pool')}:</span>
-              <span className='txt'>{thousandBit(anyts, 2)}</span>
-            </p> */}
-          </div>
-          <div className="action">
-            {
-              config.isStopSystem ? (
-                <Flex>
-                  <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
-                </Flex>
-              ) : (
-                <Flex>
-                  {
-                    evmAccount ? (
-                      <>
-                        <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.address + '&bridgetype=deposit' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                        <TokenActionBtn2 to={item?.underlying ? '/pool/add?bridgetoken=' + item?.address + '&bridgetype=withdraw' : '/pool'} className={item?.underlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
-                      </>
-                    ) : (
-                      <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
-                    )
-                  }
-                </Flex>
-              )
-            }
-          </div>
-        </ChainCardList>
-    }
-    return (
-      <>
-        {listView}
+  function ViewTd2Model ({
+    chainId,
+    bl,
+    ts,
+    token,
+    isUnderlying
+  }: any) {
+    return <TokenList className='l'>
+      <div className="chain">
+        <TokenLogo
+          symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol}
+          size={'1.2rem'}
+        ></TokenLogo>
+        <span className="label">{config.getCurChainInfo(chainId).name}</span>
+      </div>
+      <div className="dtil">
+        <p className='p'>{t('yourPoolShare')}: {bl}</p>
+        <p className='p'>{t('pool')}: {ts}</p>
+        {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
+      </div>
+      <div className="action">
         {
-          item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
-            if (chainID?.toString() === chainId?.toString()) return ''
-            // const token = item.destChains[chainID]?.address
-            // const token = item.destChains[chainID].underlying?.address ? item.destChains[chainID].underlying?.address : item.destChains[chainID]?.address
-            const ts = item.destChains[chainID].ts ? item.destChains[chainID].ts : 'Unlimited'
-            // const anyts = poolData && poolData[chainID] && poolData[chainID][token] && poolData[chainID][token].anyts ? poolData[chainID][token].anyts : '0.00'
-            const bl = item.destChains[chainID].bl ? item.destChains[chainID].bl : '0.00'
-            return (
-              <ChainCardList className='l' key={indexs}>
-                <div className="chain">
-                  <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'1.2rem'} ></TokenLogo>
-                  <span className="label">{config.getCurChainInfo(chainID).name}</span>
-                </div>
-                <div className="dtil">
-                  <p className='p'>
-                    <span className='txt'>{t('yourPoolShare')}:</span>
-                    <span className='txt'>{item?.destChains[chainID]?.underlying ? thousandBit(bl, 2) : '0.00'}</span>
-                  </p>
-                  <p className='p'>
-                    <span className='txt'>{t('pool')}:</span>
-                    <span className='txt'>{thousandBit(ts, 2)}</span>
-                  </p>
-                </div>
-                <div className="action">
+          config.isStopSystem ? (
+            <Flex>
+              <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
+            </Flex>
+          ) : (
+            <Flex>
+              {
+                evmAccount ? (
+                  <>
                   {
-                    config.isStopSystem ? (
-                      <Flex>
-                        <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
-                      </Flex>
-                    ) : (
-                      <Flex>
-                        {
-                          evmAccount ? (
-                            <TokenActionBtn1 onClick={() => {
-                              if (item?.destChains[chainID]?.underlying) {
-                                changeNetwork(chainID)
-                              }
-                            }} className={item?.destChains[chainID]?.underlying ? '' : 'disabled'}>{t('SwitchTo')} {config.getCurChainInfo(chainID).name}</TokenActionBtn1>
-                          ) : (
-                            <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
-                          )
+                    token ? (<>
+                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                    </>) : (<>
+                      <TokenActionBtn1 onClick={() => {
+                      if (isUnderlying) {
+                          changeNetwork(chainId)
                         }
-                      </Flex>
-                    )
+                      }} className={isUnderlying ? '' : 'disabled'}>{t('SwitchTo')} {config.getCurChainInfo(chainId).name}</TokenActionBtn1>
+                    </>)
                   }
-                </div>
-              </ChainCardList>
+                  </>
+                ) : (
+                  <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
+                )
+              }
+            </Flex>
+          )
+        }
+      </div>
+    </TokenList>
+  }
+
+  function ViewCard2Model ({
+    chainId,
+    bl,
+    ts,
+    token,
+    isUnderlying
+  }: any) {
+    return <ChainCardList className='l'>
+      <div className="chain">
+        <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'1.2rem'} ></TokenLogo>
+        <span className="label">{config.getCurChainInfo(chainId).name}</span>
+      </div>
+      <div className="dtil">
+        <p className='p'>
+          <span className='txt'>{t('yourPoolShare')}:</span>
+          <span className='txt'>{bl}</span>
+        </p>
+        <p className='p'>
+          <span className='txt'>{t('pool')}:</span>
+          <span className='txt'>{ts}</span>
+        </p>
+      </div>
+      <div className="action">
+        {
+          config.isStopSystem ? (
+            <Flex>
+              <TokenActionBtn1 disabled>{t('stopSystem')}</TokenActionBtn1>
+            </Flex>
+          ) : (
+            <Flex>
+              {
+                evmAccount ? (
+                  <>
+                    {
+                      token ? (
+                        <>
+                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                        </>
+                      ) : (
+                        <TokenActionBtn1 onClick={() => {
+                          if (isUnderlying) {
+                            changeNetwork(chainId)
+                          }
+                        }} className={isUnderlying ? '' : 'disabled'}>{t('SwitchTo')} {config.getCurChainInfo(chainId).name}</TokenActionBtn1>
+                      )
+                    }
+                  </>
+                ) : (
+                  <TokenActionBtn1 onClick={toggleWalletModal}>{t('ConnectWallet')}</TokenActionBtn1>
+                )
+              }
+            </Flex>
+          )
+        }
+      </div>
+    </ChainCardList>
+  }
+
+  function ViewTdModel ({
+    chainId,
+    bl,
+    ts,
+    token,
+    isUnderlying
+  }: any) {
+    return (
+      <>
+        <ViewTd2Model
+          chainId ={chainId}
+          bl={bl}
+          ts={ts}
+          token={token}
+          isUnderlying={isUnderlying}
+        />
+        <ViewCard2Model
+          chainId ={chainId}
+          bl={bl}
+          ts={ts}
+          token={token}
+          isUnderlying={isUnderlying}
+        />
+      </>
+    )
+  }
+
+  function viewTd2 (item:any, c?:any) {
+    let listView:any = ''
+    if (c) {
+      if (item.curPool.length > 0) {
+        listView = item.curPool.map((curItem:any, index:any) => {
+          return <ViewTdModel
+            key={index}
+            chainId ={c}
+            bl={curItem.bl ? thousandBit(curItem.bl, 2) : '0.00'}
+            ts={curItem.ts || curItem?.ts?.toString() === '0' ? thousandBit(curItem.ts, 2) : 'Unlimited'}
+            token={item?.token}
+            isUnderlying={true}
+          />
+        })
+      } else {
+        listView =  <ViewTdModel
+            chainId ={c}
+            bl={'0.00'}
+            ts={'Unlimited'}
+            token={item?.token}
+            isUnderlying={false}
+          />
+      }
+    }
+    return (
+      <>
+        {listView}
+        {
+          item.destChains && Object.keys(item.destChains).map((chainID:any, indexs:any) => {
+            if (chainID?.toString() === chainId?.toString()) return ''
+            const destTokenList = item.destChains[chainID]
+            // console.log(item)
+            return (
+              <div key={indexs}>
+                {
+                  Object.keys(destTokenList).map((tokenKey:any, i:any) => {
+                    const destTokenItem = destTokenList[tokenKey]
+                    const ts = destTokenItem?.ts
+                    const bl = destTokenItem?.bl
+                    return <ViewTdModel
+                      key={indexs + i}
+                      chainId ={chainID}
+                      bl={destTokenItem?.underlying ? thousandBit(bl, 2) : '0.00'}
+                      ts={destTokenItem?.underlying ? thousandBit(ts, 2) : 'Unlimited'}
+                      token={''}
+                      isUnderlying={Boolean(destTokenItem?.underlying)}
+                    />
+                  })
+                }
+              </div>
             )
           })
         }
       </>
     )
   }
-  // console.log(config.getCurConfigInfo().isOpenMerge)
+
   return (
     <>
     <AppBody>
@@ -628,7 +652,7 @@ export default function PoolLists ({
                                 {
                                   Object.keys(item.destChains).map((chainID, index) => {
                                   // chainList.map((chainID, index) => {
-                                    // if (index >= 2) return ''
+                                    if (index >= 6) return ''
                                     return (
                                       <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
                                         <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
@@ -636,7 +660,7 @@ export default function PoolLists ({
                                     )
                                   })
                                 }
-                                {Object.keys(item.destChains).length > 0 ? '' : <MoreView></MoreView>}
+                                {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
                               </>
                             ) : ''
                           }
@@ -653,7 +677,7 @@ export default function PoolLists ({
                     <tr id={'chain_list_' + index} style={{display: 'none'}}>
                       <DBTd colSpan={4}>
                         {viewTd2(item, chainId)}
-                        {viewCard2(item, chainId)}
+                        {/* {viewCard2(item, chainId)} */}
                       </DBTd>
                     </tr>
                   </DBTbody>

@@ -227,7 +227,7 @@ export default function CrossChain({
     }
     // console.log(11111)
     if (selectCurrency && chainId) {
-      if (anyToken?.address && destConfig.isViewFromPool) {
+      if (anyToken?.address && destConfig.isFromLiquidity) {
         const CC:any = await getNodeTotalsupply(
           anyToken?.address,
           chainId,

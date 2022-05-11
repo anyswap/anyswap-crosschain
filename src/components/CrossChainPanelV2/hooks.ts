@@ -223,13 +223,13 @@ export function getFTMSelectPool (
     if (
       selectCurrency
       && chainId
-      && (destConfig.isLiquidity || destConfig.isViewFromPool)
+      && (destConfig.isLiquidity || destConfig.isFromLiquidity)
       && (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
-      const curChain = destConfig.isViewFromPool ? chainId : selectChain
-      const destChain = destConfig.isViewFromPool ? selectChain : chainId
-      // const tokenA = destConfig.isViewFromPool ? selectCurrency : destConfig
+      const curChain = destConfig.isFromLiquidity ? chainId : selectChain
+      const destChain = destConfig.isFromLiquidity ? selectChain : chainId
+      // const tokenA = destConfig.isFromLiquidity ? selectCurrency : destConfig
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(

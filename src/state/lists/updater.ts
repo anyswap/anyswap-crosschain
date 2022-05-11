@@ -50,7 +50,7 @@ export default function Updater(): null {
   // 每 10 分钟获取所有列表，但仅在我们初始化库之后
   // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
   // useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
-  useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 10 : null)
+  useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 30 : null)
   // useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 : null)
 
   // whenever a list is not loaded and not loading, try again to load it

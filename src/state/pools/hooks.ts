@@ -1,4 +1,4 @@
-// import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useMemo } from 'react'
 // import { useDispatch, useSelector } from 'react-redux'
 // import { AppDispatch, AppState } from '../index'
 import { useSelector } from 'react-redux'
@@ -16,10 +16,30 @@ export function usePoolsState(): any {
   return poolLiquidity
 }
 
-export function usePoolListState(): any {
-  const poolList:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)
-  // console.log(poolLiquidity)
-  if (!poolList) return {}
+// export function usePoolListState(): any {
+//   const poolList:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)
+//   // console.log(poolLiquidity)
+//   if (!poolList) return {}
 
-  return poolList
+//   return poolList
+// }
+
+
+export function usePoolListState(chainId?:any): any {
+  const lists:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)
+  // console.log(lists)
+  const init = {}
+  return useMemo(() => {
+    if (!chainId) return init
+    const current = lists[chainId]?.tokenList
+    // console.log(current)
+    if (!current) return init
+    try {
+      // return listsMergeToTokenMap(current)
+      return current
+    } catch (error) {
+      console.error('Could not show token list due to error', error)
+      return init
+    }
+  }, [lists, chainId])
 }

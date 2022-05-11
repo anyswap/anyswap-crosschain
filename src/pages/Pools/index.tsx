@@ -26,7 +26,8 @@ import Title from '../../components/Title'
 
 import { tryParseAmount } from '../../state/swap/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { useBridgeTokenList } from '../../state/lists/hooks'
+// import { useBridgeTokenList } from '../../state/lists/hooks'
+import { usePoolListState } from '../../state/pools/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -36,7 +37,7 @@ import AppBody from '../AppBody'
 import PoolTip from './poolTip'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-import { isAddress } from '../../utils'
+// import { isAddress } from '../../utils'
 import {formatDecimal} from '../../utils/tools/tools'
 
 // import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
@@ -59,7 +60,7 @@ export default function SwapNative() {
   const theme = useContext(ThemeContext)
   
   const toggleWalletModal = useWalletModalToggle()
-  const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
+  const allTokensList:any = usePoolListState(chainId)
 
   const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
 
@@ -463,10 +464,10 @@ export default function SwapNative() {
     // setAllTokens({})
     // setSelectCurrency('')
     const list:any = {}
-    for (const token in allTokensList) {
-      if (!isAddress(token)) continue
-      list[token] = {
-        ...allTokensList[token].tokenInfo,
+    for (const tokenKey in allTokensList) {
+      const token = allTokensList[tokenKey].address
+      list[tokenKey] = {
+        ...allTokensList[tokenKey],
       }
       if (
         !selectCurrency
@@ -474,11 +475,10 @@ export default function SwapNative() {
         ) {
         if (
           t === token
-          || list[token]?.symbol?.toLowerCase() === t
-          || list[token]?.underlying?.symbol?.toLowerCase() === t
-          || list[token]?.underlying?.address?.toLowerCase() === t
+          || list[tokenKey]?.symbol?.toLowerCase() === t
+          || list[tokenKey]?.address?.toLowerCase() === t
         ) {
-          setSelectCurrency(list[token])
+          setSelectCurrency(list[tokenKey])
         }
       }
     }
