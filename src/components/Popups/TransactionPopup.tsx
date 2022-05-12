@@ -42,7 +42,8 @@ export default function TransactionPopup({
               summary?.indexOf('Cross bridge') === 0 ? (
                 <>
                   {t('txnsTip')}：
-                  <ExternalLink href={config.explorerUrl + '/tx?params=' + hash}>{config.explorerUrl + '/tx?params=' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</ExternalLink>
+                  <ExternalLink href={`#/txinfo/${chainId}/${hash}`}>{t('txnsMoreInfo')}</ExternalLink>
+                  {/* <ExternalLink href={config.explorerUrl + '/tx?params=' + hash}>{config.explorerUrl + '/tx?params=' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</ExternalLink> */}
                 </>
               ) : (
                 <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>{t('ViewOn')} {config.getCurChainInfo(chainId).name}</ExternalLink>
