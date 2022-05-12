@@ -331,7 +331,7 @@ export default function Vest () {
       let totalReward:any = ''
       const limit = 30
       // const limit = 10
-      const len = Number(epochId)
+      const len = Number(epochId) + 1
       const initStart = rewardEpochIdList?.current && rewardEpochIdList?.current[nfts?.id] ? rewardEpochIdList.current[nfts?.id] : 0
       for (let i = initStart; i < len; i+=limit) {
         const nextIndex = i + limit > len ? len : i + limit
