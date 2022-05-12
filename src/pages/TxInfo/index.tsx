@@ -10,7 +10,8 @@ import { useActiveWeb3React } from '../../hooks'
 // @ts-ignore
 import AppBody from '../AppBody'
 import { useAppState } from '../../state/application/hooks'
-import { getUrlData } from '../../utils/tools/axios'
+// @ts-ignore
+import { getUrlData, postUrlData} from '../../utils/tools/axios'
 
 export default function TxInfo() {
   const {
@@ -30,6 +31,27 @@ export default function TxInfo() {
 
   if (false) console.log(isErrorFetch)
 
+  /*
+  export function registerSwap(hash: string, chainId: any, apiAddress: string) {
+    return new Promise((resolve, reject) => {
+      console.log(`Swap > chain id: ${chainId}; hash: ${hash}`)
+
+      const url = `${apiAddress}/swap/register/${chainId}/${hash}`
+
+      postUrlData(url, {
+        logindex: 0
+      })
+        .then((res: any) => {
+          console.log('Router response: ', res)
+          resolve(res)
+        })
+        .catch(error => {
+          console.error('Router error: ', error)
+          reject(error)
+        })
+    })
+  }
+  */
 
   const fetchTxStatus = () => {
     const url = `${apiAddress}/swap/status/${chainId}/${txId}`
