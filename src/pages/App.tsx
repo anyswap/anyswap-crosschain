@@ -152,7 +152,7 @@ export default function App() {
                   <Route exact strict path="/pool/add" component={Pools} />
                   <Route exact strict path="/cross-chain-txns" component={CrossChainTxns} />
                   <Route exact strict path="/approvals" component={QueryNonApprove} />
-                  <Route exact strict path="/txinfo" component={TxInfo} />
+                  <Route exact strict path="/txinfo/:chainId/:txId" component={TxInfo} />
                   <Route
                     path="/settings"
                     component={({ match }: { match: { path: string } }) =>
