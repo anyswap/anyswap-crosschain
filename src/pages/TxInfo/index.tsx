@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-// @ts-ignore
-import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import AppBody from '../AppBody'
 import { useAppState } from '../../state/application/hooks'
@@ -28,7 +26,6 @@ export default function TxInfo() {
   const [txStatus, setTxStatus] = useState('')
   const [toChainId, setToChainId] = useState('')
   const [swapTx, setSwapTx] = useState('')
-  const [txConfirmations, setTxConfirmations] = useState('')
   const [notExists, setNotExists] = useState(false)
 
   if (false) console.log(isErrorFetch)
@@ -36,13 +33,11 @@ export default function TxInfo() {
 
   const fetchTxStatus = () => {
     const url = `${apiAddress}/swap/status/${chainId}/${txId}`
-    console.log('>>> url', isFetching, url)
     if (isFetching) return
     setIsFetching(true)
     setIsErrorFetch(false)
     getUrlData(url)
       .then((txStatus: any) => {
-        console.log(txStatus)
         setIsFetching(false)
         if (txStatus && txStatus?.msg && txStatus?.msg === `Success` && txStatus?.data) {
           const data = txStatus.data
@@ -54,12 +49,10 @@ export default function TxInfo() {
               swaptx,
               toChainID,
               status,
-              confirmations
             } = txStatus.data
             setTxStatus(status)
             setToChainId(toChainID)
             setSwapTx(swaptx)
-            setTxConfirmations(confirmations)
             setNotExists(false)
           }
         }
@@ -77,7 +70,6 @@ export default function TxInfo() {
 
   const [isDoRegisterSwap, setIsDoRegisterSwap] = useState(false)
   const doRegisterSwap = () => {
-    console.log('>>> do register swap')
     if (isDoRegisterSwap) return
     setIsDoRegisterSwap(true)
 
@@ -97,8 +89,6 @@ export default function TxInfo() {
       })
   }
 
-  console.log('>>>>> urlParams', chainId, txId, apiAddress)
-  console.log('>>>>', notExists, txStatus, toChainId, swapTx, txConfirmations)
   return (
     <AppBody>
       <div>Tx info</div>
@@ -108,6 +98,14 @@ export default function TxInfo() {
           <ExternalLink href={getEtherscanLink(toChainId, swapTx, 'transaction')}>
             {t('ViewOn')} {config.getCurChainInfo(toChainId).name}
           </ExternalLink>
+        </>
+      )}
+      {isErrorFetch && (
+        <>
+          <h2>Fail fetch information about transaction</h2>
+          <ButtonPrimary onClick={fetchTxStatus} disabled={isFetching}>
+            Try fetch again
+          </ButtonPrimary>
         </>
       )}
       {notExists && (
