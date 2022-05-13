@@ -92,14 +92,23 @@ export default function TxInfo() {
   return (
     <AppBody>
       <div>{t('swapTxInfo_Header')}</div>
-      {((`${txStatus}` === `9` || `${txStatus}` === `10`) && swapTx) && (
+      {((`${txStatus}` === `9` || `${txStatus}` === `10`) && swapTx) ? (
         <>
           <h2>{t('swapTxInfo_Ready')}</h2>
           <ExternalLink href={getEtherscanLink(toChainId, swapTx, 'transaction')}>
             {t('ViewOn')} {config.getCurChainInfo(toChainId).name}
           </ExternalLink>
         </>
-      )}
+      ) : 
+        !isErrorFetch && (
+          <>
+            <h2>{t('swapTxInfo_HeaderPending')}</h2>
+            <ButtonPrimary onClick={fetchTxStatus} disabled={isFetching}>
+              {t('swapTxInfo_PendingRefresh')}
+            </ButtonPrimary>
+          </>
+        )
+      }
       {isErrorFetch && (
         <>
           <h2>{t('swapTxInfo_FailFetchInformation')}</h2>
