@@ -433,5 +433,11 @@
   "networkRouterUseDeployed": "You can use already deployed contract or deploy new",
   "networkRouterSelectDeployedOption": "Select deployed contract",
   "crosschainTokenUseDeployed": "You can use already deployed contract or deploy new",
-  "crosschainTokenSelectDeployedOption": "Select deployed contract"
+  "crosschainTokenSelectDeployedOption": "Select deployed contract",
+  "swapTxInfo_Header": "Information about swap",
+  "swapTxInfo_Ready": "Swap finished",
+  "swapTxInfo_FailFetchInformation": "Fail fetch transaction info",
+  "swapTxInfo_TryFetchAgain": "Try fetch again",
+  "swapTxInfo_TxNotFound": "Information about swap not found",
+  "swapTxInfo_AddTransaction": "Add a transaction to the processing queue"
 }

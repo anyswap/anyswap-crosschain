@@ -91,10 +91,10 @@ export default function TxInfo() {
 
   return (
     <AppBody>
-      <div>Tx info</div>
+      <div>{t('swapTxInfo_Header')}</div>
       {((`${txStatus}` === `9` || `${txStatus}` === `10`) && swapTx) && (
         <>
-          <h2>Ready</h2>
+          <h2>{t('swapTxInfo_Ready')}</h2>
           <ExternalLink href={getEtherscanLink(toChainId, swapTx, 'transaction')}>
             {t('ViewOn')} {config.getCurChainInfo(toChainId).name}
           </ExternalLink>
@@ -102,17 +102,17 @@ export default function TxInfo() {
       )}
       {isErrorFetch && (
         <>
-          <h2>Fail fetch information about transaction</h2>
+          <h2>{t('swapTxInfo_FailFetchInformation')}</h2>
           <ButtonPrimary onClick={fetchTxStatus} disabled={isFetching}>
-            Try fetch again
+            {t('swapTxInfo_TryFetchAgain')}
           </ButtonPrimary>
         </>
       )}
       {notExists && (
         <>
-          <h2>Transaction not found</h2>
+          <h2>{t('swapTxInfo_TxNotFound')}</h2>
           <ButtonPrimary onClick={doRegisterSwap} disabled={isDoRegisterSwap}>
-            Add transaction for process
+            {t('swapTxInfo_AddTransaction')}
           </ButtonPrimary>
         </>
       )}
