@@ -66,7 +66,10 @@ export function getMulticallData ({chainId, rpc, calls, provider}) {
   return new Promise((resolve, reject) => {
     const contract = getContract({abi: multicallABI, rpc: rpc, provider})
     contract.options.address = config.getCurChainInfo(chainId).multicalToken
-    // console.log(contract.methods.getEthBalance('0xC03033d8b833fF7ca08BF2A58C9BC9d711257249'))
+    // console.log(chainId)
+    // console.log(rpc)
+    // console.log(calls)
+    // console.log(provider)
     const arr = []
     for (const obj of calls) {
       if (obj.target) {
@@ -164,7 +167,7 @@ export async function useBatchData ({chainId, calls, provider}) {
       results = error
     }
   }
-  // console.log(useNode)
+  // console.log(results)
   return results
 }
 

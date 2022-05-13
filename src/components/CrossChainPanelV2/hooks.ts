@@ -46,7 +46,8 @@ export function outputValue (inputBridgeValue: any, destConfig:any, selectCurren
 export function useInitSelectCurrency (
   allTokensList:any,
   useChainId: any,
-  initToken?: any
+  initToken?: any,
+  onlyUnderlying?: any
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
   return useMemo(() => {
@@ -63,6 +64,7 @@ export function useInitSelectCurrency (
     }
 
     const list:any = {}
+    const underlyingList:any = {}
 
     let initCurrency:any
     
@@ -87,6 +89,24 @@ export function useInitSelectCurrency (
             useToken = token
           }
         }
+        if (onlyUnderlying) {
+          for (const destChainId in list[token].destChains) {
+            const destChainIdList = list[token].destChains[destChainId]
+            let isUnderlying = false
+            for (const tokenKey in destChainIdList) {
+              const destChainIdItem = destChainIdList[tokenKey]
+              if (destChainIdItem.isFromLiquidity) {
+                isUnderlying = true
+                break
+              }
+            }
+            if (isUnderlying) {
+              underlyingList[token] = {
+                ...list[token]
+              }
+            }
+          }
+        }
       }
       if (useToken) {
         initCurrency = list[useToken]
@@ -95,9 +115,10 @@ export function useInitSelectCurrency (
       }
     }
     return {
-      initCurrency
+      initCurrency,
+      underlyingList
     }
-  }, [allTokensList, useChainId, initToken])
+  }, [allTokensList, useChainId, initToken, onlyUnderlying])
 }
 
 export function useDestChainid (
@@ -246,10 +267,10 @@ export function getFTMSelectPool (
         destChain,
         dec,
       )
-      console.log(curChain)
-      console.log(CC)
-      console.log(destChain)
-      console.log(DC)
+      // console.log(curChain)
+      // console.log(CC)
+      // console.log(destChain)
+      // console.log(DC)
       if (CC) {
         if (chainId?.toString() === '1') {
           setCurChain({

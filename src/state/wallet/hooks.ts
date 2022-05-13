@@ -367,9 +367,4 @@ export function useCurrencyBalance(account?: string, currency?: Currency, chainI
       return undefined
     }
   }, [account, currency, chainId, isETH, balanceWallet, blItem])
-  // return useCurrencyBalances(account, [currency], chainId, isETH)[0]
-  // if (chainId) {
-  // } else {
-  //   return currency?.address?.toLowerCase() && balances[currency?.address?.toLowerCase()] ? balances[currency?.address?.toLowerCase()] : undefined
-  // }
 }
