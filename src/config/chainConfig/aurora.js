@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const AURORA_MAIN_CHAINID = ChainId.AURORA
 export const AURORA_MAINNET = getLocalRPC(AURORA_MAIN_CHAINID, 'https://mainnet.aurora.dev')
-export const AURORA_MAIN_EXPLORER = 'https://explorer.mainnet.aurora.dev'
+export const AURORA_MAIN_EXPLORER = 'https://aurorascan.dev'
 
 export const tokenList = []
 export const testTokenList = []
