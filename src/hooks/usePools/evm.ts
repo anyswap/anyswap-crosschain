@@ -37,7 +37,7 @@ export function useEvmPools ({
         })
       }
     }
-    console.log(arr)
+    // console.log(arr)
     return arr
   }, [tokenList, account])
 

@@ -1,5 +1,5 @@
 import {useEvmPools, useEvmPool} from './evm'
-import { useUserSelectChainId } from '../../state/user/hooks'
+// import { useUserSelectChainId } from '../../state/user/hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useInterval from '../useInterval'
 export function usePools ({
@@ -7,7 +7,7 @@ export function usePools ({
   tokenList,
   chainId
 }:any) {
-  const {selectNetworkInfo} = useUserSelectChainId()
+  // const {selectNetworkInfo} = useUserSelectChainId()
 const [poolData, setPoolData] = useState<any>()
   const {getEvmPoolsData} = useEvmPools({
     account,
@@ -17,7 +17,7 @@ const [poolData, setPoolData] = useState<any>()
 
   const fetchPoolCallback = useCallback(() => {
     let fetchCallback:any
-    if (!selectNetworkInfo?.label) {
+    if (!isNaN(chainId)) {
       fetchCallback = getEvmPoolsData
     }
     if (fetchCallback) {
@@ -25,11 +25,11 @@ const [poolData, setPoolData] = useState<any>()
         setPoolData(res)
       })
     }
-  }, [selectNetworkInfo, getEvmPoolsData])
+  }, [chainId, getEvmPoolsData])
 
   useEffect(() => {
     fetchPoolCallback()
-  }, [selectNetworkInfo, getEvmPoolsData])
+  }, [chainId, getEvmPoolsData])
   useInterval(fetchPoolCallback, 1000 * 10)
   return {poolData}
 }
@@ -40,13 +40,13 @@ export function usePool (
   anytoken:any,
   underlying: any,
 ) {
-  const {selectNetworkInfo} = useUserSelectChainId()
-const [poolData, setPoolData] = useState<any>()
+  // const {selectNetworkInfo} = useUserSelectChainId()
+  const [poolData, setPoolData] = useState<any>()
   const {getEvmPoolsData} = useEvmPool(chainId, account, anytoken, underlying)
 
   const fetchPoolCallback = useCallback(() => {
     let fetchCallback:any
-    if (!selectNetworkInfo?.label) {
+    if (!isNaN(chainId)) {
       fetchCallback = getEvmPoolsData
     }
     if (fetchCallback) {
@@ -54,11 +54,13 @@ const [poolData, setPoolData] = useState<any>()
         setPoolData(res)
       })
     }
-  }, [selectNetworkInfo, getEvmPoolsData])
+  }, [chainId, account, anytoken, getEvmPoolsData])
 
   useEffect(() => {
     fetchPoolCallback()
-  }, [selectNetworkInfo, fetchPoolCallback])
+  // }, [chainId, fetchPoolCallback])
+  }, [chainId, account, anytoken])
+
   useInterval(fetchPoolCallback, 1000 * 10)
   return {poolData}
 }

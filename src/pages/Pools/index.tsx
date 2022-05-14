@@ -13,7 +13,7 @@ import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} fro
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-import {usePools} from '../../hooks/usePools'
+import {usePools, usePool} from '../../hooks/usePools'
 
 import { AutoColumn } from '../../components/Column'
 // import SwapIcon from '../../components/SwapIcon'
@@ -70,7 +70,7 @@ export default function SwapNative() {
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
-  const [selectChain, setSelectChain] = useState<any>()
+  const [selectChain, setSelectChain] = useState<any>(chainId)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
@@ -112,6 +112,12 @@ export default function SwapNative() {
       return selectDestCurrency
     }
     return false
+  }, [selectDestCurrency])
+  useEffect(() => {
+    console.log(selectDestCurrency)
+    if (selectDestCurrency) {
+      setSelectAnyToken(selectDestCurrency?.fromanytoken)
+    }
   }, [selectDestCurrency])
 
   const isUnderlying = useMemo(() => {
@@ -189,6 +195,7 @@ export default function SwapNative() {
   )
   // console.log('wrapInputErrorNative',wrapInputErrorNative)
   const poolTokenList = useMemo(() => {
+    // console.log(anyTokenList)
     const arr:any = []
     if (anyTokenList) {
       for (const item of anyTokenList) {
@@ -201,10 +208,7 @@ export default function SwapNative() {
     return arr
   }, [selectCurrency, anyTokenList])
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})
-  const {poolData: destPoolData} = usePools({selectChain, account, tokenList: [{
-    anytoken: destConfig?.anytoken?.address,
-    underlying: destConfig?.underlying?.address
-  }]})
+  const {poolData: destPoolData} = usePool(selectChain, account, chainId?.toString() === selectChain?.toString() ? undefined : destConfig?.anytoken?.address, destConfig?.underlying?.address)
 
   useEffect(() => {
     console.log(destPoolData)
@@ -289,7 +293,9 @@ export default function SwapNative() {
           tip: isWrapInputError
         }
       } else if (swapType !== 'deposit') {
-        const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address].totalSupply ? BigAmount.format(poolData?.[selectAnyToken?.address].totalSupply, selectAnyToken.decimals).toExact() : ''
+        console.log(selectAnyToken)
+        console.log(poolData)
+        const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address].totalSupply ? BigAmount.format(selectAnyToken.decimals, poolData?.[selectAnyToken?.address].totalSupply).toExact() : ''
         if (chainId?.toString() !== selectChain?.toString()) {
           // console.log(destChain)
           if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
@@ -480,14 +486,21 @@ export default function SwapNative() {
   useEffect(() => {
     console.log(initDestCurrencyList)
     setSelectDestCurrencyList(initDestCurrencyList)
-    if (initDestCurrencyList) {
+  }, [initDestCurrencyList])
+
+  useEffect(() => {
+    if (selectCurrency) {
+      const destChainList = selectCurrency?.destChains
       const arr:any = []
       const anyTokenList = []
-      for (const destTokenKey in initDestCurrencyList) {
-        const destTokenItem = initDestCurrencyList[destTokenKey]
-        if (destTokenItem.isFromLiquidity && !arr.includes(destTokenItem.fromanytoken.address)) {
-          arr.push(destTokenItem.fromanytoken.address)
-          anyTokenList.push(destTokenItem.fromanytoken)
+      for (const destChainId in destChainList) {
+        const destTokenList = destChainList[destChainId]
+        for (const destTokenKey in destTokenList) {
+          const destTokenItem = destTokenList[destTokenKey]
+          if (destTokenItem.isFromLiquidity && !arr.includes(destTokenItem.fromanytoken.address)) {
+            arr.push(destTokenItem.fromanytoken.address)
+            anyTokenList.push(destTokenItem.fromanytoken)
+          }
         }
       }
       if (anyTokenList.length > 0) {
@@ -497,7 +510,7 @@ export default function SwapNative() {
     } else {
       setAnyTokenList([])
     }
-  }, [initDestCurrencyList])
+  }, [selectCurrency])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -587,15 +600,26 @@ export default function SwapNative() {
             bridgeKey={BRIDGETYPE}
             // allBalances={allBalances}
           />
-          <MorePool
-            anyTokenList={anyTokenList}
-            poolData={poolData}
-            selectCurrency={selectCurrency}
-            selectAnyToken={selectAnyToken}
-            onSelectAnyToken={(value:any) => {
-              setSelectAnyToken(value)
-            }}
-          />
+          {
+            swapType === 'deposit' || chainId?.toString() === selectChain?.toString() ? (
+              <MorePool
+                anyTokenList={anyTokenList}
+                poolData={poolData}
+                selectCurrency={selectCurrency}
+                selectAnyToken={selectAnyToken}
+                onSelectAnyToken={(value:any) => {
+                  setSelectAnyToken(value)
+                }}
+              />
+            ) : (
+              <MorePool
+                anyTokenList={destConfig?.fromanytoken ? [destConfig?.fromanytoken] : []}
+                poolData={poolData}
+                selectCurrency={selectCurrency}
+              />
+            )
+          }
+          
           {
             openAdvance ? (
               <>
@@ -640,6 +664,15 @@ export default function SwapNative() {
           destChain={destChain}
           swapType={swapType}
         /> */}
+        {
+          swapType !== 'deposit' && chainId?.toString() !== selectChain?.toString() ? (
+            <MorePool
+              anyTokenList={destConfig?.anytoken ? [destConfig?.anytoken] : []}
+              poolData={destPoolData}
+              selectCurrency={destConfig}
+            />
+          ) : ''
+        }
         
         {
           openAdvance && chainId?.toString() !== selectChain?.toString() ? (
