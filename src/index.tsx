@@ -71,13 +71,13 @@ ReactDOM.render(
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3ProviderNetwork getLibrary={getLibrary}>
           <Provider store={store}>
-            <Updaters />
             <ThemeProvider>
               <ThemedGlobalStyle />
               <HashRouter>
                 <App />
               </HashRouter>
             </ThemeProvider>
+            <Updaters />
           </Provider>
         </Web3ProviderNetwork>
       </Web3ReactProvider>

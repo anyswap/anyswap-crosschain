@@ -35,7 +35,7 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
+// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
@@ -43,6 +43,8 @@ import LiquidityPool from '../LiquidityPool'
 
 import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
+
+import {usePool} from '../../hooks/usePools'
 
 import {
   LogoBox,
@@ -59,8 +61,9 @@ import {
   useDestCurrency,
   getFTMSelectPool
 } from './hooks'
+import { BigAmount } from '../../utils/formatBignumber'
 
-let intervalFN:any = ''
+// let intervalFN:any = ''
 
 export default function CrossChain({
   bridgeKey
@@ -89,7 +92,6 @@ export default function CrossChain({
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
   
-  const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
@@ -177,6 +179,17 @@ export default function CrossChain({
     return undefined
   }, [destConfig, isRouter])
 
+  
+  const isBridgeFTM = useMemo(() => {
+    if (
+      destConfig.anytoken?.address === 'FTM'
+      || destConfig.fromanytoken?.address === 'FTM'
+    ) {
+      return true
+    }
+    return false
+  }, [destConfig])
+
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
   // console.log(formatCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
@@ -213,105 +226,43 @@ export default function CrossChain({
     setDestChain('')
   }, [selectChain, selectCurrency])
   const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, chainId, selectChain, destConfig)
-  // console.log(curChain)
-  // console.log(destChain)
-  const getSelectPool = useCallback(async() => {
-    if (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM') {
+
+  const {poolData} = usePool(chainId, evmAccount, destConfig?.isFromLiquidity && !isBridgeFTM ? anyToken?.address : undefined, selectCurrency?.address)
+  useEffect(() => {
+    // console.log(poolData)
+    // console.log(curFTMChain)
+    if (poolData && anyToken?.address && !isBridgeFTM && poolData?.[anyToken?.address]?.balanceOf) {
+      setCurChain({
+        chain: chainId,
+        ts: BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balanceOf).toExact(),
+        bl: BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balance).toExact(),
+      })
+    } else if (isBridgeFTM && curFTMChain) {
       setCurChain({
         ...curFTMChain
       })
+    } else {
+      setCurChain({})
+    }
+  }, [poolData, anyToken, curFTMChain, isBridgeFTM])
+  const {poolData: destPoolData} = usePool(selectChain, evmAccount, destConfig?.isLiquidity && !isBridgeFTM ? destConfig?.anytoken?.address : undefined, destConfig?.underlying?.address)
+  useEffect(() => {
+    // console.log(destPoolData)
+    // console.log(destFTMChain)
+    if (destPoolData && destConfig?.anytoken?.address && !isBridgeFTM && destPoolData?.[destConfig?.anytoken?.address]?.balanceOf) {
+      setDestChain({
+        chain: selectChain,
+        ts: BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balanceOf).toExact(),
+        bl: BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balance).toExact(),
+      })
+    } else if (isBridgeFTM && destFTMChain) {
       setDestChain({
         ...destFTMChain
       })
-      return
-    }
-    // console.log(11111)
-    if (selectCurrency && chainId) {
-      if (anyToken?.address && destConfig.isFromLiquidity) {
-        const CC:any = await getNodeTotalsupply(
-          anyToken?.address,
-          chainId,
-          selectCurrency?.decimals,
-          evmAccount,
-          selectCurrency?.address
-        )
-        console.log(CC)
-        // console.log(selectCurrency)
-        if (CC) {
-          setCurChain({
-            chain: chainId,
-            ts: CC[anyToken?.address]?.ts,
-            bl: CC[anyToken?.address]?.balance
-          })
-        } else {
-          setCurChain({
-            chain: chainId,
-            ts: '',
-            bl: ''
-          })
-        }
-      } else {
-        setCurChain({
-          chain: chainId,
-          ts: '',
-          bl: ''
-        })
-      }
-
-      if (destConfig.anytoken?.address && isLiquidity) {
-        const DC:any = await getNodeTotalsupply(
-          destConfig.anytoken?.address,
-          selectChain,
-          destConfig.decimals,
-          evmAccount,
-          destConfig.address
-        )
-        // console.log(selectCurrency)
-        console.log(DC)
-        if (DC) {
-          setDestChain({
-            chain: selectChain,
-            ts: DC[destConfig?.anytoken.address]?.ts,
-            bl: DC[destConfig?.anytoken.address]?.balance
-          })
-        } else {
-          setDestChain({
-            chain: selectChain,
-            ts: '',
-            bl: ''
-          })
-        }
-      } else {
-        setDestChain({
-          chain: selectChain,
-          ts: '',
-          bl: ''
-        })
-      }
-      // console.log(CC)
-      // console.log(DC)
-      if (intervalFN) clearTimeout(intervalFN)
-      intervalFN = setTimeout(() => {
-        setIntervalCount(intervalCount + 1)
-      }, 1000 * 10)
     } else {
-      setCurChain({
-        chain: chainId,
-        ts: '',
-        bl: ''
-      })
-      setDestChain({
-        chain: selectChain,
-        ts: '',
-        bl: ''
-      })
+      setDestChain({})
     }
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isLiquidity, anyToken])
-
-
-  useEffect(() => {
-    getSelectPool()
-  }, [getSelectPool])
+  }, [destPoolData, destConfig, destFTMChain, isBridgeFTM])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     destConfig?.routerToken,
@@ -356,6 +307,7 @@ export default function CrossChain({
     recipient,
     selectCurrency
   )
+  
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -795,7 +747,6 @@ export default function CrossChain({
             setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
-          intervalCount={intervalCount}
           isNativeToken={isNativeToken}
           selectChainList={selectChainList}
           selectDestCurrency={selectDestCurrency}
