@@ -103,7 +103,7 @@ export default function Updater(): null {
             let bl = ''
             try {
               // console.log(ERC20_INTERFACE.decodeFunctionResult('balanceOf', results))
-              bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
+              bl = results === '0x' ? '0' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
             } catch (error) {
               // console.error(error)
             }

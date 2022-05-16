@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const CLV_MAIN_CHAINID = ChainId.CLV
 export const CLV_MAINNET = getLocalRPC(CLV_MAIN_CHAINID, 'https://api-para.clover.finance')
-export const CLV_MAIN_EXPLORER = 'https://clover.subscan.io'
+export const CLV_MAIN_EXPLORER = 'https://clvscan.com'
 
 export const tokenList = []
 export const testTokenList = []
