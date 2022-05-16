@@ -34,7 +34,19 @@ const formatAmount = (n: string | undefined, direction: Direction) => {
 
 const MILLION = 1_000_000
 
-export default function SwapSettings({ underlying }: { underlying: { [k: string]: any } }) {
+export default function SwapSettings({
+  underlying,
+  onConfigNetwork,
+  configNetworkName,
+  switchToStorageNetwork
+}: {
+  underlying: {
+    [k: string]: any
+  }
+  onConfigNetwork: boolean
+  configNetworkName: string
+  switchToStorageNetwork: () => void
+}) {
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
@@ -51,12 +63,12 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
     BigValueThreshold: 100000
     SwapFeeRatePerMillion: 0.001
     */
-  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(undefined)
-  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(undefined)
-  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(undefined)
-  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(undefined)
-  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(undefined)
-  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(undefined)
+  const [minimumSwap, setMinimumSwap] = useState<string | undefined>(`1`)
+  const [maximumSwap, setMaximumSwap] = useState<string | undefined>(`1000`)
+  const [minimumSwapFee, setMinimumSwapFee] = useState<string | undefined>(`1`)
+  const [maximumSwapFee, setMaximumSwapFee] = useState<string | undefined>(`10`)
+  const [bigValueThreshold, setBigValueThreshold] = useState<string | undefined>(`1000000`)
+  const [swapFeeRatePerMillion, setSwapFeeRatePerMillion] = useState<string | undefined>(`0.001`)
 
   const [canSetSwapConfig, setCanSetSwapConfig] = useState(false)
 
@@ -125,7 +137,7 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
       addTransaction(
         { hash },
         {
-          summary: `Swap config: token chain ${underlying.networkId}; token ${underlying.symbol.toUpperCase()}`
+          summary: `Swap config saved: token chain ${underlying.networkId}; token ${underlying.symbol.toUpperCase()}`
         }
       )
     } catch (error) {
@@ -211,9 +223,15 @@ export default function SwapSettings({ underlying }: { underlying: { [k: string]
           </OptionLabel>
         </OptionWrapper>
 
-        <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
-          {t('setSwapConfig')}
-        </ButtonPrimary>
+        {onConfigNetwork ? (
+          <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
+            {t('setSwapConfig')}
+          </ButtonPrimary>
+        ) : (
+          <ButtonPrimary onClick={switchToStorageNetwork}>
+            {t('switchToNetwork', { network: configNetworkName })}
+          </ButtonPrimary>
+        )}
       </OptionWrapper>
     </Accordion>
   )

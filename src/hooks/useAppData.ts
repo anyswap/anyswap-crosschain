@@ -21,7 +21,16 @@ const parseInfo = (info: string) => {
     elementsColorLight: '',
     elementsColorDark: '',
     socialLinks: [],
-    disableSourceCopyright: false
+    disableSourceCopyright: false,
+    appSettings: {
+      apiAddress: '',
+      serverAdminAddress: '',
+      mainConfigChainId: undefined,
+      mainConfigAddress: '',
+      routerConfigs: {},
+      erc20Tokens: {},
+      crosschainTokens: {}
+    }
   }
   const result = JSON.parse(info)
 
@@ -84,7 +93,7 @@ export default function useAppData(): {
       setError(null)
       setIsLoading(true)
 
-      let parsed
+      let parsed: any
       let data
 
       try {
@@ -95,6 +104,7 @@ export default function useAppData(): {
         setError(error)
       }
 
+      
       if (parsed?.apiAddress) {
         try {
           const response: any = await getUrlData(`${parsed?.apiAddress}/config`)
@@ -108,6 +118,21 @@ export default function useAppData(): {
           setError(error)
         }
       }
+
+
+      try {
+        const appSettingsJson: string | null = localStorage.getItem('appSettings')
+        if (appSettingsJson !== null) {
+          const appSettings = JSON.parse(appSettingsJson)
+          
+          parsed = {
+            ...parsed,
+            appSettings
+          }
+        }
+        
+      } catch (e) {}
+
 
       if (parsed) {
         const { owner } = data

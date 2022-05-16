@@ -20,7 +20,7 @@ export default function DeployCrosschainToken({
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
-  const { routerConfigChainId, routerConfigAddress } = useAppState()
+  const { routerConfigChainId, routerConfigAddress, appSettings } = useAppState()
 
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
 
@@ -65,8 +65,21 @@ export default function DeployCrosschainToken({
     }
   }, [chainId, underlying.address, underlying.networkId])
 
+  const hasCrosschainTokenOnChain = () => {
+    const contractsOnChain = Object.keys(appSettings.crosschainTokens).filter((contractKey) => {
+      const contractInfo = appSettings.crosschainTokens[contractKey]
+      return (contractInfo.underlying.networkId == underlying.networkId && contractInfo.underlying.address == underlying.address)
+    })
+    return !(contractsOnChain.length === 0)
+  }
+
   const onTokenDeployment = async () => {
+    console.log('>>> onTokenDeployment', chainId, account, vault, hasCrosschainTokenOnChain())
     if (!chainId || !account || !vault) return
+
+    const breakDeployment = !(hasCrosschainTokenOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : true)
+    console.log('>>> breakDeployment', breakDeployment)
+    if (breakDeployment) return
 
     setPending(true)
 

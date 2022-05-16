@@ -30,6 +30,54 @@ export enum ApplicationModal {
   NETWORK
 }
 
+export type RouterConfigData = {
+  chainId: string | undefined
+  address: string
+}
+
+export type ERC20TokenData = {
+  chainId: string
+  address: string
+  decimals: number
+  symbol: string
+  name: string
+  icon: string
+}
+
+export type CrossChainTokenData = {
+  chainId: number
+  contractAddress: string
+  underlying: {
+    networkId: string
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+  }
+}
+
+export type RouterConfigDataList = {
+  [ key: string ]: RouterConfigData
+}
+
+export type ERC20TokenDataList = {
+  [ key: string ]: ERC20TokenData
+}
+
+export type CrossChainTokenDataList = {
+  [ key: string ]: CrossChainTokenData
+}
+
+export type AppSettingsData = {
+  apiAddress: string
+  serverAdminAddress: string
+  mainConfigChainId: number | undefined
+  mainConfigAddress: string
+  routerConfigs: RouterConfigDataList
+  erc20Tokens: ERC20TokenDataList
+  crosschainTokens: CrossChainTokenDataList
+}
+
 export type AppData = {
   owner: string
   logo: string
@@ -45,6 +93,7 @@ export type AppData = {
   routerConfigChainId: number | undefined
   routerConfigAddress: string
   serverAdminAddress: string
+  appSettings: AppSettingsData
 }
 
 export type AppDataKeys = keyof AppData
@@ -54,6 +103,9 @@ export const setAppManagement = createAction<{ status: boolean }>('application/s
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')
 export const updateAppOptions = createAction<{ key: AppDataKeys; value: AppData[AppDataKeys] }[]>(
   'application/updateAppOptions'
+)
+export const updateAppSettings = createAction<{ appSettings: AppSettingsData }>(
+  'application/updateAppSettings'
 )
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')

@@ -9,6 +9,7 @@ import {
   setOpenModal,
   retrieveAppData,
   updateAppOptions,
+  updateAppSettings,
   setAppManagement,
   updateRouterData,
   AppData
@@ -43,7 +44,16 @@ const initialState: ApplicationState = {
   routerAddress: {},
   blockNumber: {},
   popupList: [],
-  openModal: null
+  openModal: null,
+  appSettings: {
+    apiAddress: '',
+    serverAdminAddress: '',
+    mainConfigChainId: undefined,
+    mainConfigAddress: '',
+    routerConfigs: {},
+    erc20Tokens: {},
+    crosschainTokens: {}
+  }
 }
 
 export default createReducer(initialState, builder =>
@@ -64,9 +74,11 @@ export default createReducer(initialState, builder =>
           elementsColorLight,
           elementsColorDark,
           socialLinks,
-          disableSourceCopyright
+          disableSourceCopyright,
+          appSettings
         } = action.payload
 
+        if (appSettings) state.appSettings = appSettings
         if (apiAddress) state.apiAddress = apiAddress
         if (routerConfigChainId) state.routerConfigChainId = routerConfigChainId
         if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
@@ -82,6 +94,10 @@ export default createReducer(initialState, builder =>
         if (Array.isArray(socialLinks) && socialLinks.length) state.socialLinks = socialLinks
         if (disableSourceCopyright) state.disableSourceCopyright = disableSourceCopyright
       }
+    })
+    .addCase(updateAppSettings, (state, action) => {
+      state.appSettings = action.payload.appSettings
+      localStorage.setItem('appSettings', JSON.stringify(state.appSettings))
     })
     .addCase(updateAppOptions, (state, action) => {
       if (action.payload?.length) {

@@ -24,8 +24,16 @@ export default function DeployRouter({
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
   const [wrappedToken, setWrappedToken] = useState('')
-  const { routerConfigChainId, routerConfigAddress } = useAppState()
+  const { routerConfigChainId, routerConfigAddress, appSettings } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
+
+  const hasRouterOnChain = () => {
+    const contractsOnChain = Object.keys(appSettings.routerConfigs).filter((contractKey) => {
+      const contractInfo = appSettings.routerConfigs[contractKey]
+      return (contractInfo.chainId == currentChainId)
+    })
+    return !(contractsOnChain.length === 0)
+  }
 
   useEffect(() => {
     if (currentChainId) {
@@ -45,6 +53,9 @@ export default function DeployRouter({
 
   const onDeployment = async () => {
     if (!currentChainId || !wrappedToken || !routerConfig) return
+
+    const breakDeployment = !(hasRouterOnChain() ? confirm(`You are already has deployed contract on this network. Deploy new?`) : true)
+    if (breakDeployment) return
 
     try {
       await deployRouter({

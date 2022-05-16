@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationState } from './reducer'
+import { AppSettingsData } from './actions'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal } from './actions'
 
 export function useBlockNumber(initChainId?: any): number | undefined {
@@ -95,4 +96,8 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)
   return useMemo(() => list.filter(item => item.show), [list])
+}
+
+export function useAppSettings(): AppSettingsData {
+  return useSelector((state: AppState) => state.application.appSettings)
 }
