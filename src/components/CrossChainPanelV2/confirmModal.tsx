@@ -10,6 +10,7 @@ import QuestionHelper from '../QuestionHelper'
 import config from '../../config'
 
 import {thousandBit} from '../../utils/tools/tools'
+import { shortenAddress1 } from "../../utils"
 
 const ConfirmBox = styled.div`
   width: 100%;
@@ -74,6 +75,9 @@ const ConfirmList = styled.ul`
       text-overflow: ellipsis;
       white-space:normal;
       font-size: 14px;
+      &.r {
+        text-align:right;
+      }
     }
   }
 `
@@ -143,7 +147,7 @@ export default function ConfirmContent (
           </li>
           <li className="item">
             <div className="txtLabel">{t('Address')}:</div>
-            <div className="txt">{account}</div>
+            <div className="txt r">{account ? shortenAddress1(account,8) : ''}</div>
           </li>
         </ConfirmList>
         <ConfirmList>
@@ -167,7 +171,7 @@ export default function ConfirmContent (
           </li>
           <li className="item">
             <div className="txtLabel">{t('Address')}:</div>
-            <div className="txt">{recipient}</div>
+            <div className="txt r">{shortenAddress1(recipient, 8)}</div>
           </li>
         </ConfirmList>
         <FeeBox>
