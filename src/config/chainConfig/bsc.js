@@ -108,7 +108,7 @@ const bridgeToken = {
 export default {
   [BNB_MAIN_CHAINID]: {
     wrappedToken: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-    storage: '0x4B2B549d0Be6013f30221f23d0165587cAc3f888',
+    storage: '0xa7472f384339D37EfE505a1A71619212495A973A',
     tokenListUrl: tokenListUrl + BNB_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
