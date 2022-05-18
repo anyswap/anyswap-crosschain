@@ -5,7 +5,7 @@ import nebulas from 'nebulas'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {useTxnsDtilOpen} from '../../state/application/hooks'
 import {useActiveReact} from '../useActiveReact'
-import { Currency, JSBI, Fraction } from 'anyswap-sdk'
+import { Currency } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 // import qs from 'qs'
@@ -18,6 +18,7 @@ import NebPay from 'nebpay.js'
 import { BigNumber } from 'ethers'
 
 import { ChainId } from '../../config/chainConfig/chainId'
+import { BigAmount } from '../../utils/formatBignumber'
 
 // const NAS_URL = 'https://testnet.nebulas.io'
 const NAS_URL = 'https://mainnet.nebulas.io'
@@ -93,9 +94,8 @@ export const useCurrentWNASBalance = (token?:any) => {
   return {
     getWNASBalance,
     balance,
-    balanceBig: balance
-      ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)))
-      : undefined
+    // balanceBig: balance ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))) : undefined
+    balanceBig: balance ? BigAmount.format(18, balance) : undefined
   }
 }
 
@@ -125,9 +125,8 @@ export const useCurrentNasBalance = () => {
   return {
     getNasBalance,
     balance,
-    balanceBig: balance
-      ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)))
-      : undefined
+    // balanceBig: balance ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))) : undefined
+    balanceBig: balance ? BigAmount.format(18, balance) : undefined
   }
 }
 
@@ -202,7 +201,7 @@ export function useNebBridgeCallback({
   const inputAmount = useMemo(() => inputCurrency ? tryParseAmount3(typedValue, inputCurrency?.decimals) : undefined, [inputCurrency, typedValue])
   return useMemo(() => {
     if (balance && typedValue && recipient && DepositAddress) {
-      const sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+      const sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
 
       const inputError = sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
 
