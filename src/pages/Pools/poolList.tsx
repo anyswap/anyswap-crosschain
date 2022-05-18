@@ -548,9 +548,9 @@ export default function PoolLists ({
                       key={indexs + i}
                       chainId ={chainID}
                       bl={destTokenItem?.underlying ? thousandBit(bl, 2) : '0.00'}
-                      ts={destTokenItem?.underlying ? thousandBit(ts, 2) : 'Unlimited'}
+                      ts={destTokenItem?.underlying && destTokenItem.isLiquidity ? thousandBit(ts, 2) : 'Unlimited'}
                       token={''}
-                      isUnderlying={Boolean(destTokenItem?.underlying)}
+                      isUnderlying={Boolean(destTokenItem?.underlying) && destTokenItem.isLiquidity}
                     />
                   })
                 }

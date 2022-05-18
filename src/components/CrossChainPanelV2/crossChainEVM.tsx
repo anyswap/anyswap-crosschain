@@ -171,7 +171,7 @@ export default function CrossChain({
     if (destConfig.isApprove) {
       if (isRouter) {
         // setBridgeAnyToken('')
-        return destConfig?.routerToken
+        return destConfig?.router
       } else {
         return destConfig.fromanytoken.address
       }
@@ -265,7 +265,7 @@ export default function CrossChain({
   }, [destPoolData, destConfig, destFTMChain, isBridgeFTM])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    destConfig?.routerToken,
+    destConfig?.router,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -276,7 +276,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    destConfig?.routerToken,
+    destConfig?.router,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -286,7 +286,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    destConfig?.routerToken,
+    destConfig?.router,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
