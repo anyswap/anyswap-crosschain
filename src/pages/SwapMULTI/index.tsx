@@ -50,6 +50,10 @@ import AppBody from '../AppBody'
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
 
+import {
+  login
+} from '../../hooks/near'
+
 
 const ContentBody = styled.div`
   background-color: ${({ theme }) => theme.contentBg};
@@ -206,12 +210,7 @@ export default function SwapMULTI () {
   const [inputValue, setInputValue] = useState<any>()
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  // const [srcToken, setSrcToken] = useState<any>()
-  // const [dstToken, setDstToken] = useState<any>()
-  // const [rate, setRate] = useState<any>()
-
-
-
+  
   const contract = useSwapMultiContract(useSwapInfo?.swapToken)
   const anyCurrency = useLocalToken(useSwapInfo?.anyToken)
   // console.log(anyCurrency)
@@ -222,63 +221,6 @@ export default function SwapMULTI () {
 
   const formatInputBridgeValue = tryParseAmount(inputValue, anyCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useSwapInfo?.swapToken ?? undefined)
-
-  // const calls = useMemo(
-  //   () => {
-  //     const arr:any = [
-  //       {
-  //         address: swapToken,
-  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('srcToken', []),
-  //         fragment: 'srcToken'
-  //       },
-  //       {
-  //         address: swapToken,
-  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('dstToken', []),
-  //         fragment: 'dstToken'
-  //       },
-  //       {
-  //         address: swapToken,
-  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('denominatorOfRate', []),
-  //         fragment: 'denominatorOfRate'
-  //       },
-  //       {
-  //         address: swapToken,
-  //         callData: SWAP_MULTI_INTERFACE?.encodeFunctionData('numeratorOfRate', []),
-  //         fragment: 'numeratorOfRate'
-  //       }
-  //     ]
-  //     return arr
-  //   },
-  //   [SWAP_MULTI_INTERFACE]
-  // )
-
-  // const getTokenidList = useCallback(() => {
-  //   if (multicallContract && calls && calls.length > 0 && isSupport) {
-  //     multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
-  //       // console.log(res)
-  //       const swapObj:any = {}
-  //       for (let i =0, len = res.returnData.length; i < len; i++) {
-  //         const obj = res.returnData[i]
-  //         const value = SWAP_MULTI_INTERFACE?.decodeFunctionResult(calls[i].fragment, obj)[0].toString()
-  //         swapObj[calls[i].fragment] = value
-  //       }
-  //       const rate = Number(swapObj.numeratorOfRate) / Number(swapObj.denominatorOfRate)
-  //       setSrcToken(swapObj.srcToken)
-  //       setDstToken(swapObj.dstToken)
-  //       setRate(rate)
-  //       // console.log(swapObj)
-  //     }).catch((err:any) => {
-  //       console.log(err)
-  //       setSrcToken(undefined)
-  //       setDstToken(undefined)
-  //       setRate(undefined)
-  //     })
-  //   }
-  // }, [multicallContract, calls, isSupport])
-
-  // useEffect(() => {
-  //   getTokenidList()
-  // }, [getTokenidList])
 
   const isInputError = useMemo(() => {
     if (inputValue !== '' || inputValue === '0') {
@@ -451,6 +393,9 @@ export default function SwapMULTI () {
   return (
     <>
       <AppBody>
+        <ButtonLight onClick={() => {
+          login()
+        }}>test</ButtonLight>
         <ContentBody>
           <ContentTitle>
             Swap ANY to MULTI
