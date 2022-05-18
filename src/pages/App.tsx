@@ -11,10 +11,10 @@ import TxnsDtilsModal from '../components/CrossChainPanelV2/txnsDtilsModal'
 import TxnsErrorTipModal from '../components/CrossChainPanelV2/txnsErrorTipModal'
 // import Pool from './Pool'
 // import Bridge from './Bridge'
-import Dashboard from './Dashboard'
+// import Dashboard from './Dashboard'
 
-import CrossChain from './CrossChain'
-import Bridge from './Bridge'
+// import CrossChain from './CrossChain'
+// import Bridge from './Bridge'
 
 import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
@@ -26,10 +26,10 @@ import Vest from './Vest'
 import CreateLock from './Vest/create'
 import MangerVest from './Vest/manger'
 
-import ANYFarming from './Farms/ANYFarming'
-import NoanyFarming from './Farms/NoanyFarming'
+// import ANYFarming from './Farms/ANYFarming'
+// import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
-import FarmList from './Farms/FarmsList'
+// import FarmList from './Farms/FarmsList'
 
 import HistoryList from './History'
 import HistoryDetails from './History/details'
@@ -37,7 +37,7 @@ import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
 import config from '../config'
-import farmlist from '../config/farmlist'
+// import farmlist from '../config/farmlist'
 
 // import '../hooks/xrp'
 
@@ -137,7 +137,7 @@ const Marginer = styled.div`
 // }
 
 export default function App() {
-  let initUrl = '/dashboard'
+  let initUrl = '/router'
   if (config.getCurConfigInfo().isOpenRouter) {
     initUrl = '/v1/router'
   } else if (config.getCurConfigInfo().isOpenBridge) {
@@ -166,13 +166,13 @@ export default function App() {
           {/* <TopLevelModals /> */}
           <Web3ReactManager>
             <Switch>
-              <Route exact strict path="/dashboard" component={() => <Dashboard />} />
+              {/* <Route exact strict path="/dashboard" component={() => <Dashboard />} /> */}
               <Route exact strict path="/pool" component={() => <PoolList />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
-              <Route exact strict path="/farm" component={() => <FarmList />} />
+              {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
-              <Route exact strict path="/bridge" component={() => <Bridge />} />
+              {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
               <Route exact strict path="/multi" component={() => <SwapMULTI />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
@@ -180,7 +180,7 @@ export default function App() {
               <Route exact strict path="/vest" component={() => <Vest />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />
               <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
-              <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} />
+              {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
   
               <Route
                 path={[
@@ -188,7 +188,7 @@ export default function App() {
                 ]}
                 component={() => <MergeCrossChainV2 />}
               />
-              {
+              {/* {
                 Object.keys(farmlist).map((key, index) => {
                   if (farmlist[key].farmtype === 'noany') {
                     return (
@@ -199,7 +199,7 @@ export default function App() {
                     <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
                   )
                 })
-              }
+              } */}
 
               
               <Redirect to={{ pathname: initUrl }} />

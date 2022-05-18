@@ -535,7 +535,7 @@ module.exports = function(webpackEnv) {
         Object.assign(
           {},
           {
-            inject: false,
+            inject: true,
             template: paths.appHtml,
           },
           isEnvProduction
