@@ -136,9 +136,10 @@ export default function SwapNative() {
 
   const useRouterToken = useMemo(() => {
     if (chainId?.toString() === selectChain?.toString()) {
-      return selectCurrency?.routerToken
+      // return selectCurrency?.router
+      return undefined
     }
-    return destConfig?.routerToken
+    return destConfig?.router
   }, [chainId, selectChain, selectCurrency])
   // console.log(useRouterToken)
   const isNativeToken = useMemo(() => {
