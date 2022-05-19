@@ -938,13 +938,16 @@ export default function Vest () {
                       <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled} onClick={() => {
                         // console.log(onWithdrarWrap)
                         // const ri = rewardList[item.id]
-                        if (
-                          !rewardList
-                          || !rewardList[item.id]
-                          || !rewardList[item.id].list
-                          || rewardList[item.id].list.length > 0
-                        ) {
-                          if (rewardList[item.id].list.length > 0) {
+                        const rewardCount = useVeMultiToken?.decimals && rewardList?.[item.id]?.totalReward? BigAmount.format(useVeMultiToken.decimals, rewardList[item.id].totalReward).toExact() : ''
+                        // if (
+                        //   !rewardList
+                        //   || !rewardList[item.id]
+                        //   || !rewardList[item.id].list
+                        //   || rewardList[item.id].list.length > 0
+                        // ) {
+                        if (!rewardCount || Number(rewardCount) >= 10) {
+                          console.log(rewardCount)
+                          if (rewardCount && Number(rewardCount) >= 10) {
                             alert('Please claim the reward first')
                           } else {
                             alert('Loading')
