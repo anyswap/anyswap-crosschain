@@ -167,11 +167,19 @@ export default function CrossChain({
     }
     return false
   }, [destConfig])
+
+  const routerToken = useMemo(() => {
+    if (destConfig?.router && isAddress(destConfig?.router)) {
+      return destConfig?.router
+    }
+    return undefined
+  }, [destConfig])
+
   const approveSpender = useMemo(() => {
     if (destConfig.isApprove) {
       if (isRouter) {
         // setBridgeAnyToken('')
-        return destConfig?.router
+        return routerToken
       } else {
         return destConfig.fromanytoken.address
       }
@@ -265,7 +273,7 @@ export default function CrossChain({
   }, [destPoolData, destConfig, destFTMChain, isBridgeFTM])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    destConfig?.router,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -276,7 +284,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    destConfig?.router,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,
@@ -286,7 +294,7 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    destConfig?.router,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
     recipient,

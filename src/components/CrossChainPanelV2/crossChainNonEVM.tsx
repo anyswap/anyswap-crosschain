@@ -158,7 +158,7 @@ export default function CrossChain({
     selectCurrency?.address,
     destConfig?.pairid,
     recipient,
-    destConfig?.Unit,
+    selectCurrency?.unit,
     chainId
   )
 
@@ -168,12 +168,12 @@ export default function CrossChain({
     // console.log(terraBalance)
     if (chainId === ChainId.NAS) {
       if (nasBalance) {
-        const nasBalanceFormat = nasBalance?.toSignificant(3)
+        const nasBalanceFormat = nasBalance?.toExact()
         return nasBalanceFormat
       }
     } else if (chainId === ChainId.TERRA) {
       if (terraBalance) {
-        return terraBalance?.toSignificant(3)
+        return terraBalance?.toExact()
       }
     }
     return ''

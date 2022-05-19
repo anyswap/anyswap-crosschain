@@ -1,5 +1,5 @@
 
-import { Currency, JSBI, Fraction } from 'anyswap-sdk'
+import { Currency } from 'anyswap-sdk'
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
@@ -34,6 +34,7 @@ import config from '../config'
 import { ChainId } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
+import { BigAmount } from '../utils/formatBignumber'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -423,7 +424,7 @@ export function useBridgeNativeCallback(
     // console.log(bridgeContract)
     // console.log(chainId)
     // console.log(inputCurrency)
-    // console.log(swapType)
+    // console.log(inputToken)
     if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
@@ -901,7 +902,8 @@ export function useBridgeNativeCallback(
         token: terraToken
       }]}).then((res:any) => {
         // console.log(res)
-        const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        const bl:any = res[terraToken] && inputCurrency ? BigAmount.format(inputCurrency?.decimals, res[terraToken]) : undefined
         // console.log(bl)
         // console.log(bl?.toSignificant(inputCurrency?.decimals))
         // if (bl?.toSignificant(inputCurrency?.decimals) === '0') {
@@ -967,7 +969,7 @@ export function useBridgeNativeCallback(
     // console.log(typedValue)
     let sufficientBalance = false
     try {
-      sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+      sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
     } catch (error) {
       console.log(error)
     }
