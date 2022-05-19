@@ -108,14 +108,14 @@ export default function SwapNative() {
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log(selectDestCurrency)
+    // console.log(selectDestCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
     return false
   }, [selectDestCurrency])
   useEffect(() => {
-    console.log(selectDestCurrency)
+    // console.log(selectDestCurrency)
     if (selectDestCurrency) {
       setSelectAnyToken(selectDestCurrency?.fromanytoken)
     }
@@ -235,7 +235,7 @@ export default function SwapNative() {
           return false
         }
       } else {
-        console.log(wrapInputErrorUnderlying)
+        // console.log(wrapInputErrorUnderlying)
         if (wrapInputErrorUnderlying) {
           return wrapInputErrorUnderlying
         } else {
@@ -728,12 +728,13 @@ export default function SwapNative() {
                           onClear()
                         })
                       } else {
-                        console.log(2)
                         if (isNativeToken) {
+                          console.log(2)
                           if (onWrapNative) onWrapNative().then(() => {
                             onClear()
                           })
                         } else {
+                          console.log(3)
                           if (onWrapUnderlying) onWrapUnderlying().then(() => {
                             onClear()
                           })
