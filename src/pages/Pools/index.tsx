@@ -81,8 +81,6 @@ export default function SwapNative() {
   const [selectAnyToken, setSelectAnyToken] = useState<any>()
   const [anyTokenList, setAnyTokenList] = useState<any>()
 
-
-
   const [openAdvance, setOpenAdvance] = useState<any>(urlSwapType === 'deposit' ? false : true)
   const [swapType, setSwapType] = useState<any>(urlSwapType)
   // const [count, setCount] = useState<number>(0)
@@ -117,7 +115,7 @@ export default function SwapNative() {
   useEffect(() => {
     // console.log(selectDestCurrency)
     if (selectDestCurrency) {
-      setSelectAnyToken(selectDestCurrency?.fromanytoken)
+      setSelectAnyToken({...selectDestCurrency?.fromanytoken, router: selectDestCurrency.router})
     }
   }, [selectDestCurrency])
 
@@ -136,12 +134,13 @@ export default function SwapNative() {
   }, [destConfig])
 
   const useRouterToken = useMemo(() => {
-    // if (chainId?.toString() === selectChain?.toString()) {
-    //   // return selectCurrency?.router
-    //   return undefined
-    // }
+    // console.log(destConfig)
+    if (chainId?.toString() === selectChain?.toString()) {
+      // return selectCurrency?.router
+      return selectAnyToken?.router
+    }
     return destConfig?.router
-  }, [chainId, selectChain, selectCurrency])
+  }, [chainId, selectChain, selectAnyToken, destConfig])
   // console.log(useRouterToken)
   const isNativeToken = useMemo(() => {
     if (
@@ -503,7 +502,10 @@ export default function SwapNative() {
           const destTokenItem = destTokenList[destTokenKey]
           if (destTokenItem.isFromLiquidity && !arr.includes(destTokenItem.fromanytoken.address)) {
             arr.push(destTokenItem.fromanytoken.address)
-            anyTokenList.push(destTokenItem.fromanytoken)
+            anyTokenList.push({
+              ...destTokenItem.fromanytoken,
+              router: destTokenItem.router
+            })
           }
         }
       }

@@ -424,7 +424,7 @@ export function useBridgeNativeCallback(
     // console.log(bridgeContract)
     // console.log(chainId)
     // console.log(inputCurrency)
-    // console.log(swapType)
+    // console.log(inputToken)
     if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
