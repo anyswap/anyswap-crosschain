@@ -175,7 +175,8 @@ export default function SwapNative() {
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    selectCurrency
+    selectCurrency,
+    swapType
   )
     // console.log(wrapType)
     // console.log('wrapInputError', wrapInputError)
