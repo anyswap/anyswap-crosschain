@@ -60,4 +60,5 @@ export enum ChainId {
   GT = '86',
   DOGE = '2000',
   CMP = '256256',
+  NEAR = 'NEAR',
 }

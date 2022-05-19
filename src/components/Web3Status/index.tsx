@@ -6,12 +6,12 @@ import { Activity } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { css } from 'styled-components'
 import { isMobile } from 'react-device-detect'
-import { useWallet, ConnectType } from '@terra-money/wallet-provider'
+// import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { injected } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import {useActiveReact} from '../../hooks/useActiveReact'
-import { useWalletModalToggle } from '../../state/application/hooks'
+// import { useWalletModalToggle } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { shortenAddress1 } from '../../utils'
@@ -23,7 +23,9 @@ import Loader from '../Loader'
 import { RowBetween } from '../Row'
 import WalletModal from '../WalletModal'
 
-import { ChainId } from '../../config/chainConfig/chainId'
+// import { ChainId } from '../../config/chainConfig/chainId'
+
+import {useConnectWallet} from '../../hooks/useWallet'
 
 const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -126,12 +128,14 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
 function Web3StatusInner() {
   const { t } = useTranslation()
   const { connector, error } = useWeb3React()
-  const { connect } = useWallet()
+  // const { connect } = useWallet()
   const {account, chainId} = useActiveReact()
   // console.log(error)
   const { ENSName } = useENSName(account && !isNaN(chainId) ? account : undefined)
   // console.log(ENSName)
   const allTransactions = useAllTransactions()
+
+  const connectWallet = useConnectWallet()
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -141,11 +145,11 @@ function Web3StatusInner() {
   const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
 
   const hasPendingTransactions = !!pending.length
-  const toggleWalletModal = useWalletModalToggle()
+  // const toggleWalletModal = useWalletModalToggle()
 
   if (account) {
     return (
-      <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
+      <Web3StatusConnected id="web3-status-connected" onClick={connectWallet} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
             <Text>{pending?.length} {t('Pending')}</Text> <Loader stroke="white" />
@@ -165,32 +169,37 @@ function Web3StatusInner() {
     )
   } else if (error) {
     return (
-      <Web3StatusError onClick={toggleWalletModal}>
+      <Web3StatusError onClick={connectWallet}>
         <NetworkIcon />
         <Text>{error instanceof UnsupportedChainIdError ? t('WrongNetwork') : t('Error')}</Text>
       </Web3StatusError>
     )
   } else {
-    if (chainId === ChainId.TERRA) {
-      return (
-        <Web3StatusConnect id="connect-wallet"  onClick={() => {
-          // console.log(connect)
-          if (connect) {
-            try {
-              connect(ConnectType.CHROME_EXTENSION)
-            } catch (error) {
-              alert('Please install Terra Station!')
-            }
-          } else {
-            alert('Please install Terra Station!')
-          }
-        }} faded={!account}>
-          <Text>{t('ConnectToWallet')}</Text>
-        </Web3StatusConnect>
-      )
-    }
+    // if (chainId === ChainId.TERRA) {
+    //   return (
+    //     <Web3StatusConnect id="connect-wallet"  onClick={() => {
+    //       // console.log(connect)
+    //       if (connect) {
+    //         try {
+    //           connect(ConnectType.CHROME_EXTENSION)
+    //         } catch (error) {
+    //           alert('Please install Terra Station!')
+    //         }
+    //       } else {
+    //         alert('Please install Terra Station!')
+    //       }
+    //     }} faded={!account}>
+    //       <Text>{t('ConnectToWallet')}</Text>
+    //     </Web3StatusConnect>
+    //   )
+    // }
+    // return (
+    //   <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
+    //     <Text>{t('ConnectToWallet')}</Text>
+    //   </Web3StatusConnect>
+    // )
     return (
-      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
+      <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
         <Text>{t('ConnectToWallet')}</Text>
       </Web3StatusConnect>
     )
