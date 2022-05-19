@@ -51,7 +51,7 @@ import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
 
 import {
-  login
+  useLogin
 } from '../../hooks/near'
 
 
@@ -189,6 +189,7 @@ export default function SwapMULTI () {
   const theme = useContext(ThemeContext)
   const addTransaction = useTransactionAdder()
   // const multicallContract = useMulticallContract()
+  const {login}  = useLogin()
 
   const useSwapInfo = useMemo(() => {
     if (chainId && swapList[chainId]) {

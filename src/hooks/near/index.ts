@@ -4,9 +4,12 @@ import {
   keyStores,
   WalletConnection
 } from 'near-api-js'
+import { useCallback, useState } from 'react'
 import {getConfig} from './config'
 
+
 const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
+const contractId = nearConfig.contractName
 const w:any = window
 // 初始化合同并设置全局变量
 export async function initContract() {
@@ -35,10 +38,36 @@ export function logout() {
   w.location.replace(w.location.origin + w.location.pathname)
 }
 
-export function login() {
-  // 允许当前应用调用服务器上的指定合同
-  // 用户代表。
-  // 这通过为用户的帐户创建新的访问密钥并存储
-  // localStorage中的私钥。
-  w.walletConnection.requestSignIn(nearConfig.contractName)
+
+
+export function useLogin() {
+  const [nearAccount, setNearAccount] = useState<any>()
+  const [access, setAccess] = useState<any>({})
+  const login = useCallback(async() => {
+
+    try {
+      // The method names on the contract that should be allowed to be called. Pass null for no method names and '' or [] for any method names.
+      // const res = await window.near.requestSignIn({ contractId, methodNames: ['sayHi', 'ad'] })
+      // const res = await window.near.requestSignIn({ contractId, methodNames: null })
+      const res = await window.near.requestSignIn({ contractId, methodNames: [] })
+      // const res = await window.near.requestSignIn({ contractId, amount: '10000000000000000000000' })
+      console.log('signin res: ', res);
+      if (!res.error) {
+        if (res && res.accessKey) {
+          setAccess(res.accessKey);
+          setNearAccount(window.near.accountId)
+        } else {
+          console.log('res: ', res)
+        }
+      }
+    } catch (error) {
+      console.log('error: ', error)
+    }
+  }, [])
+
+  return {
+    login,
+    nearAccount,
+    access
+  }
 }
