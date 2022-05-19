@@ -50,7 +50,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   OKEXCHAIN: {
     connector: injected,
-    name: 'OKEx',
+    name: 'MetaX',
     iconName: 'OKT.png',
     description: 'Easy-to-use browser extension.',
     href: null,
