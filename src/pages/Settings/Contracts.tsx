@@ -145,8 +145,6 @@ export default function Contracts() {
 
   const { STORAGE_CHAIN_ID, getCurChainInfo } = config
 
-  const [storageNetworkName] = useState(chainInfo[STORAGE_CHAIN_ID]?.networkName)
-
   const [configNetworkName, setConfigNetworkName] = useState(
     stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : ''
   )
@@ -158,6 +156,8 @@ export default function Contracts() {
   }, [stateRouterConfigChainId])
 
   const routerConfig = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0)
+  console.log('appSettings.mainConfigAddress', appSettings.mainConfigAddress)
+  console.log('appSettings.mainConfigChainId ', appSettings.mainConfigChainId )
   const routerConfigSigner = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0, true)
 
   const [onStorageNetwork, setOnStorageNetwork] = useState(false)
@@ -319,6 +319,7 @@ export default function Contracts() {
   }, [onConfigNetwork, routerChainId, routerAddress])
 
   const setChainConfig = async () => {
+    console.log('routerConfigSigner', routerConfigSigner)
     if (!routerConfigSigner) return
 
     try {
@@ -591,13 +592,14 @@ export default function Contracts() {
     })
   }
 
-  const switchToStorageNetwork = () => changeNetwork(STORAGE_CHAIN_ID)
-
-  const SwitchToStorageNetworkButton = () => (
-    <ButtonPrimary onClick={switchToStorageNetwork}>
-      {t('switchToNetwork', { network: storageNetworkName })}
-    </ButtonPrimary>
-  )
+  const SwitchToChainButton = ({ chainId }: { chainId: any }) => {
+    const networkName = chainInfo[chainId]?.networkName
+    return (
+      <ButtonPrimary onClick={() => changeNetwork(chainId)}>
+        {t('switchToNetwork', { network: networkName })}
+      </ButtonPrimary>
+    )
+  }
 
   return (
     <>
@@ -653,7 +655,7 @@ export default function Contracts() {
               {t('saveConfig')}
             </ButtonPrimary>
           ) : (
-            <SwitchToStorageNetworkButton />
+            <SwitchToChainButton chainId={STORAGE_CHAIN_ID} />
           )}
         </Accordion>
       ) : (
@@ -699,7 +701,7 @@ export default function Contracts() {
                 {t('saveAddress')}
               </ButtonPrimary>
             ) : (
-              <SwitchToStorageNetworkButton />
+              <SwitchToChainButton chainId={STORAGE_CHAIN_ID} />
             )}
           </OptionWrapper>
           <div>
@@ -720,7 +722,7 @@ export default function Contracts() {
                 {t('saveAdminAddressData')}
               </ButtonPrimary>
             ) : (
-              <SwitchToStorageNetworkButton />
+              <SwitchToChainButton chainId={STORAGE_CHAIN_ID} />
             )}
           </OptionWrapper>
 
@@ -804,7 +806,7 @@ export default function Contracts() {
                 {t('setChainConfig')}
               </ButtonPrimary>
             ) : (
-              <SwitchToStorageNetworkButton />
+              <SwitchToChainButton chainId={stateRouterConfigChainId} />
             )}
           </OptionWrapper>
         )}
@@ -866,13 +868,12 @@ export default function Contracts() {
                 placeholder="0x..."
                 onChange={event => setCrosschainToken(event.target.value)}
               />
-              
               {onConfigNetwork ? (
                 <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
                   {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
                 </ButtonPrimary>
               ) : (
-                <SwitchToStorageNetworkButton />
+                <SwitchToChainButton chainId={stateRouterConfigChainId} />
               )}
             </OptionLabel>
           </OptionWrapper>
@@ -881,8 +882,7 @@ export default function Contracts() {
         <SwapSettings
           underlying={underlying}
           onConfigNetwork={onConfigNetwork}
-          configNetworkName={configNetworkName}
-          switchToStorageNetwork={switchToStorageNetwork}
+          SwitchToConfigButton={<SwitchToChainButton chainId={stateRouterConfigChainId} />}
         />
       </Lock>
     </>

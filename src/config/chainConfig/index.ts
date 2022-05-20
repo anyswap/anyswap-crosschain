@@ -32,6 +32,7 @@ import glmr, {GLMR_MAIN_CHAINID} from './moonbeam'
 import astar, {ASTAR_MAIN_CHAINID} from './astar'
 import rose, {ROSE_MAIN_CHAINID} from './rose'
 import vlx, {VLX_MAIN_CHAINID} from './vlx'
+import nsc, {NSC_MAIN_CHAINID} from './nsc'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -73,6 +74,7 @@ export const chainInfo:ConFig = {
   ...astar,
   ...rose,
   ...vlx,
+  ...nsc,
 }
 
 const allChainList = [
@@ -104,6 +106,7 @@ const allChainList = [
   FUSE_MAIN_CHAINID,
   ASTAR_MAIN_CHAINID,
   VLX_MAIN_CHAINID,
+  NSC_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
   BNB_TEST_CHAINID,
   MATIC_TEST_CHAINID,
@@ -249,7 +252,8 @@ const useChain:any = {
     MOVR_MAIN_CHAINID,
     // TERRA_MAIN_CHAINID,
     AURORA_MAIN_CHAINID,
-    ASTAR_MAIN_CHAINID
+    ASTAR_MAIN_CHAINID,
+    NSC_MAIN_CHAINID,
   ]
 }
 

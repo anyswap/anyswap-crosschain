@@ -37,15 +37,13 @@ const MILLION = 1_000_000
 export default function SwapSettings({
   underlying,
   onConfigNetwork,
-  configNetworkName,
-  switchToStorageNetwork
+  SwitchToConfigButton
 }: {
   underlying: {
     [k: string]: any
   }
   onConfigNetwork: boolean
-  configNetworkName: string
-  switchToStorageNetwork: () => void
+  SwitchToConfigButton: JSX.Element
 }) {
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -227,11 +225,8 @@ export default function SwapSettings({
           <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
             {t('setSwapConfig')}
           </ButtonPrimary>
-        ) : (
-          <ButtonPrimary onClick={switchToStorageNetwork}>
-            {t('switchToNetwork', { network: configNetworkName })}
-          </ButtonPrimary>
-        )}
+        ) : SwitchToConfigButton
+        }
       </OptionWrapper>
     </Accordion>
   )
