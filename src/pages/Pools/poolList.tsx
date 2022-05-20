@@ -303,7 +303,12 @@ export default function PoolLists ({
             const destAnyToken = destTokenItem.anytoken.address
             const poolValue = poolInfo?.[destChainId]?.[destAnyToken] ? poolInfo[destChainId][destAnyToken] : {}
             const poolLocalValue = poolData?.[destChainId]?.[destAnyToken] ? poolData?.[destChainId]?.[destAnyToken] : {}
-            const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : poolLocalValue?.anyts
+            // if (destTokenItem.symbol === 'MIM') {
+
+            //   console.log(destTokenItem.symbol + '-server', poolValue.liquidity)
+            //   console.log(destTokenItem.symbol + '-local', poolLocalValue)
+            // }
+            const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : ''
             const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
             objExtend.totalV += ts ? ts : 0
             destTokenItem.ts = ts
@@ -316,8 +321,9 @@ export default function PoolLists ({
               curPoolArr.push(curAnyToken)
               const poolValue = poolInfo?.[obj.chainId]?.[curAnyToken] ? poolInfo[obj.chainId][curAnyToken] : {}
               const poolLocalValue = poolData?.[obj.chainId]?.[curAnyToken] ? poolData?.[obj.chainId]?.[curAnyToken] : {}
-              const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : poolLocalValue?.anyts
+              const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : ''
               const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+              objExtend.totalV += ts ? ts : 0
               objExtend.curPool.push({
                 ts,
                 bl

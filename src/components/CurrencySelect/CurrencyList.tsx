@@ -164,7 +164,7 @@ function CurrencyRow({
           {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
           {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
           {currencyObj?.type ? (
-            ['swapin', 'swapout'].includes(currencyObj?.type) ? '(B)' : '(R)'
+            ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router)'
           ) : ''}
           {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
           <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>

@@ -79,12 +79,14 @@ const CheckIcon = styled(Check)`
 export default function PoolTip ({
   anyTokenList,
   poolData,
+  type,
   selectCurrency,
   selectAnyToken,
   onSelectAnyToken
 }: {
   anyTokenList:any
   poolData:any
+  type: any
   selectCurrency:any
   selectAnyToken?:any
   onSelectAnyToken?: (value: any) => void
@@ -95,119 +97,116 @@ export default function PoolTip ({
   
   return (
     <>
-        {
-          anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
-            return (
-              <SubCurrencySelectBox
-                key={index}
-                className={selectAnyToken?.address === item.address ? 'active' : ''}
-                onClick={() => {
-                  if (onSelectAnyToken) {
-                    onSelectAnyToken(item)
-                  }
-                }}
-              >
-                <div className='selected'>
-                  <CheckIcon />
-                </div>
-                <dl className='list'>
-                  <dt>
-                    {item.address}
-                  </dt>
-                  <dd>
-                    <i></i>
-                    {t('currentPoolSize') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].totalSupply, item.decimals), 2) + ' ' + item?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                  <dd>
-                    <i></i>
-                    {t('yourPoolShare') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                  <dd>
-                    <i></i>
-                    {t('UnderlyingLiquidity') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                </dl>
-              </SubCurrencySelectBox>
-            )
-          }) : ''
-        }
-      {/* <SubCurrencySelectBox>
-        <dl className='list'>
-          <dd>
-            <i></i>
-            {t('currentPoolSize') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(thousandBit(bridgeConfig.anyTotalsupply, 2) + ' ' + anyCurrency?.symbol)}
-                </>
-              ) : ''
-            }
-          </dd>
-          <dd>
-            <i></i>
-            {t('yourPoolShare') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(
-                    (thousandBit(bridgeConfig.balance, 2) + ' ' + anyCurrency?.symbol)
-                    +
-                    bridgeConfig.percent
-                  )}
-                </>
-              ) : ''
-            }
-          </dd>
-          <dd>
-            <i></i>
-            {t('UnderlyingLiquidity') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(thousandBit(bridgeConfig.totalsupply, 2) + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
-                </>
-              ) : ''
-            }
-          </dd>
-          {
-            swapType !== 'deposit' && destChain && typeof destChain.ts !== 'undefined' ? (
-              <dd>
-                <i></i>
-                {t('destTS') + ' '}: 
-                {
-                  destChain && typeof destChain.ts !== 'undefined' ? (
-                    <>
-                      {(thousandBit(destChain.ts, 2) + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
-                    </>
-                  ) : ''
+      {
+        type === "S" && selectCurrency && anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
+          return (
+            <SubCurrencySelectBox
+              key={index}
+              className={selectAnyToken?.address === item.address ? 'active' : ''}
+              onClick={() => {
+                if (onSelectAnyToken) {
+                  onSelectAnyToken(item)
                 }
-              </dd>
-            ) : ''
-          }
-        </dl>
-      </SubCurrencySelectBox> */}
+              }}
+            >
+              <div className='selected'>
+                <CheckIcon />
+              </div>
+              <dl className='list'>
+                {/* <dt>
+                  {item.address}
+                </dt> */}
+                {/* <dd>
+                  <i></i>
+                  {t('currentPoolSize') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {(thousandBit(fromWei(poolData?.[item.address].totalSupply, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd> */}
+                <dd>
+                  <i></i>
+                  L{' ' + (index + 1)}
+                </dd>
+                <dd>
+                  {t('yourPoolShare') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+                <dd>
+                  {t('pool') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+              </dl>
+            </SubCurrencySelectBox>
+          )
+        }) : ''
+      }
+      {
+        type === "M" && selectCurrency && anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
+          const poolKey = item.fromanytoken.address
+          const decimals = item.fromanytoken.decimals
+          return (
+            <SubCurrencySelectBox
+              key={index}
+              className={selectAnyToken?.key === item.key ? 'active' : ''}
+              onClick={() => {
+                if (onSelectAnyToken) {
+                  onSelectAnyToken(item)
+                }
+              }}
+            >
+              <div className='selected'>
+                <CheckIcon />
+              </div>
+              <dl className='list'>
+                <dd>
+                  <i></i>
+                  L{' ' + (index + 1)}
+                </dd>
+                <dd>
+                  {t('yourPoolShare') + ' '}: 
+                  {
+                    poolData?.[poolKey] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[poolKey].balance, decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+                <dd>
+                  {t('pool') + ' '}: 
+                  {
+                    poolData?.[poolKey] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[poolKey].balanceOf, decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+              </dl>
+            </SubCurrencySelectBox>
+          )
+        }) : ''
+      }
     </>
   )
 }

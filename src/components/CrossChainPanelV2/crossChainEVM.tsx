@@ -181,7 +181,7 @@ export default function CrossChain({
         // setBridgeAnyToken('')
         return routerToken
       } else {
-        return destConfig.fromanytoken.address
+        return destConfig?.fromanytoken?.address
       }
     }
     return undefined
@@ -190,8 +190,8 @@ export default function CrossChain({
   
   const isBridgeFTM = useMemo(() => {
     if (
-      destConfig.anytoken?.address === 'FTM'
-      || destConfig.fromanytoken?.address === 'FTM'
+      destConfig?.anytoken?.address === 'FTM'
+      || destConfig?.fromanytoken?.address === 'FTM'
     ) {
       return true
     }
