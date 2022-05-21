@@ -615,6 +615,7 @@ export default function SwapNative() {
                 type={'S'}
                 selectCurrency={selectCurrency}
                 selectAnyToken={selectAnyToken}
+                tipTitleKey={swapType === 'deposit' ? "addLiquidityTip" : "removeLiquidityTip"}
                 onSelectAnyToken={(value:any) => {
                   setSelectAnyToken(value)
                 }}
@@ -628,6 +629,7 @@ export default function SwapNative() {
                 type={'M'}
                 selectCurrency={selectCurrency}
                 selectAnyToken={selectDestCurrency}
+                tipTitleKey="removeLiquidityTip"
                 onSelectAnyToken={(value:any) => {
                   setSelectDestCurrency(value)
                 }}

@@ -19,6 +19,7 @@ const SubCurrencySelectBox = styled.div`
   cursor:pointer;
   position:relative;
   overflow:hidden;
+  opacity:0.8;
   .list {
     ${({ theme }) => theme.flexSC};
     flex-wrap:wrap;
@@ -36,6 +37,7 @@ const SubCurrencySelectBox = styled.div`
       overflow:hidden;
     }
     dd {
+      ${({ theme }) => theme.flexSC};
       font-weight: 500;
       line-height: 1.83;
       margin: 0;
@@ -55,25 +57,36 @@ const SubCurrencySelectBox = styled.div`
   }
   .selected {
     ${({ theme }) => theme.flexC};
-    width:40px;
-    height:40px;
-    position:absolute;
-    top: -5px;
-    right:-5px;
+    width:20px;
+    height:20px;
+    // position:absolute;
+    // top: -5px;
+    // right:-5px;
     border: 2px solid ${({ theme }) => theme.tipColor};
     border-radius:100%;
-    opacity:.8;
-    display:none;
+    margin-right:5px;
+    padding: 2px;
+    // display:none;
+    .icon {
+      opacity:0;
+    }
   }
   &.active {
+    opacity:1;
     .selected {
-      display:flex;
+      // display:flex;
+      // opacity:0.8;
+      .icon {
+        opacity:1;
+      }
     }
   }
 `
 
 const CheckIcon = styled(Check)`
   color: ${({ theme }) => theme.tipColor};
+  width:100%;
+  height:100%;
 `
 
 export default function PoolTip ({
@@ -82,6 +95,7 @@ export default function PoolTip ({
   type,
   selectCurrency,
   selectAnyToken,
+  tipTitleKey,
   onSelectAnyToken
 }: {
   anyTokenList:any
@@ -89,6 +103,7 @@ export default function PoolTip ({
   type: any
   selectCurrency:any
   selectAnyToken?:any
+  tipTitleKey?:any
   onSelectAnyToken?: (value: any) => void
 }) {
   // const { chainId } = useActiveWeb3React()
@@ -109,9 +124,7 @@ export default function PoolTip ({
                 }
               }}
             >
-              <div className='selected'>
-                <CheckIcon />
-              </div>
+              
               <dl className='list'>
                 {/* <dt>
                   {item.address}
@@ -128,8 +141,21 @@ export default function PoolTip ({
                   }
                 </dd> */}
                 <dd>
-                  <i></i>
-                  L{' ' + (index + 1)}
+                  {/* <i></i> */}
+                  {/* L{' ' + (index + 1)} */}
+                  {
+                    selectAnyToken ? (
+                      <div className='selected'>
+                        <CheckIcon className='icon' />
+                      </div>
+                    ) : (
+                    <>
+                      <i></i>
+                      {t('destTS')}
+                    </>
+                    )
+                  }
+                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
                 </dd>
                 <dd>
                   {t('yourPoolShare') + ' '}: 
@@ -172,13 +198,14 @@ export default function PoolTip ({
                 }
               }}
             >
-              <div className='selected'>
-                <CheckIcon />
-              </div>
               <dl className='list'>
                 <dd>
-                  <i></i>
-                  L{' ' + (index + 1)}
+                  {/* <i></i> */}
+                  {/* L{' ' + (index + 1)} */}
+                  <div className='selected'>
+                    <CheckIcon className='icon'  />
+                  </div>
+                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
                 </dd>
                 <dd>
                   {t('yourPoolShare') + ' '}: 
