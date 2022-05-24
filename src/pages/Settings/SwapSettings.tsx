@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { BigNumber } from 'bignumber.js'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { OptionWrapper, Input } from './Contracts'
 import { ButtonPrimary } from '../../components/Button'
@@ -37,22 +37,20 @@ const MILLION = 1_000_000
 export default function SwapSettings({
   underlying,
   onConfigNetwork,
-  configNetworkName,
-  switchToStorageNetwork
+  SwitchToConfigButton
 }: {
   underlying: {
     [k: string]: any
   }
   onConfigNetwork: boolean
-  configNetworkName: string
-  switchToStorageNetwork: () => void
+  SwitchToConfigButton: JSX.Element
 }) {
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
-  const { routerConfigChainId, routerConfigAddress } = useAppState()
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
-  const routerConfigSigner = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
+  const { appSettings: { mainConfigAddress, mainConfigChainId } } = useAppState()
+  const routerConfig = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0)
+  const routerConfigSigner = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0, true)
   const [pending, setPending] = useState(false)
 
   /* template:
@@ -227,11 +225,8 @@ export default function SwapSettings({
           <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
             {t('setSwapConfig')}
           </ButtonPrimary>
-        ) : (
-          <ButtonPrimary onClick={switchToStorageNetwork}>
-            {t('switchToNetwork', { network: configNetworkName })}
-          </ButtonPrimary>
-        )}
+        ) : SwitchToConfigButton
+        }
       </OptionWrapper>
     </Accordion>
   )

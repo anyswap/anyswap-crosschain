@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { ZERO_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { updateBlockNumber, updateRouterData } from './actions'
 import { useAppState } from './hooks'
@@ -11,8 +11,8 @@ export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
   const windowVisible = useIsWindowVisible()
-  const { routerConfigAddress, routerConfigChainId } = useAppState()
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
+  const { appSettings: { mainConfigAddress, mainConfigChainId } } = useAppState()
+  const routerConfig = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0)
 
   const blockNumberCallback = useCallback(
     (blockNumber: number) => {
@@ -53,7 +53,7 @@ export default function Updater(): null {
     } else {
       dispatch(updateRouterData({ chainId: chainId || 0, routerAddress: '' }))
     }
-  }, [chainId, routerConfigAddress, routerConfigChainId, routerConfig])
+  }, [chainId, mainConfigAddress, mainConfigChainId, routerConfig])
 
   return null
 }

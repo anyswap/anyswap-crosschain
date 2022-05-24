@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { EVM_ADDRESS_REGEXP, ZERO_ADDRESS } from '../../constants'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { deployCrosschainERC20 } from '../../utils/contract'
 import { ButtonPrimary } from '../../components/Button'
@@ -20,9 +20,9 @@ export default function DeployCrosschainToken({
   const { library, account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
-  const { routerConfigChainId, routerConfigAddress, appSettings } = useAppState()
+  const { appSettings: { mainConfigAddress, mainConfigChainId, crosschainTokens } } = useAppState()
 
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
+  const routerConfig = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0)
 
   const [pending, setPending] = useState(false)
 
@@ -66,8 +66,8 @@ export default function DeployCrosschainToken({
   }, [chainId, underlying.address, underlying.networkId])
 
   const hasCrosschainTokenOnChain = () => {
-    const contractsOnChain = Object.keys(appSettings.crosschainTokens).filter((contractKey) => {
-      const contractInfo = appSettings.crosschainTokens[contractKey]
+    const contractsOnChain = Object.keys(crosschainTokens).filter((contractKey) => {
+      const contractInfo = crosschainTokens[contractKey]
       return (contractInfo.underlying.networkId == underlying.networkId && contractInfo.underlying.address == underlying.address)
     })
     return !(contractsOnChain.length === 0)

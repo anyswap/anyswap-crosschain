@@ -62,8 +62,6 @@ export default createReducer(initialState, builder =>
       if (action.payload && Object.keys(action.payload).length) {
         const {
           apiAddress,
-          routerConfigChainId,
-          routerConfigAddress,
           serverAdminAddress,
           logo,
           owner,
@@ -78,10 +76,11 @@ export default createReducer(initialState, builder =>
           appSettings
         } = action.payload
 
+
+        if (appSettings.mainConfigAddress && appSettings.mainConfigAddress === ZERO_ADDRESS) appSettings.mainConfigAddress = ''
         if (appSettings) state.appSettings = appSettings
+
         if (apiAddress) state.apiAddress = apiAddress
-        if (routerConfigChainId) state.routerConfigChainId = routerConfigChainId
-        if (routerConfigAddress && routerConfigAddress !== ZERO_ADDRESS) state.routerConfigAddress = routerConfigAddress
         if (serverAdminAddress && serverAdminAddress !== ZERO_ADDRESS) state.serverAdminAddress = serverAdminAddress
         if (logo) state.logo = logo
         if (owner) state.owner = owner
