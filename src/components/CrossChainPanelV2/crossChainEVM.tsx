@@ -179,7 +179,7 @@ export default function CrossChain({
     if (destConfig.isApprove) {
       if (isRouter) {
         // setBridgeAnyToken('')
-        return routerToken
+        return destConfig.approveToken
       } else {
         return destConfig?.fromanytoken?.address
       }
