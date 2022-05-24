@@ -185,7 +185,7 @@ export default function CrossChain({
       }
     }
     return undefined
-  }, [destConfig, isRouter])
+  }, [destConfig, isRouter, routerToken])
 
   
   const isBridgeFTM = useMemo(() => {
