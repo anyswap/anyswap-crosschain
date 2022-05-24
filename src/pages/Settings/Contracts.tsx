@@ -158,8 +158,6 @@ export default function Contracts() {
   }, [stateMainConfigChainId])
 
   const routerConfig = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0)
-  console.log('appSettings.mainConfigAddress', appSettings.mainConfigAddress, stateMainConfigAddress)
-  console.log('appSettings.mainConfigChainId ', appSettings.mainConfigChainId, stateMainConfigChainId)
   const routerConfigSigner = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0, true)
 
   const [onStorageNetwork, setOnStorageNetwork] = useState(false)
@@ -322,7 +320,6 @@ export default function Contracts() {
   }, [onConfigNetwork, routerChainId, routerAddress])
 
   const setChainConfig = async () => {
-    console.log('routerConfigSigner', routerConfigSigner)
     if (!routerConfigSigner) return
 
     try {
@@ -816,7 +813,7 @@ export default function Contracts() {
       </Accordion>
 
       <Title>{t('erc20Token')}</Title>
-      <Lock enabled={!routerAddress} reason={t('deployRouterFirst')}>
+      <Lock enabled={!routerAddress} reason={!routerAddress && t('deployRouterFirst')}>
         <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
         <Notice margin="0.4rem 0">{t('crosschainTokenUseDeployed')}</Notice>
         <OptionWrapper>

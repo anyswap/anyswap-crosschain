@@ -129,9 +129,9 @@ export default function useAppData(): {
         if (appSettingsJson !== null) {
           const localStorageAppSetting = JSON.parse(appSettingsJson)
 
-          const routerConfigs = localStorageAppSetting?.routerConfigs || parsed.appSettings.routerConfigs
-          const erc20Tokens = localStorageAppSetting?.erc20Tokens || parsed.appSettings.erc20Tokens
-          const crosschainTokens = localStorageAppSetting?.crosschainTokens || parsed.appSettings.crosschainTokens
+          const routerConfigs = Object.keys(localStorageAppSetting?.routerConfigs).length && localStorageAppSetting?.routerConfigs || parsed.appSettings.routerConfigs
+          const erc20Tokens = Object.keys(localStorageAppSetting?.erc20Tokens).length && localStorageAppSetting?.erc20Tokens || parsed.appSettings.erc20Tokens
+          const crosschainTokens = Object.keys(localStorageAppSetting?.crosschainTokens).length && localStorageAppSetting?.crosschainTokens || parsed.appSettings.crosschainTokens
 
           parsed.appSettings = {
             ...parsed.appSettings,
