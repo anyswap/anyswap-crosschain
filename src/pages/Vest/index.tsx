@@ -61,6 +61,7 @@ import {selectNetwork} from '../../config/tools/methods'
 // import {VE_MULTI_REWARD_INTERFACE} from '../../constants/abis/veMULTIReward'
 
 const VestContent = styled.div`
+${({ theme }) => theme.flexSC};
   width: 100%;
   max-width: 1200px;
 `
