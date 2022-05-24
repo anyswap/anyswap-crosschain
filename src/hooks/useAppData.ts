@@ -49,12 +49,16 @@ const parseInfo = (info: string) => {
       elementsColorLight,
       elementsColorDark,
       socialLinks,
-      disableSourceCopyright
+      disableSourceCopyright,
+      appSettings,
     } = crossChainSettings
 
-    if (apiAddress) parsed.apiAddress = apiAddress
-    if (routerConfigChainId) parsed.routerConfigChainId = routerConfigChainId
-    if (routerConfigAddress) parsed.routerConfigAddress = routerConfigAddress
+    parsed.appSettings.mainConfigAddress = appSettings?.mainConfigAddress || routerConfigAddress || ''
+    parsed.appSettings.mainConfigChainId = appSettings?.mainConfigChainId || routerConfigChainId
+
+    parsed.appSettings.apiAddress = appSettings?.apiAddress || apiAddress || ''
+    if (apiAddress) parsed.apiAddress = apiAddress // TODO: remove it in future and use only "appSettings.apiAddress"
+
     if (serverAdminAddress) parsed.serverAdminAddress = serverAdminAddress
     if (logoUrl) parsed.logo = logoUrl
     if (projectName) parsed.projectName = projectName
@@ -104,10 +108,10 @@ export default function useAppData(): {
         setError(error)
       }
 
-      
-      if (parsed?.apiAddress) {
+
+      if (parsed?.appSettings?.apiAddress) {
         try {
-          const response: any = await getUrlData(`${parsed?.apiAddress}/config`)
+          const response: any = await getUrlData(`${parsed.appSettings.apiAddress}/config`)
 
           if (response?.msg !== 'Success') {
             parsed.apiAddress = ''
@@ -123,14 +127,20 @@ export default function useAppData(): {
       try {
         const appSettingsJson: string | null = localStorage.getItem('appSettings')
         if (appSettingsJson !== null) {
-          const appSettings = JSON.parse(appSettingsJson)
-          
-          parsed = {
-            ...parsed,
-            appSettings
+          const localStorageAppSetting = JSON.parse(appSettingsJson)
+
+          const routerConfigs = localStorageAppSetting?.routerConfigs || parsed.appSettings.routerConfigs
+          const erc20Tokens = localStorageAppSetting?.erc20Tokens || parsed.appSettings.erc20Tokens
+          const crosschainTokens = localStorageAppSetting?.crosschainTokens || parsed.appSettings.crosschainTokens
+
+          parsed.appSettings = {
+            ...parsed.appSettings,
+            routerConfigs,
+            erc20Tokens,
+            crosschainTokens
           }
         }
-        
+
       } catch (e) {}
 
 
@@ -142,6 +152,7 @@ export default function useAppData(): {
           owner: owner === ZERO_ADDRESS ? '' : owner
         })
       }
+
       setIsLoading(false)
     }
 

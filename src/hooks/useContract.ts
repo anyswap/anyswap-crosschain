@@ -42,7 +42,7 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
-export function useRouterConfigContract(address?: string, chainId?: number, withSigner?: boolean): Contract | null {
+export function useMainConfigContract(address?: string, chainId?: number, withSigner?: boolean): Contract | null {
   const { library } = useActiveWeb3React()
 
   return useMemo(() => {
@@ -53,9 +53,9 @@ export function useRouterConfigContract(address?: string, chainId?: number, with
       const web3 = new Web3(nodeRpc)
 
       if (withSigner) {
-        const routerConfig = getContract(address, ROUTER_CONFIG.abi, library, undefined)
+        const mainConfig = getContract(address, ROUTER_CONFIG.abi, library, undefined)
 
-        return routerConfig.connect(library.getSigner())
+        return mainConfig.connect(library.getSigner())
       }
 
       return new web3.eth.Contract(ROUTER_CONFIG.abi, address)

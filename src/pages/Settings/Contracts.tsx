@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
+import { AppSettingsData, updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useAppState } from '../../state/application/hooks'
 
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
 import { ButtonPrimary, ButtonOutlined, CleanButton } from '../../components/Button'
 import Accordion from '../../components/Accordion'
@@ -133,11 +133,13 @@ export default function Contracts() {
   const {
     owner,
     apiAddress: stateApiAddress,
-    routerConfigChainId: stateRouterConfigChainId,
-    routerConfigAddress: stateRouterConfigAddress,
     routerAddress: stateRouterAddress,
     serverAdminAddress: stateServerAdminAddress,
-    appSettings: stateAppSettings
+    appSettings: stateAppSettings,
+    appSettings: {
+      mainConfigAddress: stateMainConfigAddress,
+      mainConfigChainId: stateMainConfigChainId,
+    }
   } = useAppState()
   const addTransaction = useTransactionAdder()
 
@@ -145,20 +147,20 @@ export default function Contracts() {
 
   const { STORAGE_CHAIN_ID, getCurChainInfo } = config
 
-  const [configNetworkName, setConfigNetworkName] = useState(
-    stateRouterConfigChainId ? chainInfo[stateRouterConfigChainId]?.networkName : ''
+  const [mainConfigNetworkName, setMainConfigNetworkName] = useState(
+    stateMainConfigChainId ? chainInfo[stateMainConfigChainId]?.networkName : ''
   )
 
   useEffect(() => {
-    if (stateRouterConfigChainId) {
-      setConfigNetworkName(chainInfo[stateRouterConfigChainId]?.networkName || '')
+    if (stateMainConfigChainId) {
+      setMainConfigNetworkName(chainInfo[stateMainConfigChainId]?.networkName || '')
     }
-  }, [stateRouterConfigChainId])
+  }, [stateMainConfigChainId])
 
-  const routerConfig = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0)
-  console.log('appSettings.mainConfigAddress', appSettings.mainConfigAddress)
-  console.log('appSettings.mainConfigChainId ', appSettings.mainConfigChainId )
-  const routerConfigSigner = useRouterConfigContract(appSettings.mainConfigAddress, appSettings.mainConfigChainId || 0, true)
+  const routerConfig = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0)
+  console.log('appSettings.mainConfigAddress', appSettings.mainConfigAddress, stateMainConfigAddress)
+  console.log('appSettings.mainConfigChainId ', appSettings.mainConfigChainId, stateMainConfigChainId)
+  const routerConfigSigner = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0, true)
 
   const [onStorageNetwork, setOnStorageNetwork] = useState(false)
 
@@ -169,8 +171,8 @@ export default function Contracts() {
   const [onConfigNetwork, setOnConfigNetwork] = useState(false)
 
   useEffect(() => {
-    setOnConfigNetwork(Boolean(stateRouterConfigChainId && chainId === Number(stateRouterConfigChainId)))
-  }, [chainId, stateRouterConfigChainId])
+    setOnConfigNetwork(Boolean(stateMainConfigChainId && chainId === Number(stateMainConfigChainId)))
+  }, [chainId, stateMainConfigChainId])
 
   const [apiAddress, setApiAddress] = useState(stateApiAddress)
   const [apiIsValid, setApiIsValid] = useState(false)
@@ -242,13 +244,13 @@ export default function Contracts() {
     }
   }
 
-  const [routerConfigChainId, setRouterConfigChainId] = useState<string>(`${appSettings.mainConfigChainId}` || '')
-  const [routerConfigAddress, setRouterConfigAddress] = useState(appSettings.mainConfigAddress)
+  const [mainConfigChainId, setMainConfigChainId] = useState<string>(`${appSettings.mainConfigChainId}` || '')
+  const [mainConfigAddress, setMainConfigAddress] = useState(appSettings.mainConfigAddress)
   const [routerConfigOwner, setRouterConfigOwner] = useState('')
 
   useEffect(() => {
     const fetch = async () => {
-      if (!routerConfigAddress || !routerConfigChainId || !routerConfig) {
+      if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
         return setRouterConfigOwner('')
       }
 
@@ -258,24 +260,25 @@ export default function Contracts() {
     }
 
     fetch()
-  }, [routerConfigAddress, routerConfigChainId, routerConfig])
+  }, [mainConfigAddress, mainConfigChainId, routerConfig])
 
-  const saveRouterConfig = () => {
+  const saveMainConfig = useCallback(() => {
     if (!account) return
+    const newAppSettings: AppSettingsData = {
+      ...stateAppSettings,
+      mainConfigAddress,
+      mainConfigChainId: mainConfigChainId && parseInt(mainConfigChainId) || undefined,
+    }
 
     return updateStorageData({
       library,
       owner: account,
-      data: {
-        routerConfigAddress,
-        routerConfigChainId
-      },
+      data: { appSettings: newAppSettings },
       onReceipt: (receipt, success) => {
         if (success) {
           dispatch(
             updateAppOptions([
-              { key: 'routerConfigAddress', value: routerConfigAddress },
-              { key: 'routerConfigChainId', value: routerConfigChainId }
+              { key: 'appSettings', value: newAppSettings}
             ])
           )
         }
@@ -284,12 +287,12 @@ export default function Contracts() {
         addTransaction(
           { hash },
           {
-            summary: `Swap router ${routerConfigAddress} saved to node config`
+            summary: `Swap router ${mainConfigAddress} saved to node config`
           }
         )
       }
     })
-  }
+  }, [mainConfigAddress, mainConfigChainId, account])
 
   const [routerChainId, setRouterChainId] = useState('')
   const [routerAddress, setRouterAddress] = useState('')
@@ -453,13 +456,13 @@ export default function Contracts() {
     setCanSaveRouterConfig(
       Boolean(
         onStorageNetwork &&
-          routerConfigChainId &&
-          routerConfigAddress &&
+          mainConfigChainId &&
+          mainConfigAddress &&
           routerConfigOwner &&
           routerConfigOwner.toLowerCase() === owner.toLowerCase()
       )
     )
-  }, [onStorageNetwork, routerConfigChainId, routerConfigAddress, routerConfigOwner])
+  }, [onStorageNetwork, mainConfigChainId, mainConfigAddress, routerConfigOwner])
 
   const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
 
@@ -476,8 +479,8 @@ export default function Contracts() {
   }
 
   const onDeployRouterConfig = (contractAddress: string, chainId: number) => {
-    setRouterConfigChainId(`${chainId}`)
-    setRouterConfigAddress(contractAddress)
+    setMainConfigChainId(`${chainId}`)
+    setMainConfigAddress(contractAddress)
     updateAppSetupSettings(
       appSettings,
       setAppSettings,
@@ -574,10 +577,10 @@ export default function Contracts() {
   const [commandToStartServer, setCommandToStartServer] = useState('')
 
   useEffect(() => {
-    const command = `/root/setup ${stateRouterConfigChainId} ${stateRouterConfigAddress} <YOUR PRIVATE KEY>`
+    const command = `/root/setup ${stateMainConfigChainId} ${stateMainConfigAddress} <YOUR PRIVATE KEY>`
 
     setCommandToStartServer(command)
-  }, [stateRouterConfigAddress, stateRouterConfigChainId])
+  }, [stateMainConfigAddress, stateMainConfigChainId])
 
   const copyServerCommand = () => {
     window.navigator.clipboard.writeText(commandToStartServer)
@@ -605,16 +608,16 @@ export default function Contracts() {
     <>
       <Title noMargin>{t('mainConfig')}</Title>
       <Notice margin="0.5rem 0 0">
-        {stateRouterConfigChainId && stateRouterConfigAddress ? (
+        {stateMainConfigChainId && stateMainConfigAddress ? (
           <ConfigInfo>
             <SubTitle>{t('configInformation')}</SubTitle>
-            {configNetworkName}:{' '}
+            {mainConfigNetworkName}:{' '}
             <ConfigLink
-              href={`${chainInfo[stateRouterConfigChainId]?.lookAddr}${stateRouterConfigAddress}`}
+              href={`${chainInfo[stateMainConfigChainId]?.lookAddr}${stateMainConfigAddress}`}
               target="_blank"
               rel="noreferrer"
             >
-              {stateRouterConfigAddress}
+              {stateMainConfigAddress}
             </ConfigLink>
           </ConfigInfo>
         ) : (
@@ -625,7 +628,7 @@ export default function Contracts() {
         )}
       </Notice>
 
-      {!stateRouterConfigAddress ? (
+      {!stateMainConfigAddress ? (
         <Accordion title={t('deployAndSaveConfig')} margin="0.5rem 0">
           <DeployRouterConfig onDeploymentCallback={onDeployRouterConfig} />
           <OptionWrapper>
@@ -638,20 +641,20 @@ export default function Contracts() {
                 type="number"
                 min="1"
                 placeholder=""
-                value={routerConfigChainId || chainId}
-                onChange={event => setRouterConfigChainId(event.target.value)}
+                value={mainConfigChainId || chainId}
+                onChange={event => setMainConfigChainId(event.target.value)}
               />
               {t('configAddress')}
               <Input
                 type="text"
                 placeholder="0x..."
-                value={routerConfigAddress}
-                onChange={event => setRouterConfigAddress(event.target.value)}
+                value={mainConfigAddress}
+                onChange={event => setMainConfigAddress(event.target.value)}
               />
             </OptionLabel>
           </OptionWrapper>
           {onStorageNetwork ? (
-            <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveRouterConfig}>
+            <ButtonPrimary disabled={!canSaveRouterConfig} onClick={saveMainConfig}>
               {t('saveConfig')}
             </ButtonPrimary>
           ) : (
@@ -726,7 +729,7 @@ export default function Contracts() {
             )}
           </OptionWrapper>
 
-          {stateRouterConfigAddress && stateServerAdminAddress && (
+          {stateMainConfigAddress && stateServerAdminAddress && (
             <>
               <SubTitle margin="1.4rem 0 0.5rem">7. {t('startServerWithThisCommand')}</SubTitle>
               <OptionWrapper>
@@ -806,7 +809,7 @@ export default function Contracts() {
                 {t('setChainConfig')}
               </ButtonPrimary>
             ) : (
-              <SwitchToChainButton chainId={stateRouterConfigChainId} />
+              <SwitchToChainButton chainId={stateMainConfigChainId} />
             )}
           </OptionWrapper>
         )}
@@ -873,7 +876,7 @@ export default function Contracts() {
                   {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
                 </ButtonPrimary>
               ) : (
-                <SwitchToChainButton chainId={stateRouterConfigChainId} />
+                <SwitchToChainButton chainId={stateMainConfigChainId} />
               )}
             </OptionLabel>
           </OptionWrapper>
@@ -882,7 +885,7 @@ export default function Contracts() {
         <SwapSettings
           underlying={underlying}
           onConfigNetwork={onConfigNetwork}
-          SwitchToConfigButton={<SwitchToChainButton chainId={stateRouterConfigChainId} />}
+          SwitchToConfigButton={<SwitchToChainButton chainId={stateMainConfigChainId} />}
         />
       </Lock>
     </>

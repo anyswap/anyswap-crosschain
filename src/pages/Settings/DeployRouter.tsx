@@ -6,7 +6,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { deployRouter } from '../../utils/contract'
 import { chainInfo } from '../../config/chainConfig'
 import { ButtonPrimary } from '../../components/Button'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 
 const Button = styled(ButtonPrimary)`
@@ -24,12 +24,12 @@ export default function DeployRouter({
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
   const [wrappedToken, setWrappedToken] = useState('')
-  const { routerConfigChainId, routerConfigAddress, appSettings } = useAppState()
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
+  const { appSettings: { mainConfigAddress, mainConfigChainId, routerConfigs } } = useAppState()
+  const routerConfig = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0, true)
 
   const hasRouterOnChain = () => {
-    const contractsOnChain = Object.keys(appSettings.routerConfigs).filter((contractKey) => {
-      const contractInfo = appSettings.routerConfigs[contractKey]
+    const contractsOnChain = Object.keys(routerConfigs).filter((contractKey) => {
+      const contractInfo = routerConfigs[contractKey]
       return (contractInfo.chainId == currentChainId)
     })
     return !(contractsOnChain.length === 0)

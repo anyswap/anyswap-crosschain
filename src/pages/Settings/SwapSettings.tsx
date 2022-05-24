@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { BigNumber } from 'bignumber.js'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { useRouterConfigContract } from '../../hooks/useContract'
+import { useMainConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { OptionWrapper, Input } from './Contracts'
 import { ButtonPrimary } from '../../components/Button'
@@ -48,9 +48,9 @@ export default function SwapSettings({
   const { chainId } = useActiveWeb3React()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
-  const { routerConfigChainId, routerConfigAddress } = useAppState()
-  const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
-  const routerConfigSigner = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0, true)
+  const { appSettings: { mainConfigAddress, mainConfigChainId } } = useAppState()
+  const routerConfig = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0)
+  const routerConfigSigner = useMainConfigContract(mainConfigAddress, mainConfigChainId || 0, true)
   const [pending, setPending] = useState(false)
 
   /* template:
