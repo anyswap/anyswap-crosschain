@@ -2,7 +2,7 @@
   "name": "crosschain",
   "version": "0.1.1",
   "description": "CrossChain",
-  "homepage": "/",
+  "homepage": "./",
   "private": true,
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",

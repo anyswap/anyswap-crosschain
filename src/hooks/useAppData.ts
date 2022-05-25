@@ -36,6 +36,7 @@ const parseInfo = (info: string) => {
 
   if (Object.keys(result) && result.crossChainSettings) {
     const { crossChainSettings } = result
+
     const {
       apiAddress,
       routerConfigChainId,
@@ -129,9 +130,18 @@ export default function useAppData(): {
         if (appSettingsJson !== null) {
           const localStorageAppSetting = JSON.parse(appSettingsJson)
 
-          const routerConfigs = Object.keys(localStorageAppSetting?.routerConfigs).length && localStorageAppSetting?.routerConfigs || parsed.appSettings.routerConfigs
-          const erc20Tokens = Object.keys(localStorageAppSetting?.erc20Tokens).length && localStorageAppSetting?.erc20Tokens || parsed.appSettings.erc20Tokens
-          const crosschainTokens = Object.keys(localStorageAppSetting?.crosschainTokens).length && localStorageAppSetting?.crosschainTokens || parsed.appSettings.crosschainTokens
+          const routerConfigs = {
+            ...(Object.keys(localStorageAppSetting?.routerConfigs)?.length && localStorageAppSetting?.routerConfigs),
+            ...(Object.keys(parsed?.appSettings?.routerConfigs)?.length && parsed?.appSettings?.routerConfigs)
+          }
+          const erc20Tokens = {
+            ...(Object.keys(localStorageAppSetting?.erc20Tokens)?.length && localStorageAppSetting?.erc20Tokens),
+            ...(Object.keys(parsed?.appSettings?.erc20Tokens)?.length && parsed?.appSettings?.erc20Tokens)
+          }
+          const crosschainTokens = {
+            ...(Object.keys(localStorageAppSetting?.crosschainTokens)?.length && localStorageAppSetting?.crosschainTokens),
+            ...(Object.keys(parsed?.appSettings?.crosschainTokens)?.length && parsed?.appSettings?.crosschainTokens)
+          }
 
           parsed.appSettings = {
             ...parsed.appSettings,
