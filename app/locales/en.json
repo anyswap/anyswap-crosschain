@@ -439,7 +439,5 @@
   "swapTxInfo_FailFetchInformation": "Fail fetch transaction info",
   "swapTxInfo_TryFetchAgain": "Try fetch again",
   "swapTxInfo_TxNotFound": "Information about swap not found",
-  "swapTxInfo_AddTransaction": "Add a transaction to the processing queue",
-  "swapTxInfo_HeaderPending": "Swap in progress",
-  "swapTxInfo_PendingRefresh": "Refresh"
+  "swapTxInfo_AddTransaction": "Add a transaction to the processing queue"
 }
