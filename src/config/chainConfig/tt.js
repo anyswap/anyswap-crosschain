@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const ETC_MAIN_CHAINID = ChainId.ETC
-export const ETC_MAINNET = getLocalRPC(ETC_MAIN_CHAINID, 'https://www.ethercluster.com/etc')
-export const ETC_MAIN_EXPLORER = 'https://blockscout.com/etc/mainnet'
+export const TT_MAIN_CHAINID = ChainId.TT
+export const TT_MAINNET = getLocalRPC(TT_MAIN_CHAINID, 'https://mainnet-rpc.thundercore.io')
+export const TT_MAIN_EXPLORER = 'https://viewblock.io/thundercore'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'ETC'
+const symbol = 'TT'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -25,14 +25,14 @@ const bridgeToken = {
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '',
-    nativeToken: '0x1953cab0e5bfa6d4a9bad6e05fd46c1cc6527a5a',
+    nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [ETC_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + ETC_MAIN_CHAINID,
+  [TT_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + TT_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
@@ -41,22 +41,24 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: ETC_MAINNET,
+    nodeRpc: TT_MAINNET,
     nodeRpcList: [
-      ETC_MAINNET,
+      TT_MAINNET,
+      'https://mainnet-rpc.thundertoken.net',
+      'https://mainnet-rpc.thundercore.com',
     ],
-    chainID: ETC_MAIN_CHAINID,
-    lookHash: ETC_MAIN_EXPLORER + '/tx/',
-    lookAddr: ETC_MAIN_EXPLORER + '/address/',
-    lookBlock: ETC_MAIN_EXPLORER + '/block/',
-    explorer: ETC_MAIN_EXPLORER,
+    chainID: TT_MAIN_CHAINID,
+    lookHash: TT_MAIN_EXPLORER + '/tx/',
+    lookAddr: TT_MAIN_EXPLORER + '/address/',
+    lookBlock: TT_MAIN_EXPLORER + '/block/',
+    explorer: TT_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Ethereum Classic',
-    networkName: 'Ethereum Classic mainnet',
+    name: 'ThunderCore',
+    networkName: 'ThunderCore mainnet',
     type: 'main',
-    label: ETC_MAIN_CHAINID,
+    label: TT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ETC',
+    suffix: 'TT',
     anyToken: ''
   },
 }

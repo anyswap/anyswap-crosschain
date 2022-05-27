@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const ETC_MAIN_CHAINID = ChainId.ETC
-export const ETC_MAINNET = getLocalRPC(ETC_MAIN_CHAINID, 'https://www.ethercluster.com/etc')
-export const ETC_MAIN_EXPLORER = 'https://blockscout.com/etc/mainnet'
+export const HOO_MAIN_CHAINID = ChainId.HOO
+export const HOO_MAINNET = getLocalRPC(HOO_MAIN_CHAINID, 'https://http-mainnet.hoosmartchain.com')
+export const HOO_MAIN_EXPLORER = 'https://hooscan.com'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'ETC'
+const symbol = 'HOO'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -25,14 +25,14 @@ const bridgeToken = {
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '',
-    nativeToken: '0x1953cab0e5bfa6d4a9bad6e05fd46c1cc6527a5a',
+    nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [ETC_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + ETC_MAIN_CHAINID,
+  [HOO_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + HOO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
@@ -41,22 +41,22 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: ETC_MAINNET,
+    nodeRpc: HOO_MAINNET,
     nodeRpcList: [
-      ETC_MAINNET,
+      HOO_MAINNET,
     ],
-    chainID: ETC_MAIN_CHAINID,
-    lookHash: ETC_MAIN_EXPLORER + '/tx/',
-    lookAddr: ETC_MAIN_EXPLORER + '/address/',
-    lookBlock: ETC_MAIN_EXPLORER + '/block/',
-    explorer: ETC_MAIN_EXPLORER,
+    chainID: HOO_MAIN_CHAINID,
+    lookHash: HOO_MAIN_EXPLORER + '/tx/',
+    lookAddr: HOO_MAIN_EXPLORER + '/address/',
+    lookBlock: HOO_MAIN_EXPLORER + '/block/',
+    explorer: HOO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Ethereum Classic',
-    networkName: 'Ethereum Classic mainnet',
+    name: 'Hoo',
+    networkName: 'Hoo mainnet',
     type: 'main',
-    label: ETC_MAIN_CHAINID,
+    label: HOO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ETC',
+    suffix: 'HOO',
     anyToken: ''
   },
 }

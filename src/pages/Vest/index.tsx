@@ -463,29 +463,34 @@ export default function Vest () {
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       // console.log(nftsLength)
       // console.log(arr)
-      const nfts = await Promise.all(
-        arr.map(async (idx) => {
-  
-          const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
-          const locked = await contract.locked(tokenIndex)
-          const lockValue = await contract.balanceOfNFT(tokenIndex)
-          const tokenURI = await contract.tokenURI(tokenIndex)
-          const {data} = await axios.get(tokenURI)
-          // console.log(tokenURI)
-          // console.log(data)
-          // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
-          return {
-            ...data,
-            index: idx,
-            id: tokenIndex?.toString(),
-            lockEnds: locked.end.toNumber(),
-            lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
-            lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
-          }
-        })
-      )
-      console.log(nfts)
-      setvestNFTs(nfts)
+      try {
+        const nfts = await Promise.all(
+          arr.map(async (idx) => {
+    
+            const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
+            const locked = await contract.locked(tokenIndex)
+            const lockValue = await contract.balanceOfNFT(tokenIndex)
+            const tokenURI = await contract.tokenURI(tokenIndex)
+            const {data} = await axios.get(tokenURI)
+            // console.log(tokenURI)
+            // console.log(data)
+            // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
+            return {
+              ...data,
+              index: idx,
+              id: tokenIndex?.toString(),
+              lockEnds: locked.end.toNumber(),
+              lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
+              lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
+            }
+          })
+        )
+        console.log(nfts)
+        setvestNFTs(nfts)
+      } catch (error) {
+        console.log(error)
+      }
+      
     }
   }, [contract, account, useLockToken])
   useEffect(() => {
@@ -697,7 +702,7 @@ export default function Vest () {
         console.log(err)
         setCurEpochInfo('')
       })
-      rewardContract.getEpochInfo(Number(epochId) === 0 && Date.now() < 1652925600000 ? 0 : Number(epochId) + 1).then((res:any) => {
+      rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
         // console.log(res)
         setlatestEpochInfo({
           startTime: res[0].toString(),

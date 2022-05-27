@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const ETC_MAIN_CHAINID = ChainId.ETC
-export const ETC_MAINNET = getLocalRPC(ETC_MAIN_CHAINID, 'https://www.ethercluster.com/etc')
-export const ETC_MAIN_EXPLORER = 'https://blockscout.com/etc/mainnet'
+export const TOMO_MAIN_CHAINID = ChainId.TOMO
+export const TOMO_MAINNET = getLocalRPC(TOMO_MAIN_CHAINID, 'https://rpc.tomochain.com')
+export const TOMO_MAIN_EXPLORER = 'https://scan.tomochain.com'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'ETC'
+const symbol = 'TOMO'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -25,38 +25,38 @@ const bridgeToken = {
   [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: '',
-    nativeToken: '0x1953cab0e5bfa6d4a9bad6e05fd46c1cc6527a5a',
+    nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [ETC_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + ETC_MAIN_CHAINID,
+  [TOMO_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + TOMO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
+    multicalToken: '0xf29848418cDdA0710Ae8d32e951E9DD5249a797B',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: ETC_MAINNET,
+    nodeRpc: TOMO_MAINNET,
     nodeRpcList: [
-      ETC_MAINNET,
+      TOMO_MAINNET,
     ],
-    chainID: ETC_MAIN_CHAINID,
-    lookHash: ETC_MAIN_EXPLORER + '/tx/',
-    lookAddr: ETC_MAIN_EXPLORER + '/address/',
-    lookBlock: ETC_MAIN_EXPLORER + '/block/',
-    explorer: ETC_MAIN_EXPLORER,
+    chainID: TOMO_MAIN_CHAINID,
+    lookHash: TOMO_MAIN_EXPLORER + '/txs/',
+    lookAddr: TOMO_MAIN_EXPLORER + '/address/',
+    lookBlock: TOMO_MAIN_EXPLORER + '/block/',
+    explorer: TOMO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Ethereum Classic',
-    networkName: 'Ethereum Classic mainnet',
+    name: 'TomoChain',
+    networkName: 'TomoChain mainnet',
     type: 'main',
-    label: ETC_MAIN_CHAINID,
+    label: TOMO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ETC',
+    suffix: 'TOMO',
     anyToken: ''
   },
 }
