@@ -60,4 +60,7 @@ export enum ChainId {
   GT = '86',
   DOGE = '2000',
   CMP = '256256',
+  TOMO = '88',
+  HOO = '70',
+  TT = '108',
 }
