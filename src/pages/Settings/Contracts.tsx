@@ -25,6 +25,14 @@ import { Notice } from './index'
 import { selectNetwork } from '../../config/tools/methods'
 import config from '../../config'
 
+
+import { useMulticall } from '../../utils/tools/multicall'
+import MAINCONFIG_ABI from '../../constants/abis/app/RouterConfig.json'
+console.log('>>> MAINCONFIG_ABI', MAINCONFIG_ABI)
+import { Interface } from '@ethersproject/abi'
+// @ts-ignore
+const MAINCONFIG_INTERFACE = new Interface(MAINCONFIG_ABI.abi)
+
 export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -616,6 +624,51 @@ export default function Contracts() {
   const nativeCoinSybmol = chainInfo[chainId || 0].symbol
   const lookAddress = chainInfo[chainId || 0].lookAddr
 
+  const [isFetchingConfigData, setIsFetchingConfigData] = useState(false)
+  const fetchConfigData = async () => {
+    console.log('>>> fetchConfigData')
+    setIsFetchingConfigData(false)
+    const mainConfigDataList = [
+      {
+        data: MAINCONFIG_INTERFACE.encodeFunctionData('getAllChainIDs', []),
+        method: 'getAllChainIDs',
+        to: mainConfigAddress,
+      },
+      {
+        data: MAINCONFIG_INTERFACE.encodeFunctionData('getAllTokenIDs', []),
+        method: 'getAllTokenIDs',
+        to: mainConfigAddress,
+      }
+    ]
+    // @ts-ignore
+    const allChainIds: Array<any> = []
+    // @ts-ignore
+    const allTokenIds: Array<any> = []
+    useMulticall(mainConfigChainId, mainConfigDataList)
+      .then((contractAnswer) => {
+        console.log('>>>> contractAddress', contractAnswer)
+        // @ts-ignore
+        contractAnswer.map((answerData, answerKey) => {
+          if (mainConfigDataList[answerKey].method == 'getAllChainIDs') {
+            const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
+            /*
+            allChainIds = d.map((chainIdBigNumber) => {
+              console.log('chainIdBigNumber', chainIdBigNumber)
+              //return chainIdBigNumber.toFixed()
+            })
+            */
+            console.log('>>> getAllChainIDs', d)
+          }
+          if (mainConfigDataList[answerKey].method == 'getAllTokenIDs') {
+            const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
+            console.log('>>> getAllTokenIDs', d)
+          }
+        })
+        console.log('>>> allTokenIds', allTokenIds)
+        console.log('>>> allChainIds', allChainIds)
+      })
+  }
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -631,6 +684,9 @@ export default function Contracts() {
             >
               {stateMainConfigAddress}
             </ConfigLink>
+            <ButtonPrimary onClick={fetchConfigData} disabled={isFetchingConfigData}>
+              Fetch data
+            </ButtonPrimary>
           </ConfigInfo>
         ) : (
           <>
