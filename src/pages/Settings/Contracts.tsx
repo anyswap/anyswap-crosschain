@@ -773,7 +773,7 @@ export default function Contracts() {
 
             Promise.all(fetchDataByChains).then((byChainsAnswer) => {
               const erc20byChains: any = []
-              console.log(byChainsAnswer)
+              console.log('>>> byChainsAnswer', byChainsAnswer)
               /* ----- */
               console.log(erc20byChains)
             })
