@@ -641,9 +641,9 @@ export default function Contracts() {
       }
     ]
     // @ts-ignore
-    const allChainIds: Array<any> = []
+    let allChainIds: Array<any> = []
     // @ts-ignore
-    const allTokenIds: Array<any> = []
+    let allTokenIds: Array<any> = []
     useMulticall(mainConfigChainId, mainConfigDataList)
       .then((contractAnswer) => {
         console.log('>>>> contractAddress', contractAnswer)
@@ -651,17 +651,18 @@ export default function Contracts() {
         contractAnswer.map((answerData, answerKey) => {
           if (mainConfigDataList[answerKey].method == 'getAllChainIDs') {
             const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
-            /*
-            allChainIds = d.map((chainIdBigNumber) => {
+            
+            allChainIds = d[0].map((chainIdBigNumber: any) => {
               console.log('chainIdBigNumber', chainIdBigNumber)
-              //return chainIdBigNumber.toFixed()
+              return chainIdBigNumber.toNumber()
             })
-            */
+            
             console.log('>>> getAllChainIDs', d)
           }
           if (mainConfigDataList[answerKey].method == 'getAllTokenIDs') {
             const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
             console.log('>>> getAllTokenIDs', d)
+            allTokenIds = d[0]
           }
         })
         console.log('>>> allTokenIds', allTokenIds)
