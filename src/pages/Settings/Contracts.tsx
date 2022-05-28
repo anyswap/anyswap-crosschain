@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
@@ -7,7 +7,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { AppSettingsData, updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useAppState } from '../../state/application/hooks'
-
+import { useETHBalances } from '../../state/wallet/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
@@ -151,6 +151,14 @@ export default function Contracts() {
     stateMainConfigChainId ? chainInfo[stateMainConfigChainId]?.networkName : ''
   )
 
+  const componentMounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      componentMounted.current = false
+    }
+  }, [])
+
   useEffect(() => {
     if (stateMainConfigChainId) {
       setMainConfigNetworkName(chainInfo[stateMainConfigChainId]?.networkName || '')
@@ -247,14 +255,15 @@ export default function Contracts() {
   const [routerConfigOwner, setRouterConfigOwner] = useState('')
 
   useEffect(() => {
+    if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
+      return setRouterConfigOwner('')
+    }
+
     const fetch = async () => {
-      if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
-        return setRouterConfigOwner('')
-      }
 
       const owner = await routerConfig.methods.owner().call()
 
-      setRouterConfigOwner(owner)
+      componentMounted.current && setRouterConfigOwner(owner)
     }
 
     fetch()
@@ -306,10 +315,14 @@ export default function Contracts() {
   }, [chainId, stateRouterAddress[chainId || 0]])
 
   const [displayRouterSettings, setDisplayRouterSettings] = useState(!!stateRouterAddress[chainId || 0])
+  const [savedDeployedRouterAddress, setSavedDeployedRouterAddress] = useState(stateRouterAddress[chainId || 0])
 
   useEffect(() => {
     setDisplayRouterSettings(!!stateRouterAddress[chainId || 0])
+    setSavedDeployedRouterAddress(stateRouterAddress[chainId || 0])
   }, [chainId, stateRouterAddress])
+
+  const serverAdminAddressBalance = useETHBalances(stateServerAdminAddress ? [stateServerAdminAddress] : [])?.[stateServerAdminAddress ?? '']?.toSignificant(6)
 
   const showRouterSettings = () => setDisplayRouterSettings(true)
 
@@ -745,6 +758,30 @@ export default function Contracts() {
               <div>8. Top-up for at least 0.12 in every network you plan to use (BSC, Polygon, etc)</div>
             </>
           )}
+        </>
+      )}
+
+      {savedDeployedRouterAddress && (
+        <>
+          <Title>Network Info</Title>
+          <Notice margin="0.5rem 0 0">
+            <ConfigInfo>
+              <SubTitle>Saved Router address: </SubTitle>
+              <a
+                href={`${chainInfo[chainId || 0]?.lookAddr}${savedDeployedRouterAddress}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {savedDeployedRouterAddress}
+              </a>
+              {serverAdminAddressBalance && (
+                <>
+                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>Validator address balance: </SubTitle>
+                  {serverAdminAddressBalance} {chainInfo[chainId || 0].symbol}
+                </>
+              )}
+            </ConfigInfo>
+          </Notice>
         </>
       )}
 

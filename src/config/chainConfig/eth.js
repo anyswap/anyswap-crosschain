@@ -216,6 +216,7 @@ export default {
   },
   [ETH_TEST1_CHAINID]: {
     tokenListUrl: tokenListUrl + ETH_TEST1_CHAINID,
+    wrappedToken: '0xcd8F23091F5379cf355F365dBa8C48A2C721C1e5',
     tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
     crossBridgeInitToken: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
