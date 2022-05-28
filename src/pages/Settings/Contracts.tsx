@@ -763,20 +763,24 @@ export default function Contracts() {
         </>
       )}
 
-      {savedDeployedRouterAddress && (
+      {(savedDeployedRouterAddress || stateServerAdminAddress) && (
         <>
           <Title>{t('networkInfo')}</Title>
           <Notice margin="0.5rem 0 0">
             <ConfigInfo>
-              <SubTitle>Saved Router address: </SubTitle>
-              <a
-                href={`${lookAddress}${savedDeployedRouterAddress}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {savedDeployedRouterAddress}
-              </a>
-              {stateServerAdminAddress && serverAdminAddressBalance !== undefined && parseInt(serverAdminAddressBalance) >= 0 && (
+              {savedDeployedRouterAddress && (
+                <>
+                <SubTitle>{t('savedRouterAddress')}: </SubTitle>
+                <a
+                  href={`${lookAddress}${savedDeployedRouterAddress}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {savedDeployedRouterAddress}
+                </a>
+                </>
+              )}
+              {stateServerAdminAddress && (
                 <>
                   <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>{t('validatorNodeNetworkAddress')}: </SubTitle>
                   <a
@@ -786,11 +790,11 @@ export default function Contracts() {
                   >
                     {stateServerAdminAddress}
                   </a>
-                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>Validator address balance: </SubTitle>
-                  {serverAdminAddressBalance} {nativeCoinSybmol}
-                  {parseInt(serverAdminAddressBalance) < 0.12 && (
+                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>{t('validatorAddressBalance')}: </SubTitle>
+                  {serverAdminAddressBalance === undefined ? `${t('Loading')}...` : `${serverAdminAddressBalance} ${nativeCoinSybmol}`}
+                  {serverAdminAddressBalance !== undefined && (parseFloat(serverAdminAddressBalance) < 0.12) && (
                     <Notice warning margin="0.4rem 0 0.6rem">
-                      {`Please, pop up your validator address balance above 0.12 ${nativeCoinSybmol} for correct working of app.`}
+                      {t('validatorAddressBalanceWarning', { symbol: nativeCoinSybmol })}
                     </Notice>
                   )}
                 </>
