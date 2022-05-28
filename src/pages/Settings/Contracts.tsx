@@ -27,9 +27,15 @@ import config from '../../config'
 
 // fetch main config data
 import { useMulticall } from '../../utils/tools/multicall'
-import MAINCONFIG_ABI from '../../constants/abis/app/RouterConfig.json'
-import { Interface } from '@ethersproject/abi'
-const MAINCONFIG_INTERFACE = new Interface(MAINCONFIG_ABI.abi)
+import { abi as MAINCONFIG_ABI } from '../../constants/abis/app/RouterConfig.json'
+import { abi as CHAINCONFIG_ABI } from '../../constants/abis/app/AnyswapV6Router.json'
+import { abi as CCTOKEN_ABI } from '../../constants/abis/app/AnyswapV6ERC20.json'
+import { Interface as AbiInterface } from '@ethersproject/abi'
+
+const MAINCONFIG_INTERFACE = new AbiInterface(MAINCONFIG_ABI)
+const CHAINCONFIG_INTERFACE = new AbiInterface(CHAINCONFIG_ABI)
+const CCTOKEN_INTERFACE = new AbiInterface(CCTOKEN_ABI)
+
 enum FetchConfigDataSteps {
   NONE = 0,                 // No Fetching
   MAIN_DATA = 1,            // Fetch exists chainIds and tokenIds
@@ -736,6 +742,41 @@ export default function Contracts() {
             console.log('>>> crosschainTokens', crosschainTokens)
             console.log('>>> chainRouters', chainRouters)
             setFetchConfigStep(FetchConfigDataSteps.UNDERLYNG_DATA)
+            const fetchDataByChains: any = []
+            const fetchDataByChainsIds: any = []
+            Object.keys(chainRouters).forEach((routerChainId) => {
+              const routerChainContract = chainRouters[routerChainId]
+              const fetchDataForChain: any = []
+              // Fetch wNative address 
+              fetchDataForChain.push({
+                data: CHAINCONFIG_INTERFACE.encodeFunctionData('wNATIVE', []),
+                method: 'wNATIVE',
+                routerChainId,
+                to: routerChainContract,
+              })
+              // Fetch Underlyng address
+              Object.keys(crosschainToken).forEach((ccToken: any) => {
+                if (ccToken.tokenChainId == routerChainId) {
+                  fetchDataForChain.push({
+                    data: CCTOKEN_INTERFACE.encodeFunctionData('underlying', []),
+                    method: 'underlying',
+                    routerChainId
+                  })
+                }
+              })
+
+              // Push to Promise for this chainId
+              fetchDataByChains.push(useMulticall(routerChainId, fetchDataForChain))
+              fetchDataByChainsIds.push(routerChainId)
+            })
+            console.log(fetchDataByChainsIds)
+
+            Promise.all(fetchDataByChains).then((byChainsAnswer) => {
+              const erc20byChains: any = []
+              console.log(byChainsAnswer)
+              /* ----- */
+              console.log(erc20byChains)
+            })
           })
       })
   }
