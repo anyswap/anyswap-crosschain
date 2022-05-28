@@ -108,7 +108,6 @@ const CopyButton = styled(CleanButton)`
   }
 `
 
-
 const updateAppSetupSettings = (appSettings: any, setAppSettings: any, dispatch: any, newAppSettings: any) => {
   setAppSettings({
     ...appSettings,
@@ -614,6 +613,9 @@ export default function Contracts() {
     )
   }
 
+  const nativeCoinSybmol = chainInfo[chainId || 0].symbol
+  const lookAddress = chainInfo[chainId || 0].lookAddr
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -723,7 +725,7 @@ export default function Contracts() {
             &quot;Validator Node Address&quot; to bellow field:
           </div>
           <OptionWrapper>
-            <strong>{t('validatorNodeNetworkAddress')}</strong>
+            <strong>{t('validatorNodeNetworkAddressWithDescription')}</strong>
             <Input
               type="text"
               placeholder="0x..."
@@ -763,21 +765,34 @@ export default function Contracts() {
 
       {savedDeployedRouterAddress && (
         <>
-          <Title>Network Info</Title>
+          <Title>{t('networkInfo')}</Title>
           <Notice margin="0.5rem 0 0">
             <ConfigInfo>
               <SubTitle>Saved Router address: </SubTitle>
               <a
-                href={`${chainInfo[chainId || 0]?.lookAddr}${savedDeployedRouterAddress}`}
+                href={`${lookAddress}${savedDeployedRouterAddress}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 {savedDeployedRouterAddress}
               </a>
-              {serverAdminAddressBalance && (
+              {stateServerAdminAddress && serverAdminAddressBalance !== undefined && parseInt(serverAdminAddressBalance) >= 0 && (
                 <>
+                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>{t('validatorNodeNetworkAddress')}: </SubTitle>
+                  <a
+                    href={`${lookAddress}${stateServerAdminAddress}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {stateServerAdminAddress}
+                  </a>
                   <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>Validator address balance: </SubTitle>
-                  {serverAdminAddressBalance} {chainInfo[chainId || 0].symbol}
+                  {serverAdminAddressBalance} {nativeCoinSybmol}
+                  {parseInt(serverAdminAddressBalance) < 0.12 && (
+                    <Notice warning margin="0.4rem 0 0.6rem">
+                      {`Please, pop up your validator address balance above 0.12 ${nativeCoinSybmol} for correct working of app.`}
+                    </Notice>
+                  )}
                 </>
               )}
             </ConfigInfo>
