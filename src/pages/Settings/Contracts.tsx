@@ -25,13 +25,18 @@ import { Notice } from './index'
 import { selectNetwork } from '../../config/tools/methods'
 import config from '../../config'
 
-
+// fetch main config data
 import { useMulticall } from '../../utils/tools/multicall'
 import MAINCONFIG_ABI from '../../constants/abis/app/RouterConfig.json'
-console.log('>>> MAINCONFIG_ABI', MAINCONFIG_ABI)
 import { Interface } from '@ethersproject/abi'
-// @ts-ignore
 const MAINCONFIG_INTERFACE = new Interface(MAINCONFIG_ABI.abi)
+enum FetchConfigDataSteps {
+  NONE = 0,                 // No Fetching
+  MAIN_DATA = 1,            // Fetch exists chainIds and tokenIds
+  CHAINS_AND_CCTOKENS = 2,  // Fetch chain routers and cc token routers
+  UNDERLYNG_DATA = 3,       // Fetch underlying for each chain
+}
+// -- fetch main config data
 
 export const OptionWrapper = styled.div`
   display: flex;
@@ -624,9 +629,13 @@ export default function Contracts() {
   const nativeCoinSybmol = chainInfo[chainId || 0].symbol
   const lookAddress = chainInfo[chainId || 0].lookAddr
 
+
   const [isFetchingConfigData, setIsFetchingConfigData] = useState(false)
+  const [fetchConfigStep, setFetchConfigStep] = useState(FetchConfigDataSteps.NONE)
+  
   const fetchConfigData = async () => {
-    setIsFetchingConfigData(false)
+    setIsFetchingConfigData(true)
+    setFetchConfigStep(FetchConfigDataSteps.MAIN_DATA)
     const mainConfigDataList = [
       {
         data: MAINCONFIG_INTERFACE.encodeFunctionData('getAllChainIDs', []),
@@ -644,6 +653,7 @@ export default function Contracts() {
     // First step - fetch all tokenIds and all chainIds
     useMulticall(mainConfigChainId, mainConfigDataList)
       .then((contractAnswer) => {
+        setFetchConfigStep(FetchConfigDataSteps.CHAINS_AND_CCTOKENS)
         // @ts-ignore
         contractAnswer.map((answerData, answerKey) => {
           if (mainConfigDataList[answerKey].method == 'getAllChainIDs') {
@@ -725,6 +735,7 @@ export default function Contracts() {
             })
             console.log('>>> crosschainTokens', crosschainTokens)
             console.log('>>> chainRouters', chainRouters)
+            setFetchConfigStep(FetchConfigDataSteps.UNDERLYNG_DATA)
           })
       })
   }
@@ -745,7 +756,18 @@ export default function Contracts() {
               {stateMainConfigAddress}
             </ConfigLink>
             <ButtonPrimary onClick={fetchConfigData} disabled={isFetchingConfigData}>
-              Fetch data
+              {fetchConfigStep == FetchConfigDataSteps.NONE && (
+                <>{t('mainConfig_FetchData')}</>
+              )}
+              {fetchConfigStep == FetchConfigDataSteps.MAIN_DATA && (
+                <>{t('mainConfig_FetchMainData')}</>
+              )}
+              {fetchConfigStep == FetchConfigDataSteps.CHAINS_AND_CCTOKENS && (
+                <>{t('mainConfig_FetchChain_And_CCTokenData')}</>
+              )}
+              {fetchConfigStep == FetchConfigDataSteps.UNDERLYNG_DATA && (
+                <>{t('mainConfig_FetchUnderlyngData')}</>
+              )}
             </ButtonPrimary>
           </ConfigInfo>
         ) : (
