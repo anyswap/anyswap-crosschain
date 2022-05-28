@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { ERC20_ABI } from '../../constants/abis/erc20'
@@ -7,7 +7,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { AppSettingsData, updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useAppState } from '../../state/application/hooks'
-
+import { useETHBalances } from '../../state/wallet/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
 import { getWeb3Library } from '../../utils/getLibrary'
@@ -108,7 +108,6 @@ const CopyButton = styled(CleanButton)`
   }
 `
 
-
 const updateAppSetupSettings = (appSettings: any, setAppSettings: any, dispatch: any, newAppSettings: any) => {
   setAppSettings({
     ...appSettings,
@@ -150,6 +149,14 @@ export default function Contracts() {
   const [mainConfigNetworkName, setMainConfigNetworkName] = useState(
     stateMainConfigChainId ? chainInfo[stateMainConfigChainId]?.networkName : ''
   )
+
+  const componentMounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      componentMounted.current = false
+    }
+  }, [])
 
   useEffect(() => {
     if (stateMainConfigChainId) {
@@ -247,14 +254,15 @@ export default function Contracts() {
   const [routerConfigOwner, setRouterConfigOwner] = useState('')
 
   useEffect(() => {
+    if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
+      return setRouterConfigOwner('')
+    }
+
     const fetch = async () => {
-      if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
-        return setRouterConfigOwner('')
-      }
 
       const owner = await routerConfig.methods.owner().call()
 
-      setRouterConfigOwner(owner)
+      componentMounted.current && setRouterConfigOwner(owner)
     }
 
     fetch()
@@ -306,10 +314,14 @@ export default function Contracts() {
   }, [chainId, stateRouterAddress[chainId || 0]])
 
   const [displayRouterSettings, setDisplayRouterSettings] = useState(!!stateRouterAddress[chainId || 0])
+  const [savedDeployedRouterAddress, setSavedDeployedRouterAddress] = useState(stateRouterAddress[chainId || 0])
 
   useEffect(() => {
     setDisplayRouterSettings(!!stateRouterAddress[chainId || 0])
+    setSavedDeployedRouterAddress(stateRouterAddress[chainId || 0])
   }, [chainId, stateRouterAddress])
+
+  const serverAdminAddressBalance = useETHBalances(stateServerAdminAddress ? [stateServerAdminAddress] : [])?.[stateServerAdminAddress ?? '']?.toSignificant(6)
 
   const showRouterSettings = () => setDisplayRouterSettings(true)
 
@@ -601,6 +613,9 @@ export default function Contracts() {
     )
   }
 
+  const nativeCoinSybmol = chainInfo[chainId || 0].symbol
+  const lookAddress = chainInfo[chainId || 0].lookAddr
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -710,7 +725,7 @@ export default function Contracts() {
             &quot;Validator Node Address&quot; to bellow field:
           </div>
           <OptionWrapper>
-            <strong>{t('validatorNodeNetworkAddress')}</strong>
+            <strong>{t('validatorNodeNetworkAddressWithDescription')}</strong>
             <Input
               type="text"
               placeholder="0x..."
@@ -745,6 +760,47 @@ export default function Contracts() {
               <div>8. Top-up for at least 0.12 in every network you plan to use (BSC, Polygon, etc)</div>
             </>
           )}
+        </>
+      )}
+
+      {(savedDeployedRouterAddress || stateServerAdminAddress) && (
+        <>
+          <Title>{t('networkInfo')}</Title>
+          <Notice margin="0.5rem 0 0">
+            <ConfigInfo>
+              {savedDeployedRouterAddress && (
+                <>
+                <SubTitle>{t('savedRouterAddress')}: </SubTitle>
+                <a
+                  href={`${lookAddress}${savedDeployedRouterAddress}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {savedDeployedRouterAddress}
+                </a>
+                </>
+              )}
+              {stateServerAdminAddress && (
+                <>
+                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>{t('validatorNodeNetworkAddress')}: </SubTitle>
+                  <a
+                    href={`${lookAddress}${stateServerAdminAddress}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {stateServerAdminAddress}
+                  </a>
+                  <SubTitle margin='0.5rem 0.5rem 0.5rem 0'>{t('validatorAddressBalance')}: </SubTitle>
+                  {serverAdminAddressBalance === undefined ? `${t('Loading')}...` : `${serverAdminAddressBalance} ${nativeCoinSybmol}`}
+                  {serverAdminAddressBalance !== undefined && (parseFloat(serverAdminAddressBalance) < 0.12) && (
+                    <Notice warning margin="0.4rem 0 0.6rem">
+                      {t('validatorAddressBalanceWarning', { symbol: nativeCoinSybmol })}
+                    </Notice>
+                  )}
+                </>
+              )}
+            </ConfigInfo>
+          </Notice>
         </>
       )}
 
