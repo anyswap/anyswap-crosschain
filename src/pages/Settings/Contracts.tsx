@@ -661,8 +661,6 @@ export default function Contracts() {
         console.log('>>> allTokenIds', allTokenIds)
         console.log('>>> allChainIds', allChainIds)
         // fetch getTokenConfig for allChainIds
-        // @ts-ignore
-        const tokenConfigs: any = {}
         const multicallDataTokenConfigs: any = []
         allChainIds.forEach((tokenChainId) => {
           //
@@ -689,13 +687,44 @@ export default function Contracts() {
             })
           })
         })
+
+        // @ts-ignore
+        const crosschainTokens: any = {}
+        const chainRouters: any = {}
+
         useMulticall(mainConfigChainId, multicallDataTokenConfigs)
           .then((contractTokenConfigs) => {
             // @ts-ignore
             contractTokenConfigs.map((answerData, answerKey) => {
+              const callData = multicallDataTokenConfigs[answerKey]
+              const method = callData.method
               const d = MAINCONFIG_INTERFACE.decodeFunctionResult(multicallDataTokenConfigs[answerKey].method, answerData)
+              const aData = d[0]
+              switch (method) {
+                case `getChainConfig`:
+                  chainRouters[callData.tokenChainId] = aData.RouterContract
+                  break;
+                case `getTokenConfig`:
+                  const {
+                    tokenId,
+                    tokenChainId,
+                  } = callData
+                  crosschainTokens[`${tokenChainId}:${tokenId}`] = {
+                    tokenId,
+                    tokenChainId,
+                    contract: aData.ContractAddress,
+                    decimals: aData.Decimals
+                  }
+                /*
+                case `getSwapConfig`:
+                default:
+                  throw new Error('Unknown method', method)
+                */
+              }
               console.log('>>>', d)
             })
+            console.log('>>> crosschainTokens', crosschainTokens)
+            console.log('>>> chainRouters', chainRouters)
           })
       })
   }
