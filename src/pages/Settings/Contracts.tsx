@@ -626,7 +626,6 @@ export default function Contracts() {
 
   const [isFetchingConfigData, setIsFetchingConfigData] = useState(false)
   const fetchConfigData = async () => {
-    console.log('>>> fetchConfigData')
     setIsFetchingConfigData(false)
     const mainConfigDataList = [
       {
@@ -640,33 +639,64 @@ export default function Contracts() {
         to: mainConfigAddress,
       }
     ]
-    // @ts-ignore
     let allChainIds: Array<any> = []
-    // @ts-ignore
     let allTokenIds: Array<any> = []
+    // First step - fetch all tokenIds and all chainIds
     useMulticall(mainConfigChainId, mainConfigDataList)
       .then((contractAnswer) => {
-        console.log('>>>> contractAddress', contractAnswer)
         // @ts-ignore
         contractAnswer.map((answerData, answerKey) => {
           if (mainConfigDataList[answerKey].method == 'getAllChainIDs') {
             const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
-            
             allChainIds = d[0].map((chainIdBigNumber: any) => {
-              console.log('chainIdBigNumber', chainIdBigNumber)
               return chainIdBigNumber.toNumber()
             })
-            
-            console.log('>>> getAllChainIDs', d)
           }
           if (mainConfigDataList[answerKey].method == 'getAllTokenIDs') {
             const d = MAINCONFIG_INTERFACE.decodeFunctionResult(mainConfigDataList[answerKey].method, answerData)
-            console.log('>>> getAllTokenIDs', d)
             allTokenIds = d[0]
           }
         })
+
         console.log('>>> allTokenIds', allTokenIds)
         console.log('>>> allChainIds', allChainIds)
+        // fetch getTokenConfig for allChainIds
+        // @ts-ignore
+        const tokenConfigs: any = {}
+        const multicallDataTokenConfigs: any = []
+        allChainIds.forEach((tokenChainId) => {
+          //
+          multicallDataTokenConfigs.push({
+            data: MAINCONFIG_INTERFACE.encodeFunctionData('getChainConfig', [tokenChainId]),
+            method: 'getChainConfig',
+            tokenChainId,
+            to: mainConfigAddress,
+          })
+          allTokenIds.forEach((tokenId) => {
+            multicallDataTokenConfigs.push({
+              data: MAINCONFIG_INTERFACE.encodeFunctionData('getTokenConfig', [tokenId, tokenChainId]),
+              method: 'getTokenConfig',
+              tokenId,
+              tokenChainId,
+              to: mainConfigAddress,
+            })
+            multicallDataTokenConfigs.push({
+              data: MAINCONFIG_INTERFACE.encodeFunctionData('getSwapConfig', [tokenId, tokenChainId]),
+              method: 'getSwapConfig',
+              tokenId,
+              tokenChainId,
+              to: mainConfigAddress,
+            })
+          })
+        })
+        useMulticall(mainConfigChainId, multicallDataTokenConfigs)
+          .then((contractTokenConfigs) => {
+            // @ts-ignore
+            contractTokenConfigs.map((answerData, answerKey) => {
+              const d = MAINCONFIG_INTERFACE.decodeFunctionResult(multicallDataTokenConfigs[answerKey].method, answerData)
+              console.log('>>>', d)
+            })
+          })
       })
   }
 
