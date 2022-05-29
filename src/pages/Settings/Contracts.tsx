@@ -35,6 +35,7 @@ import { Interface as AbiInterface } from '@ethersproject/abi'
 const MAINCONFIG_INTERFACE = new AbiInterface(MAINCONFIG_ABI)
 const CHAINCONFIG_INTERFACE = new AbiInterface(CHAINCONFIG_ABI)
 const CCTOKEN_INTERFACE = new AbiInterface(CCTOKEN_ABI)
+const ERC20_INTERFACE = new AbiInterface(ERC20_ABI)
 
 enum FetchConfigDataSteps {
   NONE = 0,                 // No Fetching
@@ -731,6 +732,7 @@ export default function Contracts() {
                     contract: aData.ContractAddress,
                     decimals: aData.Decimals
                   }
+                  break;
                 /*
                 case `getSwapConfig`:
                 default:
@@ -744,38 +746,97 @@ export default function Contracts() {
             setFetchConfigStep(FetchConfigDataSteps.UNDERLYNG_DATA)
             const fetchDataByChains: any = []
             const fetchDataByChainsIds: any = []
+            const fetchDataForChainSource: any = {}
             Object.keys(chainRouters).forEach((routerChainId) => {
               const routerChainContract = chainRouters[routerChainId]
-              const fetchDataForChain: any = []
+              fetchDataForChainSource[routerChainId] = []
               // Fetch wNative address 
-              fetchDataForChain.push({
+              fetchDataForChainSource[routerChainId].push({
                 data: CHAINCONFIG_INTERFACE.encodeFunctionData('wNATIVE', []),
                 method: 'wNATIVE',
                 routerChainId,
                 to: routerChainContract,
               })
               // Fetch Underlyng address
-              Object.keys(crosschainToken).forEach((ccToken: any) => {
-                if (ccToken.tokenChainId == routerChainId) {
-                  fetchDataForChain.push({
+              Object.keys(crosschainTokens).forEach((ccTokenKey) => {
+                const ccToken = crosschainTokens[ccTokenKey]
+                console.log('>>>> ccToken', ccToken, routerChainId)
+                if (`${ccToken.tokenChainId}` == routerChainId) {
+                  console.log('>> add ccToken', ccToken)
+                  fetchDataForChainSource[routerChainId].push({
                     data: CCTOKEN_INTERFACE.encodeFunctionData('underlying', []),
                     method: 'underlying',
-                    routerChainId
+                    routerChainId,
+                    to: ccToken.contract
                   })
                 }
               })
 
               // Push to Promise for this chainId
-              fetchDataByChains.push(useMulticall(routerChainId, fetchDataForChain))
+              console.log('>>> fetchDataForChain', fetchDataForChainSource[routerChainId])
+              fetchDataByChains.push(useMulticall(routerChainId, fetchDataForChainSource[routerChainId]))
               fetchDataByChainsIds.push(routerChainId)
             })
-            console.log(fetchDataByChainsIds)
+            console.log(fetchDataForChainSource, fetchDataByChainsIds)
 
             Promise.all(fetchDataByChains).then((byChainsAnswer) => {
-              const erc20byChains: any = []
-              console.log('>>> byChainsAnswer', byChainsAnswer)
-              /* ----- */
+              const erc20byChains: any = {}
+              byChainsAnswer.forEach((answerForChain: any, chainIndex) => {
+                const chainId = fetchDataByChainsIds[chainIndex]
+                erc20byChains[chainId] = {}
+                const sourceData = fetchDataForChainSource[chainId]
+                sourceData.forEach((sourceDataItem: any, answerForTokenIndex: number) => {
+                  const answerForToken = answerForChain[answerForTokenIndex]
+                  switch (sourceDataItem.method) {
+                    case 'wNATIVE':
+                      const wNativeAddress = CHAINCONFIG_INTERFACE.decodeFunctionResult('wNATIVE', answerForToken)[0]
+                      erc20byChains[chainId][wNativeAddress] = {}
+                      break;
+                    case 'underlying':
+                      const underlyingAddress = CCTOKEN_INTERFACE.decodeFunctionResult('underlying', answerForToken)[0]
+                      erc20byChains[chainId][underlyingAddress] = {}
+                      break;
+                  }
+                })
+              })
               console.log(erc20byChains)
+              // fetch erc20 info
+              const erc20fetchData: any[] = []
+              const erc20fetchChains = []
+              Object.keys(erc20byChains).forEach((chainId) => {
+                const erc20fetchByChains: any[] = []
+                Object.keys(erc20byChains[chainId]).forEach((ercAddress) => {
+                  console.log('>>>>', chainId, ercAddress)
+                  erc20fetchByChains.push({
+                    data: ERC20_INTERFACE.encodeFunctionData('symbol', []),
+                    method: 'symbol',
+                    chainId,
+                    ercAddress,
+                    to: ercAddress
+                  })
+                  erc20fetchByChains.push({
+                    data: ERC20_INTERFACE.encodeFunctionData('name', []),
+                    method: 'name',
+                    chainId,
+                    ercAddress,
+                    to: ercAddress
+                  })
+                  erc20fetchByChains.push({
+                    data: ERC20_INTERFACE.encodeFunctionData('decimals', []),
+                    method: 'decimals',
+                    chainId,
+                    ercAddress,
+                    to: ercAddress
+                  })
+                })
+                if (Object.keys(erc20byChains[chainId]).length > 0) {
+                  erc20fetchData.push(useMulticall(chainId, erc20fetchByChains))
+                  erc20fetchChains.push(chainId)
+                }
+              })
+              Promise.all(erc20fetchData).then((erc20FetchedData) => {
+                console.log(erc20FetchedData)
+              })
             })
           })
       })
