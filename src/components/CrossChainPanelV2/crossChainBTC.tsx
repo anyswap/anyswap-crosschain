@@ -144,7 +144,7 @@ export default function CrossChain({
     const isAddr = isAddress( recipient, selectChain)
     if (isInputError) {
       return isInputError
-    } else if (recipient && !Boolean(isAddr)) {
+    } else if (!recipient || !Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')

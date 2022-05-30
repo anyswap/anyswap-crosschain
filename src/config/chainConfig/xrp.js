@@ -18,10 +18,10 @@ const bridgeToken = {
     bridgeInitChain: ''
   },
   [VERSION.V7]: {
-    bridgeInitToken: 'XRP',
+    bridgeInitToken: 'xrp',
     bridgeInitChain: '',
     nativeToken: '',
-    crossBridgeInitToken: ''
+    crossBridgeInitToken: 'XRP'
   },
 }
 
