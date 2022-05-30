@@ -16,7 +16,13 @@ const bridgeToken = {
   [VERSION.V1]: {
     bridgeInitToken: '',
     bridgeInitChain: ''
-  }
+  },
+  [VERSION.V7]: {
+    bridgeInitToken: 'XRP',
+    bridgeInitChain: '',
+    nativeToken: '',
+    crossBridgeInitToken: ''
+  },
 }
 
 export default {
@@ -35,8 +41,8 @@ export default {
     lookBlock: XRP_MAIN_EXPLORER + '/block/',
     explorer: XRP_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'XRP',
-    networkName: 'XRP mainnet',
+    name: 'Ripple',
+    networkName: 'Ripple mainnet',
     networkLogo: 'XRP',
     type: 'main',
     label: XRP_MAIN_CHAINID,
