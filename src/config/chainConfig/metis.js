@@ -46,7 +46,7 @@ export default {
       METIS_MAINNET,
     ],
     chainID: METIS_MAIN_CHAINID,
-    lookHash: METIS_MAIN_EXPLORER + '/transaction/',
+    lookHash: METIS_MAIN_EXPLORER + '/tx/',
     lookAddr: METIS_MAIN_EXPLORER + '/address/',
     lookBlock: METIS_MAIN_EXPLORER + '/block/',
     explorer: METIS_MAIN_EXPLORER,
