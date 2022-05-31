@@ -802,7 +802,8 @@ export default function Contracts() {
               console.log(erc20byChains)
               // fetch erc20 info
               const erc20fetchData: any[] = []
-              const erc20fetchChains = []
+              const erc20fetchChains: any[] = []
+              const erc20SourceCallData: any[] = []
               Object.keys(erc20byChains).forEach((chainId) => {
                 const erc20fetchByChains: any[] = []
                 Object.keys(erc20byChains[chainId]).forEach((ercAddress) => {
@@ -832,10 +833,26 @@ export default function Contracts() {
                 if (Object.keys(erc20byChains[chainId]).length > 0) {
                   erc20fetchData.push(useMulticall(chainId, erc20fetchByChains))
                   erc20fetchChains.push(chainId)
+                  erc20SourceCallData.push(erc20fetchByChains)
                 }
               })
               Promise.all(erc20fetchData).then((erc20FetchedData) => {
-                console.log(erc20FetchedData)
+                erc20FetchedData.forEach((erc20ChainData, erc20ChainIndex) => {
+                  const erc20ChainId = erc20fetchChains[erc20ChainIndex]
+                  console.log('>>> erc20ChainId', erc20ChainId)
+                  erc20ChainData.forEach((erc20Data: any, erc20Index: any) => {
+                    console.log('>>> erc20Data, erc20Index', erc20Data, erc20Index)
+                    const erc20Source = erc20SourceCallData[erc20ChainIndex][erc20Index]
+                    switch (erc20Source.method) {
+                      case 'symbol':
+                        const ercSymbol = ERC20_INTERFACE.decodeFunctionResult('symbol', erc20Data)[0]
+                        erc20byChains[erc20Source.chainId][erc20Source.ercAddress].symbol = ercSymbol
+                        break;
+                    }
+                    
+                  })
+                })
+                console.log('>>>> erc20byChains', erc20byChains)
               })
             })
           })
