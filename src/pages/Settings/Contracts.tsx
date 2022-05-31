@@ -643,18 +643,13 @@ export default function Contracts() {
   const fetchConfigData = async () => {
     setIsFetchingConfigData(true)
     setFetchConfigStep(FetchConfigDataSteps.MAIN_DATA)
-    const mainConfigDataList = [
-      {
-        data: MAINCONFIG_INTERFACE.encodeFunctionData('getAllChainIDs', []),
-        method: 'getAllChainIDs',
-        to: mainConfigAddress,
-      },
-      {
-        data: MAINCONFIG_INTERFACE.encodeFunctionData('getAllTokenIDs', []),
-        method: 'getAllTokenIDs',
+    const mainConfigDataList = ['getAllChainIDs', 'getAllTokenIDs'].map((contractMethod) => {
+      return {
+        data: MAINCONFIG_INTERFACE.encodeFunctionData(contractMethod, []),
+        method: contractMethod,
         to: mainConfigAddress,
       }
-    ]
+    })
     let allChainIds: Array<any> = []
     let allTokenIds: Array<any> = []
     // First step - fetch all tokenIds and all chainIds
@@ -688,19 +683,14 @@ export default function Contracts() {
             to: mainConfigAddress,
           })
           allTokenIds.forEach((tokenId) => {
-            multicallDataTokenConfigs.push({
-              data: MAINCONFIG_INTERFACE.encodeFunctionData('getTokenConfig', [tokenId, tokenChainId]),
-              method: 'getTokenConfig',
-              tokenId,
-              tokenChainId,
-              to: mainConfigAddress,
-            })
-            multicallDataTokenConfigs.push({
-              data: MAINCONFIG_INTERFACE.encodeFunctionData('getSwapConfig', [tokenId, tokenChainId]),
-              method: 'getSwapConfig',
-              tokenId,
-              tokenChainId,
-              to: mainConfigAddress,
+            ['getTokenConfig', 'getSwapConfig'].forEach((contractMethod) => {
+              multicallDataTokenConfigs.push({
+                data: MAINCONFIG_INTERFACE.encodeFunctionData(contractMethod, [tokenId, tokenChainId]),
+                method: contractMethod,
+                tokenId,
+                tokenChainId,
+                to: mainConfigAddress,
+              })
             })
           })
         })
@@ -733,6 +723,8 @@ export default function Contracts() {
                     decimals: aData.Decimals
                   }
                   break;
+                case `getSwapConfig`:
+                  console.log('>>>> swapConfig', aData)
                 /*
                 case `getSwapConfig`:
                 default:
@@ -807,27 +799,14 @@ export default function Contracts() {
               Object.keys(erc20byChains).forEach((chainId) => {
                 const erc20fetchByChains: any[] = []
                 Object.keys(erc20byChains[chainId]).forEach((ercAddress) => {
-                  console.log('>>>>', chainId, ercAddress)
-                  erc20fetchByChains.push({
-                    data: ERC20_INTERFACE.encodeFunctionData('symbol', []),
-                    method: 'symbol',
-                    chainId,
-                    ercAddress,
-                    to: ercAddress
-                  })
-                  erc20fetchByChains.push({
-                    data: ERC20_INTERFACE.encodeFunctionData('name', []),
-                    method: 'name',
-                    chainId,
-                    ercAddress,
-                    to: ercAddress
-                  })
-                  erc20fetchByChains.push({
-                    data: ERC20_INTERFACE.encodeFunctionData('decimals', []),
-                    method: 'decimals',
-                    chainId,
-                    ercAddress,
-                    to: ercAddress
+                  ['symbol','name','decimals'].forEach((contractMethod) => {
+                    erc20fetchByChains.push({
+                      data: ERC20_INTERFACE.encodeFunctionData(contractMethod, []),
+                      method: contractMethod,
+                      chainId,
+                      ercAddress,
+                      to: ercAddress
+                    })
                   })
                 })
                 if (Object.keys(erc20byChains[chainId]).length > 0) {
@@ -838,18 +817,10 @@ export default function Contracts() {
               })
               Promise.all(erc20fetchData).then((erc20FetchedData) => {
                 erc20FetchedData.forEach((erc20ChainData, erc20ChainIndex) => {
-                  const erc20ChainId = erc20fetchChains[erc20ChainIndex]
-                  console.log('>>> erc20ChainId', erc20ChainId)
                   erc20ChainData.forEach((erc20Data: any, erc20Index: any) => {
-                    console.log('>>> erc20Data, erc20Index', erc20Data, erc20Index)
                     const erc20Source = erc20SourceCallData[erc20ChainIndex][erc20Index]
-                    switch (erc20Source.method) {
-                      case 'symbol':
-                        const ercSymbol = ERC20_INTERFACE.decodeFunctionResult('symbol', erc20Data)[0]
-                        erc20byChains[erc20Source.chainId][erc20Source.ercAddress].symbol = ercSymbol
-                        break;
-                    }
-                    
+                    const dataAtContract = ERC20_INTERFACE.decodeFunctionResult(erc20Source.method, erc20Data)[0]
+                    erc20byChains[erc20Source.chainId][erc20Source.ercAddress][erc20Source.method] = dataAtContract
                   })
                 })
                 console.log('>>>> erc20byChains', erc20byChains)
