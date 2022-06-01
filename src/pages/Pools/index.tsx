@@ -175,7 +175,8 @@ export default function SwapNative() {
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    selectCurrency
+    selectCurrency,
+    swapType
   )
     // console.log(wrapType)
     // console.log('wrapInputError', wrapInputError)
@@ -522,7 +523,7 @@ export default function SwapNative() {
 
   useEffect(() => {
     // console.log(selectCurrency)
-    setSelectChain(initChainId)
+    setSelectChain(chainId ? chainId : initChainId)
   }, [initChainId])
 
   useEffect(() => {
@@ -611,17 +612,27 @@ export default function SwapNative() {
               <MorePool
                 anyTokenList={anyTokenList}
                 poolData={poolData}
+                type={'S'}
                 selectCurrency={selectCurrency}
                 selectAnyToken={selectAnyToken}
+                tipTitleKey={swapType === 'deposit' ? "addLiquidityTip" : "removeLiquidityTip"}
                 onSelectAnyToken={(value:any) => {
                   setSelectAnyToken(value)
                 }}
               />
             ) : (
               <MorePool
-                anyTokenList={destConfig?.fromanytoken ? [destConfig?.fromanytoken] : []}
+                anyTokenList={selectDestCurrencyList ? Object.keys(selectDestCurrencyList).map((tokenKey) => {
+                  return selectDestCurrencyList[tokenKey]
+                }) : []}
                 poolData={poolData}
+                type={'M'}
                 selectCurrency={selectCurrency}
+                selectAnyToken={selectDestCurrency}
+                tipTitleKey="removeLiquidityTip"
+                onSelectAnyToken={(value:any) => {
+                  setSelectDestCurrency(value)
+                }}
               />
             )
           }
@@ -675,6 +686,7 @@ export default function SwapNative() {
             <MorePool
               anyTokenList={destConfig?.anytoken ? [destConfig?.anytoken] : []}
               poolData={destPoolData}
+              type={'S'}
               selectCurrency={destConfig}
             />
           ) : ''

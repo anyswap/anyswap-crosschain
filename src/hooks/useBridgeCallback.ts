@@ -58,7 +58,8 @@ export function useBridgeCallback(
   typedValue: string | undefined,
   toChainID: string | undefined,
   version: string | undefined,
-  selectCurrency: any
+  selectCurrency: any,
+  usePoolType?: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -69,7 +70,10 @@ export function useBridgeCallback(
   // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
   const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
-  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  let balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  if (usePoolType && usePoolType === 'withdraw') {
+    balance = anybalance
+  }
   // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1

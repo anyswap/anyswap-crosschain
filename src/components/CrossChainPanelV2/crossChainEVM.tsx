@@ -179,19 +179,19 @@ export default function CrossChain({
     if (destConfig.isApprove) {
       if (isRouter) {
         // setBridgeAnyToken('')
-        return routerToken
+        return destConfig.approveToken
       } else {
-        return destConfig.fromanytoken.address
+        return destConfig?.fromanytoken?.address
       }
     }
     return undefined
-  }, [destConfig, isRouter])
+  }, [destConfig, isRouter, routerToken])
 
   
   const isBridgeFTM = useMemo(() => {
     if (
-      destConfig.anytoken?.address === 'FTM'
-      || destConfig.fromanytoken?.address === 'FTM'
+      destConfig?.anytoken?.address === 'FTM'
+      || destConfig?.fromanytoken?.address === 'FTM'
     ) {
       return true
     }
@@ -243,7 +243,7 @@ export default function CrossChain({
       setCurChain({
         chain: chainId,
         ts: BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balanceOf).toExact(),
-        bl: BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balance).toExact(),
+        bl: poolData[anyToken?.address]?.balance ? BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balance).toExact() :'',
       })
     } else if (isBridgeFTM && curFTMChain) {
       setCurChain({
@@ -261,7 +261,7 @@ export default function CrossChain({
       setDestChain({
         chain: selectChain,
         ts: BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balanceOf).toExact(),
-        bl: BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balance).toExact(),
+        bl: destPoolData[destConfig?.anytoken?.address]?.balance ? BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balance).toExact() : '',
       })
     } else if (isBridgeFTM && destFTMChain) {
       setDestChain({

@@ -64,6 +64,7 @@ export default function SearchModal ({
 
   const isAddressSearch = isAddress(searchQuery)
   const useAllTokenList = useMemo(() => {
+    // console.log(allTokens)
     const list:any = {}
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
@@ -89,12 +90,17 @@ export default function SearchModal ({
 
   const mainTokenList = useMemo(() => {
     const arr:any = []
+    // console.log(chainId)
     for (const token in useAllTokenList) {
       const obj:any = useAllTokenList[token]
+      // if (obj.symbol === 'fUSDT') {
+
+      //   console.log(obj)
+      // }
       if (
-        (obj.symbol === 'USDT' && obj.chainId === '250')
-        || (obj.symbol === 'fUSDT' && obj.chainId === '56')
-        || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && obj.chainId === '250')
+        (obj.symbol === 'USDT' && chainId?.toString() === '250')
+        || (obj.symbol === 'fUSDT' && chainId?.toString() === '56')
+        || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && chainId?.toString() === '250')
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
       
@@ -103,7 +109,7 @@ export default function SearchModal ({
       }
     }
     return arr
-  }, [useAllTokenList])
+  }, [useAllTokenList, chainId])
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []

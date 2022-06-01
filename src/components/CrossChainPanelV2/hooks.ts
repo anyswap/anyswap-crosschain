@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
-import {isAddress} from 'multichain-bridge'
+// import {isAddress} from 'multichain-bridge'
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
@@ -62,19 +62,19 @@ export function useInitSelectCurrency (
     } else {
       t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     }
-
+    // console.log(t)
     const list:any = {}
     const underlyingList:any = {}
 
     let initCurrency:any
-    
+    // console.log(allTokensList)
     if (Object.keys(allTokensList).length > 0) {
       let useToken = ''
       let noMatchInitToken = ''
       for (const tokenKey in allTokensList) {
         const item = allTokensList[tokenKey]
         const token = item.address
-        if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
+        // if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,
@@ -82,9 +82,8 @@ export function useInitSelectCurrency (
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
           if (
-            t.includes(token)
+            t.includes(token?.toLowerCase())
             || t.includes(list[token]?.symbol?.toLowerCase())
-            || t.includes(list[token]?.underlying?.symbol?.toLowerCase())
           ) {
             useToken = token
           }
@@ -108,6 +107,8 @@ export function useInitSelectCurrency (
           }
         }
       }
+      // console.log(useToken)
+      // console.log(list)
       if (useToken) {
         initCurrency = list[useToken]
       } else if (noMatchInitToken) {

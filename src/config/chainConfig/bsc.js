@@ -137,6 +137,7 @@ export default {
       'https://bsc-dataseed2.binance.org/',
       'https://bsc-dataseed3.binance.org/',
       'https://bsc-dataseed4.binance.org/',
+      'https://bsc-mainnet.nodereal.io/v1/60da44aa9d5747eaab321b08cce17cbc',
     ],
     chainID: BNB_MAIN_CHAINID,
     lookHash: BNB_MAIN_EXPLORER + '/tx/',

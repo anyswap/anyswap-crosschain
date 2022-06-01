@@ -19,6 +19,7 @@ const SubCurrencySelectBox = styled.div`
   cursor:pointer;
   position:relative;
   overflow:hidden;
+  opacity:0.8;
   .list {
     ${({ theme }) => theme.flexSC};
     flex-wrap:wrap;
@@ -36,6 +37,7 @@ const SubCurrencySelectBox = styled.div`
       overflow:hidden;
     }
     dd {
+      ${({ theme }) => theme.flexSC};
       font-weight: 500;
       line-height: 1.83;
       margin: 0;
@@ -55,38 +57,53 @@ const SubCurrencySelectBox = styled.div`
   }
   .selected {
     ${({ theme }) => theme.flexC};
-    width:40px;
-    height:40px;
-    position:absolute;
-    top: -5px;
-    right:-5px;
+    width:20px;
+    height:20px;
+    // position:absolute;
+    // top: -5px;
+    // right:-5px;
     border: 2px solid ${({ theme }) => theme.tipColor};
     border-radius:100%;
-    opacity:.8;
-    display:none;
+    margin-right:5px;
+    padding: 2px;
+    // display:none;
+    .icon {
+      opacity:0;
+    }
   }
   &.active {
+    opacity:1;
     .selected {
-      display:flex;
+      // display:flex;
+      // opacity:0.8;
+      .icon {
+        opacity:1;
+      }
     }
   }
 `
 
 const CheckIcon = styled(Check)`
   color: ${({ theme }) => theme.tipColor};
+  width:100%;
+  height:100%;
 `
 
 export default function PoolTip ({
   anyTokenList,
   poolData,
+  type,
   selectCurrency,
   selectAnyToken,
+  tipTitleKey,
   onSelectAnyToken
 }: {
   anyTokenList:any
   poolData:any
+  type: any
   selectCurrency:any
   selectAnyToken?:any
+  tipTitleKey?:any
   onSelectAnyToken?: (value: any) => void
 }) {
   // const { chainId } = useActiveWeb3React()
@@ -95,119 +112,128 @@ export default function PoolTip ({
   
   return (
     <>
-        {
-          anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
-            return (
-              <SubCurrencySelectBox
-                key={index}
-                className={selectAnyToken?.address === item.address ? 'active' : ''}
-                onClick={() => {
-                  if (onSelectAnyToken) {
-                    onSelectAnyToken(item)
-                  }
-                }}
-              >
-                <div className='selected'>
-                  <CheckIcon />
-                </div>
-                <dl className='list'>
-                  <dt>
-                    {item.address}
-                  </dt>
-                  <dd>
-                    <i></i>
-                    {t('currentPoolSize') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].totalSupply, item.decimals), 2) + ' ' + item?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                  <dd>
-                    <i></i>
-                    {t('yourPoolShare') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                  <dd>
-                    <i></i>
-                    {t('UnderlyingLiquidity') + ' '}: 
-                    {
-                      poolData?.[item.address] ? (
-                        <>
-                          {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)}
-                        </>
-                      ) : ''
-                    }
-                  </dd>
-                </dl>
-              </SubCurrencySelectBox>
-            )
-          }) : ''
-        }
-      {/* <SubCurrencySelectBox>
-        <dl className='list'>
-          <dd>
-            <i></i>
-            {t('currentPoolSize') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(thousandBit(bridgeConfig.anyTotalsupply, 2) + ' ' + anyCurrency?.symbol)}
-                </>
-              ) : ''
-            }
-          </dd>
-          <dd>
-            <i></i>
-            {t('yourPoolShare') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(
-                    (thousandBit(bridgeConfig.balance, 2) + ' ' + anyCurrency?.symbol)
-                    +
-                    bridgeConfig.percent
-                  )}
-                </>
-              ) : ''
-            }
-          </dd>
-          <dd>
-            <i></i>
-            {t('UnderlyingLiquidity') + ' '}: 
-            {
-              bridgeConfig ? (
-                <>
-                  {(thousandBit(bridgeConfig.totalsupply, 2) + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
-                </>
-              ) : ''
-            }
-          </dd>
-          {
-            swapType !== 'deposit' && destChain && typeof destChain.ts !== 'undefined' ? (
-              <dd>
-                <i></i>
-                {t('destTS') + ' '}: 
-                {
-                  destChain && typeof destChain.ts !== 'undefined' ? (
-                    <>
-                      {(thousandBit(destChain.ts, 2) + ' ' + config.getBaseCoin(anyCurrency?.underlying?.symbol, chainId))}
-                    </>
-                  ) : ''
+      {
+        type === "S" && selectCurrency && anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
+          return (
+            <SubCurrencySelectBox
+              key={index}
+              className={selectAnyToken?.address === item.address ? 'active' : ''}
+              onClick={() => {
+                if (onSelectAnyToken) {
+                  onSelectAnyToken(item)
                 }
-              </dd>
-            ) : ''
-          }
-        </dl>
-      </SubCurrencySelectBox> */}
+              }}
+            >
+              
+              <dl className='list'>
+                {/* <dt>
+                  {item.address}
+                </dt> */}
+                {/* <dd>
+                  <i></i>
+                  {t('currentPoolSize') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {(thousandBit(fromWei(poolData?.[item.address].totalSupply, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd> */}
+                <dd>
+                  {/* <i></i> */}
+                  {/* L{' ' + (index + 1)} */}
+                  {
+                    selectAnyToken ? (
+                      <div className='selected'>
+                        <CheckIcon className='icon' />
+                      </div>
+                    ) : (
+                    <>
+                      <i></i>
+                      {t('destTS')}
+                    </>
+                    )
+                  }
+                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
+                </dd>
+                <dd>
+                  {t('yourPoolShare') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+                <dd>
+                  {t('pool') + ' '}: 
+                  {
+                    poolData?.[item.address] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+              </dl>
+            </SubCurrencySelectBox>
+          )
+        }) : ''
+      }
+      {
+        type === "M" && selectCurrency && anyTokenList && anyTokenList.length > 0 ? anyTokenList.map((item:any, index:any) => {
+          const poolKey = item.fromanytoken.address
+          const decimals = item.fromanytoken.decimals
+          return (
+            <SubCurrencySelectBox
+              key={index}
+              className={selectAnyToken?.key === item.key ? 'active' : ''}
+              onClick={() => {
+                if (onSelectAnyToken) {
+                  onSelectAnyToken(item)
+                }
+              }}
+            >
+              <dl className='list'>
+                <dd>
+                  {/* <i></i> */}
+                  {/* L{' ' + (index + 1)} */}
+                  <div className='selected'>
+                    <CheckIcon className='icon'  />
+                  </div>
+                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
+                </dd>
+                <dd>
+                  {t('yourPoolShare') + ' '}: 
+                  {
+                    poolData?.[poolKey] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balance, item.decimals), 2) + ' ' + item?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[poolKey].balance, decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+                <dd>
+                  {t('pool') + ' '}: 
+                  {
+                    poolData?.[poolKey] ? (
+                      <>
+                        {/* {(thousandBit(fromWei(poolData?.[item.address].balanceOf, item.decimals), 2) + ' ' + selectCurrency?.symbol)} */}
+                        {(thousandBit(fromWei(poolData?.[poolKey].balanceOf, decimals), 2))}
+                      </>
+                    ) : ''
+                  }
+                </dd>
+              </dl>
+            </SubCurrencySelectBox>
+          )
+        }) : ''
+      }
     </>
   )
 }

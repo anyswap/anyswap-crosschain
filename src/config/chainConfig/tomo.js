@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const METIS_MAIN_CHAINID = ChainId.METIS
-export const METIS_MAINNET = getLocalRPC(METIS_MAIN_CHAINID, 'https://andromeda.metis.io/?owner=1088')
-export const METIS_MAIN_EXPLORER = 'https://andromeda-explorer.metis.io'
+export const TOMO_MAIN_CHAINID = ChainId.TOMO
+export const TOMO_MAINNET = getLocalRPC(TOMO_MAIN_CHAINID, 'https://rpc.tomochain.com')
+export const TOMO_MAIN_EXPLORER = 'https://scan.tomochain.com'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'METIS'
+const symbol = 'TOMO'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -18,45 +18,45 @@ const bridgeToken = {
   },
   [VERSION.V5]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '56',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
   [VERSION.V7]: {
     bridgeInitToken: '',
-    bridgeInitChain: '1',
+    bridgeInitChain: '',
     nativeToken: '',
     crossBridgeInitToken: ''
   },
 }
 
 export default {
-  [METIS_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + METIS_MAIN_CHAINID,
+  [TOMO_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + TOMO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0x7C598c96D02398d89FbCb9d41Eab3DF0C16F227D',
+    multicalToken: '0xf29848418cDdA0710Ae8d32e951E9DD5249a797B',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: METIS_MAINNET,
+    nodeRpc: TOMO_MAINNET,
     nodeRpcList: [
-      METIS_MAINNET,
+      TOMO_MAINNET,
     ],
-    chainID: METIS_MAIN_CHAINID,
-    lookHash: METIS_MAIN_EXPLORER + '/tx/',
-    lookAddr: METIS_MAIN_EXPLORER + '/address/',
-    lookBlock: METIS_MAIN_EXPLORER + '/block/',
-    explorer: METIS_MAIN_EXPLORER,
+    chainID: TOMO_MAIN_CHAINID,
+    lookHash: TOMO_MAIN_EXPLORER + '/txs/',
+    lookAddr: TOMO_MAIN_EXPLORER + '/address/',
+    lookBlock: TOMO_MAIN_EXPLORER + '/block/',
+    explorer: TOMO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Metis',
-    networkName: 'Metis mainnet',
+    name: 'TomoChain',
+    networkName: 'TomoChain mainnet',
     type: 'main',
-    label: METIS_MAIN_CHAINID,
+    label: TOMO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'METIS',
+    suffix: 'TOMO',
     anyToken: ''
   },
 }

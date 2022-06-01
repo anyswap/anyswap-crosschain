@@ -6,8 +6,8 @@ import {
   injected,
   walletconnect,
   walletlink,
-  // bsc,
-  // clover
+  bsc,
+  clover
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -50,7 +50,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   OKEXCHAIN: {
     connector: injected,
-    name: 'OKEx',
+    name: 'MetaX',
     iconName: 'OKT.png',
     description: 'Easy-to-use browser extension.',
     href: null,
@@ -89,40 +89,40 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#E8831D'
   },
-  // Binance: {
-  //   connector: bsc,
-  //   name: 'Binance',
-  //   iconName: 'BNB.svg',
-  //   description: 'Login using Binance hosted wallet',
-  //   href: null,
-  //   color: '#F0B90B',
-  //   mobile: true,
-  // },
-  // Clover: {
-  //   connector: clover,
-  //   name: 'Clover',
-  //   iconName: 'clover.png',
-  //   description: 'Login using Clover hosted wallet',
-  //   href: null,
-  //   color: '#269964',
-  // },
-  // Xdefi: {
-  //   connector: injected,
-  //   name: 'Xdefi',
-  //   iconName: 'XDEFI.jpg',
-  //   description: 'Easy-to-use browser extension.',
-  //   href: null,
-  //   color: '#269964',
-  // },
-  // huobi: {
-  //   connector: walletconnect,
-  //   name: 'Huobi',
-  //   iconName: 'HT.png',
-  //   description: 'Connect to Huobi Wallet.',
-  //   href: null,
-  //   color: '#4196FC',
-  //   mobile: true
-  // },
+  Binance: {
+    connector: bsc,
+    name: 'Binance',
+    iconName: 'BNB.svg',
+    description: 'Login using Binance hosted wallet',
+    href: null,
+    color: '#F0B90B',
+    mobile: true,
+  },
+  Clover: {
+    connector: clover,
+    name: 'Clover',
+    iconName: 'clover.png',
+    description: 'Login using Clover hosted wallet',
+    href: null,
+    color: '#269964',
+  },
+  Xdefi: {
+    connector: injected,
+    name: 'Xdefi',
+    iconName: 'XDEFI.jpg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
+  huobi: {
+    connector: walletconnect,
+    name: 'Huobi',
+    iconName: 'HT.png',
+    description: 'Connect to Huobi Wallet.',
+    href: null,
+    color: '#4196FC',
+    mobile: true
+  },
 }
 
 export const NetworkContextName = 'NETWORK'

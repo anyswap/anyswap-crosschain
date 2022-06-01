@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const ASTAR_MAIN_CHAINID = ChainId.ASTAR
 export const ASTAR_MAINNET = getLocalRPC(ASTAR_MAIN_CHAINID, 'https://rpc.astar.bldnodes.org/')
-export const ASTAR_MAIN_EXPLORER = 'https://rpc.astar.network:8545'
+export const ASTAR_MAIN_EXPLORER = 'https://astar.subscan.io'
 
 export const tokenList = []
 export const testTokenList = []
