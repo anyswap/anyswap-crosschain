@@ -670,8 +670,6 @@ export default function Contracts() {
           }
         })
 
-        console.log('>>> allTokenIds', allTokenIds)
-        console.log('>>> allChainIds', allChainIds)
         // fetch getTokenConfig for allChainIds
         const multicallDataTokenConfigs: any = []
         allChainIds.forEach((tokenChainId) => {
@@ -731,10 +729,8 @@ export default function Contracts() {
                   throw new Error('Unknown method', method)
                 */
               }
-              console.log('>>>', d)
             })
-            console.log('>>> crosschainTokens', crosschainTokens)
-            console.log('>>> chainRouters', chainRouters)
+            
             setFetchConfigStep(FetchConfigDataSteps.UNDERLYNG_DATA)
             const fetchDataByChains: any = []
             const fetchDataByChainsIds: any = []
@@ -752,9 +748,7 @@ export default function Contracts() {
               // Fetch Underlyng address
               Object.keys(crosschainTokens).forEach((ccTokenKey) => {
                 const ccToken = crosschainTokens[ccTokenKey]
-                console.log('>>>> ccToken', ccToken, routerChainId)
                 if (`${ccToken.tokenChainId}` == routerChainId) {
-                  console.log('>> add ccToken', ccToken)
                   fetchDataForChainSource[routerChainId].push({
                     data: CCTOKEN_INTERFACE.encodeFunctionData('underlying', []),
                     method: 'underlying',
@@ -824,6 +818,8 @@ export default function Contracts() {
                   })
                 })
                 console.log('>>>> erc20byChains', erc20byChains)
+                console.log('>>> crosschainTokens', crosschainTokens)
+                console.log('>>> chainRouters', chainRouters)
               })
             })
           })
