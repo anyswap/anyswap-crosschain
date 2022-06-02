@@ -693,25 +693,27 @@ export default function Vest () {
       // const EpochId = await rewardContract.getCurrentEpochId()
       rewardContract.getEpochInfo(epochId).then((res:any) => {
         // console.log(res)
-        setCurEpochInfo({
+        const data = {
           startTime: res[0].toString(),
           endTime: res[1].toString(),
           totalReward: res[2].toString(),
-        })
+        }
+        setCurEpochInfo(data)
+        setlatestEpochInfo(data)
       }).catch((err:any) => {
         console.log(err)
         setCurEpochInfo('')
       })
-      rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
-        // console.log(res)
-        setlatestEpochInfo({
-          startTime: res[0].toString(),
-          endTime: res[1].toString(),
-          totalReward: res[2].toString(),
-        })
-      }).catch((err:any) => {
-        console.log(err)
-      })
+      // rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
+      //   // console.log(res)
+      //   setlatestEpochInfo({
+      //     startTime: res[0].toString(),
+      //     endTime: res[1].toString(),
+      //     totalReward: res[2].toString(),
+      //   })
+      // }).catch((err:any) => {
+      //   console.log(err)
+      // })
       rewardContract.getEpochTotalPower(epochId).then((res:any) => {
         // console.log(res)
         setTotalPower(res.toString())
