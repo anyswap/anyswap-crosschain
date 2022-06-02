@@ -52,6 +52,7 @@ import doge from './doge'
 import tomo from './tomo'
 import hoo from './hoo'
 import tt from './tt'
+import near from './near'
 
 import { ChainId } from './chainId'
 
@@ -61,6 +62,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...near,
   ...tt,
   ...hoo,
   ...tomo,
