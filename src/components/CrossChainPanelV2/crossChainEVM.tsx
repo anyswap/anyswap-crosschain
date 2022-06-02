@@ -179,7 +179,7 @@ export default function CrossChain({
     if (destConfig.isApprove) {
       if (isRouter) {
         // setBridgeAnyToken('')
-        return destConfig.approveToken
+        return destConfig.spender
       } else {
         return destConfig?.fromanytoken?.address
       }
@@ -190,7 +190,7 @@ export default function CrossChain({
   
   const isBridgeFTM = useMemo(() => {
     if (
-      destConfig?.anytoken?.address === 'FTM'
+      destConfig?.address === 'FTM'
       || destConfig?.fromanytoken?.address === 'FTM'
     ) {
       return true
@@ -417,7 +417,14 @@ export default function CrossChain({
   }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity])
 
   const errorTip = useMemo(() => {
-    const isAddr = selectChain === ChainId.NAS ? (recipient ? nebulas.Account.isValidAddress(recipient) : false) : isAddress( recipient, selectChain)
+    let isAddr:any
+    if (selectChain === ChainId.NAS) {
+      isAddr = recipient ? nebulas.Account.isValidAddress(recipient) : false
+    } else if (selectChain === ChainId.XRP) {
+      isAddr = recipient && recipient.indexOf('r') === 0 && recipient.length === 34 ? true : false
+    } else {
+      isAddr = isAddress( recipient, selectChain)
+    }
     // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
@@ -468,16 +475,17 @@ export default function CrossChain({
   }, [initCurrency])
 
   useEffect(() => {
-    if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+    // if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+    if (evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
-    } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
+    } else if (isNaN(selectChain)) {
       if (selectChain === ChainId.TERRA && connectedWallet?.walletAddress) {
         setRecipient(connectedWallet?.walletAddress)
       } else {
         setRecipient('')
       }
     }
-  }, [evmAccount, swapType, selectChain, destConfig])
+  }, [evmAccount, swapType, selectChain])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -691,7 +699,6 @@ export default function CrossChain({
           isRouter={isRouter}
         />
         {
-          // evmAccount && chainId && (isUnderlying || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') && (isRouter || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') ? (
           evmAccount && chainId && curChain?.ts ? (
             <>
               <LiquidityPool
@@ -713,7 +720,8 @@ export default function CrossChain({
             <ArrowDown size="16" color={theme.text2} />
           </ArrowWrapper>
           {
-            destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            // destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            destConfig?.type !== 'swapin' && !isNaN(selectChain) && !isNaN(chainId) ? (
               <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
                 if (swapType === 'swap') {
                   setSwapType('send')
@@ -762,7 +770,6 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          // evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
           evmAccount && chainId && destChain?.ts ? (
             <LiquidityPool
               destChain={destChain}
@@ -772,7 +779,9 @@ export default function CrossChain({
           ) : ''
         }
         {
-          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin') || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
+          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin')
+          || (isNaN(selectChain))
+          || isNaN(chainId) ? (
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(selectChain === ChainId.NAS ? nebulas.Account.isValidAddress(recipient) : isAddress( recipient, selectChain))} />
           ) : ''
         }

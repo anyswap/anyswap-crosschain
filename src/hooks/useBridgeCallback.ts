@@ -31,7 +31,7 @@ import {useTerraSend} from './terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
-import { ChainId } from '../config/chainConfig/chainId'
+import { ChainId, getLabelToChain } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
 import { BigAmount } from '../utils/formatBignumber'
@@ -98,19 +98,20 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                // console.log(bridgeContract)
+                console.log(toAddress)
+                console.log(routerToken)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -127,7 +128,7 @@ export function useBridgeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -203,14 +204,14 @@ export function useBridgeCallback(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 console.log(txReceipt)
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -227,7 +228,7 @@ export function useBridgeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -295,14 +296,14 @@ export function useBridgeNativeCallback(
                 const txReceipt = await bridgeContract.anySwapOutNative(
                   ...[inputToken,
                   toAddress,
-                  toChainID],
+                  getLabelToChain(toChainID)],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -319,7 +320,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -524,13 +525,13 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -547,7 +548,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -624,13 +625,13 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -647,7 +648,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version

@@ -246,7 +246,7 @@ export function getFTMSelectPool (
       selectCurrency
       && chainId
       && (destConfig.isLiquidity || destConfig.isFromLiquidity)
-      && (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
+      && (destConfig?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
       const curChain = destConfig.isFromLiquidity ? chainId : selectChain
@@ -255,7 +255,7 @@ export function getFTMSelectPool (
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig.anytoken?.address,
+        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig?.address,
         chainId?.toString() === '1' ? selectCurrency?.address : destConfig?.address,
         curChain,
         dec,
