@@ -52,6 +52,7 @@ import doge from './doge'
 import tomo from './tomo'
 import hoo from './hoo'
 import tt from './tt'
+import kava from './kava'
 
 import { ChainId } from './chainId'
 
@@ -61,6 +62,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...kava,
   ...tt,
   ...hoo,
   ...tomo,
@@ -163,6 +165,7 @@ const allChainList = [
   ChainId.TOMO,
   ChainId.HOO,
   ChainId.TT,
+  ChainId.KAVA,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
