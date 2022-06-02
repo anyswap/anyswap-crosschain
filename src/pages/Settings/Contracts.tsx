@@ -722,7 +722,6 @@ export default function Contracts() {
                   }
                   break;
                 case `getSwapConfig`:
-                  console.log('>>>> swapConfig', aData)
                 /*
                 case `getSwapConfig`:
                 default:
@@ -753,17 +752,16 @@ export default function Contracts() {
                     data: CCTOKEN_INTERFACE.encodeFunctionData('underlying', []),
                     method: 'underlying',
                     routerChainId,
+                    ccTokenKey,
                     to: ccToken.contract
                   })
                 }
               })
 
               // Push to Promise for this chainId
-              console.log('>>> fetchDataForChain', fetchDataForChainSource[routerChainId])
               fetchDataByChains.push(useMulticall(routerChainId, fetchDataForChainSource[routerChainId]))
               fetchDataByChainsIds.push(routerChainId)
             })
-            console.log(fetchDataForChainSource, fetchDataByChainsIds)
 
             Promise.all(fetchDataByChains).then((byChainsAnswer) => {
               const erc20byChains: any = {}
@@ -780,12 +778,12 @@ export default function Contracts() {
                       break;
                     case 'underlying':
                       const underlyingAddress = CCTOKEN_INTERFACE.decodeFunctionResult('underlying', answerForToken)[0]
+                      crosschainTokens[sourceDataItem.ccTokenKey].underlying = underlyingAddress
                       erc20byChains[chainId][underlyingAddress] = {}
                       break;
                   }
                 })
               })
-              console.log(erc20byChains)
               // fetch erc20 info
               const erc20fetchData: any[] = []
               const erc20fetchChains: any[] = []
@@ -817,9 +815,64 @@ export default function Contracts() {
                     erc20byChains[erc20Source.chainId][erc20Source.ercAddress][erc20Source.method] = dataAtContract
                   })
                 })
-                console.log('>>>> erc20byChains', erc20byChains)
-                console.log('>>> crosschainTokens', crosschainTokens)
-                console.log('>>> chainRouters', chainRouters)
+                // Save fetched data to localStorage
+                const updatedCrosschainTokens: any = {}
+                Object.keys(crosschainTokens).forEach((ccKey) => {
+                  const ccToken = crosschainTokens[ccKey]
+                  const ccUnderlyng = erc20byChains[ccToken.tokenChainId][ccToken.underlying]
+                  updatedCrosschainTokens[`${ccToken.tokenChainId}:${ccToken.contract}`] = {
+                    chainId: ccToken.tokenChainId,
+                    contractAddress: ccToken.contract,
+                    underlying: {
+                      networkId: ccToken.tokenChainId,
+                      address: ccToken.underlying,
+                      name: ccUnderlyng.name,
+                      symbol: ccUnderlyng.symbol,
+                      decimals: ccUnderlyng.decimals
+                    }
+                  }
+                })
+                const updatedErc20Tokens: any = {}
+                Object.keys(erc20byChains).forEach((chainId) => {
+                  Object.keys(erc20byChains[chainId]).forEach((tokenAddress) => {
+                    updatedErc20Tokens[`${chainId}:${tokenAddress}`] = {
+                      address: tokenAddress,
+                      chainId,
+                      icon: '',
+                      ...erc20byChains[chainId][tokenAddress]
+                    }
+                  })
+                })
+                const updatedRouterConfigs: any = {}
+                Object.keys(chainRouters).forEach((chainId) => {
+                  const chainRouterAddress = chainRouters[chainId]
+                  updatedRouterConfigs[`${chainId}:${chainRouterAddress}`] = {
+                    address: chainRouterAddress,
+                    chainId
+                  }
+                })
+
+                updateAppSetupSettings(
+                  appSettings,
+                  setAppSettings,
+                  dispatch,
+                  {
+                    crosschainTokens: {
+                      ...appSettings.crosschainTokens,
+                      ...updatedCrosschainTokens,
+                    },
+                    routerConfigs: {
+                      ...appSettings.routerConfigs,
+                      ...updatedRouterConfigs,
+                    },
+                    erc20Tokens: {
+                      ...appSettings.erc20Tokens,
+                      ...updatedErc20Tokens,
+                    },
+                  }
+                )
+                setFetchConfigStep(FetchConfigDataSteps.NONE)
+                setIsFetchingConfigData(false)
               })
             })
           })
