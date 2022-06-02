@@ -133,7 +133,8 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   // console.log(list)
   const map:any = {}
   for (const t in list) {
-    if(!isAddress(t)) continue
+    if(!isAddress(t) || !list[t].name || !list[t].symbol) continue
+    // console.log(list[t])
     map[t] = new WrappedBridgeTokenInfo(list[t])
   }
   return map

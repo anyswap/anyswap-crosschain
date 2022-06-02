@@ -74,6 +74,7 @@ export function useInitSelectCurrency (
         list[token] = {
           ...(allTokensList[token].tokenInfo ? allTokensList[token].tokenInfo : allTokensList[token]),
         }
+        if(!list[token].name || !list[token].symbol) continue
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
           if (
