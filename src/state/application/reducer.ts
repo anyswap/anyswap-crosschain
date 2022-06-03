@@ -52,7 +52,8 @@ const initialState: ApplicationState = {
     mainConfigAddress: '',
     routerConfigs: {},
     erc20Tokens: {},
-    crosschainTokens: {}
+    crosschainTokens: {},
+    tokenGroups: []
   }
 }
 

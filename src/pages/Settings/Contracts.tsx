@@ -628,6 +628,7 @@ export default function Contracts() {
     )
   }
 
+  console.log('>>>> appSettings.tokenGroups', appSettings.tokenGroups, appSettings)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -922,6 +923,16 @@ export default function Contracts() {
               </Select>
             </OptionLabel>
             <OptionLabel>
+              {t('idOfCrosschainGroup')}
+              <Select>
+                <SelectOption>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
+                {appSettings.tokenGroups.forEach((tokenGroupKey) => {
+                  return (
+                    <SelectOption key={tokenGroupKey} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>
+                  )
+                })}
+              </Select>
+              <Input />
               {t('idOfCrosschainTokenNetwork')}
               <Input
                 value={crosschainTokenChainId || chainId}

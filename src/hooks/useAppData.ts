@@ -29,7 +29,8 @@ const parseInfo = (info: string) => {
       mainConfigAddress: '',
       routerConfigs: {},
       erc20Tokens: {},
-      crosschainTokens: {}
+      crosschainTokens: {},
+      tokenGroups: []
     }
   }
   const result = JSON.parse(info)

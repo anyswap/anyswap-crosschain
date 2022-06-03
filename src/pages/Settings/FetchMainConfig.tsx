@@ -274,6 +274,10 @@ export default function FetchMainConfig({
                     ...appSettings.erc20Tokens,
                     ...updatedErc20Tokens,
                   },
+                  tokenGroups: [
+                    ...appSettings.tokenGroups,
+                    ...allTokenIds
+                  ]
                 }
                 setFetchConfigStep(FetchConfigDataSteps.NONE)
                 setIsFetchingConfigData(false)
