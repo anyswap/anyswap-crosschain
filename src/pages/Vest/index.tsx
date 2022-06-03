@@ -953,13 +953,15 @@ export default function Vest () {
                         //   || !rewardList[item.id].list
                         //   || rewardList[item.id].list.length > 0
                         // ) {
-                        if (!rewardCount || Number(rewardCount) >= 10) {
+                        if (rewardCount && Number(rewardCount) >= 10) {
                           console.log(rewardCount)
-                          if (rewardCount && Number(rewardCount) >= 10) {
-                            alert('Please claim the reward first')
-                          } else {
-                            alert('Loading')
-                          }
+                          alert('Please claim the reward first')
+                          // if (rewardCount && Number(rewardCount) >= 10) {
+                          // } else {
+                          //   alert('Loading')
+                          // }
+                        } else if (parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)) {
+                          alert('Loading')
                         } else {
                           const now = parseInt(Date.now() / 1000 + '')
                           if (now >= Number(item.lockEnds)) {
