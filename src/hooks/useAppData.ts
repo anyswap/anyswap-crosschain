@@ -143,12 +143,17 @@ export default function useAppData(): {
             ...(Object.keys(localStorageAppSetting?.crosschainTokens)?.length && localStorageAppSetting?.crosschainTokens),
             ...(Object.keys(parsed?.appSettings?.crosschainTokens)?.length && parsed?.appSettings?.crosschainTokens)
           }
+          const tokenGroups = [
+            ...(Object.keys(localStorageAppSetting?.tokenGroups)?.length && localStorageAppSetting?.tokenGroups),
+            ...(Object.keys(parsed?.appSettings?.tokenGroups)?.length && parsed?.appSettings?.tokenGroups)
+          ]
 
           parsed.appSettings = {
             ...parsed.appSettings,
             routerConfigs,
             erc20Tokens,
-            crosschainTokens
+            crosschainTokens,
+            tokenGroups
           }
         }
 
