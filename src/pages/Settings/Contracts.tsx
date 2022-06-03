@@ -19,6 +19,7 @@ import Lock from '../../components/Lock'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
 import DeployCrosschainToken from './DeployCrosschainToken'
+import FetchMainConfig from './FetchMainConfig'
 import SwapSettings from './SwapSettings'
 import OptionLabel from './OptionLabel'
 import { Notice } from './index'
@@ -616,6 +617,17 @@ export default function Contracts() {
   const nativeCoinSybmol = chainInfo[chainId || 0].symbol
   const lookAddress = chainInfo[chainId || 0].lookAddr
 
+  const onFetchMainConfigCallback = (newAppSettings: any) => {
+    updateAppSetupSettings(
+      appSettings,
+      setAppSettings,
+      dispatch,
+      {
+        ...newAppSettings
+      }
+    )
+  }
+
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -631,6 +643,7 @@ export default function Contracts() {
             >
               {stateMainConfigAddress}
             </ConfigLink>
+            <FetchMainConfig onFetchCallback={onFetchMainConfigCallback} />
           </ConfigInfo>
         ) : (
           <>
