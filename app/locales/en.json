@@ -446,5 +446,9 @@
   "swapTxInfo_TxNotFound": "Information about swap not found",
   "swapTxInfo_AddTransaction": "Add a transaction to the processing queue",
   "swapTxInfo_HeaderPending": "Swap in progress",
-  "swapTxInfo_PendingRefresh": "Refresh"
+  "swapTxInfo_PendingRefresh": "Refresh",
+  "mainConfig_FetchData": "Fetch main config data",
+  "mainConfig_FetchMainData": "Fetching chains and tokens",
+  "mainConfig_FetchChain_And_CCTokenData": "Fetching crosschain tokens",
+  "mainConfig_FetchUnderlyngData": "Fetching information about used ERC20"
 }
