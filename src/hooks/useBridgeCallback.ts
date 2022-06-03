@@ -56,14 +56,14 @@ export function useBridgeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
   selectCurrency: any,
   usePoolType?: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -162,13 +162,13 @@ export function useBridgeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
   selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -195,7 +195,10 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                // console.log(bridgeContract)
+                console.log(routerToken)
+                console.log(inputToken)
+                console.log(toAddress)
+                console.log(getLabelToChain(toChainID))
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
@@ -263,12 +266,12 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -477,7 +480,7 @@ export function useBridgeNativeCallback(
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
@@ -486,7 +489,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -578,7 +581,7 @@ export function useBridgeNativeCallback(
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
@@ -587,7 +590,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
