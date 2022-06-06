@@ -194,13 +194,13 @@ const VersionLinkBox = styled(ExternalLink)`
 
 function ViewAccountInfo () {
   const {selectNetworkInfo} = useUserSelectChainId()
-  if (selectNetworkInfo?.label === 'BTC') {
-    return <></>
-  }
+  
   const {account, chainId} = useActiveReact()
   const baseBalance = useBaseBalances(account, chainId)
   // console.log(baseBalance)
-  
+  if (selectNetworkInfo?.label === 'BTC') {
+    return <></>
+  }
   return (
     <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
       {account && baseBalance ? (
