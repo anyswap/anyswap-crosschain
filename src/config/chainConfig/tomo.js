@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const TOMO_MAIN_CHAINID = ChainId.TOMO
 export const TOMO_MAINNET = getLocalRPC(TOMO_MAIN_CHAINID, 'https://rpc.tomochain.com')
-export const TOMO_MAIN_EXPLORER = 'https://scan.tomochain.com'
+export const TOMO_MAIN_EXPLORER = 'https://tomoscan.io'
 
 export const tokenList = []
 export const testTokenList = []
@@ -46,7 +46,7 @@ export default {
       TOMO_MAINNET,
     ],
     chainID: TOMO_MAIN_CHAINID,
-    lookHash: TOMO_MAIN_EXPLORER + '/txs/',
+    lookHash: TOMO_MAIN_EXPLORER + '/tx/',
     lookAddr: TOMO_MAIN_EXPLORER + '/address/',
     lookBlock: TOMO_MAIN_EXPLORER + '/block/',
     explorer: TOMO_MAIN_EXPLORER,
