@@ -77,6 +77,7 @@ export default function CrossChain({
   const connectedWallet = useConnectedWallet()
 
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
+  // console.log(bridgeKey)
   // console.log(allTokensList)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
