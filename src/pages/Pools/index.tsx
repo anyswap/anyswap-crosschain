@@ -689,12 +689,13 @@ export default function SwapNative() {
                           onClear()
                         })
                       } else {
-                        console.log(2)
                         if (isNativeToken) {
+                          console.log(2)
                           if (onWrapNative) onWrapNative().then(() => {
                             onClear()
                           })
                         } else {
+                          console.log(3)
                           if (onWrapUnderlying) onWrapUnderlying().then(() => {
                             onClear()
                           })

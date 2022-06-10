@@ -64,4 +64,5 @@ export enum ChainId {
   HOO = '70',
   TT = '108',
   KAVA = '2222',
+  KLAY = '8217',
 }
