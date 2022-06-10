@@ -42,6 +42,12 @@ export const Select = styled.select`
   font-size: inherit;
   background-color: transparent;
   color: inherit;
+  &.hasError {
+    background-color: #e5c7c7;
+    border-bottom: 1px solid #9f0808;
+    padding-left: 10px;
+    color: #c50a0a;
+  }
 `
 
 export const SelectOption = styled.option`
@@ -66,8 +72,21 @@ export const Input = styled.input`
   font-size: inherit;
   background-color: transparent;
   color: inherit;
+  &.hasError {
+    background-color: #e5c7c7;
+    border-bottom: 1px solid #9f0808;
+    padding-left: 10px;
+    color: #c50a0a;
+  }
+  &.hasError::placeholder {
+    color: #c50a0a;
+  }
 `
-
+/*
+border-bottom: 1px solid #9f0808;
+    background: #e5c7c7;
+    color: #000;
+*/
 const Title = styled.h2<{ noMargin?: boolean }>`
   margin: ${({ noMargin }) => (!noMargin ? '1.6rem 0 0.8rem' : '0')};
 
@@ -628,6 +647,14 @@ export default function Contracts() {
     )
   }
 
+  const [activeTokenGroup, setActiveTokenGroup] = useState(`CreateNewTokenGroup`)
+  const setTokenGroup = (tokenGroup: string) => {
+    console.log('>>>> tokenGroup', tokenGroup)
+    setActiveTokenGroup(tokenGroup)
+  }
+  const [ownTokenGroup, setOwnTokenGroup] = useState(``)
+  console.log('>>>> ownTokenGroup', ownTokenGroup)
+
   console.log('>>>> appSettings.tokenGroups', appSettings.tokenGroups, appSettings)
   return (
     <>
@@ -924,15 +951,23 @@ export default function Contracts() {
             </OptionLabel>
             <OptionLabel>
               {t('idOfCrosschainGroup')}
-              <Select>
-                <SelectOption>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
-                {appSettings.tokenGroups.forEach((tokenGroupKey) => {
+              <Select onChange={event => setTokenGroup(event.target.value)}>
+                <SelectOption value={`CreateNewTokenGroup`}>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
+                {/* @ts-ignore */}
+                {appSettings.tokenGroups.map((tokenGroupKey) => {
+                  console.log('>>>> tokenGroups', tokenGroupKey)
                   return (
                     <SelectOption key={tokenGroupKey} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>
                   )
                 })}
               </Select>
-              <Input />
+              {activeTokenGroup === `CreateNewTokenGroup` && (
+                <Input
+                  className={`hasError`}
+                  placeholder={t('idOfCrosschainGroupNewGroupPlaceholder')}
+                  onChange={event => setOwnTokenGroup(event.target.value)}
+                />
+              )}
               {t('idOfCrosschainTokenNetwork')}
               <Input
                 value={crosschainTokenChainId || chainId}
