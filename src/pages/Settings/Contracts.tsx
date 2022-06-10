@@ -82,11 +82,7 @@ export const Input = styled.input`
     color: #c50a0a;
   }
 `
-/*
-border-bottom: 1px solid #9f0808;
-    background: #e5c7c7;
-    color: #000;
-*/
+
 const Title = styled.h2<{ noMargin?: boolean }>`
   margin: ${({ noMargin }) => (!noMargin ? '1.6rem 0 0.8rem' : '0')};
 
@@ -453,6 +449,24 @@ export default function Contracts() {
     }
   }, [underlyingToken, chainId, underlyingNetworkId])
 
+  const [activeTokenGroup, setActiveTokenGroup] = useState(`CreateNewTokenGroup`)
+  const [ownTokenGroup, setOwnTokenGroup] = useState(``)
+  const [ownTokenGroupError, setOwnTokenGroupError] = useState(false)
+
+  const onChangeOwnTokenGroup = (newOwnTokenGroup: string) => {
+    setOwnTokenGroup(newOwnTokenGroup)
+    setOwnTokenGroupError(newOwnTokenGroup === ``)
+  }
+
+  const setTokenGroup = (tokenGroup: string) => {
+    console.log('>>>> tokenGroup', tokenGroup)
+    setActiveTokenGroup(tokenGroup)
+  }
+
+  console.log('>>>> ownTokenGroup', ownTokenGroup)
+
+  console.log('>>>> appSettings.tokenGroups', appSettings.tokenGroups, appSettings)
+
   const setTokenConfig = async () => {
     if (!routerConfigSigner || !underlyingSymbol || !crosschainToken || !crosschainTokenChainId) return
 
@@ -590,6 +604,15 @@ export default function Contracts() {
       setUnderlyingDecimals(underlying.decimals)
       setUnderlyingName(underlying.name)
       setUnderlyingSymbol(underlying.symbol)
+      const hasTokenGroup = appSettings.tokenGroups.filter((tokenGroup) => {
+        return (tokenGroup == underlying.symbol)
+      })
+      if (hasTokenGroup.length > 0) {
+        setTokenGroup(underlying.symbol)
+      } else {
+        setTokenGroup(`CreateNewTokenGroup`)
+      }
+      setOwnTokenGroup(underlying.symbol)
 
     } else {
       setCrosschainTokenChainId(``)
@@ -600,6 +623,8 @@ export default function Contracts() {
       setUnderlyingDecimals(0)
       setUnderlyingName(``)
       setUnderlyingSymbol(``)
+      setTokenGroup(`CreateNewTokenGroup`)
+      setOwnTokenGroup(``)
     }
   }
 
@@ -647,15 +672,6 @@ export default function Contracts() {
     )
   }
 
-  const [activeTokenGroup, setActiveTokenGroup] = useState(`CreateNewTokenGroup`)
-  const setTokenGroup = (tokenGroup: string) => {
-    console.log('>>>> tokenGroup', tokenGroup)
-    setActiveTokenGroup(tokenGroup)
-  }
-  const [ownTokenGroup, setOwnTokenGroup] = useState(``)
-  console.log('>>>> ownTokenGroup', ownTokenGroup)
-
-  console.log('>>>> appSettings.tokenGroups', appSettings.tokenGroups, appSettings)
   return (
     <>
       <Title noMargin>{t('mainConfig')}</Title>
@@ -951,11 +967,10 @@ export default function Contracts() {
             </OptionLabel>
             <OptionLabel>
               {t('idOfCrosschainGroup')}
-              <Select onChange={event => setTokenGroup(event.target.value)}>
+              <Select value={activeTokenGroup} onChange={event => setTokenGroup(event.target.value)}>
                 <SelectOption value={`CreateNewTokenGroup`}>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
                 {/* @ts-ignore */}
                 {appSettings.tokenGroups.map((tokenGroupKey) => {
-                  console.log('>>>> tokenGroups', tokenGroupKey)
                   return (
                     <SelectOption key={tokenGroupKey} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>
                   )
@@ -963,9 +978,9 @@ export default function Contracts() {
               </Select>
               {activeTokenGroup === `CreateNewTokenGroup` && (
                 <Input
-                  className={`hasError`}
+                  className={(ownTokenGroupError) ? `hasError` : ``}
                   placeholder={t('idOfCrosschainGroupNewGroupPlaceholder')}
-                  onChange={event => setOwnTokenGroup(event.target.value)}
+                  onChange={event => onChangeOwnTokenGroup(event.target.value)}
                 />
               )}
               {t('idOfCrosschainTokenNetwork')}
