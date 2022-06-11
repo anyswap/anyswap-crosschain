@@ -455,25 +455,29 @@ export default function Contracts() {
 
   const onChangeOwnTokenGroup = (newOwnTokenGroup: string) => {
     setOwnTokenGroup(newOwnTokenGroup)
-    setOwnTokenGroupError(newOwnTokenGroup === ``)
+    setOwnTokenGroupError(false)
   }
 
   const setTokenGroup = (tokenGroup: string) => {
-    console.log('>>>> tokenGroup', tokenGroup)
     setActiveTokenGroup(tokenGroup)
   }
-
-  console.log('>>>> ownTokenGroup', ownTokenGroup)
-
-  console.log('>>>> appSettings.tokenGroups', appSettings.tokenGroups, appSettings)
 
   const setTokenConfig = async () => {
     if (!routerConfigSigner || !underlyingSymbol || !crosschainToken || !crosschainTokenChainId) return
 
+    if (activeTokenGroup == `CreateNewTokenGroup`) {
+      if (ownTokenGroup == ``) {
+        setOwnTokenGroupError(true)
+        return
+      }
+    }
+
+    const usedTokenGroup = (activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()
     const VERSION = 6
 
     try {
-      const tx = await routerConfigSigner.setTokenConfig(underlyingSymbol.toUpperCase(), crosschainTokenChainId, {
+
+      const tx = await routerConfigSigner.setTokenConfig(usedTokenGroup, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
         ContractAddress: crosschainToken,
         ContractVersion: VERSION
@@ -979,6 +983,7 @@ export default function Contracts() {
               {activeTokenGroup === `CreateNewTokenGroup` && (
                 <Input
                   className={(ownTokenGroupError) ? `hasError` : ``}
+                  value={ownTokenGroup}
                   placeholder={t('idOfCrosschainGroupNewGroupPlaceholder')}
                   onChange={event => onChangeOwnTokenGroup(event.target.value)}
                 />
@@ -1011,6 +1016,7 @@ export default function Contracts() {
 
         <SwapSettings
           underlying={underlying}
+          usedTokenGroup={(activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()}
           onConfigNetwork={onConfigNetwork}
           SwitchToConfigButton={<SwitchToChainButton chainId={stateMainConfigChainId} />}
         />
