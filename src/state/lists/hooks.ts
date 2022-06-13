@@ -133,7 +133,8 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   // console.log(list)
   const map:any = {}
   for (const t in list) {
-    if(!isAddress(t)) continue
+    if(!isAddress(t) || !list[t].name || !list[t].symbol) continue
+    // console.log(list[t])
     map[t] = new WrappedBridgeTokenInfo(list[t])
   }
   return map
@@ -337,7 +338,7 @@ export function useInitUserSelectCurrency(chainId?: any) {
   const setInitUserSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
     const id = useChainId ? useChainId : chainId
     if (id && toChainId && id?.toString() !== toChainId?.toString()){
-      dispatch(userSelectCurrency({chainId: useChainId ? useChainId : chainId, token, toChainId}))
+      dispatch(userSelectCurrency({chainId: id, token, toChainId}))
     }
   }, [dispatch])
 

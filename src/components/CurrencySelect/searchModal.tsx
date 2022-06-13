@@ -68,6 +68,7 @@ export default function SearchModal ({
     const list:any = {}
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      if (!obj.name || !obj.symbol) continue
       list[token] = {
         ...obj,
         key: token
@@ -82,6 +83,7 @@ export default function SearchModal ({
     // const mainTokenLists:any = []
     for (const token in useAllTokenList) {
       const obj:any = useAllTokenList[token]
+      if (!obj.name || !obj.symbol) continue
       arr.push(obj)
     }
     // console.log(arr)

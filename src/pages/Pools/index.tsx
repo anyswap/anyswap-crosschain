@@ -210,11 +210,12 @@ export default function SwapNative() {
     return arr
   }, [selectCurrency, anyTokenList])
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})
-  const {poolData: destPoolData} = usePool(selectChain, account, chainId?.toString() === selectChain?.toString() ? undefined : destConfig?.anytoken?.address, destConfig?.underlying?.address)
+  const {poolData: destPoolData} = usePool(selectChain, account, chainId?.toString() === selectChain?.toString() || !destConfig?.isLiquidity ? undefined : destConfig?.anytoken?.address, destConfig?.underlying?.address)
 
   // useEffect(() => {
   //   console.log(destPoolData)
-  // }, [destPoolData])
+  //   console.log(poolData)
+  // }, [destPoolData, poolData])
 
   function onDelay () {
     setDelayAction(true)
@@ -298,8 +299,10 @@ export default function SwapNative() {
       } else if (swapType !== 'deposit') {
         // console.log(selectAnyToken)
         // console.log(poolData)
-        const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address]?.totalSupply ? BigAmount.format(selectAnyToken.decimals, poolData?.[selectAnyToken?.address].totalSupply).toExact() : ''
-        const destLiquidity = destConfig?.anytoken?.address &&  destPoolData?.[destConfig?.anytoken?.address]?.totalSupply ? BigAmount.format(destConfig?.anytoken.decimals, destPoolData?.[destConfig?.anytoken?.address].totalSupply).toExact() : ''
+        const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address]?.balanceOf ? BigAmount.format(selectAnyToken.decimals, poolData?.[selectAnyToken?.address].balanceOf).toExact() : ''
+        const destLiquidity = destConfig?.anytoken?.address &&  destPoolData?.[destConfig?.anytoken?.address]?.balanceOf ? BigAmount.format(destConfig?.anytoken.decimals, destPoolData?.[destConfig?.anytoken?.address].balanceOf).toExact() : ''
+        // console.log('curLiquidity', curLiquidity)
+        // console.log('destLiquidity', destLiquidity)
         if (chainId?.toString() !== selectChain?.toString()) {
           // console.log(destChain)
           if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
@@ -322,6 +325,7 @@ export default function SwapNative() {
             (isDestUnderlying && destLiquidity && Number(inputBridgeValue) > Number(destLiquidity))
             || (isDestUnderlying && !destLiquidity)
           ) {
+            console.log('dest')
             return {
               state: 'Error',
               tip: t('insufficientLiquidity')
@@ -682,7 +686,7 @@ export default function SwapNative() {
           swapType={swapType}
         /> */}
         {
-          swapType !== 'deposit' && chainId?.toString() !== selectChain?.toString() ? (
+          swapType !== 'deposit' && chainId?.toString() !== selectChain?.toString() && destConfig?.isLiquidity ? (
             <MorePool
               anyTokenList={destConfig?.anytoken ? [destConfig?.anytoken] : []}
               poolData={destPoolData}

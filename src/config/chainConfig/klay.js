@@ -2,14 +2,14 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const TOMO_MAIN_CHAINID = ChainId.TOMO
-export const TOMO_MAINNET = getLocalRPC(TOMO_MAIN_CHAINID, 'https://rpc.tomochain.com')
-export const TOMO_MAIN_EXPLORER = 'https://tomoscan.io'
+export const KLAY_MAIN_CHAINID = ChainId.KLAY
+export const KLAY_MAINNET = getLocalRPC(KLAY_MAIN_CHAINID, 'https://public-node-api.klaytnapi.com/v1/cypress')
+export const KLAY_MAIN_EXPLORER = 'https://scope.klaytn.com'
 
 export const tokenList = []
 export const testTokenList = []
 
-const symbol = 'TOMO'
+const symbol = 'KLAY'
 
 const bridgeToken = {
   [VERSION.V1]: {
@@ -31,32 +31,32 @@ const bridgeToken = {
 }
 
 export default {
-  [TOMO_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + TOMO_MAIN_CHAINID,
+  [KLAY_MAIN_CHAINID]: {
+    tokenListUrl: tokenListUrl + KLAY_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
     swapInitToken: '',
-    multicalToken: '0xf29848418cDdA0710Ae8d32e951E9DD5249a797B',
+    multicalToken: '0x80A16016cC4A2E6a2CACA8a4a498b1699fF0f844',
     v1FactoryToken: '',
     v2FactoryToken: '',
     timelock: '',
-    nodeRpc: TOMO_MAINNET,
+    nodeRpc: KLAY_MAINNET,
     nodeRpcList: [
-      TOMO_MAINNET,
+      KLAY_MAINNET,
     ],
-    chainID: TOMO_MAIN_CHAINID,
-    lookHash: TOMO_MAIN_EXPLORER + '/tx/',
-    lookAddr: TOMO_MAIN_EXPLORER + '/address/',
-    lookBlock: TOMO_MAIN_EXPLORER + '/block/',
-    explorer: TOMO_MAIN_EXPLORER,
+    chainID: KLAY_MAIN_CHAINID,
+    lookHash: KLAY_MAIN_EXPLORER + '/tx/',
+    lookAddr: KLAY_MAIN_EXPLORER + '/address/',
+    lookBlock: KLAY_MAIN_EXPLORER + '/block/',
+    explorer: KLAY_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'TomoChain',
-    networkName: 'TomoChain mainnet',
+    name: 'Klaytn',
+    networkName: 'Klaytn mainnet',
     type: 'main',
-    label: TOMO_MAIN_CHAINID,
+    label: KLAY_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'TOMO',
+    suffix: 'KLAY',
     anyToken: ''
   },
 }

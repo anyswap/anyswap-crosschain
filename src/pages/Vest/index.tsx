@@ -693,25 +693,27 @@ export default function Vest () {
       // const EpochId = await rewardContract.getCurrentEpochId()
       rewardContract.getEpochInfo(epochId).then((res:any) => {
         // console.log(res)
-        setCurEpochInfo({
+        const data = {
           startTime: res[0].toString(),
           endTime: res[1].toString(),
           totalReward: res[2].toString(),
-        })
+        }
+        setCurEpochInfo(data)
+        setlatestEpochInfo(data)
       }).catch((err:any) => {
         console.log(err)
         setCurEpochInfo('')
       })
-      rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
-        // console.log(res)
-        setlatestEpochInfo({
-          startTime: res[0].toString(),
-          endTime: res[1].toString(),
-          totalReward: res[2].toString(),
-        })
-      }).catch((err:any) => {
-        console.log(err)
-      })
+      // rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
+      //   // console.log(res)
+      //   setlatestEpochInfo({
+      //     startTime: res[0].toString(),
+      //     endTime: res[1].toString(),
+      //     totalReward: res[2].toString(),
+      //   })
+      // }).catch((err:any) => {
+      //   console.log(err)
+      // })
       rewardContract.getEpochTotalPower(epochId).then((res:any) => {
         // console.log(res)
         setTotalPower(res.toString())
@@ -951,13 +953,15 @@ export default function Vest () {
                         //   || !rewardList[item.id].list
                         //   || rewardList[item.id].list.length > 0
                         // ) {
-                        if (!rewardCount || Number(rewardCount) >= 10) {
+                        if (rewardCount && Number(rewardCount) >= 10) {
                           console.log(rewardCount)
-                          if (rewardCount && Number(rewardCount) >= 10) {
-                            alert('Please claim the reward first')
-                          } else {
-                            alert('Loading')
-                          }
+                          alert('Please claim the reward first')
+                          // if (rewardCount && Number(rewardCount) >= 10) {
+                          // } else {
+                          //   alert('Loading')
+                          // }
+                        } else if (parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)) {
+                          alert('Loading')
                         } else {
                           const now = parseInt(Date.now() / 1000 + '')
                           if (now >= Number(item.lockEnds)) {

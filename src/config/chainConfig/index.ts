@@ -53,6 +53,8 @@ import tomo from './tomo'
 import hoo from './hoo'
 import tt from './tt'
 import near from './near'
+import kava from './kava'
+import klay from './klay'
 
 import { ChainId } from './chainId'
 
@@ -63,6 +65,8 @@ interface ConFig {
 }
 export const chainInfo:ConFig = {
   ...near,
+  ...klay,
+  ...kava,
   ...tt,
   ...hoo,
   ...tomo,
@@ -148,7 +152,7 @@ const allChainList = [
   ChainId.ASTAR,
   ChainId.VLX,
   ChainId.CLV,
-  ChainId.CRAB,
+  // ChainId.CRAB,
   ChainId.MIKO,
   ChainId.REI,
   ChainId.CFX,
@@ -165,6 +169,8 @@ const allChainList = [
   ChainId.TOMO,
   ChainId.HOO,
   ChainId.TT,
+  ChainId.KAVA,
+  ChainId.KLAY,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

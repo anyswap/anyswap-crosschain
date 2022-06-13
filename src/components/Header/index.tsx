@@ -12,7 +12,7 @@ import IconNight from '../../assets/images/icon/night.svg'
 
 import { useBaseBalances } from '../../hooks/useBaseBalance'
 import {useActiveReact} from '../../hooks/useActiveReact'
-import { useDarkModeManager } from '../../state/user/hooks'
+import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
 
 import { ExternalLink } from '../../theme'
 
@@ -193,13 +193,14 @@ const VersionLinkBox = styled(ExternalLink)`
 `
 
 function ViewAccountInfo () {
+  const {selectNetworkInfo} = useUserSelectChainId()
+  
   const {account, chainId} = useActiveReact()
   const baseBalance = useBaseBalances(account, chainId)
   // console.log(baseBalance)
-  if (chainId === 'BTC') {
+  if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
-  
   return (
     <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
       {account && baseBalance ? (

@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const FUSE_MAIN_CHAINID = ChainId.FUSE
 export const FUSE_MAINNET = getLocalRPC(FUSE_MAIN_CHAINID, 'https://rpc.fuse.io')
-export const FUSE_MAIN_EXPLORER = 'https://fuse-mainnet.gateway.pokt.network'
+export const FUSE_MAIN_EXPLORER = 'http://explorer.fuse.io'
 
 export const tokenList = []
 export const testTokenList = []

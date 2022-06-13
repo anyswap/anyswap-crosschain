@@ -53,12 +53,13 @@ export function useInitSelectCurrency (
   return useMemo(() => {
     // console.log(allTokensList)
     // console.log(useChainId)
+    // console.log(userInit)
     // console.log(initToken)
     let t = []
     if (initToken) {
       t = [initToken]
     } else if (userInit?.token) {
-      t = [userInit?.token]
+      t = [userInit?.token?.toLowerCase()]
     } else {
       t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     }
@@ -79,6 +80,7 @@ export function useInitSelectCurrency (
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,
         }
+        if(!list[token].name || !list[token].symbol) continue
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
           if (
@@ -246,7 +248,7 @@ export function getFTMSelectPool (
       selectCurrency
       && chainId
       && (destConfig.isLiquidity || destConfig.isFromLiquidity)
-      && (destConfig.anytoken?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
+      && (destConfig?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
       const curChain = destConfig.isFromLiquidity ? chainId : selectChain
@@ -255,7 +257,7 @@ export function getFTMSelectPool (
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig.anytoken?.address,
+        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig?.address,
         chainId?.toString() === '1' ? selectCurrency?.address : destConfig?.address,
         curChain,
         dec,
