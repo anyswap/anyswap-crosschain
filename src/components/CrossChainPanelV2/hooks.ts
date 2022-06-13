@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
-import {isAddress} from 'multichain-bridge'
+// import {isAddress} from 'multichain-bridge'
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
@@ -46,45 +46,71 @@ export function outputValue (inputBridgeValue: any, destConfig:any, selectCurren
 export function useInitSelectCurrency (
   allTokensList:any,
   useChainId: any,
-  initToken?: any
+  initToken?: any,
+  onlyUnderlying?: any
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
   return useMemo(() => {
     // console.log(allTokensList)
     // console.log(useChainId)
+    // console.log(userInit)
     // console.log(initToken)
     let t = []
     if (initToken) {
       t = [initToken]
     } else if (userInit?.token) {
-      t = [userInit?.token]
+      t = [userInit?.token?.toLowerCase()]
     } else {
       t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     }
-
+    // console.log(t)
     const list:any = {}
+    const underlyingList:any = {}
 
     let initCurrency:any
-    
+    // console.log(allTokensList)
     if (Object.keys(allTokensList).length > 0) {
       let useToken = ''
       let noMatchInitToken = ''
-      for (const token in allTokensList) {
-        if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
+      for (const tokenKey in allTokensList) {
+        const item = allTokensList[tokenKey]
+        const token = item.address
+        // if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
-          ...(allTokensList[token].tokenInfo ? allTokensList[token].tokenInfo : allTokensList[token]),
+          ...(item.tokenInfo ? item.tokenInfo : item),
+          key: tokenKey,
         }
+        if(!list[token].name || !list[token].symbol) continue
         if (!noMatchInitToken) noMatchInitToken = token
         if ( !useToken ) {
           if (
-            t.includes(token)
+            t.includes(token?.toLowerCase())
             || t.includes(list[token]?.symbol?.toLowerCase())
-            || t.includes(list[token]?.underlying?.symbol?.toLowerCase())
           ) {
             useToken = token
           }
         }
+        if (onlyUnderlying) {
+          for (const destChainId in list[token].destChains) {
+            const destChainIdList = list[token].destChains[destChainId]
+            let isUnderlying = false
+            for (const tokenKey in destChainIdList) {
+              const destChainIdItem = destChainIdList[tokenKey]
+              if (destChainIdItem.isFromLiquidity) {
+                isUnderlying = true
+                break
+              }
+            }
+            if (isUnderlying) {
+              underlyingList[token] = {
+                ...list[token]
+              }
+            }
+          }
+        }
       }
+      // console.log(useToken)
+      // console.log(list)
       if (useToken) {
         initCurrency = list[useToken]
       } else if (noMatchInitToken) {
@@ -92,9 +118,10 @@ export function useInitSelectCurrency (
       }
     }
     return {
-      initCurrency
+      initCurrency,
+      underlyingList
     }
-  }, [allTokensList, useChainId, initToken])
+  }, [allTokensList, useChainId, initToken, onlyUnderlying])
 }
 
 export function useDestChainid (
@@ -167,39 +194,30 @@ export function useDestCurrency (
       for (const t in dl) {
         formatDl[t] = {
           ...dl[t],
+          key: t,
           logoUrl: selectCurrency?.logoUrl
         }
       }
       // console.log(formatDl)
       const destTokenList = Object.keys(formatDl)
-      let destToken = ''
-      if (destTokenList.length === 1) {
-        destToken = destTokenList[0]
-      } else if (destTokenList.length > 1) {
-        const typeArr = ['swapin', 'swapout']
-        let bridgeToken = '',
-            routerToken = '',
-            isRouterUnderlying = false
-        for (const t of destTokenList) {
-          if (typeArr.includes(formatDl[t].type)) {
-            bridgeToken = t
-          }
-          if (!typeArr.includes(formatDl[t].type)) {
-            routerToken = t
-            if (formatDl[t].underlying) {
-              isRouterUnderlying = true
-            }
-          }
-        }
-        if (isRouterUnderlying) {
-          destToken = routerToken
-        } else {
-          destToken = bridgeToken
+      let destTokenKey = ''
+      const typeArr = ['swapin', 'swapout']
+      for (const tokenKey of destTokenList) {
+        if (!destTokenKey) destTokenKey = tokenKey
+        // console.log(destTokenKey)
+        if (
+          Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
+          || (
+            Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
+            && typeArr.includes(formatDl[tokenKey].type)
+          )
+        ) {
+          // console.log(destTokenKey)
+          destTokenKey = tokenKey
         }
       }
-      // setSelectDestCurrency(formatDl[destToken])
-      // setSelectDestCurrencyList(formatDl)
-      initDestCurrency = formatDl[destToken]
+      
+      initDestCurrency = formatDl[destTokenKey]
       initDestCurrencyList = formatDl
     }
     return {
@@ -211,8 +229,6 @@ export function useDestCurrency (
 
 export function getFTMSelectPool (
   selectCurrency: any,
-  isUnderlying: any,
-  isDestUnderlying: any,
   chainId: any,
   selectChain: any,
   destConfig: any,
@@ -228,22 +244,21 @@ export function getFTMSelectPool (
     bl: ''
   })
   const getFTMSelectPool = useCallback(async() => {
-
     if (
       selectCurrency
       && chainId
-      && (isUnderlying || isDestUnderlying)
-      && (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM')
+      && (destConfig.isLiquidity || destConfig.isFromLiquidity)
+      && (destConfig?.address === 'FTM' || destConfig.fromanytoken?.address === 'FTM')
     ) {
       // console.log(selectCurrency)
-      const curChain = isUnderlying ? chainId : selectChain
-      const destChain = isUnderlying ? selectChain : chainId
-      const tokenA = isUnderlying ? selectCurrency : destConfig
+      const curChain = destConfig.isFromLiquidity ? chainId : selectChain
+      const destChain = destConfig.isFromLiquidity ? selectChain : chainId
+      // const tokenA = destConfig.isFromLiquidity ? selectCurrency : destConfig
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        tokenA?.underlying1 ? tokenA?.underlying1?.address : tokenA?.underlying?.address,
-        tokenA?.address,
+        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig?.address,
+        chainId?.toString() === '1' ? selectCurrency?.address : destConfig?.address,
         curChain,
         dec,
       )
@@ -260,7 +275,7 @@ export function getFTMSelectPool (
       // console.log(destChain)
       // console.log(DC)
       if (CC) {
-        if (isUnderlying) {
+        if (chainId?.toString() === '1') {
           setCurChain({
             chain: chainId,
             ts: CC,
@@ -274,7 +289,7 @@ export function getFTMSelectPool (
       }
       // console.log(DC)
       if (DC) {
-        if (isUnderlying) {
+        if (chainId?.toString() === '1') {
           setDestChain({
             chain: selectChain,
             ts: DC,
@@ -287,10 +302,10 @@ export function getFTMSelectPool (
         }
       }
     }
-  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  }, [selectCurrency, chainId, selectChain, destConfig])
   useEffect(() => {
     getFTMSelectPool()
-  }, [selectCurrency, chainId, selectChain, isDestUnderlying, isUnderlying, destConfig])
+  }, [selectCurrency, chainId, selectChain, destConfig])
   return {
     curChain,
     destChain

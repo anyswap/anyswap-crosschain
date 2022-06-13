@@ -1,5 +1,5 @@
 
-import { Currency, JSBI, Fraction } from 'anyswap-sdk'
+import { Currency } from 'anyswap-sdk'
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
@@ -31,9 +31,10 @@ import {useTerraSend} from './terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
-import { ChainId } from '../config/chainConfig/chainId'
+import { ChainId, getLabelToChain } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
+import { BigAmount } from '../utils/formatBignumber'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -55,20 +56,24 @@ export function useBridgeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
-  selectCurrency: any
+  selectCurrency: any,
+  usePoolType?: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
   // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
   const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
-  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  let balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  if (usePoolType && usePoolType === 'withdraw') {
+    balance = anybalance
+  }
   // console.log(balance?.raw.toString(16))
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -93,19 +98,20 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                // console.log(bridgeContract)
+                console.log(toAddress)
+                console.log(routerToken)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -122,7 +128,7 @@ export function useBridgeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -156,13 +162,13 @@ export function useBridgeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
   selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -189,7 +195,10 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                // console.log(bridgeContract)
+                console.log(routerToken)
+                console.log(inputToken)
+                console.log(toAddress)
+                console.log(getLabelToChain(toChainID))
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
@@ -198,14 +207,14 @@ export function useBridgeCallback(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 console.log(txReceipt)
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -222,7 +231,7 @@ export function useBridgeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -257,12 +266,12 @@ export function useBridgeNativeCallback(
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   version: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -290,14 +299,14 @@ export function useBridgeNativeCallback(
                 const txReceipt = await bridgeContract.anySwapOutNative(
                   ...[inputToken,
                   toAddress,
-                  toChainID],
+                  getLabelToChain(toChainID)],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -314,7 +323,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -423,7 +432,7 @@ export function useBridgeNativeCallback(
     // console.log(bridgeContract)
     // console.log(chainId)
     // console.log(inputCurrency)
-    // console.log(swapType)
+    // console.log(inputToken)
     if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
@@ -471,7 +480,7 @@ export function useBridgeNativeCallback(
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
@@ -480,7 +489,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -519,13 +528,13 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -542,7 +551,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -572,7 +581,7 @@ export function useBridgeNativeCallback(
   inputCurrency: Currency | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
-  toChainID: string | undefined,
+  toChainID: any,
   deadline: number | undefined,
   outputAmount: string | undefined,
   routerPath: any,
@@ -581,7 +590,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
@@ -619,13 +628,13 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  getLabelToChain(toChainID)
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
-                  toAddress: toAddress?.toLowerCase(),
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                   symbol: inputCurrency?.symbol,
                   version: version,
                   routerToken: routerToken,
@@ -642,7 +651,7 @@ export function useBridgeNativeCallback(
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
                     formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress?.toLowerCase(),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
                     version: version
@@ -901,7 +910,8 @@ export function useBridgeNativeCallback(
         token: terraToken
       }]}).then((res:any) => {
         // console.log(res)
-        const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        // const bl:any = res[terraToken] && inputCurrency ? new Fraction(JSBI.BigInt(res[terraToken]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(inputCurrency?.decimals))) : undefined
+        const bl:any = res[terraToken] && inputCurrency ? BigAmount.format(inputCurrency?.decimals, res[terraToken]) : undefined
         // console.log(bl)
         // console.log(bl?.toSignificant(inputCurrency?.decimals))
         // if (bl?.toSignificant(inputCurrency?.decimals) === '0') {
@@ -967,7 +977,7 @@ export function useBridgeNativeCallback(
     // console.log(typedValue)
     let sufficientBalance = false
     try {
-      sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toSignificant(inputCurrency?.decimals)) > Number(typedValue))
+      sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
     } catch (error) {
       console.log(error)
     }

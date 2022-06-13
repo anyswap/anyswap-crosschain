@@ -14,7 +14,7 @@ import pools from './pools/reducer'
 import wallet from './wallet/reducer'
 import rpc from './rpc/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools']
 
 const store = configureStore({
   reducer: {

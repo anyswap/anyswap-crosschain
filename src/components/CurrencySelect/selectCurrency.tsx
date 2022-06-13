@@ -14,7 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
-import {CROSS_BRIDGE_LIST} from '../../config/constant'
+// import {CROSS_BRIDGE_LIST} from '../../config/constant'
 import {thousandBit} from '../../utils/tools/tools'
 import {
   InputRow,
@@ -67,8 +67,6 @@ interface SelectCurrencyInputPanelProps {
   isError?: any // 是否输入错误
   isNativeToken?: boolean // 是否为原生native代币
   isViewMode?: boolean // 是否显示头部更多操作按钮
-  modeConent?: any // 更多操作按钮内容，同isViewMode一起使用
-  onChangeMode?: (value: any) => void // 更多操作按钮方法，同isViewMode一起使用
   allTokens?: any // 所有token list
   customChainId?: any // 显示自定义chainId
   customBalance?: any // 显示自定义chainId
@@ -101,16 +99,13 @@ export default function SelectCurrencyInputPanel({
   isViewNetwork,
   isError,
   isNativeToken,
-  isViewMode, 
-  modeConent,
-  onChangeMode,
   allTokens = {},
   customChainId,
   customBalance,
   bridgeKey,
   allBalances,
   showETH,
-  isRouter,
+  // isRouter,
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -143,20 +138,22 @@ export default function SelectCurrencyInputPanel({
     // console.log(customBalance)
     if (customBalance || isNaN(useChainId)) {
       return customBalance
-    } else if (selectedCurrencyBalance && (!isNativeToken || isRouter === false)) {
+    } else if (selectedCurrencyBalance && (!isNativeToken)) {
+      // console.log(isNativeToken)
       // console.log(selectedCurrencyBalance)
       return selectedCurrencyBalance
     } else if (isNativeToken || !isAddress(currency?.address)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
         return selectedCurrencyBalance
       } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
+        // console.log(selectedCurrencyBalance)
         return selectedETHBalance
       }
       return undefined
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect, isRouter])
+  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect])
   // console.log(useBalance)
   const viewBalance = useMemo(() => {
     if (useBalance) {
@@ -207,23 +204,6 @@ export default function SelectCurrencyInputPanel({
               </TYPE.body>
               
               <HeadterRightBox>
-
-                {isViewMode && onChangeMode ? (
-                  <TYPE.body
-                    onClick={() => {
-                      if (modeConent.isFlag) {
-                        onChangeMode(false)
-                      } else {
-                        onChangeMode(true)
-                      }
-                    }}
-                    color={theme.tipColor}
-                    fontWeight={500}
-                    fontSize={14}
-                    style={{ display: 'inline', cursor: 'pointer', marginRight: '10px', textDecoration: 'underline' }}
-                  >{modeConent.txt}</TYPE.body>
-                ) : ''
-                }
                 {account && showMaxButton && isViewNetwork ? (
                   <>
                     <TYPE.body
@@ -292,17 +272,12 @@ export default function SelectCurrencyInputPanel({
                       (
                         currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) + '...' + currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                          : (
-                            CROSS_BRIDGE_LIST.includes(bridgeKey) ? 
-                            currency?.symbol
-                            :
-                            isRouter === false ? currency?.symbol : config.getBaseCoin(currency?.symbol, useChainId)
-                          )
+                          : currency?.symbol
                       ) || t('selectToken')
                     }
                   </h3>
                   <p>
-                  {currency && currency.name && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? (isRouter === false ? currency.name : config.getBaseCoin(currency.symbol, useChainId, 1, currency.name)) : currency?.name}
+                  {currency?.name}
                   </p>
                 </StyledTokenName>
                 {!disableCurrencySelect && !!currency && (

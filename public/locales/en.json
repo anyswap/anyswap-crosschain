@@ -363,5 +363,7 @@
   "Address": "Address",
   "Age": "Age",
   "Status": "Status",
-  "agree": "Agree"
+  "agree": "Agree",
+  "addLiquidityTip": "Add liquidity to Router {{index}} pool",
+  "removeLiquidityTip": "Remove liquidity from Router {{index}} pool"
 }

@@ -144,7 +144,7 @@ export default function CrossChain({
     const isAddr = isAddress( recipient, selectChain)
     if (isInputError) {
       return isInputError
-    } else if (recipient && !Boolean(isAddr)) {
+    } else if (!recipient || !Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
@@ -165,9 +165,10 @@ export default function CrossChain({
     setMemo('')
     if (recipient && selectCurrency && destConfig && selectChain) {
       if (chainId === 'XRP') {
-        setP2pAddress(destConfig?.DepositAddress)
+        // console.log(destConfig)
+        setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
-        setMemo(recipient)
+        setMemo(recipient + ":" + selectChain)
         setModalSpecOpen(true)
         setDelayAction(false)
       } else {

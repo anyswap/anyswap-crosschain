@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const BTT_MAIN_CHAINID = ChainId.BTT
 export const BTT_MAINNET = getLocalRPC(BTT_MAIN_CHAINID, 'https://rpc.bt.io/')
-export const BTT_MAIN_EXPLORER = 'https://scan.bt.io'
+export const BTT_MAIN_EXPLORER = 'https://bttcscan.com'
 
 export const tokenList = []
 export const testTokenList = []

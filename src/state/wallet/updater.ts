@@ -9,7 +9,7 @@ import { AppDispatch } from '../index'
 import { tokenBalanceList } from './actions'
 // import {useTokenBalances} from './hooks'
 
-import { useBridgeTokenList } from '../lists/hooks'
+import { useAllMergeBridgeTokenList } from '../lists/hooks'
 import {useAllTransactions, isTransactionRecent} from '../transactions/hooks'
 import { TransactionDetails } from '../transactions/reducer'
 // import { isAddress } from '../../utils'
@@ -41,12 +41,12 @@ export default function Updater(): null {
   const { library } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   // const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  const allTokens = useBridgeTokenList('mergeTokenList', chainId)
+  const allTokens = useAllMergeBridgeTokenList('mergeTokenList', chainId)
   const rpcItem = useRpcState()
   const tokenListRef = useRef<any>(0)
 
   const allTransactions = useAllTransactions()
-  // console.log(allTransactions)
+  // console.log(allTokens)
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
     return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
@@ -103,7 +103,7 @@ export default function Updater(): null {
             let bl = ''
             try {
               // console.log(ERC20_INTERFACE.decodeFunctionResult('balanceOf', results))
-              bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
+              bl = results === '0x' ? '0' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
             } catch (error) {
               // console.error(error)
             }

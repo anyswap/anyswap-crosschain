@@ -4,6 +4,7 @@ import { useUserSelectChainId } from '../state/user/hooks'
 import { useMemo } from 'react'
 
 import { useCurrentAddress } from './nas'
+import {useNearAddress} from './near'
 
 import { ChainId } from '../config/chainConfig/chainId'
 
@@ -12,18 +13,18 @@ export function useActiveReact () {
   const connectedWallet = useConnectedWallet()
   const {selectNetworkInfo} = useUserSelectChainId()
   const nebAddress = useCurrentAddress()
+  const nearAddress = useNearAddress()
   return useMemo(() => {
     let useAccount = account
-    let useChainId:any = chainId
+    const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : chainId
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       useAccount = connectedWallet?.walletAddress
-      useChainId = selectNetworkInfo?.chainId
     } else if (selectNetworkInfo?.label === ChainId.BTC) {
       useAccount = ''
-      useChainId = selectNetworkInfo?.chainId
     } else if (selectNetworkInfo?.label === ChainId.NAS) {
       useAccount = nebAddress
-      useChainId = selectNetworkInfo?.chainId
+    } else if (selectNetworkInfo?.label === ChainId.NEAR) {
+      useAccount = nearAddress
     }
     return {
       account: useAccount,

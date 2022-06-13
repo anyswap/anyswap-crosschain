@@ -49,6 +49,12 @@ import etc from './etc'
 import cmp from './cmp'
 import gt from './gt'
 import doge from './doge'
+import tomo from './tomo'
+import hoo from './hoo'
+import tt from './tt'
+import near from './near'
+import kava from './kava'
+import klay from './klay'
 
 import { ChainId } from './chainId'
 
@@ -58,6 +64,12 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...near,
+  ...klay,
+  ...kava,
+  ...tt,
+  ...hoo,
+  ...tomo,
   ...doge,
   ...gt,
   ...cmp,
@@ -140,7 +152,7 @@ const allChainList = [
   ChainId.ASTAR,
   ChainId.VLX,
   ChainId.CLV,
-  ChainId.CRAB,
+  // ChainId.CRAB,
   ChainId.MIKO,
   ChainId.REI,
   ChainId.CFX,
@@ -154,6 +166,11 @@ const allChainList = [
   ChainId.CMP,
   ChainId.GOERLI,
   ChainId.GT,
+  ChainId.TOMO,
+  ChainId.HOO,
+  ChainId.TT,
+  ChainId.KAVA,
+  ChainId.KLAY,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

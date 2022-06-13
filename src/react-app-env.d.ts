@@ -87,7 +87,8 @@ interface Window {
   }
   okexchain:any
   web3?: {}
-  returnCitySN?: {}
+  returnCitySN?: {},
+  near: any
 }
 
 declare module 'content-hash' {

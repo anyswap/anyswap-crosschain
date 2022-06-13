@@ -4,7 +4,8 @@ import React, { CSSProperties, useMemo } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -112,7 +113,7 @@ function CurrencyRow({
   bridgeKey?: any
   selectDestChainId?: any
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   // const { t } = useTranslation()
   const currencyObj = currency
   const key = currencyKey(currencyObj)
@@ -131,17 +132,23 @@ function CurrencyRow({
   const balance1 = ''
   const balance = useMemo(() => {
     // console.log(currencyObj)
-    if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()] && !isNativeToken) {
-      return allBalances[currencies?.address.toLowerCase()]
-    } else if (
-      isNativeToken
-      || currencyObj.address === config.getCurChainInfo(chainId)?.symbol
-    ) {
-      return ETHBalance
+    if (isNaN(chainId)) {
+      return ''
+    } else {
+      if (allBalances && currencies?.address && allBalances[currencies?.address.toLowerCase()] && !isNativeToken) {
+        return allBalances[currencies?.address.toLowerCase()]
+      } else if (
+        isNativeToken
+        || currencyObj.address === config.getCurChainInfo(chainId)?.symbol
+      ) {
+        return ETHBalance
+      }
+      return balance1
     }
-    return balance1
   }, [allBalances, isNativeToken, currencies, isNativeToken, ETHBalance, balance1])
   const isDestChainId = selectDestChainId ? selectDestChainId : chainId
+  // console.log(currencyObj)
+  // console.log(isNativeToken)
   // console.log(balance)
   return (
     <MenuItem
@@ -157,7 +164,7 @@ function CurrencyRow({
           {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
           {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
           {currencyObj?.type ? (
-            ['swapin', 'swapout'].includes(currencyObj?.type) ? '(B)' : '(R)'
+            ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router)'
           ) : ''}
           {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
           <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
@@ -194,18 +201,14 @@ export default function BridgeCurrencyList({
   bridgeKey?: any
   selectDestChainId?: any
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { evmAccount, chainId } = useActiveReact()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
-  const ETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const ETHBalance = useETHBalances(evmAccount ? [evmAccount] : [])?.[evmAccount ?? '']
   // console.log(selectedCurrency)
   const htmlNodes = useMemo(() => {
     const arr = []
     const ethNode:any = []
     for (const obj of itemData) {
-      // const isNativeToken = 
-      //   config.getCurChainInfo(chainId)?.nativeToken
-      //   && obj?.address?.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken?.toLowerCase()
-      //   && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
       const isNativeToken = obj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
       if (
         isNativeToken

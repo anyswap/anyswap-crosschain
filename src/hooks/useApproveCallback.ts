@@ -26,11 +26,15 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
-  // console.log(spender)
+  // console.log(amountToApprove)
   // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
   // console.log(currentAllowance)
+  // console.log(amountToApprove)
+  // console.log(token)
+  // console.log(spender)
+  // console.log(token)
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN

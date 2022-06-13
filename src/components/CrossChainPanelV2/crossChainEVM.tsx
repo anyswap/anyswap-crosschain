@@ -35,7 +35,7 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
 
-import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
+// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 
 import TokenLogo from '../TokenLogo'
@@ -43,6 +43,8 @@ import LiquidityPool from '../LiquidityPool'
 
 import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
+
+import {usePool} from '../../hooks/usePools'
 
 import {
   LogoBox,
@@ -59,8 +61,9 @@ import {
   useDestCurrency,
   getFTMSelectPool
 } from './hooks'
+import { BigAmount } from '../../utils/formatBignumber'
 
-let intervalFN:any = ''
+// let intervalFN:any = ''
 
 export default function CrossChain({
   bridgeKey
@@ -74,6 +77,8 @@ export default function CrossChain({
   const connectedWallet = useConnectedWallet()
 
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
+  // console.log(bridgeKey)
+  // console.log(allTokensList)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
@@ -88,7 +93,6 @@ export default function CrossChain({
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
   
-  const [intervalCount, setIntervalCount] = useState<number>(0)
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
@@ -139,13 +143,6 @@ export default function CrossChain({
     return destConfig.routerABI
   }, [destConfig])
 
-  const useDestAddress = useMemo(() => {
-    if (isRouter) {
-      return destConfig?.routerToken
-    }
-    return destConfig?.DepositAddress
-  }, [destConfig, isRouter])
-
   const isNativeToken = useMemo(() => {
     console.log(selectCurrency)
     if (
@@ -158,63 +155,55 @@ export default function CrossChain({
   }, [selectCurrency])
   // console.log(isNativeToken)
 
-  const isUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
+  const anyToken = useMemo(() => {
+    if (destConfig?.fromanytoken) {
+      return destConfig.fromanytoken
     }
-    return false
-  }, [selectCurrency])
+    return undefined
+  }, [destConfig.fromanytoken])
 
   const isDestUnderlying = useMemo(() => {
-    // console.log(destConfig)
-    // console.log(destConfig?.underlying)
     if (destConfig?.underlying) {
       return true
     }
     return false
   }, [destConfig])
-  // console.log(isDestUnderlying)
-  const [bridgeAnyToken, setBridgeAnyToken] = useState<any>()
-  const approveSpender = useMemo(() => {
-    setBridgeAnyToken('')
-    if (isRouter) {
-      // setBridgeAnyToken('')
-      if (selectCurrency?.liquidityType === "NO_POOL") {
-        return selectCurrency?.underlying?.address
-      }
-      return destConfig?.routerToken
-    } else {
-      if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
-        setBridgeAnyToken(selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address)
-        return selectCurrency?.underlying1 ? selectCurrency?.underlying1?.address : selectCurrency?.underlying?.address
-      }  else if (selectCurrency?.underlying1 && destConfig?.type === 'swapout') {
-        if (typeof selectCurrency?.underlying1?.isApprove !== 'undefined' && selectCurrency?.underlying1?.isApprove) {
-          setBridgeAnyToken(selectCurrency?.underlying1?.address)
-          return selectCurrency?.underlying1?.address
-        }
-      } else if (selectCurrency?.underlying && destConfig?.type === 'swapout') {
-        if (typeof selectCurrency?.underlying?.isApprove !== 'undefined' && selectCurrency?.underlying?.isApprove) {
-          setBridgeAnyToken(selectCurrency?.underlying?.address)
-          return selectCurrency?.underlying?.address
-        }
-        if (selectCurrency.symbol === 'PRQ') {
-          setBridgeAnyToken(selectCurrency?.underlying?.address)
-        }
-        // setBridgeAnyToken('')
-        return undefined
-      }
-      // setBridgeAnyToken('')
-      return undefined
-    }
-  }, [isRouter, selectCurrency, destConfig])
 
-  // useEffect(() => {
-  //   console.log(bridgeAnyToken)
-  // }, [bridgeAnyToken, inputBridgeValue])
+  const routerToken = useMemo(() => {
+    if (destConfig?.router && isAddress(destConfig?.router)) {
+      return destConfig?.router
+    }
+    return undefined
+  }, [destConfig])
+
+  const approveSpender = useMemo(() => {
+    if (destConfig.isApprove) {
+      if (isRouter) {
+        // setBridgeAnyToken('')
+        return destConfig.spender
+      } else {
+        return destConfig?.fromanytoken?.address
+      }
+    }
+    return undefined
+  }, [destConfig, isRouter, routerToken])
+
+  
+  const isBridgeFTM = useMemo(() => {
+    if (
+      destConfig?.address === 'FTM'
+      || destConfig?.fromanytoken?.address === 'FTM'
+    ) {
+      return true
+    }
+    return false
+  }, [destConfig])
 
   const formatCurrency = useLocalToken(selectCurrency ?? undefined)
+  // console.log(formatCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
-  // const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, isRouter ? useDestAddress : formatCurrency0?.address)
+  // console.log((formatCurrency && isApprove) ? formatCurrency : undefined)
+
   const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -245,114 +234,49 @@ export default function CrossChain({
   useEffect(() => {
     setDestChain('')
   }, [selectChain, selectCurrency])
-  const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, isUnderlying, isDestUnderlying, chainId, selectChain, destConfig)
-  // console.log(curChain)
-  // console.log(destChain)
-  const getSelectPool = useCallback(async() => {
-    if (selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') {
-      // console.log(curFTMChain)
-      // console.log(destFTMChain)
-      // console.log(selectCurrency)
-      // console.log(destConfig)
+  const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, chainId, selectChain, destConfig)
+
+  const {poolData} = usePool(chainId, evmAccount, destConfig?.isFromLiquidity && !isBridgeFTM ? anyToken?.address : undefined, selectCurrency?.address)
+  useEffect(() => {
+    // console.log(poolData)
+    // console.log(curFTMChain)
+    if (poolData && anyToken?.address && !isBridgeFTM && poolData?.[anyToken?.address]?.balanceOf) {
+      setCurChain({
+        chain: chainId,
+        ts: BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balanceOf).toExact(),
+        bl: poolData[anyToken?.address]?.balance ? BigAmount.format(anyToken?.decimals, poolData[anyToken?.address]?.balance).toExact() :'',
+      })
+    } else if (isBridgeFTM && curFTMChain) {
       setCurChain({
         ...curFTMChain
       })
+    } else {
+      setCurChain({})
+    }
+  }, [poolData, anyToken, curFTMChain, isBridgeFTM])
+  const {poolData: destPoolData} = usePool(selectChain, evmAccount, destConfig?.isLiquidity && !isBridgeFTM ? destConfig?.anytoken?.address : undefined, destConfig?.underlying?.address)
+  useEffect(() => {
+    // console.log(destPoolData)
+    // console.log(destFTMChain)
+    if (destPoolData && destConfig?.anytoken?.address && !isBridgeFTM && destPoolData?.[destConfig?.anytoken?.address]?.balanceOf) {
+      setDestChain({
+        chain: selectChain,
+        ts: BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balanceOf).toExact(),
+        bl: destPoolData[destConfig?.anytoken?.address]?.balance ? BigAmount.format(destConfig?.anytoken?.decimals, destPoolData[destConfig?.anytoken?.address]?.balance).toExact() : '',
+      })
+    } else if (isBridgeFTM && destFTMChain) {
       setDestChain({
         ...destFTMChain
       })
-      return
-    }
-    // console.log(11111)
-    if (selectCurrency && chainId && isRouter) {
-      if (selectCurrency?.underlying?.address && isRouter) {
-        const CC:any = await getNodeTotalsupply(
-          selectCurrency?.underlying?.address,
-          chainId,
-          selectCurrency?.decimals,
-          evmAccount,
-          selectCurrency?.address
-        )
-        // console.log(CC)
-        // console.log(selectCurrency)
-        if (CC) {
-          setCurChain({
-            chain: chainId,
-            ts: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.ts : CC[selectCurrency?.address]?.anyts,
-            bl: selectCurrency?.underlying ? CC[selectCurrency?.underlying?.address]?.balance : ''
-          })
-        } else {
-          setCurChain({
-            chain: chainId,
-            ts: '',
-            bl: ''
-          })
-        }
-      } else {
-        setCurChain({
-          chain: chainId,
-          ts: '',
-          bl: ''
-        })
-      }
-      if (destConfig.underlying?.address && isLiquidity) {
-        const DC:any = await getNodeTotalsupply(
-          destConfig.underlying?.address,
-          selectChain,
-          destConfig.decimals,
-          evmAccount,
-          destConfig.address
-        )
-        // console.log(selectCurrency)
-        // console.log(DC)
-        if (DC) {
-          setDestChain({
-            chain: selectChain,
-            ts: destConfig?.underlying ? DC[destConfig?.underlying.address]?.ts : DC[destConfig?.address]?.anyts,
-            bl: destConfig?.underlying ? DC[destConfig?.underlying.address]?.balance : ''
-          })
-        } else {
-          setDestChain({
-            chain: selectChain,
-            ts: '',
-            bl: ''
-          })
-        }
-      } else {
-        setDestChain({
-          chain: selectChain,
-          ts: '',
-          bl: ''
-        })
-      }
-      // console.log(CC)
-      // console.log(DC)
-      if (intervalFN) clearTimeout(intervalFN)
-      intervalFN = setTimeout(() => {
-        setIntervalCount(intervalCount + 1)
-      }, 1000 * 10)
     } else {
-      setCurChain({
-        chain: chainId,
-        ts: '',
-        bl: ''
-      })
-      setDestChain({
-        chain: selectChain,
-        ts: '',
-        bl: ''
-      })
+      setDestChain({})
     }
-  }, [selectCurrency, chainId, evmAccount, selectChain, intervalCount, destConfig, isRouter, curFTMChain, destFTMChain, isLiquidity])
-
-
-  useEffect(() => {
-    getSelectPool()
-  }, [getSelectPool])
+  }, [destPoolData, destConfig, destFTMChain, isBridgeFTM])
   
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
-    isRouter ? useDestAddress : undefined,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
-    isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
+    anyToken?.address,
     recipient,
     inputBridgeValue,
     selectChain,
@@ -361,9 +285,9 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
-    isRouter ? useDestAddress : undefined,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
-    isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
+    anyToken?.address,
     recipient,
     inputBridgeValue,
     selectChain,
@@ -371,9 +295,9 @@ export default function CrossChain({
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeUnderlyingCallback(
-    isRouter ? useDestAddress : undefined,
+    routerToken,
     formatCurrency ? formatCurrency : undefined,
-    isUnderlying ? selectCurrency?.underlying?.address : selectCurrency?.address,
+    anyToken?.address,
     recipient,
     inputBridgeValue,
     selectChain,
@@ -383,42 +307,43 @@ export default function CrossChain({
 
   const { wrapType: wrapTypeCrossBridge, execute: onWrapCrossBridge, inputError: wrapInputErrorCrossBridge } = useCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
-    destConfig?.type === 'swapin' ? useDestAddress : recipient,
+    destConfig?.type === 'swapin' ? destConfig?.DepositAddress : recipient,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
-    bridgeAnyToken ? bridgeAnyToken : selectCurrency?.address ,
+    anyToken?.address ,
     destConfig?.pairid,
     recipient,
     selectCurrency
   )
+  
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isWrapInputError = useMemo(() => {
     if (isRouter) {
-      if (!isUnderlying && !isNativeToken) {
-        if (wrapInputError) {
-          return wrapInputError
-        } else {
-          return false
-        }
-      } else {
-        if (isUnderlying && !isNativeToken) {
-          if (wrapInputErrorUnderlying) {
-            return wrapInputErrorUnderlying
-          } else {
-            return false
-          }
-        } else if (isUnderlying && isNativeToken) {
+      if (useSwapMethods) {
+        if (useSwapMethods.indexOf('anySwapOutNative') !== -1) {
           if (wrapInputErrorNative) {
             return wrapInputErrorNative
           } else {
             return false
           }
+        } else if (useSwapMethods.indexOf('anySwapOutUnderlying') !== -1) {
+          if (wrapInputErrorUnderlying) {
+            return wrapInputErrorUnderlying
+          } else {
+            return false
+          }
+        } else if (useSwapMethods.indexOf('anySwapOut') !== -1) {
+          if (wrapInputError) {
+            return wrapInputError
+          } else {
+            return false
+          }
         }
-        return false
       }
+      return false
     } else {
       if (wrapInputErrorCrossBridge) {
         return wrapInputErrorCrossBridge
@@ -426,7 +351,7 @@ export default function CrossChain({
         return false
       }
     }
-  }, [isNativeToken, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, selectCurrency, isRouter, wrapInputErrorCrossBridge])
+  }, [useSwapMethods, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, isRouter, wrapInputErrorCrossBridge])
   // console.log(selectCurrency)
   const isInputError = useMemo(() => {
     if (!selectCurrency) {
@@ -493,7 +418,14 @@ export default function CrossChain({
   }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity])
 
   const errorTip = useMemo(() => {
-    const isAddr = selectChain === ChainId.NAS ? (recipient ? nebulas.Account.isValidAddress(recipient) : false) : isAddress( recipient, selectChain)
+    let isAddr:any
+    if (selectChain === ChainId.NAS) {
+      isAddr = recipient ? nebulas.Account.isValidAddress(recipient) : false
+    } else if (selectChain === ChainId.XRP) {
+      isAddr = recipient && recipient.indexOf('r') === 0 && recipient.length === 34 ? true : false
+    } else {
+      isAddr = isAddress( recipient, selectChain)
+    }
     // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
@@ -544,16 +476,17 @@ export default function CrossChain({
   }, [initCurrency])
 
   useEffect(() => {
-    if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+    // if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+    if (evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
-    } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
+    } else if (isNaN(selectChain)) {
       if (selectChain === ChainId.TERRA && connectedWallet?.walletAddress) {
         setRecipient(connectedWallet?.walletAddress)
       } else {
         setRecipient('')
       }
     }
-  }, [evmAccount, swapType, selectChain, destConfig])
+  }, [evmAccount, swapType, selectChain])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -638,7 +571,7 @@ export default function CrossChain({
       >
         <ConfirmContent>
           {
-            !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
+            isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
               <>
                 <LogoBox>
                   <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
@@ -665,13 +598,13 @@ export default function CrossChain({
                   fee={fee}
                 />
                 {
-                  isUnderlying && isDestUnderlying ? (
+                  isDestUnderlying ? (
                     <>
                       <ConfirmText>
                         {
                           t('swapTip', {
-                            symbol: config.getBaseCoin(selectCurrency?.underlying?.symbol, chainId),
-                            symbol1: config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId),
+                            symbol: anyToken?.symbol,
+                            symbol1: selectCurrency?.symbol,
                             chainName: config.getCurChainInfo(selectChain).name
                           })
                         }
@@ -697,7 +630,7 @@ export default function CrossChain({
             {!evmAccount ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
-                !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                   <ButtonConfirmed
                     onClick={() => {
                       onDelay()
@@ -724,33 +657,6 @@ export default function CrossChain({
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                   // <ButtonPrimary disabled={delayAction} onClick={() => {
                     handleSwap()
-                    // onDelay()
-                    // if (isRouter) {
-                    //   if (!selectCurrency || !isUnderlying) {
-                    //     console.log('onWrap')
-                    //     if (onWrap) onWrap().then(() => {
-                    //       onClear()
-                    //     })
-                    //   } else {
-                    //     if (isNativeToken) {
-                    //       console.log('onWrapNative')
-                    //       if (onWrapNative) onWrapNative().then(() => {
-                    //         onClear()
-                    //       })
-                    //     } else {
-                    //       console.log('onWrapUnderlying')
-                    //       if (onWrapUnderlying) onWrapUnderlying().then((hash) => {
-                    //         console.log(hash)
-                    //         onClear()
-                    //       })
-                    //     }
-                    //   }
-                    // } else {
-                    //   console.log('onWrapCrossBridge')
-                    //   if (onWrapCrossBridge) onWrapCrossBridge().then(() => {
-                    //     onClear()
-                    //   })
-                    // }
                   }}>
                     {t('Confirm')}
                   </ButtonPrimary>
@@ -794,12 +700,12 @@ export default function CrossChain({
           isRouter={isRouter}
         />
         {
-          evmAccount && chainId && (isUnderlying || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') && (isRouter || selectCurrency?.address === 'FTM' || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && curChain?.ts ? (
             <>
               <LiquidityPool
                 curChain={curChain}
                 // destChain={destChain}
-                isUnderlying={isUnderlying}
+                // isUnderlying={isUnderlying}
                 selectCurrency={selectCurrency}
                 // isDestUnderlying={isDestUnderlying}
               />
@@ -815,7 +721,8 @@ export default function CrossChain({
             <ArrowDown size="16" color={theme.text2} />
           </ArrowWrapper>
           {
-            destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            // destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
+            destConfig?.type !== 'swapin' && !isNaN(selectChain) && !isNaN(chainId) ? (
               <ArrowWrapper clickable={false} style={{cursor:'pointer', position: 'absolute', right: 0}} onClick={() => {
                 if (swapType === 'swap') {
                   setSwapType('send')
@@ -857,7 +764,6 @@ export default function CrossChain({
             setSelectDestCurrency(inputCurrency)
           }}
           bridgeConfig={selectCurrency}
-          intervalCount={intervalCount}
           isNativeToken={isNativeToken}
           selectChainList={selectChainList}
           selectDestCurrency={selectDestCurrency}
@@ -865,18 +771,18 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && chainId && ((isDestUnderlying && isRouter) || destConfig?.address === 'FTM') ? (
+          evmAccount && chainId && destChain?.ts ? (
             <LiquidityPool
-              // curChain={curChain}
               destChain={destChain}
-              // isUnderlying={isUnderlying}
-              isDestUnderlying={isDestUnderlying}
+              // isDestUnderlying={isDestUnderlying}
               selectCurrency={destConfig}
             />
           ) : ''
         }
         {
-          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin') || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
+          (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin')
+          || (isNaN(selectChain))
+          || isNaN(chainId) ? (
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(selectChain === ChainId.NAS ? nebulas.Account.isValidAddress(recipient) : isAddress( recipient, selectChain))} />
           ) : ''
         }
@@ -895,7 +801,7 @@ export default function CrossChain({
             {!evmAccount ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
-                !isNativeToken && selectCurrency && isUnderlying && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
                   <>
                     <ButtonConfirmed
                       onClick={() => {

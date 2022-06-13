@@ -7,7 +7,7 @@ import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 import TokenLogo from '../TokenLogo'
 
-import { getEtherscanLink } from '../../utils'
+import { getEtherscanLink, shortenAddress } from '../../utils'
 import {useWeb3} from '../../utils/tools/web3UtilsV2'
 // import {timeChange} from '../../utils/tools/tools'
 
@@ -52,7 +52,9 @@ const ChainStatusBox = styled.div`
   }
 `
 
-const Link = styled(ExternalLink)``
+const Link = styled(ExternalLink)`
+text-align:right;
+`
 const Link2 = styled(NavLink)`
   text-align:right;
 `
@@ -239,7 +241,7 @@ export default function HistoryDetails ({
           <div className="item">
             <div className="txtLabel">{t('From')}:</div>
             <div className="value">
-              <Link className="a" href={getEtherscanLink(fromChainID, from, 'address')} target="_blank">{from}</Link>
+              <Link className="a" href={getEtherscanLink(fromChainID, from, 'address')} target="_blank">{from ? shortenAddress(from, 6) : ''}</Link>
               <Copy toCopy={from}></Copy>
             </div>
           </div>
@@ -297,7 +299,7 @@ export default function HistoryDetails ({
             <div className="value">
               {swaptx ? (
                 <>
-                  <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to}</Link>
+                  <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to ? shortenAddress(to, 6) : ''}</Link>
                   <Copy toCopy={to}></Copy>
                 </>
               ) : '-'}

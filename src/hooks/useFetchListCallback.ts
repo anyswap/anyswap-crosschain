@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+// import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { fetchTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { poolList } from '../state/pools/actions'
 import { AppState } from '../state'
 
 import {useActiveReact} from './useActiveReact'
@@ -16,7 +18,8 @@ import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
-import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
+// import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
+import {timeout, MAIN_COIN, bridgeApi} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
@@ -79,10 +82,11 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       } else {
         // const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
         // const url = `${config.bridgeApi}/v4/tokenlistv3/${chainId}`
-        const url = `${config.bridgeApi}/cfx/v4/tokenlistv3/${chainId}`
+        // const url = `${config.bridgeApi}/cfx/v4/tokenlistv3/${chainId}`
+        const url = `${config.bridgeApi}/v4/tokenlistv4/${chainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
-            // console.log(tokenList)
+            console.log(tokenList)
             let list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data
@@ -101,10 +105,73 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
   )
 }
 
-export function useFetchTokenListCallback(): () => Promise<any> {
+// export function useFetchTokenListCallback(): () => Promise<any> {
+//   const { chainId } = useActiveWeb3React()
+//   const dispatch = useDispatch<AppDispatch>()
+//   const lists = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
+//   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+//   // console.log(lists)
+//   return useCallback(
+//     async () => {
+//       if (!chainId) return
+//       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
+//         return
+//       } else {
+//         const UV:any = USE_VERSION
+//         const version:any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
+//         const url = `${config.bridgeApi}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
+//         return getUrlData(url)
+//           .then((tokenList:any) => {
+//             // console.log(tokenList)
+//             const list:any = {}
+//             if (tokenList.msg === 'Success' && tokenList.data) {
+//               const tList = tokenList.data
+//               if (version === 'all') {
+//                 for (const version in tList) {
+//                   if (version.indexOf('ARB') !== -1) continue
+//                   for (const token in tList[version]) {
+//                     if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
+//                     let sort = 0
+//                     if (version.toLowerCase().indexOf('stable') !== -1) {
+//                       sort = 0
+//                     } else if (version.toLowerCase().indexOf('native') !== -1) {
+//                       sort = 1
+//                     } else if (version.toLowerCase().indexOf('underlying') !== -1) {
+//                       sort = 2
+//                     }
+//                     list[token] = {
+//                       ...tList[version][token],
+//                       sort: sort
+//                     }
+//                   }
+//                 }
+//               } else {
+//                 for (const token in tList) {
+//                   // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
+//                   list[token] = {
+//                     ...tList[token],
+//                     sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
+//                   }
+//                 }
+//               }
+//             }
+//             dispatch(routerTokenList({ chainId, tokenList:list }))
+//             return list
+//           })
+//           .catch(error => {
+//             console.debug(`Failed to get list at url `, error)
+//             dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
+//             return {}
+//           })
+//       }
+//     },
+//     [dispatch, chainId]
+//   )
+// }
+export function useFetchPoolTokenListCallback(): () => Promise<any> {
   const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
-  const lists = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
+  const lists = useSelector<AppState, AppState['pools']['poolList']>(state => state.pools.poolList)
   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
   // console.log(lists)
   return useCallback(
@@ -113,51 +180,27 @@ export function useFetchTokenListCallback(): () => Promise<any> {
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
-        const UV:any = USE_VERSION
-        const version:any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
-        // const url = `${config.bridgeApi}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
-        const url = `${config.bridgeApi}/v3/comint/serverinfoV4?chainId=${chainId}&version=${version}`
+        const url = `${config.bridgeApi}/v4/poollist/${chainId}`
         return getUrlData(url)
           .then((tokenList:any) => {
             // console.log(tokenList)
             const list:any = {}
             if (tokenList.msg === 'Success' && tokenList.data) {
               const tList = tokenList.data
-              if (version === 'all') {
-                for (const version in tList) {
-                  if (version.indexOf('ARB') !== -1) continue
-                  for (const token in tList[version]) {
-                    if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
-                    let sort = 0
-                    if (version.toLowerCase().indexOf('stable') !== -1) {
-                      sort = 0
-                    } else if (version.toLowerCase().indexOf('native') !== -1) {
-                      sort = 1
-                    } else if (version.toLowerCase().indexOf('underlying') !== -1) {
-                      sort = 2
-                    }
-                    list[token] = {
-                      ...tList[version][token],
-                      sort: sort
-                    }
-                  }
-                }
-              } else {
-                for (const token in tList) {
-                  // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
-                  list[token] = {
-                    ...tList[token],
-                    sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
-                  }
+              for (const tokenKey in tList) {
+                list[tokenKey] = {
+                  ...tList[tokenKey],
+                  key: tokenKey,
+                  sort: MAIN_COIN.includes(tList[tokenKey].symbol) ? 1 : 2
                 }
               }
             }
-            dispatch(routerTokenList({ chainId, tokenList:list }))
+            dispatch(poolList({ chainId, tokenList:list }))
             return list
           })
           .catch(error => {
             console.debug(`Failed to get list at url `, error)
-            dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
+            dispatch(poolList({ chainId, tokenList: curList.tokenList }))
             return {}
           })
       }

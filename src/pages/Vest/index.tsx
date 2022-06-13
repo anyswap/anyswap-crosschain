@@ -61,6 +61,7 @@ import {selectNetwork} from '../../config/tools/methods'
 // import {VE_MULTI_REWARD_INTERFACE} from '../../constants/abis/veMULTIReward'
 
 const VestContent = styled.div`
+${({ theme }) => theme.flexSC};
   width: 100%;
   max-width: 1200px;
 `
@@ -462,29 +463,34 @@ export default function Vest () {
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
       // console.log(nftsLength)
       // console.log(arr)
-      const nfts = await Promise.all(
-        arr.map(async (idx) => {
-  
-          const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
-          const locked = await contract.locked(tokenIndex)
-          const lockValue = await contract.balanceOfNFT(tokenIndex)
-          const tokenURI = await contract.tokenURI(tokenIndex)
-          const {data} = await axios.get(tokenURI)
-          // console.log(tokenURI)
-          // console.log(data)
-          // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
-          return {
-            ...data,
-            index: idx,
-            id: tokenIndex?.toString(),
-            lockEnds: locked.end.toNumber(),
-            lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
-            lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
-          }
-        })
-      )
-      console.log(nfts)
-      setvestNFTs(nfts)
+      try {
+        const nfts = await Promise.all(
+          arr.map(async (idx) => {
+    
+            const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
+            const locked = await contract.locked(tokenIndex)
+            const lockValue = await contract.balanceOfNFT(tokenIndex)
+            const tokenURI = await contract.tokenURI(tokenIndex)
+            const {data} = await axios.get(tokenURI)
+            // console.log(tokenURI)
+            // console.log(data)
+            // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
+            return {
+              ...data,
+              index: idx,
+              id: tokenIndex?.toString(),
+              lockEnds: locked.end.toNumber(),
+              lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
+              lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
+            }
+          })
+        )
+        console.log(nfts)
+        setvestNFTs(nfts)
+      } catch (error) {
+        console.log(error)
+      }
+      
     }
   }, [contract, account, useLockToken])
   useEffect(() => {
@@ -687,25 +693,27 @@ export default function Vest () {
       // const EpochId = await rewardContract.getCurrentEpochId()
       rewardContract.getEpochInfo(epochId).then((res:any) => {
         // console.log(res)
-        setCurEpochInfo({
+        const data = {
           startTime: res[0].toString(),
           endTime: res[1].toString(),
           totalReward: res[2].toString(),
-        })
+        }
+        setCurEpochInfo(data)
+        setlatestEpochInfo(data)
       }).catch((err:any) => {
         console.log(err)
         setCurEpochInfo('')
       })
-      rewardContract.getEpochInfo(Number(epochId) === 0 && Date.now() < 1652925600000 ? 0 : Number(epochId) + 1).then((res:any) => {
-        // console.log(res)
-        setlatestEpochInfo({
-          startTime: res[0].toString(),
-          endTime: res[1].toString(),
-          totalReward: res[2].toString(),
-        })
-      }).catch((err:any) => {
-        console.log(err)
-      })
+      // rewardContract.getEpochInfo(Number(epochId) === 0 ? 0 : Number(epochId) + 1).then((res:any) => {
+      //   // console.log(res)
+      //   setlatestEpochInfo({
+      //     startTime: res[0].toString(),
+      //     endTime: res[1].toString(),
+      //     totalReward: res[2].toString(),
+      //   })
+      // }).catch((err:any) => {
+      //   console.log(err)
+      // })
       rewardContract.getEpochTotalPower(epochId).then((res:any) => {
         // console.log(res)
         setTotalPower(res.toString())
@@ -938,17 +946,22 @@ export default function Vest () {
                       <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled} onClick={() => {
                         // console.log(onWithdrarWrap)
                         // const ri = rewardList[item.id]
-                        if (
-                          !rewardList
-                          || !rewardList[item.id]
-                          || !rewardList[item.id].list
-                          || rewardList[item.id].list.length > 0
-                        ) {
-                          if (rewardList[item.id].list.length > 0) {
-                            alert('Please claim the reward first')
-                          } else {
-                            alert('Loading')
-                          }
+                        const rewardCount = useVeMultiToken?.decimals && rewardList?.[item.id]?.totalReward? BigAmount.format(useVeMultiToken.decimals, rewardList[item.id].totalReward).toExact() : ''
+                        // if (
+                        //   !rewardList
+                        //   || !rewardList[item.id]
+                        //   || !rewardList[item.id].list
+                        //   || rewardList[item.id].list.length > 0
+                        // ) {
+                        if (rewardCount && Number(rewardCount) >= 10) {
+                          console.log(rewardCount)
+                          alert('Please claim the reward first')
+                          // if (rewardCount && Number(rewardCount) >= 10) {
+                          // } else {
+                          //   alert('Loading')
+                          // }
+                        } else if (parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)) {
+                          alert('Loading')
                         } else {
                           const now = parseInt(Date.now() / 1000 + '')
                           if (now >= Number(item.lockEnds)) {

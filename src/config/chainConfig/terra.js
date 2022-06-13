@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const TERRA_MAINNET = ''
 export const TERRA_MAIN_CHAINID = ChainId.TERRA
-export const TERRA_MAIN_EXPLORER = 'https://finder.terra.money/mainnet'
+export const TERRA_MAIN_EXPLORER = 'https://finder.terra.money/classic'
 
 export const tokenList = [
 

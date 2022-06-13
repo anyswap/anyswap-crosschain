@@ -23,6 +23,8 @@ import { isAddress } from '../../utils'
 import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
+import {MAIN_COIN} from '../../config/constant'
+
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
@@ -62,9 +64,11 @@ export default function SearchModal ({
 
   const isAddressSearch = isAddress(searchQuery)
   const useAllTokenList = useMemo(() => {
+    // console.log(allTokens)
     const list:any = {}
     for (const token in allTokens) {
       const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+      if (!obj.name || !obj.symbol) continue
       list[token] = {
         ...obj,
         key: token
@@ -79,6 +83,7 @@ export default function SearchModal ({
     // const mainTokenLists:any = []
     for (const token in useAllTokenList) {
       const obj:any = useAllTokenList[token]
+      if (!obj.name || !obj.symbol) continue
       arr.push(obj)
     }
     // console.log(arr)
@@ -87,21 +92,26 @@ export default function SearchModal ({
 
   const mainTokenList = useMemo(() => {
     const arr:any = []
+    // console.log(chainId)
     for (const token in useAllTokenList) {
       const obj:any = useAllTokenList[token]
+      // if (obj.symbol === 'fUSDT') {
+
+      //   console.log(obj)
+      // }
       if (
-        (obj.symbol === 'USDT' && obj.chainId === '250')
-        || (obj.symbol === 'fUSDT' && obj.chainId === '56')
-        || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && obj.chainId === '250')
+        (obj.symbol === 'USDT' && chainId?.toString() === '250')
+        || (obj.symbol === 'fUSDT' && chainId?.toString() === '56')
+        || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && chainId?.toString() === '250')
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
       
-      if (['USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH', 'fUSDT'].includes(obj.symbol)) {
+      if (MAIN_COIN.includes(obj.symbol)) {
         arr.push(obj)
       }
     }
     return arr
-  }, [useAllTokenList])
+  }, [useAllTokenList, chainId])
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []

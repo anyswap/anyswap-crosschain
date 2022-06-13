@@ -362,5 +362,7 @@
   "Address": "地址",
   "Age": "Age",
   "Status": "状态",
-  "agree": "同意"
+  "agree": "同意",
+  "addLiquidityTip": "添加流动性至路由{{index}}资金池",
+  "removeLiquidityTip": "提取流动性从路由{{index}}资金池"
 }

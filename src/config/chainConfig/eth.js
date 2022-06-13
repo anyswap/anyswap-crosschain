@@ -5,7 +5,10 @@ import {ChainId} from './chainId'
 const navLang = navigator.language
 
 export const ETH_MAIN_CHAINID = ChainId.ETH
-export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(ETH_MAIN_CHAINID, process.env.REACT_APP_NETWORK_URL) : getLocalRPC(ETH_MAIN_CHAINID, 'https://ethmainnet.anyswap.exchange')
+// export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(ETH_MAIN_CHAINID, process.env.REACT_APP_NETWORK_URL) : getLocalRPC(ETH_MAIN_CHAINID, 'https://ethmainnet.anyswap.exchange')
+export const ETH_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(ETH_MAIN_CHAINID, 'https://rpc.ankr.com/eth') : getLocalRPC(ETH_MAIN_CHAINID, 'https://ethmainnet.anyswap.exchange')
+// export const ETH_MAINNET = getLocalRPC(ETH_MAIN_CHAINID, 'https://rpc.ankr.com/eth')
+// export const ETH_MAINNET = getLocalRPC(ETH_MAIN_CHAINID, 'https://ethmainnet.anyswap.exchange')
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
 export const ETH_TEST_CHAINID = ChainId.RINKEBY

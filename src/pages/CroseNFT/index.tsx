@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
@@ -30,12 +30,13 @@ import {selectNetwork} from '../../config/tools/methods'
 
 import {fromWei} from '../../utils/tools/tools'
 
-import NFT_DATA from './nftdata.js'
+// import NFT_DATA from './nftdata.js'
+import { getUrlData } from '../../utils/tools/axios'
 
 
 const SUPPORT_CHAIN = spportChainArr
 // console.log(SUPPORT_CHAIN)
-const nftData = NFT_DATA as any
+// const nftData = NFT_DATA as any
 
 const FlexWrapBox = styled.div`
   ${({ theme }) => theme.flexBC};
@@ -84,6 +85,7 @@ export default function CroseNFT () {
   const [selectTokenId, setSelectTokenId] = useState<any>()
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const [delayAction, setDelayAction] = useState<boolean>(false)
+  const [nftList, setNftList] = useState<any>({})
 
   const initBridgeToken = getInitToken()
 
@@ -91,9 +93,24 @@ export default function CroseNFT () {
     setSelectTokenId('')
   }, [chainId, selectCurrency])
 
+  const fetchNFTList = useCallback(() => {
+    getUrlData(`${config.bridgeApi}/v3/nft?chainId=${chainId}&version=NFTV1`).then((res:any) => {
+      console.log(res)
+      if (res && res.msg === 'Success') {
+        setNftList(res.data)
+      } else {
+        setNftList({})
+      }
+    })
+  }, [chainId])
+
+  useEffect(() => {
+    fetchNFTList()
+  }, [fetchNFTList, chainId])
+
   const tokenList = useMemo(() => {
-    if (nftData && chainId && nftData[chainId]) {
-      const list:any = nftData[chainId]
+    if (nftList) {
+      const list:any = nftList
       
       const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).nftInitToken))?.toLowerCase()
       // console.log(urlParams)
@@ -132,7 +149,7 @@ export default function CroseNFT () {
       return list
     }
     return {}
-  }, [nftData, chainId])
+  }, [nftList, chainId])
   
   const fee = useMemo(() => {
     if (selectCurrency) {
