@@ -150,7 +150,7 @@ const allChainList = [
   ChainId.ASTAR,
   ChainId.VLX,
   ChainId.CLV,
-  ChainId.CRAB,
+  // ChainId.CRAB,
   ChainId.MIKO,
   ChainId.REI,
   ChainId.CFX,
