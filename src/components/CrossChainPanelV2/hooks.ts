@@ -53,12 +53,13 @@ export function useInitSelectCurrency (
   return useMemo(() => {
     // console.log(allTokensList)
     // console.log(useChainId)
+    // console.log(userInit)
     // console.log(initToken)
     let t = []
     if (initToken) {
       t = [initToken]
     } else if (userInit?.token) {
-      t = [userInit?.token]
+      t = [userInit?.token?.toLowerCase()]
     } else {
       t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     }

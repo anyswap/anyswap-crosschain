@@ -338,7 +338,7 @@ export function useInitUserSelectCurrency(chainId?: any) {
   const setInitUserSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
     const id = useChainId ? useChainId : chainId
     if (id && toChainId && id?.toString() !== toChainId?.toString()){
-      dispatch(userSelectCurrency({chainId: useChainId ? useChainId : chainId, token, toChainId}))
+      dispatch(userSelectCurrency({chainId: id, token, toChainId}))
     }
   }, [dispatch])
 
