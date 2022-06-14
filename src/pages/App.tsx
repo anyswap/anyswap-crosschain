@@ -15,14 +15,18 @@ import TxnsErrorTipModal from '../components/CrossChainPanelV2/txnsErrorTipModal
 
 // import CrossChain from './CrossChain'
 // import Bridge from './Bridge'
+import Lazyload from '../components/Lazyload/Lazyload'
 
 import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
-import PoolList from './Pools/poolList'
+const PoolList = Lazyload(() => import('./Pools/poolList'))
+// import PoolList from './Pools/poolList'
 import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
-import SwapMULTI from './SwapMULTI'
-import Vest from './Vest'
+const SwapMULTI = Lazyload(() => import('./SwapMULTI'))
+// import SwapMULTI from './SwapMULTI'
+const Vest = Lazyload(() => import('./Vest'))
+// import Vest from './Vest'
 import CreateLock from './Vest/create'
 import MangerVest from './Vest/manger'
 
@@ -156,17 +160,17 @@ export default function App() {
           <Web3ReactManager>
             <Switch>
               {/* <Route exact strict path="/dashboard" component={() => <Dashboard />} /> */}
-              <Route exact strict path="/pool" component={() => <PoolList />} />
+              <Route exact strict path="/pool" component={() => <PoolList  duration={ 0 } />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
               {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
-              <Route exact strict path="/multi" component={() => <SwapMULTI />} />
+              <Route exact strict path="/multi" component={() => <SwapMULTI duration={ 0 } />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
-              <Route exact strict path="/vest" component={() => <Vest />} />
+              <Route exact strict path="/vest" component={() => <Vest duration={ 0 } />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />
               <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
               {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
@@ -177,20 +181,6 @@ export default function App() {
                 ]}
                 component={() => <MergeCrossChainV2 />}
               />
-              {/* {
-                Object.keys(farmlist).map((key, index) => {
-                  if (farmlist[key].farmtype === 'noany') {
-                    return (
-                      <Route exact strict path={'/' + farmlist[key].url} component={() => <NoanyFarming farmkey={key} />} key={index} />
-                    )
-                  }
-                  return (
-                    <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
-                  )
-                })
-              } */}
-
-              
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>

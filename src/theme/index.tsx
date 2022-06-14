@@ -1,5 +1,5 @@
 // import { transparentize } from 'polished'
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
   createGlobalStyle,
@@ -339,3 +339,25 @@ min-height:28px;
 background-color:#bbb;
 }
 `
+export const ThemeGlobalClassName = () => {
+  const darkMode = useIsDarkMode()
+  useEffect(() => {
+    const rootEl = document.documentElement;
+    if (rootEl) {
+      const currentClassName = rootEl.className;
+      const darkClassName = "dark-theme";
+      const hasDarkClassName = ` ${currentClassName} `.indexOf(` ${darkClassName} `) > -1;
+      if (darkMode && !hasDarkClassName) {
+        const newClassName = `${currentClassName} ${darkClassName}`.replace(/^\s|\s$/g, '');
+        rootEl.setAttribute('class', newClassName);
+      }
+      else if (hasDarkClassName && !darkMode) {
+        const newClassName = ` ${currentClassName} `
+          .replace(` ${darkClassName} `, '')
+          .replace(/^\s|\s$/g, '');
+        rootEl.setAttribute('class', newClassName);
+      }
+    }
+  }, [darkMode])
+  return (<></>)
+}

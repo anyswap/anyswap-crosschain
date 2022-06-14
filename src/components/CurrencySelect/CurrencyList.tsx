@@ -1,8 +1,9 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'anyswap-sdk'
 // import { Currency, CurrencyAmount, ETHER, Token } from 'anyswap-sdk'
-import React, { CSSProperties, useMemo } from 'react'
+import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 
 // import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
@@ -16,6 +17,7 @@ import TokenLogo from '../TokenLogo'
 import { MouseoverTooltip } from '../Tooltip'
 import { MenuItem } from '../SearchModal/styleds'
 import Loader from '../Loader'
+import { LazyList } from '../Lazyload/LazyList';
 
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
@@ -61,6 +63,11 @@ function Balance({ balance }: { balance: any }) {
 const TagContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+`
+
+const Loading = styled.div`
+  line-height: 56px;
+  text-align: center;
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -188,7 +195,8 @@ export default function BridgeCurrencyList({
   showETH,
   allBalances,
   bridgeKey,
-  selectDestChainId
+  selectDestChainId,
+  size
 }: {
   height: number
   currencies: any[]
@@ -200,10 +208,15 @@ export default function BridgeCurrencyList({
   allBalances?: any
   bridgeKey?: any
   selectDestChainId?: any
+  size?: number
 }) {
   const { evmAccount, chainId } = useActiveReact()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
   const ETHBalance = useETHBalances(evmAccount ? [evmAccount] : [])?.[evmAccount ?? '']
+  const pageSize = size || 20
+  const boxRef = createRef<any>()
+  const watchRef = createRef<any>()
+  const { t } = useTranslation()
   // console.log(selectedCurrency)
   const htmlNodes = useMemo(() => {
     const arr = []
@@ -224,10 +237,43 @@ export default function BridgeCurrencyList({
     }
     return arr
   }, [itemData, chainId])
+
+
+  function List({ records }: { records?: any [] }) {
+    return (<>{
+      records?.map((item:any, index:any) =>{
+        const currency: any = item
+        // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
+        const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
+        const isSelected = Boolean(selectedCurrency?.key?.toLowerCase() === currency?.key?.toLowerCase())
+        const handleSelect = () => onCurrencySelect(currency)
+        return (
+          <CurrencyRow
+            style={{margin:'auto'}}
+            currency={currency}
+            isSelected={isSelected}
+            onSelect={handleSelect}
+            otherSelected={otherSelected}
+            key={index}
+            allBalances={allBalances}
+            ETHBalance={ETHBalance}
+            bridgeKey={bridgeKey}
+            selectDestChainId={selectDestChainId}
+          />
+        )
+      })
+    }
+    </>);
+  }
+
   return (
     <>
-      <ListBox style={{height: height}}>
-        {
+      <ListBox ref={ boxRef } style={{height: height}}>
+        <LazyList records={ htmlNodes } pageSize={ pageSize }
+          boxRef={ boxRef } watchRef={ watchRef } list={ List }>
+          <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
+        </LazyList>
+        {/* {
           htmlNodes.map((item, index) => {
             const currency: any = item
             // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
@@ -249,7 +295,7 @@ export default function BridgeCurrencyList({
               />
             )
           })
-        }
+        } */}
       </ListBox>
     </>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, createRef } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +8,7 @@ import TokenLogo from '../../components/TokenLogo'
 import Title from '../../components/Title'
 import CrossChainTitle from '../../components/CrossChainTitle'
 import { ButtonLight } from '../../components/Button'
+import { LazyList } from '../../components/Lazyload/LazyList'
 // import {selectNetwork} from '../../components/Header/SelectNetwork'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -27,6 +28,7 @@ import {
   DBThDiv,
   DBTbodyDiv,
   DBTdDiv,
+  DBTbodyTrDiv,
   TokenTableCoinBox,
   TokenTableLogo,
   TokenNameBox,
@@ -56,6 +58,11 @@ const BalanceTxt = styled.div`
     font-weight: normal;
     font-size:14px;
   }
+`
+
+const Loading = styled.div`
+  line-height: 56px;
+  text-align: center;
 `
 
 // const TableListBox = styled.div`
@@ -568,7 +575,83 @@ export default function PoolLists ({
       </>
     )
   }
-
+  const [expandState, setExpandState] = useState<{[key: number]: boolean}>({});
+  function List({ records }: { records?: any [] }) {
+    return (<>{
+      records?.map((item:any, index:any) => <DBTbodyDiv key={index}>
+        <DBTbodyTrDiv onClick={() => {
+          const id: number = index;
+          const newState = { ...expandState };
+          newState[id] = expandState[id] ? false : true;
+          setExpandState(newState);
+        }}>
+          <DBTdDiv className="token">
+            <TokenTableCoinBox>
+              <TokenTableLogo>
+                <TokenLogo
+                  symbol={config.getBaseCoin(item?.symbol, chainId)}
+                  logoUrl={item.logoUrl}
+                  size={'1.625rem'}
+                  isLazy={ index > 10 }
+                ></TokenLogo>
+              </TokenTableLogo>
+              <TokenNameBox>
+                <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
+                {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
+              </TokenNameBox>
+            </TokenTableCoinBox>
+          </DBTdDiv>
+          <DBTdDiv className="l chain hideSmall">
+            <FlexSC>
+              <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
+                <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
+              </ChainLogoBox>
+              {
+                item.destChains && Object.keys(item.destChains).length > 0 ? (
+                  <>
+                    {
+                      item.destChains && Object.keys(item.destChains).length > 0 ? (
+                        <>
+                          {
+                            Object.keys(item.destChains).map((chainID, index) => {
+                            // chainList.map((chainID, index) => {
+                              if (index >= 6) return ''
+                              return (
+                                <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
+                                  <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
+                                </ChainLogoBox>
+                              )
+                            })
+                          }
+                          {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
+                        </>
+                      ) : ''
+                    }
+                  </>
+                ) : ''
+              }
+            </FlexSC>
+          </DBTdDiv>
+          {viewTd(item)}
+          <DBTdDiv className="c detail">
+            <Flex>
+            { expandState[index] ? 
+              <ColoredDropup id={'chain_dropup_' + index}></ColoredDropup> :
+              <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown> }
+            </Flex>
+          </DBTdDiv>
+        </DBTbodyTrDiv>
+        { expandState[index] ? <DBTbodyTrDiv id={'chain_list_' + index}>
+          <DBTdDiv className='full'>
+            {viewTd2(item, chainId)}
+            {/* {viewCard2(item, chainId)} */}
+          </DBTdDiv>
+        </DBTbodyTrDiv> : null }
+      </DBTbodyDiv>)
+    }
+    </>)
+  }
+  const watchRef = createRef<any>();
   return (
     <>
     <AppBody>
@@ -603,102 +686,121 @@ export default function PoolLists ({
 
       <MyBalanceBox>
         <DBTablesDiv>
-          <DBTheadDiv>
+          {/* <DBTheadDiv>
             <DBTheadTrDiv>
               <DBThDiv className="l">{t('tokens')}</DBThDiv>
               <DBThDiv className="l hideSmall">{t('supportChain')}</DBThDiv>
               <DBThDiv className="r">{t('lr')}</DBThDiv>
               <DBThDiv className="c">{t('details')}</DBThDiv>
             </DBTheadTrDiv>
+          </DBTheadDiv> */}
+          <DBTheadDiv>
+            <DBTheadTrDiv>
+              <DBThDiv className="l token">{t('tokens')}</DBThDiv>
+              <DBThDiv className="l chain hideSmall">{t('supportChain')}</DBThDiv>
+              <DBThDiv className="r liquidity">{t('lr')}</DBThDiv>
+              <DBThDiv className="c detail">{t('details')}</DBThDiv>
+            </DBTheadTrDiv>
           </DBTheadDiv>
           {
             tokenList && tokenList.length > 0 ? (
-              tokenList.map((item:any, index:any) => {
-                return (
-                  <DBTbodyDiv key={index}>
-                    <DBTheadTrDiv onClick={() => {
-                      // console.log(1)
-                      const htmlNode = document.getElementById('chain_list_' + index)
-                      const upNode = document.getElementById('chain_dropup_' + index)
-                      const downNode = document.getElementById('chain_dropdown_' + index)
-                      if (htmlNode && upNode && downNode) {
-                        if (htmlNode.style.display === 'none') {
-                          htmlNode.style.display = ''
-                          upNode.style.display = ''
-                          downNode.style.display = 'none'
-                        } else {
-                          htmlNode.style.display = 'none'
-                          upNode.style.display = 'none'
-                          downNode.style.display = ''
-                        }
-                      }
-                    }}>
-                      <DBTdDiv>
-                        <TokenTableCoinBox>
-                          <TokenTableLogo>
-                            <TokenLogo
-                              symbol={config.getBaseCoin(item?.symbol, chainId)}
-                              logoUrl={item.logoUrl}
-                              size={'1.625rem'}
-                            ></TokenLogo>
-                          </TokenTableLogo>
-                          <TokenNameBox>
-                            <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
-                            {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
-                          </TokenNameBox>
-                        </TokenTableCoinBox>
-                      </DBTdDiv>
-                      <DBTdDiv className="l hideSmall">
-                        <FlexSC>
-                          <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
-                            <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
-                          </ChainLogoBox>
-                          {
-                            item.destChains && Object.keys(item.destChains).length > 0 ? (
-                              <>
-                                {
-                                  Object.keys(item.destChains).map((chainID, index) => {
-                                  // chainList.map((chainID, index) => {
-                                    if (index >= 6) return ''
-                                    return (
-                                      <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
-                                        <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
-                                      </ChainLogoBox>
-                                    )
-                                  })
-                                }
-                                {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
-                              </>
-                            ) : ''
-                          }
-                        </FlexSC>
-                      </DBTdDiv>
-                      {viewTd(item)}
-                      <DBTdDiv className="c">
-                        <Flex>
-                          <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
-                          <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
-                        </Flex>
-                      </DBTdDiv>
-                    </DBTheadTrDiv>
-                    <DBTheadTrDiv id={'chain_list_' + index} style={{display: 'none'}}>
-                      <DBTdDiv>
-                        {viewTd2(item, chainId)}
-                        {/* {viewCard2(item, chainId)} */}
-                      </DBTdDiv>
-                    </DBTheadTrDiv>
-                  </DBTbodyDiv>
-                )
-              })
+              <LazyList records={ tokenList } pageSize={ 24 }
+                list={ List } watchRef={ watchRef }>
+                <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
+              </LazyList>
+              // tokenList.map((item:any, index:any) => {
+              //   return (
+              //     <DBTbodyDiv key={index}>
+              //       <DBTheadTrDiv onClick={() => {
+              //         // console.log(1)
+              //         const htmlNode = document.getElementById('chain_list_' + index)
+              //         const upNode = document.getElementById('chain_dropup_' + index)
+              //         const downNode = document.getElementById('chain_dropdown_' + index)
+              //         if (htmlNode && upNode && downNode) {
+              //           if (htmlNode.style.display === 'none') {
+              //             htmlNode.style.display = ''
+              //             upNode.style.display = ''
+              //             downNode.style.display = 'none'
+              //           } else {
+              //             htmlNode.style.display = 'none'
+              //             upNode.style.display = 'none'
+              //             downNode.style.display = ''
+              //           }
+              //         }
+              //       }}>
+              //         <DBTdDiv>
+              //           <TokenTableCoinBox>
+              //             <TokenTableLogo>
+              //               <TokenLogo
+              //                 symbol={config.getBaseCoin(item?.symbol, chainId)}
+              //                 logoUrl={item.logoUrl}
+              //                 size={'1.625rem'}
+              //               ></TokenLogo>
+              //             </TokenTableLogo>
+              //             <TokenNameBox>
+              //               <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
+              //               {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
+              //             </TokenNameBox>
+              //           </TokenTableCoinBox>
+              //         </DBTdDiv>
+              //         <DBTdDiv className="l hideSmall">
+              //           <FlexSC>
+              //             <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
+              //               <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
+              //             </ChainLogoBox>
+              //             {
+              //               item.destChains && Object.keys(item.destChains).length > 0 ? (
+              //                 <>
+              //                   {
+              //                     Object.keys(item.destChains).map((chainID, index) => {
+              //                     // chainList.map((chainID, index) => {
+              //                       if (index >= 6) return ''
+              //                       return (
+              //                         <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
+              //                           <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
+              //                         </ChainLogoBox>
+              //                       )
+              //                     })
+              //                   }
+              //                   {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
+              //                 </>
+              //               ) : ''
+              //             }
+              //           </FlexSC>
+              //         </DBTdDiv>
+              //         {viewTd(item)}
+              //         <DBTdDiv className="c">
+              //           <Flex>
+              //             <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
+              //             <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
+              //           </Flex>
+              //         </DBTdDiv>
+              //       </DBTheadTrDiv>
+              //       <DBTheadTrDiv id={'chain_list_' + index} style={{display: 'none'}}>
+              //         <DBTdDiv>
+              //           {viewTd2(item, chainId)}
+              //           {/* {viewCard2(item, chainId)} */}
+              //         </DBTdDiv>
+              //       </DBTheadTrDiv>
+              //     </DBTbodyDiv>
+              //   )
+              // })
             ) : (
               <DBTbodyDiv>
-                <DBTheadTrDiv>
-                  <DBTdDiv></DBTdDiv>
-                  <DBTdDiv></DBTdDiv>
-                  <DBTdDiv></DBTdDiv>
-                  <DBTdDiv></DBTdDiv>
-                </DBTheadTrDiv>
+                <DBTbodyTrDiv>
+                  <DBTdDiv className='chain'>
+                    <Loading>{ t('Loading') }...</Loading>
+                  </DBTdDiv>
+                </DBTbodyTrDiv>
               </DBTbodyDiv>
+              // <DBTbodyDiv>
+              //   <DBTheadTrDiv>
+              //     <DBTdDiv></DBTdDiv>
+              //     <DBTdDiv></DBTdDiv>
+              //     <DBTdDiv></DBTdDiv>
+              //     <DBTdDiv></DBTdDiv>
+              //   </DBTheadTrDiv>
+              // </DBTbodyDiv>
             )
           }
         </DBTablesDiv>
