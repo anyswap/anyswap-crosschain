@@ -171,16 +171,20 @@ function CurrencyRow({
           {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
           {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
           {currencyObj?.type ? (
-            ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router)'
+            ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router ' + currencyObj.sortId + ')'
           ) : ''}
           {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
           <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
         </Text>
       </Column>
       <TokenTags currency={currencyObj} />
-      <RowFixed style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
-      </RowFixed>
+      {
+        selectDestChainId ? null : (
+          <RowFixed style={{ justifySelf: 'flex-end' }}>
+            {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
+          </RowFixed>
+        )
+      }
     </MenuItem>
   )
 }

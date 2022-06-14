@@ -21,7 +21,8 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       && chainID
       && !isNaN(chainID)
     ) {
-      const lObj = getLocalConfig(account, token, chainID, DESTBALANCE, 1000 * 10)
+      const tokenKey = isNativeToken ? 'NATIVE' + token : token
+      const lObj = getLocalConfig(account, tokenKey, chainID, DESTBALANCE, 1000 * 10)
       if (lObj && lObj.balance) {
         resolve(fromWei(lObj.balance, dec))
       } else {
@@ -30,7 +31,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
             // console.log(res)
             if (res && res.toString().indexOf('Error: Returned error') === -1) {
               const bl = res
-              setLocalConfig(account, token, chainID, DESTBALANCE, {balance: bl})
+              setLocalConfig(account, tokenKey, chainID, DESTBALANCE, {balance: bl})
               resolve(fromWei(bl, dec))
             } else {
               resolve('')
@@ -44,7 +45,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
             if (res && res.toString().indexOf('Error: Returned error') === -1) {
               try {
                 const bl = ERC20_INTERFACE?.decodeFunctionResult('balanceOf', res)?.toString()
-                setLocalConfig(account, token, chainID, DESTBALANCE, {balance: bl})
+                setLocalConfig(account, tokenKey, chainID, DESTBALANCE, {balance: bl})
                 resolve(fromWei(bl, dec))
               } catch (error) {
                 resolve('')

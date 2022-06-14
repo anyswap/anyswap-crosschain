@@ -157,18 +157,17 @@ export default function SelectChainIdInputPanel({
       && !isNaN(selectChainId)
     ) {
       const token:any = destChainInfo?.address
-      // if (chainId?.toString() === selectChainId?.toString()) {
-      //   token = destChainInfo?.address
-      // } else {
-      //   token = destChainInfo?.address
-      // }
       if (token) {
-        const isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
+        // let isNT = (isNativeToken && chainId?.toString() === selectChainId?.toString()) || config.getCurChainInfo(selectChainId)?.nativeToken?.toLowerCase() === destChainInfo?.address.toLowerCase()
+        // if (['swapin', 'swapout'].includes(destChainInfo?.type)) {
+
+        // }
+        const isNT = destChainInfo?.tokenType === 'NATIVE' ? true : false
         // console.log(selectChainId)
         // console.log(destChainInfo)
         getNodeBalance(evmAccount, token, selectChainId, destChainInfo?.decimals, isNT).then(res => {
           // console.log(res)
-          if (res) {
+          if (res || res === 0) {
             setDestBalance(res)
           } else {
             setDestBalance('')
@@ -183,8 +182,9 @@ export default function SelectChainIdInputPanel({
   useInterval(getDestBalance, 1000 * 10)
 
   useEffect(() => {
+    setDestBalance('')
     getDestBalance()
-  }, [evmAccount, chainId, bridgeConfig, selectChainId])
+  }, [evmAccount, chainId, bridgeConfig, selectChainId, isNativeToken, destChainInfo])
 
   const useBalance = useMemo(() => {
     // console.log(nonEVMbl)
