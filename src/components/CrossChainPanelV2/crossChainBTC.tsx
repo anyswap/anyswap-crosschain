@@ -202,7 +202,7 @@ export default function CrossChain({
   useEffect(() => {
     setSelectChainList(initChainList)
   }, [initChainList])
-  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectChain)
+  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
 
   useEffect(() => {
     setSelectDestCurrency(initDestCurrency)

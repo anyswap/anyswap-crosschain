@@ -491,7 +491,7 @@ export default function CrossChain({
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
   useEffect(() => {
-    // console.log(selectCurrency)
+    console.log(initChainId)
     setSelectChain(initChainId)
   }, [initChainId])
 
@@ -499,8 +499,10 @@ export default function CrossChain({
     setSelectChainList(initChainList)
   }, [initChainList])
   
-  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectChain)
-
+  // const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
+  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
+  // console.log(selectChain)
+  // console.log(selectCurrency?.destChains?.[selectChain])
   useEffect(() => {
     setSelectDestCurrency(initDestCurrency)
   }, [initDestCurrency])

@@ -69,7 +69,6 @@ import {
   // outputValue,
   useInitSelectCurrency,
   useDestChainid,
-  // useDestCurrency
 } from '../../components/CrossChainPanelV2/hooks'
 
 const SettingsBox = styled.div`

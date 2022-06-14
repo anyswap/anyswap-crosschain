@@ -403,7 +403,7 @@ export default function SwapNative() {
     }
   }, [initCurrency])
 
-  const {initDestCurrency, initDestCurrencyList}:any = useDestCurrency(selectCurrency, selectChain)
+  const {initDestCurrency, initDestCurrencyList}:any = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
 
   useEffect(() => {
     setSelectDestCurrency(initDestCurrency)

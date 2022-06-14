@@ -130,9 +130,11 @@ export function useDestChainid (
   useChainId:any,
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
-  return useMemo(() => {
-    let initChainId:any = '',
-        initChainList:any = []
+  const [initChainId, setInitChainId] = useState<any>()
+  const [initChainList, setInitChainList] = useState<any>()
+  useEffect(() => {
+    // let initChainId1:any = '',
+    //     initChainList1:any = []
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
@@ -144,15 +146,10 @@ export function useDestChainid (
       let useChain:any = ''
       if (userInit?.toChainId) {
         useChain = userInit?.toChainId
-        // console.log('useChain1', userInit)
-        // console.log('useChain1', useChain)
-        // console.log('useChain1', useChainId)
-      } else if (selectChain) {
+      } else if (selectChain && arr.includes(useChain.toString())) {
         useChain = selectChain
-        // console.log('useChain2', useChain)
       } else {
         useChain = config.getCurChainInfo(selectChain).bridgeInitChain
-        // console.log('useChain3', useChain)
       }
       if (arr.length > 0) {
         if (
@@ -166,30 +163,29 @@ export function useDestChainid (
           }
         }
       }
-      // console.log('useChain', useChain)
-      // setSelectChain(useChain)
-      // console.log('useChain4', useChain)
-      // console.log(arr)
-      initChainId = useChain
-      initChainList = arr
-      // setSelectChainList(arr)
+      setInitChainId(useChain)
+      setInitChainList(arr)
     }
-    return {
-      initChainId,
-      initChainList
-    }
-  }, [selectCurrency])
+  }, [selectCurrency, selectChain, userInit])
+  return {
+    initChainId,
+    initChainList
+  }
 }
 
 export function useDestCurrency (
   selectCurrency:any,
-  selectChain:any,
+  selectDestCurrencyList:any,
 ) {
-  return useMemo(() => {
-    let initDestCurrency = '',
-        initDestCurrencyList = ''
-    if (selectCurrency && selectChain) {
-      const dl:any = selectCurrency?.destChains[selectChain]
+  const [initDestCurrency, setInitDestCurrency] = useState<any>()
+  const [initDestCurrencyList, setInitDestCurrencyList] = useState<any>()
+  useEffect(() => {
+    // let initDestCurrency = '',
+    //     initDestCurrencyList = ''
+        // console.log('selectChain', selectChain)
+        // console.log(selectDestCurrencyList)
+    if (selectDestCurrencyList) {
+      const dl:any = selectDestCurrencyList
       const formatDl:any = {}
       for (const t in dl) {
         formatDl[t] = {
@@ -222,23 +218,32 @@ export function useDestCurrency (
           destTokenMinKey = tokenKey
         }
       }
-      if (
-        Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
-        || (
-          Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
-          && typeArr.includes(formatDl[destTokenKey].type)
-        )
-      ) {
-        destTokenMinKey = destTokenKey
+      try {
+        // console.log(formatDl)
+        // console.log(destTokenMinKey)
+        // console.log(destTokenKey)
+        if (
+          Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
+          || (
+            Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
+            && typeArr.includes(formatDl[destTokenKey].type)
+          )
+        ) {
+          destTokenMinKey = destTokenKey
+        }
+        // initDestCurrency = formatDl[destTokenMinKey]
+        // initDestCurrencyList = formatDl
+        setInitDestCurrency(formatDl[destTokenMinKey])
+        setInitDestCurrencyList(formatDl)
+      } catch (error) {
+        
       }
-      initDestCurrency = formatDl[destTokenMinKey]
-      initDestCurrencyList = formatDl
     }
-    return {
-      initDestCurrency,
-      initDestCurrencyList
-    }
-  }, [selectCurrency, selectChain])
+  }, [selectCurrency, selectDestCurrencyList])
+  return {
+    initDestCurrency,
+    initDestCurrencyList
+  }
 }
 
 export function getFTMSelectPool (
