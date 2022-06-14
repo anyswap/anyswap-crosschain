@@ -556,6 +556,7 @@ export default function PoolLists ({
           {
             tokenList && tokenList.length > 0 ? (
               tokenList.map((item:any, index:any) => {
+                console.log('item', item.destChains)
                 return (
                   <DBTbody key={index}>
                     <tr onClick={() => {
@@ -602,11 +603,11 @@ export default function PoolLists ({
                                   Object.keys(item.destChains).map((chainID, index) => {
                                   // chainList.map((chainID, index) => {
                                     // if (index >= 2) return ''
-                                    return (
+                                    return useChainId != chainID ? (
                                       <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
                                         <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
                                       </ChainLogoBox>
-                                    )
+                                    ) : null
                                   })
                                 }
                                 {Object.keys(item.destChains).length > 0 ? '' : <MoreView></MoreView>}
