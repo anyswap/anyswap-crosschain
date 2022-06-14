@@ -29,8 +29,9 @@ const postcssNormalize = require('postcss-normalize');
 const appPackageJson = require(paths.appPackageJson);
 
 const UglifyJsPlugin=require('uglifyjs-webpack-plugin')
-const CompressionPlugin = require("compression-webpack-plugin")
-
+const CompressionPlugin = require('compression-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin')
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -61,8 +62,8 @@ module.exports = function(webpackEnv) {
 
   // Variable used for enabling profiling in Production
   // passed into alias object. Uses a flag if passed into the build command
-  const isEnvProductionProfile =
-    isEnvProduction && process.argv.includes('--profile');
+  const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
+  const isEnvProductionAanlyzer = isEnvProduction && process.argv.includes('--analyzer');
 
   // We will provide `paths.publicUrlOrPath` to our app
   // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
@@ -278,6 +279,15 @@ module.exports = function(webpackEnv) {
       splitChunks: {
         chunks: 'all',
         name: false,
+        minSize: 4096,
+        cacheGroups: {
+          common: {
+            test: /@ethereumjs|@terra-money|@terra-dev|@ethersproject|bip39|bn.js/,
+            // test: /@terra-money|@terra-dev|@ethersproject|raphael|idna-uts64-hx|ellptic|nebulas|lodash|@walletconnect|bip39/,
+            name: "common",
+            priority: 20,
+          },
+        }
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -312,6 +322,10 @@ module.exports = function(webpackEnv) {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
+        ...(isEnvProduction && {
+          // '@ethersproject/signing-key': path.resolve(__dirname, '../node_modules/@ethersproject/signing-key'),
+          'bn.js': path.resolve(__dirname, '../node_modules/bn.js')
+        }),
         ...(modules.webpackAliases || {}),
       },
       plugins: [
@@ -333,6 +347,9 @@ module.exports = function(webpackEnv) {
         PnpWebpackPlugin.moduleLoader(module),
       ],
     },
+    externals: isEnvProduction ? {
+      'web3': 'Web3'
+    } : {},
     module: {
       strictExportPresence: true,
       rules: [
@@ -535,8 +552,9 @@ module.exports = function(webpackEnv) {
         Object.assign(
           {},
           {
-            inject: true,
+            inject: false,
             template: paths.appHtml,
+            theme: env.raw.REACT_APP_THEME
           },
           isEnvProduction
             ? {
@@ -556,6 +574,14 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
+      isEnvProduction && new HtmlWebpackTagsPlugin({
+        append: false,
+        usePublicPath: false,
+        tags: [
+          'https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js',
+          // 'https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js'
+        ],
+      }),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
@@ -644,6 +670,7 @@ module.exports = function(webpackEnv) {
             new RegExp('/[^/?]+\\.[^/]+$'),
           ],
         }),
+      isEnvProductionAanlyzer && new BundleAnalyzerPlugin(),
       // TypeScript type checking
       useTypeScript &&
         new ForkTsCheckerWebpackPlugin({

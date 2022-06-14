@@ -50,9 +50,9 @@ import AppBody from '../AppBody'
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
 
-import {
-  useLogin
-} from '../../hooks/near'
+// import {
+//   useLogin
+// } from '../../hooks/near'
 
 
 const ContentBody = styled.div`
@@ -189,7 +189,7 @@ export default function SwapMULTI () {
   const theme = useContext(ThemeContext)
   const addTransaction = useTransactionAdder()
   // const multicallContract = useMulticallContract()
-  const {login}  = useLogin()
+  // const {login}  = useLogin()
   
   const useSwapInfo = useMemo(() => {
     if (chainId && swapList[chainId]) {
@@ -394,9 +394,9 @@ export default function SwapMULTI () {
   return (
     <>
       <AppBody>
-        <ButtonLight onClick={() => {
+        {/* <ButtonLight onClick={() => {
           login()
-        }}>test</ButtonLight>
+        }}>test</ButtonLight> */}
         <ContentBody>
           <ContentTitle>
             Swap ANY to MULTI

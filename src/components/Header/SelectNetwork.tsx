@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback,RefObject } from 'react'
+import React, { useMemo, useState, useRef, useCallback,RefObject,createRef } from 'react'
 // import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
@@ -12,6 +12,7 @@ import Modal from '../Modal'
 import Loader from '../Loader'
 import Column from '../Column'
 import { RowBetween } from '../Row'
+import { LazyList } from '../Lazyload/LazyList';
 import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
 
 // import { useActiveWeb3React } from '../../hooks'
@@ -42,6 +43,11 @@ export const WalletLogoBox2 = styled.div`
     ${({theme}) => theme.flexSC};
     width: 100%;
   }
+`
+
+const Loading = styled.div`
+  line-height: 56px;
+  text-align: center;
 `
 
 export const IconWrapper = styled.div`
@@ -413,16 +419,52 @@ function ChainListBox ({
   height,
   useChainId,
   openUrl,
-  searchQuery
+  searchQuery,
+  size
 }: {
   height: number
   useChainId: any
   openUrl: (value:any) => void
   searchQuery: any
+  size?: number
 }) {
+  const pageSize = size || 20
+  const boxRef = createRef<any>()
+  const watchRef = createRef<any>()
+  const { t } = useTranslation()
+  function List({ records }: { records?: any [] }) {
+    return (<>{
+      records?.map((item:any, index:any) => {
+        if (
+          (searchQuery
+          && (
+            chainInfo[item].name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            || chainInfo[item].symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            || searchQuery.toLowerCase() === item.toString().toLowerCase()
+          ))
+          || !searchQuery
+        ) {
+          return (
+            <OptionCardClickable key={index} className={
+              useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+              <Option curChainId={item} selectChainId={useChainId}></Option>
+            </OptionCardClickable>
+          )
+        }
+        return
+      })
+    }
+    </>);
+  }
   return (
     <>
-      <NetWorkList style={{height: height}}>
+      <NetWorkList ref={ boxRef } style={{height: height}}>
+        <LazyList records={ spportChainArr } pageSize={ pageSize }
+          boxRef={ boxRef } watchRef={ watchRef } list={ List }>
+          <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
+        </LazyList>
+      </NetWorkList>
+      {/* <NetWorkList style={{height: height}}>
         {
           spportChainArr && spportChainArr.map((item:any, index:any) => {
             if (
@@ -444,7 +486,7 @@ function ChainListBox ({
             return
           })
         }
-      </NetWorkList>
+      </NetWorkList> */}
     </>
   )
 }

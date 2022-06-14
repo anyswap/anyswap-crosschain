@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="<%= htmlWebpackPlugin.options.theme %>">
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/favicon.ico" />
@@ -28,7 +28,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-
+    <%= htmlWebpackPlugin.tags.headTags %>
     <title>Multichain - Cross Chain Router Protocol</title>
   </head>
   <body>
@@ -44,9 +44,10 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script> 
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>  
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-220410839-2"></script>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-220410839-2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
