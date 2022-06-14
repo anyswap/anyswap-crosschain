@@ -556,7 +556,6 @@ export default function PoolLists ({
           {
             tokenList && tokenList.length > 0 ? (
               tokenList.map((item:any, index:any) => {
-                console.log('item', item.destChains)
                 return (
                   <DBTbody key={index}>
                     <tr onClick={() => {
