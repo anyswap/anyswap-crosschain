@@ -119,19 +119,6 @@ export default function SwapNative() {
     }
   }, [selectDestCurrency])
 
-  // const isUnderlying = useMemo(() => {
-  //   if (selectCurrency?.underlying) {
-  //     return true
-  //   }
-  //   return false
-  // }, [selectCurrency])
-
-  const isDestUnderlying = useMemo(() => {
-    if (destConfig?.underlying) {
-      return true
-    }
-    return false
-  }, [destConfig])
 
   const useRouterToken = useMemo(() => {
     // console.log(destConfig)
@@ -322,10 +309,10 @@ export default function SwapNative() {
               })
             }
           } else if (
-            (isDestUnderlying && destLiquidity && Number(inputBridgeValue) > Number(destLiquidity))
-            || (isDestUnderlying && !destLiquidity)
+            (destConfig.isLiquidity && destLiquidity && Number(inputBridgeValue) > Number(destLiquidity))
+            || (destConfig.isLiquidity && !destLiquidity)
           ) {
-            console.log('dest')
+            // console.log('dest')
             return {
               state: 'Error',
               tip: t('insufficientLiquidity')
@@ -345,7 +332,7 @@ export default function SwapNative() {
       }
     }
     return undefined
-  }, [chainId, swapType, selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destPoolData, selectAnyToken, poolData])
+  }, [chainId, swapType, selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, destPoolData, selectAnyToken, poolData])
 
   const errorTip = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
@@ -406,59 +393,6 @@ export default function SwapNative() {
     }
   }, [chainId])
 
-  // function formatPercent (n1:any, n2:any) {
-  //   if (!n1 || !n2) return ''
-  //   const n = (Number(n1) / Number(n2)) * 100
-  //   if (n < 0.01) {
-  //     return '(<0.01%)'
-  //   } else {
-  //     return '(' + n.toFixed(2) + '%)'
-  //   }
-  // }
-  // useEffect(() => {
-  //   setDestChain('')
-  // }, [selectChain])
-  // async function getAllOutBalance (account:any) {
-  //   const token = selectCurrency.address
-  //   // console.log(selectCurrency)
-  //   const curAnyToken = isUnderlying ? selectCurrency?.underlying?.address : token
-  //   const curUnlToekn = isUnderlying ? token : ''
-  //   const obj:any = await getNodeTotalsupply(
-  //     curAnyToken,
-  //     chainId,
-  //     selectCurrency.decimals,
-  //     account,
-  //     curUnlToekn
-  //   )
-  //   const dObj = chainId?.toString() === selectChain?.toString() ? selectCurrency : selectCurrency?.destChains[selectChain]
-  //   const destAnyToken = dObj?.underlying?.address ? dObj?.underlying?.address : dObj?.address
-  //   const destUnlToken = dObj?.underlying?.address ? dObj?.address : ''
-  //   const DC:any = openAdvance ? await getNodeTotalsupply(
-  //     destAnyToken,
-  //     selectChain,
-  //     dObj?.decimals,
-  //     account,
-  //     destUnlToken
-  //   ) : ''
-  //   // console.log(DC)
-  //   const ts = obj[curAnyToken]?.ts
-  //   const anyts = obj[curAnyToken]?.anyts
-  //   const bl = obj[curAnyToken]?.balance
-  //   if (DC) {
-  //     setDestChain({
-  //       chain: selectChain,
-  //       ts: dObj?.underlying ? DC[destAnyToken]?.ts : DC[destAnyToken]?.anyts,
-  //       bl: DC[destAnyToken]?.balance
-  //     })
-  //   }
-  //   return {
-  //     chainId: chainId,
-  //     balance: bl,
-  //     totalsupply: ts,
-  //     anyTotalsupply: anyts,
-  //     percent: formatPercent(bl, anyts)
-  //   }
-  // }
 
   const {initCurrency, underlyingList} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken, true)
   // console.log(underlyingList)
@@ -468,23 +402,6 @@ export default function SwapNative() {
       history.replace(window.location.pathname + '#/pool/add')
     }
   }, [initCurrency])
-
-  // useEffect(() => {
-  //   if (selectCurrency) {
-  //     getAllOutBalance(account).then(() => {
-  //       // setPoolInfo(res)
-  //       if (intervalFN) clearTimeout(intervalFN)
-  //       intervalFN = setTimeout(() => {
-  //         setIntervalCount(intervalCount + 1)
-  //       }, 1000 * 10)
-  //     })
-  //   } else {
-  //     if (intervalFN) clearTimeout(intervalFN)
-  //     intervalFN = setTimeout(() => {
-  //       setIntervalCount(intervalCount + 1)
-  //     }, 1000 * 10)
-  //   }
-  // }, [selectCurrency, account, intervalCount, selectChain, openAdvance])
 
   const {initDestCurrency, initDestCurrencyList}:any = useDestCurrency(selectCurrency, selectChain)
 
