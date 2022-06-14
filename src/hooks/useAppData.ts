@@ -144,8 +144,8 @@ export default function useAppData(): {
             ...(Object.keys(parsed?.appSettings?.crosschainTokens)?.length && parsed?.appSettings?.crosschainTokens)
           }
           const tokenGroups = [
-            ...(Object.keys(localStorageAppSetting?.tokenGroups)?.length && localStorageAppSetting?.tokenGroups),
-            ...(Object.keys(parsed?.appSettings?.tokenGroups)?.length && parsed?.appSettings?.tokenGroups)
+            ...(localStorageAppSetting?.tokenGroups),
+            ...(parsed?.appSettings?.tokenGroups)
           ]
 
           parsed.appSettings = {
@@ -157,7 +157,9 @@ export default function useAppData(): {
           }
         }
 
-      } catch (e) {}
+      } catch (e) {
+        console.log('>>> error fetch app settings from ls', e)
+      }
 
 
       if (parsed) {
