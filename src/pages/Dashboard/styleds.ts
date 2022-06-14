@@ -108,6 +108,9 @@ export const DBTables = styled.table`
   table-layer: fixed;
   border-spacing:0px 10px;
 `
+export const DBTablesDiv = styled.div`
+  min-width: 100%;
+`
 export const DBThead = styled.thead`
   width: 100%;
   border-radius: 0.5625rem;
@@ -123,6 +126,26 @@ export const DBThead = styled.thead`
     padding: 1rem 5px;
   }
 `
+export const DBTheadDiv = styled.div`
+  width: 100%;
+  border-radius: 0.5625rem;
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+  // border: solid 1px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  margin-top: 0.625rem;
+  margin-bottom: 0.625rem;
+  font-size: 12px;
+  
+  @media screen and (max-width: 960px) {
+    padding: 1rem 5px;
+  }
+`
+export const DBTheadTrDiv = styled.div`
+  ${({ theme }) => theme.flexRowNoWrap};
+  
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
+`
+
 export const DBTh = styled.th`
   color: ${({ theme }) => theme.textColorBold};
   background-color: ${({ theme }) => theme.contentBg};
@@ -149,6 +172,46 @@ export const DBTh = styled.th`
     }
   `}
 `
+
+export const DBThDiv = styled.div`
+  color: ${({ theme }) => theme.textColorBold};
+  background-color: ${({ theme }) => theme.contentBg};
+  padding: 12px 8px;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 1.5;
+  &.r {
+    text-align: right;
+  }
+  &.l {
+    text-align: left;
+  }
+  &.c {
+    text-align: center;
+  }
+  &.hideSmall {
+    
+  }
+  &.token {
+    width: 140px;
+  }
+  &.chain {
+    flex: 1;
+  }
+  &.liquidity {
+    width: 150px;
+  }
+  &.detail {
+    width: 110px;
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.hideSmall {
+      display:none;
+    }
+  `}
+`
+
 export const DBTbody = styled.tbody`
   width: 100%;
   border-radius: 0.5625rem;
@@ -163,6 +226,23 @@ export const DBTbody = styled.tbody`
   @media screen and (max-width: 960px) {
     padding: 1rem 5px;
   }
+`
+
+export const DBTbodyDiv = styled.div`
+  width: 100%;
+  border-radius: 0.5625rem;
+  // border: solid 1px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  margin-bottom: 0.625rem;
+  font-size: 12px;
+  @media screen and (max-width: 960px) {
+    padding: 1rem 5px;
+  }
+`
+
+export const DBTbodyTrDiv = styled.div`
+  ${({ theme }) => theme.flexRowNoWrap};
+  box-shadow: ${({ theme }) => theme.tableShadow};
 `
 
 export const DBTd = styled.td`
@@ -181,6 +261,61 @@ export const DBTd = styled.td`
   }
   &.c {
     text-align: center;
+  }
+  p {
+    margin: 0;
+    &.lr {
+      ${({ theme }) => theme.flexBC};
+    }
+    &.textR {
+      ${({ theme }) => theme.flexEC};
+    }
+  }
+  
+  &.hideSmall {
+    
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.hideSmall {
+      display:none;
+    }
+  `}
+`
+
+export const DBTdDiv = styled.div`
+  background-color: ${({ theme }) => theme.contentBg};
+  padding: 8px 8px;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 1.5;
+  color: ${({ theme }) => theme.textColorBold};
+  &.r {
+    text-align: right;
+  }
+  &.l {
+    text-align: left;
+  }
+  &.c {
+    text-align: center;
+  }
+  &.token {
+    width: 140px;
+  }
+  &.chain {
+    padding-top: 12px;
+    flex: 1;
+  }
+  &.liquidity {
+    line-height: 2.5;
+    width: 150px;
+  }
+  &.detail {
+    padding-top: 22px;
+    width: 110px;
+  }
+  &.full {
+    width: 100%;
   }
   p {
     margin: 0;

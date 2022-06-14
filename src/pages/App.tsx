@@ -43,14 +43,8 @@ import config from '../config'
 
 // console.log(Sdk)
 const AppWrapper = styled.div`
-  // display: flex;
-  // flex-flow: column;
-  // align-items: flex-start;
-  // overflow-x: hidden;
   width: 100%;
   height: 100%;
-  // width: 100vw;
-  // height: 100vh;
   position: relative;
 `
 
@@ -104,17 +98,12 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  // max-width: 1440px;
   max-width: 1100px;
   height: 100%;
-  // height: 100vh;
   padding-top: 70px;
-  // padding-left: 320px;
   position: relative;
   align-items: center;
   flex: 1;
-  // overflow-y: auto;
-  // overflow-x: hidden;
   z-index: 10;
   margin: auto;
 

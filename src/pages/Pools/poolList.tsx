@@ -21,11 +21,12 @@ import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
 import {thousandBit, bigToSmallSort, fromWei} from '../../utils/tools/tools'
 
 import {
-  DBTables,
-  DBThead,
-  DBTh,
-  DBTbody,
-  DBTd,
+  DBTablesDiv,
+  DBTheadDiv,
+  DBTheadTrDiv,
+  DBThDiv,
+  DBTbodyDiv,
+  DBTdDiv,
   TokenTableCoinBox,
   TokenTableLogo,
   TokenNameBox,
@@ -361,11 +362,11 @@ export default function PoolLists ({
     
     return (
       <>
-        <DBTd className='r'>
+        <DBTdDiv className='r'>
           <BalanceTxt>
             <p className='p1'>{thousandBit(item.totalV, 2)}</p>
           </BalanceTxt>
-        </DBTd>
+        </DBTdDiv>
       </>
     )
   }
@@ -601,21 +602,21 @@ export default function PoolLists ({
       }
 
       <MyBalanceBox>
-        <DBTables>
-          <DBThead>
-            <tr>
-              <DBTh className="l">{t('tokens')}</DBTh>
-              <DBTh className="l hideSmall">{t('supportChain')}</DBTh>
-              <DBTh className="r">{t('lr')}</DBTh>
-              <DBTh className="c">{t('details')}</DBTh>
-            </tr>
-          </DBThead>
+        <DBTablesDiv>
+          <DBTheadDiv>
+            <DBTheadTrDiv>
+              <DBThDiv className="l">{t('tokens')}</DBThDiv>
+              <DBThDiv className="l hideSmall">{t('supportChain')}</DBThDiv>
+              <DBThDiv className="r">{t('lr')}</DBThDiv>
+              <DBThDiv className="c">{t('details')}</DBThDiv>
+            </DBTheadTrDiv>
+          </DBTheadDiv>
           {
             tokenList && tokenList.length > 0 ? (
               tokenList.map((item:any, index:any) => {
                 return (
-                  <DBTbody key={index}>
-                    <tr onClick={() => {
+                  <DBTbodyDiv key={index}>
+                    <DBTheadTrDiv onClick={() => {
                       // console.log(1)
                       const htmlNode = document.getElementById('chain_list_' + index)
                       const upNode = document.getElementById('chain_dropup_' + index)
@@ -632,7 +633,7 @@ export default function PoolLists ({
                         }
                       }
                     }}>
-                      <DBTd width={'150'}>
+                      <DBTdDiv>
                         <TokenTableCoinBox>
                           <TokenTableLogo>
                             <TokenLogo
@@ -646,8 +647,8 @@ export default function PoolLists ({
                             {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
                           </TokenNameBox>
                         </TokenTableCoinBox>
-                      </DBTd>
-                      <DBTd className="l hideSmall">
+                      </DBTdDiv>
+                      <DBTdDiv className="l hideSmall">
                         <FlexSC>
                           <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
                             <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
@@ -671,36 +672,36 @@ export default function PoolLists ({
                             ) : ''
                           }
                         </FlexSC>
-                      </DBTd>
+                      </DBTdDiv>
                       {viewTd(item)}
-                      <DBTd className="c" width={'180'}>
+                      <DBTdDiv className="c">
                         <Flex>
                           <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
                           <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
                         </Flex>
-                      </DBTd>
-                    </tr>
-                    <tr id={'chain_list_' + index} style={{display: 'none'}}>
-                      <DBTd colSpan={4}>
+                      </DBTdDiv>
+                    </DBTheadTrDiv>
+                    <DBTheadTrDiv id={'chain_list_' + index} style={{display: 'none'}}>
+                      <DBTdDiv>
                         {viewTd2(item, chainId)}
                         {/* {viewCard2(item, chainId)} */}
-                      </DBTd>
-                    </tr>
-                  </DBTbody>
+                      </DBTdDiv>
+                    </DBTheadTrDiv>
+                  </DBTbodyDiv>
                 )
               })
             ) : (
-              <DBTbody>
-                <tr>
-                  <DBTd></DBTd>
-                  <DBTd></DBTd>
-                  <DBTd></DBTd>
-                  <DBTd></DBTd>
-                </tr>
-              </DBTbody>
+              <DBTbodyDiv>
+                <DBTheadTrDiv>
+                  <DBTdDiv></DBTdDiv>
+                  <DBTdDiv></DBTdDiv>
+                  <DBTdDiv></DBTdDiv>
+                  <DBTdDiv></DBTdDiv>
+                </DBTheadTrDiv>
+              </DBTbodyDiv>
             )
           }
-        </DBTables>
+        </DBTablesDiv>
       </MyBalanceBox>
     </AppBody>
     </>

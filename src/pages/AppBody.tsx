@@ -5,7 +5,6 @@ export const BodyWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  // max-width: 1100px;
   padding: 2.5rem 70px;
   overflow:auto;
   margin:auto;
@@ -15,12 +14,6 @@ export const BodyWrapper = styled.div`
 `
 
 const BodyContent = styled.div`
-  // position: absolute;
-  // top: 70px;
-  // right: 0;
-  // bottom: 0;
-  // // left: 320px;
-  // left: 0px;
   width: 100%;
   height: 100%;
   padding: 0rem 0px;
