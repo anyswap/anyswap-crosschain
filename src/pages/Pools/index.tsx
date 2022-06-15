@@ -117,7 +117,7 @@ export default function SwapNative() {
     if (selectDestCurrency) {
       setSelectAnyToken({...selectDestCurrency?.fromanytoken, router: selectDestCurrency.router})
     }
-  }, [selectDestCurrency])
+  }, [selectDestCurrency, swapType])
 
 
   const useRouterToken = useMemo(() => {

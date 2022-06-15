@@ -196,23 +196,23 @@ export function useDestCurrency (
       }
       // console.log(formatDl)
       const destTokenList = Object.keys(formatDl)
-      let destTokenKey = ''
+      // let destTokenKey = ''
       let destTokenMinKey = ''
-      const typeArr = ['swapin', 'swapout']
+      // const typeArr = ['swapin', 'swapout']
       for (const tokenKey of destTokenList) {
-        if (!destTokenKey) destTokenKey = tokenKey
+        // if (!destTokenKey) destTokenKey = tokenKey
         if (!destTokenMinKey) destTokenMinKey = tokenKey
-        // console.log(destTokenKey)
-        if (
-          Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
-          || (
-            Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
-            && typeArr.includes(formatDl[tokenKey].type)
-          )
-        ) {
-          // console.log(destTokenKey)
-          destTokenKey = tokenKey
-        }
+        // // console.log(destTokenKey)
+        // if (
+        //   Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
+        //   || (
+        //     Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
+        //     && typeArr.includes(formatDl[tokenKey].type)
+        //   )
+        // ) {
+        //   // console.log(destTokenKey)
+        //   destTokenKey = tokenKey
+        // }
 
         if (formatDl[destTokenMinKey].sortId > formatDl[tokenKey].sortId) {
           destTokenMinKey = tokenKey
@@ -222,15 +222,15 @@ export function useDestCurrency (
         // console.log(formatDl)
         // console.log(destTokenMinKey)
         // console.log(destTokenKey)
-        if (
-          Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
-          || (
-            Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
-            && typeArr.includes(formatDl[destTokenKey].type)
-          )
-        ) {
-          destTokenMinKey = destTokenKey
-        }
+        // if (
+        //   Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
+        //   || (
+        //     Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
+        //     && typeArr.includes(formatDl[destTokenKey].type)
+        //   )
+        // ) {
+        //   destTokenMinKey = destTokenKey
+        // }
         // initDestCurrency = formatDl[destTokenMinKey]
         // initDestCurrencyList = formatDl
         setInitDestCurrency(formatDl[destTokenMinKey])

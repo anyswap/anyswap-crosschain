@@ -100,6 +100,8 @@ export function useBridgeCallback(
               try {
                 console.log(toAddress)
                 console.log(routerToken)
+                console.log(inputToken)
+                console.log(toChainID)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
                   inputToken,
