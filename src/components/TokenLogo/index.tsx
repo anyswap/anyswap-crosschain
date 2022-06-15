@@ -11,6 +11,8 @@ import { LazyImage } from '../../components/Lazyload/LazyImage'
 const Image = styled.img<{ size?: any }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
+  min-width: ${({ size }) => size};
+  min-height: ${({ size }) => size};
   max-width: 100%;
   max-height: 100%;
   background-color: white;
@@ -49,6 +51,8 @@ const imageStyle = (size: any) => {
   return {
     width: size,
     height: size,
+    minMidth: size,
+    minHeight: size,
     borderRadius: size
   }
 }
@@ -93,6 +97,7 @@ export default function TokenLogo({
   } else {
     path = initPath
   }
+  // path = ''
   // console.log(logoUrl)
   // console.log(path)
   // return <Image {...rest} alt={symbol} src={path} size={size} style={style} />
