@@ -130,8 +130,8 @@ export function useDestChainid (
   useChainId:any,
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
-  const [initChainId, setInitChainId] = useState<any>()
-  const [initChainList, setInitChainList] = useState<any>()
+  const [initChainId, setInitChainId] = useState<any>('')
+  const [initChainList, setInitChainList] = useState<any>([])
   useEffect(() => {
     // let initChainId1:any = '',
     //     initChainList1:any = []
@@ -166,7 +166,7 @@ export function useDestChainid (
       setInitChainId(useChain)
       setInitChainList(arr)
     }
-  }, [selectCurrency, selectChain, userInit])
+  }, [selectCurrency])
   return {
     initChainId,
     initChainList
@@ -177,8 +177,8 @@ export function useDestCurrency (
   selectCurrency:any,
   selectDestCurrencyList:any,
 ) {
-  const [initDestCurrency, setInitDestCurrency] = useState<any>()
-  const [initDestCurrencyList, setInitDestCurrencyList] = useState<any>()
+  const [initDestCurrency, setInitDestCurrency] = useState<any>('')
+  const [initDestCurrencyList, setInitDestCurrencyList] = useState<any>({})
   useEffect(() => {
     // let initDestCurrency = '',
     //     initDestCurrencyList = ''
@@ -239,7 +239,7 @@ export function useDestCurrency (
         
       }
     }
-  }, [selectCurrency, selectDestCurrencyList])
+  }, [selectDestCurrencyList])
   return {
     initDestCurrency,
     initDestCurrencyList
