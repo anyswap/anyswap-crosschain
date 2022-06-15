@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
-import styled from "styled-components"
+import React, { useEffect, useContext } from "react"
+import styled, {ThemeContext} from "styled-components"
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle } from 'react-feather'
+import { CheckCircle, AlertCircle } from 'react-feather'
 import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 import TokenLogo from '../TokenLogo'
@@ -198,6 +198,7 @@ export default function HistoryDetails ({
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
+  const theme = useContext(ThemeContext)
   const useToStatus = DestChainStatus({fromStatus,toStatus})
   useEffect(() => {
     if (underlying && swaptx && !isReceiveAnyToken) {
@@ -254,7 +255,9 @@ export default function HistoryDetails ({
             {
               fromStatus === Status.Success? (
                 <CheckCircle size="16" style={{marginRight: '10px'}} />
-              ) : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+              ) : (
+                fromStatus === Status.Failure ? <AlertCircle color={theme.red1} size={16} style={{marginRight: '10px'}} /> : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+              )
             }
             {fromStatus === Status.Pending ? (<><span>{fromStatus}</span></>) : fromStatus}
           </span>
@@ -333,7 +336,9 @@ export default function HistoryDetails ({
           <span className="status">
             {
               useToStatus ? (
-                useToStatus === Status.Success ? <CheckCircle size="16" style={{marginRight: '10px'}} /> : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+                useToStatus === Status.Success ? <CheckCircle size="16" style={{marginRight: '10px'}} /> : (
+                  useToStatus === Status.Failure ? <AlertCircle color={theme.red1} size={16} style={{marginRight: '10px'}} /> : <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
+                )
               ) : ''
             }
             {useToStatus ? useToStatus : '-'}
