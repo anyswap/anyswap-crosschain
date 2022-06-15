@@ -29,7 +29,8 @@ const parseInfo = (info: string) => {
       mainConfigAddress: '',
       routerConfigs: {},
       erc20Tokens: {},
-      crosschainTokens: {}
+      crosschainTokens: {},
+      tokenGroups: []
     }
   }
   const result = JSON.parse(info)
@@ -142,16 +143,23 @@ export default function useAppData(): {
             ...(Object.keys(localStorageAppSetting?.crosschainTokens)?.length && localStorageAppSetting?.crosschainTokens),
             ...(Object.keys(parsed?.appSettings?.crosschainTokens)?.length && parsed?.appSettings?.crosschainTokens)
           }
+          const tokenGroups = [
+            ...(localStorageAppSetting?.tokenGroups),
+            ...(parsed?.appSettings?.tokenGroups)
+          ]
 
           parsed.appSettings = {
             ...parsed.appSettings,
             routerConfigs,
             erc20Tokens,
-            crosschainTokens
+            crosschainTokens,
+            tokenGroups
           }
         }
 
-      } catch (e) {}
+      } catch (e) {
+        console.log('>>> error fetch app settings from ls', e)
+      }
 
 
       if (parsed) {

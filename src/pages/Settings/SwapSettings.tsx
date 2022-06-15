@@ -36,12 +36,14 @@ const MILLION = 1_000_000
 
 export default function SwapSettings({
   underlying,
+  usedTokenGroup,
   onConfigNetwork,
   SwitchToConfigButton
 }: {
   underlying: {
     [k: string]: any
   }
+  usedTokenGroup: string
   onConfigNetwork: boolean
   SwitchToConfigButton: JSX.Element
 }) {
@@ -127,7 +129,7 @@ export default function SwapSettings({
         SwapFeeRatePerMillion: new BigNumber(swapFeeRatePerMillion || 0).times(MILLION).toString()
       }
       const { hash } = await routerConfigSigner.setSwapConfig(
-        underlying.symbol.toUpperCase(),
+        usedTokenGroup,
         underlying.networkId,
         swapConfig
       )
@@ -222,7 +224,7 @@ export default function SwapSettings({
         </OptionWrapper>
 
         {onConfigNetwork ? (
-          <ButtonPrimary disabled={pending || !canSetSwapConfig} onClick={setSwapConfig}>
+          <ButtonPrimary disabled={usedTokenGroup == `` || pending || !canSetSwapConfig} onClick={setSwapConfig}>
             {t('setSwapConfig')}
           </ButtonPrimary>
         ) : SwitchToConfigButton
