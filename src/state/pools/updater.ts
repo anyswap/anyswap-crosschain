@@ -21,11 +21,11 @@ export default function Updater(): null {
     }
   }, [fetchTokenList, chainId])
 
-  useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 30 : null)
+  useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 30 : null, false)
 
   useEffect(() => {
     fetchAllTokenListsCallback()
-  }, [dispatch, fetchTokenList, chainId])
+  }, [dispatch, fetchAllTokenListsCallback, chainId])
 
   // const getPools = useCallback(() => {
   //   axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {

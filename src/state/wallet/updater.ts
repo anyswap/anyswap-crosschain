@@ -123,41 +123,6 @@ export default function Updater(): null {
         }
         resolve(res)
       })
-      // console.log(arr)
-      // console.log(config.getCurChainInfo(chainId))
-      // contract.options.address = config.getCurChainInfo(chainId).multicalToken
-      // contract.methods.aggregate(arr.map(({callData, target}: {callData:string, target:string}) => ({callData, target}))).call((err:any, res:any) => {
-      //   // console.log(err)
-      //   // console.log(res)
-      //   if (!err) {
-      //     const blList:any = {}
-      //     for (let i = 0, len = arr.length; i < len; i++) {
-      //       const token = arr[i].target.toLowerCase()
-      //       const dec = arr[i].dec
-      //       const results = res.returnData[i]
-      //       let bl = ''
-      //       try {
-      //         // console.log(results)
-      //         bl = results === '0x' ? '' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
-      //       } catch (error) {
-      //         // console.error(error)
-      //       }
-      //       blList[token] = {
-      //         // balance: fromWei(results, dec),
-      //         balance: bl ? formatUnits(bl, dec) : '',
-      //         balancestr: bl,
-      //         dec: dec,
-      //         blocknumber: res.blockNumber
-      //       }
-      //     }
-      //     dispatch(tokenBalanceList({
-      //       chainId,
-      //       account,
-      //       tokenList: blList
-      //     }))
-      //   }
-      //   resolve(res)
-      // })
     })
   }, [rpcItem, chainId])
 
@@ -258,7 +223,7 @@ export default function Updater(): null {
     }
   }, [pendingLength])
 
-  useInterval(getAllBalance, 1000 * 60 * 10)
+  useInterval(getAllBalance, 1000 * 60 * 10, false)
 
   return null
 }

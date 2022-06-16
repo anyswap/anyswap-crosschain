@@ -21,7 +21,7 @@ import MergeCrossChainV2 from './MergeCrossChainV2'
 import Pools from './Pools'
 const PoolList = Lazyload(() => import('./Pools/poolList'))
 // import PoolList from './Pools/poolList'
-import CrossChainTxns from './CrossChainTxns'
+// import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
 const SwapMULTI = Lazyload(() => import('./SwapMULTI'))
 // import SwapMULTI from './SwapMULTI'
@@ -164,7 +164,7 @@ export default function App() {
               <Route exact strict path="/pool/add" component={() => <Pools />} />
               {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
-              <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} />
+              {/* <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} /> */}
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
               <Route exact strict path="/multi" component={() => <SwapMULTI duration={ 0 } />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />

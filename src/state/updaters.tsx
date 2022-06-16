@@ -6,7 +6,7 @@ import TransactionUpdater from './transactions/updater'
 import UserUpdater from './user/updater'
 import PoolsUpdater from './pools/updater'
 import WalletUpdater from './wallet/updater'
-import RpcUpdater from './rpc/updater'
+// import RpcUpdater from './rpc/updater'
 
 export function Updaters() {
   return (
@@ -18,8 +18,8 @@ export function Updaters() {
       <TransactionUpdater />
       <MulticallUpdater />
       <WalletUpdater />
-      <RpcUpdater />
-      <MulticallUpdater type={1}/>
+      {/* <RpcUpdater /> */}
+      {/* <MulticallUpdater type={1}/> */}
     </>
   )
 }
