@@ -10,6 +10,7 @@ import {getConfig} from './config'
 
 const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
 const contractId = nearConfig.contractName
+// const wNearContractId = 'wrap.testnet';
 
 export function useLogout() {
   const logout = useCallback(() => {
@@ -50,5 +51,28 @@ export function useLogin() {
   return {
     login,
     access
+  }
+}
+
+export function useSendNear () {
+  const sendNear = useCallback(async(receiverId, amount) => {
+    const res = await window.near.sendMoney({
+      receiverId: receiverId,
+      amount: amount,
+    });
+    console.log(res)
+  }, [])
+  return {
+    sendNear
+  }
+}
+
+export function useNearSendTxns () {
+  const {sendNear} = useSendNear()
+  const sendNearTxns = useCallback(async(receiverId, amount) => {
+    sendNear(receiverId, amount)
+  }, [])
+  return {
+    sendNearTxns
   }
 }

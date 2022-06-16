@@ -40,7 +40,6 @@ export const SearchBox = styled.div`
   border-radius: 0.5625rem;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
   border: solid 0.0625rem rgba(0, 0, 0, 0.1);
-  // background-color: #ffffff;
   padding-left: 2.5rem;
   position: relative;
 
@@ -116,7 +115,7 @@ export const DBThead = styled.thead`
   border-radius: 0.5625rem;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
   border: solid 1px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.contentBg};
   margin-bottom: 0.625rem;
   font-size: 12px;
   tr {
@@ -131,7 +130,7 @@ export const DBTheadDiv = styled.div`
   border-radius: 0.5625rem;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
   // border: solid 1px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.contentBg};
   margin-top: 0.625rem;
   margin-bottom: 0.625rem;
   font-size: 12px;
@@ -216,7 +215,7 @@ export const DBTbody = styled.tbody`
   width: 100%;
   border-radius: 0.5625rem;
   border: solid 1px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.contentBg};
   margin-bottom: 0.625rem;
   font-size: 12px;
   tr {
@@ -232,7 +231,7 @@ export const DBTbodyDiv = styled.div`
   width: 100%;
   border-radius: 0.5625rem;
   // border: solid 1px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.contentBg};
   margin-bottom: 0.625rem;
   font-size: 12px;
   @media screen and (max-width: 960px) {
@@ -352,7 +351,7 @@ export const TokenTableLogo = styled.div`
 
   box-shadow: 0 0.125rem 0.25rem 0 rgba(0, 0, 0, 0.04);
   border: solid 0.0625rem rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.contentBg};
   border-radius: 100%;
   padding: 0.3125rem;
   margin-right: 1.25rem;
