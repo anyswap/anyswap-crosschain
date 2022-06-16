@@ -29,6 +29,7 @@ const Vest = Lazyload(() => import('./Vest'))
 // import Vest from './Vest'
 import CreateLock from './Vest/create'
 import MangerVest from './Vest/manger'
+import TestWarpper from './Test'
 
 // import ANYFarming from './Farms/ANYFarming'
 // import NoanyFarming from './Farms/NoanyFarming'
@@ -164,6 +165,7 @@ export default function App() {
               <Route exact strict path="/pool/add" component={() => <Pools />} />
               {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
+              <Route exact strict path="/test" component={() => <TestWarpper />} />
               {/* <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} /> */}
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
               <Route exact strict path="/multi" component={() => <SwapMULTI duration={ 0 } />} />

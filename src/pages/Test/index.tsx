@@ -13,12 +13,12 @@ import {
 
 export default function TestWarpper () {
 
-  const {sendNearTxns}  = useNearSendTxns()
+  const {execute: sendNearTxns}  = useNearSendTxns('1', 'dwinter.testnet')
   return (
     <>
       <AppBody>
         <ButtonLight onClick={() => {
-          sendNearTxns('dwinter.testnet', '100')
+          if (sendNearTxns) sendNearTxns()
         }}>test</ButtonLight>
       </AppBody>
     </>
