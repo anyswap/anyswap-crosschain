@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState, createRef } from 'react'
+import React, { useEffect, useMemo, useState, createRef, useCallback } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
+import useInterval from '../../hooks/useInterval'
 
 import TokenLogo from '../../components/TokenLogo'
 import Title from '../../components/Title'
@@ -16,6 +19,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { usePoolListState } from '../../state/pools/hooks'
 // import { useUserSelectChainId } from '../../state/user/hooks'
 import {usePoolsState} from '../../state/pools/hooks'
+import {poolLiquidity} from '../../state/pools/actions'
 import AppBody from '../AppBody'
 
 import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
@@ -196,6 +200,7 @@ export default function PoolLists ({
   const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
+  const dispatch = useDispatch()
 
   // const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   const allTokensList:any = usePoolListState(chainId)
@@ -209,6 +214,16 @@ export default function PoolLists ({
   const [intervalCount, setIntervalCount] = useState<number>(0)
 
   // const 
+  const getPools = useCallback(() => {
+    axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {
+      const {status, data} = res
+      if (status === 200) {
+        dispatch(poolLiquidity({poolLiquidity: data}))
+      }
+    })
+  }, [dispatch])
+
+  useInterval(getPools, 1000 * 30)
 
   function getOutChainInfo (destList:any) {
     const list:any = {}
@@ -334,7 +349,8 @@ export default function PoolLists ({
               objExtend.totalV += ts ? ts : 0
               objExtend.curPool.push({
                 ts,
-                bl
+                bl,
+                anytoken: curAnyToken
               })
             }
           }
@@ -383,7 +399,8 @@ export default function PoolLists ({
     bl,
     ts,
     token,
-    isUnderlying
+    isUnderlying,
+    anytoken
   }: any) {
     return <TokenList className='l'>
       <div className="chain">
@@ -411,8 +428,8 @@ export default function PoolLists ({
                   <>
                   {
                     token ? (<>
-                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit&anytoken=' + anytoken : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                      <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw&anytoken=' + anytoken : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
                     </>) : (<>
                       <TokenActionBtn1 onClick={() => {
                       if (isUnderlying) {
@@ -438,7 +455,8 @@ export default function PoolLists ({
     bl,
     ts,
     token,
-    isUnderlying
+    isUnderlying,
+    anytoken
   }: any) {
     return <ChainCardList className='l'>
       <div className="chain">
@@ -469,8 +487,8 @@ export default function PoolLists ({
                     {
                       token ? (
                         <>
-                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
-                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw' : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
+                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=deposit&anytoken=' + anytoken : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Add')}</TokenActionBtn2>
+                          <TokenActionBtn2 to={isUnderlying ? '/pool/add?bridgetoken=' + token + '&bridgetype=withdraw&anytoken=' + anytoken : '/pool'} className={isUnderlying ? '' : 'disabled'}>{t('Remove')}</TokenActionBtn2>
                         </>
                       ) : (
                         <TokenActionBtn1 onClick={() => {
@@ -497,7 +515,8 @@ export default function PoolLists ({
     bl,
     ts,
     token,
-    isUnderlying
+    isUnderlying,
+    anytoken
   }: any) {
     return (
       <>
@@ -507,6 +526,7 @@ export default function PoolLists ({
           ts={ts}
           token={token}
           isUnderlying={isUnderlying}
+          anytoken={anytoken}
         />
         <ViewCard2Model
           chainId ={chainId}
@@ -514,6 +534,7 @@ export default function PoolLists ({
           ts={ts}
           token={token}
           isUnderlying={isUnderlying}
+          anytoken={anytoken}
         />
       </>
     )
@@ -523,6 +544,7 @@ export default function PoolLists ({
     let listView:any = ''
     if (c) {
       if (item.curPool.length > 0) {
+        console.log(item)
         listView = item.curPool.map((curItem:any, index:any) => {
           return <ViewTdModel
             key={index}
@@ -531,6 +553,7 @@ export default function PoolLists ({
             ts={curItem.ts || curItem?.ts?.toString() === '0' ? thousandBit(curItem.ts, 2) : 'Unlimited'}
             token={item?.token}
             isUnderlying={true}
+            anytoken={curItem.anytoken}
           />
         })
       } else {

@@ -104,6 +104,8 @@ export default function SwapNative() {
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+  let initAnyToken:any = getParams('anytoken') ? getParams('anytoken') : ''
+  initAnyToken = initAnyToken ? initAnyToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
     // console.log(selectDestCurrency)
@@ -115,7 +117,7 @@ export default function SwapNative() {
   useEffect(() => {
     // console.log(selectDestCurrency)
     if (selectDestCurrency) {
-      setSelectAnyToken({...selectDestCurrency?.fromanytoken, router: selectDestCurrency.router})
+      setSelectAnyToken({...selectDestCurrency?.fromanytoken, router: selectDestCurrency.router, sortId: selectDestCurrency.sortId})
     }
   }, [selectDestCurrency, swapType])
 
@@ -140,8 +142,8 @@ export default function SwapNative() {
   }, [selectCurrency, chainId])
 
   const useSelectCurrency = useMemo(() => {
-    console.log(selectAnyToken)
-    console.log(selectCurrency)
+    // console.log(selectAnyToken)
+    // console.log(selectCurrency)
     if (swapType === 'deposit') {
       return selectCurrency
     }
@@ -418,27 +420,40 @@ export default function SwapNative() {
       const destChainList = selectCurrency?.destChains
       const arr:any = []
       const anyTokenList = []
+      let useAnyToken:any = ''
       for (const destChainId in destChainList) {
         const destTokenList = destChainList[destChainId]
         for (const destTokenKey in destTokenList) {
           const destTokenItem = destTokenList[destTokenKey]
           if (destTokenItem.isFromLiquidity && !arr.includes(destTokenItem.fromanytoken.address)) {
             arr.push(destTokenItem.fromanytoken.address)
-            anyTokenList.push({
+            const data = {
               ...destTokenItem.fromanytoken,
-              router: destTokenItem.router
-            })
+              router: destTokenItem.router,
+              sortId: destTokenItem.sortId
+            }
+            // console.log(initAnyToken)
+            // console.log(destTokenItem)
+            if (initAnyToken?.toLowerCase() === destTokenItem?.fromanytoken?.address?.toLowerCase()) {
+              useAnyToken = data
+            }
+            anyTokenList.push(data)
           }
         }
       }
       if (anyTokenList.length > 0) {
-        setSelectAnyToken(anyTokenList[0])
+        if (useAnyToken) {
+          setSelectAnyToken(useAnyToken)
+        } else {
+          setSelectAnyToken(anyTokenList[0])
+        }
       }
+      // console.log(anyTokenList)
       setAnyTokenList(anyTokenList)
     } else {
       setAnyTokenList([])
     }
-  }, [selectCurrency])
+  }, [selectCurrency, initAnyToken])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 

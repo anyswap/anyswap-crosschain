@@ -126,23 +126,7 @@ export default function PoolTip ({
             >
               
               <dl className='list'>
-                {/* <dt>
-                  {item.address}
-                </dt> */}
-                {/* <dd>
-                  <i></i>
-                  {t('currentPoolSize') + ' '}: 
-                  {
-                    poolData?.[item.address] ? (
-                      <>
-                        {(thousandBit(fromWei(poolData?.[item.address].totalSupply, item.decimals), 2))}
-                      </>
-                    ) : ''
-                  }
-                </dd> */}
                 <dd>
-                  {/* <i></i> */}
-                  {/* L{' ' + (index + 1)} */}
                   {
                     selectAnyToken ? (
                       <div className='selected'>
@@ -155,7 +139,7 @@ export default function PoolTip ({
                     </>
                     )
                   }
-                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
+                  {tipTitleKey ? t(tipTitleKey, {index: item.sortId}) : ''}
                 </dd>
                 <dd>
                   {t('yourPoolShare') + ' '}: 
@@ -205,7 +189,7 @@ export default function PoolTip ({
                   <div className='selected'>
                     <CheckIcon className='icon'  />
                   </div>
-                  {tipTitleKey ? t(tipTitleKey, {index: index + 1}) : ''}
+                  {tipTitleKey ? t(tipTitleKey, {index: item.sortId}) : ''}
                 </dd>
                 <dd>
                   {t('yourPoolShare') + ' '}: 

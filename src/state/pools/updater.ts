@@ -3,9 +3,9 @@ import useInterval from '../../hooks/useInterval'
 import { useActiveWeb3React } from '../../hooks'
 // import { useDispatch } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import axios from 'axios'
-import config from '../../config'
-import {poolLiquidity} from './actions'
+// import axios from 'axios'
+// import config from '../../config'
+// import {poolLiquidity} from './actions'
 
 import { useFetchPoolTokenListCallback } from '../../hooks/useFetchListCallback'
 
@@ -27,15 +27,15 @@ export default function Updater(): null {
     fetchAllTokenListsCallback()
   }, [dispatch, fetchTokenList, chainId])
 
-  const getPools = useCallback(() => {
-    axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {
-      const {status, data} = res
-      if (status === 200) {
-        dispatch(poolLiquidity({poolLiquidity: data}))
-      }
-    })
-  }, [dispatch])
+  // const getPools = useCallback(() => {
+  //   axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {
+  //     const {status, data} = res
+  //     if (status === 200) {
+  //       dispatch(poolLiquidity({poolLiquidity: data}))
+  //     }
+  //   })
+  // }, [dispatch])
 
-  useInterval(getPools, 1000 * 30)
+  // useInterval(getPools, 1000 * 30)
   return null
 }
