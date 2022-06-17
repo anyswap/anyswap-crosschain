@@ -13,6 +13,7 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 // import { useCurrentNasBalance, useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
+import { useNearSendTxns } from '../../hooks/near'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -162,6 +163,18 @@ export default function CrossChain({
     chainId
   )
 
+  const { balance: nearBalance, execute: onNearWrap, inputError: wrapInputErrorNear } = useNearSendTxns(
+    destConfig?.router,
+    selectCurrency,
+    anyToken?.address,
+    selectCurrency?.address,
+    inputBridgeValue,
+    recipient,
+    chainId,
+    selectChain,
+    destConfig
+  )
+
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
@@ -175,19 +188,25 @@ export default function CrossChain({
       if (terraBalance) {
         return terraBalance?.toExact()
       }
+    } else if (chainId === ChainId.NEAR) {
+      if (nearBalance) {
+        return nearBalance?.toExact()
+      }
     }
     return ''
-  }, [terraBalance,chainId,nasBalance])
+  }, [terraBalance,chainId,nasBalance, nearBalance])
   // console.log(terraBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
       return wrapInputErrorTerra
     } else if (wrapInputErrorNeb && chainId === ChainId.NAS) {
       return wrapInputErrorNeb
+    } else if (wrapInputErrorNear && chainId === ChainId.NEAR) {
+      return wrapInputErrorNear
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -368,6 +387,11 @@ export default function CrossChain({
                   } else if (onNebWrap && chainId === ChainId.NAS) {
                     console.log('onNebWrap')
                     onNebWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onNearWrap && chainId === ChainId.NEAR) {
+                    console.log('onNebWrap')
+                    onNearWrap().then(() => {
                       onClear()
                     })
                   }

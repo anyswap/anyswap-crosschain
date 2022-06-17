@@ -36,7 +36,7 @@ db.onerror = function(event:any) {
 
 function getDBdata (path:any, key:any) {
   return new Promise(resolve => {
-    if (!key) {
+    if (!key || !db?.transaction) {
       resolve('')
       return
     }
