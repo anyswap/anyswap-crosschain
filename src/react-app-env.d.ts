@@ -88,7 +88,14 @@ interface Window {
   okexchain:any
   web3?: {}
   returnCitySN?: {},
-  near: any
+  near: any,
+  mozIndexedDB: any
+  webkitIndexedDB: any
+  msIndexedDB: any
+  webkitIDBTransaction: any
+  msIDBTransaction: any
+  webkitIDBKeyRange: any
+  msIDBKeyRange: any
 }
 
 declare module 'content-hash' {

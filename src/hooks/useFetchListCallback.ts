@@ -19,6 +19,7 @@ import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {timeout, MAIN_COIN} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
+import {setTokenlist} from '../utils/indexedDB'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
   const { chainId, library } = useActiveWeb3React()
@@ -91,6 +92,7 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data
             }
+            setTokenlist(chainId, list)
             dispatch(mergeTokenList({ chainId: chainId, tokenList:list }))
             return list
           })
