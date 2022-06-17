@@ -10,7 +10,7 @@ import {
   mergeTokenList,
   updateTokenlistTime
 } from '../state/lists/actions'
-import { poolList } from '../state/pools/actions'
+import { poolList, updatePoollistTime } from '../state/pools/actions'
 import { AppState } from '../state'
 
 import {useActiveReact} from './useActiveReact'
@@ -164,6 +164,7 @@ export function useFetchPoolTokenListCallback(): () => Promise<any> {
             } else {
               dispatch(poolList({ chainId, tokenList:list }))
             }
+            dispatch(updatePoollistTime({}))
             return list
           })
           .catch(error => {

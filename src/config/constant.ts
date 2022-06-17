@@ -94,23 +94,10 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.4.4'
+export const version = '0.4.6'
 export const timeout = 1000 * 60 * 30
 // export const timeout = 1000 * 60
 
-// console.log(USE_VERSION)
-// function initVersion (version:any, configVersion:any) {
-//   const VERSION = version + '_VERSION'
-//   const curVersion = localStorage.getItem(VERSION)
-//   if (curVersion && curVersion !== configVersion) {
-//     sessionStorage.clear()
-//     localStorage.clear()
-//     localStorage.setItem(VERSION, configVersion)
-//   } else if (!curVersion) {
-//     localStorage.setItem(VERSION, configVersion)
-//   }
-// }
-// initVersion(USE_VERSION, version)
 
 function formatHiddenCoin (list?:Array<any>) {
   const arr:any = []

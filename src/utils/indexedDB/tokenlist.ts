@@ -5,6 +5,7 @@ import {
 } from './config'
 
 const TOKENPATH = 'token-list-table'
+const POOLPATH = 'pool-list-table'
 const TOKENKEY = 'chainId'
 
 
@@ -19,25 +20,29 @@ tokenlistReauest.onsuccess = function(event:any) {
   db = event.target.result;
   console.log(db)
 };
+
 tokenlistReauest.onupgradeneeded = function (event:any) {
   db = event.target.result;
   if (!db.objecttables || !db.objecttables.contains(TOKENPATH)) { //判断数据库中是否已经存在该名称的数据表
-  db.createObjectStore(TOKENPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+    db.createObjectStore(TOKENPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+  }
+  if (!db.objecttables || !db.objecttables.contains(POOLPATH)) { //判断数据库中是否已经存在该名称的数据表
+    db.createObjectStore(POOLPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
 }
 db.onerror = function(event:any) {
   console.error("Database error: " + event.target.errorCode);
 }
 
-export function getTokenlist (chainId:any) {
+function getDBdata (path:any, key:any) {
   return new Promise(resolve => {
-    if (!chainId) {
+    if (!key) {
       resolve('')
       return
     }
-    const transaction = db.transaction([TOKENPATH], "readwrite")
-    const objectStore = transaction.objectStore(TOKENPATH);
-    const request = objectStore.get(chainId.toString());
+    const transaction = db.transaction([path], "readwrite")
+    const objectStore = transaction.objectStore(path);
+    const request = objectStore.get(key.toString());
     request.onerror = function(event:any) {
       console.log(event)
       // Handle errors!
@@ -52,14 +57,10 @@ export function getTokenlist (chainId:any) {
     }
   })
 }
-export function setTokenlist (chainId:any, tokenList:any) {
-  const data = {
-    chainId: chainId.toString(),
-    tokenList,
-    timestamp: Date.now()
-  }
-  const request = db.transaction([TOKENPATH], 'readwrite') //readwrite表示有读写权限
-    .objectStore(TOKENPATH)
+
+function setDBdata (path:any, data:any) {
+  const request = db.transaction([path], 'readwrite') //readwrite表示有读写权限
+    .objectStore(path)
     // .add(data) //新增数据
     .put(data) //更新数据
   request.onsuccess = function (event:any) {
@@ -70,4 +71,36 @@ export function setTokenlist (chainId:any, tokenList:any) {
     console.log(event);
     console.log('数据写入失败');
   }
+}
+
+export function getTokenlist (chainId:any) {
+  return new Promise(resolve => {
+    getDBdata(TOKENPATH, chainId).then(res => {
+      resolve(res)
+    })
+  })
+}
+export function setTokenlist (chainId:any, tokenList:any) {
+  const data = {
+    chainId: chainId.toString(),
+    tokenList,
+    timestamp: Date.now()
+  }
+  setDBdata(TOKENPATH, data)
+}
+
+export function getPoollist (chainId:any) {
+  return new Promise(resolve => {
+    getDBdata(POOLPATH, chainId).then(res => {
+      resolve(res)
+    })
+  })
+}
+export function setPoollist (chainId:any, tokenList:any) {
+  const data = {
+    chainId: chainId.toString(),
+    tokenList,
+    timestamp: Date.now()
+  }
+  setDBdata(POOLPATH, data)
 }
