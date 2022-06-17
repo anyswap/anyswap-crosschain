@@ -1,68 +1,78 @@
-import { nanoid } from '@reduxjs/toolkit'
-import { ChainId } from 'anyswap-sdk'
-import { TokenList } from '@uniswap/token-lists'
+// import { nanoid } from '@reduxjs/toolkit'
+// import { ChainId } from 'anyswap-sdk'
+// import { TokenList } from '@uniswap/token-lists'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
+// import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-import { fetchTokenList, mergeTokenList } from '../state/lists/actions'
+import {
+  // fetchTokenList,
+  mergeTokenList,
+  updateTokenlistTime
+} from '../state/lists/actions'
 import { poolList } from '../state/pools/actions'
 import { AppState } from '../state'
 
 import {useActiveReact} from './useActiveReact'
 
-import getTokenList from '../utils/getTokenList'
-import resolveENSContentHash from '../utils/resolveENSContentHash'
+// import getTokenList from '../utils/getTokenList'
+// import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {timeout, MAIN_COIN} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
-import {setTokenlist} from '../utils/indexedDB'
+import {
+  setTokenlist,
+  getTokenlist,
+  isSupportIndexedDB,
+  setPoollist,
+  getPoollist,
+} from '../utils/indexedDB'
 
-export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
-  const { chainId, library } = useActiveWeb3React()
-  const dispatch = useDispatch<AppDispatch>()
+// export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
+//   const { chainId, library } = useActiveWeb3React()
+//   const dispatch = useDispatch<AppDispatch>()
 
-  const ensResolver = useCallback(
-    (ensName: string) => {
-      if (!library || chainId !== ChainId.MAINNET) {
-        if (NETWORK_CHAIN_ID === ChainId.MAINNET) {
-          const networkLibrary = getNetworkLibrary()
-          if (networkLibrary) {
-            return resolveENSContentHash(ensName, networkLibrary)
-          }
-        }
-        throw new Error('Could not construct mainnet ENS resolver')
-      }
-      return resolveENSContentHash(ensName, library)
-    },
-    [chainId, library]
-  )
+//   const ensResolver = useCallback(
+//     (ensName: string) => {
+//       if (!library || chainId !== ChainId.MAINNET) {
+//         if (NETWORK_CHAIN_ID === ChainId.MAINNET) {
+//           const networkLibrary = getNetworkLibrary()
+//           if (networkLibrary) {
+//             return resolveENSContentHash(ensName, networkLibrary)
+//           }
+//         }
+//         throw new Error('Could not construct mainnet ENS resolver')
+//       }
+//       return resolveENSContentHash(ensName, library)
+//     },
+//     [chainId, library]
+//   )
 
-  return useCallback(
-    async (listUrl: string) => {
-      const requestId = nanoid()
-      dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
-      return getTokenList(listUrl, ensResolver)
-        .then(tokenList => {
-          console.log(tokenList)
-          dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
-          return tokenList
-        })
-        .catch(error => {
-          // console.log(error)
-          console.debug(`Failed to get list at url ${listUrl}`, error)
-          // dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
-          // throw error
-          dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList: config.getCurChainInfo(chainId).tokenList, requestId }))
-          return config.getCurChainInfo(chainId).tokenList
-        })
-    },
-    [dispatch, ensResolver]
-  )
-}
+//   return useCallback(
+//     async (listUrl: string) => {
+//       const requestId = nanoid()
+//       dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
+//       return getTokenList(listUrl, ensResolver)
+//         .then(tokenList => {
+//           console.log(tokenList)
+//           dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
+//           return tokenList
+//         })
+//         .catch(error => {
+//           // console.log(error)
+//           console.debug(`Failed to get list at url ${listUrl}`, error)
+//           // dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
+//           // throw error
+//           dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList: config.getCurChainInfo(chainId).tokenList, requestId }))
+//           return config.getCurChainInfo(chainId).tokenList
+//         })
+//     },
+//     [dispatch, ensResolver]
+//   )
+// }
 
 export function useFetchMergeTokenListCallback(): () => Promise<any> {
 
@@ -74,7 +84,12 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
   return useCallback(
     async () => {
       if (!chainId) return
-      const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+      let curList:any = {}
+      if (isSupportIndexedDB) {
+        curList = await getTokenlist(chainId)
+      } else {
+        curList = lists && lists[chainId] ? lists[chainId] : {}
+      }
       // console.log(lists)
       // console.log(curList)
       // console.log(chainId)
@@ -92,8 +107,12 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
             if (tokenList.msg === 'Success' && tokenList.data) {
               list = tokenList.data
             }
-            setTokenlist(chainId, list)
-            dispatch(mergeTokenList({ chainId: chainId, tokenList:list }))
+            if (isSupportIndexedDB) {
+              setTokenlist(chainId, list)
+            } else {
+              dispatch(mergeTokenList({ chainId: chainId, tokenList:list }))
+            }
+            dispatch(updateTokenlistTime({}))
             return list
           })
           .catch(error => {
@@ -111,11 +130,17 @@ export function useFetchPoolTokenListCallback(): () => Promise<any> {
   const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['pools']['poolList']>(state => state.pools.poolList)
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+  // const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
   // console.log(lists)
   return useCallback(
     async () => {
       if (!chainId) return
+      let curList:any = {}
+      if (isSupportIndexedDB) {
+        curList = await getPoollist(chainId)
+      } else {
+        curList = lists && lists[chainId] ? lists[chainId] : {}
+      }
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
@@ -134,7 +159,11 @@ export function useFetchPoolTokenListCallback(): () => Promise<any> {
                 }
               }
             }
-            dispatch(poolList({ chainId, tokenList:list }))
+            if (isSupportIndexedDB) {
+              setPoollist(chainId, list)
+            } else {
+              dispatch(poolList({ chainId, tokenList:list }))
+            }
             return list
           })
           .catch(error => {

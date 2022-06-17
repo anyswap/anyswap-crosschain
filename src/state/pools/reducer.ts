@@ -1,18 +1,23 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { poolLiquidity, poolList } from './actions'
+import { poolLiquidity, poolList, updatePoollistTime } from './actions'
 
 export interface BurnState {
   readonly poolLiquidity: any
   readonly poolList: any
+  readonly updatePoollistTime: any
 }
 
 const initialState: BurnState = {
   poolLiquidity: {},
   poolList: {},
+  updatePoollistTime: {},
 }
 
 export default createReducer<BurnState>(initialState, builder =>
   builder
+    .addCase(updatePoollistTime, (state, { payload: {  } }) => {
+      state.updatePoollistTime = Date.now()
+    })
     .addCase(poolLiquidity, (state, { payload: {poolLiquidity} }) => {
       state.poolLiquidity = poolLiquidity
     })

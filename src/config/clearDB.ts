@@ -4,7 +4,8 @@ import {
 } from './constant'
 import {
   w,
-  TOKENLIST
+  TOKENLIST,
+  POOLLIST
 } from '../utils/indexedDB'
 
 function initVersion (version:any, configVersion:any) {
@@ -16,6 +17,7 @@ function initVersion (version:any, configVersion:any) {
     sessionStorage.clear()
     localStorage.clear()
     w.indexedDB.deleteDatabase(TOKENLIST)
+    w.indexedDB.deleteDatabase(POOLLIST)
     localStorage.setItem(VERSION, configVersion)
   } else if (!curVersion) {
     localStorage.setItem(VERSION, configVersion)

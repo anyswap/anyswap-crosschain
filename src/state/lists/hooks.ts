@@ -1,12 +1,14 @@
 import { ChainId, Token } from 'anyswap-sdk'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
 import config from '../../config'
 import { isAddress } from 'ethers/lib/utils'
 import {userSelectCurrency} from './actions'
+
+import {getTokenlist, isSupportIndexedDB} from '../../utils/indexedDB'
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
@@ -211,60 +213,50 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): any 
   }, [lists, key, chainId])
 }
 
-export function useMergeBridgeTokenList(chainId?:any): any {
-  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists.mergeTokenList)
-  // console.log(lists)
-  const init = {}
-  return useMemo(() => {
-    if (!chainId) return init
-    const current = lists[chainId]?.tokenList
-    // console.log(current)
-    if (!current) return init
-    try {
-      // return listsMergeToTokenMap(current)
-      return current
-    } catch (error) {
-      console.error('Could not show token list due to error', error)
-      return init
-    }
-  }, [lists, chainId])
-}
-
 export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
-  // console.log(lists)
-  const init = {}
-  return useMemo(() => {
-    if (!key || !chainId) return init
-    const current = lists[key]?.[chainId]?.tokenList
-    // console.log(current)
-    if (!current) return init
-    try {
-      // return listsMergeToTokenMap(current)
-      return current
-    } catch (error) {
-      console.error('Could not show token list due to error', error)
-      return init
+  const updateTokenlistTime:any = useSelector<AppState, AppState['lists']>(state => state.lists.updateTokenlistTime)
+  // console.log(updateTokenlistTime)
+  const [tokenlist, setTokenlist] = useState<any>({})
+  const getCurTokenlist = useCallback(() => {
+    // console.log(updateTokenlistTime)
+    if (isSupportIndexedDB) {
+      getTokenlist(chainId).then((res:any) => {
+        console.log(res)
+        if (res?.tokenList) {
+          setTokenlist(res.tokenList)
+        } else {
+          let current = key ? lists[key]?.[chainId]?.tokenList : ''
+          if (!current) current = {}
+          setTokenlist(current)
+        }
+      })
+    } else {
+      let current = key ? lists[key]?.[chainId]?.tokenList : ''
+      if (!current) current = {}
+      setTokenlist(current)
     }
-  }, [lists, chainId])
-}
+  }, [chainId, updateTokenlistTime])
 
-export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
-  const mergeLists:any = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
-  // console.log(lists)
-  return useMemo(() => {
-    if (!chainId) return EMPTY_LIST
-    const mcurrent = mergeLists[chainId]?.tokenList
-    // console.log(current)
-    if (!mcurrent) return EMPTY_LIST
-    try {
-      return allListsToTokenMap(mcurrent, chainId)
-      // return current
-    } catch (error) {
-      console.error('Could not show token list due to error', error)
-      return EMPTY_LIST
-    }
-  }, [chainId, mergeLists])
+  useEffect(() => {
+    getCurTokenlist()
+  }, [getCurTokenlist, chainId, updateTokenlistTime])
+
+  return tokenlist
+  // const init = {}
+  // return useMemo(() => {
+  //   if (!key || !chainId) return init
+  //   const current = lists[key]?.[chainId]?.tokenList
+  //   // console.log(current)
+  //   if (!current) return init
+  //   try {
+  //     // return listsMergeToTokenMap(current)
+  //     return current
+  //   } catch (error) {
+  //     console.error('Could not show token list due to error', error)
+  //     return init
+  //   }
+  // }, [lists, chainId])
 }
 
 export function useSelectedListUrl(): string | undefined {

@@ -14,9 +14,11 @@ if (!w.indexedDB) {
 }
 
 const TOKENLIST = 'token-list'
+const POOLLIST = 'pool-list'
 
 export {
   w,
   isSupportIndexedDB,
-  TOKENLIST
+  TOKENLIST,
+  POOLLIST
 }
