@@ -193,7 +193,6 @@ ${({ theme }) => theme.flexSC};
 `
 
 let intervalFN:any
-// const BRIDGETYPE = 'routerTokenList'
 export default function PoolLists ({
 
 }) {

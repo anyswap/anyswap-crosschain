@@ -52,9 +52,9 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   // }, [])
 
   // 在页面加载时，在尝试连接到注入的连接器之前，不要执行任何操作
-  if (!triedEager) {
-    return null
-  }
+  // if (!triedEager) {
+  //   return null
+  // }
 
   // 如果帐户上下文未处于活动状态，并且网络上下文中存在错误，则这是一个无法恢复的错误
   // if (!active && networkError) {

@@ -151,7 +151,7 @@ export function listsMergeToTokenMap(list:any): TokenAddressMap {
   return map
 }
 
-export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any): TokenAddressMap {
+export function allListsToTokenMap(mlist:any, chainId:any): TokenAddressMap {
 
   // console.log(list)
   const map:any = {}
@@ -164,13 +164,6 @@ export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any)
       decimals: 18
     })
   }
-  for (const t in rlist) {
-    if(!isAddress(t)) continue
-    if (rlist[t].underlying) {
-      map[rlist[t].underlying.address] = new WrappedAllTokenInfo(rlist[t].underlying)
-    }
-    map[t] = new WrappedAllTokenInfo(rlist[t])
-  }
 
   for (const t in mlist) {
     if(!isAddress(t)) continue
@@ -180,34 +173,24 @@ export function allListsToTokenMap(rlist:any, blist:any, mlist:any, chainId:any)
     map[t] = new WrappedAllTokenInfo(mlist[t])
   }
   // console.log(map)
-  // console.log(rlist)
-  // console.log(blist)
-  for (const t in blist) {
-    if(!isAddress(t) || map[t]) continue
-    if (blist[t].underlying) {
-      map[blist[t].underlying.address] = new WrappedAllTokenInfo(blist[t].underlying)
-    }
-    map[t] = new WrappedAllTokenInfo(blist[t])
-  }
-  // console.log(map)
   return map
 }
 
-export function useTokenList(url: string | undefined): TokenAddressMap {
-  const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  // console.log(lists)
-  return useMemo(() => {
-    if (!url) return EMPTY_LIST
-    const current = lists[url]?.current
-    if (!current) return EMPTY_LIST
-    try {
-      return listToTokenMap(current)
-    } catch (error) {
-      console.error('Could not show token list due to error', error)
-      return EMPTY_LIST
-    }
-  }, [lists, url])
-}
+// export function useTokenList(url: string | undefined): TokenAddressMap {
+//   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+//   // console.log(lists)
+//   return useMemo(() => {
+//     if (!url) return EMPTY_LIST
+//     const current = lists[url]?.current
+//     if (!current) return EMPTY_LIST
+//     try {
+//       return listToTokenMap(current)
+//     } catch (error) {
+//       console.error('Could not show token list due to error', error)
+//       return EMPTY_LIST
+//     }
+//   }, [lists, url])
+// }
 
 export function useBridgeTokenList(key?: string | undefined, chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
@@ -267,25 +250,21 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
 }
 
 export function useBridgeAllTokenList(chainId?:any): TokenAddressMap {
-  const routerLists:any = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
-  const bridgeLists:any = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
   const mergeLists:any = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
   // console.log(lists)
   return useMemo(() => {
     if (!chainId) return EMPTY_LIST
-    const rcurrent = routerLists[chainId]?.tokenList
-    const bcurrent = bridgeLists[chainId]?.tokenList
     const mcurrent = mergeLists[chainId]?.tokenList
     // console.log(current)
-    if (!rcurrent && !bcurrent && !mcurrent) return EMPTY_LIST
+    if (!mcurrent) return EMPTY_LIST
     try {
-      return allListsToTokenMap(rcurrent, bcurrent, mcurrent, chainId)
+      return allListsToTokenMap(mcurrent, chainId)
       // return current
     } catch (error) {
       console.error('Could not show token list due to error', error)
       return EMPTY_LIST
     }
-  }, [routerLists, bridgeLists, chainId])
+  }, [chainId, mergeLists])
 }
 
 export function useSelectedListUrl(): string | undefined {
@@ -299,34 +278,34 @@ export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:an
   return useBridgeTokenList(key, chainId)
 }
 
-export function useSelectedTokenList(): TokenAddressMap {
-  return useTokenList(useSelectedListUrl())
-}
+// export function useSelectedTokenList(): TokenAddressMap {
+//   return useTokenList(useSelectedListUrl())
+// }
 
-export function useSelectedListInfo(): { current: TokenList | null; pending: TokenList | null; loading: boolean } {
-  const selectedUrl = useSelectedListUrl()
-  const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-  const list = selectedUrl ? listsByUrl[selectedUrl] : undefined
-  // console.log(listsByUrl)
-  return {
-    current: list?.current ?? null,
-    pending: list?.pendingUpdate ?? null,
-    loading: list?.loadingRequestId !== null
-  }
-}
+// export function useSelectedListInfo(): { current: TokenList | null; pending: TokenList | null; loading: boolean } {
+//   const selectedUrl = useSelectedListUrl()
+//   const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+//   const list = selectedUrl ? listsByUrl[selectedUrl] : undefined
+//   // console.log(listsByUrl)
+//   return {
+//     current: list?.current ?? null,
+//     pending: list?.pendingUpdate ?? null,
+//     loading: list?.loadingRequestId !== null
+//   }
+// }
 
 // returns all downloaded current lists
-export function useAllLists(): TokenList[] {
-  const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+// export function useAllLists(): TokenList[] {
+//   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
 
-  return useMemo(
-    () =>
-      Object.keys(lists)
-        .map(url => lists[url].current)
-        .filter((l): l is TokenList => Boolean(l)),
-    [lists]
-  )
-}
+//   return useMemo(
+//     () =>
+//       Object.keys(lists)
+//         .map(url => lists[url].current)
+//         .filter((l): l is TokenList => Boolean(l)),
+//     [lists]
+//   )
+// }
 
 
 export function useInitUserSelectCurrency(chainId?: any) {

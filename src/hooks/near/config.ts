@@ -14,6 +14,7 @@ export function getConfig(env:any) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
+      wNearContractId: ''
     }
   case 'development':
   case 'testnet':
@@ -24,6 +25,7 @@ export function getConfig(env:any) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
+      wNearContractId: 'wrap.testnet'
     }
   case 'betanet':
     return {

@@ -3,11 +3,9 @@ import { ChainId } from 'anyswap-sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {GetTokenListByChainID} from 'multichain-bridge'
 import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
-// import { fetchTokenList, routerTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
-import { fetchTokenList, bridgeTokenList, mergeTokenList } from '../state/lists/actions'
+import { fetchTokenList, mergeTokenList } from '../state/lists/actions'
 import { poolList } from '../state/pools/actions'
 import { AppState } from '../state'
 
@@ -19,7 +17,7 @@ import { useActiveWeb3React } from './index'
 // import { isAddress } from '../utils'
 import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
-import {timeout, MAIN_COIN, bridgeApi} from '../config/constant'
+import {timeout, MAIN_COIN} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
@@ -71,12 +69,14 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
 
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-
-  // console.log(lists)
+  
   return useCallback(
     async () => {
       if (!chainId) return
+      const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
+      // console.log(lists)
+      // console.log(curList)
+      // console.log(chainId)
       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
         return
       } else {
@@ -105,69 +105,6 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
   )
 }
 
-// export function useFetchTokenListCallback(): () => Promise<any> {
-//   const { chainId } = useActiveWeb3React()
-//   const dispatch = useDispatch<AppDispatch>()
-//   const lists = useSelector<AppState, AppState['lists']['routerTokenList']>(state => state.lists.routerTokenList)
-//   const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-//   // console.log(lists)
-//   return useCallback(
-//     async () => {
-//       if (!chainId) return
-//       if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
-//         return
-//       } else {
-//         const UV:any = USE_VERSION
-//         const version:any = [VERSION.V5, VERSION.V6, VERSION.V7].includes(UV) ? 'all' : USE_VERSION
-//         const url = `${config.bridgeApi}/v3/serverinfoV4?chainId=${chainId}&version=${version}`
-//         return getUrlData(url)
-//           .then((tokenList:any) => {
-//             // console.log(tokenList)
-//             const list:any = {}
-//             if (tokenList.msg === 'Success' && tokenList.data) {
-//               const tList = tokenList.data
-//               if (version === 'all') {
-//                 for (const version in tList) {
-//                   if (version.indexOf('ARB') !== -1) continue
-//                   for (const token in tList[version]) {
-//                     if (version.toLowerCase().indexOf('underlying') !== -1 && tList[version][token].symbol === 'DAI') continue
-//                     let sort = 0
-//                     if (version.toLowerCase().indexOf('stable') !== -1) {
-//                       sort = 0
-//                     } else if (version.toLowerCase().indexOf('native') !== -1) {
-//                       sort = 1
-//                     } else if (version.toLowerCase().indexOf('underlying') !== -1) {
-//                       sort = 2
-//                     }
-//                     list[token] = {
-//                       ...tList[version][token],
-//                       sort: sort
-//                     }
-//                   }
-//                 }
-//               } else {
-//                 for (const token in tList) {
-//                   // if (version.toLowerCase().indexOf('underlying') !== -1 && tList[token].symbol === 'DAI') continue
-//                   list[token] = {
-//                     ...tList[token],
-//                     sort: version.toLowerCase().indexOf('stable') !== -1 ? 0 : 1
-//                   }
-//                 }
-//               }
-//             }
-//             dispatch(routerTokenList({ chainId, tokenList:list }))
-//             return list
-//           })
-//           .catch(error => {
-//             console.debug(`Failed to get list at url `, error)
-//             dispatch(routerTokenList({ chainId, tokenList: curList.tokenList }))
-//             return {}
-//           })
-//       }
-//     },
-//     [dispatch, chainId]
-//   )
-// }
 export function useFetchPoolTokenListCallback(): () => Promise<any> {
   const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
@@ -202,39 +139,6 @@ export function useFetchPoolTokenListCallback(): () => Promise<any> {
             console.debug(`Failed to get list at url `, error)
             dispatch(poolList({ chainId, tokenList: curList.tokenList }))
             return {}
-          })
-      }
-    },
-    [dispatch, chainId]
-  )
-}
-
-export function useFetchTokenList1Callback(): () => Promise<any> {
-  const { chainId } = useActiveWeb3React()
-  const dispatch = useDispatch<AppDispatch>()
-  const lists = useSelector<AppState, AppState['lists']['bridgeTokenList']>(state => state.lists.bridgeTokenList)
-  const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-  return useCallback(
-    async () => {
-      if (!chainId || !config.getCurConfigInfo().isOpenBridge) return
-      if (
-        lists
-        && curList?.timestamp
-        && (Date.now() - curList?.timestamp) <= timeout
-        && curList?.tokenList
-        && Object.keys(curList?.tokenList).length > 0
-      ) {
-        return
-      } else {
-        return GetTokenListByChainID({
-          srcChainID: chainId,
-          chainList: config.getCurConfigInfo().showChain,
-          bridgeAPI: bridgeApi + '/v2/tokenlist'
-        })
-          .then((tokenList:any) => {
-            // console.log(tokenList)
-            dispatch(bridgeTokenList({ chainId, tokenList: tokenList.bridge }))
-            return tokenList
           })
       }
     },

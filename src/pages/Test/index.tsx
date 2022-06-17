@@ -4,21 +4,21 @@ import { ButtonLight } from '../../components/Button'
 
 import AppBody from '../AppBody'
 
-import {
-  // useLogin,
-  useNearSendTxns
-} from '../../hooks/near'
+// import {
+//   // useLogin,
+//   useNearSendTxns
+// } from '../../hooks/near'
 
 
 
 export default function TestWarpper () {
 
-  const {execute: sendNearTxns}  = useNearSendTxns('1', 'dwinter.testnet')
+  // const {execute: sendNearTxns}  = useNearSendTxns('1', 'dwinter.testnet')
   return (
     <>
       <AppBody>
         <ButtonLight onClick={() => {
-          if (sendNearTxns) sendNearTxns()
+          // if (sendNearTxns) sendNearTxns()
         }}>test</ButtonLight>
       </AppBody>
     </>

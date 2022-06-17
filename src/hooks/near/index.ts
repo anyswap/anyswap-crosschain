@@ -19,7 +19,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
 const contractId = nearConfig.contractName
-// const wNearContractId = 'wrap.testnet';
+// const wNearContractId = nearConfig.wNearContractId
 
 export function useLogout() {
   const logout = useCallback(() => {
@@ -92,44 +92,63 @@ export function useNearBalance () {
 }
 
 export function useSendNear () {
-  const sendNear = useCallback(async(receiverId, amount) => {
-    const res = await window.near.sendMoney({
-      receiverId: receiverId,
-      amount: amount,
-    });
+  const sendNear = useCallback(async(routerContractId, amount, bindaddr, selectchain) => {
+    const res = window.near.signAndSendTransaction({
+      receiverId: routerContractId,
+      actions: [
+        {
+          methodName: 'swap_out_native',
+          args: {
+            "to": `${bindaddr}`,
+            "to_chain_id": `${selectchain}`, 
+          },
+        }
+      ],
+      amount: amount
+    })
+    console.log(res)
+  }, [])
+
+  const sendNearToken = useCallback(async(contractId, anyContractId, routerContractId, amount, bindaddr, selectchain) => {
+    const res = await window.near.signAndSendTransaction({
+      receiverId: contractId,
+      actions: [
+        {
+          methodName: 'ft_tranfser_call',
+          args: {
+            'receiver_id': routerContractId,
+            amount: amount,  // wNear decimals is 24
+            msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+          },
+        }
+      ]
+    })
     console.log(res)
   }, [])
   return {
-    sendNear
+    sendNear,
+    // sendWnear,
+    sendNearToken
   }
 }
 
-export function useSendNearToken () {
-  const sendNear = useCallback(async(receiverId, amount) => {
-    const res = await window.near.sendMoney({
-      receiverId: receiverId,
-      amount: amount,
-    });
-    console.log(res)
-  }, [])
-  return {
-    sendNear
-  }
-}
-
+// contractId, anyContractId, routerContractId, amount, bindaddr, selectchain
 export function useNearSendTxns(
-  // inputCurrency,
+  routerToken:any,
+  inputCurrency: any,
+  anyContractId:any,
+  contractId:any,
   typedValue:any,
   receiverId:any,
-  // chainId,
-  // selectChain,
+  chainId:any,
+  selectChain:any,
 ): {
   wrapType?: WrapType
   inputError?: string
   execute?: undefined | (() => Promise<void>)
 } {
-  const {sendNear} = useSendNear()
-  const inputAmount = useMemo(() => tryParseAmount3(typedValue, 24), [typedValue])
+  const {sendNear, sendNearToken} = useSendNear()
+  const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [typedValue, inputCurrency])
   const {
     getNearBalance,
     getNearTokenBalance
@@ -144,12 +163,13 @@ export function useNearSendTxns(
     console.log(receiverId)
     console.log(inputAmount)
     console.log(typedValue)
-    if (!inputAmount || !receiverId) return NOT_APPLICABLE
+    if (!inputAmount || !receiverId || !selectChain || !routerToken || !anyContractId || !contractId || !chainId) return NOT_APPLICABLE
     return {
       wrapType: WrapType.WRAP,
       execute: async () => {
-        sendNear(receiverId, inputAmount)
+        const txReceipt = await inputCurrency?.tokenType === "NATIVE" ? sendNear(routerToken, inputAmount, receiverId, selectChain) : sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
+        console.log(txReceipt)
       }
     }
-  }, [inputAmount, receiverId])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency])
 }
