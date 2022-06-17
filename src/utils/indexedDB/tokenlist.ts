@@ -1,8 +1,9 @@
 import {
   w,
+  TOKENLIST
   // isSupportIndexedDB
 } from './config'
-export const TOKENLIST = 'token-list'
+
 const TOKENPATH = 'token-list-table'
 const TOKENKEY = 'chainId'
 

@@ -13,7 +13,10 @@ if (!w.indexedDB) {
   isSupportIndexedDB = false
 }
 
+const TOKENLIST = 'token-list'
+
 export {
   w,
-  isSupportIndexedDB
+  isSupportIndexedDB,
+  TOKENLIST
 }

@@ -11,6 +11,7 @@ import {
 } from './constant'
 
 import {getNetwork, getInitBridgeChain} from './tools/getUrlParams'
+import './clearDB'
  
 interface ConFig {
   [key: string]: any
