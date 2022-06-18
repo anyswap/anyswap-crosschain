@@ -12,6 +12,7 @@ import { BigAmount } from '../../utils/formatBignumber'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
+import useInterval from '../useInterval'
 // export enum WrapType {
 //   NOT_APPLICABLE,
 //   WRAP,
@@ -175,18 +176,6 @@ export function useSendNear () {
         reject(error)
       })
     })
-    // let res:any
-    // let tx:any = {}
-    // try {
-    //   res = await window.near.signAndSendTransaction(actions)
-    //   if (res?.response && !res?.response.error && res?.response.length > 0) {
-    //     tx = res?.response[0]?.transaction
-    //   }
-    // } catch (error) {
-      
-    // }
-    // console.log(res)
-    // return tx
   }, [])
   return {
     sendNear,
@@ -225,7 +214,7 @@ export function useNearSendTxns(
     getNearTokenBalance
   } = useNearBalance()
 
-  useEffect(() => {
+  const getBalance = useCallback(() => {
     if (inputCurrency?.tokenType === 'NATIVE') {
       getNearBalance().then(res => {
         if (res?.available) {
@@ -248,6 +237,12 @@ export function useNearSendTxns(
       })
     }
   }, [inputCurrency, contractId])
+
+  useEffect(() => {
+    getBalance()
+  }, [inputCurrency, contractId])
+
+  useInterval(getBalance, 1000 * 10)
 
   let sufficientBalance = false
   try {

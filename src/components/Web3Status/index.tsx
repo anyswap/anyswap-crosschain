@@ -175,29 +175,6 @@ function Web3StatusInner() {
       </Web3StatusError>
     )
   } else {
-    // if (chainId === ChainId.TERRA) {
-    //   return (
-    //     <Web3StatusConnect id="connect-wallet"  onClick={() => {
-    //       // console.log(connect)
-    //       if (connect) {
-    //         try {
-    //           connect(ConnectType.CHROME_EXTENSION)
-    //         } catch (error) {
-    //           alert('Please install Terra Station!')
-    //         }
-    //       } else {
-    //         alert('Please install Terra Station!')
-    //       }
-    //     }} faded={!account}>
-    //       <Text>{t('ConnectToWallet')}</Text>
-    //     </Web3StatusConnect>
-    //   )
-    // }
-    // return (
-    //   <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
-    //     <Text>{t('ConnectToWallet')}</Text>
-    //   </Web3StatusConnect>
-    // )
     return (
       <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
         <Text>{t('ConnectToWallet')}</Text>

@@ -7,8 +7,10 @@ import { useUserSelectChainId } from '../state/user/hooks'
 import { ChainId } from '../config/chainConfig/chainId'
 
 import {useLogin} from './near'
+import {useActiveReact} from './useActiveReact'
 
 export function useConnectWallet () {
+  const {account} = useActiveReact()
   const {selectNetworkInfo} = useUserSelectChainId()
   const toggleWalletModal = useWalletModalToggle()
   const { connect } = useWallet()
@@ -29,9 +31,13 @@ export function useConnectWallet () {
     } else if (selectNetworkInfo?.label === ChainId.NAS) {
       
     } else if (selectNetworkInfo?.label === ChainId.NEAR) {
-      login()
+      if (!account) {
+        login()
+      } else {
+        toggleWalletModal()
+      }
     } else {
       toggleWalletModal()
     }
-  }, [selectNetworkInfo, toggleWalletModal])
+  }, [selectNetworkInfo, toggleWalletModal, account])
 }
