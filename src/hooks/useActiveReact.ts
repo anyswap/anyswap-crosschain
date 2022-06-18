@@ -14,6 +14,7 @@ export function useActiveReact () {
   const {selectNetworkInfo} = useUserSelectChainId()
   const nebAddress = useCurrentAddress()
   const nearAddress = useNearAddress()
+  // console.log(account)
   return useMemo(() => {
     let useAccount = account
     const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : chainId
@@ -31,5 +32,5 @@ export function useActiveReact () {
       chainId: useChainId,
       evmAccount: account
     }
-  }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress])
+  }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress, nearAddress])
 }

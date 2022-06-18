@@ -178,7 +178,9 @@ export default function CrossChain({
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    console.log(nearBalance)
+    // console.log(nearBalance)
+    // console.log(chainId)
+    // console.log(ChainId.NEAR)
     if (chainId === ChainId.NAS) {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toExact()
@@ -195,7 +197,7 @@ export default function CrossChain({
     }
     return ''
   }, [terraBalance,chainId,nasBalance, nearBalance])
-  // console.log(terraBalance)
+  // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
       return wrapInputErrorTerra
@@ -263,7 +265,10 @@ export default function CrossChain({
       return undefined
     } else if (isInputError) {
       return isInputError
-    } else if (recipient && !Boolean(isAddr)) {
+    } else if (
+      !recipient
+      || recipient && !Boolean(isAddr)
+    ) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
@@ -296,12 +301,13 @@ export default function CrossChain({
   }, [initCurrency])
   
   useEffect(() => {
-    if (swapType == 'swap' && evmAccount && !isNaN(selectChain)) {
+    // console.log(evmAccount)
+    if (evmAccount) {
       setRecipient(evmAccount)
-    } else if (isNaN(selectChain) && destConfig?.type === 'swapout') {
+    } else {
       setRecipient('')
     }
-  }, [evmAccount, swapType, selectChain, destConfig])
+  }, [evmAccount])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -450,9 +456,9 @@ export default function CrossChain({
                   setSwapType('send')
                 } else {
                   setSwapType('swap')
-                  if (evmAccount) {
-                    setRecipient(evmAccount)
-                  }
+                }
+                if (evmAccount) {
+                  setRecipient(evmAccount)
                 }
               }}>
                 {

@@ -288,10 +288,10 @@ const useChain:any = {
     ChainId.COLX,
     ChainId.NAS,
     ChainId.XRP,
-    ChainId.NEAR,
   ],
   [VERSION.V7_TEST]: [
-    ...testChainList
+    ...testChainList,
+    ChainId.NEAR,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

@@ -166,7 +166,7 @@ export default function SelectCurrencyInputPanel({
     }
     return undefined
   }, [useBalance])
-
+  // console.log(viewBalance)
   const handleMax = useCallback(() => {
     if (onMax) {
       if (useBalance) {
@@ -226,7 +226,7 @@ export default function SelectCurrencyInputPanel({
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
-                      {!hideBalance && !!currency && viewBalance && account
+                      {!hideBalance && !!currency && viewBalance
                         ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(viewBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>

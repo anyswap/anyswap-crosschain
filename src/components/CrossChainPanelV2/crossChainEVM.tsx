@@ -423,6 +423,8 @@ export default function CrossChain({
       isAddr = recipient ? nebulas.Account.isValidAddress(recipient) : false
     } else if (selectChain === ChainId.XRP) {
       isAddr = recipient && recipient.indexOf('r') === 0 && recipient.length === 34 ? true : false
+    } else if (selectChain === ChainId.NEAR) {
+      isAddr = recipient ? true : false
     } else {
       isAddr = isAddress( recipient, selectChain)
     }

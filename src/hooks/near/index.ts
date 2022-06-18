@@ -11,7 +11,7 @@ import { tryParseAmount3 } from '../../state/swap/hooks'
 import { BigAmount } from '../../utils/formatBignumber'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import {recordsTxns} from '../../utils/bridge/register'
-import {useTxnsDtilOpen} from '../../state/application/hooks'
+import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 // export enum WrapType {
 //   NOT_APPLICABLE,
 //   WRAP,
@@ -77,7 +77,7 @@ export function useNearBalance () {
     }
     // const res2 = await window.near.account().getAccountDetails()
     // console.log(res)
-    // console.log(res)
+    // console.log(bl)
     return bl
     // console.log(res2)
   }, [])
@@ -88,7 +88,7 @@ export function useNearBalance () {
       
       bl = await window?.near?.account().viewFunction(
         contractId,
-        'storage_balance_of',
+        'ft_balance_of',
         { "account_id": window.near.accountId },
       )
     } catch (error) {
@@ -96,7 +96,8 @@ export function useNearBalance () {
     }
     // const res1 = await window.near.account().getAccountBalance()
     // const res2 = await window.near.account().getAccountDetails()
-    console.log(bl)
+    // console.log(contractId)
+    // console.log(bl)
     return bl
     // console.log(res1)
     // console.log(res2)
@@ -110,39 +111,82 @@ export function useNearBalance () {
 
 export function useSendNear () {
   const sendNear = useCallback(async(routerContractId, amount, bindaddr, selectchain) => {
-    const res = window.near.signAndSendTransaction({
-      receiverId: routerContractId,
-      actions: [
-        {
-          methodName: 'swap_out_native',
-          args: {
-            "to": `${bindaddr}`,
-            "to_chain_id": `${selectchain}`, 
-          },
+    return new Promise((resolve, reject) => {
+
+      const actions = {
+        receiverId: routerContractId,
+        actions: [
+          {
+            methodName: 'swap_out_native',
+            args: {
+              "to": `${bindaddr}`,
+              "to_chain_id": `${selectchain}`, 
+            },
+            gas: '70000000000000',
+            deposit: '1'
+          }
+        ],
+        amount: amount
+      }
+      // let res:any
+      let tx:any = {}
+      window.near.signAndSendTransaction(actions).then((res:any) => {
+        console.log(res)
+        if (res?.response && !res?.response.error && res?.response.length > 0) {
+          tx = res?.response[0]?.transaction
+          resolve(tx)
+        } else {
+          reject(res?.response?.error)
         }
-      ],
-      amount: amount
+      }).catch((error:any) => {
+        reject(error)
+      })
     })
-    console.log(res)
-    return {}
   }, [])
 
   const sendNearToken = useCallback(async(contractId, anyContractId, routerContractId, amount, bindaddr, selectchain) => {
-    const res = await window.near.signAndSendTransaction({
-      receiverId: contractId,
-      actions: [
-        {
-          methodName: 'ft_tranfser_call',
-          args: {
-            'receiver_id': routerContractId,
-            amount: amount,  // wNear decimals is 24
-            msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
-          },
+    return new Promise((resolve, reject) => {
+      const actions = {
+        receiverId: contractId,
+        actions: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              'receiver_id': routerContractId,
+              amount: amount,  // wNear decimals is 24
+              msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+            },
+            gas: '70000000000000',
+            deposit: '1'
+          }
+        ]
+      }
+      console.log(actions)
+      let tx:any = {}
+      window.near.signAndSendTransaction(actions).then((res:any) => {
+        console.log(res)
+        if (res?.response && !res?.response.error && res?.response.length > 0) {
+          tx = res?.response[0]?.transaction
+          resolve(tx)
+        } else {
+          reject(res?.response?.error)
         }
-      ]
+      }).catch((error:any) => {
+        reject(error)
+      })
     })
-    console.log(res)
-    return {}
+    // let res:any
+    // let tx:any = {}
+    // try {
+    //   res = await window.near.signAndSendTransaction(actions)
+    //   if (res?.response && !res?.response.error && res?.response.length > 0) {
+    //     tx = res?.response[0]?.transaction
+    //   }
+    // } catch (error) {
+      
+    // }
+    // console.log(res)
+    // return tx
   }, [])
   return {
     sendNear,
@@ -172,6 +216,7 @@ export function useNearSendTxns(
   const address = useNearAddress()
   const addTransaction = useTransactionAdder()
   const {onChangeViewDtil} = useTxnsDtilOpen()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const [balance, setBalance] = useState<any>()
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [typedValue, inputCurrency])
   const underlyingToken = contractId ? contractId : anyContractId
@@ -192,10 +237,11 @@ export function useNearSendTxns(
       })
     } else {
       getNearTokenBalance(contractId).then(res => {
-        console.log(contractId)
-        if (res?.available) {
+        // console.log(contractId)
+        // console.log(res)
+        if (res) {
           // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
-          setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
+          setBalance(BigAmount.format(inputCurrency?.decimals,res))
         } else {
           setBalance('')
         }
@@ -205,8 +251,8 @@ export function useNearSendTxns(
 
   let sufficientBalance = false
   try {
-    sufficientBalance = true
-    // sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+    // sufficientBalance = true
+    sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
   } catch (error) {
     console.log(error)
   }
@@ -218,41 +264,47 @@ export function useNearSendTxns(
     // console.log(routerToken)
     // console.log(underlyingToken)
     // console.log(chainId)
-    if (!receiverId || !selectChain || !routerToken || !underlyingToken || !chainId) return NOT_APPLICABLE
+    if (!selectChain || !routerToken || !underlyingToken || !chainId) return NOT_APPLICABLE
     // console.log(balance)
     return {
       // wrapType: WrapType.WRAP,
       balance,
-      execute: inputAmount ? async () => {
-        const txReceipt:any = await inputCurrency?.tokenType === "NATIVE" ? sendNear(routerToken, inputAmount, receiverId, selectChain) : sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
-        console.log(txReceipt)
-        if (txReceipt?.hash) {
-          const data:any = {
-            hash: txReceipt.hash,
-            chainId: chainId,
-            selectChain: selectChain,
-            account: address,
-            value: inputAmount,
-            formatvalue: typedValue,
-            to: receiverId,
-            symbol: inputCurrency?.symbol,
-            version: destConfig.type,
-            pairid: inputCurrency?.symbol,
+      execute: receiverId &&  inputAmount ? async () => {
+        try {
+          
+          const txReceipt:any = inputCurrency?.tokenType === "NATIVE" ? await sendNear(routerToken, inputAmount, receiverId, selectChain) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
+          console.log(txReceipt)
+          if (txReceipt?.hash) {
+            const data:any = {
+              hash: txReceipt.hash,
+              chainId: chainId,
+              selectChain: selectChain,
+              account: address,
+              value: inputAmount,
+              formatvalue: typedValue,
+              to: receiverId,
+              symbol: inputCurrency?.symbol,
+              version: destConfig.type,
+              pairid: inputCurrency?.symbol,
+            }
+            addTransaction(txReceipt, {
+              summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`,
+              value: typedValue,
+              toChainId: selectChain,
+              toAddress: receiverId.indexOf('0x') === 0 ? receiverId?.toLowerCase() : receiverId,
+              symbol: inputCurrency?.symbol,
+              version: 'swapin',
+              routerToken: '',
+              token: inputCurrency?.address,
+              logoUrl: inputCurrency?.logoUrl,
+              underlying: inputCurrency?.underlying
+            })
+            recordsTxns(data)
+            onChangeViewDtil(txReceipt?.hash, true)
           }
-          addTransaction(txReceipt, {
-            summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`,
-            value: typedValue,
-            toChainId: selectChain,
-            toAddress: receiverId.indexOf('0x') === 0 ? receiverId?.toLowerCase() : receiverId,
-            symbol: inputCurrency?.symbol,
-            version: 'swapin',
-            routerToken: '',
-            token: inputCurrency?.address,
-            logoUrl: inputCurrency?.logoUrl,
-            underlying: inputCurrency?.underlying
-          })
-          recordsTxns(data)
-          onChangeViewDtil(txReceipt?.hash, true)
+        } catch (error) {
+          console.log('Could not swapout', error)
+          onChangeViewErrorTip('Txns failure.', true)
         }
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
