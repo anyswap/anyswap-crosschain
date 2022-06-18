@@ -174,6 +174,7 @@ export function useNearSendTxns(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const [balance, setBalance] = useState<any>()
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [typedValue, inputCurrency])
+  const underlyingToken = contractId ? contractId : anyContractId
   const {
     getNearBalance,
     getNearTokenBalance
@@ -183,15 +184,18 @@ export function useNearSendTxns(
     if (inputCurrency?.tokenType === 'NATIVE') {
       getNearBalance().then(res => {
         if (res?.available) {
-          setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+          // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+          setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
         } else {
           setBalance('')
         }
       })
     } else {
       getNearTokenBalance(contractId).then(res => {
+        console.log(contractId)
         if (res?.available) {
-          setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+          // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+          setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
         } else {
           setBalance('')
         }
@@ -201,20 +205,25 @@ export function useNearSendTxns(
 
   let sufficientBalance = false
   try {
-    sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+    sufficientBalance = true
+    // sufficientBalance = inputCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
   } catch (error) {
     console.log(error)
   }
 
   return useMemo(() => {
-    console.log(receiverId)
-    console.log(inputAmount)
-    console.log(typedValue)
-    if (!inputAmount || !receiverId || !selectChain || !routerToken || !anyContractId || !contractId || !chainId) return NOT_APPLICABLE
+    // console.log(inputAmount)
+    // console.log(receiverId)
+    // console.log(selectChain)
+    // console.log(routerToken)
+    // console.log(underlyingToken)
+    // console.log(chainId)
+    if (!receiverId || !selectChain || !routerToken || !underlyingToken || !chainId) return NOT_APPLICABLE
+    // console.log(balance)
     return {
       // wrapType: WrapType.WRAP,
       balance,
-      execute: async () => {
+      execute: inputAmount ? async () => {
         const txReceipt:any = await inputCurrency?.tokenType === "NATIVE" ? sendNear(routerToken, inputAmount, receiverId, selectChain) : sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
         console.log(txReceipt)
         if (txReceipt?.hash) {
@@ -245,8 +254,8 @@ export function useNearSendTxns(
           recordsTxns(data)
           onChangeViewDtil(txReceipt?.hash, true)
         }
-      },
+      } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken])
 }

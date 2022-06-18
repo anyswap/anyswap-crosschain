@@ -349,7 +349,8 @@ export default function PoolLists ({
               objExtend.curPool.push({
                 ts,
                 bl,
-                anytoken: curAnyToken
+                anytoken: curAnyToken,
+                sortId: destTokenItem.sortId
               })
             }
           }
@@ -399,7 +400,8 @@ export default function PoolLists ({
     ts,
     token,
     isUnderlying,
-    anytoken
+    anytoken,
+    sortId
   }: any) {
     return <TokenList className='l'>
       <div className="chain">
@@ -411,7 +413,7 @@ export default function PoolLists ({
       </div>
       <div className="dtil">
         <p className='p'>{t('yourPoolShare')}: {bl}</p>
-        <p className='p'>{t('pool')}: {ts}</p>
+        <p className='p'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}: {ts} </p>
         {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
       </div>
       <div className="action">
@@ -455,7 +457,8 @@ export default function PoolLists ({
     ts,
     token,
     isUnderlying,
-    anytoken
+    anytoken,
+    sortId
   }: any) {
     return <ChainCardList className='l'>
       <div className="chain">
@@ -468,7 +471,7 @@ export default function PoolLists ({
           <span className='txt'>{bl}</span>
         </p>
         <p className='p'>
-          <span className='txt'>{t('pool')}:</span>
+          <span className='txt'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}:</span>
           <span className='txt'>{ts}</span>
         </p>
       </div>
@@ -515,7 +518,8 @@ export default function PoolLists ({
     ts,
     token,
     isUnderlying,
-    anytoken
+    anytoken,
+    sortId
   }: any) {
     return (
       <>
@@ -526,6 +530,7 @@ export default function PoolLists ({
           token={token}
           isUnderlying={isUnderlying}
           anytoken={anytoken}
+          sortId={sortId}
         />
         <ViewCard2Model
           chainId ={chainId}
@@ -534,6 +539,7 @@ export default function PoolLists ({
           token={token}
           isUnderlying={isUnderlying}
           anytoken={anytoken}
+          sortId={sortId}
         />
       </>
     )
@@ -553,6 +559,7 @@ export default function PoolLists ({
             token={item?.token}
             isUnderlying={true}
             anytoken={curItem.anytoken}
+            sortId={curItem.sortId}
           />
         })
       } else {
@@ -587,6 +594,7 @@ export default function PoolLists ({
                       ts={destTokenItem?.underlying && destTokenItem.isLiquidity ? thousandBit(ts, 2) : 'Unlimited'}
                       token={''}
                       isUnderlying={Boolean(destTokenItem?.underlying) && destTokenItem.isLiquidity}
+                      sortId={destTokenItem.sortId}
                     />
                   })
                 }

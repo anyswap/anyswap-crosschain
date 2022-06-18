@@ -178,7 +178,7 @@ export default function CrossChain({
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    // console.log(terraBalance)
+    console.log(nearBalance)
     if (chainId === ChainId.NAS) {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toExact()
