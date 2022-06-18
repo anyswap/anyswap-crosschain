@@ -138,7 +138,7 @@ export default function FetchMainConfig({
                 */
               }
             })
-            
+
             setFetchConfigStep(FetchConfigDataSteps.UNDERLYNG_DATA)
             const fetchDataByChains: any = []
             const fetchDataByChainsIds: any = []
@@ -146,7 +146,7 @@ export default function FetchMainConfig({
             Object.keys(chainRouters).forEach((routerChainId) => {
               const routerChainContract = chainRouters[routerChainId]
               fetchDataForChainSource[routerChainId] = []
-              // Fetch wNative address 
+              // Fetch wNative address
               fetchDataForChainSource[routerChainId].push({
                 data: CHAINCONFIG_INTERFACE.encodeFunctionData('wNATIVE', []),
                 method: 'wNATIVE',
@@ -175,6 +175,7 @@ export default function FetchMainConfig({
             Promise.all(fetchDataByChains).then((byChainsAnswer) => {
               const erc20byChains: any = {}
               byChainsAnswer.forEach((answerForChain: any, chainIndex) => {
+                if (!answerForChain) return
                 const chainId = fetchDataByChainsIds[chainIndex]
                 erc20byChains[chainId] = {}
                 const sourceData = fetchDataForChainSource[chainId]
@@ -219,6 +220,7 @@ export default function FetchMainConfig({
               Promise.all(erc20fetchData).then((erc20FetchedData) => {
                 erc20FetchedData.forEach((erc20ChainData, erc20ChainIndex) => {
                   erc20ChainData.forEach((erc20Data: any, erc20Index: any) => {
+                    if (!erc20Data || erc20Data === '0x') return
                     const erc20Source = erc20SourceCallData[erc20ChainIndex][erc20Index]
                     const dataAtContract = ERC20_INTERFACE.decodeFunctionResult(erc20Source.method, erc20Data)[0]
                     erc20byChains[erc20Source.chainId][erc20Source.ercAddress][erc20Source.method] = dataAtContract
@@ -228,7 +230,8 @@ export default function FetchMainConfig({
                 const updatedCrosschainTokens: any = {}
                 Object.keys(crosschainTokens).forEach((ccKey) => {
                   const ccToken = crosschainTokens[ccKey]
-                  const ccUnderlyng = erc20byChains[ccToken.tokenChainId][ccToken.underlying]
+                  const ccUnderlyng = erc20byChains[ccToken.tokenChainId]?.[ccToken.underlying]
+                  if (!ccUnderlyng) return
                   updatedCrosschainTokens[`${ccToken.tokenChainId}:${ccToken.contract}`] = {
                     chainId: ccToken.tokenChainId,
                     contractAddress: ccToken.contract,
