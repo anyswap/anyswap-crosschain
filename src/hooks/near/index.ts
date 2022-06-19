@@ -150,6 +150,14 @@ export function useSendNear () {
       const actions = {
         receiverId: contractId,
         actions: [
+          // {
+          //   methodName: 'storage_deposit',
+          //   args: {
+          //     "account_id": window.near.accountId 
+          //   },
+          //   gas: '70000000000000',
+          //   deposit: 1e24
+          // },
           {
             methodName: 'ft_transfer_call',
             args: {
@@ -157,7 +165,7 @@ export function useSendNear () {
               amount: amount,  // wNear decimals is 24
               msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
             },
-            gas: '70000000000000',
+            gas: '300000000000000',
             deposit: '1'
           }
         ]
