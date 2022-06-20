@@ -26,9 +26,9 @@ export function getUrlData (url:string) {
   })
 }
 // console.log(axios.post)
-export function postUrlData (url:string, data:any) {
+export function postUrlData (url:string, data:any, type?: any) {
   return new Promise(resolve => {
-    axios.post(url, qs.stringify(data)).then((res:any) => {
+    axios.post(url, type ? data : qs.stringify(data)).then((res:any) => {
       if (res && res.data && res.status === 200) {
         resolve({
           msg: 'Success',

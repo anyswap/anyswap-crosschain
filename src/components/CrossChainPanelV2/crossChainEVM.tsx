@@ -63,6 +63,8 @@ import {
 } from './hooks'
 import { BigAmount } from '../../utils/formatBignumber'
 
+import {getUrlData} from '../../utils/tools/axios'
+
 // let intervalFN:any = ''
 
 export default function CrossChain({
@@ -376,11 +378,11 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
-        // return undefined
-        return {
-          state: 'Error',
-          tip: isWrapInputError
-        }
+        return undefined
+        // return {
+        //   state: 'Error',
+        //   tip: isWrapInputError
+        // }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
         return {
           state: 'Error',
@@ -560,6 +562,170 @@ export default function CrossChain({
       }
     }
   }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap])
+  const [xrplimit, setXrplimit] = useState<any>('NONE')
+  useEffect(() => {
+    if (
+      selectChain === ChainId.XRP
+      && recipient
+      && recipient.indexOf('0x') !== 0
+      && destConfig?.address !== 'XRP'
+    ) {
+      // const symbol = destConfig.symbol
+      getUrlData(`${config.bridgeApi}/xrp/trustset/${recipient}`).then((res:any) => {
+        console.log(res)
+        if (res.msg === 'Success') {
+          const data = res.data?.result?.lines ?? []
+          let type = ''
+          for (const item of data) {
+            // if (item.currency === symbol) {
+            if (destConfig.address.indexOf(item.account) !== -1) {
+              if (Number(item.limit) > Number(inputBridgeValue)) {
+                type = 'PASS'
+              } else {
+                type = 'NOPASS'
+              }
+              break
+            }
+          }
+          if (type) {
+            setXrplimit(type)
+          } else {
+            setXrplimit('ERROR')
+          }
+        } else {
+          setXrplimit('ERROR')
+        }
+      })
+    } else {
+      setXrplimit('NONE')
+    }
+  }, [getUrlData, selectChain, recipient, destConfig, inputBridgeValue])
+  const maxInputValue = Math.ceil(inputBridgeValue)
+  
+  const xrpurl = useMemo(() => {
+    let url = ''
+    if (
+      selectChain === ChainId.XRP
+      && destConfig?.address !== 'XRP'
+    ) {
+      const result = destConfig?.address?.split('/')
+      // console.log(result)
+      if (result && result.length === 2) {
+        url = `https://xrpl.services/?issuer=${result[1]}&currency=${result[0]}&limit=${maxInputValue}`
+      }
+    }
+    return url
+  }, [destConfig, selectChain, maxInputValue])
+  function CrossChainTip () {
+    if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
+      return <>
+        <LogoBox>
+          <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
+        </LogoBox>
+        <TxnsInfoText>{config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
+        <ConfirmText>
+          {
+            t('approveTip', {
+              symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
+            })
+          }
+        </ConfirmText>
+      </>
+    } else if (
+      selectChain === ChainId.XRP
+      && xrplimit === 'NOPASS'
+    ) {
+      
+      return <ConfirmText>
+        Get trust set error, the transaction may fail.Please use <a href={xrpurl} target='__blank'>{xrpurl}</a>
+      </ConfirmText>
+    } else {
+      let otherTip:any
+      if (selectChain === ChainId.XRP && xrplimit === 'ERROR') {
+        otherTip = <ConfirmText>
+          Get trust set error, the transaction may fail.Please use <a href={xrpurl} target='__blank'>{xrpurl}</a>
+        </ConfirmText>
+      } else if (selectDestCurrency?.symbol?.indexOf('FRAX') !== -1 && !isDestUnderlying) {
+        otherTip = <ConfirmText>
+          Please use <a href='https://app.frax.finance/crosschain' target='__blank'>https://app.frax.finance/crosschain</a> to swap into native FRAX on destination chain.
+        </ConfirmText>
+      }
+      return <>
+        <ConfirmView
+          fromChainId={chainId}
+          value={inputBridgeValue}
+          toChainId={selectChain}
+          swapvalue={outputBridgeValue}
+          recipient={recipient}
+          destConfig={destConfig}
+          selectCurrency={selectCurrency}
+          fee={fee}
+        />
+        {
+          isDestUnderlying ? (
+            <>
+              <ConfirmText>
+                {
+                  t('swapTip', {
+                    symbol: anyToken?.symbol,
+                    symbol1: selectCurrency?.symbol,
+                    chainName: config.getCurChainInfo(selectChain).name
+                  })
+                }
+              </ConfirmText>
+            </>
+          ) : (
+            <></>
+          )
+        }
+        {otherTip}
+      </>
+    }
+  }
+
+  function ViemConfirmBtn () {
+    if (!evmAccount) {
+      return <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+    } else if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
+      return <ButtonConfirmed
+        onClick={() => {
+          onDelay()
+          approveCallback().then(() => {
+            onClear(1)
+          })
+        }}
+        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+        width="48%"
+        altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+        // confirmed={approval === ApprovalState.APPROVED}
+      >
+        {approval === ApprovalState.PENDING ? (
+          <AutoRow gap="6px" justify="center">
+            {t('Approving')} <Loader stroke="white" />
+          </AutoRow>
+        ) : approvalSubmitted ? (
+          t('Approved')
+        ) : (
+          t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
+        )}
+      </ButtonConfirmed>
+    } else if (
+      selectChain === ChainId.XRP
+      && xrplimit === 'NOPASS'
+    ) {
+      return <ButtonPrimary onClick={() => {
+        window.open(xrpurl)
+      }}>
+        TRUST SET
+      </ButtonPrimary>
+    } else {
+      return <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+        handleSwap()
+      }}>
+        {t('Confirm')}
+      </ButtonPrimary>
+    }
+  }
 
   return (
     <>
@@ -572,64 +738,10 @@ export default function CrossChain({
         padding={'10px 2rem 20px'}
       >
         <ConfirmContent>
-          {
-            isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (
-              <>
-                <LogoBox>
-                  <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} logoUrl={selectCurrency?.logoUrl} size={'1rem'}></TokenLogo>
-                </LogoBox>
-                <TxnsInfoText>{config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)}</TxnsInfoText>
-                <ConfirmText>
-                  {
-                    t('approveTip', {
-                      symbol: config.getBaseCoin(selectCurrency?.symbol, chainId),
-                    })
-                  }
-                </ConfirmText>
-              </>
-            ) : (
-              <>
-                <ConfirmView
-                  fromChainId={chainId}
-                  value={inputBridgeValue}
-                  toChainId={selectChain}
-                  swapvalue={outputBridgeValue}
-                  recipient={recipient}
-                  destConfig={destConfig}
-                  selectCurrency={selectCurrency}
-                  fee={fee}
-                />
-                {
-                  isDestUnderlying ? (
-                    <>
-                      <ConfirmText>
-                        {
-                          t('swapTip', {
-                            symbol: anyToken?.symbol,
-                            symbol1: selectCurrency?.symbol,
-                            chainName: config.getCurChainInfo(selectChain).name
-                          })
-                        }
-                      </ConfirmText>
-                    </>
-                  ) : (
-                    <></>
-                  )
-                }
-                {
-                  selectDestCurrency?.symbol?.indexOf('FRAX') !== -1 && !isDestUnderlying ? (
-                    <>
-                      <ConfirmText>
-                      Please use <a href='https://app.frax.finance/crosschain' target='__blank'>https://app.frax.finance/crosschain</a> to swap into native FRAX on destination chain.
-                      </ConfirmText>
-                    </>
-                  ) : ''
-                }
-              </>
-            )
-          }
+          <CrossChainTip />
           <BottomGrouping>
-            {!evmAccount ? (
+            <ViemConfirmBtn />
+            {/* {!evmAccount ? (
                 <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
               ) : (
                 isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
@@ -664,7 +776,7 @@ export default function CrossChain({
                   </ButtonPrimary>
                 )
               )
-            }
+            } */}
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>

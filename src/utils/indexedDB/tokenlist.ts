@@ -17,7 +17,7 @@ tokenlistReauest.onerror = function(event:any) {
 };
 tokenlistReauest.onsuccess = function(event:any) {
   db = event.target.result;
-  console.log(db)
+  // console.log(db)
 };
 tokenlistReauest.onupgradeneeded = function (event:any) {
   db = event.target.result;
