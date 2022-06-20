@@ -38,11 +38,6 @@ import AppBody from '../AppBody'
 // import PoolTip from './poolTip'
 import MorePool from './morePool'
 
-// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import { isAddress } from '../../utils'
-// import {formatDecimal} from '../../utils/tools/tools'
-
-// import SelectChainIdInputPanel from '../../components/CrossChainPanel/selectChainID'
 import SelectChainIdInputPanel from '../../components/CrossChainPanelV2/selectChainID'
 import Reminder from '../../components/CrossChainPanelV2/reminder'
 // import Reminder from '../CrossChain/reminder'

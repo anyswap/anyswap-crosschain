@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
-// import {isAddress} from 'multichain-bridge'
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
@@ -75,7 +74,6 @@ export function useInitSelectCurrency (
       for (const tokenKey in allTokensList) {
         const item = allTokensList[tokenKey]
         const token = item.address
-        // if (!isAddress(token) && token !== config.getCurChainInfo(useChainId).symbol) continue
         list[token] = {
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,

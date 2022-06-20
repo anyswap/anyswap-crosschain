@@ -49,7 +49,6 @@ import {
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
-// import { isAddress } from '@ethersproject/address'
 
 const BalanceTxt = styled.div`
 .p1 {
@@ -258,7 +257,6 @@ export default function PoolLists ({
       const destList:any = {}
       const allToken = []
       for (const tokenKey in allTokensList) {
-        // if (!isAddress(token)) continue
         const tObj = allTokensList[tokenKey]
         const token = tObj.address
         const curPoolTokenSet:any = []

@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 
-import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
-import nebulas from 'nebulas'
+// import nebulas from 'nebulas'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
@@ -64,6 +63,7 @@ import {
 import { BigAmount } from '../../utils/formatBignumber'
 
 import {getUrlData} from '../../utils/tools/axios'
+import {isAddress} from '../../utils/isAddress'
 
 // let intervalFN:any = ''
 
@@ -420,16 +420,7 @@ export default function CrossChain({
   }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity])
 
   const errorTip = useMemo(() => {
-    let isAddr:any
-    if (selectChain === ChainId.NAS) {
-      isAddr = recipient ? nebulas.Account.isValidAddress(recipient) : false
-    } else if (selectChain === ChainId.XRP) {
-      isAddr = recipient && recipient.indexOf('r') === 0 && recipient.length === 34 ? true : false
-    } else if (selectChain === ChainId.NEAR) {
-      isAddr = recipient ? true : false
-    } else {
-      isAddr = isAddress( recipient, selectChain)
-    }
+    const isAddr = isAddress( recipient, selectChain)
     // console.log(isAddr)
     if (!evmAccount || !chainId) {
       return undefined
@@ -899,7 +890,7 @@ export default function CrossChain({
           (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin')
           || (isNaN(selectChain))
           || isNaN(chainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(selectChain === ChainId.NAS ? nebulas.Account.isValidAddress(recipient) : isAddress( recipient, selectChain))} />
+            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
           ) : ''
         }
       </AutoColumn>

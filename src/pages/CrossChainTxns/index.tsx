@@ -51,8 +51,6 @@ import {selectNetwork} from '../../config/tools/methods'
 import {BASECURRENCY} from '../../config/constant'
 
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import {formatDecimal} from '../../utils/tools/tools'
-// import { isAddress } from '../../utils'
 
 import AppBody from '../AppBody'
 import TokenLogo from '../../components/TokenLogo'

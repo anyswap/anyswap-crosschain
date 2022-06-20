@@ -11,7 +11,7 @@ const TOKENKEY = 'chainId'
 
 let db:any = {}
 // let objectStore: any = {}
-const tokenlistReauest = w.indexedDB.open(TOKENLIST, 1);
+const tokenlistReauest = w.indexedDB.open(TOKENLIST, 5);
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
   console.log("Why didn't you allow my web app to use IndexedDB?!");
@@ -40,20 +40,27 @@ function getDBdata (path:any, key:any) {
       resolve('')
       return
     }
-    const transaction = db.transaction([path], "readwrite")
-    const objectStore = transaction.objectStore(path);
-    const request = objectStore.get(key.toString());
-    request.onerror = function(event:any) {
-      console.log(event)
-      // Handle errors!
+    try {
+      // const transaction = db.transaction([path], "readwrite")
+      const transaction = db.transaction([TOKENPATH, POOLPATH], "readwrite")
+      const objectStore = transaction.objectStore(path);
+      const request = objectStore.get(key.toString());
+      request.onerror = function(event:any) {
+        console.log(event)
+        // Handle errors!
+        resolve('')
+      };
+      request.onsuccess = function(event:any) {
+        // Do something with the request.result!
+        const data = event.target.result 
+        // console.log(data)
+        resolve(data)
+        // console.log("Name for SSN 444-44-4444 is " + request.result.name);
+      }
+    } catch (error) {
+      console.log(path)
+      console.log(error)
       resolve('')
-    };
-    request.onsuccess = function(event:any) {
-      // Do something with the request.result!
-      const data = event.target.result 
-      // console.log(data)
-      resolve(data)
-      // console.log("Name for SSN 444-44-4444 is " + request.result.name);
     }
   })
 }

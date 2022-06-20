@@ -12,7 +12,6 @@ import { tokenBalanceList } from './actions'
 import { useAllMergeBridgeTokenList } from '../lists/hooks'
 import {useAllTransactions, isTransactionRecent} from '../transactions/hooks'
 import { TransactionDetails } from '../transactions/reducer'
-// import { isAddress } from '../../utils'
 
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 

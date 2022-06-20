@@ -86,6 +86,7 @@ interface Window {
     removeListener?: (...args: any[]) => void
   }
   okexchain:any
+  tronWeb:any
   web3?: {}
   returnCitySN?: {},
   near: any,
