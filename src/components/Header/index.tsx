@@ -16,6 +16,7 @@ import NavList from './NavList'
 import { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
 import SelectNetwork from './SelectNetwork'
+import SelectSupportedNetwork from './SelectSupportedNetwork'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
 
@@ -204,6 +205,7 @@ export default function Header() {
       <HeaderControls>
         <HeaderElement>
           <SelectNetwork />
+          <SelectSupportedNetwork />
           <ViewAccountInfo />
           <StyleDarkToggle onClick={toggleDarkMode}>
             {isDark ? <img src={IconDay} alt="" /> : <img src={IconNight} alt="" />}

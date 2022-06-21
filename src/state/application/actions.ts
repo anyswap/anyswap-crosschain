@@ -27,7 +27,8 @@ export enum ApplicationModal {
   MENU,
   DELEGATE,
   VOTE,
-  NETWORK
+  NETWORK,
+  SUPPORTED_NETWORK
 }
 
 export type RouterConfigData = {
