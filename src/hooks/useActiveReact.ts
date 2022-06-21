@@ -24,7 +24,10 @@ export function useActiveReact () {
       useAccount = ''
     } else if (selectNetworkInfo?.label === ChainId.NAS) {
       useAccount = nebAddress
-    } else if (selectNetworkInfo?.label === ChainId.NEAR) {
+    } else if (
+      selectNetworkInfo?.label === ChainId.NEAR
+      || selectNetworkInfo?.label === ChainId.NEAR_TEST
+    ) {
       useAccount = nearAddress
     }
     return {

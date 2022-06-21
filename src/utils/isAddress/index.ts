@@ -31,7 +31,10 @@ export function isAddress(address: string, chainId?: any) {
       return AccAddress.validate(address) ? address : false
     } else if (chainId === ChainId.XRP) {
       return address && address.indexOf('r') === 0 && address.length === 34 ? true : false
-    } else if (chainId === ChainId.NEAR) {
+    } else if (
+      chainId === ChainId.NEAR
+      || chainId === ChainId.NEAR_TEST
+    ) {
       return address ? address : false
     } else if (BTCARR.includes(chainId)) {
       return isBTCAddress(address, chainId)

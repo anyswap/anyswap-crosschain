@@ -35,7 +35,10 @@ export function useBaseBalances (
         // console.log(res)
         setBalance(res)
       })
-    } else if (selectNetworkInfo?.label === ChainId.NEAR) {
+    } else if (
+      selectNetworkInfo?.label === ChainId.NEAR
+      || selectNetworkInfo?.label === ChainId.NEAR_TEST
+    ) {
       getNearBalance().then(res => {
         // console.log(res)
         setBalance(res)
@@ -67,7 +70,10 @@ export function useBaseBalances (
       // } catch (err) {
       //   console.error(err)
       // }
-    } else if (selectNetworkInfo?.label === ChainId.NEAR) {
+    } else if (
+      selectNetworkInfo?.label === ChainId.NEAR
+      || selectNetworkInfo?.label === ChainId.NEAR_TEST
+    ) {
       return balance?.total ? BigAmount.format(24, balance?.total) : undefined
     }
     return undefined

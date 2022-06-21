@@ -61,6 +61,7 @@ export enum ChainId {
   DOGE = '2000',
   CMP = '256256',
   NEAR = 'NEAR',
+  NEAR_TEST = 'NEAR_TEST',
   TOMO = '88',
   HOO = '70',
   TT = '108',
@@ -69,7 +70,7 @@ export enum ChainId {
   TRX = 'TRX',
 }
 
-export const LabelToChain:any = { XRP: '1000005788240', NEAR: '1001313161555' }
+export const LabelToChain:any = { XRP: '1000005788240', NEAR_TEST: '1001313161555' }
 
 export function getLabelToChain (chainId:any) {
   if (chainId && LabelToChain[chainId]) {

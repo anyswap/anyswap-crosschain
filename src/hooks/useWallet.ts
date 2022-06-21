@@ -30,7 +30,10 @@ export function useConnectWallet () {
       
     } else if (selectNetworkInfo?.label === ChainId.NAS) {
       
-    } else if (selectNetworkInfo?.label === ChainId.NEAR) {
+    } else if (
+      selectNetworkInfo?.label === ChainId.NEAR
+      || selectNetworkInfo?.label === ChainId.NEAR_TEST
+    ) {
       if (!account) {
         login()
       } else {

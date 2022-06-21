@@ -190,7 +190,10 @@ export default function CrossChain({
       if (terraBalance) {
         return terraBalance?.toExact()
       }
-    } else if (chainId === ChainId.NEAR) {
+    } else if (
+      chainId === ChainId.NEAR
+      || chainId === ChainId.NEAR_TEST
+    ) {
       if (nearBalance) {
         return nearBalance?.toExact()
       }
@@ -203,7 +206,10 @@ export default function CrossChain({
       return wrapInputErrorTerra
     } else if (wrapInputErrorNeb && chainId === ChainId.NAS) {
       return wrapInputErrorNeb
-    } else if (wrapInputErrorNear && chainId === ChainId.NEAR) {
+    } else if (wrapInputErrorNear && (
+      chainId === ChainId.NEAR
+      || chainId === ChainId.NEAR_TEST
+    )) {
       return wrapInputErrorNear
     } else {
       return false
@@ -395,7 +401,10 @@ export default function CrossChain({
                     onNebWrap().then(() => {
                       onClear()
                     })
-                  } else if (onNearWrap && chainId === ChainId.NEAR) {
+                  } else if (onNearWrap && (
+                    chainId === ChainId.NEAR
+                    || chainId === ChainId.NEAR_TEST
+                  )) {
                     console.log('onNebWrap')
                     onNearWrap().then(() => {
                       onClear()

@@ -6,7 +6,7 @@
 // } from 'near-api-js'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {getConfig} from './config'
+// import {getConfig} from './config'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import { BigAmount } from '../../utils/formatBignumber'
 import { useTransactionAdder } from '../../state/transactions/hooks'
@@ -22,9 +22,8 @@ import useInterval from '../useInterval'
 
 const NOT_APPLICABLE = { }
 
-const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
-const contractId = nearConfig.contractName
-// const wNearContractId = nearConfig.wNearContractId
+// const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
+const contractId = 'bridge-1.crossdemo.testnet'
 
 export function useLogout() {
   const logout = useCallback(() => {
@@ -113,7 +112,7 @@ export function useNearBalance () {
 export function useSendNear () {
   const sendNear = useCallback(async(routerContractId, amount, bindaddr, selectchain) => {
     return new Promise((resolve, reject) => {
-
+      console.log('sendNear')
       const actions = {
         receiverId: routerContractId,
         actions: [
@@ -123,12 +122,14 @@ export function useSendNear () {
               "to": `${bindaddr}`,
               "to_chain_id": `${selectchain}`, 
             },
-            gas: '70000000000000',
-            deposit: '1'
+            gas: '300000000000000',
+            // deposit: '1'
+            deposit: amount
           }
         ],
-        amount: amount
+        // amount: amount
       }
+      console.log(actions)
       // let res:any
       let tx:any = {}
       window.near.signAndSendTransaction(actions).then((res:any) => {
@@ -147,17 +148,10 @@ export function useSendNear () {
 
   const sendNearToken = useCallback(async(contractId, anyContractId, routerContractId, amount, bindaddr, selectchain) => {
     return new Promise((resolve, reject) => {
+      console.log('sendNearToken')
       const actions = {
         receiverId: contractId,
         actions: [
-          // {
-          //   methodName: 'storage_deposit',
-          //   args: {
-          //     "account_id": window.near.accountId 
-          //   },
-          //   gas: '70000000000000',
-          //   deposit: 1e24
-          // },
           {
             methodName: 'ft_transfer_call',
             args: {

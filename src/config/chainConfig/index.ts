@@ -291,7 +291,7 @@ const useChain:any = {
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
-    ChainId.NEAR,
+    ChainId.NEAR_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
