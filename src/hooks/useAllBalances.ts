@@ -1,4 +1,4 @@
-import { JSBI, Fraction } from 'anyswap-sdk'
+// import { JSBI, Fraction } from 'anyswap-sdk'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
 
 import useTerraBalance from './useTerraBalance'
@@ -7,6 +7,8 @@ import useInterval from './useInterval'
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 
 import { ChainId } from '../config/chainConfig/chainId'
+
+import { BigAmount } from '../utils/formatBignumber'
 
 export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const connectedWallet = useConnectedWallet()
@@ -18,20 +20,20 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const fetchBalance = useCallback(() => {
     // console.log(token)
     if (token) {
-      if (selectChainId === ChainId.TERRA && connectedWallet?.walletAddress) {
-        // console.log(token)
-        // console.log(connectedWallet?.walletAddress)
+      if ([ChainId.TERRA].includes(selectChainId) && connectedWallet?.walletAddress) {
         getTerraBalances({
           terraWhiteList: [{
             token: token
           }],
           account: connectedWallet?.walletAddress
         }).then(res => {
-          // console.log(res)
-          const bl = res[token] && (dec || dec === 0) ? new Fraction(JSBI.BigInt(res[token]), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(dec))) : undefined
-          // console.log(bl)
+          const bl = res[token] && (dec || dec === 0) ? BigAmount.format(dec, res[token]) : undefined
           savedBalance.current = bl
         })
+      } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChainId)) {
+
+      } else if ([ChainId.NAS].includes(selectChainId)) {
+
       }
     } else {
       savedBalance.current = ''
