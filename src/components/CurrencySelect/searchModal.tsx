@@ -103,6 +103,7 @@ export default function SearchModal ({
         (obj.symbol === 'USDT' && chainId?.toString() === '250')
         || (obj.symbol === 'fUSDT' && chainId?.toString() === '56')
         || (obj.address === '0xf5c8054efc6acd25f31a17963462b90e82fdecad' && chainId?.toString() === '250')
+        || (obj.address === '0x1ccca1ce62c62f7be95d4a67722a8fdbed6eecb4' && chainId?.toString() === '42161')
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
       
