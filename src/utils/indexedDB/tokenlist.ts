@@ -11,7 +11,7 @@ const TOKENKEY = 'chainId'
 
 let db:any = {}
 // let objectStore: any = {}
-const tokenlistReauest = w.indexedDB.open(TOKENLIST, 5);
+const tokenlistReauest = w.indexedDB.open(TOKENLIST, 6);
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
   console.log("Why didn't you allow my web app to use IndexedDB?!");
