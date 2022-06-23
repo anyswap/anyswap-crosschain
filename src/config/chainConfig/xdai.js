@@ -3,7 +3,7 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const XDAI_MAIN_CHAINID = ChainId.XDAI
-export const XDAI_MAINNET = getLocalRPC(XDAI_MAIN_CHAINID, 'https://rpc.xdaichain.com')
+export const XDAI_MAINNET = getLocalRPC(XDAI_MAIN_CHAINID, 'https://rpc.ankr.com/gnosis')
 export const XDAI_MAIN_EXPLORER = 'https://blockscout.com/xdai/mainnet'
 
 export const tokenList = []
@@ -45,6 +45,12 @@ export default {
     nodeRpc: XDAI_MAINNET,
     nodeRpcList: [
       XDAI_MAINNET,
+      'https://gnosischain-rpc.gateway.pokt.network',
+      'https://gnosis-mainnet.public.blastapi.io/',
+      'https://xdai-rpc.gateway.pokt.network/',
+      'https://rpc.ankr.com/gnosis',
+      'https://rpc.gnosischain.com/',
+      'https://xdai-archive.blockscout.com/',
     ],
     chainID: XDAI_MAIN_CHAINID,
     lookHash: XDAI_MAIN_EXPLORER + '/tx/',
