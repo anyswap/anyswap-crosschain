@@ -181,16 +181,18 @@ export default function FetchMainConfig({
                 const sourceData = fetchDataForChainSource[chainId]
                 sourceData.forEach((sourceDataItem: any, answerForTokenIndex: number) => {
                   const answerForToken = answerForChain[answerForTokenIndex]
-                  switch (sourceDataItem.method) {
-                    case 'wNATIVE':
-                      const wNativeAddress = CHAINCONFIG_INTERFACE.decodeFunctionResult('wNATIVE', answerForToken)[0]
-                      erc20byChains[chainId][wNativeAddress] = {}
-                      break;
-                    case 'underlying':
-                      const underlyingAddress = CCTOKEN_INTERFACE.decodeFunctionResult('underlying', answerForToken)[0]
-                      crosschainTokens[sourceDataItem.ccTokenKey].underlying = underlyingAddress
-                      erc20byChains[chainId][underlyingAddress] = {}
-                      break;
+                  if (answerForToken !== "0x") {
+                    switch (sourceDataItem.method) {
+                      case 'wNATIVE':
+                        const wNativeAddress = CHAINCONFIG_INTERFACE.decodeFunctionResult('wNATIVE', answerForToken)[0]
+                        erc20byChains[chainId][wNativeAddress] = {}
+                        break;
+                      case 'underlying':
+                        const underlyingAddress = CCTOKEN_INTERFACE.decodeFunctionResult('underlying', answerForToken)[0]
+                        crosschainTokens[sourceDataItem.ccTokenKey].underlying = underlyingAddress
+                        erc20byChains[chainId][underlyingAddress] = {}
+                        break;
+                    }
                   }
                 })
               })
