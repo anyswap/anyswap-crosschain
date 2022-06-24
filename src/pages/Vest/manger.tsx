@@ -200,17 +200,6 @@ export default function CreateLock () {
 
   const futureNFT = useMemo(() => {
     if (lockData) {
-      // if(inputValue === '') {
-      //   // console.log(inputValue)
-      //   const tmpNFT = {
-      //     lockAmount: lockData.lockAmount,
-      //     lockValue: lockData.lockValue,
-      //     lockEnds: lockData.lockEnds,
-      //   }
-  
-      //   return tmpNFT
-      // }
-  
       const tmpNFT = {
         lockAmount: inputValue ? inputValue : lockData.lockAmount,
         lockValue: lockData.lockValue,
@@ -221,7 +210,8 @@ export default function CreateLock () {
       const expiry = moment.unix(tmpNFT.lockEnds)
       const dayToExpire:any = expiry.diff(now, 'days')
   
-      tmpNFT.lockAmount = inputValue ? new BigNumber(tmpNFT.lockAmount).plus(inputValue).toFixed(18) : tmpNFT.lockAmount
+      // tmpNFT.lockAmount = inputValue ? new BigNumber(tmpNFT.lockAmount).plus(inputValue).toFixed(18) : tmpNFT.lockAmount
+      tmpNFT.lockAmount = inputValue ? inputValue : tmpNFT.lockAmount
       tmpNFT.lockValue = new BigNumber(tmpNFT.lockAmount).times(parseInt(dayToExpire + '')+1).div(1460).toFixed(18)
       // console.log(lockData)
       // console.log(tmpNFT)
