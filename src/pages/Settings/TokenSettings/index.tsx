@@ -48,8 +48,8 @@ export default function TokenSettings({
   const [underlyingName, setUnderlyingName] = useState('')
   const [underlyingSymbol, setUnderlyingSymbol] = useState('')
   const [underlyingDecimals, setUnderlyingDecimals] = useState(-1)
-  const [crosschainToken, setCrosschainToken] = useState('')
-  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState('')
+  const [crosschainTokenAddress, setCrosschainTokenAddress] = useState('')
+  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState(`${chainId}`)
 
   const [underlyingTokenInfo, setUnderlyingTokenInfo] = useState<CrossChainTokenData['underlying']>({
     networkId: underlyingNetworkId,
@@ -77,7 +77,7 @@ export default function TokenSettings({
         const { nodeRpc } = underlyingNetworkConfig
         const web3 = getWeb3Library(nodeRpc)
         //@ts-ignore
-        const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingToken)
+        const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingAddress)
 
         const name = await underlyingErc20.methods.name().call()
         const symbol = await underlyingErc20.methods.symbol().call()
@@ -108,7 +108,7 @@ export default function TokenSettings({
             const { ContractAddress } = tokenConfig
 
             setCrosschainTokenChainId(underlyingNetworkId)
-            setCrosschainToken(ContractAddress)
+            setCrosschainTokenAddress(ContractAddress)
           }
         }
       } catch (error) {
@@ -144,7 +144,7 @@ export default function TokenSettings({
       } = appSettings.crosschainTokens[selectedContract]
 
       setCrosschainTokenChainId(`${chainId}`)
-      setCrosschainToken(contractAddress)
+      setCrosschainTokenAddress(contractAddress)
 
       setUnderlyingNetworkId(underlying.networkId)
       setUnderlyingAddress(underlying.address)
@@ -166,7 +166,7 @@ export default function TokenSettings({
 
     } else {
       setCrosschainTokenChainId(``)
-      setCrosschainToken(``)
+      setCrosschainTokenAddress(``)
 
       setUnderlyingNetworkId(`${chainId}`)
       setUnderlyingAddress(``)
@@ -187,7 +187,7 @@ export default function TokenSettings({
   }
 
   const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingSymbol || !crosschainToken || !crosschainTokenChainId) return
+    if (!routerConfigSigner || !underlyingSymbol || !crosschainTokenAddress || !crosschainTokenChainId) return
 
     if (activeTokenGroup == `CreateNewTokenGroup`) {
       if (ownTokenGroup == ``) {
@@ -203,7 +203,7 @@ export default function TokenSettings({
 
       const tx = await routerConfigSigner.setTokenConfig(usedTokenGroup, crosschainTokenChainId, {
         Decimals: underlyingDecimals,
-        ContractAddress: crosschainToken,
+        ContractAddress: crosschainTokenAddress,
         ContractVersion: VERSION
       })
       const receipt = await tx.wait()
@@ -212,9 +212,55 @@ export default function TokenSettings({
         addTransaction(
           { hash: receipt.transactionHash },
           {
-            summary: `Crosschain token config ${crosschainToken} for chain ${crosschainTokenChainId} saved to main router`
+            summary: `Crosschain token config ${crosschainTokenAddress} for chain ${crosschainTokenChainId} saved to main router`
           }
         )
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const [isSavedTokenExists, setIsSavedTokenExists] = useState(false)
+
+  const checkSavedToken = async () => {
+    try {
+      if (!routerConfigSigner) throw new Error("Need to connect to main config network")
+      if (!crosschainTokenChainId) throw new Error("Fill crosschain chain id")
+      if (!crosschainTokenAddress) throw new Error("Fill crosschain token address")
+      if (!crosschainTokenAddress?.match(EVM_ADDRESS_REGEXP)) throw new Error("Fill correct crosschain token address")
+      if (!ownTokenGroup) throw new Error("Fill crosschain token group id")
+
+      const multichainTokenAddress = await routerConfigSigner.getMultichainToken(ownTokenGroup.toUpperCase(), crosschainTokenChainId)
+
+      setIsSavedTokenExists(multichainTokenAddress === crosschainTokenAddress)
+
+      console.log('check saved token', routerConfigSigner, crosschainTokenAddress, crosschainTokenChainId, multichainTokenAddress)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    setIsSavedTokenExists(false)
+  }, [crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup, routerConfigSigner])
+
+  const removeTokenFromRouterConfig = async () => {
+    try {
+      if (!isSavedTokenExists) throw new Error("Firstly, check if the crosschain token exists in the router config")
+
+      const tx = await routerConfigSigner.removeMultichainToken(ownTokenGroup.toUpperCase(), crosschainTokenChainId)
+      const receipt = await tx.wait()
+
+      if (receipt.status) {
+        addTransaction(
+          { hash: receipt.transactionHash },
+          {
+            summary: `Crosschain token config ${crosschainTokenAddress} for chain ${crosschainTokenChainId} removed from main router`
+          }
+        )
+
+        setCrosschainTokenData("-")
       }
     } catch (error) {
       console.error(error)
@@ -251,7 +297,7 @@ export default function TokenSettings({
           underlying={underlyingTokenInfo}
           onDeploymentCallback={(contractAddress, chainId) => {
             setCrosschainTokenChainId(`${chainId}`)
-            setCrosschainToken(contractAddress)
+            setCrosschainTokenAddress(contractAddress)
             onDeployCrosschainTokenCallback(contractAddress, chainId, underlyingTokenInfo)
           }}
         />
@@ -293,7 +339,7 @@ export default function TokenSettings({
               )}
               {t('idOfCrosschainTokenNetwork')}
               <Input
-                value={crosschainTokenChainId || chainId}
+                value={crosschainTokenChainId}
                 type="number"
                 min="1"
                 step="1"
@@ -301,15 +347,27 @@ export default function TokenSettings({
               />
               {t('crosschainTokenAddress')}
               <Input
-                value={crosschainToken}
+                value={crosschainTokenAddress}
                 type="text"
                 placeholder="0x..."
-                onChange={event => setCrosschainToken(event.target.value)}
+                onChange={event => setCrosschainTokenAddress(event.target.value)}
               />
               {onConfigNetwork ? (
-                <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
-                  {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
-                </ButtonPrimary>
+                <>
+                  <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
+                    {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
+                  </ButtonPrimary>
+                  {!isSavedTokenExists
+                    ?
+                      <ButtonPrimary onClick={checkSavedToken} disabled={false}>
+                        {t('checkSavedToken')}
+                      </ButtonPrimary>
+                    :
+                      <ButtonPrimary onClick={removeTokenFromRouterConfig} disabled={false}>
+                        {t('removeCrosschainFromRouterConfig')}
+                      </ButtonPrimary>
+                  }
+                </>
               ) : SwitchToConfigButton
               }
             </OptionLabel>
