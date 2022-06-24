@@ -19,7 +19,7 @@ import { useUserSelectChainId } from '../../state/user/hooks'
 import { ReactComponent as Close } from '../../assets/x.svg'
 
 import config from '../../config'
-import {chainInfo/*, spportChainArr*/} from '../../config/chainConfig'
+import {chainInfo} from '../../config/chainConfig'
 
 import {setLocalRPC} from '../../config/chainConfig/methods'
 
@@ -446,7 +446,7 @@ export default function SelectSupportedNetwork () {
   }, [selectNetworkInfo, chainId])
 
   const allTokensList:any = useAllMergeBridgeTokenList(`mergeTokenList`)
-  console.log('>>> select network allTokensList', allTokensList)
+
   function changeNetwork () {
     return (
       <Modal
