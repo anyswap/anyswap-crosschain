@@ -24,7 +24,8 @@ import AddressInputPanel from '../AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../swap/styleds'
 import ModalContent from '../Modal/ModalContent'
 
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletModalToggle, useOpenModal } from '../../state/application/hooks'
+import { ApplicationModal } from '../../state/application/actions'
 import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
@@ -77,6 +78,7 @@ export default function CrossChain({
 
   // const allTokensList:any = useMergeBridgeTokenList(useChainId)
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, useChainId)
+
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   
@@ -476,6 +478,22 @@ export default function CrossChain({
     }
   }
 
+  const hasPairsOnChain = (Object.keys(allTokensList).length > 0)
+  const showChainsWithPairs = useOpenModal(ApplicationModal.SUPPORTED_NETWORK)
+  if (!hasPairsOnChain) {
+    return (
+      <>
+        <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+          <h2>{t('ThisChainNotContainPairs')}</h2>
+        </AutoRow>
+        <AutoRow justify="center" style={{ padding: '0 1rem' }}>
+          <ButtonPrimary onClick={showChainsWithPairs}>
+            {t('ShowChainsWithPairs')}
+          </ButtonPrimary>
+        </AutoRow>
+      </>
+    )
+  }
   return (
     <>
       <ModalContent
@@ -540,7 +558,6 @@ export default function CrossChain({
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>
-
       <AutoColumn gap={'sm'}>
         <SelectCurrencyInputPanel
           label={t('From')}
