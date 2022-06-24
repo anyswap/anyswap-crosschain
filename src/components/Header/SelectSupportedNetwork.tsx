@@ -461,7 +461,7 @@ export default function SelectSupportedNetwork () {
               <CloseColor />
             </CloseIcon>
             <HeaderRow>
-              <HoverText>{t('SwitchTo')} Supported</HoverText>
+              <HoverText>{t('SwitchTo')}</HoverText>
             </HeaderRow>
             <ContentWrapper>
               <NetWorkList>
