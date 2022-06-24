@@ -25,6 +25,8 @@ import {setLocalRPC} from '../../config/chainConfig/methods'
 
 import {selectNetwork} from '../../config/tools/methods'
 
+import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
+
 export const WalletLogoBox = styled.div`
   width:100%;
   ${({theme}) => theme.flexBC}
@@ -443,6 +445,8 @@ export default function SelectSupportedNetwork () {
     return chainId
   }, [selectNetworkInfo, chainId])
 
+  const allTokensList:any = useAllMergeBridgeTokenList(`mergeTokenList`)
+  console.log('>>> select network allTokensList', allTokensList)
   function changeNetwork () {
     return (
       <Modal
@@ -463,12 +467,14 @@ export default function SelectSupportedNetwork () {
               <NetWorkList>
                 {
                   spportChainArr && spportChainArr.map((item:any, index:any) => {
-                    return (
-                      <OptionCardClickable key={index} className={
-                        useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        <Option curChainId={item} selectChainId={useChainId}></Option>
-                      </OptionCardClickable>
-                    )
+                    if (allTokensList[item] && Object.keys(allTokensList[item].tokenList).length) {
+                      return (
+                        <OptionCardClickable key={index} className={
+                          useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                          <Option curChainId={item} selectChainId={useChainId}></Option>
+                        </OptionCardClickable>
+                      )
+                    } else return null
                   })
                 }
               </NetWorkList>
