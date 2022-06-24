@@ -19,7 +19,7 @@ import { useUserSelectChainId } from '../../state/user/hooks'
 import { ReactComponent as Close } from '../../assets/x.svg'
 
 import config from '../../config'
-import {chainInfo, spportChainArr} from '../../config/chainConfig'
+import {chainInfo/*, spportChainArr*/} from '../../config/chainConfig'
 
 import {setLocalRPC} from '../../config/chainConfig/methods'
 
@@ -466,16 +466,26 @@ export default function SelectSupportedNetwork () {
             <ContentWrapper>
               <NetWorkList>
                 {
-                  spportChainArr && spportChainArr.map((item:any, index:any) => {
-                    if (allTokensList[item] && Object.keys(allTokensList[item].tokenList).length) {
+                  Object.keys(allTokensList).map((chainId) => {
+                    if (Object.keys(allTokensList[chainId].tokenList).length > 0) {
                       return (
-                        <OptionCardClickable key={index} className={
-                          useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                          <Option curChainId={item} selectChainId={useChainId}></Option>
+                        <OptionCardClickable key={chainId} className={
+                          useChainId?.toString() === chainId?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[chainId])}}>
+                          <Option curChainId={chainId} selectChainId={useChainId}></Option>
                         </OptionCardClickable>
                       )
                     } else return null
                   })
+                  /*
+                  spportChainArr && spportChainArr.map((item:any, index:any) => {
+                    return (
+                      <OptionCardClickable key={index} className={
+                        useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
+                        <Option curChainId={item} selectChainId={useChainId}></Option>
+                      </OptionCardClickable>
+                    )
+                  })
+                  */
                 }
               </NetWorkList>
             </ContentWrapper>
