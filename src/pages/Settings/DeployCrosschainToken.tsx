@@ -60,7 +60,7 @@ export default function DeployCrosschainToken({
       }
     }
 
-    if (chainId && underlying.address.match(EVM_ADDRESS_REGEXP)) {
+    if (chainId && underlying?.address?.match(EVM_ADDRESS_REGEXP)) {
       fetchUnderlyingInfo()
     }
   }, [chainId, underlying.address, underlying.networkId])

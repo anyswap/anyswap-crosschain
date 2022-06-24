@@ -76,7 +76,7 @@ export type AppSettingsData = {
   routerConfigs: RouterConfigDataList
   erc20Tokens: ERC20TokenDataList
   crosschainTokens: CrossChainTokenDataList
-  tokenGroups: string[] | []
+  tokenGroups: string[]
 }
 
 export type AppData = {

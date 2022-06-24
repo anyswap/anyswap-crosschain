@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { ERC20_ABI } from '../../constants/abis/erc20'
 import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppSettingsData, updateAppOptions, updateAppSettings, updateRouterData } from '../../state/application/actions'
@@ -10,21 +9,18 @@ import { useAppState } from '../../state/application/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import { chainInfo } from '../../config/chainConfig'
 import { updateStorageData } from '../../utils/storage'
-import { getWeb3Library } from '../../utils/getLibrary'
 import { useMainConfigContract } from '../../hooks/useContract'
-import { ZERO_ADDRESS, API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
+import { API_REGEXP, EVM_ADDRESS_REGEXP } from '../../constants'
 import { ButtonPrimary, ButtonOutlined, CleanButton } from '../../components/Button'
 import Accordion from '../../components/Accordion'
-import Lock from '../../components/Lock'
 import DeployRouterConfig from './DeployRouterConfig'
 import DeployRouter from './DeployRouter'
-import DeployCrosschainToken from './DeployCrosschainToken'
 import FetchMainConfig from './FetchMainConfig'
-import SwapSettings from './SwapSettings'
-import OptionLabel from './OptionLabel'
 import { Notice } from './index'
 import { selectNetwork } from '../../config/tools/methods'
 import config from '../../config'
+import TokenSettings from './TokenSettings'
+import OptionLabel from './OptionLabel'
 
 export const OptionWrapper = styled.div`
   display: flex;
@@ -83,7 +79,7 @@ export const Input = styled.input`
   }
 `
 
-const Title = styled.h2<{ noMargin?: boolean }>`
+export const Title = styled.h2<{ noMargin?: boolean }>`
   margin: ${({ noMargin }) => (!noMargin ? '1.6rem 0 0.8rem' : '0')};
 
   :first-child {
@@ -376,46 +372,29 @@ export default function Contracts() {
     }
   }
 
-  const [underlyingNetworkId, setUnderlyingNetworkId] = useState(`${chainId}`)
-  const [underlyingToken, setUnderlyingToken] = useState('')
-  const [underlyingName, setUnderlyingName] = useState('')
-  const [underlyingSymbol, setUnderlyingSymbol] = useState('')
-  const [underlyingDecimals, setUnderlyingDecimals] = useState(-1)
-  const [crosschainToken, setCrosschainToken] = useState('')
-  const [crosschainTokenChainId, setCrosschainTokenChainId] = useState('')
-
-  useEffect(() => {
-    const fetchUnderlyingInfo = async () => {
-      if (!underlyingToken?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
-
-      try {
-        const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
-
-        if (!underlyingNetworkConfig) return
-
-        const { nodeRpc } = underlyingNetworkConfig
-        const web3 = getWeb3Library(nodeRpc)
-        //@ts-ignore
-        const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingToken)
-
-        const name = await underlyingErc20.methods.name().call()
-        const symbol = await underlyingErc20.methods.symbol().call()
-        const decimals = await underlyingErc20.methods.decimals().call()
-
-        setUnderlyingName(name)
-        setUnderlyingSymbol(symbol)
-        setUnderlyingDecimals(decimals)
-
-        updateAppSetupSettings(
+  const updateUnderlyingToken = useCallback(({
+    networkId,
+    address,
+    decimals,
+    symbol,
+    name,
+  } : {
+      networkId: string
+      address: string
+      decimals: any
+      symbol: any
+      name: any
+  }) => {
+      updateAppSetupSettings(
           appSettings,
           setAppSettings,
           dispatch,
           {
             erc20Tokens: {
               ...appSettings.erc20Tokens,
-              [`${underlyingNetworkId}:${underlyingToken}`]: {
-                chainId: underlyingNetworkId,
-                address: underlyingToken,
+              [`${networkId}:${address}`]: {
+                chainId: networkId,
+                address: address,
                 decimals,
                 symbol,
                 name,
@@ -424,78 +403,7 @@ export default function Contracts() {
             }
           }
         )
-
-        if (routerConfig) {
-          const tokenConfig = await routerConfig.methods
-            .getTokenConfig(symbol.toUpperCase(), underlyingNetworkId)
-            .call()
-
-          if (tokenConfig.ContractAddress !== ZERO_ADDRESS) {
-            const { ContractAddress } = tokenConfig
-
-            setCrosschainTokenChainId(underlyingNetworkId)
-            setCrosschainToken(ContractAddress)
-          }
-
-          console.groupEnd()
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    if (underlyingNetworkId && underlyingToken) {
-      fetchUnderlyingInfo()
-    }
-  }, [underlyingToken, chainId, underlyingNetworkId])
-
-  const [activeTokenGroup, setActiveTokenGroup] = useState(`CreateNewTokenGroup`)
-  const [ownTokenGroup, setOwnTokenGroup] = useState(``)
-  const [ownTokenGroupError, setOwnTokenGroupError] = useState(false)
-
-  const onChangeOwnTokenGroup = (newOwnTokenGroup: string) => {
-    setOwnTokenGroup(newOwnTokenGroup)
-    setOwnTokenGroupError(false)
-  }
-
-  const setTokenGroup = (tokenGroup: string) => {
-    setActiveTokenGroup(tokenGroup)
-  }
-
-  const setTokenConfig = async () => {
-    if (!routerConfigSigner || !underlyingSymbol || !crosschainToken || !crosschainTokenChainId) return
-
-    if (activeTokenGroup == `CreateNewTokenGroup`) {
-      if (ownTokenGroup == ``) {
-        setOwnTokenGroupError(true)
-        return
-      }
-    }
-
-    const usedTokenGroup = (activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()
-    const VERSION = 6
-
-    try {
-
-      const tx = await routerConfigSigner.setTokenConfig(usedTokenGroup, crosschainTokenChainId, {
-        Decimals: underlyingDecimals,
-        ContractAddress: crosschainToken,
-        ContractVersion: VERSION
-      })
-      const receipt = await tx.wait()
-
-      if (receipt.status) {
-        addTransaction(
-          { hash: receipt.transactionHash },
-          {
-            summary: `Crosschain token config ${crosschainToken} for chain ${crosschainTokenChainId} saved to main router`
-          }
-        )
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  }, [appSettings, setAppSettings, dispatch])
 
   const [canSaveRouterConfig, setCanSaveRouterConfig] = useState(false)
 
@@ -510,20 +418,6 @@ export default function Contracts() {
       )
     )
   }, [onStorageNetwork, mainConfigChainId, mainConfigAddress, routerConfigOwner])
-
-  const [hasUnderlyingInfo, setHasUnderlyingInfo] = useState(false)
-
-  useEffect(() => {
-    setHasUnderlyingInfo(Boolean(underlyingNetworkId && underlyingName && underlyingSymbol))
-  }, [underlyingNetworkId, underlyingName, underlyingSymbol])
-
-  const underlying = {
-    networkId: underlyingNetworkId,
-    address: underlyingToken,
-    name: underlyingName,
-    symbol: underlyingSymbol,
-    decimals: Number(underlyingDecimals)
-  }
 
   const onDeployRouterConfig = (contractAddress: string, chainId: number) => {
     setMainConfigChainId(`${chainId}`)
@@ -558,9 +452,7 @@ export default function Contracts() {
     )
   }
 
-  const onDeployCrosschainToken = (contractAddress: string, chainId: number) => {
-    setCrosschainTokenChainId(`${chainId}`)
-    setCrosschainToken(contractAddress)
+  const onDeployCrosschainToken = (contractAddress: string, chainId: number, underlying: any ) => {
     updateAppSetupSettings(
       appSettings,
       setAppSettings,
@@ -589,46 +481,6 @@ export default function Contracts() {
     } else {
       setRouterChainId(``)
       setRouterAddress(``)
-    }
-  }
-
-  const setCrosschainTokenData = (selectedContract: any) => {
-    if (selectedContract !== `-`) {
-      const {
-        chainId,
-        contractAddress,
-        underlying
-      } = appSettings.crosschainTokens[selectedContract]
-
-      setCrosschainTokenChainId(`${chainId}`)
-      setCrosschainToken(contractAddress)
-      
-      setUnderlyingNetworkId(underlying.networkId)
-      setUnderlyingToken(underlying.address)
-      setUnderlyingDecimals(underlying.decimals)
-      setUnderlyingName(underlying.name)
-      setUnderlyingSymbol(underlying.symbol)
-      const hasTokenGroup = appSettings.tokenGroups.filter((tokenGroup) => {
-        return (tokenGroup == underlying.symbol)
-      })
-      if (hasTokenGroup.length > 0) {
-        setTokenGroup(underlying.symbol)
-      } else {
-        setTokenGroup(`CreateNewTokenGroup`)
-      }
-      setOwnTokenGroup(underlying.symbol)
-
-    } else {
-      setCrosschainTokenChainId(``)
-      setCrosschainToken(``)
-      
-      setUnderlyingNetworkId(``)
-      setUnderlyingToken(``)
-      setUnderlyingDecimals(0)
-      setUnderlyingName(``)
-      setUnderlyingSymbol(``)
-      setTokenGroup(`CreateNewTokenGroup`)
-      setOwnTokenGroup(``)
     }
   }
 
@@ -929,98 +781,16 @@ export default function Contracts() {
         )}
       </Accordion>
 
-      <Title>{t('erc20Token')}</Title>
-      <Lock enabled={!routerAddress} reason={!routerAddress && t('deployRouterFirst')}>
-        <Notice margin="0.4rem 0">{t('youNeedCrosschainTokenForEachErc20TokenOnEachNetwork')}</Notice>
-        <Notice margin="0.4rem 0">{t('crosschainTokenUseDeployed')}</Notice>
-        <OptionWrapper>
-          <OptionLabel displayChainsLink>
-            {t('erc20ChainId')}
-            <Input
-              type="number"
-              min="1"
-              value={underlyingNetworkId || chainId}
-              onChange={event => setUnderlyingNetworkId(event.target.value)}
-            />
-            {t('erc20TokenAddress')}
-            <Input type="text" placeholder="0x..." value={underlyingToken} onChange={event => setUnderlyingToken(event.target.value)} />
-          </OptionLabel>
-        </OptionWrapper>
-
-        <DeployCrosschainToken
-          routerAddress={routerAddress}
-          underlying={underlying}
-          onDeploymentCallback={onDeployCrosschainToken}
-        />
-
-        <Accordion title={t('tokenConfig')} margin="0.5rem 0">
-          <OptionWrapper>
-            <OptionLabel>
-              <Select onChange={event => setCrosschainTokenData(event.target.value)}>
-                <SelectOption value="-">{t('crosschainTokenSelectDeployedOption')}</SelectOption>
-                {Object.keys(appSettings.crosschainTokens).map((ccTokenKey) => {
-                  const ccTokenInfo = appSettings.crosschainTokens[ccTokenKey]
-
-                  return (
-                    <SelectOption key={ccTokenKey} value={ccTokenKey}>
-                      Chain {ccTokenInfo.chainId} ({ccTokenInfo.underlying.symbol}) {ccTokenInfo.contractAddress}
-                    </SelectOption>
-                  )
-                })}
-              </Select>
-            </OptionLabel>
-            <OptionLabel>
-              {t('idOfCrosschainGroup')}
-              <Select value={activeTokenGroup} onChange={event => setTokenGroup(event.target.value)}>
-                <SelectOption value={`CreateNewTokenGroup`}>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
-                {/* @ts-ignore */}
-                {appSettings.tokenGroups.map((tokenGroupKey) => {
-                  return (
-                    <SelectOption key={tokenGroupKey} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>
-                  )
-                })}
-              </Select>
-              {activeTokenGroup === `CreateNewTokenGroup` && (
-                <Input
-                  className={(ownTokenGroupError) ? `hasError` : ``}
-                  value={ownTokenGroup}
-                  placeholder={t('idOfCrosschainGroupNewGroupPlaceholder')}
-                  onChange={event => onChangeOwnTokenGroup(event.target.value)}
-                />
-              )}
-              {t('idOfCrosschainTokenNetwork')}
-              <Input
-                value={crosschainTokenChainId || chainId}
-                type="number"
-                min="1"
-                step="1"
-                onChange={event => setCrosschainTokenChainId(event.target.value)}
-              />
-              {t('crosschainTokenAddress')}
-              <Input
-                value={crosschainToken}
-                type="text"
-                placeholder="0x..."
-                onChange={event => setCrosschainToken(event.target.value)}
-              />
-              {onConfigNetwork ? (
-                <ButtonPrimary onClick={setTokenConfig} disabled={!hasUnderlyingInfo || !onConfigNetwork}>
-                  {t(!hasUnderlyingInfo ? 'fillUnderlyingInfo' : 'setTokenConfig')}
-                </ButtonPrimary>
-              ) : (
-                <SwitchToChainButton chainId={stateMainConfigChainId} />
-              )}
-            </OptionLabel>
-          </OptionWrapper>
-        </Accordion>
-
-        <SwapSettings
-          underlying={underlying}
-          usedTokenGroup={(activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()}
-          onConfigNetwork={onConfigNetwork}
-          SwitchToConfigButton={<SwitchToChainButton chainId={stateMainConfigChainId} />}
-        />
-      </Lock>
+      <TokenSettings
+        appSettings={appSettings}
+        routerConfig={routerConfig}
+        routerAddress={routerAddress}
+        routerConfigSigner={routerConfigSigner}
+        onConfigNetwork={onConfigNetwork}
+        SwitchToConfigButton={<SwitchToChainButton chainId={stateMainConfigChainId} />}
+        updateUnderlyingToken={updateUnderlyingToken}
+        onDeployCrosschainTokenCallback={onDeployCrosschainToken}
+      />
     </>
   )
 }
