@@ -203,7 +203,7 @@ export default function HistoryDetails ({
   useEffect(() => {
     if (underlying && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
-        if (res && res.logs && res.logs.length === 1 && setUnderlyingStatus) {
+        if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
           setUnderlyingStatus(fromChainID, txid, true)
         }
       })
