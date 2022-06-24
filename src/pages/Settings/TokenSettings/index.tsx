@@ -222,8 +222,13 @@ export default function TokenSettings({
   }
 
   const [isSavedTokenExists, setIsSavedTokenExists] = useState(false)
+  const [isCheckCrosschainTokenButtonDisable, setIsCheckCrosschainTokenButtonDisable] = useState(!routerConfigSigner || !crosschainTokenChainId || !crosschainTokenAddress || !ownTokenGroup)
 
-  const checkSavedToken = async () => {
+  useEffect(() => {
+    setIsCheckCrosschainTokenButtonDisable(!routerConfigSigner || !crosschainTokenChainId || !crosschainTokenAddress || !ownTokenGroup)
+  }, [routerConfigSigner, crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup])
+
+  const checkCrosschainTokenInRouterConfig = async () => {
     try {
       if (!routerConfigSigner) throw new Error("Need to connect to main config network")
       if (!crosschainTokenChainId) throw new Error("Fill crosschain chain id")
@@ -245,7 +250,7 @@ export default function TokenSettings({
     setIsSavedTokenExists(false)
   }, [crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup, routerConfigSigner])
 
-  const removeTokenFromRouterConfig = async () => {
+  const removeCrosschainTokenFromRouterConfig = async () => {
     try {
       if (!isSavedTokenExists) throw new Error("Firstly, check if the crosschain token exists in the router config")
 
@@ -322,12 +327,12 @@ export default function TokenSettings({
               {t('idOfCrosschainGroup')}
               <Select value={activeTokenGroup} onChange={event => setTokenGroup(event.target.value)}>
                 <SelectOption value={`CreateNewTokenGroup`}>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
-                {/* @ts-ignore */}
-                {appSettings.tokenGroups.map((tokenGroupKey, i) => {
-                  return (
-                    <SelectOption key={i} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>
-                  )
-                })}
+                {appSettings.tokenGroups.reduce((tokenGroups: string[], currTokenGroup: string) =>{ // remove duplicates
+                      if (!tokenGroups.includes(currTokenGroup))
+                      tokenGroups.push(currTokenGroup);
+                      return tokenGroups;
+                  }, []).map((tokenGroupKey, i) => <SelectOption key={i} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>)
+                }
               </Select>
               {activeTokenGroup === `CreateNewTokenGroup` && (
                 <Input
@@ -359,12 +364,12 @@ export default function TokenSettings({
                   </ButtonPrimary>
                   {!isSavedTokenExists
                     ?
-                      <ButtonPrimary onClick={checkSavedToken} disabled={false}>
-                        {t('checkSavedToken')}
+                      <ButtonPrimary onClick={checkCrosschainTokenInRouterConfig} disabled={isCheckCrosschainTokenButtonDisable}>
+                        {t('checkCrosschainTokenInRouterConfig')}
                       </ButtonPrimary>
                     :
-                      <ButtonPrimary onClick={removeTokenFromRouterConfig} disabled={false}>
-                        {t('removeCrosschainFromRouterConfig')}
+                      <ButtonPrimary onClick={removeCrosschainTokenFromRouterConfig} disabled={isCheckCrosschainTokenButtonDisable}>
+                        {t('removeCrosschainTokenFromRouterConfig')}
                       </ButtonPrimary>
                   }
                 </>

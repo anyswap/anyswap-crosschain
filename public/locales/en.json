@@ -450,5 +450,12 @@
   "mainConfig_FetchData": "Fetch main config data",
   "mainConfig_FetchMainData": "Fetching chains and tokens",
   "mainConfig_FetchChain_And_CCTokenData": "Fetching crosschain tokens",
-  "mainConfig_FetchUnderlyngData": "Fetching information about used ERC20"
+  "mainConfig_FetchUnderlyngData": "Fetching information about used ERC20",
+  "idOfCrosschainGroup": "Token Group ID",
+  "idOfCrosschainGroupNewGroup": "Create new Token Group ID",
+  "idOfCrosschainGroupNewGroupPlaceholder": "Enter the Token Group ID here (usually the token symbol)",
+  "removeCrosschainTokenFromRouterConfig": "Remove token from config",
+  "checkCrosschainTokenInRouterConfig": "Check token in config",
+  "txnsMoreInfo": "More Info",
+  "fillUnderlyingInfo": "Fill the ERC20 token info"
 }
