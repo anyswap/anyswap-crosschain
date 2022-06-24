@@ -484,11 +484,11 @@ export default function CrossChain({
     return (
       <>
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
-          <h2>{t('ThisChainNotContainPairs')}</h2>
+          <h2>{t('thisChainNotContainPairs')}</h2>
         </AutoRow>
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ButtonPrimary onClick={showChainsWithPairs}>
-            {t('ShowChainsWithPairs')}
+            {t('showChainsWithPairs')}
           </ButtonPrimary>
         </AutoRow>
       </>
