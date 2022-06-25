@@ -46,6 +46,7 @@ export default function FirstSetup() {
     }
   }
 
+  console.log('>>>> FirstSetup account', account)
   const changeNetwork = (chainID: any) => {
     selectNetwork(chainID).then((res: any) => {
       console.log(res)
@@ -53,6 +54,10 @@ export default function FirstSetup() {
         alert(t('changeMetamaskNetwork', { label: getCurChainInfo(chainID).networkName }))
       }
     })
+  }
+
+  const connectWallet = () => {
+    console.log('>>> do connect wallet')
   }
 
   const switchToStorageNetwork = () => changeNetwork(STORAGE_CHAIN_ID)
@@ -66,12 +71,22 @@ export default function FirstSetup() {
   return (
     <>
       <h1>{t('installOnDomainTitle')}</h1>
-      {onStorageChain ? (
-        <ButtonPrimary onClick={installOnDomainDo} fullWidth>
-          {t('installOnDomainDo')}
-        </ButtonPrimary>
+      {account === null ? (
+        <>
+          <ButtonPrimary onClick={connectWallet} fullWidth>
+            {t('installOnDomainConnectWallet')}
+          </ButtonPrimary>
+        </>
       ) : (
-        <SwitchToStorageNetworkButton />
+        <>
+          {onStorageChain ? (
+            <ButtonPrimary onClick={installOnDomainDo} fullWidth>
+              {t('installOnDomainDo')}
+            </ButtonPrimary>
+          ) : (
+            <SwitchToStorageNetworkButton />
+          )}
+        </>
       )}
     </>
   )
