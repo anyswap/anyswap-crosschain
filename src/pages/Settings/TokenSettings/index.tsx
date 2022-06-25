@@ -327,12 +327,7 @@ export default function TokenSettings({
               {t('idOfCrosschainGroup')}
               <Select value={activeTokenGroup} onChange={event => setTokenGroup(event.target.value)}>
                 <SelectOption value={`CreateNewTokenGroup`}>{t('idOfCrosschainGroupNewGroup')}</SelectOption>
-                {appSettings.tokenGroups.reduce((tokenGroups: string[], currTokenGroup: string) =>{ // remove duplicates
-                      if (!tokenGroups.includes(currTokenGroup))
-                      tokenGroups.push(currTokenGroup);
-                      return tokenGroups;
-                  }, []).map((tokenGroupKey, i) => <SelectOption key={i} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>)
-                }
+                {appSettings.tokenGroups.map((tokenGroupKey, i) => <SelectOption key={i} value={tokenGroupKey}>{tokenGroupKey}</SelectOption>)}
               </Select>
               {activeTokenGroup === `CreateNewTokenGroup` && (
                 <Input

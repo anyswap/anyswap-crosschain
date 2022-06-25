@@ -11,7 +11,7 @@ import TokenLogo from '../TokenLogo'
 import { TYPE } from '../../theme'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useToggleNetworkModal } from '../../state/application/hooks'
+import { useToggleSupportedNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
 import {thousandBit} from '../../utils/tools/tools'
@@ -119,7 +119,7 @@ export default function SelectCurrencyInputPanel({
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
-  const toggleNetworkModal = useToggleNetworkModal()
+  const toggleNetworkModal = useToggleSupportedNetworkModal()
 
   const [modalOpen, setModalOpen] = useState(false)
 

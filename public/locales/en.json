@@ -457,5 +457,7 @@
   "removeCrosschainTokenFromRouterConfig": "Remove token from config",
   "checkCrosschainTokenInRouterConfig": "Check token in config",
   "txnsMoreInfo": "More Info",
-  "fillUnderlyingInfo": "Fill the ERC20 token info"
+  "fillUnderlyingInfo": "Fill the ERC20 token info",
+  "thisChainNotContainPairs": "There are no pairs to exchange on this network. Select another network",
+  "showChainsWithPairs": "Select another network"
 }

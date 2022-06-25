@@ -239,7 +239,8 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   // console.log(lists)
   const init = {}
   return useMemo(() => {
-    if (!key || !chainId) return init
+    if (!key) return init
+    if (!chainId) return lists[key]
     const current = lists[key]?.[chainId]?.tokenList
     // console.log(current)
     if (!current) return init

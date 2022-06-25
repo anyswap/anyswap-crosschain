@@ -143,10 +143,15 @@ export default function useAppData(): {
             ...(Object.keys(localStorageAppSetting?.crosschainTokens)?.length && localStorageAppSetting?.crosschainTokens),
             ...(Object.keys(parsed?.appSettings?.crosschainTokens)?.length && parsed?.appSettings?.crosschainTokens)
           }
-          const tokenGroups = [
+          const tokenGroups: any[] = []
+          const tokenGroupsDraft = [
             ...(localStorageAppSetting?.tokenGroups),
             ...(parsed?.appSettings?.tokenGroups)
           ]
+          tokenGroupsDraft.forEach((tokenGroupName) => {
+            if (tokenGroups.indexOf(tokenGroupName) == -1) tokenGroups.push(tokenGroupName)
+          })
+          
 
           parsed.appSettings = {
             ...parsed.appSettings,
