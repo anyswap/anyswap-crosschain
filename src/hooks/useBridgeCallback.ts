@@ -59,8 +59,8 @@ export function useBridgeCallback(
   toChainID: any,
   version: string | undefined,
   selectCurrency: any,
-  usePoolType?: any
-// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+  isLiquidity: any,
+  usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
@@ -119,7 +119,7 @@ export function useBridgeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -166,7 +166,8 @@ export function useBridgeCallback(
   typedValue: string | undefined,
   toChainID: any,
   version: string | undefined,
-  selectCurrency: any
+  selectCurrency: any,
+  isLiquidity: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -222,7 +223,7 @@ export function useBridgeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -270,6 +271,7 @@ export function useBridgeNativeCallback(
   typedValue: string | undefined,
   toChainID: any,
   version: string | undefined,
+  isLiquidity: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -314,7 +316,7 @@ export function useBridgeNativeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -487,7 +489,8 @@ export function useBridgeNativeCallback(
   outputAmount: string | undefined,
   routerPath: any,
   isUnderlying: any,
-  version: any
+  version: any,
+  isLiquidity: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -542,7 +545,7 @@ export function useBridgeNativeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -589,6 +592,7 @@ export function useBridgeNativeCallback(
   routerPath: any,
   isUnderlying: any,
   version: any,
+  isLiquidity: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -642,7 +646,7 @@ export function useBridgeNativeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -687,8 +691,9 @@ export function useBridgeNativeCallback(
   txnsType: string | undefined,
   inputToken: string | undefined,
   pairid: string | undefined,
-  receiveAddress?: string | undefined,
-  selectCurrency?: any,
+  isLiquidity: any,
+  receiveAddress: string | undefined,
+  selectCurrency: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
@@ -775,7 +780,7 @@ export function useBridgeNativeCallback(
                     routerToken: '',
                     token: inputCurrency?.address,
                     logoUrl: inputCurrency?.logoUrl,
-                    underlying: inputCurrency?.underlying
+                    isLiquidity: isLiquidity
                   })
                   let srcChainID = chainId
                   let destChainID = toChainID
@@ -825,6 +830,7 @@ export function useBridgeNativeCallback(
   terraRecipient: string | undefined,
   Unit: any,
   srcChainid: string | undefined,
+  isLiquidity: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { 
   wrapType: WrapType;
@@ -1012,7 +1018,7 @@ export function useBridgeNativeCallback(
                     routerToken: '',
                     token: inputCurrency?.address,
                     logoUrl: inputCurrency?.logoUrl,
-                    underlying: inputCurrency?.underlying
+                    isLiquidity: isLiquidity
                   })
                   if (txData.hash && account && terraRecipient) {
                     const data:any = {

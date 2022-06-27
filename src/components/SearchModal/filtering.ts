@@ -1,7 +1,7 @@
 import { isAddress } from '../../utils'
-import { Token } from 'anyswap-sdk'
+// import { Token } from 'anyswap-sdk'
 
-export function filterTokens(tokens: Token[], search: string): Token[] {
+export function filterTokens(tokens: any[], search: string): any[] {
   if (search.length === 0) return tokens
 
   const searchingAddress = isAddress(search)

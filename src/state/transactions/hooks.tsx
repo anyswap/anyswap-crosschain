@@ -26,7 +26,7 @@ export function useTransactionAdder(): (
     routerToken?: any;
     token?: any;
     logoUrl?: any;
-    underlying?: any;
+    isLiquidity?: any;
   }
 ) => void {
   // const { chainId, account } = useActiveWeb3React()
@@ -48,7 +48,7 @@ export function useTransactionAdder(): (
         routerToken,
         token,
         logoUrl,
-        underlying,
+        isLiquidity,
       }: {
         summary?: string;
         claim?: { recipient: string };
@@ -61,7 +61,7 @@ export function useTransactionAdder(): (
         routerToken?: any,
         token?: any,
         logoUrl?: any,
-        underlying?: any,
+        isLiquidity?: any,
       } = {}
     ) => {
       if (!account) return
@@ -86,7 +86,7 @@ export function useTransactionAdder(): (
         routerToken,
         token,
         logoUrl,
-        underlying,
+        isLiquidity,
       }))
     },
     [dispatch, chainId, account]

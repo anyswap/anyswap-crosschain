@@ -111,6 +111,10 @@ export default function CrossChain({
     return undefined
   }, [destConfig.fromanytoken])
 
+  const isLiquidity = useMemo(() => {
+    return destConfig.isLiquidity
+  }, [destConfig])
+
   const isDestUnderlying = useMemo(() => {
     if (destConfig?.underlying) {
       return true
@@ -149,6 +153,7 @@ export default function CrossChain({
     selectChain,
     recipient,
     pairid: destConfig?.pairid,
+    isLiquidity
   })
 
   const { balance: terraBalance, wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
@@ -160,7 +165,8 @@ export default function CrossChain({
     destConfig?.pairid,
     recipient,
     selectCurrency?.unit,
-    chainId
+    chainId,
+    isLiquidity
   )
 
   const { balance: nearBalance, execute: onNearWrap, inputError: wrapInputErrorNear } = useNearSendTxns(
