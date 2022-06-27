@@ -360,6 +360,7 @@ export default function CrossChain({
   }, [useSwapMethods, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, isRouter, wrapInputErrorCrossBridge])
   // console.log(selectCurrency)
   const isInputError = useMemo(() => {
+    // console.log(isWrapInputError)
     if (!selectCurrency) {
       return {
         state: 'Error',
@@ -382,11 +383,11 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
-        return undefined
-        // return {
-        //   state: 'Error',
-        //   tip: isWrapInputError
-        // }
+        // return undefined
+        return {
+          state: 'Error',
+          tip: isWrapInputError
+        }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
         return {
           state: 'Error',

@@ -267,14 +267,8 @@ export default function CrossChain({
   }, [errorTip, inputBridgeValue])
 
   const btnTxt = useMemo(() => {
-    // console.log(isWrapInputError)
-    // if (errorTip) {
-    //   return errorTip?.tip
-    // } else if (wrapTerraType === WrapType.WRAP) {
-    //   return t('swap')
-    // }
     return t('swap')
-  }, [errorTip, t, wrapTerraType, wrapNebType])
+  }, [wrapTerraType, wrapNebType])
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, chainId, initBridgeToken)
 
