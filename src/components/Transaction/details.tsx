@@ -174,7 +174,7 @@ export default function HistoryDetails ({
   value,
   version,
   token,
-  underlying,
+  isLiquidity,
   isReceiveAnyToken,
   avgTime
 }: {
@@ -192,7 +192,7 @@ export default function HistoryDetails ({
   value?: any,
   version?: any,
   token?: any,
-  underlying?: any,
+  isLiquidity?: any,
   isReceiveAnyToken?: any,
   avgTime?: any,
 }) {
@@ -201,14 +201,34 @@ export default function HistoryDetails ({
   const theme = useContext(ThemeContext)
   const useToStatus = DestChainStatus({fromStatus,toStatus})
   useEffect(() => {
-    if (underlying && swaptx && !isReceiveAnyToken) {
+    // useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
+    //   console.log(res)
+    //   if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
+    //     setUnderlyingStatus(fromChainID, txid, true)
+    //   }
+    // })
+    // if (setUnderlyingStatus) {
+    //   setUnderlyingStatus(fromChainID, txid, false)
+    // }
+    // console.log(underlying && swaptx && !isReceiveAnyToken)
+    // console.log('underlying',underlying)
+    // console.log('swaptx',swaptx)
+    // console.log('isReceiveAnyToken',isReceiveAnyToken)
+    if (isLiquidity && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
+        console.log(res)
         if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
           setUnderlyingStatus(fromChainID, txid, true)
         }
       })
     }
-  }, [underlying, swaptx, toChainID])
+  }, [isLiquidity, swaptx, toChainID, isReceiveAnyToken])
+  // console.log(fromStatus === Status.Success && useToStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken)
+  // console.log('fromStatus', fromStatus)
+  // console.log('useToStatus', useToStatus)
+  // console.log('version', version)
+  // console.log(token)
+  // console.log(isReceiveAnyToken)
   return (
     <>
 
@@ -276,13 +296,6 @@ export default function HistoryDetails ({
             <div className="value">
               <div className="cont">
                 {swapvalue ? '+ ' + thousandBit(swapvalue, 2) + ' ' + symbol : '-'}
-                {/* {
-                  fromStatus === Status.Success && toStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
-                    <>
-                      <Link2 className="a" to={`/pool/add?bridgetoken=${token}&bridgetype=withdraw`}>Remove the liquidity -&gt;</Link2>
-                    </>
-                  ) : ''
-                } */}
               </div>
             </div>
           </div>

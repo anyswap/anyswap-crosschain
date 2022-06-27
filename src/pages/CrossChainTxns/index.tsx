@@ -284,7 +284,8 @@ export default function CrossChain() {
     outputAmount?.raw?.toString(),
     routerPath,
     isUnderlying,
-    destConfig?.type
+    destConfig?.type,
+    true
   )
 
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useBridgeSwapUnderlyingCallback(
@@ -297,7 +298,8 @@ export default function CrossChain() {
     outputAmount?.raw?.toString(),
     routerPath,
     isUnderlying,
-    destConfig?.type
+    destConfig?.type,
+    true
   )
 
 

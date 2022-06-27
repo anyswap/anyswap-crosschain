@@ -74,7 +74,7 @@ export default function TxnsDtilsModal () {
           value={tx?.value}
           version={tx?.version}
           token={tx?.token}
-          underlying={tx?.underlying}
+          isLiquidity={tx?.isLiquidity}
           isReceiveAnyToken={tx?.isReceiveAnyToken}
           avgTime={tx?.info?.time}
         />

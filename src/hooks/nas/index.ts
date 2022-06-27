@@ -138,6 +138,7 @@ interface UseBridgeCallbackInterface {
   selectChain: string
   recipient: string
   pairid: string
+  isLiquidity:any
 }
 
 export enum WrapType {
@@ -185,7 +186,8 @@ export function useNebBridgeCallback({
   chainId,
   selectChain,
   recipient,
-  pairid
+  pairid,
+  isLiquidity
 }: UseBridgeCallbackInterface): {
   wrapType?: WrapType
   inputError?: string
@@ -234,7 +236,7 @@ export function useNebBridgeCallback({
                   routerToken: '',
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  underlying: inputCurrency?.underlying
+                  isLiquidity: isLiquidity
                 })
                 recordsTxns(data)
                 onChangeViewDtil(txData?.hash, true)
