@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from "react"
+import { createBrowserHistory } from 'history'
 import styled, {ThemeContext} from "styled-components"
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +14,15 @@ import {useWeb3} from '../../utils/tools/web3UtilsV2'
 
 import {useUpdateUnderlyingStatus} from '../../state/transactions/hooks'
 
+import {selectNetwork} from '../../config/tools/methods'
+
 import { ExternalLink } from '../../theme'
+import { BottomGrouping } from '../swap/styleds'
+import { 
+  // ButtonLight,
+  ButtonPrimary,
+  // ButtonConfirmed
+} from '../Button'
 
 import {Status} from '../../config/status'
 import config from '../../config'
@@ -139,6 +148,11 @@ const TxnsDtilList = styled.div`
   }
 `
 
+const RemoveTip = styled.div`
+  color: ${({ theme }) => theme.red1};
+  font-size: 12px;
+`
+
 function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
   if (fromStatus === Status.Pending) {
     return undefined
@@ -200,6 +214,7 @@ export default function HistoryDetails ({
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
   const theme = useContext(ThemeContext)
   const useToStatus = DestChainStatus({fromStatus,toStatus})
+  const history = createBrowserHistory()
   useEffect(() => {
     // useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
     //   console.log(res)
@@ -369,6 +384,40 @@ export default function HistoryDetails ({
                 </div>
               </div>
             </TxnsDtilList>
+          ) : ''
+        }
+
+        {
+          fromStatus === Status.Success && useToStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken ? (
+            <>
+              <RemoveTip>
+                {t('removeanytokentip')}
+                <br />
+                <ExternalLink href="https://multichain.zendesk.com/hc/en-us/articles/4410379722639-Redeem-Remove-Pool-Token-Anyassets-e-g-anyUSDC-anyUSDT-anyDAI-anyETH-anyFTM-etc-into-Native-Token-Tutorial">https://multichain.zendesk.com/hc/en-us/articles/4410379722639-Redeem-Remove-Pool-Token-Anyassets-e-g-anyUSDC-anyUSDT-anyDAI-anyETH-anyFTM-etc-into-Native-Token-Tutorial</ExternalLink>
+              </RemoveTip>
+              <BottomGrouping onClick={() => {
+                selectNetwork(toChainID, 1).then((res: any) => {
+                  console.log(res)
+                  if (res.msg === 'Error') {
+                    alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(toChainID).networkName}))
+                  } else {
+                    history.push(`#/pool/add?bridgetoken=${symbol}&bridgetype=withdraw`)
+                    history.go(0)
+                    // history.replace(`/pool/add?bridgetoken=${token}&bridgetype=withdraw`)
+                    // window.open(`/pool/add?bridgetoken=${token}&bridgetype=withdraw`)
+                    // alert('1111')
+                  }
+                })
+              }}>
+                <ButtonPrimary>Remove the liquidity -&gt; </ButtonPrimary>
+              </BottomGrouping>
+              {/* <div className="item">
+                <div className="txtLabel">{t('Remove')}:</div>
+                <div className="value">
+                  <Link2 className="a" to={`/pool/add?bridgetoken=${token}&bridgetype=withdraw`}>Remove the liquidity -&gt;</Link2>
+                </div>
+              </div> */}
+            </>
           ) : ''
         }
         

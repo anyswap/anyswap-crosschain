@@ -401,9 +401,9 @@ export default function SwapNative() {
   // console.log(underlyingList)
   useEffect(() => {
     setSelectCurrency(initCurrency)
-    if (!initCurrency) {
-      history.replace(window.location.pathname + '#/pool/add')
-    }
+    // if (!initCurrency) {
+    //   history.replace(window.location.pathname + '#/pool/add')
+    // }
   }, [initCurrency])
 
   const {initDestCurrency, initDestCurrencyList}:any = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])

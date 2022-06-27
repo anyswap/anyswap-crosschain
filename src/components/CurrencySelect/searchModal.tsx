@@ -1,6 +1,6 @@
 
 import React, { KeyboardEvent, useState, RefObject, useCallback, useEffect, useRef, useMemo } from 'react'
-import { Currency, Token, ETHER } from 'anyswap-sdk'
+import { Currency, ETHER } from 'anyswap-sdk'
 import { Text } from 'rebass'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +20,7 @@ import { CloseIcon } from '../../theme'
 
 import { isAddress } from '../../utils'
 
-import { useLocalToken } from '../../hooks/Tokens'
+// import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
 import {MAIN_COIN} from '../../config/constant'
@@ -58,47 +58,29 @@ export default function SearchModal ({
   const {tokenComparator, balances: allBalances} = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [mainTokenList, setMainTokenList] = useState<any>([])
+  const [tokenList, setTokenList] = useState<any>([])
+  const [useAllTokenList, setUseAllTokenList] = useState<any>({})
   // const [intervalCount, setIntervalCount] = useState<any>(0)
 
   const inputRef = useRef<HTMLInputElement>()
 
   const isAddressSearch = isAddress(searchQuery)
-  const useAllTokenList = useMemo(() => {
-    // console.log(allTokens)
+
+  useEffect(() => {
     const list:any = {}
-    for (const token in allTokens) {
-      const obj:any = allTokens[token].tokenInfo ? allTokens[token].tokenInfo : allTokens[token]
+    const arr:any = []
+    const mainarr:any = []
+    for (const tokenKey in allTokens) {
+      const obj:any = allTokens[tokenKey].tokenInfo ? allTokens[tokenKey].tokenInfo : allTokens[tokenKey]
+      const token = obj.address
       if (!obj.name || !obj.symbol) continue
-      list[token] = {
+      const data = {
         ...obj,
-        key: token
+        key: tokenKey
       }
-    }
-    return list
-  }, [allTokens])
-  const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
-
-  const tokenList = useMemo(() => {
-    const arr:any = []
-    // const mainTokenLists:any = []
-    for (const token in useAllTokenList) {
-      const obj:any = useAllTokenList[token]
-      if (!obj.name || !obj.symbol) continue
-      arr.push(obj)
-    }
-    // console.log(arr)
-    return arr
-  }, [useAllTokenList])
-
-  const mainTokenList = useMemo(() => {
-    const arr:any = []
-    // console.log(chainId)
-    for (const token in useAllTokenList) {
-      const obj:any = useAllTokenList[token]
-      // if (obj.symbol === 'fUSDT') {
-
-      //   console.log(obj)
-      // }
+      list[token] = data
+      arr.push(data)
       if (
         (obj.symbol === 'USDT' && chainId?.toString() === '250')
         || (obj.symbol === 'fUSDT' && chainId?.toString() === '56')
@@ -108,18 +90,28 @@ export default function SearchModal ({
       ) continue
       
       if (MAIN_COIN.includes(obj.symbol)) {
-        arr.push(obj)
+        mainarr.push(data)
       }
     }
-    return arr
-  }, [useAllTokenList, chainId])
+    setUseAllTokenList(list)
+    setTokenList(arr)
+    setMainTokenList(mainarr)
+  }, [allTokens, chainId])
 
-  const filteredTokens: Token[] = useMemo(() => {
-    if (isAddressSearch) return searchToken ? [searchToken] : []
+  // const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
+  const searchToken = useMemo(() => {
+    if (searchQuery && useAllTokenList[searchQuery?.toLowerCase()]) {
+      return useAllTokenList[searchQuery?.toLowerCase()]
+    }
+    return undefined
+  }, [searchQuery, useAllTokenList])
+
+  const filteredTokens: any[] = useMemo(() => {
+    if (isAddressSearch && searchToken) return searchToken ? [searchToken] : []
     return filterTokens(Object.values(tokenList), searchQuery)
   }, [isAddressSearch, searchToken, tokenList, searchQuery])
 
-  const filteredSortedTokens: Token[] = useMemo(() => {
+  const filteredSortedTokens: any[] = useMemo(() => {
     // console.log(searchToken)
     if (searchToken) return [searchToken]
     // console.log(filteredTokens)
@@ -137,15 +129,6 @@ export default function SearchModal ({
       ...sorted.filter(token => token.symbol?.toLowerCase() === symbolMatch[0]),
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
-    // console.log(arr)
-    // setTimeout(() => {
-    //   setIntervalCount(1)
-    // }, 500)
-    // if (arr.length > 50 && intervalCount === 0) {
-    //   return arr.splice(0, 50)
-    // } else {
-    //   return arr
-    // }
     return arr
   // }, [searchQuery, searchToken, tokenComparator, filteredTokens, intervalCount])
   }, [searchQuery, searchToken, tokenComparator, filteredTokens])

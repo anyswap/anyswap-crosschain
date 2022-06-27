@@ -365,5 +365,6 @@
   "Status": "Status",
   "agree": "Agree",
   "addLiquidityTip": "Add liquidity to Router {{index}} pool",
-  "removeLiquidityTip": "Remove liquidity from Router {{index}} pool"
+  "removeLiquidityTip": "Remove liquidity from Router {{index}} pool",
+  "removeanytokentip": "Due to the volatility of pool liquidity, you received pool token anyXXX. Please redeem XXX when there is enough liquidity. Click here for more details. "
 }

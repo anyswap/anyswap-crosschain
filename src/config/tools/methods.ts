@@ -3,7 +3,7 @@ import {
   ENV_NODE_CONFIG
 } from '../constant'
 
-export function selectNetwork (chainID:any) {
+export function selectNetwork (chainID:any, type?: any) {
   return new Promise(resolve => {
     const { ethereum } = window
     const ethereumFN:any = {
@@ -36,7 +36,9 @@ export function selectNetwork (chainID:any) {
         // console.log(chainID)
         console.log(res)
         // localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
-        history.go(0)
+        if (!type) {
+          history.go(0)
+        }
         resolve({
           msg: 'Success'
         })
