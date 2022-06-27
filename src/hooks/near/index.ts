@@ -294,7 +294,7 @@ export function useNearSendTxns(
               routerToken: '',
               token: inputCurrency?.address,
               logoUrl: inputCurrency?.logoUrl,
-              underlying: inputCurrency?.underlying
+              isLiquidity: destConfig?.isLiquidity
             })
             recordsTxns(data)
             onChangeViewDtil(txReceipt?.hash, true)
