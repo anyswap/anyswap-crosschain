@@ -533,8 +533,8 @@ export default function Vest () {
   useEffect(() => {
     if (useLockToken?.label) {
       getLabelPrice(useLockToken?.label).then(res => {
-        console.log(useLockToken)
-        console.log(res)
+        // console.log(useLockToken)
+        // console.log(res)
         if (res) {
           setPrice(res)
         }
