@@ -123,7 +123,7 @@ export const useCurrentWNASBalance = (token?:any) => {
     } catch (err) {
       console.error(err)
     }
-  }, [address])
+  }, [address, token])
 
   useInterval(getWNASBalance, 1000 * 10)
 
