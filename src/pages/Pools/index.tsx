@@ -161,6 +161,7 @@ export default function SwapNative() {
     destConfig?.type,
     selectCurrency,
     destConfig?.isLiquidity,
+    destConfig,
     swapType
   )
     // console.log(wrapType)

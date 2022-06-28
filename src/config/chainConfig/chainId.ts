@@ -69,12 +69,3 @@ export enum ChainId {
   KLAY = '8217',
   TRX = 'TRX',
 }
-
-export const LabelToChain:any = { XRP: '1000005788240', NEAR_TEST: '1001313161555' }
-
-export function getLabelToChain (chainId:any) {
-  if (chainId && LabelToChain[chainId]) {
-    return LabelToChain[chainId]
-  }
-  return chainId
-}

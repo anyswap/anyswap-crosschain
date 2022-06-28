@@ -31,7 +31,7 @@ import {useTerraSend} from './terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
-import { ChainId, getLabelToChain } from '../config/chainConfig/chainId'
+import { ChainId } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
 import { BigAmount } from '../utils/formatBignumber'
@@ -60,6 +60,7 @@ export function useBridgeCallback(
   version: string | undefined,
   selectCurrency: any,
   isLiquidity: any,
+  destConfig: any,
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -107,7 +108,7 @@ export function useBridgeCallback(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  getLabelToChain(toChainID)
+                  destConfig?.chainId
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
@@ -167,7 +168,8 @@ export function useBridgeCallback(
   toChainID: any,
   version: string | undefined,
   selectCurrency: any,
-  isLiquidity: any
+  isLiquidity: any,
+  destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -198,10 +200,6 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                console.log(routerToken)
-                console.log(inputToken)
-                console.log(toAddress)
-                console.log(getLabelToChain(toChainID))
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
@@ -210,7 +208,7 @@ export function useBridgeCallback(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  getLabelToChain(toChainID)
+                  destConfig?.chainId
                 )
                 console.log(txReceipt)
                 addTransaction(txReceipt, {
@@ -272,6 +270,7 @@ export function useBridgeNativeCallback(
   toChainID: any,
   version: string | undefined,
   isLiquidity: any,
+  destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -303,7 +302,7 @@ export function useBridgeNativeCallback(
                 const txReceipt = await bridgeContract.anySwapOutNative(
                   ...[inputToken,
                   toAddress,
-                  getLabelToChain(toChainID)],
+                  destConfig.chainId],
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
                 addTransaction(txReceipt, {
@@ -533,7 +532,7 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  getLabelToChain(toChainID)
+                  toChainID
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
@@ -634,7 +633,7 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  getLabelToChain(toChainID)
+                  toChainID
                 )
                 addTransaction(txReceipt, {
                   summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
