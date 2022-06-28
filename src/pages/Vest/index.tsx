@@ -286,11 +286,14 @@ export default function Vest () {
   
 
   const useLockToken:any = useMemo(() => {
+    // console.log(MULTI_TOKEN)
+    // console.log(chainId)
     if (chainId && MULTI_TOKEN[chainId]) {
       return MULTI_TOKEN[chainId]
     }
     return undefined
   }, [chainId])
+  // console.log(useLockToken)
 
   const rewardInfo = useMemo(() => {
     if (claimRewardId && rewardList && rewardList[claimRewardId]) {
@@ -522,16 +525,22 @@ export default function Vest () {
         setCirculatingsupply(res.data)
       }
     })
-    getLabelPrice(useLockToken?.label).then(res => {
-      console.log(res)
-      if (res) {
-        setPrice(res)
-      }
-    })
-  }, [useLockToken])
+  }, [])
   useEffect(() => {
     getCirc()
   }, [])
+
+  useEffect(() => {
+    if (useLockToken?.label) {
+      getLabelPrice(useLockToken?.label).then(res => {
+        console.log(useLockToken)
+        console.log(res)
+        if (res) {
+          setPrice(res)
+        }
+      })
+    }
+  }, [useLockToken])
 
   const DataList = useMemo(() => {
     const list = []
