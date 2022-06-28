@@ -82,25 +82,20 @@ export function useNearBalance () {
     // console.log(res2)
   }, [])
 
-  const getNearTokenBalance = useCallback(async(contractId) => {
+  const getNearTokenBalance = useCallback(async({token, account}) => {
     let bl:any
+    const useAccount = account ? account : window?.near?.accountId
     try {
       
       bl = await window?.near?.account().viewFunction(
-        contractId,
+        token,
         'ft_balance_of',
-        { "account_id": window.near.accountId },
+        { "account_id": useAccount },
       )
     } catch (error) {
       
     }
-    // const res1 = await window.near.account().getAccountBalance()
-    // const res2 = await window.near.account().getAccountDetails()
-    // console.log(contractId)
-    // console.log(bl)
     return bl
-    // console.log(res1)
-    // console.log(res2)
   }, [])
 
   return {
@@ -227,7 +222,7 @@ export function useNearSendTxns(
         }
       })
     } else {
-      getNearTokenBalance(contractId).then(res => {
+      getNearTokenBalance({token: contractId}).then(res => {
         // console.log(contractId)
         // console.log(res)
         if (res) {

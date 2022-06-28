@@ -11,7 +11,6 @@ import Reminder from './reminder'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
-// import { useCurrentNasBalance, useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
 // import { WrapType } from '../../hooks/useWrapCallback'
@@ -142,7 +141,6 @@ export default function CrossChain({
     })
   }
 
-  // const { balanceBig: nasBalance } = useCurrentNasBalance()
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({

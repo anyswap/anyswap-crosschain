@@ -10,7 +10,7 @@ import LogoColor from '../../assets/svg/logo_color.png'
 import IconDay from '../../assets/images/icon/day.svg'
 import IconNight from '../../assets/images/icon/night.svg'
 
-import { useBaseBalances } from '../../hooks/useBaseBalance'
+import { useBaseBalances } from '../../hooks/useAllBalances'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
 
@@ -196,7 +196,7 @@ function ViewAccountInfo () {
   const {selectNetworkInfo} = useUserSelectChainId()
   
   const {account, chainId} = useActiveReact()
-  const baseBalance = useBaseBalances(account, chainId)
+  const baseBalance = useBaseBalances(account)
   // console.log(selectNetworkInfo)
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>

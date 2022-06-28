@@ -57,6 +57,42 @@ export const useCurrentAddress = () => {
   }, [address])
 }
 
+export function useNasTokenBalance () {
+  const address = useCurrentAddress()
+  const neb:any = new nebulas.Neb()
+  const getNasTokenBalance = useCallback(async ({account, token}: any) => {
+    return new Promise(async(resolve, reject) => {
+      const useAccount = account ? account : address
+      try {
+        if (!nebulas.Account.isValidAddress(useAccount) || !token) {
+          resolve('')
+        }
+        const tx = await neb.api.call({
+          chainID: 1,
+          from: useAccount,
+          to: token,
+          value: 0,
+          gasPrice: '20000000000',
+          gasLimit: '8000000',
+          contract: {
+            function: 'balanceOf',
+            args: JSON.stringify([useAccount])
+          }
+        })
+  
+        const result = JSON.parse(tx.result)
+        resolve(result)
+      } catch (err) {
+        console.error(err)
+        reject(err)
+      }
+    })
+  }, [address])
+  return {
+    getNasTokenBalance
+  }
+}
+
 export const useCurrentWNASBalance = (token?:any) => {
   const [balance, setBalance] = useState<string>()
   const address = useCurrentAddress()
@@ -101,32 +137,20 @@ export const useCurrentWNASBalance = (token?:any) => {
 
 export const useCurrentNasBalance = () => {
   const { chainId } = useActiveReact()
-  const [balance, setBalance] = useState<string>()
   const address = useCurrentAddress()
-  // const neb = new nebulas.Neb()
-  // neb.setRequest(new nebulas.HttpRequest('https://testnet.nebulas.io'))
-  // console.log(chainId)
+  
   const getNasBalance = useCallback(async () => {
     if (nebulas.Account.isValidAddress(address) && chainId === ChainId.NAS) {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)
-      if (state?.data?.result) {
-        setBalance(state?.data?.result.balance)
-      }
-      // console.log('getNasBalance', address, state)
       return state?.data?.result.balance
     }
     // setBalance('')
   }, [address, chainId])
 
-  useInterval(getNasBalance, 1000 * 10)
-
   return {
     getNasBalance,
-    balance,
-    // balanceBig: balance ? new Fraction(JSBI.BigInt(balance), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))) : undefined
-    balanceBig: balance ? BigAmount.format(18, balance) : undefined
   }
 }
 

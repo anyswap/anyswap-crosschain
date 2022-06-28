@@ -4,14 +4,8 @@ import { getAddress } from '@ethersproject/address'
 import nebulas from 'nebulas'
 import { ChainId } from "../../config/chainConfig/chainId"
 import {isBTCAddress, BTCARR} from './BTC'
-const tronweb = window.tronWeb
 
-export function isTRXAddress (address:string) {
-  if (address.indexOf('0x') === 0) {
-    address = address.replace('0x', '41')
-  }
-  return tronweb.isAddress(address)
-}
+import {isTRXAddress} from '../../hooks/trx'
 
 export function isEvmAddress(value: any): string | false {
   try {
