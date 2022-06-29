@@ -875,7 +875,7 @@ export function useBridgeNativeCallback(
       && useNnit
       && inputAmount
     ) {
-      // console.log(inputAmount)
+      // console.log(connectedWallet)
       getTerraFeeList(
         connectedWallet?.walletAddress,
         toAddress,

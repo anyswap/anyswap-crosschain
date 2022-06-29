@@ -101,7 +101,7 @@ export const useCurrentWNASBalance = (token?:any) => {
 
   const getWNASBalance = useCallback(async () => {
     try {
-      if (!nebulas.Account.isValidAddress(address) || !token) {
+      if (!nebulas.Account.isValidAddress(address) || !nebulas.Account.isValidAddress(token)) {
         return false
       }
       const tx = await neb.api.call({
