@@ -25,7 +25,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const { apiAddress } = useAppState()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -75,6 +75,10 @@ export function useApproveCallback(
       return console.error('no spender')
     }
 
+    if (!library) {
+      return console.error('no evm library')
+    }
+
     let useExact = false
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
       // general fallback for tokens who restrict approval amounts
@@ -84,7 +88,8 @@ export function useApproveCallback(
 
     return tokenContract
       .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas)
+        gasLimit: calculateGasMargin(estimatedGas),
+        gasPrice: await library.getGasPrice(),
       })
       .then((response: TransactionResponse) => {
         recordsApprove({
