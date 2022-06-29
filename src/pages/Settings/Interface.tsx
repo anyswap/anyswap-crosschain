@@ -16,6 +16,50 @@ import ListFactory from '../../components/ListFactory'
 import { OptionWrapper } from './index'
 import { updateStorageData } from '../../utils/storage'
 
+import styled from 'styled-components'
+import { CleanButton, ButtonEdit } from '../../components/Button'
+import { RiCloseFill } from 'react-icons/ri'
+
+const TokenIconsHolder = styled.ul`
+  margin: 0;
+  padding: 0.4rem;
+  outline: 1px solid red;
+`
+
+const TokenIconRow = styled.li`
+  padding: 0.2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  outline: 1px solid blue;
+`
+
+const TokenSymbol = styled.div`
+  margin: 0;
+  padding: 0.4rem;
+  outline: 1px solid red;
+  width: 20%;
+  overflow: hidden;
+`
+
+const TokenIcon = styled.a`
+  margin: 0;
+  padding: 0.4rem;
+  outline: 1px solid red;
+  width: 60%;
+  overflow: hidden;
+`
+
+const TokenIconDelete = styled(CleanButton)`
+  width: auto;
+  padding: 0.3rem;
+`
+
+const TokenIconEdit = styled(ButtonEdit)`
+  width: auto;
+  padding: 0.3rem;
+`
+
 export default function Interface() {
   const { t } = useTranslation()
   const { account, library } = useActiveWeb3React()
@@ -228,6 +272,58 @@ export default function Interface() {
             defaultColor={elementsColorDark}
             onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_DARK)}
           />
+        </OptionWrapper>
+      </Accordion>
+
+      <Accordion title={t('tokenIcons')} margin="0 0 1rem">
+        <OptionWrapper>
+          <div>
+            <h4>{t('tokenIconsAdd')}</h4>
+            <InputPanel
+              label={`${t('tokenIconsAddSymbol')}`}
+              value={``}
+              onChange={(v) => { console.log('>>> token symbol', v) }}
+              error={false}
+            />
+            <InputPanel
+              label={`${t('tokenIconsAddIconUrl')}`}
+              value={``}
+              error={false}
+              onChange={(v) => { console.log('>>> icon url', v) }}
+            />
+          </div>
+          <ButtonPrimary onClick={() => { console.log('>>> do add token icon') }} disabled={false} fullWidth>
+            {t('tokenIconsAddDo')}
+          </ButtonPrimary>
+        </OptionWrapper>
+
+        <OptionWrapper>
+          <TokenIconsHolder>
+            <TokenIconRow>
+              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
+              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
+              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
+                <RiCloseFill />
+              </TokenIconDelete>
+              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
+            </TokenIconRow>
+            <TokenIconRow>
+              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
+              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
+              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
+                <RiCloseFill />
+              </TokenIconDelete>
+              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
+            </TokenIconRow>
+            <TokenIconRow>
+              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
+              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
+              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
+                <RiCloseFill />
+              </TokenIconDelete>
+              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
+            </TokenIconRow>
+          </TokenIconsHolder>
         </OptionWrapper>
       </Accordion>
 
