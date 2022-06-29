@@ -51,7 +51,7 @@ export function useBridgeCallback(
   toChainID: string | undefined,
   version: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -61,7 +61,7 @@ export function useBridgeCallback(
   const { apiAddress } = useAppState()
 
   return useMemo(() => {
-    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !library) return NOT_APPLICABLE
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
@@ -75,7 +75,8 @@ export function useBridgeCallback(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  toChainID,
+                  { gasPrice: await library.getGasPrice() },
                 )
 
                 const registerSwapOnMined = {
@@ -148,7 +149,7 @@ export function useBridgeCallback(
   toChainID: string | undefined,
   version: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -157,7 +158,7 @@ export function useBridgeCallback(
   const { apiAddress } = useAppState()
 
   return useMemo(() => {
-    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !library) return NOT_APPLICABLE
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
@@ -166,12 +167,13 @@ export function useBridgeCallback(
       execute:
         sufficientBalance && inputAmount
           ? async () => {
-              try {              
+              try {
                 const txReceipt = await bridgeContract.anySwapOutUnderlying(
                   inputToken,
                   toAddress,
                   `0x${inputAmount.raw.toString(16)}`,
-                  toChainID
+                  toChainID,
+                  { gasPrice: await library.getGasPrice() },
                 )
 
                 console.log('>>> useBridgeUnderlyingCallback')
@@ -246,7 +248,7 @@ export function useBridgeNativeCallback(
   toChainID: string | undefined,
   version: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const balance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -255,7 +257,7 @@ export function useBridgeNativeCallback(
   const { apiAddress } = useAppState()
 
   return useMemo(() => {
-    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!apiAddress || !bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !library) return NOT_APPLICABLE
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
@@ -269,7 +271,8 @@ export function useBridgeNativeCallback(
                   ...[inputToken,
                   toAddress,
                   toChainID],
-                  {value: `0x${inputAmount.raw.toString(16)}`}
+                  {value: `0x${inputAmount.raw.toString(16)}`},
+                  { gasPrice: await library.getGasPrice() },
                 )
 
                 console.log('>>> useBridgeNativeCallback')
@@ -329,7 +332,7 @@ export function useBridgeNativeCallback(
   swapType: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useSwapUnderlyingContract(inputToken)
   const { t } = useTranslation()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
@@ -340,7 +343,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    if (!bridgeContract || !chainId || !inputCurrency || !swapType || !library) return NOT_APPLICABLE
     // console.log(inputAmount?.raw.toString())
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -352,10 +355,13 @@ export function useBridgeNativeCallback(
           ? async () => {
               try {
                 // console.log(inputAmount.raw.toString(16))
+                const gasPrice = await library.getGasPrice()
                 const txReceipt = swapType === 'deposit' ? await bridgeContract.deposit(
-                  `0x${inputAmount.raw.toString(16)}`
+                  `0x${inputAmount.raw.toString(16)}`,
+                  { gasPrice },
                 ) : await bridgeContract.withdraw(
-                  `0x${inputAmount.raw.toString(16)}`
+                  `0x${inputAmount.raw.toString(16)}`,
+                  { gasPrice },
                 )
                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
@@ -383,7 +389,7 @@ export function useBridgeNativeCallback(
   swapType: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { t } = useTranslation()
   const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -400,7 +406,7 @@ export function useBridgeNativeCallback(
     // console.log(chainId)
     // console.log(inputCurrency)
     // console.log(swapType)
-    if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    if (!bridgeContract || !chainId || !inputCurrency || !swapType || !library) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -412,7 +418,8 @@ export function useBridgeNativeCallback(
           ? async () => {
               try {
                 // console.log(`0x${inputAmount.raw.toString(16)}`)
-                const v = {value: `0x${inputAmount.raw.toString(16)}`}
+                const gasPrice = await library.getGasPrice()
+                const v = {value: `0x${inputAmount.raw.toString(16)}`, gasPrice}
                 // console.log(v)
                 // console.log([inputToken, account])
                 const txReceipt = swapType === 'deposit' ? await bridgeContract.depositNative(
@@ -421,7 +428,8 @@ export function useBridgeNativeCallback(
                 ) : await bridgeContract.withdrawNative(
                   inputToken,
                   `0x${inputAmount.raw.toString(16)}`,
-                  account
+                  account,
+                  { gasPrice }
                 )
                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               } catch (error) {
@@ -453,7 +461,7 @@ export function useBridgeNativeCallback(
   isUnderlying: any,
   version: any
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { apiAddress } = useAppState()
   const { t } = useTranslation()
@@ -474,7 +482,8 @@ export function useBridgeNativeCallback(
       !deadline ||
       !outputAmount ||
       !routerPath ||
-      routerPath.length <= 0
+      routerPath.length <= 0 ||
+      !library
     ) {
       return NOT_APPLICABLE
     }
@@ -496,7 +505,8 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  toChainID,
+                  { gasPrice: await library.getGasPrice() },
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 // registerSwap(txReceipt.hash, chainId)
@@ -559,7 +569,7 @@ export function useBridgeNativeCallback(
   version: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, library } = useActiveWeb3React()
   const bridgeContract = useBridgeContract(routerToken)
   const { apiAddress } = useAppState()
   const { t } = useTranslation()
@@ -579,7 +589,8 @@ export function useBridgeNativeCallback(
       !deadline ||
       !outputAmount ||
       !routerPath ||
-      routerPath.length <= 0
+      routerPath.length <= 0 ||
+      !library
     ) {
       return NOT_APPLICABLE
     }
@@ -600,7 +611,8 @@ export function useBridgeNativeCallback(
                   routerPath,
                   toAddress,
                   parseInt((Date.now()/1000 + deadline).toString()),
-                  toChainID
+                  toChainID,
+                  { gasPrice: await library.getGasPrice() },
                 )
                 console.log('>>> useBridgeSwapUnderlyingCallback')
                 addTransaction(txReceipt, { summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
