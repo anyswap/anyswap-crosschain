@@ -59,7 +59,8 @@ export const deployContract = async (params: any) => {
     const contractInstance = await transaction
       .send({
         from: account,
-        gas
+        gas,
+        gasPrice: await library.getGasPrice(),
       })
       .on('transactionHash', (hash: string) => {
         txHash = hash
