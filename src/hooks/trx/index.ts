@@ -64,7 +64,7 @@ export async function sendTRXTxns ({
         console.log(error)
         return {
           msg: 'Error',
-          error: error.toString()
+          error: error?.toString()
         }
       }
     } else {
