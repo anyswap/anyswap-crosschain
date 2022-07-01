@@ -101,7 +101,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   Clover: {
     connector: clover,
     name: 'Clover',
-    iconName: 'clover.png',
+    iconName: 'clv.png',
     description: 'Login using Clover hosted wallet',
     href: null,
     color: '#269964',
