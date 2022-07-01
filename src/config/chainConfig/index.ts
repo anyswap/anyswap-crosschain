@@ -56,6 +56,7 @@ import near from './near'
 import kava from './kava'
 import klay from './klay'
 import kai from './kai'
+import cube from './cube'
 
 import { ChainId } from './chainId'
 
@@ -65,6 +66,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...cube,
   ...kai,
   ...near,
   ...klay,
@@ -174,6 +176,7 @@ const allChainList = [
   ChainId.KAVA,
   ChainId.KLAY,
   ChainId.KAI,
+  ChainId.CUBE,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

@@ -69,4 +69,5 @@ export enum ChainId {
   KLAY = '8217',
   TRX = 'TRX',
   KAI = '24',
+  CUBE = '1818',
 }
