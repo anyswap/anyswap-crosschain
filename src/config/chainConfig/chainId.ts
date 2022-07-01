@@ -67,6 +67,7 @@ export enum ChainId {
   KAVA = '2222',
   KLAY = '8217',
   KAI = '24',
+  CUBE = '1818',
 }
 
 export const LabelToChain:any = { XRP: '1000005788240', NEAR: '1001313161555' }
