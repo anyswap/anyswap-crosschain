@@ -31,6 +31,7 @@ import {useTerraSend} from './terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
+import {VALID_BALANCE} from '../config/constant'
 import { ChainId } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
@@ -95,7 +96,7 @@ export function useBridgeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+        (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               const results:any = {}
               try {
@@ -103,6 +104,7 @@ export function useBridgeCallback(
                 console.log(routerToken)
                 console.log(inputToken)
                 console.log(toChainID)
+                console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
                   inputToken,
@@ -149,7 +151,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version])
+  }, [bridgeContract, chainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
 }
 
 
@@ -196,7 +198,7 @@ export function useBridgeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               const results:any = {}
               try {
@@ -250,7 +252,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
 }
 
 
@@ -294,7 +296,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 // console.log(bridgeContract.anySwapOutNative)
@@ -342,7 +344,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken])
+  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig])
 }
 
 /**
@@ -382,7 +384,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 // console.log(inputAmount.raw.toString(16))
@@ -444,7 +446,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 // console.log(`0x${inputAmount.raw.toString(16)}`)
@@ -513,7 +515,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 // console.log(`0x${inputAmount.raw.toString(16)}`)
@@ -616,7 +618,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 console.log(`${inputAmount.raw.toString()}`)
@@ -728,7 +730,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        sufficientBalance && inputAmount
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
           ? async () => {
               try {
                 console.log(txnsType)
@@ -810,7 +812,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity])
 }
 
 /**

@@ -96,6 +96,8 @@ export const env:any = 'pro'
 
 export const version = '0.4.9'
 export const timeout = 1000 * 60 * 30
+
+export const VALID_BALANCE = true
 // export const timeout = 1000 * 60
 
 
