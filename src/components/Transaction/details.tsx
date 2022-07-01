@@ -393,7 +393,7 @@ export default function HistoryDetails ({
               <RemoveTip>
                 {t('removeanytokentip')}
                 <br />
-                <ExternalLink href="https://multichain.zendesk.com/hc/en-us/articles/4410379722639-Redeem-Remove-Pool-Token-Anyassets-e-g-anyUSDC-anyUSDT-anyDAI-anyETH-anyFTM-etc-into-Native-Token-Tutorial">https://multichain.zendesk.com/hc/en-us/articles/4410379722639-Redeem-Remove-Pool-Token-Anyassets-e-g-anyUSDC-anyUSDT-anyDAI-anyETH-anyFTM-etc-into-Native-Token-Tutorial</ExternalLink>
+                <ExternalLink href="https://multichain.zendesk.com/hc/en-us/articles/4410379722639-Redeem-Remove-Pool-Token-Anyassets-e-g-anyUSDC-anyUSDT-anyDAI-anyETH-anyFTM-etc-into-Native-Token-Tutorial">https://multichain.zendesk.com...</ExternalLink>
               </RemoveTip>
               <BottomGrouping onClick={() => {
                 selectNetwork(toChainID, 1).then((res: any) => {
