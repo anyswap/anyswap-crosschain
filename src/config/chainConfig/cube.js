@@ -44,6 +44,9 @@ export default {
     nodeRpc: CUBE_MAINNET,
     nodeRpcList: [
       CUBE_MAINNET,
+      'https://http-mainnet.cube.network',
+      'https://http-mainnet-sg.cube.network',
+      'https://http-mainnet-us.cube.network',
     ],
     chainID: CUBE_MAIN_CHAINID,
     lookHash: CUBE_MAIN_EXPLORER + '/tx/',
