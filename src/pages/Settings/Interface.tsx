@@ -23,7 +23,6 @@ import { RiCloseFill } from 'react-icons/ri'
 const TokenIconsHolder = styled.ul`
   margin: 0;
   padding: 0.4rem;
-  outline: 1px solid red;
 `
 
 const TokenIconRow = styled.li`
@@ -31,13 +30,11 @@ const TokenIconRow = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  outline: 1px solid blue;
 `
 
 const TokenSymbol = styled.div`
   margin: 0;
   padding: 0.4rem;
-  outline: 1px solid red;
   width: 20%;
   overflow: hidden;
 `
@@ -45,7 +42,6 @@ const TokenSymbol = styled.div`
 const TokenIcon = styled.a`
   margin: 0;
   padding: 0.4rem;
-  outline: 1px solid red;
   width: 60%;
   overflow: hidden;
 `
@@ -207,6 +203,108 @@ export default function Interface() {
     }
   }
 
+  const draftTokenIconsList: any = {/*
+    USDT: `https://blablabla`,
+    SWAP: `https://blablabla`,
+    TETHER: `https://blablabla`
+  */}
+  const [tokenIconsList, setTokenIconsList] = useState(draftTokenIconsList)
+  const [tokenAddEditIconSymbol, setTokenAddEditIconSymbol] = useState(``)
+  const [tokenEditSymbolKey, setTokenEditSymbolKey] = useState(``)
+  const [tokenAddEditIconLink, setTokenAddEditIconLink] = useState(``)
+  const [isEditTokenIcon, setIsEditTokenIcon] = useState(false)
+  const [isValidTokenIconLink, setIsValidTokenIconLink] = useState(Boolean(validUrl.isUri(tokenAddEditIconLink)))
+
+  
+  useEffect(() => {
+    if (tokenAddEditIconLink) {
+      setIsValidTokenIconLink(Boolean(validUrl.isUri(tokenAddEditIconLink)))
+    } else {
+      setIsValidTokenIconLink(false)
+    }
+  }, [tokenAddEditIconLink])
+
+  const doCancelEditIcon = () => {
+    setIsEditTokenIcon(false)
+    setTokenAddEditIconSymbol(``)
+    setTokenAddEditIconLink(``)
+  }
+
+  const tokenIconRemove = (removeTokenKey: string) => {
+    if (confirm(t('removeTokenIconConfirm'))) {
+      const newTokenIconsList = {}
+      Object.keys(tokenIconsList).forEach((tokenKey) => {
+        // @ts-ignore
+        if (tokenKey !== removeTokenKey) newTokenIconsList[tokenKey] = tokenIconsList[tokenKey]
+      })
+      setTokenIconsList(newTokenIconsList)
+    }
+  }
+
+  const doAddEditIcon = () => {
+    if (isEditTokenIcon) {
+      const newTokenIconsList = {}
+      Object.keys(tokenIconsList).forEach((tokenKey) => {
+        // @ts-ignore
+        if (tokenKey !== tokenEditSymbolKey) newTokenIconsList[tokenKey] = tokenIconsList[tokenKey]
+      })
+      setTokenIconsList({
+        ...newTokenIconsList,
+        [tokenAddEditIconSymbol.toUpperCase()]: tokenAddEditIconLink,
+      })
+    } else {
+      setTokenIconsList({
+        ...tokenIconsList,
+        [tokenAddEditIconSymbol.toUpperCase()]: tokenAddEditIconLink,
+      })
+    }
+    setTokenAddEditIconSymbol(``)
+    setTokenAddEditIconLink(``)
+    setIsEditTokenIcon(false)
+  }
+
+  const tokenIconEdit = (tokenKey: string) => {
+    console.log('do edit icon', tokenKey)
+    setTokenEditSymbolKey(tokenKey)
+    setTokenAddEditIconSymbol(tokenKey)
+    setTokenAddEditIconLink(tokenIconsList[tokenKey])
+    setIsEditTokenIcon(true)
+  }
+
+  const formAddEditTokenIcon = (
+    <OptionWrapper key={`addTokenForm`}>
+      <div>
+        <h4>{t((isEditTokenIcon) ? 'tokenIconsEdit' : 'tokenIconsAdd')}</h4>
+        <InputPanel
+          label={`${t('tokenIconsAddSymbol')}`}
+          value={tokenAddEditIconSymbol}
+          onChange={setTokenAddEditIconSymbol}
+          error={Boolean(tokenAddEditIconSymbol == ``)}
+        />
+        <InputPanel
+          label={`${t('tokenIconsAddIconUrl')}`}
+          value={tokenAddEditIconLink}
+          error={Boolean(tokenAddEditIconLink == ``) || !isValidTokenIconLink}
+          onChange={setTokenAddEditIconLink}
+        />
+      </div>
+      {isEditTokenIcon ? (
+        <>
+          <ButtonPrimary onClick={doAddEditIcon} disabled={!(tokenAddEditIconSymbol !== `` && isValidTokenIconLink)} fullWidth>
+            {t('tokenIconsEditDo')}
+          </ButtonPrimary>
+          <ButtonPrimary onClick={doCancelEditIcon} fullWidth>
+            {t('tokenIconsEditCancel')}
+          </ButtonPrimary>
+        </>
+      ) : (
+        <ButtonPrimary onClick={doAddEditIcon} disabled={!(tokenAddEditIconSymbol !== `` && isValidTokenIconLink)} fullWidth>
+          {t('tokenIconsAddDo')}
+        </ButtonPrimary>
+      )}
+    </OptionWrapper>
+  )
+
   return (
     <>
       <OptionWrapper>
@@ -276,53 +374,25 @@ export default function Interface() {
       </Accordion>
 
       <Accordion title={t('tokenIcons')} margin="0 0 1rem">
-        <OptionWrapper>
-          <div>
-            <h4>{t('tokenIconsAdd')}</h4>
-            <InputPanel
-              label={`${t('tokenIconsAddSymbol')}`}
-              value={``}
-              onChange={(v) => { console.log('>>> token symbol', v) }}
-              error={false}
-            />
-            <InputPanel
-              label={`${t('tokenIconsAddIconUrl')}`}
-              value={``}
-              error={false}
-              onChange={(v) => { console.log('>>> icon url', v) }}
-            />
-          </div>
-          <ButtonPrimary onClick={() => { console.log('>>> do add token icon') }} disabled={false} fullWidth>
-            {t('tokenIconsAddDo')}
-          </ButtonPrimary>
-        </OptionWrapper>
-
+        {/* @ts-ignore */}
+        {!isEditTokenIcon && formAddEditTokenIcon}
         <OptionWrapper>
           <TokenIconsHolder>
-            <TokenIconRow>
-              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
-              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
-              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
-                <RiCloseFill />
-              </TokenIconDelete>
-              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
-            </TokenIconRow>
-            <TokenIconRow>
-              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
-              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
-              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
-                <RiCloseFill />
-              </TokenIconDelete>
-              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
-            </TokenIconRow>
-            <TokenIconRow>
-              <TokenSymbol title={`USDT`}>{`USDT`}</TokenSymbol>
-              <TokenIcon href={`https://blabla.com`} target="_blank">{`https://blabla.com`}</TokenIcon>
-              <TokenIconDelete type="button" onClick={() => { console.log('remove token icon') }}>
-                <RiCloseFill />
-              </TokenIconDelete>
-              <TokenIconEdit onClick={() => { console.log('edit token icon') }} />
-            </TokenIconRow>
+            {Object.keys(tokenIconsList).map((tokenKey) => {
+              // @ts-ignore
+              const tokenIconHref = tokenIconsList[tokenKey]
+              if (isEditTokenIcon && tokenEditSymbolKey == tokenKey) return formAddEditTokenIcon
+              return (
+                <TokenIconRow key={tokenKey}>
+                  <TokenSymbol title={tokenKey}>{tokenKey}</TokenSymbol>
+                  <TokenIcon href={tokenIconHref} target="_blank">{tokenIconHref}</TokenIcon>
+                  <TokenIconDelete type="button" onClick={() => { tokenIconRemove(tokenKey) }}>
+                    <RiCloseFill />
+                  </TokenIconDelete>
+                  <TokenIconEdit onClick={() => { tokenIconEdit(tokenKey) }} />
+                </TokenIconRow>
+              )
+            })}
           </TokenIconsHolder>
         </OptionWrapper>
       </Accordion>
