@@ -239,7 +239,7 @@ export function useNebBridgeCallback({
             sendNasTx(inputCurrency?.address,DepositAddress,inputAmount, recipient).then((txData:any) => {
               if (txData.hash) {
                 const data:any = {
-                  hash: txData.hash?.toLowerCase(),
+                  hash: txData.hash,
                   chainId: chainId,
                   selectChain: selectChain,
                   account: address,
