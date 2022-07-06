@@ -71,7 +71,8 @@ export default function Interface() {
     elementsColorLight: stateElementsColorLight,
     elementsColorDark: stateElementsColorDark,
     socialLinks: stateSocialLinks,
-    disableSourceCopyright: stateDisableSourceCopyright
+    disableSourceCopyright: stateDisableSourceCopyright,
+    tokenIcons: stateTokenIcons
   } = useAppState()
 
   const [projectName, setProjectName] = useState(stateProjectName)
@@ -122,6 +123,8 @@ export default function Interface() {
   const [socialLinks, setSocialLinks] = useState<string[]>(stateSocialLinks)
   const [disableSourceCopyright, setDisableSourceCopyright] = useState<boolean>(stateDisableSourceCopyright)
 
+  const [tokenIconsList, setTokenIconsList] = useState(stateTokenIcons)
+
   const currentStrSettings = JSON.stringify({
     projectName: stateProjectName,
     logoUrl: stateLogo,
@@ -131,6 +134,7 @@ export default function Interface() {
     elementsColorLight: stateElementsColorLight,
     elementsColorDark: stateElementsColorDark,
     socialLinks: stateSocialLinks,
+    tokenIcons: stateTokenIcons,
     disableSourceCopyright: stateDisableSourceCopyright
   })
 
@@ -179,6 +183,7 @@ export default function Interface() {
           elementsColorLight,
           elementsColorDark,
           socialLinks,
+          tokenIcons: tokenIconsList,
           disableSourceCopyright
         },
         onHash: (hash: string) => {
@@ -203,12 +208,7 @@ export default function Interface() {
     }
   }
 
-  const draftTokenIconsList: any = {/*
-    USDT: `https://blablabla`,
-    SWAP: `https://blablabla`,
-    TETHER: `https://blablabla`
-  */}
-  const [tokenIconsList, setTokenIconsList] = useState(draftTokenIconsList)
+
   const [tokenAddEditIconSymbol, setTokenAddEditIconSymbol] = useState(``)
   const [tokenEditSymbolKey, setTokenEditSymbolKey] = useState(``)
   const [tokenAddEditIconLink, setTokenAddEditIconLink] = useState(``)
@@ -238,6 +238,7 @@ export default function Interface() {
         if (tokenKey !== removeTokenKey) newTokenIconsList[tokenKey] = tokenIconsList[tokenKey]
       })
       setTokenIconsList(newTokenIconsList)
+      setSettingsChanged(true)
     }
   }
 
@@ -261,10 +262,10 @@ export default function Interface() {
     setTokenAddEditIconSymbol(``)
     setTokenAddEditIconLink(``)
     setIsEditTokenIcon(false)
+    setSettingsChanged(true)
   }
 
   const tokenIconEdit = (tokenKey: string) => {
-    console.log('do edit icon', tokenKey)
     setTokenEditSymbolKey(tokenKey)
     setTokenAddEditIconSymbol(tokenKey)
     setTokenAddEditIconLink(tokenIconsList[tokenKey])

@@ -40,6 +40,7 @@ const initialState: ApplicationState = {
   elementsColorLight: '',
   elementsColorDark: '',
   socialLinks: [],
+  tokenIcons: {},
   disableSourceCopyright: false,
   routerAddress: {},
   blockNumber: {},
@@ -73,6 +74,7 @@ export default createReducer(initialState, builder =>
           elementsColorLight,
           elementsColorDark,
           socialLinks,
+          tokenIcons,
           disableSourceCopyright,
           appSettings
         } = action.payload
@@ -93,6 +95,7 @@ export default createReducer(initialState, builder =>
         if (elementsColorDark) state.elementsColorDark = elementsColorDark
         if (Array.isArray(socialLinks) && socialLinks.length) state.socialLinks = socialLinks
         if (disableSourceCopyright) state.disableSourceCopyright = disableSourceCopyright
+        state.tokenIcons = (tokenIcons && Object.keys(tokenIcons).length) ? tokenIcons : {}
       }
     })
     .addCase(updateAppSettings, (state, action) => {

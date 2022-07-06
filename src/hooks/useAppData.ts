@@ -22,6 +22,7 @@ const parseInfo = (info: string) => {
     elementsColorDark: '',
     socialLinks: [],
     disableSourceCopyright: false,
+    tokenIcons: {},
     appSettings: {
       apiAddress: '',
       serverAdminAddress: '',
@@ -50,6 +51,7 @@ const parseInfo = (info: string) => {
       backgroundColorDark,
       elementsColorLight,
       elementsColorDark,
+      tokenIcons,
       socialLinks,
       disableSourceCopyright,
       appSettings,
@@ -71,6 +73,7 @@ const parseInfo = (info: string) => {
     if (elementsColorDark) parsed.elementsColorDark = elementsColorDark
     if (Array.isArray(socialLinks) && socialLinks.length) parsed.socialLinks = socialLinks
     if (disableSourceCopyright) parsed.disableSourceCopyright = disableSourceCopyright
+    parsed.tokenIcons = (tokenIcons && Object.keys(tokenIcons).length) ? tokenIcons : {}
   }
 
   return parsed
