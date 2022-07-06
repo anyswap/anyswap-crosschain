@@ -275,7 +275,7 @@ export default function Interface() {
   const formAddEditTokenIcon = (
     <OptionWrapper key={`addTokenForm`}>
       <div>
-        <h4>{t((isEditTokenIcon) ? 'tokenIconsEdit' : 'tokenIconsAdd')}</h4>
+        <h4>{t((isEditTokenIcon) ? 'tokenIconsEditTitle' : 'tokenIconsAddTitle')}</h4>
         <InputPanel
           label={`${t('tokenIconsAddSymbol')}`}
           value={tokenAddEditIconSymbol}
