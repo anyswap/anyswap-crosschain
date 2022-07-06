@@ -124,7 +124,7 @@ export function useBridgeCallback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
@@ -228,7 +228,7 @@ export function useBridgeCallback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
@@ -321,7 +321,7 @@ export function useBridgeNativeCallback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
@@ -550,7 +550,7 @@ export function useBridgeNativeCallback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
@@ -651,7 +651,7 @@ export function useBridgeNativeCallback(
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
                   const data = {
-                    hash: txReceipt.hash?.toLowerCase(),
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: chainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
@@ -1022,7 +1022,7 @@ export function useBridgeNativeCallback(
                   })
                   if (txData.hash && account && terraRecipient) {
                     const data:any = {
-                      hash: txData.hash?.toLowerCase(),
+                      hash: txData.hash.indexOf('0x') === 0 ? txData.hash?.toLowerCase() : txData.hash,
                       chainId: srcChainid,
                       selectChain: toChainID,
                       account: connectedWallet?.walletAddress,
