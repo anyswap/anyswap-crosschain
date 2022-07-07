@@ -30,6 +30,7 @@ import { tryParseAmount } from '../../state/swap/hooks'
 import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../state/lists/hooks'
 
 import config from '../../config'
+import {VALID_BALANCE} from '../../config/constant'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
@@ -386,10 +387,13 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
-        // return undefined
-        return {
-          state: 'Error',
-          tip: isWrapInputError
+        if (VALID_BALANCE) {
+          return {
+            state: 'Error',
+            tip: isWrapInputError
+          }
+        } else {
+          return undefined
         }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
         return {

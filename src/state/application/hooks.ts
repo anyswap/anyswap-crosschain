@@ -125,10 +125,20 @@ export function useTxnsErrorTipOpen(): any {
   const dispatch = useDispatch<AppDispatch>()
   const onChangeViewErrorTip = useCallback(
     (errorTip: any, isOpenModal: any) => {
-      // console.log(errorTip)
+      console.log(errorTip)
       // console.log(typedValue)
       // console.log(typeInput({ field, typedValue }))
-      dispatch(viewTxnsErrorTip({ errorTip: errorTip?.message ?? errorTip.toString(), isOpenModal }))
+      let errorContent = ''
+      if (errorTip?.data?.data) {
+        if (errorTip?.data?.data.indexOf('burn amount exceeds minter total') !== -1) {
+          errorContent = 'Insufficient cross chain quota.'
+        }
+      } else if (errorTip?.message) {
+        errorContent = errorTip?.message
+      } else {
+        errorContent = errorTip.toString()
+      }
+      dispatch(viewTxnsErrorTip({ errorTip: errorContent, isOpenModal }))
     },
     [dispatch]
   )
