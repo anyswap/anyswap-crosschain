@@ -6,6 +6,7 @@ import { ButtonPrimary } from '../../components/Button'
 import { updateStorageData } from '../../utils/storage'
 import { selectNetwork } from '../../config/tools/methods'
 import { chainInfo } from '../../config/chainConfig'
+import { useWalletModalToggle } from '../../state/application/hooks'
 import config from '../../config'
 
 export default function FirstSetup() {
@@ -16,6 +17,8 @@ export default function FirstSetup() {
 
   const [onStorageChain, setOnStorageChain] = useState(false)
   const [storageNetworkName] = useState(chainInfo[STORAGE_CHAIN_ID]?.networkName)
+
+  const toggleWalletModal = useWalletModalToggle()
 
   useEffect(() => {
     setOnStorageChain(!!chainId && chainId === config.STORAGE_CHAIN_ID)
@@ -66,12 +69,22 @@ export default function FirstSetup() {
   return (
     <>
       <h1>{t('installOnDomainTitle')}</h1>
-      {onStorageChain ? (
-        <ButtonPrimary onClick={installOnDomainDo} fullWidth>
-          {t('installOnDomainDo')}
-        </ButtonPrimary>
+      {account === null ? (
+        <>
+          <ButtonPrimary onClick={toggleWalletModal} fullWidth>
+            {t('installOnDomainConnectWallet')}
+          </ButtonPrimary>
+        </>
       ) : (
-        <SwitchToStorageNetworkButton />
+        <>
+          {onStorageChain ? (
+            <ButtonPrimary onClick={installOnDomainDo} fullWidth>
+              {t('installOnDomainDo')}
+            </ButtonPrimary>
+          ) : (
+            <SwitchToStorageNetworkButton />
+          )}
+        </>
       )}
     </>
   )

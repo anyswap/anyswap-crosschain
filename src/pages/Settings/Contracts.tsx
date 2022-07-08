@@ -176,8 +176,12 @@ export default function Contracts() {
     }
   }, [stateMainConfigChainId])
 
-  const routerConfig = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0)
-  const routerConfigSigner = useMainConfigContract(stateMainConfigAddress, stateMainConfigChainId || 0, true)
+  const [mainConfigChainId, setMainConfigChainId] = useState<string>(`${appSettings.mainConfigChainId}` || '')
+  const [mainConfigAddress, setMainConfigAddress] = useState(appSettings.mainConfigAddress)
+  const [routerConfigOwner, setRouterConfigOwner] = useState('')
+
+  const routerConfig = useMainConfigContract(mainConfigAddress, Number(mainConfigChainId) || 0)
+  const routerConfigSigner = useMainConfigContract(mainConfigAddress, Number(mainConfigChainId) || 0, true)
 
   const [onStorageNetwork, setOnStorageNetwork] = useState(false)
 
@@ -261,9 +265,7 @@ export default function Contracts() {
     }
   }
 
-  const [mainConfigChainId, setMainConfigChainId] = useState<string>(`${appSettings.mainConfigChainId}` || '')
-  const [mainConfigAddress, setMainConfigAddress] = useState(appSettings.mainConfigAddress)
-  const [routerConfigOwner, setRouterConfigOwner] = useState('')
+
 
   useEffect(() => {
     if (!mainConfigAddress || !mainConfigChainId || !routerConfig) {
@@ -271,10 +273,10 @@ export default function Contracts() {
     }
 
     const fetch = async () => {
-
-      const owner = await routerConfig.methods.owner().call()
-
-      componentMounted.current && setRouterConfigOwner(owner)
+      if (routerConfig !== null) {
+        const owner = await routerConfig.methods.owner().call()
+        componentMounted.current && setRouterConfigOwner(owner)
+      }
     }
 
     fetch()

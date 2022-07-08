@@ -459,5 +459,16 @@
   "txnsMoreInfo": "More Info",
   "fillUnderlyingInfo": "Fill the ERC20 token info",
   "thisChainNotContainPairs": "There are no pairs to exchange on this network. Select another network",
-  "showChainsWithPairs": "Select another network"
+  "showChainsWithPairs": "Select another network",
+  "installOnDomainConnectWallet": "Connect wallet",
+  "removeTokenIconConfirm": "Remove this token icon?",
+  "tokenIconsEditTitle": "Edit token icon",
+  "tokenIconsAddTitle": "Add token icon",
+  "tokenIconsEditDo": "Update token icon",
+  "tokenIconsEditCancel": "Cancel",
+  "tokenIconsAddDo": "Add token icon",
+  "tokenIcons": "Token icons",
+  "edit": "Edit",
+  "tokenIconsAddSymbol": "Token symbol",
+  "tokenIconsAddIconUrl": "Icon url"
 }

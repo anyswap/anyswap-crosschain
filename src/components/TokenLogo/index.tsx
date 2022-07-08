@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
+import { useAppState } from '../../state/application/hooks'
 
 import config from '../../config'
 
@@ -60,29 +61,34 @@ export default function TokenLogo({
   isAny?: any
 }) {
   const { chainId } = useActiveWeb3React()
+  const { tokenIcons } = useAppState()
   let path = ''
   symbol = config.getBaseCoin(symbol, chainId)
   symbol = symbol === 'W' + config.getCurChainInfo(chainId).symbol ? symbol.substr(1) : symbol
   // symbol = symbol === 'WHT' ? 'HT' : symbol
-  // console.log(symbol)
-  if (logoUrl) {
-    path = logoUrl
-  } else if (symbol) {
-    if (isAny) {
-      if (symbol.indexOf('a') === 0 && symbol.indexOf('any') === -1) {
-        symbol = symbol.replace('a', 'any')
-        path = getAnyPath(symbol)
-      } else if (symbol.indexOf('any') !== -1) {
-        path = getAnyPath(symbol)
+  // console.log('>>', symbol, logoUrl)
+  if (symbol && tokenIcons[symbol.toUpperCase()]) {
+    path = tokenIcons[symbol.toUpperCase()]
+  } else {
+    if (logoUrl) {
+      path = logoUrl
+    } else if (symbol) {
+      if (isAny) {
+        if (symbol.indexOf('a') === 0 && symbol.indexOf('any') === -1) {
+          symbol = symbol.replace('a', 'any')
+          path = getAnyPath(symbol)
+        } else if (symbol.indexOf('any') !== -1) {
+          path = getAnyPath(symbol)
+        } else {
+          path = getSourcePath(symbol)
+        }
       } else {
+        symbol = symbol.replace('any', '').replace('a', '')
         path = getSourcePath(symbol)
       }
     } else {
-      symbol = symbol.replace('any', '').replace('a', '')
-      path = getSourcePath(symbol)
+      path = initPath
     }
-  } else {
-    path = initPath
   }
   // console.log(logoUrl)
   // console.log(path)

@@ -90,6 +90,7 @@ export type AppData = {
   elementsColorLight: string
   elementsColorDark: string
   socialLinks: string[]
+  tokenIcons: any
   disableSourceCopyright: boolean
   apiAddress: string
   routerConfigChainId: number | undefined

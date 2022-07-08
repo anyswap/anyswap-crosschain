@@ -16,6 +16,46 @@ import ListFactory from '../../components/ListFactory'
 import { OptionWrapper } from './index'
 import { updateStorageData } from '../../utils/storage'
 
+import styled from 'styled-components'
+import { CleanButton, ButtonEdit } from '../../components/Button'
+import { RiCloseFill } from 'react-icons/ri'
+
+const TokenIconsHolder = styled.ul`
+  margin: 0;
+  padding: 0.4rem;
+`
+
+const TokenIconRow = styled.li`
+  padding: 0.2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const TokenSymbol = styled.div`
+  margin: 0;
+  padding: 0.4rem;
+  width: 20%;
+  overflow: hidden;
+`
+
+const TokenIcon = styled.a`
+  margin: 0;
+  padding: 0.4rem;
+  width: 60%;
+  overflow: hidden;
+`
+
+const TokenIconDelete = styled(CleanButton)`
+  width: auto;
+  padding: 0.3rem;
+`
+
+const TokenIconEdit = styled(ButtonEdit)`
+  width: auto;
+  padding: 0.3rem;
+`
+
 export default function Interface() {
   const { t } = useTranslation()
   const { account, library } = useActiveWeb3React()
@@ -31,7 +71,8 @@ export default function Interface() {
     elementsColorLight: stateElementsColorLight,
     elementsColorDark: stateElementsColorDark,
     socialLinks: stateSocialLinks,
-    disableSourceCopyright: stateDisableSourceCopyright
+    disableSourceCopyright: stateDisableSourceCopyright,
+    tokenIcons: stateTokenIcons
   } = useAppState()
 
   const [projectName, setProjectName] = useState(stateProjectName)
@@ -82,6 +123,8 @@ export default function Interface() {
   const [socialLinks, setSocialLinks] = useState<string[]>(stateSocialLinks)
   const [disableSourceCopyright, setDisableSourceCopyright] = useState<boolean>(stateDisableSourceCopyright)
 
+  const [tokenIconsList, setTokenIconsList] = useState(stateTokenIcons)
+
   const currentStrSettings = JSON.stringify({
     projectName: stateProjectName,
     logoUrl: stateLogo,
@@ -91,6 +134,7 @@ export default function Interface() {
     elementsColorLight: stateElementsColorLight,
     elementsColorDark: stateElementsColorDark,
     socialLinks: stateSocialLinks,
+    tokenIcons: stateTokenIcons,
     disableSourceCopyright: stateDisableSourceCopyright
   })
 
@@ -139,6 +183,7 @@ export default function Interface() {
           elementsColorLight,
           elementsColorDark,
           socialLinks,
+          tokenIcons: tokenIconsList,
           disableSourceCopyright
         },
         onHash: (hash: string) => {
@@ -162,6 +207,104 @@ export default function Interface() {
       // })
     }
   }
+
+
+  const [tokenAddEditIconSymbol, setTokenAddEditIconSymbol] = useState(``)
+  const [tokenEditSymbolKey, setTokenEditSymbolKey] = useState(``)
+  const [tokenAddEditIconLink, setTokenAddEditIconLink] = useState(``)
+  const [isEditTokenIcon, setIsEditTokenIcon] = useState(false)
+  const [isValidTokenIconLink, setIsValidTokenIconLink] = useState(Boolean(validUrl.isUri(tokenAddEditIconLink)))
+
+  
+  useEffect(() => {
+    if (tokenAddEditIconLink) {
+      setIsValidTokenIconLink(Boolean(validUrl.isUri(tokenAddEditIconLink)))
+    } else {
+      setIsValidTokenIconLink(false)
+    }
+  }, [tokenAddEditIconLink])
+
+  const doCancelEditIcon = () => {
+    setIsEditTokenIcon(false)
+    setTokenAddEditIconSymbol(``)
+    setTokenAddEditIconLink(``)
+  }
+
+  const tokenIconRemove = (removeTokenKey: string) => {
+    if (confirm(t('removeTokenIconConfirm'))) {
+      const newTokenIconsList = {}
+      Object.keys(tokenIconsList).forEach((tokenKey) => {
+        // @ts-ignore
+        if (tokenKey !== removeTokenKey) newTokenIconsList[tokenKey] = tokenIconsList[tokenKey]
+      })
+      setTokenIconsList(newTokenIconsList)
+      setSettingsChanged(true)
+    }
+  }
+
+  const doAddEditIcon = () => {
+    if (isEditTokenIcon) {
+      const newTokenIconsList = {}
+      Object.keys(tokenIconsList).forEach((tokenKey) => {
+        // @ts-ignore
+        if (tokenKey !== tokenEditSymbolKey) newTokenIconsList[tokenKey] = tokenIconsList[tokenKey]
+      })
+      setTokenIconsList({
+        ...newTokenIconsList,
+        [tokenAddEditIconSymbol.toUpperCase()]: tokenAddEditIconLink,
+      })
+    } else {
+      setTokenIconsList({
+        ...tokenIconsList,
+        [tokenAddEditIconSymbol.toUpperCase()]: tokenAddEditIconLink,
+      })
+    }
+    setTokenAddEditIconSymbol(``)
+    setTokenAddEditIconLink(``)
+    setIsEditTokenIcon(false)
+    setSettingsChanged(true)
+  }
+
+  const tokenIconEdit = (tokenKey: string) => {
+    setTokenEditSymbolKey(tokenKey)
+    setTokenAddEditIconSymbol(tokenKey)
+    setTokenAddEditIconLink(tokenIconsList[tokenKey])
+    setIsEditTokenIcon(true)
+  }
+
+  const formAddEditTokenIcon = (
+    <OptionWrapper key={`addTokenForm`}>
+      <div>
+        <h4>{t((isEditTokenIcon) ? 'tokenIconsEditTitle' : 'tokenIconsAddTitle')}</h4>
+        <InputPanel
+          label={`${t('tokenIconsAddSymbol')}`}
+          value={tokenAddEditIconSymbol}
+          onChange={setTokenAddEditIconSymbol}
+          error={Boolean(tokenAddEditIconSymbol == ``)}
+        />
+        <InputPanel
+          label={`${t('tokenIconsAddIconUrl')}`}
+          value={tokenAddEditIconLink}
+          error={Boolean(tokenAddEditIconLink == ``) || !isValidTokenIconLink}
+          onChange={setTokenAddEditIconLink}
+        />
+      </div>
+      {isEditTokenIcon ? (
+        <>
+          <ButtonPrimary onClick={doAddEditIcon} disabled={!(tokenAddEditIconSymbol !== `` && isValidTokenIconLink)} fullWidth>
+            {t('tokenIconsEditDo')}
+          </ButtonPrimary>
+          <ButtonPrimary onClick={doCancelEditIcon} fullWidth>
+            {t('tokenIconsEditCancel')}
+          </ButtonPrimary>
+        </>
+      ) : (
+        <ButtonPrimary onClick={doAddEditIcon} disabled={!(tokenAddEditIconSymbol !== `` && isValidTokenIconLink)} fullWidth>
+          {t('tokenIconsAddDo')}
+        </ButtonPrimary>
+      )}
+    </OptionWrapper>
+  )
 
   return (
     <>
@@ -228,6 +371,30 @@ export default function Interface() {
             defaultColor={elementsColorDark}
             onColor={color => updateColor(color, ColorType.ELEMENTS_COLOR_DARK)}
           />
+        </OptionWrapper>
+      </Accordion>
+
+      <Accordion title={t('tokenIcons')} margin="0 0 1rem">
+        {/* @ts-ignore */}
+        {!isEditTokenIcon && formAddEditTokenIcon}
+        <OptionWrapper>
+          <TokenIconsHolder>
+            {Object.keys(tokenIconsList).map((tokenKey) => {
+              // @ts-ignore
+              const tokenIconHref = tokenIconsList[tokenKey]
+              if (isEditTokenIcon && tokenEditSymbolKey == tokenKey) return formAddEditTokenIcon
+              return (
+                <TokenIconRow key={tokenKey}>
+                  <TokenSymbol title={tokenKey}>{tokenKey}</TokenSymbol>
+                  <TokenIcon href={tokenIconHref} target="_blank">{tokenIconHref}</TokenIcon>
+                  <TokenIconDelete type="button" onClick={() => { tokenIconRemove(tokenKey) }}>
+                    <RiCloseFill />
+                  </TokenIconDelete>
+                  <TokenIconEdit onClick={() => { tokenIconEdit(tokenKey) }} />
+                </TokenIconRow>
+              )
+            })}
+          </TokenIconsHolder>
         </OptionWrapper>
       </Accordion>
 

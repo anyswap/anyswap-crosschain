@@ -233,6 +233,16 @@ export function ButtonAdd({ onClick, disabled }: { onClick: () => void; disabled
   )
 }
 
+export function ButtonEdit({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useTranslation()
+
+  return (
+    <ButtonAddStyle onClick={onClick} disabled={disabled} title={t('edit')}>
+      {t('edit')}
+    </ButtonAddStyle>
+  )
+}
+
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {
   if (error) {
     return <ButtonErrorStyle {...rest} />
