@@ -98,8 +98,7 @@ export default function SwapSettings({
           SwapFeeRatePerMillion,
           MaximumSwapFee,
           MinimumSwapFee
-        } = await routerConfig.methods.getSwapConfig(underlying.symbol.toUpperCase(), underlying.networkId).call()
-
+        } = await routerConfig.methods.getSwapConfig(usedTokenGroup, underlying.networkId).call()
         setMinimumSwap(formatAmount(MinimumSwap.toString(), Direction.from))
         setMaximumSwap(formatAmount(MaximumSwap.toString(), Direction.from))
         setMinimumSwapFee(formatAmount(MinimumSwapFee.toString(), Direction.from))
