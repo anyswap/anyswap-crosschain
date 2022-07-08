@@ -232,7 +232,7 @@ export default function HistoryDetails ({
     if (isLiquidity && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
         console.log(res)
-        if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
+        if (res && res.logs && res.logs.length < 4 && setUnderlyingStatus) {
           setUnderlyingStatus(fromChainID, txid, true)
         }
       })

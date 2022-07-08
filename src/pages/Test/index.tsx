@@ -6,7 +6,7 @@ import AppBody from '../AppBody'
 
 import {
   getTokenlist,
-  setTokenlist
+  // setTokenlist
 } from '../../utils/indexedDB'
 
 // import {
@@ -28,7 +28,7 @@ export default function TestWarpper () {
         }}>test</ButtonLight>
         <ButtonLight onClick={() => {
           // if (sendNearTxns) sendNearTxns()
-          setTokenlist('56', {name: 'test'})
+          // setTokenlist('56', {name: 'test'})
         }}>test1</ButtonLight>
       </AppBody>
     </>

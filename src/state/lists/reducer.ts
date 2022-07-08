@@ -55,20 +55,20 @@ export default createReducer(initialState, builder =>
     .addCase(updateTokenlistTime, (state, { payload: {  } }) => {
       state.updateTokenlistTime = Date.now()
     })
-    .addCase(mergeTokenList, (state, { payload: { chainId, tokenList } }) => {
+    .addCase(mergeTokenList, (state, { payload: { chainId, tokenList, version } }) => {
       // console.log(state)
       if (state && state.mergeTokenList) {
         // console.log(111)
         // state.mergeTokenList[chainId] = {tokenList, timestamp: Date.now()}
         state.mergeTokenList = {
           // ...(state.mergeTokenList ? state.mergeTokenList : {}),
-          [chainId]: {tokenList, timestamp: Date.now()}
+          [chainId]: {tokenList, timestamp: Date.now(), version}
         }
-        console.log(state.mergeTokenList)
+        // console.log(state.mergeTokenList)
       } else {
         // console.log(222)
         state.mergeTokenList = {
-          [chainId]: {tokenList, timestamp: Date.now()}
+          [chainId]: {tokenList, timestamp: Date.now(), version}
         }
       }
     })

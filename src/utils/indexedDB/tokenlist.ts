@@ -87,10 +87,11 @@ export function getTokenlist (chainId:any) {
     })
   })
 }
-export function setTokenlist (chainId:any, tokenList:any) {
+export function setTokenlist (chainId:any, tokenList:any, version:any) {
   const data = {
     chainId: chainId.toString(),
     tokenList,
+    version,
     timestamp: Date.now()
   }
   setDBdata(TOKENPATH, data)

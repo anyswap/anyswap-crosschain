@@ -73,6 +73,35 @@ import {
 //   )
 // }
 
+function getVersion () {
+  return new Promise(resolve => {
+    const url = `${config.bridgeApi}/token/version`
+    getUrlData(url).then((version:any) => {
+      resolve(version)
+    })
+  })
+}
+
+function getServerTokenlist (chainId:any) {
+  return new Promise(resolve => {
+    let list:any = {}
+    if (chainId) {
+      const url = `${config.bridgeApi}/v4/tokenlistv4/${chainId}`
+      getUrlData(url).then((tokenList:any) => {
+        console.log(tokenList)
+        if (tokenList.msg === 'Success' && tokenList.data) {
+          list = tokenList.data
+          resolve(list)
+        } else {
+          resolve('')
+        }
+      })
+    } else {
+      resolve('')
+    }
+  })
+}
+
 export function useFetchMergeTokenListCallback(): () => Promise<any> {
 
   const { chainId } = useActiveReact()
@@ -92,34 +121,24 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
       // console.log(lists)
       // console.log(curList)
       // console.log(chainId)
-      if ((Date.now() - curList?.timestamp) <= timeout && curList?.tokenList && Object.keys(curList?.tokenList).length > 0) {
-        return
-      } else {
-        // const url = `${config.bridgeApi}/merge/tokenlist/${chainId}`
-        // const url = `${config.bridgeApi}/v4/tokenlistv3/${chainId}`
-        // const url = `${config.bridgeApi}/cfx/v4/tokenlistv3/${chainId}`
-        const url = `${config.bridgeApi}/v4/tokenlistv4/${chainId}`
-        return getUrlData(url)
-          .then((tokenList:any) => {
-            console.log(tokenList)
-            let list:any = {}
-            if (tokenList.msg === 'Success' && tokenList.data) {
-              list = tokenList.data
-            }
-            if (isSupportIndexedDB) {
-              setTokenlist(chainId, list)
-            } else {
-              dispatch(mergeTokenList({ chainId: chainId, tokenList:list }))
-            }
-            dispatch(updateTokenlistTime({}))
-            return list
-          })
-          .catch(error => {
-            console.debug(`Failed to get list at url `, error)
-            dispatch(mergeTokenList({ chainId: chainId, tokenList: curList.tokenList }))
-            return {}
-          })
-      }
+      return getVersion().then((res:any) => {
+        // console.log(res)
+        if (res.msg === 'Success') {
+          const serverVersion = res.data
+          if (!curList?.version || curList.version !== serverVersion) {
+            getServerTokenlist(chainId).then(res => {
+              if (res) {
+                if (isSupportIndexedDB) {
+                  setTokenlist(chainId, res, serverVersion)
+                } else {
+                  dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
+                }
+                dispatch(updateTokenlistTime({}))
+              }
+            })
+          }
+        }
+      })
     },
     [dispatch, chainId]
   )

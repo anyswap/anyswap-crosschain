@@ -31,10 +31,10 @@ export default function Updater(): null {
     }
   }, [fetchMergeTokenList, chainId])
 
-  // 每 10 分钟获取所有列表，但仅在我们初始化库之后
-  // useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
+  // 每 半 分钟获取所有列表，但仅在我们初始化库之后
+  useInterval(fetchMergeTokenListsCallback, library ? 1000 * 30 : null, false)
   // useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 10 : null)
-  useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 30 : null, false)
+  // useInterval(fetchMergeTokenListsCallback, library ? 1000 * 60 * 30 : null, false)
 
   useEffect(() => {
     fetchMergeTokenListsCallback()
