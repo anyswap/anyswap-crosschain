@@ -17,6 +17,15 @@ import { useActiveWeb3React } from './index'
 import config from '../config'
 import { timeout, USE_VERSION, VERSION } from '../config/constant'
 import { getUrlData } from '../utils/tools/axios'
+import { BigNumber } from 'bignumber.js'
+
+// @ts-ignore
+const formatWithoutDecimals = (amount, decimals): string => {
+  return new BigNumber(amount)
+    .div(10 ** decimals)
+    .dp(decimals)
+    .toString()
+}
 
 const prepareServerList = (chainId: any, pairs: any) => {
   try {
@@ -39,8 +48,12 @@ const prepareServerList = (chainId: any, pairs: any) => {
       if (mainToken !== null) {
         pairData.multichainTokens.forEach((tokenData: any) => {
           if (tokenData.chainId !== chainId) {
-            //if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
-            pairTokens[tokenData.chainId]/*[tokenData.anyswapToken.Underlying]*/ = {
+            const {
+              swapConfig,
+            } = tokenData
+            const Decimals = 18
+
+            pairTokens[tokenData.chainId] = {
               name: tokenID,
               symbol: tokenID,
               decimals: tokenData.anyswapToken.Decimals,
@@ -55,12 +68,12 @@ const prepareServerList = (chainId: any, pairs: any) => {
               type: "STABLEV3",
               tokenid: tokenID,
               swapfeeon: 1,
-              MaximumSwap: 20000000,
-              MinimumSwap: 12,
-              BigValueThreshold: 5000000,
+              MaximumSwap: formatWithoutDecimals(swapConfig.MaximumSwap, Decimals),
+              MinimumSwap: formatWithoutDecimals(swapConfig.MinimumSwap, Decimals),
+              BigValueThreshold: formatWithoutDecimals(swapConfig.BigValueThreshold, Decimals),
               SwapFeeRatePerMillion: 0.1,
-              MaximumSwapFee: 0.9,
-              MinimumSwapFee: 0.9,
+              MaximumSwapFee: formatWithoutDecimals(swapConfig.MaximumSwapFee, Decimals),
+              MinimumSwapFee: formatWithoutDecimals(swapConfig.MinimumSwapFee, Decimals),
               routerToken: mainToken.router.RouterContract,
             }
           }
@@ -108,6 +121,11 @@ const prepareTokenList = (chainId: any, pairs: any) => {
         pairData.multichainTokens.forEach((tokenData: any) => {
           if (tokenData.chainId !== chainId) {
             if (!pairTokens[tokenData.chainId]) pairTokens[tokenData.chainId] = {}
+            const {
+              swapConfig,
+            } = tokenData
+            const Decimals = 18
+
             pairTokens[tokenData.chainId][tokenData.anyswapToken.Underlying] = {
               name: tokenID,
               symbol: tokenID,
@@ -123,12 +141,12 @@ const prepareTokenList = (chainId: any, pairs: any) => {
               type: "STABLEV3",
               tokenid: tokenID,
               swapfeeon: 1,
-              MaximumSwap: 20000000,
-              MinimumSwap: 12,
-              BigValueThreshold: 5000000,
+              MaximumSwap: formatWithoutDecimals(swapConfig.MaximumSwap, Decimals),
+              MinimumSwap: formatWithoutDecimals(swapConfig.MinimumSwap, Decimals),
+              BigValueThreshold: formatWithoutDecimals(swapConfig.BigValueThreshold, Decimals),
               SwapFeeRatePerMillion: 0.1,
-              MaximumSwapFee: 0.9,
-              MinimumSwapFee: 0.9,
+              MaximumSwapFee: formatWithoutDecimals(swapConfig.MaximumSwapFee, Decimals),
+              MinimumSwapFee: formatWithoutDecimals(swapConfig.MinimumSwapFee, Decimals),
               routerToken: mainToken.router.RouterContract,
             }
           }
