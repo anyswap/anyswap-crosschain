@@ -266,6 +266,13 @@ export function useSelectedListUrl(): string | undefined {
   return config.tokenListUrl
 }
 
+export function useTokenListVersionUrl(): string | undefined {
+  return useSelector<AppState, AppState['lists']['tokenlistversion']>(state => {
+    return state.lists.tokenlistversion
+  })
+  // return config.tokenListUrl
+}
+
 export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
   return useBridgeTokenList(key, chainId)
 }

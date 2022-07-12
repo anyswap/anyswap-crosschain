@@ -204,7 +204,8 @@ export default function PoolLists ({
   const allTokensList:any = usePoolListState(chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   const poolInfo = usePoolsState()
-  // console.log(poolInfo)
+  // console.log(chainId)
+  // console.log(allTokensList)
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()

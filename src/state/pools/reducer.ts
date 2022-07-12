@@ -21,13 +21,13 @@ export default createReducer<BurnState>(initialState, builder =>
     .addCase(poolLiquidity, (state, { payload: {poolLiquidity} }) => {
       state.poolLiquidity = poolLiquidity
     })
-    .addCase(poolList, (state, { payload: { chainId, tokenList } }) => {
+    .addCase(poolList, (state, { payload: { chainId, tokenList, version } }) => {
       // console.log(state)
       if (state.poolList) {
-        state.poolList[chainId] = {tokenList, timestamp: Date.now()}
+        state.poolList[chainId] = {tokenList, timestamp: Date.now(), version}
       } else {
         state.poolList = {
-          [chainId]: {tokenList, timestamp: Date.now()}
+          [chainId]: {tokenList, timestamp: Date.now(), version}
         }
       }
     })

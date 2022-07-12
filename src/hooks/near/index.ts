@@ -57,7 +57,9 @@ export function useLogin() {
         console.log('error: ', error)
       }
     } else {
-      alert('Please install Sender Wallet.')
+      if (confirm('Please install Sender Wallet.') === true) {
+        window.open('https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg')
+      }
     }
   }, [])
 
@@ -98,9 +100,25 @@ export function useNearBalance () {
     return bl
   }, [])
 
+  const getNearStorageBalance = useCallback(async({account}) => {
+    let bl:any
+    const useAccount = account ? account : window?.near?.accountId
+    try {
+      
+      bl = await window?.near?.account().viewFunction(
+        'storage_balance_of',
+        { "account_id": useAccount },
+      )
+    } catch (error) {
+      
+    }
+    return bl
+  }, [])
+
   return {
     getNearBalance,
-    getNearTokenBalance
+    getNearTokenBalance,
+    getNearStorageBalance
   }
 }
 

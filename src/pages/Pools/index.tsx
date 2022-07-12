@@ -8,7 +8,7 @@ import styled, { ThemeContext } from 'styled-components'
 
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -54,14 +54,15 @@ const BRIDGETYPE = 'routerTokenList'
 // let onlyFirst = 0
 // let intervalFN:any
 export default function SwapNative() {
-  const { account, chainId } = useActiveWeb3React()
+  // const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   const history = createBrowserHistory()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   
   const toggleWalletModal = useWalletModalToggle()
   const allTokensList:any = usePoolListState(chainId)
-
+// console.log(allTokensList)
   const urlSwapType = getParams('bridgetype') ? getParams('bridgetype') : 'deposit'
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')

@@ -96,7 +96,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
