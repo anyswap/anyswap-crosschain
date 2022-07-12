@@ -33,10 +33,10 @@ export function usePoolListState(chainId?:any): any {
   // console.log(updateTokenlistTime)
   const [tokenlist, setTokenlist] = useState<any>({})
   const getCurTokenlist = useCallback(() => {
-    // console.log(updateTokenlistTime)
+    // console.log(chainId)
     if (isSupportIndexedDB) {
       getPoollist(chainId).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res?.tokenList) {
           setTokenlist(res.tokenList)
         } else {
@@ -57,18 +57,4 @@ export function usePoolListState(chainId?:any): any {
   }, [getCurTokenlist, chainId, updatePoollistTime])
 
   return tokenlist
-  // const init = {}
-  // return useMemo(() => {
-  //   if (!chainId) return init
-  //   const current = lists[chainId]?.tokenList
-  //   // console.log(current)
-  //   if (!current) return init
-  //   try {
-  //     // return listsMergeToTokenMap(current)
-  //     return current
-  //   } catch (error) {
-  //     console.error('Could not show token list due to error', error)
-  //     return init
-  //   }
-  // }, [lists, chainId])
 }

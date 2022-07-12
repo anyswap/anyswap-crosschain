@@ -4,7 +4,7 @@ import ListsUpdater from './lists/updater'
 import MulticallUpdater from './multicall/updater'
 import TransactionUpdater from './transactions/updater'
 import UserUpdater from './user/updater'
-import PoolsUpdater from './pools/updater'
+// import PoolsUpdater from './pools/updater'
 import WalletUpdater from './wallet/updater'
 // import RpcUpdater from './rpc/updater'
 
@@ -13,7 +13,7 @@ export function Updaters() {
     <>
       <ListsUpdater />
       <UserUpdater />
-      <PoolsUpdater />
+      {/* <PoolsUpdater /> */}
       <ApplicationUpdater />
       <TransactionUpdater />
       <MulticallUpdater />

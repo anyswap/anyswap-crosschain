@@ -1,18 +1,21 @@
 import { useCallback, useEffect } from 'react'
-import useInterval from '../../hooks/useInterval'
-import { useActiveWeb3React } from '../../hooks'
+// import useInterval from '../../hooks/useInterval'
+// import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 // import { useDispatch } from 'react-redux'
 import { useDispatch } from 'react-redux'
 // import axios from 'axios'
 // import config from '../../config'
 // import {poolLiquidity} from './actions'
-
+import {useTokenListVersionUrl} from '../lists/hooks'
 import { useFetchPoolTokenListCallback } from '../../hooks/useFetchListCallback'
 
 
 export default function Updater(): null {
-  const { library, chainId } = useActiveWeb3React()
+  // const { library, chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const dispatch = useDispatch()
+  const version = useTokenListVersionUrl()
   const fetchTokenList = useFetchPoolTokenListCallback()
 
   const fetchAllTokenListsCallback = useCallback(() => {
@@ -21,11 +24,11 @@ export default function Updater(): null {
     }
   }, [fetchTokenList, chainId])
 
-  useInterval(fetchAllTokenListsCallback, library ? 1000 * 60 * 30 : null, false)
+  // useInterval(fetchAllTokenListsCallback, 1000 * 60 * 30)
 
   useEffect(() => {
     fetchAllTokenListsCallback()
-  }, [dispatch, fetchAllTokenListsCallback, chainId])
+  }, [dispatch, fetchAllTokenListsCallback, chainId, version])
 
   // const getPools = useCallback(() => {
   //   axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {

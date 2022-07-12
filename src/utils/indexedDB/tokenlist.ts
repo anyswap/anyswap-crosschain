@@ -37,7 +37,11 @@ db.onerror = function(event:any) {
 function getDBdata (path:any, key:any) {
   return new Promise(resolve => {
     if (!key || !db?.transaction) {
-      resolve('')
+      // console.log(333)
+      // console.log(key)
+      // console.log(db)
+      // console.log(db?.transaction)
+      resolve('LOADING')
       return
     }
     try {
@@ -48,19 +52,21 @@ function getDBdata (path:any, key:any) {
       request.onerror = function(event:any) {
         console.log(event)
         // Handle errors!
-        resolve('')
+        resolve('ERROR')
       };
       request.onsuccess = function(event:any) {
         // Do something with the request.result!
         const data = event.target.result 
+        // console.log(event)
         // console.log(data)
+        // console.log(key)
         resolve(data)
         // console.log("Name for SSN 444-44-4444 is " + request.result.name);
       }
     } catch (error) {
       console.log(path)
       console.log(error)
-      resolve('')
+      resolve('ERROR')
     }
   })
 }
@@ -72,17 +78,18 @@ function setDBdata (path:any, data:any) {
     .put(data) //更新数据
   request.onsuccess = function (event:any) {
     console.log(event);
-    console.log('数据写入成功');
+    console.log(path + '数据写入成功');
   };
   request.onerror = function (event:any) {
     console.log(event);
-    console.log('数据写入失败');
+    console.log(path + '数据写入失败');
   }
 }
 
 export function getTokenlist (chainId:any) {
   return new Promise(resolve => {
     getDBdata(TOKENPATH, chainId).then(res => {
+      // console.log(res)
       resolve(res)
     })
   })
@@ -99,15 +106,17 @@ export function setTokenlist (chainId:any, tokenList:any, version:any) {
 
 export function getPoollist (chainId:any) {
   return new Promise(resolve => {
+    // console.log(chainId)
     getDBdata(POOLPATH, chainId).then(res => {
       resolve(res)
     })
   })
 }
-export function setPoollist (chainId:any, tokenList:any) {
+export function setPoollist (chainId:any, tokenList:any, version:any) {
   const data = {
     chainId: chainId.toString(),
     tokenList,
+    version,
     timestamp: Date.now()
   }
   setDBdata(POOLPATH, data)
