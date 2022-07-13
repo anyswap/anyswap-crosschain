@@ -19,6 +19,7 @@ import { BigNumber } from 'ethers'
 
 import { ChainId } from '../../config/chainConfig/chainId'
 import { BigAmount } from '../../utils/formatBignumber'
+import { isAddress } from '../../utils/isAddress'
 
 // const NAS_URL = 'https://testnet.nebulas.io'
 const NAS_URL = 'https://mainnet.nebulas.io'
@@ -59,12 +60,14 @@ export const useCurrentAddress = () => {
 
 export function useNasTokenBalance () {
   const address = useCurrentAddress()
+  const { chainId } = useActiveReact()
   const neb:any = new nebulas.Neb()
   const getNasTokenBalance = useCallback(async ({account, token}: any) => {
+    if (![ChainId.NAS].includes(chainId)) return
     return new Promise(async(resolve, reject) => {
       const useAccount = account ? account : address
       try {
-        if (!nebulas.Account.isValidAddress(useAccount) || !token) {
+        if (!isAddress(useAccount, chainId) || !token) {
           resolve('')
         }
         const tx = await neb.api.call({
@@ -95,13 +98,15 @@ export function useNasTokenBalance () {
 
 export const useCurrentWNASBalance = (token?:any) => {
   const [balance, setBalance] = useState<string>()
+  const { chainId } = useActiveReact()
   const address = useCurrentAddress()
   const neb:any = new nebulas.Neb()
   neb.setRequest(new nebulas.HttpRequest(NAS_URL))
 
   const getWNASBalance = useCallback(async () => {
+    if (![ChainId.NAS].includes(chainId)) return
     try {
-      if (!nebulas.Account.isValidAddress(address) || !nebulas.Account.isValidAddress(token)) {
+      if (!isAddress(address, chainId) || !isAddress(token, chainId)) {
         return false
       }
       const tx = await neb.api.call({
@@ -140,7 +145,8 @@ export const useCurrentNasBalance = () => {
   const address = useCurrentAddress()
   
   const getNasBalance = useCallback(async () => {
-    if (nebulas.Account.isValidAddress(address) && chainId === ChainId.NAS) {
+    if (![ChainId.NAS].includes(chainId)) return
+    if (isAddress(address, chainId) && chainId === ChainId.NAS) {
       // const state = await neb.api.getAccountState(address)
       const state:any = await axios.post(`${NAS_URL}/v1/user/accountstate`, {address})
       // console.log(state)

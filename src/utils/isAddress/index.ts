@@ -17,18 +17,15 @@ export function isEvmAddress(value: any): string | false {
 
 export function isAddress(address: string, chainId?: any) {
   if (chainId) {
-    if (chainId === ChainId.TRX) {
+    if ([ChainId.TRX].includes(chainId)) {
       return isTRXAddress(address)
-    } else if (chainId === ChainId.NAS) {
+    } else if ([ChainId.NAS].includes(chainId)) {
       return nebulas.Account.isValidAddress(address) ? address : false
-    } else if (chainId === ChainId.TERRA) {
+    } else if ([ChainId.TERRA].includes(chainId)) {
       return AccAddress.validate(address) ? address : false
-    } else if (chainId === ChainId.XRP) {
+    } else if ([ChainId.XRP].includes(chainId)) {
       return address && address.indexOf('r') === 0 && address.length === 34 ? true : false
-    } else if (
-      chainId === ChainId.NEAR
-      || chainId === ChainId.NEAR_TEST
-    ) {
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
       return address ? address : false
     } else if (BTCARR.includes(chainId)) {
       return isBTCAddress(address, chainId)

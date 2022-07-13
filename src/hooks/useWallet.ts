@@ -1,7 +1,10 @@
 
 import { useCallback } from 'react'
 import { useWallet, ConnectType } from '@terra-money/wallet-provider'
+// import { useDispatch } from 'react-redux'
+// import { setOpenModal, ApplicationModal } from '../state/application/actions'
 import { useWalletModalToggle } from '../state/application/hooks'
+// import { AppDispatch } from '../state/index'
 import { useUserSelectChainId } from '../state/user/hooks'
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -11,6 +14,7 @@ import {useActiveReact} from './useActiveReact'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
+  // const dispatch = useDispatch<AppDispatch>()
   const {selectNetworkInfo} = useUserSelectChainId()
   const toggleWalletModal = useWalletModalToggle()
   const { connect } = useWallet()
@@ -38,6 +42,7 @@ export function useConnectWallet () {
         login()
       } else {
         toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
     } else {
       toggleWalletModal()

@@ -10,6 +10,7 @@ import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { injected } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import usePrevious from '../../hooks/usePrevious'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
 // import { ExternalLink } from '../../theme'
@@ -127,7 +128,8 @@ export default function WalletModal({
   ENSName?: string
 }) {
   // 重要的是，这些都是从特定于帐户的web3 react上下文中销毁的
-  const { active, account, connector, activate, error, chainId } = useWeb3React()
+  const { active, connector, activate, error } = useWeb3React()
+  const { account, chainId } = useActiveReact()
 // console.log(active)
 // console.log(connector)
   const { t } = useTranslation()

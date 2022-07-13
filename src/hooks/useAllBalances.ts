@@ -25,7 +25,7 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const savedBalance = useRef<any>()
 
   const fetchBalance = useCallback(() => {
-    console.log(token)
+    // console.log(token)
     if (token) {
       if ([ChainId.TERRA].includes(selectChainId) && connectedWallet?.walletAddress) {
         getTerraBalances({
