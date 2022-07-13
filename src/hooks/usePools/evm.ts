@@ -1,54 +1,40 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useBatchData } from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../index'
+import { isAddress } from '../../utils/isAddress'
 
-export function useEvmPools ({
-  account,
-  tokenList,
-  chainId
-}:any) {
-  const { library, chainId: curChainId } = useActiveWeb3React()
-  // const [poolData, setPoolData] = useState<any>()
-  const calls = useMemo(() => {
-    const arr = []
-    for (const item of tokenList) {
-      arr.push({
-        callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [item.anytoken]),
-        target: item.underlying,
-        label: 'balanceOf',
-        fragment: 'balanceOf',
-        key: item.anytoken
-      })
-      arr.push({
-        callData: ERC20_INTERFACE.encodeFunctionData('totalSupply', []),
-        target: item.anytoken,
-        label: 'totalSupply',
-        fragment: 'totalSupply',
-        key: item.anytoken
-      })
-      if (account) {
-        arr.push({
-          callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [account]),
-          target: item.anytoken,
-          label: 'balance',
+
+export function useEvmPoolDatas () {
+  const getEvmPoolsDatas = useCallback((chainId:any, list:any, account?:any, provider?:any) => {
+    return new Promise(resolve => {
+      const calls:any = []
+      for (const item of list) {
+        calls.push({
+          callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [item.anytoken]),
+          target: item.underlying,
+          label: 'balanceOf',
           fragment: 'balanceOf',
           key: item.anytoken
         })
+        calls.push({
+          callData: ERC20_INTERFACE.encodeFunctionData('totalSupply', []),
+          target: item.anytoken,
+          label: 'totalSupply',
+          fragment: 'totalSupply',
+          key: item.anytoken
+        })
+        if (isAddress(account)) {
+          calls.push({
+            callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [account]),
+            target: item.anytoken,
+            label: 'balance',
+            fragment: 'balanceOf',
+            key: item.anytoken
+          })
+        }
       }
-    }
-    // console.log(arr)
-    return arr
-  }, [tokenList, account])
-
-  const getEvmPoolsData = useCallback(() => {
-    return new Promise(resolve => {
-      // console.log('----------curChainId')
-      // console.log(curChainId)
-      // console.log(chainId)
-      // console.log(calls)
       if (calls.length > 0 && chainId) {
-        const provider = curChainId?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
         // console.log(provider)
         useBatchData({chainId, calls, provider}).then((res:any) => {
           // console.log(res)
@@ -74,7 +60,27 @@ export function useEvmPools ({
       }
     })
 
-  }, [calls, account, curChainId, chainId])
+  }, [])
+  return {
+    getEvmPoolsDatas
+  }
+}
+
+export function useEvmPools ({
+  account,
+  tokenList,
+  chainId
+}:any) {
+  const { library, chainId: curChainId } = useActiveWeb3React()
+  const {getEvmPoolsDatas} = useEvmPoolDatas()
+  const getEvmPoolsData = useCallback(() => {
+    return new Promise(resolve => {
+      const provider = curChainId?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
+      getEvmPoolsDatas(chainId, tokenList, account, provider).then(res => {
+        resolve(res)
+      })
+    })
+  }, [account, curChainId, chainId])
   return {getEvmPoolsData}
 }
 

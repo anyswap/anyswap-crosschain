@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import useInterval from '../../hooks/useInterval'
+import {usePoolDatas} from '../../hooks/usePools'
 
 import TokenLogo from '../../components/TokenLogo'
 import Title from '../../components/Title'
@@ -195,7 +196,7 @@ let intervalFN:any
 export default function PoolLists ({
 
 }) {
-  const { chainId, evmAccount } = useActiveReact()
+  const { chainId, evmAccount, account } = useActiveReact()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
   const dispatch = useDispatch()
@@ -204,6 +205,8 @@ export default function PoolLists ({
   const allTokensList:any = usePoolListState(chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
   const poolInfo = usePoolsState()
+
+  const {getPoolsData} = usePoolDatas()
   // console.log(chainId)
   // console.log(allTokensList)
 
@@ -230,9 +233,16 @@ export default function PoolLists ({
     const arr = []
     const chainarr:any = []
     for (const chainID in destList) {
-      // list[chainID] = await getGroupTotalsupply(destList[chainID], chainID, evmAccount)
+      
       chainarr.push(chainID)
-      arr.push(getGroupTotalsupply(destList[chainID], chainID, evmAccount))
+      const c:any = chainID
+      if (isNaN(c)) {
+        console.log(c)
+        console.log(account)
+        arr.push(getPoolsData(c, destList[c], account))
+      } else {
+        arr.push(getGroupTotalsupply(destList[c], c, evmAccount))
+      }
     }
     Promise.all(arr).then((res:any) => {
       // console.log(res)
@@ -252,7 +262,7 @@ export default function PoolLists ({
 
 
   useEffect(() => {
-    // console.log(allTokensList)
+    console.log(allTokensList)
     if (allTokensList) {
       // const list:any = []
       const destList:any = {}
@@ -273,10 +283,12 @@ export default function PoolLists ({
           for (const destTokenKey in destTokenList) {
             const destTokenItem = destTokenList[destTokenKey]
             if (!curPoolTokenSet.includes(destTokenItem.fromanytoken.address)) {
+              curPoolTokenSet.push(destTokenItem.fromanytoken.address)
               curPoolTokenArr.push({
                 token: destTokenItem.fromanytoken.address,
                 dec: tObj.decimals,
-                underlying: destTokenItem.isFromLiquidity ? tObj.address : ''
+                // underlying: destTokenItem.isFromLiquidity ? token : '',
+                underlying: token
               })
             }
             destList[chainID].push({
@@ -293,11 +305,11 @@ export default function PoolLists ({
           token: token
         })
       }
-      // console.log(destList)
+      console.log(destList)
       setPoolList(allToken)
       getOutChainInfo(destList)
     }
-  }, [chainId, allTokensList, intervalCount])
+  }, [chainId, allTokensList, intervalCount, account])
 
   const tokenList = useMemo(() => {
     // console.log(poolInfo)
@@ -424,7 +436,7 @@ export default function PoolLists ({
           ) : (
             <Flex>
               {
-                evmAccount ? (
+                account ? (
                   <>
                   {
                     token ? (<>
@@ -483,7 +495,7 @@ export default function PoolLists ({
           ) : (
             <Flex>
               {
-                evmAccount ? (
+                account ? (
                   <>
                     {
                       token ? (

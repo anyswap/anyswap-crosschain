@@ -1,14 +1,50 @@
-import {useEvmPools, useEvmPool} from './evm'
+import {useEvmPools, useEvmPool, useEvmPoolDatas} from './evm'
 // import { useUserSelectChainId } from '../../state/user/hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useInterval from '../useInterval'
+import { ChainId } from '../../config/chainConfig/chainId'
+import {useNearPoolDatas} from '../near'
+
+export function usePoolDatas () {
+  const {getNearPoolDatas} = useNearPoolDatas()
+  const {getEvmPoolsDatas} = useEvmPoolDatas()
+
+  const getPoolsData = useCallback((chainId, list, account) => {
+    return new Promise(resolve => {
+      if ([ChainId.NEAR, ChainId.NEAR_TEST].indexOf(chainId)) {
+        const arr = []
+        for (const item of list) {
+          arr.push({
+            token: item.underlying,
+            account: account,
+            anytoken: item.token,
+            dec: item.dec
+          })
+        }
+        // console.log(arr)
+        getNearPoolDatas(arr, chainId).then(res => {
+          resolve(res)
+        })
+      } else {
+        getEvmPoolsDatas(chainId, list, account).then(res => {
+          resolve(res)
+        })
+      }
+    })
+  }, [getNearPoolDatas, getEvmPoolsDatas])
+
+  return {
+    getPoolsData
+  }
+}
+
 export function usePools ({
   account,
   tokenList,
   chainId
 }:any) {
   // const {selectNetworkInfo} = useUserSelectChainId()
-const [poolData, setPoolData] = useState<any>()
+  const [poolData, setPoolData] = useState<any>()
   const {getEvmPoolsData} = useEvmPools({
     account,
     tokenList,

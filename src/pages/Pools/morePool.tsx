@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Check } from 'react-feather'
 // import config from '../../config'
 
-// import { useActiveWeb3React } from '../../hooks'
-
 import {fromWei, thousandBit} from '../../utils/tools/tools'
 
 const SubCurrencySelectBox = styled.div`
@@ -106,8 +104,6 @@ export default function PoolTip ({
   tipTitleKey?:any
   onSelectAnyToken?: (value: any) => void
 }) {
-  // const { chainId } = useActiveWeb3React()
-  // const account = '0x12139f3afa1C93303e1EfE3Df142039CC05C6c58'
   const { t } = useTranslation()
   
   return (

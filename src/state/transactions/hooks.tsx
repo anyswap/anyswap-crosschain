@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 
-// import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction, updateUnderlyingStatus } from './actions'
@@ -29,7 +28,6 @@ export function useTransactionAdder(): (
     isLiquidity?: any;
   }
 ) => void {
-  // const { chainId, account } = useActiveWeb3React()
   const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 

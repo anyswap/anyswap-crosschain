@@ -5,7 +5,6 @@ import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-// import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'

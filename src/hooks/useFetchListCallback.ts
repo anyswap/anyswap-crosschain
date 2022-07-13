@@ -17,9 +17,6 @@ import { AppState } from '../state'
 
 import {useActiveReact} from './useActiveReact'
 
-// import getTokenList from '../utils/getTokenList'
-// import resolveENSContentHash from '../utils/resolveENSContentHash'
-// import { useActiveWeb3React } from './index'
 import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 // import {timeout, MAIN_COIN} from '../config/constant'

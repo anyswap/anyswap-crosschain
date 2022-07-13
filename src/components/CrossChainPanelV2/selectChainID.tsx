@@ -5,7 +5,6 @@ import { Currency } from 'anyswap-sdk'
 // import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-// import { useActiveWeb3React } from '../../hooks'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import useInterval from '../../hooks/useInterval'
 import {useNonEVMDestBalance} from '../../hooks/useAllBalances'

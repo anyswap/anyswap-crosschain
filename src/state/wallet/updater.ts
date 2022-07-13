@@ -200,6 +200,7 @@ export default function Updater(): null {
       && !tokenListRef.current
     ) {
       tokenListRef.current = 1
+      console.log(chainId)
       getAllBalance()
     }
   }, [library, calls, chainId, account, rpcItem])

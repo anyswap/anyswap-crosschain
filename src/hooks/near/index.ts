@@ -13,6 +13,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import useInterval from '../useInterval'
+import { isAddress } from '../../utils/isAddress'
 // export enum WrapType {
 //   NOT_APPLICABLE,
 //   WRAP,
@@ -119,6 +120,64 @@ export function useNearBalance () {
     getNearBalance,
     getNearTokenBalance,
     getNearStorageBalance
+  }
+}
+
+export function useNearPoolDatas () {
+  const getNearPoolDatas = useCallback(async(calls, chainId) => {
+    return new Promise(resolve => {
+      const arr = []
+      const labelArr:any = []
+      if (window?.near?.account()) {
+        for (const item of calls) {
+          arr.push(window?.near?.account().viewFunction(
+            item.token,
+            'ft_balance_of',
+            { "account_id": item.anytoken },
+          ))
+          labelArr.push({
+            key: item.anytoken,
+            label: 'balanceOf'
+          })
+          arr.push(window?.near?.account().viewFunction(
+            item.token,
+            'ft_total_supply',
+            {},
+          ))
+          labelArr.push({
+            key: item.anytoken,
+            label: 'totalSupply'
+          })
+          if (isAddress(item.account, chainId)) {
+            arr.push(window?.near?.account().viewFunction(
+              item.anytoken,
+              'ft_balance_of',
+              { "account_id": item.account },
+            ))
+            labelArr.push({
+              key: item.anytoken,
+              label: 'balance'
+            })
+          }
+        }
+      }
+      // console.log(calls)
+      Promise.all(arr).then(res => {
+        // console.log(res)
+        const list:any = {}
+        for (let i = 0, len = arr.length; i < len; i++) {
+          const k = labelArr[i].key
+          const l = labelArr[i].label
+          if (!list[k]) list[k] = {}
+          list[k][l] = res[i]
+        }
+        resolve(list)
+      })
+    })
+  }, [])
+
+  return {
+    getNearPoolDatas,
   }
 }
 

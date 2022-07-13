@@ -17,7 +17,6 @@ import ErrorTip from '../../components/CrossChainPanelV2/errorTip'
 
 import {useCurrencyBalances} from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-// import { useActiveWeb3React } from '../../hooks'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import {useLocalToken} from '../../hooks/Tokens'
 import { useUserSelectChainId } from '../../state/user/hooks'
@@ -76,7 +75,6 @@ const BackArrowView = styled.div`
 const initweek = 14
 export default function CreateLock () {
   const { t } = useTranslation()
-  // const { account, chainId } = useActiveWeb3React()
   const { chainId, evmAccount: account } = useActiveReact()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()

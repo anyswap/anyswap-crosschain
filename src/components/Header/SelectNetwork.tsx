@@ -15,7 +15,6 @@ import { RowBetween } from '../Row'
 import { LazyList } from '../Lazyload/LazyList';
 import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
 
-// import { useActiveWeb3React } from '../../hooks'
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import { ApplicationModal } from '../../state/application/actions'
@@ -493,7 +492,6 @@ function ChainListBox ({
 
 export default function SelectNetwork () {
   // const history = createBrowserHistory()
-  // const { chainId } = useActiveWeb3React()
   const { chainId } = useActiveReact()
   const { t } = useTranslation()
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)

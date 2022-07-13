@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react'
 // import useInterval from '../../hooks/useInterval'
-// import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 // import { useDispatch } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -12,7 +11,6 @@ import { useFetchPoolTokenListCallback } from '../../hooks/useFetchListCallback'
 
 
 export default function Updater(): null {
-  // const { library, chainId } = useActiveWeb3React()
   const { chainId } = useActiveReact()
   const dispatch = useDispatch()
   const version = useTokenListVersionUrl()
