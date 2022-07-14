@@ -314,13 +314,13 @@ export function useTokenBalances(
   tokens?: (Token | undefined)[],
   chainId?:any
 ): { [tokenAddress: string]: TokenAmount | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address?.toLowerCase(), tokens, chainId)[0]
+  return useTokenBalancesWithLoadingIndicator(address ? address?.toLowerCase() : undefined, tokens, chainId)[0]
 }
 
 // get the balance for a single token/account combo
 export function useTokenBalance(account?: string, token?: Token, chainId?:any): TokenAmount | undefined {
   const tokenBalances = useTokenBalances(account, [token], chainId)
-  if (!token) return undefined
+  if (!token?.address) return undefined
   return tokenBalances[token.address.toLowerCase()]
 }
 
@@ -353,9 +353,9 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency, chainId?:any, isETH?:any): CurrencyAmount | undefined {
   // const balances = useTokenBalanceList()
-  const balanceWallet  = useCurrencyBalances(account, [currency], chainId, isETH)[0]
-  const blItem = useOneTokenBalance(currency?.address?.toLowerCase())
   // console.log(currency)
+  const balanceWallet  = useCurrencyBalances(account, currency ? [currency] : [], chainId, isETH)[0]
+  const blItem = useOneTokenBalance(currency ? currency?.address?.toLowerCase() : undefined)
   return useMemo(() => {
     if (chainId || balanceWallet) {
       return balanceWallet
