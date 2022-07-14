@@ -76,8 +76,8 @@ function setDBdata (path:any, data:any) {
     .objectStore(path)
     // .add(data) //新增数据
     .put(data) //更新数据
-  request.onsuccess = function (event:any) {
-    console.log(event);
+  request.onsuccess = function () {
+    // console.log(event);
     console.log(path + '数据写入成功');
   };
   request.onerror = function (event:any) {
