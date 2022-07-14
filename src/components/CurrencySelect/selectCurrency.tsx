@@ -10,7 +10,8 @@ import TokenLogo from '../TokenLogo'
 
 import { TYPE } from '../../theme'
 
-import { useActiveWeb3React } from '../../hooks'
+// import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
@@ -35,7 +36,7 @@ import {
 } from './styleds'
 
 import SearchModal from './searchModal'
-import { isAddress } from '../../utils'
+import { isAddress } from '../../utils/isAddress'
 
 const HeadterRightBox = styled.div`
 
@@ -108,7 +109,7 @@ export default function SelectCurrencyInputPanel({
   // isRouter,
 }: SelectCurrencyInputPanelProps) {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, evmChainId } = useActiveReact()
   // const account = '0x4188663a85C92EEa35b5AD3AA5cA7CeB237C6fe9'
   const useChainId = customChainId ? customChainId : chainId
   const theme = useContext(ThemeContext)
@@ -119,7 +120,7 @@ export default function SelectCurrencyInputPanel({
   // const useTokenList = Object.keys(allTokens).length > 0 ? allTokens : allTokensList
   const useTokenList = allTokens
   // console.log(useTokenList)
-  // console.log(allTokens)
+  // console.log(useChainId)
   //   console.log(allTokensList)
   const handleDismissSearch = useCallback(() => {
     // console.log(allTokens)
@@ -130,8 +131,9 @@ export default function SelectCurrencyInputPanel({
     }
   }, [setModalOpen])
   const formatCurrency = useLocalToken(currency ?? undefined)
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, formatCurrency ?? undefined)
-  const selectedETHBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const useAccount:any = isAddress(account, evmChainId)
+  const selectedCurrencyBalance = useCurrencyBalance(useAccount ?? undefined, formatCurrency ?? undefined)
+  const selectedETHBalance = useETHBalances(useAccount ? [useAccount] : [])?.[useAccount ?? '']
 
   const useBalance = useMemo(() => {
     // console.log(hideBalance)
@@ -142,7 +144,7 @@ export default function SelectCurrencyInputPanel({
       // console.log(isNativeToken)
       // console.log(selectedCurrencyBalance)
       return selectedCurrencyBalance
-    } else if (isNativeToken || !isAddress(currency?.address)) {
+    } else if (isNativeToken || !isAddress(currency?.address, evmChainId)) {
       if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
         return selectedCurrencyBalance
       } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {

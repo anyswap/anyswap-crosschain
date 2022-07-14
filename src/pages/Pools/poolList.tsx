@@ -237,8 +237,8 @@ export default function PoolLists ({
       chainarr.push(chainID)
       const c:any = chainID
       if (isNaN(c)) {
-        console.log(c)
-        console.log(account)
+        // console.log(c)
+        // console.log(account)
         arr.push(getPoolsData(c, destList[c], account))
       } else {
         arr.push(getGroupTotalsupply(destList[c], c, evmAccount))
@@ -262,7 +262,7 @@ export default function PoolLists ({
 
 
   useEffect(() => {
-    console.log(allTokensList)
+    // console.log(allTokensList)
     if (allTokensList) {
       // const list:any = []
       const destList:any = {}
@@ -287,8 +287,8 @@ export default function PoolLists ({
               curPoolTokenArr.push({
                 token: destTokenItem.fromanytoken.address,
                 dec: tObj.decimals,
-                // underlying: destTokenItem.isFromLiquidity ? token : '',
-                underlying: token
+                underlying: destTokenItem.isFromLiquidity ? token : '',
+                // underlying: token
               })
             }
             destList[chainID].push({
@@ -305,7 +305,7 @@ export default function PoolLists ({
           token: token
         })
       }
-      console.log(destList)
+      // console.log(destList)
       setPoolList(allToken)
       getOutChainInfo(destList)
     }

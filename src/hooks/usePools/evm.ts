@@ -35,7 +35,7 @@ export function useEvmPoolDatas () {
         }
       }
       if (calls.length > 0 && chainId) {
-        // console.log(provider)
+        console.log(calls)
         useBatchData({chainId, calls, provider}).then((res:any) => {
           // console.log(res)
           const list: any = {}

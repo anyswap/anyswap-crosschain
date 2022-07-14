@@ -194,6 +194,7 @@ export default function SwapNative() {
         })
       }
     }
+    // console.log(arr)
     return arr
   }, [selectCurrency, anyTokenList])
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})

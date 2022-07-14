@@ -11,6 +11,8 @@ export function usePoolDatas () {
 
   const getPoolsData = useCallback((chainId, list, account) => {
     return new Promise(resolve => {
+      // console.log(chainId)
+      // console.log(list)
       if ([ChainId.NEAR, ChainId.NEAR_TEST].indexOf(chainId)) {
         const arr = []
         for (const item of list) {
@@ -50,11 +52,26 @@ export function usePools ({
     tokenList,
     chainId
   })
+  const {getNearPoolDatas} = useNearPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
     let fetchCallback:any
     if (!isNaN(chainId)) {
       fetchCallback = getEvmPoolsData
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].indexOf(chainId)) {
+      const arr = []
+      for (const item of tokenList) {
+        arr.push({
+          token: item.underlying,
+          account: account,
+          anytoken: item.anytoken
+        })
+      }
+      // console.log(arr)
+      getNearPoolDatas(arr, chainId).then(res => {
+        // console.log(res)
+        setPoolData(res)
+      })
     }
     if (fetchCallback) {
       fetchCallback().then((res:any) => {

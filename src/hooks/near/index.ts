@@ -14,6 +14,8 @@ import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import useInterval from '../useInterval'
 import { isAddress } from '../../utils/isAddress'
+import { ChainId } from '../../config/chainConfig/chainId'
+import {VALID_BALANCE} from '../../config/constant'
 // export enum WrapType {
 //   NOT_APPLICABLE,
 //   WRAP,
@@ -128,27 +130,33 @@ export function useNearPoolDatas () {
     return new Promise(resolve => {
       const arr = []
       const labelArr:any = []
-      if (window?.near?.account()) {
+      // console.log(chainId)
+      if (window?.near?.account() && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId) ) {
+
         for (const item of calls) {
-          arr.push(window?.near?.account().viewFunction(
-            item.token,
-            'ft_balance_of',
-            { "account_id": item.anytoken },
-          ))
-          labelArr.push({
-            key: item.anytoken,
-            label: 'balanceOf'
-          })
-          arr.push(window?.near?.account().viewFunction(
-            item.token,
-            'ft_total_supply',
-            {},
-          ))
-          labelArr.push({
-            key: item.anytoken,
-            label: 'totalSupply'
-          })
+          if (item.token) {
+            arr.push(window?.near?.account().viewFunction(
+              item.token,
+              'ft_balance_of',
+              { "account_id": item.anytoken },
+            ))
+            labelArr.push({
+              key: item.anytoken,
+              label: 'balanceOf'
+            })
+            arr.push(window?.near?.account().viewFunction(
+              item.token,
+              'ft_total_supply',
+              {},
+            ))
+            labelArr.push({
+              key: item.anytoken,
+              label: 'totalSupply'
+            })
+          }
+          
           if (isAddress(item.account, chainId)) {
+            
             arr.push(window?.near?.account().viewFunction(
               item.anytoken,
               'ft_balance_of',
@@ -171,6 +179,7 @@ export function useNearPoolDatas () {
           if (!list[k]) list[k] = {}
           list[k][l] = res[i]
         }
+        // console.log(list)
         resolve(list)
       })
     })
@@ -251,10 +260,81 @@ export function useSendNear () {
       })
     })
   }, [])
+
+  const depositNearToken = useCallback(async(contractId, anyContractId, routerContractId, amount, bindaddr, selectchain) => {
+    return new Promise((resolve, reject) => {
+      console.log('sendNearToken')
+      const actions = {
+        receiverId: contractId,
+        actions: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              'receiver_id': routerContractId,
+              amount: amount,  // wNear decimals is 24
+              msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+            },
+            gas: '300000000000000',
+            deposit: '1'
+          }
+        ]
+      }
+      console.log(actions)
+      let tx:any = {}
+      window.near.signAndSendTransaction(actions).then((res:any) => {
+        console.log(res)
+        if (res?.response && !res?.response.error && res?.response.length > 0) {
+          tx = res?.response[0]?.transaction
+          resolve(tx)
+        } else {
+          reject(res?.response?.error)
+        }
+      }).catch((error:any) => {
+        reject(error)
+      })
+    })
+  }, [])
+
+  const withdrawNearToken = useCallback(async(contractId, anyContractId, routerContractId, amount, bindaddr, selectchain) => {
+    return new Promise((resolve, reject) => {
+      console.log('sendNearToken')
+      const actions = {
+        receiverId: contractId,
+        actions: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              'receiver_id': routerContractId,
+              amount: amount,  // wNear decimals is 24
+              msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+            },
+            gas: '300000000000000',
+            deposit: '1'
+          }
+        ]
+      }
+      console.log(actions)
+      let tx:any = {}
+      window.near.signAndSendTransaction(actions).then((res:any) => {
+        console.log(res)
+        if (res?.response && !res?.response.error && res?.response.length > 0) {
+          tx = res?.response[0]?.transaction
+          resolve(tx)
+        } else {
+          reject(res?.response?.error)
+        }
+      }).catch((error:any) => {
+        reject(error)
+      })
+    })
+  }, [])
+
+
   return {
     sendNear,
-    // sendWnear,
-    sendNearToken
+    sendNearToken,
+    depositNearToken,
+    withdrawNearToken,
   }
 }
 
@@ -338,7 +418,7 @@ export function useNearSendTxns(
     return {
       // wrapType: WrapType.WRAP,
       balance,
-      execute: receiverId &&  inputAmount ? async () => {
+      execute: receiverId && (sufficientBalance || !VALID_BALANCE) && inputAmount ? async () => {
         try {
           
           const txReceipt:any = inputCurrency?.tokenType === "NATIVE" ? await sendNear(routerToken, inputAmount, receiverId, selectChain) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
@@ -380,3 +460,97 @@ export function useNearSendTxns(
     }
   }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken])
 }
+
+/**
+ * any token 充值与提现underlying
+ * 给定选定的输入和输出货币，返回一个wrap回调
+ * @param inputCurrency 选定的输入货币
+ * @param typedValue 用户输入值
+ */
+//  export function useNearSwapPoolUnderlyingCallback(
+//   inputCurrency: any,
+//   inputToken: string | undefined,
+//   // anyContractId:any,
+//   contractId:any,
+//   typedValue: string | undefined,
+//   swapType: string | undefined,
+//   // selectCurrency: any,
+//   chainId: any
+// // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+//   // const { chainId } = useActiveReact()
+//   // const bridgeContract = useSwapUnderlyingContract(isAddress(inputToken, evmChainId))
+//   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+//   const { t } = useTranslation()
+//   const {depositNearToken, withdrawNearToken} = useSendNear()
+  
+//   const [balance, setBalance] = useState<any>()
+//   // const useAccount:any = isAddress(account, evmChainId)
+//   // const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+//   // const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
+//   // const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+//   // const underlyingToken = contractId ? contractId : anyContractId
+//   const {
+//     getNearBalance,
+//     getNearTokenBalance
+//   } = useNearBalance()
+
+//   const getBalance = useCallback(() => {
+//     if (inputCurrency?.tokenType === 'NATIVE') {
+//       getNearBalance().then(res => {
+//         if (res?.available) {
+//           // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+//           setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
+//         } else {
+//           setBalance('')
+//         }
+//       })
+//     } else {
+//       getNearTokenBalance({token: contractId}).then(res => {
+//         // console.log(contractId)
+//         // console.log(res)
+//         if (res) {
+//           // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+//           setBalance(BigAmount.format(inputCurrency?.decimals,res))
+//         } else {
+//           setBalance('')
+//         }
+//       })
+//     }
+//   }, [inputCurrency, contractId])
+
+//   useEffect(() => {
+//     getBalance()
+//   }, [inputCurrency, contractId])
+
+//   useInterval(getBalance, 1000 * 10)
+//   // console.log(balance?.raw.toString())
+//   // console.log(inputCurrency)
+//   // 我们总是可以解析输入货币的金额，因为包装是1:1
+//   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [typedValue, inputCurrency])
+//   const addTransaction = useTransactionAdder()
+//   return useMemo(() => {
+//     // console.log(inputCurrency)
+//     if (!chainId || !inputCurrency || !swapType || [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) return NOT_APPLICABLE
+//     // console.log(inputAmount?.raw.toString())
+
+//     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+//     // console.log(sufficientBalance)
+//     return {
+//       execute:
+//       (sufficientBalance || !VALID_BALANCE) && inputAmount
+//           ? async () => {
+//               try {
+//                 // console.log(inputAmount.raw.toString(16))
+//                 const txReceipt:any = swapType === 'deposit' ? await depositNearToken : await withdrawNearToken
+//                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${inputCurrency?.symbol}` })
+//               } catch (error) {
+//                 console.log('Could not swapout', error)
+//                 onChangeViewErrorTip(error, true)
+//               }
+//             }
+//           : undefined,
+//       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+//     }
+//   }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
+// }

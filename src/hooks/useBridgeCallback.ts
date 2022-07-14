@@ -8,11 +8,12 @@ import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../state/application/hooks'
 // import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
+import {useActiveReact} from './useActiveReact'
 import { useBridgeContract, useSwapUnderlyingContract, useSwapBTCContract, useSwapETHContract } from './useContract'
 // import {useSwapBTCABI, useSwapETHABI} from './useContract'
 // import {signSwapoutData, signSwapinData} from 'multichain-bridge'
 // import {signSwapoutData, signSwapinData} from './useBuildData'
-import { isAddress } from '../utils'
+import { isAddress } from '../utils/isAddress'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 // import { MsgSend } from '@terra-money/terra.js';
 import {
@@ -64,20 +65,20 @@ export function useBridgeCallback(
   destConfig: any,
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
-  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  // console.log(inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   let balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   if (usePoolType && usePoolType === 'withdraw') {
     balance = anybalance
   }
   // console.log(balance?.raw.toString(16))
-  // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
@@ -86,7 +87,7 @@ export function useBridgeCallback(
     // console.log(inputToken)
     // console.log(selectCurrency)
     // console.log(bridgeContract)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -113,7 +114,7 @@ export function useBridgeCallback(
                   destConfig?.chainId
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
@@ -128,7 +129,7 @@ export function useBridgeCallback(
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: chainId,
+                    chainId: evmChainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
@@ -151,7 +152,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
 }
 
 
@@ -174,14 +175,14 @@ export function useBridgeCallback(
   destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
-  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   // console.log(balance)
   // console.log(inputCurrency)
@@ -190,7 +191,7 @@ export function useBridgeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -214,7 +215,7 @@ export function useBridgeCallback(
                 )
                 console.log(txReceipt)
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
@@ -229,7 +230,7 @@ export function useBridgeCallback(
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: chainId,
+                    chainId: evmChainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
@@ -252,7 +253,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
 }
 
 
@@ -275,12 +276,13 @@ export function useBridgeNativeCallback(
   destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const useAccount:any = isAddress(account, evmChainId)
+  const balance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -289,7 +291,7 @@ export function useBridgeNativeCallback(
   return useMemo(() => {
     // console.log(inputCurrency)
     // console.log(balance?.toSignificant(6))
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -308,7 +310,7 @@ export function useBridgeNativeCallback(
                   {value: `0x${inputAmount.raw.toString(16)}`}
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
@@ -323,7 +325,7 @@ export function useBridgeNativeCallback(
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: chainId,
+                    chainId: evmChainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
@@ -344,7 +346,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig])
 }
 
 /**
@@ -361,13 +363,13 @@ export function useBridgeNativeCallback(
   selectCurrency: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useSwapUnderlyingContract(inputToken)
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useSwapUnderlyingContract(isAddress(inputToken, evmChainId))
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  // const balance = useCurrencyBalance(account ?? undefined, selectCurrency?.tokenType === "NATIVE" ? selectCurrency?.tokenType : inputCurrency)
-  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
   // console.log(balance?.raw.toString())
   // console.log(inputCurrency)
@@ -376,7 +378,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(inputAmount?.raw.toString())
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -393,7 +395,7 @@ export function useBridgeNativeCallback(
                 ) : await bridgeContract.withdraw(
                   `0x${inputAmount.raw.toString(16)}`
                 )
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
                 onChangeViewErrorTip(error, true)
@@ -402,7 +404,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
 }
 
 
@@ -420,12 +422,13 @@ export function useBridgeNativeCallback(
   swapType: string | undefined,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken)
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const ethbalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  const anybalance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   const balance = swapType === 'deposit' ? ethbalance : anybalance
   // console.log(balance)
   // console.log(inputCurrency)
@@ -438,7 +441,7 @@ export function useBridgeNativeCallback(
     // console.log(chainId)
     // console.log(inputCurrency)
     // console.log(inputToken)
-    if (!bridgeContract || !chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -461,7 +464,7 @@ export function useBridgeNativeCallback(
                   `0x${inputAmount.raw.toString(16)}`,
                   account
                 )
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}` })
               } catch (error) {
                 console.log('Could not swapout', error)
                 onChangeViewErrorTip(error, true)
@@ -470,7 +473,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
 }
 
 
@@ -494,12 +497,13 @@ export function useBridgeNativeCallback(
   isLiquidity: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -507,7 +511,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -537,7 +541,7 @@ export function useBridgeNativeCallback(
                   toChainID
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
@@ -552,7 +556,7 @@ export function useBridgeNativeCallback(
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: chainId,
+                    chainId: evmChainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
@@ -573,7 +577,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
 }
 
 /**
@@ -596,12 +600,13 @@ export function useBridgeNativeCallback(
   isLiquidity: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const bridgeContract = useBridgeContract(routerToken, toChainID && isNaN(toChainID) ? 'V2' : '')
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { t } = useTranslation()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   // console.log(balance)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
@@ -609,7 +614,7 @@ export function useBridgeNativeCallback(
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     // console.log(inputCurrency)
-    if (!bridgeContract || !chainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID || !deadline || !outputAmount || !routerPath || routerPath.length <= 0) return NOT_APPLICABLE
     // console.log(typedValue)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
@@ -638,7 +643,7 @@ export function useBridgeNativeCallback(
                   toChainID
                 )
                 addTransaction(txReceipt, {
-                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
+                  summary: `Cross bridge txns ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
                   value: inputAmount.toSignificant(6),
                   toChainId: toChainID,
                   toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
@@ -653,7 +658,7 @@ export function useBridgeNativeCallback(
                 if (txReceipt?.hash && account) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: chainId,
+                    chainId: evmChainId,
                     selectChain: toChainID,
                     account: account?.toLowerCase(),
                     value: inputAmount.raw.toString(),
@@ -674,7 +679,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, chainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
 }
 
 
@@ -840,7 +845,7 @@ export function useBridgeNativeCallback(
   execute?: undefined | (() => Promise<void>);
   inputError?: string 
 } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useActiveReact()
   const { t } = useTranslation()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
