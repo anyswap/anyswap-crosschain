@@ -15,7 +15,8 @@ export function isEvmAddress(value: any): string | false {
   }
 }
 
-export function isAddress(address: string, chainId?: any) {
+export function isAddress(address: any, chainId?: any) {
+  if (!address) return undefined
   if (chainId) {
     if ([ChainId.TRX].includes(chainId)) {
       return isTRXAddress(address)
