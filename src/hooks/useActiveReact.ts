@@ -33,7 +33,8 @@ export function useActiveReact () {
     return {
       account: useAccount,
       chainId: useChainId,
-      evmAccount: account
+      evmAccount: account,
+      evmChainId: useChainId === chainId ? chainId : '',
     }
   }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress, nearAddress])
 }
