@@ -1,10 +1,11 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect } from "react"
 import { createBrowserHistory } from 'history'
-import styled, {ThemeContext} from "styled-components"
+// import styled, {ThemeContext} from "styled-components"
+import styled from "styled-components"
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle, AlertCircle } from 'react-feather'
-import Loader from '../Loader'
+// import { CheckCircle, AlertCircle } from 'react-feather'
+// import Loader from '../Loader'
 import Copy from '../AccountDetails/Copy'
 import TokenLogo from '../TokenLogo'
 
@@ -29,37 +30,39 @@ import config from '../../config'
 
 import {thousandBit} from '../../utils/tools/tools'
 
+import TxnsProgress from './txnsProgress'
+
 // import ScheduleIcon from '../../assets/images/icon/schedule.svg'
 
-const ChainStatusBox = styled.div`
-  ${({ theme }) => theme.flexBC};
-  width: 100%;
-  font-size:12px;
-  color: ${({ theme }) => theme.textColorBold};
-  // color: #031a6e;
-  font-weight:bold;
-  padding: 12px 15px;
-  border-radius:9px;
-  margin:15px 0;
-  .name {
-    ${({ theme }) => theme.flexSC};
-  }
-  .status {
-    ${({ theme }) => theme.flexEC};
-  }
-  &.yellow,&.Confirming,&.Crosschaining,&.Routing {
-    border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
-    background: ${({ theme }) => theme.birdgeStateBg};
-  }
-  &.green,&.Success, &.Pending{
-    border: 1px solid ${({ theme }) => theme.birdgeStateBorder1};
-    background: ${({ theme }) => theme.birdgeStateBg1};
-  }
-  &.red,&.Failure, &.Timeout, &.BigAmount{
-    border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
-    background: ${({ theme }) => theme.birdgeStateBg2};
-  }
-`
+// const ChainStatusBox = styled.div`
+//   ${({ theme }) => theme.flexBC};
+//   width: 100%;
+//   font-size:12px;
+//   color: ${({ theme }) => theme.textColorBold};
+//   // color: #031a6e;
+//   font-weight:bold;
+//   padding: 12px 15px;
+//   border-radius:9px;
+//   margin:15px 0;
+//   .name {
+//     ${({ theme }) => theme.flexSC};
+//   }
+//   .status {
+//     ${({ theme }) => theme.flexEC};
+//   }
+//   &.yellow,&.Confirming,&.Crosschaining,&.Routing {
+//     border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
+//     background: ${({ theme }) => theme.birdgeStateBg};
+//   }
+//   &.green,&.Success, &.Pending{
+//     border: 1px solid ${({ theme }) => theme.birdgeStateBorder1};
+//     background: ${({ theme }) => theme.birdgeStateBg1};
+//   }
+//   &.red,&.Failure, &.Timeout, &.BigAmount{
+//     border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
+//     background: ${({ theme }) => theme.birdgeStateBg2};
+//   }
+// `
 
 const Link = styled(ExternalLink)`
 text-align:right;
@@ -212,7 +215,7 @@ export default function HistoryDetails ({
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
-  const theme = useContext(ThemeContext)
+  // const theme = useContext(ThemeContext)
   const useToStatus = DestChainStatus({fromStatus,toStatus})
   const history = createBrowserHistory()
   useEffect(() => {
@@ -282,7 +285,7 @@ export default function HistoryDetails ({
             </div>
           </div>
         </TxnsDtilList>
-        <ChainStatusBox className={fromStatus}>
+        {/* <ChainStatusBox className={fromStatus}>
           <div className="name">
             {config.getCurChainInfo(fromChainID)?.name + ' Status'}
           </div>
@@ -296,7 +299,7 @@ export default function HistoryDetails ({
             }
             {fromStatus === Status.Pending ? (<><span>{fromStatus}</span></>) : fromStatus}
           </span>
-        </ChainStatusBox>
+        </ChainStatusBox> */}
         <TxnsDtilList>
           <div className="item">
             <h3 className="title">{t('to')}</h3>
@@ -349,16 +352,8 @@ export default function HistoryDetails ({
             ) : ''
           }
         </TxnsDtilList>
-        <ChainStatusBox className={useToStatus ? useToStatus : Status.Pending}>
+        {/* <ChainStatusBox className={useToStatus ? useToStatus : Status.Pending}>
           <div className="name">
-            
-            {/* {
-              toStatus === Status.Success? (
-                <CheckCircle size="16" style={{marginRight: '10px'}} />
-              ) : <>
-                <Loader stroke="#5f6bfb" style={{marginRight: '10px'}} />
-              </>
-            } */}
             {config.getCurChainInfo(toChainID)?.name + ' Status'}
           </div>
           <span className="status">
@@ -371,7 +366,9 @@ export default function HistoryDetails ({
             }
             {useToStatus ? useToStatus : '-'}
           </span>
-        </ChainStatusBox>
+        </ChainStatusBox> */}
+        
+        <TxnsProgress fromStatus={fromStatus} toStatus={toStatus} />
         {
           avgTime ? (
             <TxnsDtilList>
@@ -420,6 +417,7 @@ export default function HistoryDetails ({
             </>
           ) : ''
         }
+
         
         
         {
