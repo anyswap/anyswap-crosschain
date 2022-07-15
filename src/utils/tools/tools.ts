@@ -136,63 +136,78 @@ export function formatDecimal(num:any, decimal:number) {
   }
   return Number(parseFloat(num).toFixed(decimal))
 }
+
+function thousandBitFormat (num:any, dec:any = 8) {
+  const numArr = num.toString().split('.')
+  const numInt = numArr[0]
+  const numDec = numArr[1] ? numArr[1] : ''
+  const numStr = numInt.toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+    return s+','
+  })
+  return numStr + (numDec ? '.' + numDec.substr(0,dec) : '')
+}
+
+// console.log(thousandBitFormat(2732816))
+// console.log(thousandBitFormat(2732816.123456789,2))
+
 export function thousandBit (num:any, dec:any = 8) {
   if (!Number(num)) return '0.00'
-    if (Number(num) < 0.00000001) return '<0.00000001'
-    if (Number(num) < 0.01) {
-      if (isNaN(dec)) {
-        return num
-      } else {
-        return formatDecimal(num, 6)
-      }
-    }
-    if (Number(num) < 1) {
-      if (isNaN(dec)) {
-        return num
-      } else {
-        return formatDecimal(num, 4)
-      }
-    }
-    if (Number(num) < 1000) {
-      if (isNaN(dec)) {
-        return num
-      } else {
-        return formatDecimal(num, dec)
-      }
-    }
-    const _num = num = Number(num)
-    if (isNaN(num)) {
-      num = 0
-      num = formatDecimal(num, dec)
+  if (Number(num) < 0.00000001) return '<0.00000001'
+  if (Number(num) < 0.01) {
+    if (isNaN(dec)) {
+      return num
     } else {
-      if (isNaN(dec)) {
-        if (num.toString().indexOf('.') === -1) {
-          num = Number(num).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
-            return s+','
-          })
-        } else {
-          const numSplit = num.toString().split('.')
-          numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
-          num = Number(numSplit[0]).toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
-          // num = Number(numSplit[0]).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
-          //   return s+','
-          // })
-          num = num.toString().split('.')[0] + '.' + numSplit[1]
-        }
-      } else {
-        if (num.toString().indexOf('.') === -1) {
-          num = formatDecimal(num, dec).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
-            return s+','
-          })
-        } else {
-          num = formatDecimal(num, dec).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
-        }
-      }
+      return formatDecimal(num, 6)
     }
-    if (_num < 0 && num.toString().indexOf('-') < 0) {
-      num = '-' + num
+  }
+  if (Number(num) < 1) {
+    if (isNaN(dec)) {
+      return num
+    } else {
+      return formatDecimal(num, 4)
     }
-    return num
+  }
+  if (Number(num) < 1000) {
+    if (isNaN(dec)) {
+      return num
+    } else {
+      return formatDecimal(num, dec)
+    }
+  }
+  const _num = num = Number(num)
+  if (isNaN(num)) {
+    num = 0
+    num = formatDecimal(num, dec)
+  } else {
+    num = thousandBitFormat(num, dec)
+    // if (isNaN(dec)) {
+    //   if (num.toString().indexOf('.') === -1) {
+    //     num = Number(num).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+    //       return s+','
+    //     })
+    //   } else {
+    //     const numSplit = num.toString().split('.')
+    //     numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
+    //     num = Number(numSplit[0]).toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+    //     // num = Number(numSplit[0]).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+    //     //   return s+','
+    //     // })
+    //     num = num.toString().split('.')[0] + '.' + numSplit[1]
+    //   }
+    // } else {
+    //   if (num.toString().indexOf('.') === -1) {
+    //     num = formatDecimal(num, dec).toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
+    //       return s+','
+    //     })
+    //   } else {
+    //     num = formatDecimal(num, dec).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+    //   }
+    // }
+  }
+  if (_num < 0 && num.toString().indexOf('-') < 0) {
+    num = '-' + num
+  }
+  return num
 }
 
 export function formatNum (num:any) {
