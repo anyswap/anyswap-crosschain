@@ -17,7 +17,7 @@ export function getStatus (status:any) {
     statusType = Status.Crosschaining
   } else if ([9, 10].includes(status)) {
     statusType = Status.Success
-  } else if ([1,2, 4, 6, 3, 16, 11, 14, ].includes(status)) {
+  } else if ([1,2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
     statusType = Status.Failure
   }
   // else if ([].includes(status)) {
@@ -29,4 +29,4 @@ export function getStatus (status:any) {
   return statusType
 }
 
-export const END_STATUS = [1, 3, 10, 16,-2]
+export const END_STATUS = [1, 3, 10, 16,-2, -3]
