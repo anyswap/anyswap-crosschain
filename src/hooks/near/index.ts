@@ -106,6 +106,7 @@ export function useNearBalance () {
   const getNearStorageBalance = useCallback(async({account}) => {
     let bl:any
     const useAccount = account ? account : window?.near?.accountId
+    // console.log(useAccount)
     try {
       
       bl = await window?.near?.account().viewFunction(
@@ -234,16 +235,53 @@ export function useSendNear () {
         receiverId: contractId,
         actions: [
           {
-            methodName: 'ft_transfer_call',
+            // methodName: 'ft_transfer_call',
+            methodName: 'ft_transfer',
             args: {
               'receiver_id': routerContractId,
               amount: amount,  // wNear decimals is 24
-              msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+              // msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
+              msg: `${bindaddr} ${selectchain}`
             },
             gas: '300000000000000',
             deposit: '1'
           }
         ]
+      }
+      console.log(actions)
+      let tx:any = {}
+      window.near.signAndSendTransaction(actions).then((res:any) => {
+        console.log(res)
+        if (res?.response && !res?.response.error && res?.response.length > 0) {
+          tx = res?.response[0]?.transaction
+          resolve(tx)
+        } else {
+          reject(res?.response?.error)
+        }
+      }).catch((error:any) => {
+        reject(error)
+      })
+    })
+  }, [])
+
+  const depositStorageNear = useCallback((contractid, accountId) => {
+    return new Promise((resolve, reject) => {
+      console.log('sendNearToken')
+      const actions = {
+        receiverId: contractid,
+        actions: [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              "account_id": accountId, 
+              // "registration_only": true, 
+            },
+            gas: '300000000000000',
+            deposit: 1e24
+            // deposit: amount
+          }
+        ],
+        // amount: amount
       }
       console.log(actions)
       let tx:any = {}
@@ -333,6 +371,7 @@ export function useSendNear () {
   return {
     sendNear,
     sendNearToken,
+    depositStorageNear,
     depositNearToken,
     withdrawNearToken,
   }

@@ -55,9 +55,13 @@ export function usePools ({
   const {getNearPoolDatas} = useNearPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
-    let fetchCallback:any
+    // let fetchCallback:any
     if (!isNaN(chainId)) {
-      fetchCallback = getEvmPoolsData
+      // fetchCallback = getEvmPoolsData
+      getEvmPoolsData().then((res:any) => {
+        // console.log(res)
+        setPoolData(res)
+      })
     } else if ([ChainId.NEAR, ChainId.NEAR_TEST].indexOf(chainId)) {
       const arr = []
       for (const item of tokenList) {
@@ -73,17 +77,14 @@ export function usePools ({
         setPoolData(res)
       })
     }
-    if (fetchCallback) {
-      fetchCallback().then((res:any) => {
-        setPoolData(res)
-      })
-    }
-  }, [chainId, getEvmPoolsData])
+  }, [chainId, getEvmPoolsData, getNearPoolDatas])
 
   useEffect(() => {
     fetchPoolCallback()
-  }, [chainId, getEvmPoolsData])
+  }, [chainId, getEvmPoolsData, getNearPoolDatas])
+
   useInterval(fetchPoolCallback, 1000 * 10)
+
   return {poolData}
 }
 
@@ -98,22 +99,19 @@ export function usePool (
   const {getEvmPoolsData} = useEvmPool(chainId, account, anytoken, underlying)
 
   const fetchPoolCallback = useCallback(() => {
-    let fetchCallback:any
     if (!isNaN(chainId)) {
-      fetchCallback = getEvmPoolsData
-    }
-    if (fetchCallback) {
-      fetchCallback().then((res:any) => {
+      getEvmPoolsData().then((res:any) => {
+        // console.log(res)
         setPoolData(res)
       })
     }
-  }, [chainId, account, anytoken, getEvmPoolsData])
+  }, [chainId, account, anytoken, underlying, getEvmPoolsData])
 
   useEffect(() => {
     fetchPoolCallback()
-  // }, [chainId, fetchPoolCallback])
   }, [chainId, account, anytoken])
 
   useInterval(fetchPoolCallback, 1000 * 10)
+
   return {poolData}
 }

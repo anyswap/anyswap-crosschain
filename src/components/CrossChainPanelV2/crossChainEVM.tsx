@@ -45,6 +45,10 @@ import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
 
 import {usePool} from '../../hooks/usePools'
+import {
+  useNearBalance,
+  useSendNear
+} from '../../hooks/near'
 
 import {
   LogoBox,
@@ -84,7 +88,11 @@ export default function CrossChain({
   // console.log(allTokensList)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+
+  const {getNearStorageBalance} = useNearBalance()
+
   const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
+  const {depositStorageNear} = useSendNear()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -621,6 +629,21 @@ export default function CrossChain({
     }
     return url
   }, [destConfig, selectChain, maxInputValue])
+  const [nearStorageBalance, setNearStorageBalance] = useState<any>()
+  useEffect(() => {
+    if (
+      selectChain === ChainId.NEAR
+    ) {
+      getNearStorageBalance({account: recipient}).then((res:any) => {
+        console.log(res)
+        setNearStorageBalance(res)
+      })
+    }
+    // getNearStorageBalance({}).then((res:any) => {
+    //   console.log(res)
+    // })
+  }, [selectChain, recipient])
+
   function CrossChainTip () {
     if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
       return <>
@@ -640,10 +663,22 @@ export default function CrossChain({
       selectChain === ChainId.XRP
       && xrplimit === 'NOPASS'
     ) {
-      
       return <ConfirmText>
         Get trust set error, the transaction may fail.Please use <a href={xrpurl} target='__blank'>{xrpurl}</a>
       </ConfirmText>
+    } else if (
+      !nearStorageBalance
+      && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
+    ) {
+      if (window?.near?.account()) {
+        return <ConfirmText>
+          You need to deposit the storage.
+        </ConfirmText>
+      } else {
+        return <ConfirmText>
+          You need to deposit the storage.
+        </ConfirmText>
+      }
     } else {
       let otherTip:any
       if (selectChain === ChainId.XRP && xrplimit === 'ERROR') {
@@ -723,6 +758,19 @@ export default function CrossChain({
       }}>
         TRUST SET
       </ButtonPrimary>
+    } else if (
+      !nearStorageBalance
+      && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
+    ) {
+      return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+        depositStorageNear(destConfig?.address, recipient).then(() => {
+          alert('Deposit storage success.')
+        }).catch(() => {
+          alert('Deposit storage failure.')
+        })
+      }}>
+        Deposit Storage
+      </ButtonPrimary>
     } else {
       return <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
         handleSwap()
@@ -746,42 +794,6 @@ export default function CrossChain({
           <CrossChainTip />
           <BottomGrouping>
             <ViemConfirmBtn />
-            {/* {!evmAccount ? (
-                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-              ) : (
-                isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
-                  <ButtonConfirmed
-                    onClick={() => {
-                      onDelay()
-                      approveCallback().then(() => {
-                        onClear(1)
-                      })
-                    }}
-                    disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                    width="48%"
-                    altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                    // confirmed={approval === ApprovalState.APPROVED}
-                  >
-                    {approval === ApprovalState.PENDING ? (
-                      <AutoRow gap="6px" justify="center">
-                        {t('Approving')} <Loader stroke="white" />
-                      </AutoRow>
-                    ) : approvalSubmitted ? (
-                      t('Approved')
-                    ) : (
-                      t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
-                    )}
-                  </ButtonConfirmed>
-                ) : (
-                  <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  // <ButtonPrimary disabled={delayAction} onClick={() => {
-                    handleSwap()
-                  }}>
-                    {t('Confirm')}
-                  </ButtonPrimary>
-                )
-              )
-            } */}
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>

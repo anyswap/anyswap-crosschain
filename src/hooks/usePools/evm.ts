@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useBatchData } from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../index'
@@ -34,8 +34,10 @@ export function useEvmPoolDatas () {
           })
         }
       }
+      // console.log(chainId)
+      // console.log(list)
+      // console.log(calls)
       if (calls.length > 0 && chainId) {
-        console.log(calls)
         useBatchData({chainId, calls, provider}).then((res:any) => {
           // console.log(res)
           const list: any = {}
@@ -50,6 +52,7 @@ export function useEvmPoolDatas () {
                 }
               }
             } catch (error) {
+              console.log(calls)
               console.log(error)
             }
           }
@@ -80,7 +83,7 @@ export function useEvmPools ({
         resolve(res)
       })
     })
-  }, [account, curChainId, chainId])
+  }, [account, curChainId, chainId, tokenList, getEvmPoolsDatas])
   return {getEvmPoolsData}
 }
 
@@ -90,9 +93,20 @@ export function useEvmPool (
   anytoken:any,
   underlying: any,
 ) {
+  // console.log(chainId)
+  // console.log(anytoken)
+  // console.log(underlying)
+
+  const tokenList = useMemo(() => {
+    if (anytoken && underlying) {
+      return [{anytoken, underlying}]
+    }
+    return []
+  }, [anytoken, underlying])
+
   const {getEvmPoolsData} = useEvmPools({
     account,
-    tokenList: anytoken && underlying ? [{anytoken, underlying}] : [],
+    tokenList: tokenList,
     chainId
   })
   return {getEvmPoolsData}
