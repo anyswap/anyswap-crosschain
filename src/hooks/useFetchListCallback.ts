@@ -19,7 +19,10 @@ import {useActiveReact} from './useActiveReact'
 
 import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
-// import {timeout, MAIN_COIN} from '../config/constant'
+import {
+  // timeout,
+  MAIN_COIN
+} from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 import {
   setTokenlist,
@@ -47,6 +50,14 @@ function getServerTokenlist (chainId:any) {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {
           list = tokenList.data
+          // const tList = tokenList.data
+          // for (const tokenKey in tList) {
+          //   list[tokenKey] = {
+          //     ...tList[tokenKey],
+          //     key: tokenKey,
+          //     sort: MAIN_COIN.includes(tList[tokenKey].symbol) ? 1 : 2
+          //   }
+          // }
           resolve(list)
         } else {
           resolve('')
@@ -60,13 +71,20 @@ function getServerTokenlist (chainId:any) {
 
 function getServerPoolTokenlist (chainId:any) {
   return new Promise(resolve => {
-    let list:any = {}
+    const list:any = {}
     if (chainId) {
       const url = `${config.bridgeApi}/v4/poollist/${chainId}`
       getUrlData(url).then((tokenList:any) => {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {
-          list = tokenList.data
+          const tList = tokenList.data
+          for (const tokenKey in tList) {
+            list[tokenKey] = {
+              ...tList[tokenKey],
+              key: tokenKey,
+              sort: MAIN_COIN.includes(tList[tokenKey].symbol) ? 1 : 2
+            }
+          }
           resolve(list)
         } else {
           resolve('')

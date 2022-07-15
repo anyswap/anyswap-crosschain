@@ -144,10 +144,17 @@ function thousandBitFormat (num:any, dec:any = 8) {
   const numStr = numInt.toString().replace(/\d{1,3}(?=(\d{3})+$)/g,function(s:any){
     return s+','
   })
+  // console.log(num)
+  // console.log(numDec)
+  // console.log(dec)
+  if (isNaN(dec)) {
+
+    return numStr + (numDec ? '.' + numDec : '')
+  }
   return numStr + (numDec ? '.' + numDec.substr(0,dec) : '')
 }
 
-// console.log(thousandBitFormat(2732816))
+// console.log(thousandBitFormat(111111))
 // console.log(thousandBitFormat(2732816.123456789,2))
 
 export function thousandBit (num:any, dec:any = 8) {
