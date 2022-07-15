@@ -59,8 +59,15 @@ export function useInitSelectCurrency (
       t = [initToken]
     } else if (userInit?.token) {
       t = [userInit?.token?.toLowerCase()]
+    } else if (config.getCurChainInfo(useChainId)?.bridgeInitToken || config.getCurChainInfo(useChainId)?.crossBridgeInitToken) {
+      if (config.getCurChainInfo(useChainId)?.bridgeInitToken) {
+        t.push(config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase())
+      } else if (config.getCurChainInfo(useChainId)?.crossBridgeInitToken) {
+        t.push(config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase())
+      }
+      // t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     } else {
-      t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
+      t = [config.getCurChainInfo(useChainId)?.symbol]
     }
     // console.log(t)
     const list:any = {}
