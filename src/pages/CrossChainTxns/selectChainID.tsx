@@ -276,10 +276,11 @@ export default function SelectChainIdInputPanel({
                       <OptionCardClickable
                         key={index}
                         className={selectChainId && selectChainId === item ? 'active' : ''}
-                        onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
+                        // onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
                       >
                         {/* {Option(item, selectChainId)} */}
-                        <Option curChainId={item} selectChainId={chainId}></Option>
+                        {/* <Option curChainId={item} selectChainId={chainId}></Option> */}
+                        <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val))}></Option>
                       </OptionCardClickable>
                     )
                   })

@@ -962,7 +962,7 @@ export default function Vest () {
                         //   || !rewardList[item.id].list
                         //   || rewardList[item.id].list.length > 0
                         // ) {
-                        if (rewardCount && Number(rewardCount) >= 10) {
+                        if (rewardCount && Number(rewardCount) >= 0.001) {
                           console.log(rewardCount)
                           alert('Please claim the reward first')
                           // if (rewardCount && Number(rewardCount) >= 10) {

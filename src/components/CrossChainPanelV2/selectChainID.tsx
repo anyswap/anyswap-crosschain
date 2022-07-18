@@ -25,6 +25,8 @@ import { TYPE, CloseIcon } from '../../theme'
 
 import {thousandBit} from '../../utils/tools/tools'
 
+import {useStarChain} from '../../state/user/hooks'
+
 import config from '../../config'
 
 import {
@@ -92,11 +94,34 @@ export default function SelectChainIdInputPanel({
   const { t } = useTranslation()
   // const { chainId, account } = useActiveWeb3React()
   const { chainId, evmAccount } = useActiveReact()
+  const {starChainList} = useStarChain()
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalDestOpen, setModalDestOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')
+
+  const comparator = (a:any, b:any) => {
+    if (a.networkName > b.networkName) {
+      return 1
+    }
+    return -1
+  }
+  const useChainList = useMemo(() => {
+    const arr:any = []
+    const starArr:any = []
+    for (const c of chainList) {
+      if (starChainList?.[c]) {
+        starArr.push(config.chainInfo[c])
+      } else {
+        arr.push(config.chainInfo[c])
+      }
+    }
+    return [
+      ...starArr.sort(comparator),
+      ...arr.sort(comparator),
+    ]
+  }, [chainList, starChainList])
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -334,22 +359,20 @@ export default function SelectChainIdInputPanel({
             <div style={{ flex: '1' }}>
               {/* {chainListView()} */}
               {
-                  chainList && chainList.map((item:any, index:any) => {
+                  useChainList.map((item:any, index:any) => {
                     if (
-                      (chainId?.toString() === item?.toString() && !isViewAllChain)
-                      || (config.getCurConfigInfo()?.hiddenChain?.includes(item))
+                      (chainId?.toString() === item.chainID?.toString() && !isViewAllChain)
+                      || (config.getCurConfigInfo()?.hiddenChain?.includes(item.chainID))
                     ) {
                       return ''
                     }
-                    // console.log(selectChainId)
+                    // console.log(useChainList)
                     return (
                       <OptionCardClickable
                         key={index}
-                        className={selectChainId && selectChainId === item ? 'active' : ''}
-                        onClick={() => (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))}
+                        className={selectChainId && selectChainId === item.chainID ? 'active' : ''}
                       >
-                        {/* {Option(item, selectChainId)} */}
-                        <Option curChainId={item} selectChainId={selectChainId}></Option>
+                        <Option curChainId={item.chainID} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item.chainID ? null : handleCurrencySelect(val))}></Option>
                       </OptionCardClickable>
                     )
                   })

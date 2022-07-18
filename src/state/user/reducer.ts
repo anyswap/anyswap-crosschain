@@ -15,7 +15,8 @@ import {
   updateUserDeadline,
   toggleURLWarning,
   selectNetworkId,
-  updateUserBetaMessage
+  updateUserBetaMessage,
+  starChain
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -54,6 +55,7 @@ export interface UserState {
   timestamp: number
   URLWarningVisible: boolean
   selectNetworkId: any
+  starChain: any
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -72,11 +74,30 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
-  selectNetworkId: {}
+  selectNetworkId: {},
+  starChain: {},
 }
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(starChain, (state, { payload: { account, chainId} }) => {
+      if (!state.starChain) state.starChain = {}
+      if (state?.starChain?.[account]) {
+        if (state.starChain[account][chainId]) {
+          delete state.starChain[account][chainId]
+        } else {
+          state.starChain[account][chainId] = {timestamp: Date.now()}
+        }
+      } else {
+        state.starChain = {
+          ...(state?.starChain ? state?.starChain : {}),
+          [account]: {
+            ...(state.starChain[account] ? state.starChain[account] : {}),
+            [chainId]: {timestamp: Date.now()}
+          }
+        }
+      }
+    })
     .addCase(selectNetworkId, (state, { payload: { chainId, label } }) => {
       state.selectNetworkId = {
         chainId, label

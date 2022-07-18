@@ -2,6 +2,7 @@ import { ChainId, Pair, Token } from 'anyswap-sdk'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 // import { useDispatch, useSelector } from 'react-redux'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -18,7 +19,8 @@ import {
   updateUserSlippageTolerance,
   toggleURLWarning,
   selectNetworkId,
-  updateUserBetaMessage
+  updateUserBetaMessage,
+  starChain
 } from './actions'
 
 import config from '../../config'
@@ -215,5 +217,23 @@ export function useUserSelectChainId(): {selectNetworkInfo?:any, setUserSelectNe
 
   return {
     selectNetworkInfo, setUserSelectNetwork
+  }
+}
+
+
+export function useStarChain(): any {
+  const { account } = useActiveReact()
+  const starChainResult = useSelector((state: AppState) => state.user.starChain)
+  const dispatch = useDispatch<AppDispatch>()
+  const onChangeStarChain = useCallback(
+    (chainId: any) => {
+      dispatch(starChain({ account, chainId }))
+    },
+    [dispatch]
+  )
+    // console.log(starChainResult)
+  return {
+    starChainList: account ? starChainResult[account] : {},
+    onChangeStarChain
   }
 }

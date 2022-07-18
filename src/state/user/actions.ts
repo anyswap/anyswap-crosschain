@@ -32,3 +32,5 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
 )
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const selectNetworkId = createAction<{ chainId: string, label: string }>('user/selectNetworkId')
+
+export const starChain = createAction<{ account: any, chainId: any }>('application/starChain')

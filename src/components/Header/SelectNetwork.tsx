@@ -3,7 +3,7 @@ import React, { useMemo, useState, useRef, useCallback,RefObject,createRef } fro
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Settings, CheckSquare } from 'react-feather'
+import { Settings, CheckSquare, Star } from 'react-feather'
 import { Text } from 'rebass'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { YellowCard } from '../Card'
@@ -30,6 +30,8 @@ import {setLocalRPC} from '../../config/chainConfig/methods'
 
 import {selectNetwork} from '../../config/tools/methods'
 
+import {useStarChain} from '../../state/user/hooks'
+
 export const WalletLogoBox = styled.div`
   width:100%;
   ${({theme}) => theme.flexBC}
@@ -40,7 +42,13 @@ export const WalletLogoBox2 = styled.div`
   ${({theme}) => theme.flexBC}
   .left {
     ${({theme}) => theme.flexSC};
-    width: 100%;
+    width: 80%;
+    padding: 0.625rem 0rem 0.625rem 1rem;
+  }
+  .right {
+    ${({theme}) => theme.flexEC};
+    width: 20%;
+    padding: 0.625rem 1rem 0.625rem 1rem;
   }
 `
 
@@ -197,10 +205,12 @@ export const OptionCard = styled(InfoCard)`
   align-items: center;
   justify-content: space-between;
   margin-top: 2rem;
-  padding: 0.625rem 1rem;
+  // padding: 0.625rem 1rem;
+  padding: 0;
 `
 export const OptionCardClickable = styled(OptionCard)`
   margin-top: 0;
+  // padding: 0;
   &:hover {
     cursor: pointer;
     background: rgba(0,0,0,.1);
@@ -241,6 +251,21 @@ const StyledMenuIcon = styled(Settings)`
 
   > * {
     stroke: ${({ theme }) => theme.text1};
+  }
+`
+const StyledStarIcon = styled(Star)`
+  height: 20px;
+  width: 20px;
+  margin-left: 5px;
+
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+  &.star {
+    > * {
+      stroke: ${({ theme }) => theme.yellow1};
+      fill: ${({ theme }) => theme.yellow1};
+    }
   }
 `
 
@@ -319,20 +344,24 @@ function isConnect (rpc:string) {
 
 export function Option ({
   curChainId,
-  selectChainId
+  selectChainId,
+  changeNetwork
 }: {
   curChainId:any,
-  selectChainId:any
+  selectChainId:any,
+  changeNetwork: (value:any) => void
 }) {
   const item = config.getCurChainInfo(curChainId)
   const [viewUrl, setViewUrl] = useState<string>(item.nodeRpc)
   const [viewLoading, setViewLoading] = useState<boolean>(false)
+
+  const {onChangeStarChain, starChainList} = useStarChain()
   // console.log(viewUrl)
   return (
     <>
       <WalletLogoBox>
         <WalletLogoBox2>
-          <div className="left">
+          <div className="left" onClick={() => changeNetwork(chainInfo[curChainId])}>
             <IconWrapper>
               {/* <img src={icon} alt={'Icon'} /> */}
               <TokenLogo symbol={item?.networkLogo ?? item?.symbol} size={'46px'}></TokenLogo>
@@ -359,55 +388,54 @@ export function Option ({
             </OptionCardLeft>
             <OptionCardLeft1 id={'chain_list_url_' + curChainId} onClick={e => e.stopPropagation()}>
               <Input value={viewUrl} id={'chain_list_input_' + curChainId} onChange={(event:any) => {
-                // const htmlInput:any = document.getElementById('chain_list_input_' + curChainId)
-                // if (htmlInput) {
-                //   htmlInput.value = event.target.value
-                // }
                 setViewUrl(event.target.value)
               }}/>
             </OptionCardLeft1>
           </div>
-          {
-            item.nodeRpc ? (
-              <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
+          <div className='right'>
+            {
+              item.nodeRpc ? (
+                <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
+                  const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
+                  const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
+                  const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
+                  const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
+                  if (htmlNameNode) htmlNameNode.style.display = 'none'
+                  if (htmlNameNode1) htmlNameNode1.style.display = 'none'
+                  if (htmlUrlNode) htmlUrlNode.style.display = 'block'
+                  if (htmlUrlNode1) htmlUrlNode1.style.display = 'block'
+                  e.stopPropagation()
+                }}></StyledMenuIcon>
+              ) : ''
+            }
+            {viewLoading ? <LoaderIcon></LoaderIcon> : (
+              <CheckSquareIcon id={'chain_list_tick_' + curChainId} onClick={e => {
+                setViewLoading(true)
                 const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
                 const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
                 const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
                 const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
-                if (htmlNameNode) htmlNameNode.style.display = 'none'
-                if (htmlNameNode1) htmlNameNode1.style.display = 'none'
-                if (htmlUrlNode) htmlUrlNode.style.display = 'block'
-                if (htmlUrlNode1) htmlUrlNode1.style.display = 'block'
-                e.stopPropagation()
-              }}></StyledMenuIcon>
-            ) : ''
-          }
-          {viewLoading ? <LoaderIcon></LoaderIcon> : (
-            <CheckSquareIcon id={'chain_list_tick_' + curChainId} onClick={e => {
-              setViewLoading(true)
-              const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
-              const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
-              const htmlUrlNode = document.getElementById('chain_list_url_' + curChainId)
-              const htmlUrlNode1 = document.getElementById('chain_list_tick_' + curChainId)
-              isConnect(viewUrl).then((res:any) => {
-                setViewLoading(false)
-                if (res.msg === 'Success') {
-                  if (viewUrl === item.nodeRpc) {
-                    if (htmlNameNode) htmlNameNode.style.display = 'block'
-                    if (htmlNameNode1) htmlNameNode1.style.display = 'block'
-                    if (htmlUrlNode) htmlUrlNode.style.display = 'none'
-                    if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
+                isConnect(viewUrl).then((res:any) => {
+                  setViewLoading(false)
+                  if (res.msg === 'Success') {
+                    if (viewUrl === item.nodeRpc) {
+                      if (htmlNameNode) htmlNameNode.style.display = 'block'
+                      if (htmlNameNode1) htmlNameNode1.style.display = 'block'
+                      if (htmlUrlNode) htmlUrlNode.style.display = 'none'
+                      if (htmlUrlNode1) htmlUrlNode1.style.display = 'none'
+                    } else {
+                      setLocalRPC(curChainId, viewUrl)
+                      history.go(0)
+                    }
                   } else {
-                    setLocalRPC(curChainId, viewUrl)
-                    history.go(0)
+                    alert(res.error)
                   }
-                } else {
-                  alert(res.error)
-                }
-              })
-              e.stopPropagation()
-            }}></CheckSquareIcon>
-          )}
+                })
+                e.stopPropagation()
+              }}></CheckSquareIcon>
+            )}
+            <StyledStarIcon className={starChainList?.[curChainId] ? 'star' : ''} onClick={() => onChangeStarChain(curChainId)}/>
+          </div>
         </WalletLogoBox2>
       </WalletLogoBox>
     </>
@@ -431,22 +459,48 @@ function ChainListBox ({
   const boxRef = createRef<any>()
   const watchRef = createRef<any>()
   const { t } = useTranslation()
+  const {starChainList} = useStarChain()
+
+  const comparator = (a:any, b:any) => {
+    if (a.networkName > b.networkName) {
+      return 1
+    }
+    return -1
+  }
+
+  const chainList = useMemo(() => {
+    const arr:any = []
+    const starArr:any = []
+    for (const c of spportChainArr) {
+      if (starChainList?.[c]) {
+        starArr.push(chainInfo[c])
+      } else {
+        arr.push(chainInfo[c])
+      }
+    }
+    return [
+      ...starArr.sort(comparator),
+      ...arr.sort(comparator),
+    ]
+  }, [spportChainArr, starChainList])
+
   function List({ records }: { records?: any [] }) {
     return (<>{
       records?.map((item:any, index:any) => {
         if (
           (searchQuery
           && (
-            chainInfo[item].name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-            || chainInfo[item].symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-            || searchQuery.toLowerCase() === item.toString().toLowerCase()
+            item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            || searchQuery.toLowerCase() === item.chainID.toString().toLowerCase()
           ))
           || !searchQuery
         ) {
           return (
-            <OptionCardClickable key={index} className={
-              useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-              <Option curChainId={item} selectChainId={useChainId}></Option>
+            <OptionCardClickable key={index} className={ useChainId?.toString() === item.chainID?.toString()  ? 'active' : ''}>
+              <Option curChainId={item.chainID} selectChainId={useChainId} changeNetwork={(val) => {
+                openUrl(val)
+              }}></Option>
             </OptionCardClickable>
           )
         }
@@ -458,34 +512,12 @@ function ChainListBox ({
   return (
     <>
       <NetWorkList ref={ boxRef } style={{height: height}}>
-        <LazyList records={ spportChainArr } pageSize={ pageSize }
+        {/* <LazyList records={ spportChainArr } pageSize={ pageSize } */}
+        <LazyList records={ chainList } pageSize={ pageSize }
           boxRef={ boxRef } watchRef={ watchRef } list={ List }>
           <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
         </LazyList>
       </NetWorkList>
-      {/* <NetWorkList style={{height: height}}>
-        {
-          spportChainArr && spportChainArr.map((item:any, index:any) => {
-            if (
-              (searchQuery
-              && (
-                chainInfo[item].name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-                || chainInfo[item].symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-                || searchQuery.toLowerCase() === item.toString().toLowerCase()
-              ))
-              || !searchQuery
-            ) {
-              return (
-                <OptionCardClickable key={index} className={
-                  useChainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                  <Option curChainId={item} selectChainId={useChainId}></Option>
-                </OptionCardClickable>
-              )
-            }
-            return
-          })
-        }
-      </NetWorkList> */}
     </>
   )
 }
@@ -590,30 +622,6 @@ export default function SelectNetwork () {
             </AutoSizer>
           </div>
         </Column>
-        {/* <Wrapper>
-          <UpperSection>
-            <CloseIcon onClick={() => {toggleNetworkModal()}}>
-              <CloseColor />
-            </CloseIcon>
-            <HeaderRow>
-              <HoverText>{t('SwitchTo')}</HoverText>
-            </HeaderRow>
-            <ContentWrapper>
-              <NetWorkList>
-                {
-                  spportChainArr && spportChainArr.map((item:any, index:any) => {
-                    return (
-                      <OptionCardClickable key={index} className={
-                        chainId?.toString() === item?.toString()  ? 'active' : ''} onClick={() => {openUrl(chainInfo[item])}}>
-                        <Option curChainId={item} selectChainId={chainId}></Option>
-                      </OptionCardClickable>
-                    )
-                  })
-                }
-              </NetWorkList>
-            </ContentWrapper>
-          </UpperSection>
-        </Wrapper> */}
       </Modal>
     )
   }
@@ -625,10 +633,6 @@ export default function SelectNetwork () {
           <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
           {config.getCurChainInfo(chainId).name}
         </NetworkCard>}
-        {/* {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
-          <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
-          {config.getCurChainInfo(chainId).networkName}
-        </NetworkCard>} */}
       </HideSmall>
     </>
   )
