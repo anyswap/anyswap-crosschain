@@ -44,6 +44,8 @@ import LiquidityPool from '../LiquidityPool'
 import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
 
+import RouterList from './routerList'
+
 import {usePool} from '../../hooks/usePools'
 import {
   useNearBalance,
@@ -901,7 +903,7 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        {
+        {/* {
           evmAccount && chainId && destChain?.ts ? (
             <LiquidityPool
               destChain={destChain}
@@ -909,7 +911,7 @@ export default function CrossChain({
               selectCurrency={destConfig}
             />
           ) : ''
-        }
+        } */}
         {
           (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin')
           || (isNaN(selectChain))
@@ -917,6 +919,18 @@ export default function CrossChain({
             <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
           ) : ''
         }
+
+        <RouterList
+          // selectCurrency={selectCurrency}
+          // tipTitleKey=""
+          selectChain={selectChain}
+          selectDestKey={destConfig.key}
+          routerlist={selectDestCurrencyList}
+          inputBridgeValue={inputBridgeValue}
+          onCurrencySelect={(inputCurrency) => {
+            setSelectDestCurrency(inputCurrency)
+          }}
+        />
       </AutoColumn>
 
       <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>

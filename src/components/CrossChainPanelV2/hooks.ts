@@ -6,40 +6,76 @@ import config from '../../config'
 import { useInitUserSelectCurrency } from '../../state/lists/hooks'
 import {useStarChain} from '../../state/user/hooks'
 
-export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
-  return useMemo(() => {
-    if (inputBridgeValue && destConfig && selectCurrency) {
-      const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
-      const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
-      let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
-      let value = Number(inputBridgeValue) - fee
-      // console.log(minFee)
-      // console.log(baseFee)
-      if (fee < Number(minFee)) {
-        fee = Number(minFee)
-      } else if (fee > destConfig.MaximumSwapFee) {
-        fee = Number(destConfig.MaximumSwapFee)
-      } else {
-        fee = fee
-      }
-      value = Number(inputBridgeValue) - fee - baseFee
-      if (value && Number(value) && Number(value) > 0) {
-        const dec = Math.min(6, selectCurrency.decimals)
-        return {
-          fee: fee,
-          outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
-        }
-      }
-      return {
-        fee: '',
-        outputBridgeValue: ''
-      }
+export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, decimals:any) {
+  if (inputBridgeValue && destConfig) {
+    const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+    const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
+    let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
+    let value = Number(inputBridgeValue) - fee
+    // console.log(minFee)
+    // console.log(baseFee)
+    if (fee < Number(minFee)) {
+      fee = Number(minFee)
+    } else if (fee > destConfig.MaximumSwapFee) {
+      fee = Number(destConfig.MaximumSwapFee)
     } else {
+      fee = fee
+    }
+    value = Number(inputBridgeValue) - fee - baseFee
+    if (value && Number(value) && Number(value) > 0) {
+      const dec = Math.min(6, decimals)
       return {
-        fee: '',
-        outputBridgeValue: ''
+        fee: fee,
+        outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
       }
     }
+    return {
+      fee: '',
+      outputBridgeValue: ''
+    }
+  } else {
+    return {
+      fee: '',
+      outputBridgeValue: ''
+    }
+  }
+}
+
+export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
+  return useMemo(() => {
+    return calcReceiveValueAndFee(inputBridgeValue, destConfig, selectCurrency?.decimals)
+    // if (inputBridgeValue && destConfig && selectCurrency) {
+    //   const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
+    //   const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
+    //   let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
+    //   let value = Number(inputBridgeValue) - fee
+    //   // console.log(minFee)
+    //   // console.log(baseFee)
+    //   if (fee < Number(minFee)) {
+    //     fee = Number(minFee)
+    //   } else if (fee > destConfig.MaximumSwapFee) {
+    //     fee = Number(destConfig.MaximumSwapFee)
+    //   } else {
+    //     fee = fee
+    //   }
+    //   value = Number(inputBridgeValue) - fee - baseFee
+    //   if (value && Number(value) && Number(value) > 0) {
+    //     const dec = Math.min(6, selectCurrency.decimals)
+    //     return {
+    //       fee: fee,
+    //       outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
+    //     }
+    //   }
+    //   return {
+    //     fee: '',
+    //     outputBridgeValue: ''
+    //   }
+    // } else {
+    //   return {
+    //     fee: '',
+    //     outputBridgeValue: ''
+    //   }
+    // }
   }, [inputBridgeValue, destConfig, selectCurrency])
 }
 

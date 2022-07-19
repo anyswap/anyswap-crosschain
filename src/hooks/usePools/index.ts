@@ -80,7 +80,9 @@ export function usePools ({
   }, [chainId, getEvmPoolsData, getNearPoolDatas])
 
   useEffect(() => {
-    fetchPoolCallback()
+    if (chainId) {
+      fetchPoolCallback()
+    }
   }, [chainId, getEvmPoolsData, getNearPoolDatas])
 
   useInterval(fetchPoolCallback, 1000 * 10)

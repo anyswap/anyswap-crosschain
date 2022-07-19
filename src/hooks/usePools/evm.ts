@@ -81,10 +81,12 @@ export function useEvmPools ({
   const {getEvmPoolsDatas} = useEvmPoolDatas()
   const getEvmPoolsData = useCallback(() => {
     return new Promise(resolve => {
-      const provider = curChainId?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
-      getEvmPoolsDatas(chainId, tokenList, account, provider).then(res => {
-        resolve(res)
-      })
+      if (chainId) {
+        const provider = curChainId?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
+        getEvmPoolsDatas(chainId, tokenList, account, provider).then(res => {
+          resolve(res)
+        })
+      }
     })
   }, [account, curChainId, chainId, tokenList, getEvmPoolsDatas])
   return {getEvmPoolsData}
