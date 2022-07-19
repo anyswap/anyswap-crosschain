@@ -139,6 +139,10 @@ export function useDestChainid (
   const [initChainId, setInitChainId] = useState<any>('')
   const [initChainList, setInitChainList] = useState<any>([])
   const {starChainList} = useStarChain()
+  const starChainLen = useMemo(() => {
+    if (starChainList) return Object.keys(starChainList).length
+    return 0
+  }, [starChainList])
   useEffect(() => {
     // let initChainId1:any = '',
     //     initChainList1:any = []
@@ -150,6 +154,7 @@ export function useDestChainid (
         arr.push(c)
       }
       // console.log(arr)
+      // console.log(starChainList)
       let useChain:any = ''
       if (userInit?.toChainId) {
         useChain = userInit?.toChainId
@@ -181,7 +186,7 @@ export function useDestChainid (
       setInitChainId(useChain)
       setInitChainList(arr)
     }
-  }, [selectCurrency, starChainList])
+  }, [selectCurrency, starChainLen])
   return {
     initChainId,
     initChainList

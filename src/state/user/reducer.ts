@@ -81,6 +81,7 @@ export const initialState: UserState = {
 export default createReducer(initialState, builder =>
   builder
     .addCase(starChain, (state, { payload: { account, chainId} }) => {
+      account = account ? account : 'all'
       if (!state.starChain) state.starChain = {}
       if (!state.starChain[account]) state.starChain[account] = {}
       if (state?.starChain?.[account]) {

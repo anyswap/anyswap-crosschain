@@ -213,10 +213,14 @@ function CurrencyRow({
             </RowFixed>
           )
         }
-        <PlusIcon onClick={() => {
-          // console.log(currencyObj)
-          addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
-        }} />
+        {
+          isNativeToken || isNaN(chainId) ? '' : (
+            <PlusIcon onClick={() => {
+              // console.log(currencyObj)
+              addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
+            }} />
+          )
+        }
       </CurrencyRight>
     </MenuItemWrapper>
   )

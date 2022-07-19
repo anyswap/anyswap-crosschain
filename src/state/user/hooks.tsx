@@ -233,7 +233,7 @@ export function useStarChain(): any {
   )
     // console.log(starChainResult)
   return {
-    starChainList: account ? starChainResult[account] : {},
+    starChainList: account && starChainResult?.[account] ? starChainResult[account] : (starChainResult?.['all'] ? starChainResult['all'] : {}),
     onChangeStarChain
   }
 }

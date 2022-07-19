@@ -98,9 +98,16 @@ export default function SelectChainIdInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalDestOpen, setModalDestOpen] = useState(false)
-  const [chainList, setChainList] = useState<Array<any>>([])
+  // const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')
-
+  const chainList = useMemo(() => {
+      return [...selectChainList]
+    // if (selectChainList.length > 0) {
+    //   return [...selectChainList]
+    // } else {
+    //   return []
+    // }
+  }, [selectChainList])
   const comparator = (a:any, b:any) => {
     if (a.networkName > b.networkName) {
       return 1
@@ -130,13 +137,13 @@ export default function SelectChainIdInputPanel({
 
   const theme = useContext(ThemeContext)
   // console.log(bridgeConfig)
-  useEffect(() => {
-    if (selectChainList.length > 0) {
-      setChainList([...selectChainList])
-    } else {
-      setChainList([])
-    }
-  }, [selectChainList])
+  // useEffect(() => {
+  //   if (selectChainList.length > 0) {
+  //     setChainList([...selectChainList])
+  //   } else {
+  //     setChainList([])
+  //   }
+  // }, [selectChainList])
   // console.log(chainList)
 
   const handleCurrencySelect = useCallback(
