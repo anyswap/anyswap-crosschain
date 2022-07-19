@@ -577,7 +577,7 @@ export default function PoolLists ({
     let listView:any = ''
     if (c) {
       if (item.curPool.length > 0) {
-        console.log(item)
+        // console.log(item)
         listView = item.curPool.map((curItem:any, index:any) => {
           return <ViewTdModel
             key={index}
