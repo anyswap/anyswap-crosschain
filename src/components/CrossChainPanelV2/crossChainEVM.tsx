@@ -526,7 +526,6 @@ export default function CrossChain({
 
   useEffect(() => {
     setInitUserSelect({useChainId: selectChain, toChainId: chainId, token: selectDestCurrency?.address})
-    // setSelectDestCurrency(initDestCurrency)
   }, [selectDestCurrency, selectChain, chainId])
 
   useEffect(() => {
@@ -535,7 +534,6 @@ export default function CrossChain({
     if (chainId && selectChain && selectCurrency?.address) {
       setInitUserSelect({useChainId: chainId, toChainId: selectChain, token: selectCurrency?.address})
     }
-    // setSelectDestCurrency(initDestCurrency)
   }, [selectCurrency, selectChain, chainId])
 
   useEffect(() => {

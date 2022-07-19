@@ -202,32 +202,26 @@ export default function RouterList ({
               >
                 
                 <dl className='list'>
+                  {
+                    obj.sortId === 0 ? <dd>
+                      <div className='selected'>
+                        <CheckIcon className='icon' />
+                      </div>
+                      {'Bridge'}
+                    </dd> : <dd>
+                      <div className='selected'>
+                        <CheckIcon className='icon' />
+                      </div>
+                      {'Router ' + obj.sortId}
+                    </dd>
+                  }
                   <dd>
-                    {/* {
-                      selectAnyToken ? (
-                        <div className='selected'>
-                          <CheckIcon className='icon' />
-                        </div>
-                      ) : (
-                      <>
-                        <i></i>
-                        {t('destTS')}
-                      </>
-                      )
-                    } */}
-                    {/* {tipTitleKey ? t(tipTitleKey, {index: obj.sortId}) : ''} */}
-                    <div className='selected'>
-                      <CheckIcon className='icon' />
-                    </div>
-                    {'Router ' + obj.sortId}
+                    {t('pool') + ' '}: 
+                    {poolLiquidity}
                   </dd>
                   <dd>
                     {t('yourPoolShare') + ' '}: 
                     {poolMyLiquidity}
-                  </dd>
-                  <dd>
-                    {t('pool') + ' '}: 
-                    {poolLiquidity}
                   </dd>
                   <dd>
                     {t('fee') + ' '}: 
