@@ -40,23 +40,26 @@ export function useEvmPoolDatas () {
       if (calls.length > 0 && chainId) {
         useBatchData({chainId, calls, provider}).then((res:any) => {
           // console.log(res)
-          const list: any = {}
+          const resultList: any = {}
           if (res) {
             try {
               for (let i = 0, len = calls.length; i < len; i++) {
                 const item = calls[i]
                 if (res[i]) {
-                  const bl = ERC20_INTERFACE?.decodeFunctionResult(item.fragment, res[i])?.toString()
-                  if (!list[item.key]) list[item.key] = {}
-                  list[item.key][item.label] = bl
+                  const bl = res[i] === '0x' ? '' : ERC20_INTERFACE?.decodeFunctionResult(item.fragment, res[i])?.toString()
+                  if (!resultList[item.key]) resultList[item.key] = {}
+                  resultList[item.key][item.label] = bl
                 }
               }
             } catch (error) {
-              console.log(calls)
+              // console.log(chainId)
+              // console.log(account)
+              // console.log(list)
+              // console.log(calls)
               console.log(error)
             }
           }
-          resolve(list)
+          resolve(resultList)
         })
       } else {
         resolve({})

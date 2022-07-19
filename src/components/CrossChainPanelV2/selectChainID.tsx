@@ -100,14 +100,14 @@ export default function SelectChainIdInputPanel({
   const [modalDestOpen, setModalDestOpen] = useState(false)
   // const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')
-  const chainList = useMemo(() => {
-      return [...selectChainList]
-    // if (selectChainList.length > 0) {
-    //   return [...selectChainList]
-    // } else {
-    //   return []
-    // }
-  }, [selectChainList])
+  // const chainList = useMemo(() => {
+  //     return [...selectChainList]
+  //   // if (selectChainList.length > 0) {
+  //   //   return [...selectChainList]
+  //   // } else {
+  //   //   return []
+  //   // }
+  // }, [selectChainList])
   const comparator = (a:any, b:any) => {
     if (a.networkName > b.networkName) {
       return 1
@@ -117,7 +117,8 @@ export default function SelectChainIdInputPanel({
   const useChainList = useMemo(() => {
     const arr:any = []
     const starArr:any = []
-    for (const c of chainList) {
+    // console.log(selectChainList)
+    for (const c of selectChainList) {
       if (starChainList?.[c]) {
         starArr.push(config.chainInfo[c])
       } else {
@@ -128,7 +129,7 @@ export default function SelectChainIdInputPanel({
       ...starArr.sort(comparator),
       ...arr.sort(comparator),
     ]
-  }, [chainList, starChainList])
+  }, [selectChainList, starChainList])
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -136,16 +137,7 @@ export default function SelectChainIdInputPanel({
   }, [setModalOpen])
 
   const theme = useContext(ThemeContext)
-  // console.log(bridgeConfig)
-  // useEffect(() => {
-  //   if (selectChainList.length > 0) {
-  //     setChainList([...selectChainList])
-  //   } else {
-  //     setChainList([])
-  //   }
-  // }, [selectChainList])
-  // console.log(chainList)
-
+  
   const handleCurrencySelect = useCallback(
     (chainID) => {
       if (onChainSelect) {
@@ -379,7 +371,7 @@ export default function SelectChainIdInputPanel({
                         key={index}
                         className={selectChainId && selectChainId === item.chainID ? 'active' : ''}
                       >
-                        <Option curChainId={item.chainID} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item.chainID ? null : handleCurrencySelect(val))}></Option>
+                        <Option curChainId={item.chainID} selectChainId={selectChainId} changeNetwork={(val) => (selectChainId && selectChainId === item.chainID ? null : handleCurrencySelect(val.chainID))}></Option>
                       </OptionCardClickable>
                     )
                   })
