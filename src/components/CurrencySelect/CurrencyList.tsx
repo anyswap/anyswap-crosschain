@@ -4,6 +4,7 @@ import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { Plus } from 'react-feather'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -20,6 +21,7 @@ import { LazyList } from '../Lazyload/LazyList';
 
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
+import {addToken} from '../../config/tools/methods'
 
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
@@ -67,6 +69,30 @@ const TagContainer = styled.div`
 const Loading = styled.div`
   line-height: 56px;
   text-align: center;
+  font-size: 12px;
+`
+const MenuItemWrapper = styled(MenuItem)`
+  ${({ theme }) => theme.flexBC};
+`
+const CurrencyLeft = styled.div`
+  ${({ theme }) => theme.flexSC};
+  width: 80%;
+`
+const CurrencyRight = styled.div`
+  ${({ theme }) => theme.flexEC};
+  width: 20%;
+`
+
+const PlusIcon = styled(Plus)`
+  height: 20px;
+  width: 20px;
+  min-height: 20px;
+  min-width: 20px;
+  margin-left: 5px;
+
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -157,34 +183,42 @@ function CurrencyRow({
   // console.log(isNativeToken)
   // console.log(balance)
   return (
-    <MenuItem
+    <MenuItemWrapper
       style={style}
       className={`token-item-${key}`}
-      onClick={() => (isSelected ? null : onSelect())}
+      // onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
     >
-      <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'}></TokenLogo>
-      <Column>
-        <Text title={currencyObj.name} fontWeight={500}>
-          {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
-          {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
-          {currencyObj?.type ? (
-            ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router ' + currencyObj.sortId + ')'
-          ) : ''}
-          {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
-          <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
-        </Text>
-      </Column>
-      <TokenTags currency={currencyObj} />
-      {
-        selectDestChainId ? null : (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
-          </RowFixed>
-        )
-      }
-    </MenuItem>
+      <CurrencyLeft onClick={() => (isSelected ? null : onSelect())}>
+        <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'} style={{marginRight:'10px'}}></TokenLogo>
+        <Column>
+          <Text title={currencyObj.name} fontWeight={500}>
+            {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
+            {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
+            {currencyObj?.type ? (
+              ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router ' + currencyObj.sortId + ')'
+            ) : ''}
+            {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
+            <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
+          </Text>
+        </Column>
+        <TokenTags currency={currencyObj} />
+      </CurrencyLeft>
+      <CurrencyRight>
+        {
+          selectDestChainId ? null : (
+            <RowFixed style={{ justifySelf: 'flex-end' }}>
+              {balance ? <Balance balance={balance} /> : (account && chainId && !isNaN(chainId)) ? <Loader stroke="#5f6bfb" /> : null}
+            </RowFixed>
+          )
+        }
+        <PlusIcon onClick={() => {
+          // console.log(currencyObj)
+          addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
+        }} />
+      </CurrencyRight>
+    </MenuItemWrapper>
   )
 }
 

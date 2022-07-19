@@ -64,7 +64,7 @@ export function addToken (address:string, symbol: string, decimals: number, logo
       ...ethereum
     }
     if (ethereumFN && ethereumFN.request) {
-      ethereumFN.request({
+      const params = {
         method: 'wallet_watchAsset',
         params: {
           type: 'ERC20', // 最初只支持ERC20，但最终支持更多
@@ -75,7 +75,9 @@ export function addToken (address:string, symbol: string, decimals: number, logo
             image: logoUrl, // A string url of the token logo
           },
         },
-      }).then((res: any) => {
+      }
+      // console.log(params)
+      ethereumFN.request(params).then((res: any) => {
         console.log(res)
         resolve({
           msg: 'Success'

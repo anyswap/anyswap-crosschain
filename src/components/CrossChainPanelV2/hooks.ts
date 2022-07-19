@@ -4,6 +4,7 @@ import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
 
 import { useInitUserSelectCurrency } from '../../state/lists/hooks'
+import {useStarChain} from '../../state/user/hooks'
 
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
   return useMemo(() => {
@@ -137,6 +138,7 @@ export function useDestChainid (
   const {userInit} = useInitUserSelectCurrency(useChainId)
   const [initChainId, setInitChainId] = useState<any>('')
   const [initChainList, setInitChainList] = useState<any>([])
+  const {starChainList} = useStarChain()
   useEffect(() => {
     // let initChainId1:any = '',
     //     initChainList1:any = []
@@ -153,9 +155,17 @@ export function useDestChainid (
         useChain = userInit?.toChainId
       } else if (selectChain && arr.includes(useChain.toString())) {
         useChain = selectChain
-      } else {
+      } else if (Object.keys(starChainList).length > 0) {
+        for (const c of arr) {
+          if (starChainList[c]) {
+            useChain = c
+            break
+          }
+        }
+      } {
         useChain = config.getCurChainInfo(selectChain).bridgeInitChain
       }
+      // console.log(useChain)
       if (arr.length > 0) {
         if (
           !useChain
@@ -171,7 +181,7 @@ export function useDestChainid (
       setInitChainId(useChain)
       setInitChainList(arr)
     }
-  }, [selectCurrency])
+  }, [selectCurrency, starChainList])
   return {
     initChainId,
     initChainList
