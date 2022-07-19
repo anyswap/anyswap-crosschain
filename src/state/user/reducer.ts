@@ -82,11 +82,15 @@ export default createReducer(initialState, builder =>
   builder
     .addCase(starChain, (state, { payload: { account, chainId} }) => {
       if (!state.starChain) state.starChain = {}
+      if (!state.starChain[account]) state.starChain[account] = {}
       if (state?.starChain?.[account]) {
-        if (state.starChain[account][chainId]) {
+        if (state?.starChain?.[account]?.[chainId]) {
           delete state.starChain[account][chainId]
         } else {
-          state.starChain[account][chainId] = {timestamp: Date.now()}
+          state.starChain[account] = {
+            ...(state.starChain[account] ? state.starChain[account] : {}),
+            [chainId]: {timestamp: Date.now()}
+          }
         }
       } else {
         state.starChain = {

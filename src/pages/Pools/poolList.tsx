@@ -14,6 +14,7 @@ import CrossChainTitle from '../../components/CrossChainTitle'
 import { ButtonLight } from '../../components/Button'
 import { LazyList } from '../../components/Lazyload/LazyList'
 // import {selectNetwork} from '../../components/Header/SelectNetwork'
+import { SearchInput } from '../../components/SearchModal/styleds'
 
 import { useWalletModalToggle } from '../../state/application/hooks'
 // import { useBridgeTokenList } from '../../state/lists/hooks'
@@ -67,6 +68,7 @@ const BalanceTxt = styled.div`
 const Loading = styled.div`
   line-height: 56px;
   text-align: center;
+  font-size:12px;
 `
 
 // const TableListBox = styled.div`
@@ -214,6 +216,8 @@ export default function PoolLists ({
   const [poolList, setPoolList] = useState<any>()
   // const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
+  
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   // const 
   const getPools = useCallback(() => {
@@ -320,56 +324,69 @@ export default function PoolLists ({
     const sortArr:any = []
     if (poolList) {
       for (const obj of poolList) {
-        const objExtend:any = {
-          ...obj,
-          curPool: [],
-          destChains: {},
-          totalV: 0
-        }
-        const curPoolArr:any = []
-        for (const destChainId in obj.destChains) {
-          const destTokenList:any = {...obj.destChains[destChainId]}
-          if (!config.chainInfo[destChainId]) continue
-          for (const destTokenKey in destTokenList) {
-            const destTokenItem:any = {...destTokenList[destTokenKey], ts: '', bl: ''}
-            // const destToken = destTokenItem.address
-            const destAnyToken = destTokenItem.anytoken.address
-            const poolValue = poolInfo?.[destChainId]?.[destAnyToken] ? poolInfo[destChainId][destAnyToken] : {}
-            const poolLocalValue = poolData?.[destChainId]?.[destAnyToken] ? poolData?.[destChainId]?.[destAnyToken] : {}
-            // if (destTokenItem.symbol === 'MIM') {
+        if (
+          !searchQuery
+          || (
+            searchQuery
+            && (
+              obj.address.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || obj.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || obj.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            )
+          )
+        ) {
 
-            //   console.log(destTokenItem.symbol + '-server', poolValue.liquidity)
-            //   console.log(destTokenItem.symbol + '-local', poolLocalValue)
-            // }
-            const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : ''
-            const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
-            objExtend.totalV += ts ? ts : 0
-            destTokenItem.ts = ts
-            destTokenItem.bl = bl
-            if (!objExtend.destChains[destChainId]) objExtend.destChains[destChainId] = {}
-            if (!objExtend.destChains[destChainId][destTokenKey]) objExtend.destChains[destChainId][destTokenKey] = destTokenItem
-
-            const curAnyToken =  destTokenItem.fromanytoken.address
-            if (!curPoolArr.includes(curAnyToken) && destTokenItem.isFromLiquidity) {
-              curPoolArr.push(curAnyToken)
-              const poolValue = poolInfo?.[obj.chainId]?.[curAnyToken] ? poolInfo[obj.chainId][curAnyToken] : {}
-              const poolLocalValue = poolData?.[obj.chainId]?.[curAnyToken] ? poolData?.[obj.chainId]?.[curAnyToken] : {}
-              const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : ''
+          const objExtend:any = {
+            ...obj,
+            curPool: [],
+            destChains: {},
+            totalV: 0
+          }
+          const curPoolArr:any = []
+          for (const destChainId in obj.destChains) {
+            const destTokenList:any = {...obj.destChains[destChainId]}
+            if (!config.chainInfo[destChainId]) continue
+            for (const destTokenKey in destTokenList) {
+              const destTokenItem:any = {...destTokenList[destTokenKey], ts: '', bl: ''}
+              // const destToken = destTokenItem.address
+              const destAnyToken = destTokenItem.anytoken.address
+              const poolValue = poolInfo?.[destChainId]?.[destAnyToken] ? poolInfo[destChainId][destAnyToken] : {}
+              const poolLocalValue = poolData?.[destChainId]?.[destAnyToken] ? poolData?.[destChainId]?.[destAnyToken] : {}
+              // if (destTokenItem.symbol === 'MIM') {
+  
+              //   console.log(destTokenItem.symbol + '-server', poolValue.liquidity)
+              //   console.log(destTokenItem.symbol + '-local', poolLocalValue)
+              // }
+              const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : ''
               const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
               objExtend.totalV += ts ? ts : 0
-              objExtend.curPool.push({
-                ts,
-                bl,
-                anytoken: curAnyToken,
-                sortId: destTokenItem.sortId
-              })
+              destTokenItem.ts = ts
+              destTokenItem.bl = bl
+              if (!objExtend.destChains[destChainId]) objExtend.destChains[destChainId] = {}
+              if (!objExtend.destChains[destChainId][destTokenKey]) objExtend.destChains[destChainId][destTokenKey] = destTokenItem
+  
+              const curAnyToken =  destTokenItem.fromanytoken.address
+              if (!curPoolArr.includes(curAnyToken) && destTokenItem.isFromLiquidity) {
+                curPoolArr.push(curAnyToken)
+                const poolValue = poolInfo?.[obj.chainId]?.[curAnyToken] ? poolInfo[obj.chainId][curAnyToken] : {}
+                const poolLocalValue = poolData?.[obj.chainId]?.[curAnyToken] ? poolData?.[obj.chainId]?.[curAnyToken] : {}
+                const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : ''
+                const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+                objExtend.totalV += ts ? ts : 0
+                objExtend.curPool.push({
+                  ts,
+                  bl,
+                  anytoken: curAnyToken,
+                  sortId: destTokenItem.sortId
+                })
+              }
             }
           }
+          // console.log(curPoolArr)
+          if (!list[obj.sort]) list[obj.sort] = []
+          if (!sortArr.includes(obj.sort)) sortArr.push(obj.sort)
+          list[obj.sort].push(objExtend)
         }
-        // console.log(curPoolArr)
-        if (!list[obj.sort]) list[obj.sort] = []
-        if (!sortArr.includes(obj.sort)) sortArr.push(obj.sort)
-        list[obj.sort].push(objExtend)
         
         // arr.push(objExtend)
       }
@@ -380,7 +397,7 @@ export default function PoolLists ({
     }
     // console.log(arr)
     return arr
-  }, [poolData, poolList, poolInfo])
+  }, [poolData, poolList, poolInfo, searchQuery])
   
 
   function changeNetwork (chainID:any) {
@@ -616,79 +633,122 @@ export default function PoolLists ({
       </>
     )
   }
-  const [expandState, setExpandState] = useState<{[key: number]: boolean}>({});
+  // const [expandState, setExpandState] = useState<{[key: any]: boolean}>({});
+  const [expandState, setExpandState] = useState<any>({});
+
+  const handleInput = useCallback(event => {
+    const input = event.target.value
+    setSearchQuery(input)
+    // fixedList.current?.scrollTo(0)
+  }, [])
+
+  // const handleEnter = useCallback(
+  //   (e: KeyboardEvent<HTMLInputElement>) => {
+  //     if (e.key === 'Enter') {
+  //       const s = searchQuery.toLowerCase().trim()
+  //       if (s === 'eth') {
+  //         handleCurrencySelect(ETHER)
+  //       } else if (filteredSortedTokens.length > 0) {
+  //         if (
+  //           filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
+  //           filteredSortedTokens.length === 1
+  //         ) {
+  //           handleCurrencySelect(filteredSortedTokens[0])
+  //         }
+  //       }
+  //     }
+  //   },
+  //   // [searchQuery]
+  //   [searchQuery]
+  // )
+
   function List({ records }: { records?: any [] }) {
     return (<>{
-      records?.map((item:any, index:any) => <DBTbodyDiv key={index}>
-        <DBTbodyTrDiv onClick={() => {
-          const id: number = index;
-          const newState = { ...expandState };
-          newState[id] = expandState[id] ? false : true;
-          setExpandState(newState);
-        }}>
-          <DBTdDiv className="token">
-            <TokenTableCoinBox>
-              <TokenTableLogo>
-                <TokenLogo
-                  symbol={config.getBaseCoin(item?.symbol, chainId)}
-                  logoUrl={item.logoUrl}
-                  size={'1.625rem'}
-                  isLazy={ index > 10 }
-                ></TokenLogo>
-              </TokenTableLogo>
-              <TokenNameBox>
-                <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
-                {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
-              </TokenNameBox>
-            </TokenTableCoinBox>
-          </DBTdDiv>
-          <DBTdDiv className="l chain hideSmall">
-            <FlexSC>
-              <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
-                <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
-              </ChainLogoBox>
-              {
-                item.destChains && Object.keys(item.destChains).length > 0 ? (
-                  <>
-                    {
-                      item.destChains && Object.keys(item.destChains).length > 0 ? (
-                        <>
-                          {
-                            Object.keys(item.destChains).map((chainID, index) => {
-                            // chainList.map((chainID, index) => {
-                              if (index >= 6) return ''
-                              return (
-                                <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
-                                  <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
-                                </ChainLogoBox>
-                              )
-                            })
-                          }
-                          {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
-                        </>
-                      ) : ''
-                    }
-                  </>
-                ) : ''
-              }
-            </FlexSC>
-          </DBTdDiv>
-          {viewTd(item)}
-          <DBTdDiv className="c detail">
-            <Flex>
-            { expandState[index] ? 
-              <ColoredDropup id={'chain_dropup_' + index}></ColoredDropup> :
-              <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown> }
-            </Flex>
-          </DBTdDiv>
-        </DBTbodyTrDiv>
-        { expandState[index] ? <DBTbodyTrDiv id={'chain_list_' + index}>
-          <DBTdDiv className='full'>
-            {viewTd2(item, chainId)}
-            {/* {viewCard2(item, chainId)} */}
-          </DBTdDiv>
-        </DBTbodyTrDiv> : null }
-      </DBTbodyDiv>)
+      records?.map((item:any, index:any) => {
+        if (
+          !searchQuery
+          || (
+            searchQuery
+            && (
+              item.address.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+            )
+          )
+        ) {
+          return <DBTbodyDiv key={index}>
+            <DBTbodyTrDiv onClick={() => {
+              const id: any = item.address;
+              // const newState = { ...expandState };
+              const newState:any = { };
+              newState[id] = expandState[id] ? false : true;
+              setExpandState(newState);
+            }}>
+              <DBTdDiv className="token">
+                <TokenTableCoinBox>
+                  <TokenTableLogo>
+                    <TokenLogo
+                      symbol={config.getBaseCoin(item?.symbol, chainId)}
+                      logoUrl={item.logoUrl}
+                      size={'1.625rem'}
+                      isLazy={ index > 10 }
+                    ></TokenLogo>
+                  </TokenTableLogo>
+                  <TokenNameBox>
+                    <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
+                    {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
+                  </TokenNameBox>
+                </TokenTableCoinBox>
+              </DBTdDiv>
+              <DBTdDiv className="l chain hideSmall">
+                <FlexSC>
+                  <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
+                    <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
+                  </ChainLogoBox>
+                  {
+                    item.destChains && Object.keys(item.destChains).length > 0 ? (
+                      <>
+                        {
+                          item.destChains && Object.keys(item.destChains).length > 0 ? (
+                            <>
+                              {
+                                Object.keys(item.destChains).map((chainID, index) => {
+                                  if (index >= 6) return ''
+                                  return (
+                                    <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
+                                      <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
+                                    </ChainLogoBox>
+                                  )
+                                })
+                              }
+                              {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
+                            </>
+                          ) : ''
+                        }
+                      </>
+                    ) : ''
+                  }
+                </FlexSC>
+              </DBTdDiv>
+              {viewTd(item)}
+              <DBTdDiv className="c detail">
+                <Flex>
+                { expandState[item.address] ? 
+                  <ColoredDropup id={'chain_dropup_' + index}></ColoredDropup> :
+                  <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown> }
+                </Flex>
+              </DBTdDiv>
+            </DBTbodyTrDiv>
+            { expandState[item.address] ? <DBTbodyTrDiv id={'chain_list_' + index}>
+              <DBTdDiv className='full'>
+                {viewTd2(item, chainId)}
+                {/* {viewCard2(item, chainId)} */}
+              </DBTdDiv>
+            </DBTbodyTrDiv> : null }
+          </DBTbodyDiv>
+        }
+        return ''
+      })
     }
     </>)
   }
@@ -724,17 +784,18 @@ export default function PoolLists ({
           ></Title>
         )
       }
-
       <MyBalanceBox>
+        <SearchInput
+          type="text"
+          id="token-search-input"
+          placeholder={t('tokenSearchPlaceholder')}
+          value={searchQuery}
+          // ref={inputRef as RefObject<HTMLInputElement>}
+          onChange={handleInput}
+          // onKeyDown={handleEnter}
+          style={{marginBottom: '10px'}}
+        />
         <DBTablesDiv>
-          {/* <DBTheadDiv>
-            <DBTheadTrDiv>
-              <DBThDiv className="l">{t('tokens')}</DBThDiv>
-              <DBThDiv className="l hideSmall">{t('supportChain')}</DBThDiv>
-              <DBThDiv className="r">{t('lr')}</DBThDiv>
-              <DBThDiv className="c">{t('details')}</DBThDiv>
-            </DBTheadTrDiv>
-          </DBTheadDiv> */}
           <DBTheadDiv>
             <DBTheadTrDiv>
               <DBThDiv className="l token">{t('tokens')}</DBThDiv>
@@ -747,101 +808,17 @@ export default function PoolLists ({
             tokenList && tokenList.length > 0 ? (
               <LazyList records={ tokenList } pageSize={ 24 }
                 list={ List } watchRef={ watchRef }>
+                {/* {searchQuery ? '' : <Loading ref={ watchRef }>{ t('Loading') }...</Loading>} */}
                 <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
               </LazyList>
-              // tokenList.map((item:any, index:any) => {
-              //   return (
-              //     <DBTbodyDiv key={index}>
-              //       <DBTheadTrDiv onClick={() => {
-              //         // console.log(1)
-              //         const htmlNode = document.getElementById('chain_list_' + index)
-              //         const upNode = document.getElementById('chain_dropup_' + index)
-              //         const downNode = document.getElementById('chain_dropdown_' + index)
-              //         if (htmlNode && upNode && downNode) {
-              //           if (htmlNode.style.display === 'none') {
-              //             htmlNode.style.display = ''
-              //             upNode.style.display = ''
-              //             downNode.style.display = 'none'
-              //           } else {
-              //             htmlNode.style.display = 'none'
-              //             upNode.style.display = 'none'
-              //             downNode.style.display = ''
-              //           }
-              //         }
-              //       }}>
-              //         <DBTdDiv>
-              //           <TokenTableCoinBox>
-              //             <TokenTableLogo>
-              //               <TokenLogo
-              //                 symbol={config.getBaseCoin(item?.symbol, chainId)}
-              //                 logoUrl={item.logoUrl}
-              //                 size={'1.625rem'}
-              //               ></TokenLogo>
-              //             </TokenTableLogo>
-              //             <TokenNameBox>
-              //               <h3>{config.getBaseCoin(item?.symbol, chainId)}</h3>
-              //               {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
-              //             </TokenNameBox>
-              //           </TokenTableCoinBox>
-              //         </DBTdDiv>
-              //         <DBTdDiv className="l hideSmall">
-              //           <FlexSC>
-              //             <ChainLogoBox key={index} title={config.getCurChainInfo(chainId).symbol}>
-              //               <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'}></TokenLogo>
-              //             </ChainLogoBox>
-              //             {
-              //               item.destChains && Object.keys(item.destChains).length > 0 ? (
-              //                 <>
-              //                   {
-              //                     Object.keys(item.destChains).map((chainID, index) => {
-              //                     // chainList.map((chainID, index) => {
-              //                       if (index >= 6) return ''
-              //                       return (
-              //                         <ChainLogoBox key={index} title={config.getCurChainInfo(chainID).symbol}>
-              //                           <TokenLogo symbol={config.getCurChainInfo(chainID).networkLogo ?? config.getCurChainInfo(chainID).symbol} size={'20px'}></TokenLogo>
-              //                         </ChainLogoBox>
-              //                       )
-              //                     })
-              //                   }
-              //                   {Object.keys(item.destChains).length < 6 ? '' : <MoreView></MoreView>}
-              //                 </>
-              //               ) : ''
-              //             }
-              //           </FlexSC>
-              //         </DBTdDiv>
-              //         {viewTd(item)}
-              //         <DBTdDiv className="c">
-              //           <Flex>
-              //             <ColoredDropup id={'chain_dropup_' + index} style={{display: 'none'}}></ColoredDropup>
-              //             <ColoredDropdown id={'chain_dropdown_' + index}></ColoredDropdown>
-              //           </Flex>
-              //         </DBTdDiv>
-              //       </DBTheadTrDiv>
-              //       <DBTheadTrDiv id={'chain_list_' + index} style={{display: 'none'}}>
-              //         <DBTdDiv>
-              //           {viewTd2(item, chainId)}
-              //           {/* {viewCard2(item, chainId)} */}
-              //         </DBTdDiv>
-              //       </DBTheadTrDiv>
-              //     </DBTbodyDiv>
-              //   )
-              // })
             ) : (
               <DBTbodyDiv>
                 <DBTbodyTrDiv>
                   <DBTdDiv className='chain'>
-                    <Loading>{ t('Loading') }...</Loading>
+                    {/* <Loading>{ t('Loading') }...</Loading> */}
                   </DBTdDiv>
                 </DBTbodyTrDiv>
               </DBTbodyDiv>
-              // <DBTbodyDiv>
-              //   <DBTheadTrDiv>
-              //     <DBTdDiv></DBTdDiv>
-              //     <DBTdDiv></DBTdDiv>
-              //     <DBTdDiv></DBTdDiv>
-              //     <DBTdDiv></DBTdDiv>
-              //   </DBTheadTrDiv>
-              // </DBTbodyDiv>
             )
           }
         </DBTablesDiv>
