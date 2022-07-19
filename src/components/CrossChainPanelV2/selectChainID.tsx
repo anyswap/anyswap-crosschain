@@ -119,6 +119,7 @@ export default function SelectChainIdInputPanel({
     const starArr:any = []
     // console.log(selectChainList)
     for (const c of selectChainList) {
+      if (!config.chainInfo[c]) continue
       if (starChainList?.[c]) {
         starArr.push(config.chainInfo[c])
       } else {
@@ -130,6 +131,8 @@ export default function SelectChainIdInputPanel({
       ...arr.sort(comparator),
     ]
   }, [selectChainList, starChainList])
+
+  // console.log(useChainList)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -360,7 +363,7 @@ export default function SelectChainIdInputPanel({
               {
                   useChainList.map((item:any, index:any) => {
                     if (
-                      (chainId?.toString() === item.chainID?.toString() && !isViewAllChain)
+                      (chainId && chainId?.toString() === item.chainID?.toString() && !isViewAllChain)
                       || (config.getCurConfigInfo()?.hiddenChain?.includes(item.chainID))
                     ) {
                       return ''

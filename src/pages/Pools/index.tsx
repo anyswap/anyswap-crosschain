@@ -188,10 +188,12 @@ export default function SwapNative() {
     const arr:any = []
     if (anyTokenList) {
       for (const item of anyTokenList) {
-        arr.push({
-          anytoken: item.address,
-          underlying: selectCurrency.address
-        })
+        if (selectCurrency?.address) {
+          arr.push({
+            anytoken: item.address,
+            underlying: selectCurrency.address
+          })
+        }
       }
     }
     // console.log(arr)
