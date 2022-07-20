@@ -107,7 +107,7 @@ const MetamaskIcon = styled(Metamask)`
   width: 16px;
   min-height: 16px;
   min-width: 16px;
-  margin-left: 10px;
+  margin-left: 5px;
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -214,13 +214,13 @@ function CurrencyRow({
               {
                 isNativeToken || isNaN(chainId) || currencyObj?.type ? '' : (
                   <>
+                    <CopyHelper toCopy={currencyObj.address} />
                     <MetamaskIcon onClick={(event) => {
                       // console.log(currencyObj)
                       addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl).then(() => {
                         event.preventDefault()
                       })
                     }} />
-                    <CopyHelper toCopy={currencyObj.address} />
                   </>
                 )
               }
