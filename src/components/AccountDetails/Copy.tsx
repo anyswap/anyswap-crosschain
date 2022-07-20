@@ -31,7 +31,7 @@ export default function CopyHelper(props: { toCopy: string; children?: React.Rea
   return (
     <CopyIcon onClick={(event) => {
       setCopied(props.toCopy)
-      event.preventDefault()
+      event.stopPropagation()
     }}>
       {isCopied ? (
         <TransactionStatusText>

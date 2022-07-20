@@ -20,7 +20,8 @@ import {
   toggleURLWarning,
   selectNetworkId,
   updateUserBetaMessage,
-  starChain
+  starChain,
+  starToken
 } from './actions'
 
 import config from '../../config'
@@ -235,5 +236,22 @@ export function useStarChain(): any {
   return {
     starChainList: account && starChainResult?.[account] ? starChainResult[account] : (starChainResult?.['all'] ? starChainResult['all'] : {}),
     onChangeStarChain
+  }
+}
+
+export function useStarToken(): any {
+  const { chainId } = useActiveReact()
+  const starTokenResult = useSelector((state: AppState) => state.user.starToken)
+  const dispatch = useDispatch<AppDispatch>()
+  const onChangeStarToken = useCallback(
+    (token: any) => {
+      dispatch(starToken({ chainId, token }))
+    },
+    [dispatch]
+  )
+    // console.log(starChainResult)
+  return {
+    starTokenList: chainId && starTokenResult?.[chainId] ? starTokenResult[chainId] : (starTokenResult?.['all'] ? starTokenResult['all'] : {}),
+    onChangeStarToken
   }
 }

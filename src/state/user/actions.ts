@@ -34,3 +34,4 @@ export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const selectNetworkId = createAction<{ chainId: string, label: string }>('user/selectNetworkId')
 
 export const starChain = createAction<{ account: any, chainId: any }>('application/starChain')
+export const starToken = createAction<{ chainId: any, token: any }>('application/starToken')

@@ -4,12 +4,14 @@ import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
+import { Star } from 'react-feather'
 // import { Plus } from 'react-feather'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
+import {useStarToken} from '../../state/user/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
@@ -110,6 +112,22 @@ const MetamaskIcon = styled(Metamask)`
   margin-left: 5px;
 `
 
+const StyledStarIcon = styled(Star)`
+  height: 16px;
+  width: 16px;
+  margin-left: 10px;
+
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+  &.star {
+    > * {
+      stroke: ${({ theme }) => theme.yellow1};
+      fill: ${({ theme }) => theme.yellow1};
+    }
+  }
+`
+
 function TokenTags({ currency }: { currency: Currency }) {
   if (!(currency instanceof WrappedTokenInfo)) {
     return <span />
@@ -161,6 +179,7 @@ function CurrencyRow({
   selectDestChainId?: any
 }) {
   const { account, chainId } = useActiveReact()
+  const {starTokenList, onChangeStarToken} = useStarToken()
   // const { t } = useTranslation()
   const currencyObj = currency
   const key = currencyKey(currencyObj)
@@ -217,10 +236,13 @@ function CurrencyRow({
                     <CopyHelper toCopy={currencyObj.address} />
                     <MetamaskIcon onClick={(event) => {
                       // console.log(currencyObj)
-                      addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl).then(() => {
-                        event.preventDefault()
-                      })
+                      addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
+                      event.stopPropagation()
                     }} />
+                    <StyledStarIcon className={starTokenList?.[currencyObj.address] ? 'star' : ''} onClick={(event) => {
+                      onChangeStarToken(currencyObj.address)
+                      event.stopPropagation()
+                    }}/>
                   </>
                 )
               }
@@ -280,6 +302,7 @@ export default function BridgeCurrencyList({
   size?: number
 }) {
   const { evmAccount, chainId } = useActiveReact()
+  const {starTokenList} = useStarToken()
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
   const ETHBalance = useETHBalances(evmAccount ? [evmAccount] : [])?.[evmAccount ?? '']
   const pageSize = size || 20
@@ -289,6 +312,7 @@ export default function BridgeCurrencyList({
   // console.log(selectedCurrency)
   const htmlNodes = useMemo(() => {
     const arr = []
+    const starArr = []
     const ethNode:any = []
     for (const obj of itemData) {
       const isNativeToken = obj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
@@ -297,15 +321,23 @@ export default function BridgeCurrencyList({
         || obj?.address === config.getCurChainInfo(chainId)?.symbol
       ) {
         ethNode.push(obj)
-        continue
+        // continue
+      }else if (starTokenList[obj.address]) {
+        starArr.push(obj)
+      } else {
+        arr.push(obj)
       }
-      arr.push(obj)
     }
-    if (ethNode.length > 0) {
-      arr.unshift(...ethNode)
-    }
-    return arr
-  }, [itemData, chainId])
+    // if (ethNode.length > 0) {
+    //   arr.unshift(...ethNode)
+    // }
+    // return arr
+    return [
+      ...ethNode,
+      ...starArr,
+      ...arr
+    ]
+  }, [itemData, chainId, starTokenList])
 
 
   function List({ records }: { records?: any [] }) {

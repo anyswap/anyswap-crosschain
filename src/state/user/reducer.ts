@@ -16,7 +16,8 @@ import {
   toggleURLWarning,
   selectNetworkId,
   updateUserBetaMessage,
-  starChain
+  starChain,
+  starToken
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -56,6 +57,7 @@ export interface UserState {
   URLWarningVisible: boolean
   selectNetworkId: any
   starChain: any
+  starToken: any
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -76,10 +78,34 @@ export const initialState: UserState = {
   URLWarningVisible: true,
   selectNetworkId: {},
   starChain: {},
+  starToken: {},
 }
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(starToken, (state, { payload: { chainId, token} }) => {
+      chainId = chainId ? chainId : 'all'
+      if (!state.starToken) state.starToken = {}
+      if (!state.starToken[chainId]) state.starToken[chainId] = {}
+      if (state?.starToken?.[chainId]) {
+        if (state?.starToken?.[chainId]?.[token]) {
+          delete state.starToken[chainId][token]
+        } else {
+          state.starToken[chainId] = {
+            ...(state.starToken[chainId] ? state.starToken[chainId] : {}),
+            [token]: {timestamp: Date.now()}
+          }
+        }
+      } else {
+        state.starToken = {
+          ...(state?.starToken ? state?.starToken : {}),
+          [chainId]: {
+            ...(state.starToken[chainId] ? state.starToken[chainId] : {}),
+            [token]: {timestamp: Date.now()}
+          }
+        }
+      }
+    })
     .addCase(starChain, (state, { payload: { account, chainId} }) => {
       account = account ? account : 'all'
       if (!state.starChain) state.starChain = {}
