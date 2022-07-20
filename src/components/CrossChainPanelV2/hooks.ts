@@ -44,38 +44,6 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
 export function outputValue (inputBridgeValue: any, destConfig:any, selectCurrency:any) {
   return useMemo(() => {
     return calcReceiveValueAndFee(inputBridgeValue, destConfig, selectCurrency?.decimals)
-    // if (inputBridgeValue && destConfig && selectCurrency) {
-    //   const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
-    //   const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
-    //   let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
-    //   let value = Number(inputBridgeValue) - fee
-    //   // console.log(minFee)
-    //   // console.log(baseFee)
-    //   if (fee < Number(minFee)) {
-    //     fee = Number(minFee)
-    //   } else if (fee > destConfig.MaximumSwapFee) {
-    //     fee = Number(destConfig.MaximumSwapFee)
-    //   } else {
-    //     fee = fee
-    //   }
-    //   value = Number(inputBridgeValue) - fee - baseFee
-    //   if (value && Number(value) && Number(value) > 0) {
-    //     const dec = Math.min(6, selectCurrency.decimals)
-    //     return {
-    //       fee: fee,
-    //       outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
-    //     }
-    //   }
-    //   return {
-    //     fee: '',
-    //     outputBridgeValue: ''
-    //   }
-    // } else {
-    //   return {
-    //     fee: '',
-    //     outputBridgeValue: ''
-    //   }
-    // }
   }, [inputBridgeValue, destConfig, selectCurrency])
 }
 
@@ -175,10 +143,10 @@ export function useDestChainid (
   const [initChainId, setInitChainId] = useState<any>('')
   const [initChainList, setInitChainList] = useState<any>([])
   const {starChainList} = useStarChain()
-  const starChainLen = useMemo(() => {
-    if (starChainList) return Object.keys(starChainList).length
-    return 0
-  }, [starChainList])
+  // const starChainLen = useMemo(() => {
+  //   if (starChainList) return Object.keys(starChainList).length
+  //   return 0
+  // }, [starChainList])
   useEffect(() => {
     // let initChainId1:any = '',
     //     initChainList1:any = []
@@ -190,20 +158,24 @@ export function useDestChainid (
         arr.push(c)
       }
       // console.log(arr)
-      // console.log(starChainList)
+      // console.log(userInit)
       let useChain:any = ''
-      if (userInit?.toChainId) {
-        useChain = userInit?.toChainId
-      } else if (selectChain && arr.includes(useChain.toString())) {
+      if (selectChain && arr.includes(selectChain.toString())) {
+        // console.log(2)
         useChain = selectChain
+      } else if (userInit?.toChainId) {
+        // console.log(1)
+        useChain = userInit?.toChainId
       } else if (Object.keys(starChainList).length > 0) {
+        // console.log(3)
         for (const c of arr) {
           if (starChainList[c]) {
             useChain = c
             break
           }
         }
-      } {
+      } else {
+        // console.log(4)
         useChain = config.getCurChainInfo(selectChain).bridgeInitChain
       }
       // console.log(useChain)
@@ -222,7 +194,7 @@ export function useDestChainid (
       setInitChainId(useChain)
       setInitChainList(arr)
     }
-  }, [selectCurrency, starChainLen])
+  }, [selectCurrency])
   return {
     initChainId,
     initChainList

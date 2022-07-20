@@ -105,6 +105,8 @@ export default function CrossChain({
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
+
+  const [isUserSelect, setIsUserSelect] = useState(false)
   
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -129,7 +131,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    console.log(selectDestCurrency)
+    // console.log(selectDestCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -517,12 +519,15 @@ export default function CrossChain({
   }, [initChainList])
   
   // const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
-  const {initDestCurrency, initDestCurrencyList} = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
+  const {
+    // initDestCurrency,
+    initDestCurrencyList
+  } = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
   // console.log(selectChain)
   // console.log(selectCurrency?.destChains?.[selectChain])
-  useEffect(() => {
-    setSelectDestCurrency(initDestCurrency)
-  }, [initDestCurrency])
+  // useEffect(() => {
+  //   setSelectDestCurrency(initDestCurrency)
+  // }, [initDestCurrency])
 
   useEffect(() => {
     setInitUserSelect({useChainId: selectChain, toChainId: chainId, token: selectDestCurrency?.address})
@@ -809,6 +814,7 @@ export default function CrossChain({
           }}
           onCurrencySelect={(inputCurrency) => {
             setSelectCurrency(inputCurrency)
+            setIsUserSelect(false)
           }}
           onMax={(value) => {
             handleMaxInput(value)
@@ -888,11 +894,13 @@ export default function CrossChain({
           }}
           onChainSelect={(chainID) => {
             setSelectChain(chainID)
+            setIsUserSelect(false)
           }}
           selectChainId={selectChain}
           id="selectChainID"
           onCurrencySelect={(inputCurrency) => {
             setSelectDestCurrency(inputCurrency)
+            setIsUserSelect(true)
           }}
           bridgeConfig={selectCurrency}
           isNativeToken={isNativeToken}
@@ -901,7 +909,7 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        {/* {
+        {
           evmAccount && chainId && destChain?.ts ? (
             <LiquidityPool
               destChain={destChain}
@@ -909,7 +917,7 @@ export default function CrossChain({
               selectCurrency={destConfig}
             />
           ) : ''
-        } */}
+        }
         {
           (swapType === 'send' && !isNaN(chainId) && destConfig?.type != 'swapin')
           || (isNaN(selectChain))
@@ -919,12 +927,18 @@ export default function CrossChain({
         }
 
         <RouterList
-          // selectCurrency={selectCurrency}
+          selectCurrency={selectCurrency}
           // tipTitleKey=""
           selectChain={selectChain}
           selectDestKey={destConfig.key}
           routerlist={selectDestCurrencyList}
           inputBridgeValue={inputBridgeValue}
+          sortType={'LIQUIDITYUP'}
+          isUserSelect={isUserSelect}
+          onUserCurrencySelect={(inputCurrency) => {
+            setSelectDestCurrency(inputCurrency)
+            setIsUserSelect(true)
+          }}
           onCurrencySelect={(inputCurrency) => {
             setSelectDestCurrency(inputCurrency)
           }}

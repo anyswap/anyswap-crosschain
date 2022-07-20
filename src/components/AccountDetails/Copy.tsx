@@ -29,7 +29,10 @@ export default function CopyHelper(props: { toCopy: string; children?: React.Rea
   const [isCopied, setCopied] = useCopyClipboard()
 
   return (
-    <CopyIcon onClick={() => setCopied(props.toCopy)}>
+    <CopyIcon onClick={(event) => {
+      setCopied(props.toCopy)
+      event.preventDefault()
+    }}>
       {isCopied ? (
         <TransactionStatusText>
           <CheckCircle size={'16'} />

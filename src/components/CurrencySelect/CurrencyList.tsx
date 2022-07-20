@@ -4,7 +4,7 @@ import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Plus } from 'react-feather'
+// import { Plus } from 'react-feather'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -18,10 +18,13 @@ import { MouseoverTooltip } from '../Tooltip'
 import { MenuItem } from '../SearchModal/styleds'
 import Loader from '../Loader'
 import { LazyList } from '../Lazyload/LazyList';
+import CopyHelper from '../AccountDetails/Copy'
 
 import config from '../../config'
 import {CROSS_BRIDGE_LIST} from '../../config/constant'
 import {addToken} from '../../config/tools/methods'
+
+import { ReactComponent as Metamask } from '../../assets/images/metamask.svg'
 
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
@@ -51,6 +54,7 @@ const Tag = styled.div`
 const ListBox = styled.div`
   overflow:auto;
 `
+
 
 // function Balance({ balance }: { balance: CurrencyAmount }) {
 //   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
@@ -82,17 +86,28 @@ const CurrencyRight = styled.div`
   ${({ theme }) => theme.flexEC};
   width: 20%;
 `
+const FlexSC = styled.div`
+  ${({ theme }) => theme.flexSC};
+`
+// const PlusIcon = styled(Plus)`
+//   height: 20px;
+//   width: 20px;
+//   min-height: 20px;
+//   min-width: 20px;
+//   margin-left: 5px;
 
-const PlusIcon = styled(Plus)`
-  height: 20px;
-  width: 20px;
-  min-height: 20px;
-  min-width: 20px;
-  margin-left: 5px;
+//   > * {
+//     stroke: ${({ theme }) => theme.text1};
+//   }
+// `
 
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
+
+const MetamaskIcon = styled(Metamask)`
+  height: 16px;
+  width: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  margin-left: 10px;
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -194,12 +209,25 @@ function CurrencyRow({
         <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'} style={{marginRight:'10px'}}></TokenLogo>
         <Column>
           <Text title={currencyObj.name} fontWeight={500}>
-            {/* {isNativeToken ? config.getBaseCoin(currencyObj.symbol, isDestChainId) : currencyObj.symbol} */}
-            {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
-            {currencyObj?.type ? (
-              ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router ' + currencyObj.sortId + ')'
-            ) : ''}
-            {/* <Text fontSize={'10px'}>{currencyObj.name ? currencyObj.name : ''}</Text> */}
+            <FlexSC>
+              {config.getBaseCoin(currencyObj.symbol, isDestChainId)}
+              {
+                isNativeToken || isNaN(chainId) || currencyObj?.type ? '' : (
+                  <>
+                    <MetamaskIcon onClick={(event) => {
+                      // console.log(currencyObj)
+                      addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl).then(() => {
+                        event.preventDefault()
+                      })
+                    }} />
+                    <CopyHelper toCopy={currencyObj.address} />
+                  </>
+                )
+              }
+              {currencyObj?.type ? (
+                ['swapin', 'swapout'].includes(currencyObj?.type) ? ' (Bridge)' : ' (Router ' + currencyObj.sortId + ')'
+              ) : ''}
+            </FlexSC>
             <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
           </Text>
         </Column>
@@ -213,14 +241,14 @@ function CurrencyRow({
             </RowFixed>
           )
         }
-        {
-          isNativeToken || isNaN(chainId) ? '' : (
+        {/* {
+          isNativeToken || isNaN(chainId) || currencyObj?.type ? '' : (
             <PlusIcon onClick={() => {
               // console.log(currencyObj)
               addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
             }} />
           )
-        }
+        } */}
       </CurrencyRight>
     </MenuItemWrapper>
   )

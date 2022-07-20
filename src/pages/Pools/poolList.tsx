@@ -441,7 +441,8 @@ export default function PoolLists ({
       </div>
       <div className="dtil">
         <p className='p'>{t('yourPoolShare')}: {bl}</p>
-        <p className='p'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}: {ts} </p>
+        {/* <p className='p'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}: {ts} </p> */}
+        <p className='p'>{t('pool') + (sortId ? ' ' + sortId : '')}: {ts} </p>
         {/* <p className='p'>{t('pool')}: {thousandBit(anyts, 2)}</p> */}
       </div>
       <div className="action">
@@ -499,7 +500,8 @@ export default function PoolLists ({
           <span className='txt'>{bl}</span>
         </p>
         <p className='p'>
-          <span className='txt'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}:</span>
+          {/* <span className='txt'>{t('pool')}{sortId ? '(Router ' + sortId + ')' : ''}:</span> */}
+          <span className='txt'>{t('pool') + (sortId ? ' ' + sortId : '')}:</span>
           <span className='txt'>{ts}</span>
         </p>
       </div>
