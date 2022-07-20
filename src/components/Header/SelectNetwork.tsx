@@ -480,7 +480,8 @@ function ChainListBox ({
     }
     return [
       ...starArr.sort(comparator),
-      ...arr.sort(comparator),
+      // ...arr.sort(comparator),
+      ...arr,
     ]
   }, [spportChainArr, starChainList])
 
