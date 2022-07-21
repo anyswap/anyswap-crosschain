@@ -26,6 +26,8 @@ export function useTransactionAdder(): (
     token?: any;
     logoUrl?: any;
     isLiquidity?: any;
+    fromInfo?: any;
+    toInfo?: any;
   }
 ) => void {
   const { chainId, account } = useActiveReact()
@@ -47,6 +49,8 @@ export function useTransactionAdder(): (
         token,
         logoUrl,
         isLiquidity,
+        fromInfo,
+        toInfo
       }: {
         summary?: string;
         claim?: { recipient: string };
@@ -60,6 +64,8 @@ export function useTransactionAdder(): (
         token?: any,
         logoUrl?: any,
         isLiquidity?: any,
+        fromInfo?: any,
+        toInfo?: any,
       } = {}
     ) => {
       if (!account) return
@@ -85,6 +91,8 @@ export function useTransactionAdder(): (
         token,
         logoUrl,
         isLiquidity,
+        fromInfo,
+        toInfo
       }))
     },
     [dispatch, chainId, account]

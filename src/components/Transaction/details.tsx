@@ -27,10 +27,11 @@ import {
 
 import {Status} from '../../config/status'
 import config from '../../config'
-
+import {addToken} from '../../config/tools/methods'
 import {thousandBit} from '../../utils/tools/tools'
 
 import TxnsProgress from './txnsProgress'
+import { ReactComponent as Metamask } from '../../assets/images/metamask.svg'
 
 // import ScheduleIcon from '../../assets/images/icon/schedule.svg'
 
@@ -156,6 +157,14 @@ const RemoveTip = styled.div`
   font-size: 12px;
 `
 
+const MetamaskIcon = styled(Metamask)`
+  height: 16px;
+  width: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  margin-left: 5px;
+`
+
 function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
   if (fromStatus === Status.Pending) {
     return undefined
@@ -193,7 +202,10 @@ export default function HistoryDetails ({
   token,
   isLiquidity,
   isReceiveAnyToken,
-  avgTime
+  avgTime,
+  logoUrl,
+  fromInfo,
+  toInfo,
 }: {
   symbol?: any,
   from?: any,
@@ -212,6 +224,9 @@ export default function HistoryDetails ({
   isLiquidity?: any,
   isReceiveAnyToken?: any,
   avgTime?: any,
+  logoUrl?: any,
+  fromInfo?: any,
+  toInfo?: any,
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
@@ -267,6 +282,15 @@ export default function HistoryDetails ({
             <div className="value">
               <div className="cont">
                 - {thousandBit(value, 2) + ' ' + symbol}
+                {
+                  isNaN(fromChainID) ? '' : (
+                    <MetamaskIcon onClick={(event) => {
+                      // console.log(currencyObj)
+                      addToken(fromInfo.address, symbol, fromInfo.decimals, logoUrl)
+                      event.stopPropagation()
+                    }} />
+                  )
+                }
               </div>
             </div>
           </div>
@@ -313,30 +337,43 @@ export default function HistoryDetails ({
             </div>
             <div className="value">
               <div className="cont">
-                {swapvalue ? '+ ' + thousandBit(swapvalue, 2) + ' ' + symbol : '-'}
+                {swapvalue ? (
+                  <>
+                    {'+ ' + thousandBit(swapvalue, 2) + ' ' + symbol}
+                    {
+                      isNaN(toChainID) ? '' : (
+                        <MetamaskIcon onClick={(event) => {
+                          // console.log(currencyObj)
+                          addToken(toInfo.address, symbol, toInfo.decimals, logoUrl)
+                          event.stopPropagation()
+                        }} />
+                      )
+                    }
+                  </>
+                ) : '-'}
               </div>
             </div>
           </div>
           <div className="item">
             <div className="txtLabel">Tx hash:</div>
             <div className="value">
-              {swaptx ? (
+              <Link className="a" href={getEtherscanLink(toChainID, swaptx, 'transaction')} target="_blank">{swaptx}</Link>
+              <Copy toCopy={swaptx}></Copy>
+              {/* {swaptx ? (
                 <>
-                  <Link className="a" href={getEtherscanLink(toChainID, swaptx, 'transaction')} target="_blank">{swaptx}</Link>
-                  <Copy toCopy={swaptx}></Copy>
                 </>
-              ) : '-'}
+              ) : '-'} */}
             </div>
           </div>
           <div className="item">
             <div className="txtLabel">{t('Receive')}:</div>
             <div className="value">
-              {swaptx ? (
+              <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to ? shortenAddress(to, 6) : ''}</Link>
+              <Copy toCopy={to}></Copy>
+              {/* {swaptx ? (
                 <>
-                  <Link className="a" href={getEtherscanLink(toChainID, to, 'address')} target="_blank">{to ? shortenAddress(to, 6) : ''}</Link>
-                  <Copy toCopy={to}></Copy>
                 </>
-              ) : '-'}
+              ) : '-'} */}
             </div>
           </div>
           {

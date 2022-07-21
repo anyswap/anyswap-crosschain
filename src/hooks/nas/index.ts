@@ -169,6 +169,7 @@ interface UseBridgeCallbackInterface {
   recipient: string
   pairid: string
   isLiquidity:any
+  destConfig:any
 }
 
 export enum WrapType {
@@ -217,7 +218,8 @@ export function useNebBridgeCallback({
   selectChain,
   recipient,
   pairid,
-  isLiquidity
+  isLiquidity,
+  destConfig
 }: UseBridgeCallbackInterface): {
   wrapType?: WrapType
   inputError?: string
@@ -266,7 +268,19 @@ export function useNebBridgeCallback({
                   routerToken: '',
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity
+                  isLiquidity: isLiquidity,
+                  fromInfo: {
+                    symbol: inputCurrency?.symbol,
+                    name: inputCurrency?.name,
+                    decimals: inputCurrency?.decimals,
+                    address: inputCurrency?.address,
+                  },
+                  toInfo: {
+                    symbol: destConfig?.symbol,
+                    name: destConfig?.name,
+                    decimals: destConfig?.decimals,
+                    address: destConfig?.address,
+                  },
                 })
                 recordsTxns(data)
                 onChangeViewDtil(txData?.hash, true)
@@ -281,7 +295,7 @@ export function useNebBridgeCallback({
       inputError: '',
       wrapType: WrapType.NOCONNECT
     }
-  }, [balance, typedValue, address, DepositAddress, selectChain, pairid, inputCurrency, chainId,inputAmount, recipient])
+  }, [balance, typedValue, address, DepositAddress, selectChain, pairid, inputCurrency, chainId,inputAmount, recipient, destConfig])
 }
 
 

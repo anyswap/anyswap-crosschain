@@ -487,7 +487,19 @@ export function useNearSendTxns(
               routerToken: '',
               token: inputCurrency?.address,
               logoUrl: inputCurrency?.logoUrl,
-              isLiquidity: destConfig?.isLiquidity
+              isLiquidity: destConfig?.isLiquidity,
+              fromInfo: {
+                symbol: inputCurrency?.symbol,
+                name: inputCurrency?.name,
+                decimals: inputCurrency?.decimals,
+                address: inputCurrency?.address,
+              },
+              toInfo: {
+                symbol: destConfig?.symbol,
+                name: destConfig?.name,
+                decimals: destConfig?.decimals,
+                address: destConfig?.address,
+              },
             })
             recordsTxns(data)
             onChangeViewDtil(txReceipt?.hash, true)
@@ -499,7 +511,7 @@ export function useNearSendTxns(
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig])
 }
 
 /**

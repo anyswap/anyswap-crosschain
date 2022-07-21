@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
-import {ChevronsRight, CheckCircle, Info} from 'react-feather'
+import {
+  // ChevronsRight,
+  CheckCircle,
+  Info
+} from 'react-feather'
 
 import {Status} from '../../config/status'
 
@@ -16,9 +20,33 @@ const ProgressBox = styled.div`
   border: 1px solid ${({theme}) => theme.bg3};
   padding:10px;
   .list {
+    position:relative;
     ${({ theme }) => theme.flexBC};
     font-size: 12px;
+    .lineBox {
+      width:100%;
+      height:20px;
+      position: absolute;
+      top:0;
+      left:0;
+      right:0;
+      z-index:0;
+      .lineWrapper {
+        width:90%;
+        position: relative;
+        background: ${({ theme }) => theme.text1};
+        margin-top:10px;
+        margin-left: 10px;
+        height: 1px;
+        .line {
+          width: 30%;
+          background: #10f732;
+          height: 1px;
+        }
+      }
+    }
     .item {
+      z-index:1;
       ${({ theme }) => theme.text1};
       .step {
         ${({ theme }) => theme.flexC};
@@ -31,6 +59,7 @@ const ProgressBox = styled.div`
           border: 1px solid ${({ theme }) => theme.text1};
           font-size:12px;
           text-align:center;
+          background:${({ theme }) => theme.contentBg};
         }
       }
       .label {
@@ -46,7 +75,13 @@ const ProgressBox = styled.div`
       }
       &.green{
         color: #10f732;
+        // .lineBox {
+        //   .line {
+        //     background: #10f732;
+        //   }
+        // }
         .step {
+          // color: #10f732;
           .num {
             border: 1px solid #10f732;
           }
@@ -112,8 +147,8 @@ export default function TxnsProgress({
     return 0
   }, [fromStatus, toStatus])
 
-  const ChevronsRightView = <div className="item"><ChevronsRight className="arrow" size={14} /></div>
-  const CheckCircleView = <CheckCircle size={12} style={{marginRight: 5}} />
+  // const ChevronsRightView = <div className="item"><ChevronsRight className="arrow" size={14} /></div>
+  const CheckCircleView = <CheckCircle size={12} style={{marginRight: 5, display: 'none'}} />
   const LoaderView = <Loading size={'14px'} stroke="#5f6bfb" style={{marginRight: 5}} />
 
   const PendingView = (status:any) => {
@@ -125,7 +160,7 @@ export default function TxnsProgress({
     }
     return <div className={"item green"}>
       <div className="step"><span className="num">1</span></div>
-      <div className="label">{CheckCircleView}Pending</div>
+      <div className="label">{CheckCircleView}Sent</div>
     </div>
   }
   const ConfirmingView = (status:any) => {
@@ -137,19 +172,19 @@ export default function TxnsProgress({
     }
     return <div className={"item green"}>
       <div className="step"><span className="num">2</span></div>
-      <div className="label">{CheckCircleView}Confirming</div>
+      <div className="label">{CheckCircleView}Confirmed</div>
     </div>
   }
   const CrosschainingView = (status:any) => {
     if (status < 4) {
       return <div className={"item"}>
         <div className="step"><span className="num">3</span></div>
-        <div className="label">{status >= 2 ? LoaderView : ''}Crosschaining</div>
+        <div className="label">{status >= 2 ? LoaderView : ''}Routing</div>
       </div>
     }
     return <div className={"item green"}>
       <div className="step"><span className="num">3</span></div>
-      <div className="label">{CheckCircleView}Crosschaining</div>
+      <div className="label">{CheckCircleView}Routing</div>
     </div>
   }
   // const FailureView = <div className={"item red"}><Info size={12} style={{marginRight: 5}} />Failure</div>
@@ -177,13 +212,13 @@ export default function TxnsProgress({
       return (
         <>
           {PendingView(status)}
-          {ChevronsRightView}
+          {/* {ChevronsRightView} */}
 
           {ConfirmingView(status)}
-          {ChevronsRightView}
+          {/* {ChevronsRightView} */}
 
           {CrosschainingView(status)}
-          {ChevronsRightView}
+          {/* {ChevronsRightView} */}
 
           {SuccessView(status)}
         </>
@@ -194,47 +229,17 @@ export default function TxnsProgress({
           <Info size={16} style={{marginRight: 5}} />Failure
         </FailureBox>
       )
-      // if (status === -1) {
-      //   return (
-      //     <>
-      //       {FailureView}
-      //     </>
-      //   )
-      // } else {
-
-      // }
-      // if (status === -1) {
-      //   return (
-      //     <>
-      //       {PendingView(status)}
-      //       {ChevronsRightView}
-  
-      //       {FailureView}
-      //       {ChevronsRightView}
-
-      //       {CrosschainingView(status)}
-      //       {ChevronsRightView}
-
-      //       {SuccessView(status)}
-      //     </>
-      //   )
-      // } else {
-      //   return (
-      //     <>
-      //       {PendingView(status)}
-      //       {ChevronsRightView}
-  
-      //       {ConfirmingView(status)}
-      //       {ChevronsRightView}
-
-      //       {CrosschainingView(status)}
-      //       {ChevronsRightView}
-
-      //       {FailureView}
-      //     </>
-      //   )
-      // }
     }
+  }
+  function LineView (ProgressNum:any) {
+    if (ProgressNum > 4) {
+      return <div className={"line "}style={{ width: '100%' }}></div>
+    } else if (ProgressNum >= 3) {
+      return <div className={"line "}style={{ width: '65%' }}></div>
+    } if (ProgressNum >= 2) {
+      return <div className={"line "}style={{ width: '30%' }}></div>
+    }
+    return <div className={"line "}style={{ width: '0%' }}></div>
   }
   return (
     <>
@@ -247,6 +252,13 @@ export default function TxnsProgress({
         ) : (
           <ProgressBox>
             <div className="list">
+              <div className="lineBox">
+                <div className="lineWrapper">
+                  {LineView(ProgressNum)}
+                  {/* {LineView(4)} */}
+                </div>
+                {/* <div className={"line line1" + (ProgressNum >= 3 ? 'green' : '')}></div> */}
+              </div>
               {ProgressView(ProgressNum)}
             </div>
           </ProgressBox>

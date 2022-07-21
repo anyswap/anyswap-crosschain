@@ -31,7 +31,9 @@ export interface TransactionDetails {
   token?: any
   logoUrl?: any
   isLiquidity?: any
-  isReceiveAnyToken?: any
+  isReceiveAnyToken?: any,
+  fromInfo?: any,
+  toInfo?: any,
 }
 
 export interface TransactionState {
@@ -60,6 +62,8 @@ export default createReducer(initialState, builder =>
       token,
       logoUrl,
       isLiquidity,
+      fromInfo,
+      toInfo
     } }) => {
       if (transactions[chainId]?.[hash]) {
         throw Error('Attempted to add existing transaction.')
@@ -81,6 +85,8 @@ export default createReducer(initialState, builder =>
         token,
         logoUrl,
         isLiquidity,
+        fromInfo,
+        toInfo
       }
       transactions[chainId] = txs
     })

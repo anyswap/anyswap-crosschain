@@ -17,7 +17,7 @@ export default function TxnsDtilsModal () {
 
   // console.log(isOpenModal)
   // const hash = getParams('hash')
-  const tx = allTransactions?.[hash]
+  const tx:any = allTransactions?.[hash]
   // console.log(tx)
   const fromStatus = useMemo(() => {
     if (tx) {
@@ -79,6 +79,9 @@ export default function TxnsDtilsModal () {
           isLiquidity={tx?.isLiquidity}
           isReceiveAnyToken={tx?.isReceiveAnyToken}
           avgTime={tx?.info?.time}
+          logoUrl={tx?.logoUrl}
+          fromInfo={tx?.fromInfo}
+          toInfo={tx?.toInfo}
         />
       </ModalContent>
     </>

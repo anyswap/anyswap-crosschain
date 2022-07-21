@@ -151,7 +151,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     pairid: destConfig?.pairid,
-    isLiquidity
+    isLiquidity,
+    destConfig
   })
 
   const { balance: terraBalance, wrapType: wrapTerraType, execute: onTerraWrap, inputError: wrapInputErrorTerra } = useTerraCrossBridgeCallback(
@@ -164,7 +165,8 @@ export default function CrossChain({
     recipient,
     selectCurrency?.unit,
     chainId,
-    isLiquidity
+    isLiquidity,
+    destConfig
   )
 
   const { balance: nearBalance, execute: onNearWrap, inputError: wrapInputErrorNear } = useNearSendTxns(

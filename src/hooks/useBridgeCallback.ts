@@ -224,7 +224,19 @@ export function useBridgeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity
+                  isLiquidity: isLiquidity,
+                  fromInfo: {
+                    symbol: inputCurrency?.symbol,
+                    name: inputCurrency?.name,
+                    decimals: inputCurrency?.decimals,
+                    address: inputCurrency?.address,
+                  },
+                  toInfo: {
+                    symbol: destConfig?.symbol,
+                    name: destConfig?.name,
+                    decimals: destConfig?.decimals,
+                    address: destConfig?.address,
+                  },
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -319,7 +331,19 @@ export function useBridgeNativeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity
+                  isLiquidity: isLiquidity,
+                  fromInfo: {
+                    symbol: inputCurrency?.symbol,
+                    name: inputCurrency?.name,
+                    decimals: inputCurrency?.decimals,
+                    address: inputCurrency?.address,
+                  },
+                  toInfo: {
+                    symbol: destConfig?.symbol,
+                    name: destConfig?.name,
+                    decimals: destConfig?.decimals,
+                    address: destConfig?.address,
+                  },
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
@@ -700,6 +724,7 @@ export function useBridgeNativeCallback(
   isLiquidity: any,
   receiveAddress: string | undefined,
   selectCurrency: any,
+  destConfig: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
@@ -786,7 +811,19 @@ export function useBridgeNativeCallback(
                     routerToken: '',
                     token: inputCurrency?.address,
                     logoUrl: inputCurrency?.logoUrl,
-                    isLiquidity: isLiquidity
+                    isLiquidity: isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
                   })
                   let srcChainID = chainId
                   let destChainID = toChainID
@@ -817,7 +854,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity, destConfig])
 }
 
 /**
@@ -836,7 +873,8 @@ export function useBridgeNativeCallback(
   terraRecipient: string | undefined,
   Unit: any,
   srcChainid: string | undefined,
-  isLiquidity: any
+  isLiquidity: any,
+  destConfig: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { 
   wrapType: WrapType;
@@ -1024,7 +1062,19 @@ export function useBridgeNativeCallback(
                     routerToken: '',
                     token: inputCurrency?.address,
                     logoUrl: inputCurrency?.logoUrl,
-                    isLiquidity: isLiquidity
+                    isLiquidity: isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
                   })
                   if (txData.hash && account && terraRecipient) {
                     const data:any = {
@@ -1056,5 +1106,5 @@ export function useBridgeNativeCallback(
           : undefined,
         inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx, destConfig])
 }

@@ -336,7 +336,8 @@ export default function CrossChain({
     destConfig?.pairid,
     isLiquidity,
     recipient,
-    selectCurrency
+    selectCurrency,
+    destConfig
   )
   
 
