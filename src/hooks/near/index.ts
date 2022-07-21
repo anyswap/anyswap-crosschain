@@ -104,18 +104,20 @@ export function useNearBalance () {
     return bl
   }, [])
 
-  const getNearStorageBalance = useCallback(async({account}) => {
+  const getNearStorageBalance = useCallback(async({token, account, chainId}) => {
     let bl:any
     const useAccount = account ? account : window?.near?.accountId
     // console.log(useAccount)
     try {
-      
-      bl = await window?.near?.account().viewFunction(
-        'storage_balance_of',
-        { "account_id": useAccount },
-      )
+      if (useAccount && isAddress(useAccount, chainId)) {
+        bl = await window?.near?.account().viewFunction(
+          token,
+          'storage_balance_of',
+          { "account_id": useAccount },
+        )
+      }
     } catch (error) {
-      
+      console.log(error)
     }
     return bl
   }, [])
@@ -279,7 +281,8 @@ export function useSendNear () {
               // "registration_only": true, 
             },
             gas: '300000000000000',
-            deposit: 1e24
+            // deposit: 1e24
+            deposit: '1250000000000000000000'
             // deposit: amount
           }
         ],
@@ -296,6 +299,7 @@ export function useSendNear () {
           reject(res?.response?.error)
         }
       }).catch((error:any) => {
+        console.log(error)
         reject(error)
       })
     })

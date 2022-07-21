@@ -71,6 +71,7 @@ import { BigAmount } from '../../utils/formatBignumber'
 
 import {getUrlData} from '../../utils/tools/axios'
 import {isAddress} from '../../utils/isAddress'
+import useInterval from '../../hooks/useInterval'
 
 // let intervalFN:any = ''
 
@@ -636,19 +637,23 @@ export default function CrossChain({
     return url
   }, [destConfig, selectChain, maxInputValue])
   const [nearStorageBalance, setNearStorageBalance] = useState<any>()
-  useEffect(() => {
+  const getNearStorage = useCallback(() => {
     if (
-      selectChain === ChainId.NEAR
+      [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain) 
+      && recipient
     ) {
-      getNearStorageBalance({account: recipient}).then((res:any) => {
+      getNearStorageBalance({token: destConfig.address,account: recipient, chainId: selectChain}).then((res:any) => {
         console.log(res)
-        setNearStorageBalance(res)
+        if (res?.total) {
+          setNearStorageBalance(res.total)
+        }
       })
     }
-    // getNearStorageBalance({}).then((res:any) => {
-    //   console.log(res)
-    // })
+  }, [selectChain, recipient, destConfig])
+  useEffect(() => {
+    getNearStorage()
   }, [selectChain, recipient])
+  useInterval(getNearStorage, 1000 * 10)
 
   function CrossChainTip () {
     if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
