@@ -11,29 +11,54 @@ const ProgressBox = styled.div`
   width:100%;
   margin-bottom: 10px;
   border-radius: 10px;
-  border: solid 0.5px ${({ theme }) => theme.tipBorder};
-  background-color: ${({ theme }) => theme.tipBg};
+  // border: solid 0.5px ${({ theme }) => theme.tipBorder};
+  // background-color: ${({ theme }) => theme.tipBg};
+  border: 1px solid ${({theme}) => theme.bg3};
   padding:10px;
   .list {
     ${({ theme }) => theme.flexBC};
     font-size: 12px;
     .item {
-      ${({ theme }) => theme.flexC};
+      ${({ theme }) => theme.text1};
+      .step {
+        ${({ theme }) => theme.flexC};
+        .num {
+          display:block;
+          width:20px;
+          height:20px;
+          line-height:18px;
+          border-radius: 100%;
+          border: 1px solid ${({ theme }) => theme.text1};
+          font-size:12px;
+          text-align:center;
+        }
+      }
+      .label {
+        ${({ theme }) => theme.flexC};
+      }
       &.yellow {
-        // border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
-        // background: ${({ theme }) => theme.birdgeStateBg};
         color: ${({ theme }) => theme.birdgeStateBorder};
+        .step {
+          .num {
+            border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
+          }
+        }
       }
       &.green{
-        // border: 1px solid ${({ theme }) => theme.birdgeStateBorder1};
-        // background: ${({ theme }) => theme.birdgeStateBg1};
-        // color: ${({ theme }) => theme.birdgeStateBorder1};
         color: #10f732;
+        .step {
+          .num {
+            border: 1px solid #10f732;
+          }
+        }
       }
       &.red{
-        // border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
-        // background: ${({ theme }) => theme.birdgeStateBg2};
         color: ${({ theme }) => theme.birdgeStateBorder2};
+        .step {
+          .num {
+            border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
+          }
+        }
       }
     }
   }
@@ -93,33 +118,61 @@ export default function TxnsProgress({
 
   const PendingView = (status:any) => {
     if (status === 0) {
-      return <div className={"item"}>{LoaderView}Pending</div>
+      return <div className={"item"}>
+        <div className="step"><span className="num">1</span></div>
+        <div className="label">{LoaderView}Pending</div>
+      </div>
     }
-    return <div className={"item green"}>{CheckCircleView}Pending</div>
+    return <div className={"item green"}>
+      <div className="step"><span className="num">1</span></div>
+      <div className="label">{CheckCircleView}Pending</div>
+    </div>
   }
   const ConfirmingView = (status:any) => {
     if (status >= 1 && status < 2) {
-      return <div className={"item"}>{LoaderView}Confirming</div>
+      return <div className={"item"}>
+        <div className="step"><span className="num">2</span></div>
+        <div className="label">{LoaderView}Confirming</div>
+      </div>
     }
-    return <div className={"item green"}>{CheckCircleView}Confirming</div>
+    return <div className={"item green"}>
+      <div className="step"><span className="num">2</span></div>
+      <div className="label">{CheckCircleView}Confirming</div>
+    </div>
   }
   const CrosschainingView = (status:any) => {
-    if (status >= 3 && status < 4) {
-      return <div className={"item"}>{LoaderView}Crosschaining</div>
+    if (status < 4) {
+      return <div className={"item"}>
+        <div className="step"><span className="num">3</span></div>
+        <div className="label">{status >= 2 ? LoaderView : ''}Crosschaining</div>
+      </div>
     }
-    return <div className={"item green"}>{CheckCircleView}Crosschaining</div>
+    return <div className={"item green"}>
+      <div className="step"><span className="num">3</span></div>
+      <div className="label">{CheckCircleView}Crosschaining</div>
+    </div>
   }
   // const FailureView = <div className={"item red"}><Info size={12} style={{marginRight: 5}} />Failure</div>
   const SuccessView = (status:any) => {
-    if (status >= 4 && status < 5) {
-      return <div className={"item"}>{LoaderView}Success</div>
+    if (status < 5) {
+      return <div className={"item"}>
+        <div className="step"><span className="num">4</span></div>
+        <div className="label">{status >= 3 ? LoaderView : ''}Success</div>
+      </div>
     } else if (status === 6) {
-      return <div className={"item yellow"}><Info size={12} style={{marginRight: 5}} />Big Amount</div>
+      return <div className={"item yellow"}>
+        <div className="step"><span className="num">4</span></div>
+        <div className="label"><Info size={12} style={{marginRight: 5}} />Big Amount</div>
+      </div>
     }
-    return <div className={"item green"}>{CheckCircleView}Success</div>
+    return <div className={"item green"}>
+      <div className="step"><span className="num">4</span></div>
+      <div className="label">{CheckCircleView}Success</div>
+    </div>
   }
   // console.log(ProgressNum)
   function ProgressView (status:any) {
+    console.log(status)
     if (status >= 0) {
       return (
         <>

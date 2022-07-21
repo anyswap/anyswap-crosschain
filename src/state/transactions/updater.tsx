@@ -2,8 +2,12 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import {updateTerraHash} from '../../hooks/terra'
-import {updateNasHash} from '../../hooks/nas'
+
+// import {updateTerraHash} from '../../hooks/terra'
+// import {updateNasHash} from '../../hooks/nas'
+
+import {getHashInfo} from '../../hooks/getHash'
+
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
@@ -12,8 +16,8 @@ import {useHashSwapInfo} from './hooks'
 
 import useInterval from '../../hooks/useInterval'
 
-import {TERRA_MAIN_CHAINID} from '../../config/chainConfig/terra'
-import {NAS_MAIN_CHAINID} from '../../config/chainConfig/nas'
+// import {TERRA_MAIN_CHAINID} from '../../config/chainConfig/terra'
+// import {NAS_MAIN_CHAINID} from '../../config/chainConfig/nas'
 
 import {END_STATUS} from '../../config/status'
 
@@ -55,11 +59,10 @@ export default function Updater(): null {
     // console.log(chainId)
     // console.log(transactions)
     if (!chainId || Object.keys(transactions).length <= 0) return
-    if (chainId === TERRA_MAIN_CHAINID) {
+    if (isNaN(chainId)) {
       Object.keys(transactions)
       .filter(hash => {
         const tx = transactions[hash]
-        // if (tx.receipt) return false
         if (tx.info && END_STATUS.includes(tx.info.status)) return false
         return true
       })
@@ -67,9 +70,9 @@ export default function Updater(): null {
         // console.log(hash)
         const tx = transactions[hash]
         if (!tx.receipt) {
-          updateTerraHash(hash).then((receipt:any) => {
+          getHashInfo(hash, chainId).then((receipt:any) => {
             // console.log(receipt)
-            if (receipt && !receipt.error) {
+            if (receipt.msg === 'Success' || receipt.msg === 'Failure') {
               dispatch(
                 finalizeTransaction({
                   chainId,
@@ -79,7 +82,7 @@ export default function Updater(): null {
                     blockNumber: receipt.height,
                     contractAddress: '',
                     from: tx.from,
-                    status: receipt.code ? 0 : 1,
+                    status: receipt.msg === 'Success' ? 1 : 0,
                     to: tx.toAddress,
                     transactionHash: hash,
                     transactionIndex: ''
@@ -91,7 +94,7 @@ export default function Updater(): null {
                   {
                     txn: {
                       hash,
-                      success: !receipt.code,
+                      success: receipt.msg === 'Success' ? true : false,
                       summary: transactions[hash]?.summary
                     }
                   },
@@ -120,71 +123,137 @@ export default function Updater(): null {
           })
         }
       })
-    } else if (chainId === NAS_MAIN_CHAINID) {
-      Object.keys(transactions)
-      .filter(hash => {
-        const tx = transactions[hash]
-        // if (tx.receipt) return false
-        if (tx.info && END_STATUS.includes(tx.info.status)) return false
-        return true
-      })
-      .forEach(hash => {
-        // console.log(hash)
-        const tx = transactions[hash]
-        if (!tx.receipt) {
-          updateNasHash(hash).then((receipt:any) => {
-            console.log(receipt)
-            if (receipt) {
-              dispatch(
-                finalizeTransaction({
-                  chainId,
-                  hash,
-                  receipt: {
-                    blockHash: '',
-                    blockNumber: receipt?.data?.block?.height,
-                    contractAddress: '',
-                    from: tx.from,
-                    status: receipt.msg === "success" ? 1 : 0,
-                    to: tx.toAddress,
-                    transactionHash: hash,
-                    transactionIndex: ''
-                  }
-                })
-              )
-              if (!tx?.version) {
-                addPopup(
-                  {
-                    txn: {
-                      hash,
-                      success: receipt.msg === "success" ? true : false,
-                      summary: transactions[hash]?.summary
-                    }
-                  },
-                  hash
-                )
-              }
-            }
-          })
-        } else if (
-          !(tx.info && END_STATUS.includes(tx?.info?.status))
-          && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
-          && tx?.version
-        )  {
-          useHashSwapInfo(hash).then((receipt:any) => {
-            if (receipt && receipt.msg === 'Success' && receipt.info) {
-              dispatch(
-                updateTransaction({
-                  chainId,
-                  hash,
-                  info: {
-                    ...receipt.info
-                  }
-                })
-              )
-            }
-          })
-        }
-      })
+    // if (chainId === TERRA_MAIN_CHAINID) {
+    //   Object.keys(transactions)
+    //   .filter(hash => {
+    //     const tx = transactions[hash]
+    //     // if (tx.receipt) return false
+    //     if (tx.info && END_STATUS.includes(tx.info.status)) return false
+    //     return true
+    //   })
+    //   .forEach(hash => {
+    //     // console.log(hash)
+    //     const tx = transactions[hash]
+    //     if (!tx.receipt) {
+    //       updateTerraHash(hash).then((receipt:any) => {
+    //         // console.log(receipt)
+    //         if (receipt && !receipt.error) {
+    //           dispatch(
+    //             finalizeTransaction({
+    //               chainId,
+    //               hash,
+    //               receipt: {
+    //                 blockHash: '',
+    //                 blockNumber: receipt.height,
+    //                 contractAddress: '',
+    //                 from: tx.from,
+    //                 status: receipt.code ? 0 : 1,
+    //                 to: tx.toAddress,
+    //                 transactionHash: hash,
+    //                 transactionIndex: ''
+    //               }
+    //             })
+    //           )
+    //           if (!tx?.version) {
+    //             addPopup(
+    //               {
+    //                 txn: {
+    //                   hash,
+    //                   success: !receipt.code,
+    //                   summary: transactions[hash]?.summary
+    //                 }
+    //               },
+    //               hash
+    //             )
+    //           }
+    //         }
+    //       })
+    //     } else if (
+    //       !(tx.info && END_STATUS.includes(tx?.info?.status))
+    //       && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+    //       && tx?.version
+    //     )  {
+    //       useHashSwapInfo(hash).then((receipt:any) => {
+    //         if (receipt && receipt.msg === 'Success' && receipt.info) {
+    //           dispatch(
+    //             updateTransaction({
+    //               chainId,
+    //               hash,
+    //               info: {
+    //                 ...receipt.info
+    //               }
+    //             })
+    //           )
+    //         }
+    //       })
+    //     }
+    //   })
+    // } else if (chainId === NAS_MAIN_CHAINID) {
+    //   Object.keys(transactions)
+    //   .filter(hash => {
+    //     const tx = transactions[hash]
+    //     // if (tx.receipt) return false
+    //     if (tx.info && END_STATUS.includes(tx.info.status)) return false
+    //     return true
+    //   })
+    //   .forEach(hash => {
+    //     // console.log(hash)
+    //     const tx = transactions[hash]
+    //     if (!tx.receipt) {
+    //       updateNasHash(hash).then((receipt:any) => {
+    //         console.log(receipt)
+    //         if (receipt) {
+    //           dispatch(
+    //             finalizeTransaction({
+    //               chainId,
+    //               hash,
+    //               receipt: {
+    //                 blockHash: '',
+    //                 blockNumber: receipt?.data?.block?.height,
+    //                 contractAddress: '',
+    //                 from: tx.from,
+    //                 status: receipt.msg === "success" ? 1 : 0,
+    //                 to: tx.toAddress,
+    //                 transactionHash: hash,
+    //                 transactionIndex: ''
+    //               }
+    //             })
+    //           )
+    //           if (!tx?.version) {
+    //             addPopup(
+    //               {
+    //                 txn: {
+    //                   hash,
+    //                   success: receipt.msg === "success" ? true : false,
+    //                   summary: transactions[hash]?.summary
+    //                 }
+    //               },
+    //               hash
+    //             )
+    //           }
+    //         }
+    //       })
+    //     } else if (
+    //       !(tx.info && END_STATUS.includes(tx?.info?.status))
+    //       && (tx.receipt.status === 1 || typeof tx.receipt?.status === 'undefined')
+    //       && tx?.version
+    //     )  {
+    //       useHashSwapInfo(hash).then((receipt:any) => {
+    //         if (receipt && receipt.msg === 'Success' && receipt.info) {
+    //           dispatch(
+    //             updateTransaction({
+    //               chainId,
+    //               hash,
+    //               info: {
+    //                 ...receipt.info
+    //               }
+    //             })
+    //           )
+    //         }
+    //       })
+    //     }
+    //   })
+    // } else {
     } else {
       if (!chainId || !library || !lastBlockNumber || isNaN(chainId)) return
       Object.keys(transactions)

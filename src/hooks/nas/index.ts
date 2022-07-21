@@ -286,18 +286,42 @@ export function useNebBridgeCallback({
 
 
 export function updateNasHash (hash:any): Promise<any> {
+  const data:any = {
+    msg: 'Error',
+    info: ''
+  }
   return new Promise(resolve => {
-    const url = `https://data.nebulas.io/api/tx/${hash}`
-    axios.get(url).then(res => {
-      const {status, data} = res
-      if (status === 200) {
-        resolve(data)
+    fetch(`https://data.nebulas.io/api/tx/${hash}`).then(res => res.json()).then(json => {
+      console.log(json)
+      if (json) {
+        if (json.msg !== "success") {
+          data.msg = 'Failure'
+          data.error = 'Txns is failure!'
+        } else {
+          data.msg = 'Success'
+          data.info = json
+        }
       } else {
-        resolve('')
+        data.msg = 'Null'
+        data.error = 'Query is empty!'
       }
-    }).catch((err) => {
-      console.log(err)
-      resolve('')
+      resolve(data)
+    }).catch(err => {
+      console.log(err.toString())
+      data.error = 'Query is empty!'
+      resolve(data)
     })
+    // const url = `https://data.nebulas.io/api/tx/${hash}`
+    // axios.get(url).then(res => {
+    //   const {status, data} = res
+    //   if (status === 200) {
+    //     resolve(data)
+    //   } else {
+    //     resolve('')
+    //   }
+    // }).catch((err) => {
+    //   console.log(err)
+    //   resolve('')
+    // })
   })
 }

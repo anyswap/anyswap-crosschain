@@ -10,7 +10,7 @@ export enum Status {
 }
 
 export function getStatus (status:any) {
-  let statusType = ''
+  let statusType = Status.Confirming
   if ([0, 5].includes(status)) {
     statusType = Status.Confirming
   } else if ([7, 8].includes(status)) {

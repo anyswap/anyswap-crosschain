@@ -154,18 +154,37 @@ export function useTerraSend () {
 }
 
 export function updateTerraHash (hash:any): Promise<any> {
+  const data:any = {
+    msg: 'Error',
+    info: ''
+  }
   return new Promise(resolve => {
     const url = `${terraExt.queryTx}${hash}`
-    axios.get(url).then(res => {
-      const {status, data} = res
-      if (status === 200) {
-        resolve(data)
+    fetch(url).then(res => res.json()).then(json => {
+      if (json) {
+        if (json.error || json.code) {
+          data.msg = 'Failure'
+          data.error = 'Txns is failure!'
+        } else {
+          data.msg = 'Success'
+          data.info = json
+        }
       } else {
-        resolve('')
+        data.msg = 'Null'
+        data.error = 'Query is empty!'
       }
-    }).catch((err) => {
-      console.log(err)
-      resolve('')
+      resolve(data)
     })
+    // axios.get(url).then(res => {
+    //   const {status, data} = res
+    //   if (status === 200) {
+    //     resolve(data)
+    //   } else {
+    //     resolve('')
+    //   }
+    // }).catch((err) => {
+    //   console.log(err)
+    //   resolve('')
+    // })
   })
 }

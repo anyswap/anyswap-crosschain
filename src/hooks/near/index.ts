@@ -16,6 +16,7 @@ import useInterval from '../useInterval'
 import { isAddress } from '../../utils/isAddress'
 import { ChainId } from '../../config/chainConfig/chainId'
 import {VALID_BALANCE} from '../../config/constant'
+import config from '../../config'
 // export enum WrapType {
 //   NOT_APPLICABLE,
 //   WRAP,
@@ -241,7 +242,8 @@ export function useSendNear () {
               'receiver_id': routerContractId,
               amount: amount,  // wNear decimals is 24
               // msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
-              msg: `${bindaddr} ${selectchain}`
+              // msg: `${bindaddr} ${selectchain}`
+              memo: `${bindaddr} ${selectchain}`
             },
             gas: '300000000000000',
             deposit: '1'
@@ -593,3 +595,53 @@ export function useNearSendTxns(
 //     }
 //   }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
 // }
+
+export function updateNearHash (hash:any, chainId:any) {
+  const data:any = {
+    msg: 'Error',
+    info: ''
+  }
+  return new Promise(resolve => {
+    // const url = 'https://rpc.testnet.near.org'
+    const url = config.chainInfo[chainId].nodeRpc
+    fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({
+        "jsonrpc": "2.0",
+        "id": "dontcare",
+        "method": "EXPERIMENTAL_tx_status",
+        "params": [hash, "bowen"]
+      })
+    }).then(res => res.json()).then(json => {
+      console.log(json)
+      const result = json?.result?.transaction_outcome?.outcome
+      if (result) {
+        if (
+          result?.status?.SuccessReceiptId
+          || result?.status?.SuccessValue
+        ) {
+          data.msg = 'Success'
+          data.info = json
+        } else if (result?.status?.Failure) {
+          data.msg = 'Failure'
+          data.error = 'Txns is failure!'
+        } else {
+          data.msg = 'Null'
+          data.error = 'Query is empty!'
+        }
+      } else {
+        data.msg = 'Null'
+        data.error = 'Query is empty!'
+      }
+      resolve(data)
+    }).catch(err => {
+      console.log(err.toString())
+      data.error = 'Query is empty!'
+      resolve(data)
+    })
+  })
+}
+// updateNearHash('4KVYoGtn2FFceXdtrttGPkqWnKAGJZ9yVArFMF2z7RxH', 'NEAR_TEST').then(res => {
+//   console.log(res)
+// })
