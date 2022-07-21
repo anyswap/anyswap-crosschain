@@ -31,6 +31,7 @@ const ProgressBox = styled.div`
       left:0;
       right:0;
       z-index:0;
+      padding-left: 12px;
       .lineWrapper {
         width:90%;
         position: relative;

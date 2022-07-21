@@ -33,6 +33,9 @@ import {thousandBit} from '../../utils/tools/tools'
 import TxnsProgress from './txnsProgress'
 import { ReactComponent as Metamask } from '../../assets/images/metamask.svg'
 
+import {useChangeTokenOnWallet, useUserSelectChainId} from '../../state/user/hooks'
+
+
 // import ScheduleIcon from '../../assets/images/icon/schedule.svg'
 
 // const ChainStatusBox = styled.div`
@@ -233,6 +236,9 @@ export default function HistoryDetails ({
   // const theme = useContext(ThemeContext)
   const useToStatus = DestChainStatus({fromStatus,toStatus})
   const history = createBrowserHistory()
+  const {onAddToken} = useChangeTokenOnWallet()
+  const {setUserSelectNetwork} = useUserSelectChainId()
+
   useEffect(() => {
     // useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
     //   console.log(res)
@@ -344,7 +350,14 @@ export default function HistoryDetails ({
                       isNaN(toChainID) ? '' : (
                         <MetamaskIcon onClick={(event) => {
                           // console.log(currencyObj)
-                          addToken(toInfo.address, symbol, toInfo.decimals, logoUrl)
+                          onAddToken(toChainID, toInfo)
+                          if (setUserSelectNetwork) {
+                            setUserSelectNetwork('')
+                          }
+                          selectNetwork(toChainID, 1).then((res: any) => {
+                            console.log(res)
+                            history.go(0)
+                          })
                           event.stopPropagation()
                         }} />
                       )

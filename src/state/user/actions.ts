@@ -35,3 +35,5 @@ export const selectNetworkId = createAction<{ chainId: string, label: string }>(
 
 export const starChain = createAction<{ account: any, chainId: any }>('application/starChain')
 export const starToken = createAction<{ chainId: any, token: any }>('application/starToken')
+export const addTokenToWallet = createAction<{ chainId: any, tokenInfo: any }>('application/addTokenToWallet')
+export const removeTokenToWallet = createAction<{}>('application/removeTokenToWallet')

@@ -21,7 +21,9 @@ import {
   selectNetworkId,
   updateUserBetaMessage,
   starChain,
-  starToken
+  starToken,
+  addTokenToWallet,
+  removeTokenToWallet
 } from './actions'
 
 import config from '../../config'
@@ -253,5 +255,29 @@ export function useStarToken(): any {
   return {
     starTokenList: chainId && starTokenResult?.[chainId] ? starTokenResult[chainId] : (starTokenResult?.['all'] ? starTokenResult['all'] : {}),
     onChangeStarToken
+  }
+}
+
+export function useChangeTokenOnWallet(): any {
+  // const { chainId } = useActiveReact()
+  const addTokenToWalletResult = useSelector((state: AppState) => state.user.addTokenToWallet)
+  const dispatch = useDispatch<AppDispatch>()
+  const onAddToken = useCallback(
+    (chainId:any, tokenInfo: any) => {
+      dispatch(addTokenToWallet({ chainId, tokenInfo }))
+    },
+    [dispatch]
+  )
+  const onRemoveToken = useCallback(
+    () => {
+      dispatch(removeTokenToWallet({}))
+    },
+    [dispatch]
+  )
+    // console.log(starChainResult)
+  return {
+    tokeninfo: addTokenToWalletResult,
+    onAddToken,
+    onRemoveToken
   }
 }

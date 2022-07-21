@@ -17,7 +17,9 @@ import {
   selectNetworkId,
   updateUserBetaMessage,
   starChain,
-  starToken
+  starToken,
+  addTokenToWallet,
+  removeTokenToWallet
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -58,6 +60,7 @@ export interface UserState {
   selectNetworkId: any
   starChain: any
   starToken: any
+  addTokenToWallet: any
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -79,10 +82,20 @@ export const initialState: UserState = {
   selectNetworkId: {},
   starChain: {},
   starToken: {},
+  addTokenToWallet: '',
 }
 
 export default createReducer(initialState, builder =>
   builder
+    .addCase(addTokenToWallet, (state, { payload: { chainId, tokenInfo} }) => {
+      state.addTokenToWallet = {
+        chainId,
+        ...tokenInfo
+      }
+    })
+    .addCase(removeTokenToWallet, (state, { payload: {} }) => {
+      state.addTokenToWallet = ''
+    })
     .addCase(starToken, (state, { payload: { chainId, token} }) => {
       chainId = chainId ? chainId : 'all'
       if (!state.starToken) state.starToken = {}
