@@ -70,4 +70,10 @@ export enum ChainId {
   TRX = 'TRX',
   KAI = '24',
   CUBE = '1818',
+  INTAIN = '',
+  INTAIN_TEST = '52322',
+  PFT = '',
+  PFT_TEST = '808',
+  GOERLI1 = '',
+  GOERLI1_TEST = '420',
 }

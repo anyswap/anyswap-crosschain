@@ -57,6 +57,9 @@ import kava from './kava'
 import klay from './klay'
 import kai from './kai'
 import cube from './cube'
+import intain from './intain'
+import pft from './pft'
+import goerli from './goerli'
 
 import { ChainId } from './chainId'
 
@@ -66,6 +69,9 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...goerli,
+  ...pft,
+  ...intain,
   ...cube,
   ...kai,
   ...near,
@@ -189,6 +195,9 @@ const testChainList = [
   ChainId.AVAX_TEST,
   ChainId.ARBITRUM_TEST,
   ChainId.BAS_TEST,
+  ChainId.INTAIN_TEST,
+  ChainId.PFT_TEST,
+  ChainId.GOERLI1_TEST,
 ]
 
 const useChain:any = {

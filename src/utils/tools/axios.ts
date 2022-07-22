@@ -6,7 +6,7 @@ import qs from 'qs'
 export function getUrlData (url:string) {
   return new Promise(resolve => {
     axios.get(url).then((res:any) => {
-      if (res && res.data && res.status === 200) {
+      if (res && (res.data || res.data === 0) && res.status === 200) {
         resolve({
           msg: 'Success',
           data: res.data

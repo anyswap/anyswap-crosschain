@@ -121,10 +121,12 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           curPoolList = poollists && poollists[chainId] ? poollists[chainId] : {}
         }
         
+        // console.log(res)
         if (res.msg === 'Success') {
           const serverVersion = res.data
           if (
-            !curTokenList?.version
+            !serverVersion
+            || !curTokenList?.version
             || curTokenList.version !== serverVersion
           ) {
             getServerTokenlist(chainId).then(res => {
