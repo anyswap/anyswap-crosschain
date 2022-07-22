@@ -61,7 +61,7 @@ export default function Updater(): null {
     // console.log(destChainId)
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
 
-    if (destChainId) {
+    if (destChainId && !isNaN(destChainId)) {
       useWeb3(destChainId, 'eth', 'getBlockNumber', []).then((res:any) => {
         dispatch(updateBlockNumber({ chainId: destChainId, blockNumber: res }))
       })
