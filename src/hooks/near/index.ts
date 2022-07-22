@@ -1,9 +1,9 @@
-// import {
-//   connect,
-//   // Contract,
-//   keyStores,
-//   WalletConnection
-// } from 'near-api-js'
+import {
+  connect,
+  // Contract,
+  keyStores,
+  // WalletConnection
+} from 'near-api-js'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 // import {getConfig} from './config'
@@ -28,6 +28,37 @@ const NOT_APPLICABLE = { }
 
 // const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
 const contractId = 'bridge-1.crossdemo.testnet'
+
+export async function initConnect (chainId:any, token:any) {
+  let account
+  try {
+    let connectConfig:any ={}
+    if (chainId === ChainId.NEAR_TEST) {
+      connectConfig = {
+        networkId: "testnet",
+        keyStore: new keyStores.InMemoryKeyStore(),
+        nodeUrl: "https://rpc.testnet.near.org",
+        walletUrl: "https://wallet.testnet.near.org",
+        helperUrl: "https://helper.testnet.near.org",
+        explorerUrl: "https://explorer.testnet.near.org",
+      }
+    } else if (chainId === ChainId.NEAR) {
+      connectConfig = {
+        networkId: 'mainnet',
+        nodeUrl: 'https://rpc.mainnet.near.org',
+        walletUrl: 'https://wallet.near.org',
+        helperUrl: 'https://helper.mainnet.near.org',
+        explorerUrl: 'https://explorer.mainnet.near.org',
+      }
+    }
+    const near = await connect(connectConfig);
+    account = await near.account(token);
+  } catch (error) {
+    console.log('initConnect')
+    console.log(error)
+  }
+  return account;
+}
 
 export function useLogout() {
   const logout = useCallback(() => {
@@ -107,10 +138,11 @@ export function useNearBalance () {
   const getNearStorageBalance = useCallback(async({token, account, chainId}) => {
     let bl:any
     const useAccount = account ? account : window?.near?.accountId
-    // console.log(useAccount)
+    const accountFn = await initConnect(chainId, token);
+    // console.log(window?.near)
     try {
-      if (useAccount && isAddress(useAccount, chainId)) {
-        bl = await window?.near?.account().viewFunction(
+      if (accountFn && useAccount && isAddress(useAccount, chainId)) {
+        bl = await accountFn.viewFunction(
           token,
           'storage_balance_of',
           { "account_id": useAccount },

@@ -190,7 +190,7 @@ export default function TxnsProgress({
   }
   // const FailureView = <div className={"item red"}><Info size={12} style={{marginRight: 5}} />Failure</div>
   const SuccessView = (status:any) => {
-    if (status < 5) {
+    if (status >= 4 && status < 5) {
       return <div className={"item"}>
         <div className="step"><span className="num">4</span></div>
         <div className="label">{status >= 3 ? LoaderView : ''}Success</div>
@@ -200,8 +200,13 @@ export default function TxnsProgress({
         <div className="step"><span className="num">4</span></div>
         <div className="label"><Info size={12} style={{marginRight: 5}} />Big Amount</div>
       </div>
+    } else if (status === 5) {
+      return <div className={"item green"}>
+        <div className="step"><span className="num">4</span></div>
+        <div className="label">{CheckCircleView}Success</div>
+      </div>
     }
-    return <div className={"item green"}>
+    return <div className={"item"}>
       <div className="step"><span className="num">4</span></div>
       <div className="label">{CheckCircleView}Success</div>
     </div>
