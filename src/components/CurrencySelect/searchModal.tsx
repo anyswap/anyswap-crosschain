@@ -246,7 +246,7 @@ export default function SearchModal ({
           selectDestChainId ? '' : (
             <TabList>
               <div className={'item ' + (selectTab === 0 ? 'active' : '')} onClick={() => setSelectTab(0)}>My Favorites</div>
-              <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All List</div>
+              <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All Token</div>
             </TabList>
           )
         }
