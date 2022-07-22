@@ -4,6 +4,7 @@ import { Currency, ETHER } from 'anyswap-sdk'
 import { Text } from 'rebass'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useTranslation } from 'react-i18next'
+// import styled from 'styled-components'
 
 import Column from '../Column'
 import { RowBetween } from '../Row'
@@ -15,6 +16,9 @@ import { useTokenComparator } from '../SearchModal/sorting'
 import Row from '../Row'
 
 import CommonBases from './CommonBases'
+import {
+  TabList
+} from './styleds'
 
 import { CloseIcon } from '../../theme'
 
@@ -24,6 +28,24 @@ import { isAddress } from '../../utils'
 import CurrencyList from './CurrencyList'
 
 import {MAIN_COIN} from '../../config/constant'
+
+import {useStarToken} from '../../state/user/hooks'
+
+// const TabList = styled.div`
+//   ${({ theme }) => theme.flexSC};
+//   width: 100%;
+//   .item {
+//     padding: 8px 12px;
+//     cursor:pointer;
+//     border-bottom: 2px solid transparent;
+//     &.active {
+//       // color: ${({ theme }) => theme.primary1};
+//       color: #734be2;
+//       font-weight:bold;
+//       border-bottom: 2px solid #734be2;
+//     }
+//   }
+// `
 
 interface CurrencySearchModalProps {
   isOpen: boolean
@@ -55,32 +77,45 @@ export default function SearchModal ({
   selectDestChainId
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
+  const {starTokenList} = useStarToken()
   const {tokenComparator, balances: allBalances} = useTokenComparator(bridgeKey, chainId, false)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [mainTokenList, setMainTokenList] = useState<any>([])
   const [tokenList, setTokenList] = useState<any>([])
   const [useAllTokenList, setUseAllTokenList] = useState<any>({})
+  const [selectTab, setSelectTab] = useState<any>(Object.keys(starTokenList).length > 0 ? 0 : 1)
   // const [intervalCount, setIntervalCount] = useState<any>(0)
 
   const inputRef = useRef<HTMLInputElement>()
 
   const isAddressSearch = isAddress(searchQuery)
-
+  const starTokenListStr = useMemo(() => {
+    return JSON.stringify(starTokenList)
+  }, [starTokenList])
   useEffect(() => {
     const list:any = {}
     const arr:any = []
     const mainarr:any = []
+    // console.log(111)
+    // console.log(selectTab)
+    // console.log(starTokenList)
+    const starList = starTokenListStr ? JSON.parse(starTokenListStr) : {}
     for (const tokenKey in allTokens) {
       const obj:any = allTokens[tokenKey].tokenInfo ? allTokens[tokenKey].tokenInfo : allTokens[tokenKey]
       const token = obj.address
-      if (!obj.name || !obj.symbol) continue
       const data = {
         ...obj,
         key: tokenKey
       }
+      if (!obj.name || !obj.symbol) continue
+      if (selectTab === 0 && starList[token]) {
+        arr.push(data)
+      } else if (selectTab === 1) {
+        arr.push(data)
+      }
       list[token] = data
-      arr.push(data)
+      // arr.push(data)
       if (
         (obj.symbol === 'USDT' && chainId?.toString() === '250')
         || (obj.symbol === 'fUSDT' && chainId?.toString() === '56')
@@ -96,7 +131,7 @@ export default function SearchModal ({
     setUseAllTokenList(list)
     setTokenList(arr)
     setMainTokenList(mainarr)
-  }, [allTokens, chainId])
+  }, [allTokens, chainId, selectTab, starTokenListStr])
 
   // const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
   const searchToken = useMemo(() => {
@@ -206,6 +241,15 @@ export default function SearchModal ({
             />
           ) : ''}
         </PaddedColumn>
+        <Separator />
+        {
+          selectDestChainId ? '' : (
+            <TabList>
+              <div className={'item ' + (selectTab === 0 ? 'active' : '')} onClick={() => setSelectTab(0)}>My Favorites</div>
+              <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All List</div>
+            </TabList>
+          )
+        }
         <Separator />
         <div style={{ flex: '1' }}>
           <AutoSizer disableWidth>

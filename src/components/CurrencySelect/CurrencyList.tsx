@@ -312,7 +312,7 @@ export default function BridgeCurrencyList({
   // console.log(selectedCurrency)
   const htmlNodes = useMemo(() => {
     const arr = []
-    const starArr = []
+    // const starArr = []
     const ethNode:any = []
     for (const obj of itemData) {
       const isNativeToken = obj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
@@ -322,9 +322,11 @@ export default function BridgeCurrencyList({
       ) {
         ethNode.push(obj)
         // continue
-      }else if (starTokenList[obj.address]) {
-        starArr.push(obj)
-      } else {
+      }
+      //  else if (starTokenList[obj.address]) {
+      //   starArr.push(obj)
+      // } 
+      else {
         arr.push(obj)
       }
     }
@@ -334,7 +336,7 @@ export default function BridgeCurrencyList({
     // return arr
     return [
       ...ethNode,
-      ...starArr,
+      // ...starArr,
       ...arr
     ]
   }, [itemData, chainId, starTokenList])

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback,RefObject,createRef } from 'react'
+import React, { useMemo, useState, useRef, useCallback,RefObject,createRef, useEffect } from 'react'
 // import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
@@ -14,6 +14,9 @@ import Column from '../Column'
 import { RowBetween } from '../Row'
 import { LazyList } from '../Lazyload/LazyList';
 import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
+import {
+  TabList
+} from '../CurrencySelect/styleds'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 
@@ -447,12 +450,14 @@ function ChainListBox ({
   useChainId,
   openUrl,
   searchQuery,
+  selectTab,
   size
 }: {
   height: number
   useChainId: any
   openUrl: (value:any) => void
   searchQuery: any
+  selectTab: any
   size?: number
 }) {
   const pageSize = size || 20
@@ -470,20 +475,20 @@ function ChainListBox ({
 
   const chainList = useMemo(() => {
     const arr:any = []
-    const starArr:any = []
+    // const starArr:any = []
     for (const c of spportChainArr) {
-      if (starChainList?.[c]) {
-        starArr.push(chainInfo[c])
-      } else {
+      if (selectTab === 0 && starChainList?.[c]) {
+        arr.push(chainInfo[c])
+      } else if (selectTab === 1) {
         arr.push(chainInfo[c])
       }
     }
     return [
-      ...starArr.sort(comparator),
+      // ...starArr.sort(comparator),
       // ...arr.sort(comparator),
-      ...arr,
+      ...(selectTab === 0 ? arr.sort(comparator) : arr),
     ]
-  }, [spportChainArr, starChainList])
+  }, [spportChainArr, starChainList, selectTab])
 
   function List({ records }: { records?: any [] }) {
     return (<>{
@@ -527,11 +532,23 @@ export default function SelectNetwork () {
   // const history = createBrowserHistory()
   const { chainId } = useActiveReact()
   const { t } = useTranslation()
+  const {starChainList} = useStarChain()
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
 
   const {selectNetworkInfo, setUserSelectNetwork} = useUserSelectChainId()
   const [searchQuery, setSearchQuery] = useState<string>('')
+
+  // console.log(Object.keys(starChainList).length)
+  // console.log(Object.keys(starChainList).length > 0 ? 0 : 1)
+  const initTab = Object.keys(starChainList).length > 0 ? 0 : 1
+  // console.log(initTab)
+  const [selectTab, setSelectTab] = useState<any>(initTab)
+  // console.log(selectTab)
+  useEffect(() => {
+    setSelectTab(initTab)
+  }, [initTab])
+
   const inputRef = useRef<HTMLInputElement>()
 
   function setMetamaskNetwork (item:any) {
@@ -580,7 +597,6 @@ export default function SelectNetwork () {
     // fixedList.current?.scrollTo(0)
   }, [])
 
-
   function changeNetwork () {
     return (
       <Modal
@@ -608,6 +624,11 @@ export default function SelectNetwork () {
             />
           </PaddedColumn>
           <Separator />
+          <TabList>
+            <div className={'item ' + (selectTab === 0 ? 'active' : '')} onClick={() => setSelectTab(0)}>My Favorites</div>
+            <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All List</div>
+          </TabList>
+          <Separator />
           <div style={{ flex: '1' }}>
             <AutoSizer disableWidth>
               {({ height }) => (
@@ -617,6 +638,7 @@ export default function SelectNetwork () {
                     useChainId={useChainId}
                     openUrl={openUrl}
                     searchQuery={searchQuery}
+                    selectTab={selectTab}
                   />
                 </>
               )}

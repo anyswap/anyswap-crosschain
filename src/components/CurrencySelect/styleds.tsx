@@ -252,3 +252,19 @@ export const HideSmallBox = styled.div`
     display: block;
   `}
 `
+
+export const TabList = styled.div`
+${({ theme }) => theme.flexSC};
+width: 100%;
+.item {
+  padding: 8px 12px;
+  cursor:pointer;
+  border-bottom: 2px solid transparent;
+  &.active {
+    // color: ${({ theme }) => theme.primary1};
+    color: #734be2;
+    font-weight:bold;
+    border-bottom: 2px solid #734be2;
+  }
+}
+`
