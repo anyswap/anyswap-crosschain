@@ -7,8 +7,8 @@ export const PFT_MAINNET = getLocalRPC(PFT_MAIN_CHAINID, '')
 export const PFT_MAIN_EXPLORER = ''
 
 export const PFT_TEST_CHAINID = ChainId.PFT_TEST
-export const PFT_TESTNET = getLocalRPC(PFT_TEST_CHAINID, 'http://3.212.233.100:9650/ext/bc/29oXNywCkGdJCuYikXkkqG6Pe5Q8tuS5VfyLHNGfeqmDzBoTPq/rpc')
-export const PFT_TEST_EXPLORER = ''
+export const PFT_TESTNET = getLocalRPC(PFT_TEST_CHAINID, 'https://testnetrpc.multichain.org/pft')
+export const PFT_TEST_EXPLORER = 'https://etherscan.io'
 
 export const tokenList = []
 export const testTokenList = []
@@ -67,6 +67,7 @@ export default {
     nodeRpc: PFT_TESTNET,
     nodeRpcList: [
       PFT_TESTNET,
+      'http://3.212.233.100:9650/ext/bc/29oXNywCkGdJCuYikXkkqG6Pe5Q8tuS5VfyLHNGfeqmDzBoTPq/rpc'
     ],
     chainID: PFT_TEST_CHAINID,
     lookHash: PFT_TEST_EXPLORER + '/extrinsic/',

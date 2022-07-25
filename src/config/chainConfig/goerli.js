@@ -8,7 +8,7 @@ export const GOERLI_MAIN_EXPLORER = ''
 
 export const GOERLI_TEST_CHAINID = ChainId.GOERLI1_TEST
 export const GOERLI_TESTNET = getLocalRPC(GOERLI_TEST_CHAINID, 'https://goerli.optimism.io/')
-export const GOERLI_TEST_EXPLORER = ''
+export const GOERLI_TEST_EXPLORER = 'https://etherscan.io'
 
 export const tokenList = []
 export const testTokenList = []

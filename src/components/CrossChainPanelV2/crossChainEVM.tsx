@@ -646,8 +646,12 @@ export default function CrossChain({
         console.log(res)
         if (res?.total) {
           setNearStorageBalance(res.total)
+        } else {
+          setNearStorageBalance('')
         }
       })
+    } else {
+      setNearStorageBalance('')
     }
   }, [selectChain, recipient, destConfig])
   useEffect(() => {
