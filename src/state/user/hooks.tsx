@@ -23,7 +23,8 @@ import {
   starChain,
   starToken,
   addTokenToWallet,
-  removeTokenToWallet
+  removeTokenToWallet,
+  changeStarTab
 } from './actions'
 
 import config from '../../config'
@@ -236,7 +237,8 @@ export function useStarChain(): any {
   )
     // console.log(starChainResult)
   return {
-    starChainList: account && starChainResult?.[account] ? starChainResult[account] : (starChainResult?.['all'] ? starChainResult['all'] : {}),
+    // starChainList: account && starChainResult?.[account] ? starChainResult[account] : (starChainResult?.['all'] ? starChainResult['all'] : {}),
+    starChainList: account && starChainResult?.[account] ? starChainResult[account] : {},
     onChangeStarChain
   }
 }
@@ -279,5 +281,21 @@ export function useChangeTokenOnWallet(): any {
     tokeninfo: addTokenToWalletResult,
     onAddToken,
     onRemoveToken
+  }
+}
+
+export function useChangeStarTab(type:any): any {
+  // const { chainId } = useActiveReact()
+  const changeStarTabResult = useSelector((state: AppState) => state.user.changeStarTab)
+  const dispatch = useDispatch<AppDispatch>()
+  const onChangeStarTab = useCallback(
+    (index: any) => {
+      dispatch(changeStarTab({ type, index }))
+    },
+    [dispatch]
+  )
+  return {
+    starTabIndex: changeStarTabResult?.[type] || changeStarTabResult?.[type] === 0 ? changeStarTabResult?.[type] : 1,
+    onChangeStarTab
   }
 }

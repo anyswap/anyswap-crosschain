@@ -19,7 +19,8 @@ import {
   starChain,
   starToken,
   addTokenToWallet,
-  removeTokenToWallet
+  removeTokenToWallet,
+  changeStarTab
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -61,6 +62,7 @@ export interface UserState {
   starChain: any
   starToken: any
   addTokenToWallet: any
+  changeStarTab: any
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -83,6 +85,7 @@ export const initialState: UserState = {
   starChain: {},
   starToken: {},
   addTokenToWallet: '',
+  changeStarTab: {},
 }
 
 export default createReducer(initialState, builder =>
@@ -92,6 +95,10 @@ export default createReducer(initialState, builder =>
         chainId,
         ...tokenInfo
       }
+    })
+    .addCase(changeStarTab, (state, { payload: {type, index} }) => {
+      if (!state.changeStarTab) state.changeStarTab = {}
+      state.changeStarTab[type] = index
     })
     .addCase(removeTokenToWallet, (state, { payload: {} }) => {
       state.addTokenToWallet = ''

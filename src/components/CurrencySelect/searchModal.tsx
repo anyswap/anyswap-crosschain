@@ -29,7 +29,7 @@ import CurrencyList from './CurrencyList'
 
 import {MAIN_COIN} from '../../config/constant'
 
-import {useStarToken} from '../../state/user/hooks'
+import {useStarToken, useChangeStarTab} from '../../state/user/hooks'
 
 // const TabList = styled.div`
 //   ${({ theme }) => theme.flexSC};
@@ -84,7 +84,8 @@ export default function SearchModal ({
   const [mainTokenList, setMainTokenList] = useState<any>([])
   const [tokenList, setTokenList] = useState<any>([])
   const [useAllTokenList, setUseAllTokenList] = useState<any>({})
-  const [selectTab, setSelectTab] = useState<any>(Object.keys(starTokenList).length > 0 ? 0 : 1)
+  // const [selectTab, setSelectTab] = useState<any>(Object.keys(starTokenList).length > 0 ? 0 : 1)
+  const {starTabIndex, onChangeStarTab} = useChangeStarTab('TOKEN')
   // const [intervalCount, setIntervalCount] = useState<any>(0)
 
   const inputRef = useRef<HTMLInputElement>()
@@ -109,9 +110,9 @@ export default function SearchModal ({
         key: tokenKey
       }
       if (!obj.name || !obj.symbol) continue
-      if (selectTab === 0 && starList[token]) {
+      if (starTabIndex === 0 && starList[token]) {
         arr.push(data)
-      } else if (selectTab === 1) {
+      } else if (starTabIndex === 1) {
         arr.push(data)
       }
       list[token] = data
@@ -131,7 +132,7 @@ export default function SearchModal ({
     setUseAllTokenList(list)
     setTokenList(arr)
     setMainTokenList(mainarr)
-  }, [allTokens, chainId, selectTab, starTokenListStr])
+  }, [allTokens, chainId, starTabIndex, starTokenListStr])
 
   // const searchToken = useLocalToken(searchQuery && useAllTokenList[searchQuery?.toLowerCase()] ? useAllTokenList[searchQuery?.toLowerCase()] : '')
   const searchToken = useMemo(() => {
@@ -245,8 +246,8 @@ export default function SearchModal ({
         {
           selectDestChainId ? '' : (
             <TabList>
-              <div className={'item ' + (selectTab === 0 ? 'active' : '')} onClick={() => setSelectTab(0)}>My Favorites</div>
-              <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All Token</div>
+              <div className={'item ' + (starTabIndex === 0 ? 'active' : '')} onClick={() => onChangeStarTab(0)}>My Favorites</div>
+              <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Token</div>
             </TabList>
           )
         }

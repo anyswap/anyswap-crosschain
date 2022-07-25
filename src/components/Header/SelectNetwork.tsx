@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback,RefObject,createRef, useEffect } from 'react'
+import React, { useMemo, useState, useRef, useCallback,RefObject,createRef } from 'react'
 // import React, { useState, useEffect } from 'react'
 // import { createBrowserHistory } from 'history'
 import styled from 'styled-components'
@@ -33,7 +33,7 @@ import {setLocalRPC} from '../../config/chainConfig/methods'
 
 import {selectNetwork} from '../../config/tools/methods'
 
-import {useStarChain} from '../../state/user/hooks'
+import {useStarChain, useChangeStarTab} from '../../state/user/hooks'
 
 export const WalletLogoBox = styled.div`
   width:100%;
@@ -532,22 +532,13 @@ export default function SelectNetwork () {
   // const history = createBrowserHistory()
   const { chainId } = useActiveReact()
   const { t } = useTranslation()
-  const {starChainList} = useStarChain()
+  // const {starChainList} = useStarChain()
+  const {starTabIndex, onChangeStarTab} = useChangeStarTab('CHAIN')
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
 
   const {selectNetworkInfo, setUserSelectNetwork} = useUserSelectChainId()
   const [searchQuery, setSearchQuery] = useState<string>('')
-
-  // console.log(Object.keys(starChainList).length)
-  // console.log(Object.keys(starChainList).length > 0 ? 0 : 1)
-  const initTab = Object.keys(starChainList).length > 0 ? 0 : 1
-  // console.log(initTab)
-  const [selectTab, setSelectTab] = useState<any>(initTab)
-  // console.log(selectTab)
-  useEffect(() => {
-    setSelectTab(initTab)
-  }, [initTab])
 
   const inputRef = useRef<HTMLInputElement>()
 
@@ -625,8 +616,8 @@ export default function SelectNetwork () {
           </PaddedColumn>
           <Separator />
           <TabList>
-            <div className={'item ' + (selectTab === 0 ? 'active' : '')} onClick={() => setSelectTab(0)}>My Favorites</div>
-            <div className={'item ' + (selectTab === 1 ? 'active' : '')} onClick={() => setSelectTab(1)}>All Chain</div>
+            <div className={'item ' + (starTabIndex === 0 ? 'active' : '')} onClick={() => onChangeStarTab(0)}>My Favorites</div>
+            <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Chain</div>
           </TabList>
           <Separator />
           <div style={{ flex: '1' }}>
@@ -638,7 +629,7 @@ export default function SelectNetwork () {
                     useChainId={useChainId}
                     openUrl={openUrl}
                     searchQuery={searchQuery}
-                    selectTab={selectTab}
+                    selectTab={starTabIndex}
                   />
                 </>
               )}
