@@ -607,7 +607,7 @@ export default function SelectNetwork () {
             <SearchInput
               type="text"
               id="token-search-input"
-              placeholder={t('SwitchTo')}
+              placeholder={t('selectNetwork')}
               value={searchQuery}
               ref={inputRef as RefObject<HTMLInputElement>}
               onChange={handleInput}
