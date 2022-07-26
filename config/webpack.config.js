@@ -347,9 +347,9 @@ module.exports = function(webpackEnv) {
         PnpWebpackPlugin.moduleLoader(module),
       ],
     },
-    externals: isEnvProduction ? {
-      'web3': 'Web3'
-    } : {},
+    // externals: isEnvProduction ? {
+    //   'web3': 'Web3'
+    // } : {},
     module: {
       strictExportPresence: true,
       rules: [
@@ -574,14 +574,14 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
-      isEnvProduction && new HtmlWebpackTagsPlugin({
-        append: false,
-        usePublicPath: false,
-        tags: [
-          'https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js',
-          // 'https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js'
-        ],
-      }),
+      // isEnvProduction && new HtmlWebpackTagsPlugin({
+      //   append: false,
+      //   usePublicPath: false,
+      //   tags: [
+      //     'https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.3/web3.min.js',
+      //     // 'https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js'
+      //   ],
+      // }),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
