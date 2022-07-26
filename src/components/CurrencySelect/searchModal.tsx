@@ -27,7 +27,7 @@ import { isAddress } from '../../utils'
 // import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
-import {MAIN_COIN} from '../../config/constant'
+import {MAIN_COIN_SORT} from '../../config/constant'
 
 import {useStarToken, useChangeStarTab} from '../../state/user/hooks'
 
@@ -99,7 +99,7 @@ export default function SearchModal ({
     const arr:any = []
     const mainarr:any = []
     // console.log(111)
-    // console.log(selectTab)
+    // console.log(allTokens)
     // console.log(starTokenList)
     const starList = starTokenListStr ? JSON.parse(starTokenListStr) : {}
     for (const tokenKey in allTokens) {
@@ -112,7 +112,7 @@ export default function SearchModal ({
       if (!obj.name || !obj.symbol) continue
       if (starTabIndex === 0 && starList[token]) {
         arr.push(data)
-      } else if (starTabIndex === 1) {
+      } else if (starTabIndex === 1 || obj.type) {
         arr.push(data)
       }
       list[token] = data
@@ -125,8 +125,11 @@ export default function SearchModal ({
         || ['MultichainUSDC', 'MultichainDAI'].includes(obj.name)
       ) continue
       
-      if (MAIN_COIN.includes(obj.symbol)) {
-        mainarr.push(data)
+      if (MAIN_COIN_SORT[obj.symbol]) {
+        mainarr.push({
+          mainSort: MAIN_COIN_SORT[obj.symbol].sort,
+          ...data
+        })
       }
     }
     setUseAllTokenList(list)
@@ -247,7 +250,7 @@ export default function SearchModal ({
           selectDestChainId ? '' : (
             <TabList>
               <div className={'item ' + (starTabIndex === 0 ? 'active' : '')} onClick={() => onChangeStarTab(0)}>My Favorites</div>
-              <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Token</div>
+              <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Tokens</div>
             </TabList>
           )
         }

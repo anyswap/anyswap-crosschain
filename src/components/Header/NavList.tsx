@@ -4,7 +4,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 // import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
-import { Twitch } from 'react-feather'
+// import { Twitch } from 'react-feather'
 
 import styled from 'styled-components'
 
@@ -162,141 +162,141 @@ const StyledNavLink1 = styled(ExternalLink)`
     }
   `}
 `
-const Tabs = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
-  align-items: center;
-  margin-bottom: 19px;
-  width: 100%;
-  padding: 1rem 1.5625rem;
-  box-sizing: border-box;
-  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
-`
+// const Tabs = styled.div`
+//   ${({ theme }) => theme.flexColumnNoWrap}
+//   align-items: center;
+//   margin-bottom: 19px;
+//   width: 100%;
+//   padding: 1rem 1.5625rem;
+//   box-sizing: border-box;
+//   border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display: none;
+//   `}
+// `
 
-const MenuItem = styled(ExternalLink)`
-  ${({ theme }) => theme.flexSC};
-  width: 100%;
-  height: 2.5rem;
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: #96989e;
-  border-bottom: none;
-  margin: 0;
-  padding: 0.0625rem 0.875rem;
-  border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
-  .icon {
-    ${({ theme }) => theme.flexC};
-    width: 38px;
-    height: 38px;
-    margin-right: 1rem;
-    .on {
-      display: none;
-    }
-    .off {
-      display: block;
-    }
-  }
-  .arrow {
-    position: absolute;
-    top: 0.875rem;
-    right: 1rem;
-  }
-  &:hover {
-    color: ${({ theme }) => theme.textColor};
-    font-weight: 600;
-    text-decoration: none;
-    .icon {
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
-  }
-  &:last-child {
-    border: none;
-  }
-`
-const OutLink = styled.div`
-  padding-left: 30px;
-  margin-top: 78px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
-`
-const CopyRightBox = styled.div`
-  font-family: 'Manrope';
-  h5 {
-    font-size: 0.75rem;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.17;
-    letter-spacing: normal;
-    color: ${({ theme }) => theme.textColorBold};
-    margin: 1rem 0 0px;
-    span {
-      font-weight: bold;
-    }
-  }
-  p {
-    font-size: 0.75rem;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.17;
-    letter-spacing: normal;
-    color: #96989e;
-    margin-top: 6px;
-    margin-bottom: 0;
-  }
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
-`
-const OutLinkImgBox = styled.div`
-  ${({ theme }) => theme.flexSC};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `}
-`
-const Link = styled(ExternalLink)`
-  .icon {
-    ${({ theme }) => theme.flexC};
-    width: 34px;
-    height: 34px;
-    background-color: ${({ theme }) => theme.outLinkIconBg};
-    border-radius: 100%;
-    margin-right: 0.625rem;
-    padding: 8px;
-    &:hover {
-      background-color: #5f6cfc;
-    }
-    img {
-      display: block;
-      width: 100%;
-    }
-    .on {
-      display: none;
-    }
-    .off {
-      display: block;
-    }
-  }
-  &:hover {
-    .icon {
-      .on {
-        display: block;
-      }
-      .off {
-        display: none;
-      }
-    }
-  }
-`
+// const MenuItem = styled(ExternalLink)`
+//   ${({ theme }) => theme.flexSC};
+//   width: 100%;
+//   height: 2.5rem;
+//   font-size: 0.75rem;
+//   font-weight: normal;
+//   color: #96989e;
+//   border-bottom: none;
+//   margin: 0;
+//   padding: 0.0625rem 0.875rem;
+//   border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.06);
+//   .icon {
+//     ${({ theme }) => theme.flexC};
+//     width: 38px;
+//     height: 38px;
+//     margin-right: 1rem;
+//     .on {
+//       display: none;
+//     }
+//     .off {
+//       display: block;
+//     }
+//   }
+//   .arrow {
+//     position: absolute;
+//     top: 0.875rem;
+//     right: 1rem;
+//   }
+//   &:hover {
+//     color: ${({ theme }) => theme.textColor};
+//     font-weight: 600;
+//     text-decoration: none;
+//     .icon {
+//       .on {
+//         display: block;
+//       }
+//       .off {
+//         display: none;
+//       }
+//     }
+//   }
+//   &:last-child {
+//     border: none;
+//   }
+// `
+// const OutLink = styled.div`
+//   padding-left: 30px;
+//   margin-top: 78px;
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display: none;
+//   `}
+// `
+// const CopyRightBox = styled.div`
+//   font-family: 'Manrope';
+//   h5 {
+//     font-size: 0.75rem;
+//     font-weight: normal;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: 1.17;
+//     letter-spacing: normal;
+//     color: ${({ theme }) => theme.textColorBold};
+//     margin: 1rem 0 0px;
+//     span {
+//       font-weight: bold;
+//     }
+//   }
+//   p {
+//     font-size: 0.75rem;
+//     font-weight: normal;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: 1.17;
+//     letter-spacing: normal;
+//     color: #96989e;
+//     margin-top: 6px;
+//     margin-bottom: 0;
+//   }
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display: none;
+//   `}
+// `
+// const OutLinkImgBox = styled.div`
+//   ${({ theme }) => theme.flexSC};
+//   ${({ theme }) => theme.mediaWidth.upToMedium`
+//     display: none;
+//   `}
+// `
+// const Link = styled(ExternalLink)`
+//   .icon {
+//     ${({ theme }) => theme.flexC};
+//     width: 34px;
+//     height: 34px;
+//     background-color: ${({ theme }) => theme.outLinkIconBg};
+//     border-radius: 100%;
+//     margin-right: 0.625rem;
+//     padding: 8px;
+//     &:hover {
+//       background-color: #5f6cfc;
+//     }
+//     img {
+//       display: block;
+//       width: 100%;
+//     }
+//     .on {
+//       display: none;
+//     }
+//     .off {
+//       display: block;
+//     }
+//   }
+//   &:hover {
+//     .icon {
+//       .on {
+//         display: block;
+//       }
+//       .off {
+//         display: none;
+//       }
+//     }
+//   }
+// `
 
 export default function NavList() {
   const { t } = useTranslation()
@@ -345,11 +345,9 @@ export default function NavList() {
           })
         }
       </HeaderLinks>
-      <Tabs>
+      {/* <Tabs>
         <MenuItem id="link" href="https://anyswaphelp.zendesk.com/hc/en-us">
           <div className="icon">
-            {/* <img src={require('../../assets/images/icon/any.svg')} className="off" alt="" />
-            <img src={require('../../assets/images/icon/any-purpl.svg')} className="on" alt="" /> */}
             <Twitch className="off" style={{color: '#96989E',fontSize:'18px',width:'18px',height:'18px'}} />
             <Twitch className="on" style={{color: '#062536',fontSize:'18px',width:'18px',height:'18px'}} />
           </div>
@@ -429,7 +427,7 @@ export default function NavList() {
           </h5>
           <p>© 2020 Anyswap. All rights reserved.</p>
         </CopyRightBox>
-      </OutLink>
+      </OutLink> */}
     </>
   )
 }

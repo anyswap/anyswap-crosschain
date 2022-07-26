@@ -20,8 +20,7 @@ import {useActiveReact} from './useActiveReact'
 import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {
-  // timeout,
-  MAIN_COIN
+  MAIN_COIN_SORT
 } from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 import {
@@ -50,14 +49,6 @@ function getServerTokenlist (chainId:any) {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {
           list = tokenList.data
-          // const tList = tokenList.data
-          // for (const tokenKey in tList) {
-          //   list[tokenKey] = {
-          //     ...tList[tokenKey],
-          //     key: tokenKey,
-          //     sort: MAIN_COIN.includes(tList[tokenKey].symbol) ? 1 : 2
-          //   }
-          // }
           resolve(list)
         } else {
           resolve('')
@@ -82,7 +73,7 @@ function getServerPoolTokenlist (chainId:any) {
             list[tokenKey] = {
               ...tList[tokenKey],
               key: tokenKey,
-              sort: MAIN_COIN.includes(tList[tokenKey].symbol) ? 1 : 2
+              sort: MAIN_COIN_SORT?.[tList[tokenKey].symbol]?.sort ?? 1000
             }
           }
           resolve(list)

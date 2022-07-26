@@ -391,7 +391,14 @@ export default function PoolLists ({
         // arr.push(objExtend)
       }
     }
-    sortArr.sort()
+    // console.log(sortArr)
+    sortArr.sort((a:any, b:any) => {
+      if (a > b) {
+        return 1
+      }
+      return -1
+    })
+    // console.log(sortArr)
     for (const k of sortArr) {
       arr.push(...list[k].sort(bigToSmallSort(['totalV'])))
     }

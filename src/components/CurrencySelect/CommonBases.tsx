@@ -34,9 +34,15 @@ export default function CommonBases({
   onSelect: (currency: any) => void
   tokenList: any
 }) {
+  const comparator = (a:any, b:any) => {
+    if (a.mainSort > b.mainSort) {
+      return 1
+    }
+    return -1
+  }
   const viewTokenList = useMemo(() => {
     if (tokenList) {
-      return tokenList
+      return tokenList.sort(comparator)
     }
     return []
   }, [tokenList])

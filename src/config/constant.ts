@@ -73,7 +73,23 @@ function getUrlVersion (init:any) {
 }
 export const USE_VERSION:any = getUrlVersion(INIT_VERSION)
 
-export const MAIN_COIN = ['USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH', 'fUSDT', 'USDD_t', 'MAI']
+// export const MAIN_COIN = ['USDC', 'ETH', 'ETHK', 'DAI', 'WBTC', 'USDT', 'MIM', 'BTC', 'BTCB', 'USDC.e', 'WBTC.e', 'WETH', 'fUSDT', 'USDD_t', 'MAI']
+export const MAIN_COIN_SORT:any = {
+  'ETH': {sort: 1},
+  'ETHK': {sort: 1},
+  'WETH': {sort: 2},
+  'BTC': {sort: 2},
+  'WBTC': {sort: 3},
+  'WBTC.e': {sort: 3},
+  'BTCB': {sort: 3},
+  'USDC': {sort: 4},
+  'USDC.e': {sort: 4},
+  'USDT': {sort: 5},
+  'fUSDT': {sort: 5},
+  'DAI': {sort: 6},
+  'MIM': {sort: 7},
+  'MAI': {sort: 8},
+}
 
 export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'

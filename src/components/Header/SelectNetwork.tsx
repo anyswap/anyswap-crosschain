@@ -617,7 +617,7 @@ export default function SelectNetwork () {
           <Separator />
           <TabList>
             <div className={'item ' + (starTabIndex === 0 ? 'active' : '')} onClick={() => onChangeStarTab(0)}>My Favorites</div>
-            <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Chain</div>
+            <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Chains</div>
           </TabList>
           <Separator />
           <div style={{ flex: '1' }}>
