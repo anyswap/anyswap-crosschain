@@ -189,12 +189,7 @@ export default function TokenSettings({
   const setTokenConfig = async () => {
     if (!routerConfigSigner || !underlyingSymbol || !crosschainTokenAddress || !crosschainTokenChainId) return
 
-    if (activeTokenGroup == `CreateNewTokenGroup`) {
-      if (ownTokenGroup == ``) {
-        setOwnTokenGroupError(true)
-        return
-      }
-    }
+    if (activeTokenGroup == `CreateNewTokenGroup` && ownTokenGroup == ``) return setOwnTokenGroupError(true)
 
     const usedTokenGroup = (activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()
     const VERSION = 6
@@ -225,8 +220,9 @@ export default function TokenSettings({
   const [isCheckCrosschainTokenButtonDisable, setIsCheckCrosschainTokenButtonDisable] = useState(!routerConfigSigner || !crosschainTokenChainId || !crosschainTokenAddress || !ownTokenGroup)
 
   useEffect(() => {
-    setIsCheckCrosschainTokenButtonDisable(!routerConfigSigner || !crosschainTokenChainId || !crosschainTokenAddress || !ownTokenGroup)
-  }, [routerConfigSigner, crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup])
+    const usedTokenGroup = (activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()
+    setIsCheckCrosschainTokenButtonDisable(!routerConfigSigner || !crosschainTokenChainId || !crosschainTokenAddress || !usedTokenGroup)
+  }, [routerConfigSigner, crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup, activeTokenGroup])
 
   const checkCrosschainTokenInRouterConfig = async () => {
     try {
@@ -236,11 +232,12 @@ export default function TokenSettings({
       if (!crosschainTokenAddress?.match(EVM_ADDRESS_REGEXP)) throw new Error("Fill correct crosschain token address")
       if (!ownTokenGroup) throw new Error("Fill crosschain token group id")
 
-      const multichainTokenAddress = await routerConfigSigner.getMultichainToken(ownTokenGroup.toUpperCase(), crosschainTokenChainId)
+      const usedTokenGroup = (activeTokenGroup == `CreateNewTokenGroup`) ? ownTokenGroup.toUpperCase() : activeTokenGroup.toUpperCase()
+
+      const multichainTokenAddress = await routerConfigSigner.getMultichainToken(usedTokenGroup, crosschainTokenChainId)
 
       setIsSavedTokenExists(multichainTokenAddress === crosschainTokenAddress)
 
-      console.log('check saved token', routerConfigSigner, crosschainTokenAddress, crosschainTokenChainId, multichainTokenAddress)
     } catch (error) {
       console.error(error)
     }
@@ -248,7 +245,7 @@ export default function TokenSettings({
 
   useEffect(() => {
     setIsSavedTokenExists(false)
-  }, [crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup, routerConfigSigner])
+  }, [crosschainTokenChainId, crosschainTokenAddress, ownTokenGroup, routerConfigSigner, activeTokenGroup])
 
   const removeCrosschainTokenFromRouterConfig = async () => {
     try {
