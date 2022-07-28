@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: KAVA_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'KAVA',
     anyToken: ''
   },
 }

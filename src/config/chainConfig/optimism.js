@@ -72,7 +72,6 @@ export default {
     type: 'main',
     label: OPTIMISM_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'OPTIMISM',
     anyToken: ''
   },
   [OPTIMISM_TEST_CHAINID]: {
@@ -98,6 +97,5 @@ export default {
     type: 'main',
     label: OPTIMISM_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'OPTIMISM'
   },
 }

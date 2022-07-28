@@ -57,7 +57,6 @@ export default {
     type: 'main',
     label: SYS_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'SYS',
     anyToken: ''
   },
 }

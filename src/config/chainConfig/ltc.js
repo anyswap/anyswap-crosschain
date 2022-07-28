@@ -40,7 +40,6 @@ export default {
     type: 'main',
     label: LTC_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'LTC',
     anyToken: '',
     chainType: 'BTC'
   },

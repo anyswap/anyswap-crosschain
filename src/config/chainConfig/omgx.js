@@ -60,7 +60,6 @@ export default {
     type: 'main',
     label: OMGX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'OMGX',
     anyToken: ''
   },
   [OMGX_TEST_CHAINID]: {
@@ -89,6 +88,5 @@ export default {
     type: 'main',
     label: OMGX_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'OMGX'
   },
 }

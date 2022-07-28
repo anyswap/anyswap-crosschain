@@ -45,7 +45,6 @@ export default {
     type: 'main',
     label: XLM_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'XLM',
     anyToken: '',
     chainType: XLM_MAIN_CHAINID
   },
@@ -70,7 +69,6 @@ export default {
     type: 'test',
     label: XLM_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'XLM',
     anyToken: '',
     chainType: XLM_TEST_CHAINID
   },

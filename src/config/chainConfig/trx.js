@@ -41,7 +41,6 @@ export default {
     type: 'main',
     label: TRX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'TRX',
     anyToken: '',
     chainType: TRX_MAIN_CHAINID
   },

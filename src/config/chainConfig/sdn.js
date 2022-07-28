@@ -59,7 +59,6 @@ export default {
     type: 'main',
     label: SDN_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'SDN',
     anyToken: ''
   },
 }

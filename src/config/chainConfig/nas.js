@@ -41,7 +41,6 @@ export default {
     type: 'main',
     label: NAS_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'NAS',
     anyToken: '',
     chainType: NAS_MAIN_CHAINID
   },

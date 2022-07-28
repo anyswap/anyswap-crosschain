@@ -58,7 +58,6 @@ export default {
     type: 'main',
     label: TT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'TT',
     anyToken: ''
   },
 }

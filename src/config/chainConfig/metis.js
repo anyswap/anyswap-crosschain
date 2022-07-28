@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: METIS_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'METIS',
     anyToken: ''
   },
 }

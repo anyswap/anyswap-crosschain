@@ -57,7 +57,6 @@ export default {
     type: 'main',
     label: TLOS_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'TLOS',
     anyToken: ''
   },
 }

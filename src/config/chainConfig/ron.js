@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: RON_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'RON',
     anyToken: ''
   },
 }

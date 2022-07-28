@@ -47,7 +47,6 @@ export default {
     type: 'main',
     label: KAI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'KAI',
     anyToken: ''
   },
 }

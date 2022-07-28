@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: MIKO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'milkADA',
     anyToken: ''
   },
 }

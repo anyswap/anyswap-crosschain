@@ -117,7 +117,6 @@ export default {
     type: 'main',
     label: MATIC_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'MATIC',
     anyToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   },
   [MATIC_TEST_CHAINID]: {
@@ -145,7 +144,6 @@ export default {
     type: 'test',
     label: MATIC_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'MATIC',
     anyToken: ''
   },
 }

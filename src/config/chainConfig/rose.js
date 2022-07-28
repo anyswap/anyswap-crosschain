@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: ROSE_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ROSE',
     anyToken: ''
   },
 }

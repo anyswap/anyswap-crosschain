@@ -47,7 +47,6 @@ export default {
     type: 'main',
     label: XRP_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'XRP',
     anyToken: '',
     // chainType: XRP_MAIN_CHAINID
     chainType: 'BTC'

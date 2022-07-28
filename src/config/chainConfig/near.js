@@ -45,7 +45,6 @@ export default {
     type: 'main',
     label: NEAR_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'NEAR',
     anyToken: '',
     chainType: NEAR_MAIN_CHAINID
   },
@@ -70,7 +69,6 @@ export default {
     type: 'test',
     label: NEAR_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'NEAR',
     anyToken: '',
     chainType: NEAR_TEST_CHAINID
   },

@@ -41,7 +41,6 @@ export default {
     type: 'main',
     label: TERRA_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'TERRA',
     anyToken: '',
     chainType: TERRA_MAIN_CHAINID
   },

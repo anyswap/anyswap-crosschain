@@ -62,7 +62,6 @@ export default {
     type: 'main',
     label: OKT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'OKT',
     anyToken: ''
   },
 }

@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: REI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'REI',
     anyToken: ''
   },
 }

@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: OETH_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'OETH',
     anyToken: ''
   },
 }

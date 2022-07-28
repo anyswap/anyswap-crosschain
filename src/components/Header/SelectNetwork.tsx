@@ -556,10 +556,6 @@ export default function SelectNetwork () {
   }
   
   function openUrl (item:any) {
-    if (!item.isSwitch) {
-      return
-    }
-    
     if (item?.chainType && item?.chainType !== 'EVM') {
       if (setUserSelectNetwork) {
         setUserSelectNetwork({

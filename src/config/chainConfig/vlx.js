@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: VLX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'VLX',
     anyToken: ''
   },
 }
