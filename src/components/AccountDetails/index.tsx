@@ -268,7 +268,7 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName()}
                 <div>
-                  {connector !== injected && (
+                  {connector !== injected && !isNaN(chainId) && (
                     <WalletAction
                       style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
                       onClick={() => {
@@ -278,14 +278,16 @@ export default function AccountDetails({
                       {t('Disconnect')}
                     </WalletAction>
                   )}
-                  <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
-                    onClick={() => {
-                      openOptions()
-                    }}
-                  >
-                    {t('Change')}
-                  </WalletAction>
+                  {
+                    !isNaN(chainId) && <WalletAction
+                      style={{ fontSize: '.825rem', fontWeight: 400 }}
+                      onClick={() => {
+                        openOptions()
+                      }}
+                    >
+                      {t('Change')}
+                    </WalletAction>
+                  }
                 </div>
               </AccountGroupingRow>
               <AccountGroupingRow id="web3-account-identifier-row">

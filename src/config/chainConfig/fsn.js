@@ -70,7 +70,6 @@ export default {
     type: 'main',
     label: FSN_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'Fusion',
     anyToken: '0x0c74199d22f732039e843366a236ff4f61986b32'
   },
   [FSN_TEST_CHAINID]: {
@@ -99,6 +98,5 @@ export default {
     type: 'test',
     label: FSN_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'Fusion'
   }
 }

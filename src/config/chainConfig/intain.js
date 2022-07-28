@@ -51,7 +51,6 @@ export default {
     type: 'main',
     label: INTAIN_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: '',
     anyToken: ''
   },
   [INTAIN_TEST_CHAINID]: {
@@ -81,7 +80,6 @@ export default {
     type: 'test',
     label: INTAIN_TEST_CHAINID,
     isSwitch: 1,
-    suffix: '',
     anyToken: ''
   },
 }

@@ -72,6 +72,8 @@ import { BigAmount } from '../../utils/formatBignumber'
 import {getUrlData} from '../../utils/tools/axios'
 import {isAddress} from '../../utils/isAddress'
 import useInterval from '../../hooks/useInterval'
+import {formatXlmMemo} from '../../hooks/stellar'
+formatXlmMemo('0xC5107334A3Ae117E3DaD3570b419618C905Aa5eC', 5777)
 
 // let intervalFN:any = ''
 

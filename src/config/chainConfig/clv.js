@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: CLV_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CLV',
     anyToken: ''
   },
 }

@@ -60,6 +60,7 @@ import cube from './cube'
 import intain from './intain'
 import pft from './pft'
 import goerli from './goerli'
+import xlm from './xlm'
 
 import { ChainId } from './chainId'
 
@@ -69,6 +70,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...xlm,
   ...goerli,
   ...pft,
   ...intain,
@@ -198,6 +200,7 @@ const testChainList = [
   ChainId.INTAIN_TEST,
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
+  ChainId.XLM_TEST,
 ]
 
 const useChain:any = {

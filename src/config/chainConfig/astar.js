@@ -59,7 +59,6 @@ export default {
     type: 'main',
     label: ASTAR_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ASTR',
     anyToken: ''
   },
 }

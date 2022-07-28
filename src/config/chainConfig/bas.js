@@ -118,7 +118,6 @@ export default {
   //   type: 'main',
   //   label: BAS_MAIN_CHAINID,
   //   isSwitch: 1,
-  //   suffix: 'BEP20',
   //   anyToken: ''
   // },
   [BAS_TEST_CHAINID]: {
@@ -146,6 +145,5 @@ export default {
     type: 'test',
     label: BAS_TEST_CHAINID,
     isSwitch: 1,
-    suffix: ''
   }
 }

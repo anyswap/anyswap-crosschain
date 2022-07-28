@@ -12,6 +12,8 @@ import { ChainId } from '../config/chainConfig/chainId'
 import {useLogin} from './near'
 import {useActiveReact} from './useActiveReact'
 
+import {connectXlmWallet} from './stellar'
+
 export function useConnectWallet () {
   const {account} = useActiveReact()
   // const dispatch = useDispatch<AppDispatch>()
@@ -19,6 +21,7 @@ export function useConnectWallet () {
   const toggleWalletModal = useWalletModalToggle()
   const { connect } = useWallet()
   const {login} = useLogin()
+  const {loginXlm} = connectXlmWallet()
   return useCallback(() => {
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       if (connect) {
@@ -40,6 +43,13 @@ export function useConnectWallet () {
     ) {
       if (!account) {
         login()
+      } else {
+        toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
+      }
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectNetworkInfo?.label)) {
+      if (!account) {
+        loginXlm()
       } else {
         toggleWalletModal()
         // dispatch(setOpenModal(ApplicationModal.WALLET))

@@ -51,7 +51,6 @@ export default {
     type: 'main',
     label: GOERLI_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: '',
     anyToken: ''
   },
   [GOERLI_TEST_CHAINID]: {
@@ -82,7 +81,6 @@ export default {
     type: 'test',
     label: GOERLI_TEST_CHAINID,
     isSwitch: 1,
-    suffix: '',
     anyToken: ''
   },
 }

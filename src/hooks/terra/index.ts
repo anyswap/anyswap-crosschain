@@ -12,6 +12,8 @@ import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 import currency from './currency'
+import { useActiveReact } from '../useActiveReact'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 
 export enum AssetNativeDenomEnum {
@@ -50,26 +52,26 @@ const isNativeTerra = (str: string): boolean =>
   currency.currencies.includes(str.slice(1).toUpperCase())
 
 export function useTerraSend () {
-
+  const {chainId} = useActiveReact()
   const [gasPricesFromServer, setGasPricesFromServer] = useState<any>()
 
   const getGasPricesFromServer = useCallback(
     async (fcd?:any): Promise<void> => {
-      if (fcd) {
+      if (fcd && chainId === ChainId.TERRA) {
         const { data } = await axios.get(terraExt.fcd + '/v1/txs/gas_prices', {
           baseURL: fcd,
         })
         // console.log(data)
         setGasPricesFromServer(data)
       }
-    }, [])
+    }, [chainId])
 
   useEffect(() => {
     getGasPricesFromServer(terraExt.fcd)
     return (): void => {
       getGasPricesFromServer()
     }
-  }, [terraExt.fcd])
+  }, [terraExt.fcd, chainId])
 
   const getTerraSendTax = async (props: {
     denom: AssetNativeDenomEnum
@@ -175,16 +177,5 @@ export function updateTerraHash (hash:any): Promise<any> {
       }
       resolve(data)
     })
-    // axios.get(url).then(res => {
-    //   const {status, data} = res
-    //   if (status === 200) {
-    //     resolve(data)
-    //   } else {
-    //     resolve('')
-    //   }
-    // }).catch((err) => {
-    //   console.log(err)
-    //   resolve('')
-    // })
   })
 }

@@ -59,7 +59,6 @@ export default {
     type: 'main',
     label: CUBE_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CUBE',
     anyToken: ''
   },
 }

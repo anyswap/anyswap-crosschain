@@ -40,7 +40,6 @@ export default {
     type: 'main',
     label: BTC_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'BTC',
     anyToken: '',
     chainType: 'BTC'
   },

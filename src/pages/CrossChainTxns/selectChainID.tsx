@@ -205,7 +205,6 @@ export default function SelectChainIdInputPanel({
                             : config.getBaseCoin(selectDestCurrency?.symbol, chainId)
                         ) : (selectDestCurrency?.symbol === BASECURRENCY ? config.getCurChainInfo(selectChainId)?.symbol : t('selectToken'))
                       }
-                      {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
                     </h3>
                     <p>
                       {

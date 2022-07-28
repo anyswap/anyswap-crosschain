@@ -84,7 +84,6 @@ export default {
     type: 'main',
     label: ARBITRUM_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ARBITRUM',
     anyToken: ''
   },
   [ARBITRUM_TEST_CHAINID]: {
@@ -113,6 +112,5 @@ export default {
     type: 'test',
     label: ARBITRUM_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'ARBITRUM'
   },
 }

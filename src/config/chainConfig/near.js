@@ -67,7 +67,7 @@ export default {
     name: 'Near',
     networkName: 'Near testnet',
     networkLogo: 'NEAR',
-    type: 'main',
+    type: 'test',
     label: NEAR_TEST_CHAINID,
     isSwitch: 1,
     suffix: 'NEAR',

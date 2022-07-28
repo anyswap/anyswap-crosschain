@@ -6,6 +6,8 @@ import { useMemo } from 'react'
 import { useCurrentAddress } from './nas'
 import {useNearAddress} from './near'
 
+import {connectXlmWallet} from './stellar'
+
 import { ChainId } from '../config/chainConfig/chainId'
 
 export function useActiveReact () {
@@ -14,6 +16,7 @@ export function useActiveReact () {
   const {selectNetworkInfo} = useUserSelectChainId()
   const nebAddress = useCurrentAddress()
   const nearAddress = useNearAddress()
+  const {xlmAddress} = connectXlmWallet()
   // console.log(account)
   return useMemo(() => {
     let useAccount = account
@@ -29,6 +32,8 @@ export function useActiveReact () {
       || selectNetworkInfo?.label === ChainId.NEAR_TEST
     ) {
       useAccount = nearAddress
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectNetworkInfo?.label)) {
+      useAccount = xlmAddress
     }
     return {
       account: useAccount,
@@ -36,5 +41,5 @@ export function useActiveReact () {
       evmAccount: account,
       evmChainId: useChainId === chainId ? chainId : '',
     }
-  }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress, nearAddress])
+  }, [account, connectedWallet, selectNetworkInfo, chainId, nebAddress, nearAddress, xlmAddress])
 }

@@ -299,10 +299,6 @@ export default function SelectChainIdInputPanel({
                             : config.getBaseCoin(destChainInfo?.symbol, selectChainId)
                         ) : t('selectToken')
                       }
-                      {/* {selectChainId ? '-' + config.chainInfo[selectChainId].suffix : ''} */}
-                      {/* {
-                        ['swapin', 'swapout'].includes(selectDestCurrency?.type) ? '(B)' : '(R)'
-                      } */}
                     </h3>
                     <p>
                       {

@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: CMP_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CMP',
     anyToken: ''
   },
 }

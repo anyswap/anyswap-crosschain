@@ -108,7 +108,6 @@ export default {
     type: 'main',
     label: FTM_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'FRC20',
     anyToken: '0xddcb3ffd12750b45d32e084887fdf1aabab34239'
   },
   [FTM_TEST_CHAINID]: {
@@ -136,7 +135,6 @@ export default {
     type: 'test',
     label: FTM_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'FRC20',
     anyToken: ''
   },
 }

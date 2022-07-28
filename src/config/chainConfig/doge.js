@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: DOGE_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'DOGE',
     anyToken: ''
   },
 }

@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: ETC_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'ETC',
     anyToken: ''
   },
 }

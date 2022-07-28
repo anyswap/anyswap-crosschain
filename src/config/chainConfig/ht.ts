@@ -196,7 +196,6 @@ export default {
     type: 'main',
     label: HT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'HECO',
     anyToken: '0x538cee985e930557d16c383783ca957fa90b63b3'
   },
   [HT_TEST_CHAINID]: {
@@ -224,6 +223,5 @@ export default {
     type: 'test',
     label: HT_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'HECO'
   },
 }

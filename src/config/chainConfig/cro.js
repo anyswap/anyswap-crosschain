@@ -58,7 +58,6 @@ export default {
     type: 'main',
     label: CRO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CRO',
     anyToken: ''
   },
 }

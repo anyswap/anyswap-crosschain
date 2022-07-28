@@ -57,7 +57,6 @@ export default {
     type: 'main',
     label: FUSE_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'FUSE',
     anyToken: ''
   },
 }

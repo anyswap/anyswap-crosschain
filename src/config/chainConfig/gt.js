@@ -57,7 +57,6 @@ export default {
     type: 'main',
     label: GT_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'GT',
     anyToken: ''
   },
 }

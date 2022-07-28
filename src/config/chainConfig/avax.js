@@ -78,7 +78,6 @@ export default {
     type: 'main',
     label: AVAX_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'AVAX',
     anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
   [AVAX_TEST_CHAINID]: {
@@ -106,7 +105,6 @@ export default {
     type: 'test',
     label: AVAX_TEST_CHAINID,
     isSwitch: 1,
-    suffix: 'AVAX',
     anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
 }

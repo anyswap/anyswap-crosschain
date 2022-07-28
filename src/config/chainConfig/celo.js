@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: CELO_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CELO',
     anyToken: ''
   },
 }

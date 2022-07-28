@@ -76,4 +76,6 @@ export enum ChainId {
   PFT_TEST = '808',
   GOERLI1 = '',
   GOERLI1_TEST = '420',
+  XLM = 'XLM',
+  XLM_TEST = 'XLM_TEST',
 }

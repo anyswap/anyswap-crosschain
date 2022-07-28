@@ -56,7 +56,6 @@ export default {
     type: 'main',
     label: CRAB_MAIN_CHAINID,
     isSwitch: 1,
-    suffix: 'CRAB',
     anyToken: ''
   },
 }
