@@ -1,12 +1,11 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const AURORA_MAIN_CHAINID = ChainId.AURORA
 export const AURORA_MAINNET = getLocalRPC(AURORA_MAIN_CHAINID, 'https://mainnet.aurora.dev')
 export const AURORA_MAIN_EXPLORER = 'https://aurorascan.dev'
 
-export const tokenList = []
 export const testTokenList = []
 
 const symbol = 'ETH'
@@ -32,15 +31,11 @@ const bridgeToken = {
 
 export default {
   [AURORA_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + AURORA_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: AURORA_MAINNET,
     nodeRpcList: [
       AURORA_MAINNET,
@@ -56,7 +51,5 @@ export default {
     networkLogo: 'AURORA',
     type: 'main',
     label: AURORA_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

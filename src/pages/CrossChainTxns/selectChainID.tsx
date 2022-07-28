@@ -141,7 +141,7 @@ export default function SelectChainIdInputPanel({
 
   const destTokenList = useMemo(() => {
     // console.log(selectChainId)
-    const arr = config.getCurChainInfo(selectChainId)?.tokenList?.tokens
+    const arr = config.getCurChainInfo(selectChainId)?.tokenList?.tokens ?? []
     if (arr) {
       return arr
     }

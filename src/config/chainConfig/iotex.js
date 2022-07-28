@@ -1,13 +1,11 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const IOTEX_MAIN_CHAINID = ChainId.IOTEX
 export const IOTEX_MAINNET = getLocalRPC(IOTEX_MAIN_CHAINID, 'https://babel-api.mainnet.iotex.io')
 export const IOTEX_MAIN_EXPLORER = 'https://iotexscan.io'
 
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'IOTX'
 
@@ -32,15 +30,11 @@ const bridgeToken = {
 
 export default {
   [IOTEX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + IOTEX_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xe6801928061cdbe32ac5ad0634427e140efd05f9',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: IOTEX_MAINNET,
     nodeRpcList: [
       IOTEX_MAINNET,
@@ -55,7 +49,5 @@ export default {
     networkName: 'IoTeX mainnet',
     type: 'main',
     label: IOTEX_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const AVAX_MAIN_CHAINID = ChainId.AVAX
@@ -9,10 +9,6 @@ export const AVAX_MAIN_EXPLORER = 'https://snowtrace.io'
 export const AVAX_TEST_CHAINID = ChainId.AVAX_TEST
 export const AVAX_TESTNET = getLocalRPC(AVAX_TEST_CHAINID, 'https://api.avax-test.network/ext/bc/C/rpc')
 export const AVAX_TEST_EXPLORER = 'https://testnet.snowtrace.io'
-
-export const tokenList = [
-
-]
 
 const symbol = 'AVAX'
 
@@ -54,15 +50,11 @@ const bridgeToken = {
 
 export default {
   [AVAX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + AVAX_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xd8e95abcce8901cc2640d2ff4444c85506fb829d',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: AVAX_MAINNET,
     nodeRpcList: [
       AVAX_MAINNET
@@ -77,19 +69,13 @@ export default {
     networkName: 'Avalanche mainnet',
     type: 'main',
     label: AVAX_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
   [AVAX_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + AVAX_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xd8e95abcce8901cc2640d2ff4444c85506fb829d',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: AVAX_TESTNET,
     nodeRpcList: [
       AVAX_TESTNET
@@ -104,7 +90,5 @@ export default {
     networkName: 'Avalanche testnet',
     type: 'test',
     label: AVAX_TEST_CHAINID,
-    isSwitch: 1,
-    anyToken: '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
   },
 }

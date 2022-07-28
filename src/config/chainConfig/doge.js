@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const DOGE_MAIN_CHAINID = ChainId.DOGE
 export const DOGE_MAINNET = getLocalRPC(DOGE_MAIN_CHAINID, 'https://rpc-sg.dogechain.dog')
 export const DOGE_MAIN_EXPLORER = 'https://blockchair.com/dogecoin'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'DOGE'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [DOGE_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + DOGE_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: DOGE_MAINNET,
     nodeRpcList: [
       DOGE_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'Dogechain mainnet',
     type: 'main',
     label: DOGE_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

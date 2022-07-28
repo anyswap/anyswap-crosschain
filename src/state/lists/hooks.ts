@@ -259,52 +259,16 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   // }, [lists, chainId])
 }
 
-export function useSelectedListUrl(): string | undefined {
-  // return useSelector<AppState, AppState['lists']['selectedListUrl']>(state => {
-  //   return state.lists.selectedListUrl
-  // })
-  return config.tokenListUrl
-}
 
 export function useTokenListVersionUrl(): string | undefined {
   return useSelector<AppState, AppState['lists']['tokenlistversion']>(state => {
     return state.lists.tokenlistversion
   })
-  // return config.tokenListUrl
 }
 
 export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
   return useBridgeTokenList(key, chainId)
 }
-
-// export function useSelectedTokenList(): TokenAddressMap {
-//   return useTokenList(useSelectedListUrl())
-// }
-
-// export function useSelectedListInfo(): { current: TokenList | null; pending: TokenList | null; loading: boolean } {
-//   const selectedUrl = useSelectedListUrl()
-//   const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-//   const list = selectedUrl ? listsByUrl[selectedUrl] : undefined
-//   // console.log(listsByUrl)
-//   return {
-//     current: list?.current ?? null,
-//     pending: list?.pendingUpdate ?? null,
-//     loading: list?.loadingRequestId !== null
-//   }
-// }
-
-// returns all downloaded current lists
-// export function useAllLists(): TokenList[] {
-//   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-
-//   return useMemo(
-//     () =>
-//       Object.keys(lists)
-//         .map(url => lists[url].current)
-//         .filter((l): l is TokenList => Boolean(l)),
-//     [lists]
-//   )
-// }
 
 
 export function useInitUserSelectCurrency(chainId?: any) {

@@ -91,7 +91,6 @@ export const MAIN_COIN_SORT:any = {
   'MAI': {sort: 8},
 }
 
-export const tokenListUrl = 'https://list.htswap.io/tokenList/'
 // export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
 export const bridgeApi = 'http://localhost:8107'

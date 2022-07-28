@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const INTAIN_MAIN_CHAINID = ChainId.INTAIN
@@ -9,9 +9,6 @@ export const INTAIN_MAIN_EXPLORER = ''
 export const INTAIN_TEST_CHAINID = ChainId.INTAIN_TEST
 export const INTAIN_TESTNET = getLocalRPC(INTAIN_TEST_CHAINID, 'https://testnetrpc.multichain.org/intain')
 export const INTAIN_TEST_EXPLORER = 'https://etherscan.io'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'ASTR'
 
@@ -26,15 +23,11 @@ const bridgeToken = {
 
 export default {
   [INTAIN_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + INTAIN_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: INTAIN_MAINNET,
     nodeRpcList: [
       INTAIN_MAINNET,
@@ -50,19 +43,13 @@ export default {
     networkLogo: 'INTAIN',
     type: 'main',
     label: INTAIN_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
   [INTAIN_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + INTAIN_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: INTAIN_TESTNET,
     nodeRpcList: [
       INTAIN_TESTNET,
@@ -79,7 +66,5 @@ export default {
     networkLogo: 'INTAIN',
     type: 'test',
     label: INTAIN_TEST_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const PFT_MAIN_CHAINID = ChainId.PFT
@@ -9,9 +9,6 @@ export const PFT_MAIN_EXPLORER = ''
 export const PFT_TEST_CHAINID = ChainId.PFT_TEST
 export const PFT_TESTNET = getLocalRPC(PFT_TEST_CHAINID, 'https://testnetrpc.multichain.org/pft')
 export const PFT_TEST_EXPLORER = 'https://etherscan.io'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'PFT'
 
@@ -26,15 +23,11 @@ const bridgeToken = {
 
 export default {
   [PFT_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + PFT_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: PFT_MAINNET,
     nodeRpcList: [
       PFT_MAINNET,
@@ -50,19 +43,13 @@ export default {
     networkLogo: 'PFT',
     type: 'main',
     label: PFT_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
   [PFT_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + PFT_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: PFT_TESTNET,
     nodeRpcList: [
       PFT_TESTNET,
@@ -79,7 +66,5 @@ export default {
     networkLogo: 'PFT',
     type: 'test',
     label: PFT_TEST_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

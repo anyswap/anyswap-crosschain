@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const VLX_MAIN_CHAINID = ChainId.VLX
 export const VLX_MAINNET = getLocalRPC(VLX_MAIN_CHAINID, 'https://evmexplorer.velas.com/rpc')
 export const VLX_MAIN_EXPLORER = 'https://evmexplorer.velas.com'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'VLX'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [VLX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + VLX_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x624De1690fAf85B3B0b64d5c4ab3d9B195102e78',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: VLX_MAINNET,
     nodeRpcList: [
       VLX_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'Velas mainnet',
     type: 'main',
     label: VLX_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const TLOS_MAIN_CHAINID = ChainId.TLOS
 export const TLOS_MAINNET = getLocalRPC(TLOS_MAIN_CHAINID, 'https://rpc1.us.telos.net/evm')
 export const TLOS_MAIN_EXPLORER = 'https://www.teloscan.io'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'TLOS'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [TLOS_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + TLOS_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xE1A34ca06e57f981A51C6a9518d1bCDAb3cE1c6d',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: TLOS_MAINNET,
     nodeRpcList: [
       TLOS_MAINNET,
@@ -56,7 +49,5 @@ export default {
     networkName: 'Telos mainnet',
     type: 'main',
     label: TLOS_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

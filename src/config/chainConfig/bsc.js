@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 // console.log(process.env)
 // alert(process.env.NODE_ENV)
@@ -27,32 +27,6 @@ export const BNB_TEST_CHAINID = ChainId.BNB_TEST
 export const BNB_TESTNET = getLocalRPC(BNB_TEST_CHAINID, 'https://data-seed-prebsc-1-s1.binance.org:8545')
 export const BNB_TEST_EXPLORER = 'https://testnet.bscscan.com'
 
-export const tokenList = [
-  {
-    "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg Ethereum",
-    "symbol": "ETH"
-  },
-  {
-    "address": "0x4338665cbb7b2485a8855a139b75d5e34ab0db94",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg Litecoin",
-    "symbol": "LTC"
-  },
-  {
-    "address": "0x55d398326f99059ff775485246999027b3197955",
-    "chainId": BNB_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Binance-Peg BSC-USD",
-    "symbol": "USDT"
-  },
-]
-export const testTokenList = [
-
-]
 
 const symbol = 'BNB'
 
@@ -113,16 +87,11 @@ const bridgeToken = {
 
 export default {
   [BNB_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + BNB_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0x55d398326f99059ff775485246999027b3197955',
-    // multicalToken: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
     multicalToken: '0xa9193376D09C7f31283C54e56D013fCF370Cd9D9',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: BNB_MAINNET,
     nodeRpcList: [
       'https://bsc-dataseed1.defibit.io/',
@@ -150,19 +119,13 @@ export default {
     networkName: 'BNB CHAIN mainnet',
     type: 'main',
     label: BNB_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa'
   },
   [BNB_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + BNB_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, testTokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0x461d52769884ca6235b685ef2040f47d30c94eb5',
     multicalToken: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    timelock: '0x1a9C8182C09F50C8318d769245beA52c32BE35BC',
     nodeRpc: BNB_TESTNET,
     nodeRpcList: [
       BNB_TESTNET
@@ -177,6 +140,5 @@ export default {
     networkName: 'BNB CHAIN testnet',
     type: 'test',
     label: BNB_TEST_CHAINID,
-    isSwitch: 1,
   }
 }

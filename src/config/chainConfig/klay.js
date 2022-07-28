@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const KLAY_MAIN_CHAINID = ChainId.KLAY
 export const KLAY_MAINNET = getLocalRPC(KLAY_MAIN_CHAINID, 'https://public-node-api.klaytnapi.com/v1/cypress')
 export const KLAY_MAIN_EXPLORER = 'https://scope.klaytn.com'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'KLAY'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [KLAY_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + KLAY_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x80A16016cC4A2E6a2CACA8a4a498b1699fF0f844',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: KLAY_MAINNET,
     nodeRpcList: [
       KLAY_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'Klaytn mainnet',
     type: 'main',
     label: KLAY_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

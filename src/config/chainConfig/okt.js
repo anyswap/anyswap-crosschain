@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const OKT_MAIN_CHAINID = ChainId.OKT
 export const OKT_MAINNET = getLocalRPC(OKT_MAIN_CHAINID, 'https://exchainrpc.okex.org')
 export const OKT_MAIN_EXPLORER = 'https://www.oklink.com/okexchain'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'OKT'
 
@@ -37,16 +34,11 @@ const bridgeToken = {
 
 export default {
   [OKT_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + OKT_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
-    // multicalToken: '0xfa9343c3897324496a05fc75abed6bac29f8a40f',
     multicalToken: '0xF4d73326C13a4Fc5FD7A064217e12780e9Bd62c3',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: OKT_MAINNET,
     nodeRpcList: [
       OKT_MAINNET,
@@ -61,7 +53,5 @@ export default {
     networkName: 'OKC mainnet',
     type: 'main',
     label: OKT_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

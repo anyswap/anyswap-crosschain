@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const METIS_MAIN_CHAINID = ChainId.METIS
 export const METIS_MAINNET = getLocalRPC(METIS_MAIN_CHAINID, 'https://andromeda.metis.io/?owner=1088')
 export const METIS_MAIN_EXPLORER = 'https://andromeda-explorer.metis.io'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'METIS'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [METIS_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + METIS_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x7C598c96D02398d89FbCb9d41Eab3DF0C16F227D',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: METIS_MAINNET,
     nodeRpcList: [
       METIS_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'Metis mainnet',
     type: 'main',
     label: METIS_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

@@ -1,13 +1,11 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const SDN_MAIN_CHAINID = ChainId.SDN
 export const SDN_MAINNET = getLocalRPC(SDN_MAIN_CHAINID, 'https://rpc.shiden.astar.network:8545')
 export const SDN_MAIN_EXPLORER = 'https://shiden.subscan.io'
 
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'SDN'
 
@@ -32,15 +30,11 @@ const bridgeToken = {
 
 export default {
   [SDN_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + SDN_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xEba098A16d6092B66608A14A3f53A984186266e7',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: SDN_MAINNET,
     nodeRpcList: [
       SDN_MAINNET,
@@ -58,7 +52,5 @@ export default {
     networkName: 'Shiden Network mainnet',
     type: 'main',
     label: SDN_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

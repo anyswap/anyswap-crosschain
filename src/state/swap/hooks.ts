@@ -249,7 +249,7 @@ export function useDerivedSwapInfo(chainId?:any): {
   
   const inputCurrency = useFormatCurrency(inputChainId, inputCurrencyId, inputDecimals, inputName, inputSymbol)
   // console.log(inputCurrency)
-  const outputCurrency = useFormatCurrency(outputChainId, outputCurrencyId ? outputCurrencyId : config.swapInitToken, outputDecimals, outputName, outputSymbol)
+  const outputCurrency = useFormatCurrency(outputChainId, outputCurrencyId ? outputCurrencyId : '', outputDecimals, outputName, outputSymbol)
   // console.log(outputCurrency)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null

@@ -1,13 +1,11 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import { ChainId } from './chainId'
 
 export const CUBE_MAIN_CHAINID = ChainId.CUBE
 export const CUBE_MAINNET = getLocalRPC(CUBE_MAIN_CHAINID, 'https://http-mainnet.cube.network')
 export const CUBE_MAIN_EXPLORER = 'https://www.cubescan.network/en-us'
 
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'CUBE'
 
@@ -32,15 +30,11 @@ const bridgeToken = {
 
 export default {
   [CUBE_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + CUBE_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: CUBE_MAINNET,
     nodeRpcList: [
       CUBE_MAINNET,
@@ -58,7 +52,5 @@ export default {
     networkName: 'Cube Chain mainnet',
     type: 'main',
     label: CUBE_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

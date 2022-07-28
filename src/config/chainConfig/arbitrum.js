@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const ARBITRUM_MAIN_CHAINID = ChainId.ARBITRUM
@@ -9,8 +9,6 @@ export const ARBITRUM_MAIN_EXPLORER = 'https://arbiscan.io/'
 export const ARBITRUM_TEST_CHAINID = ChainId.ARBITRUM_TEST
 export const ARBITRUM_TESTNET = getLocalRPC(ARBITRUM_TEST_CHAINID, 'https://rinkeby.arbitrum.io/rpc')
 export const ARBITRUM_TEST_EXPLORER = 'https://rinkeby-explorer.arbitrum.io/#'
-
-export const tokenList = []
 
 const symbol = 'ETH'
 
@@ -58,16 +56,11 @@ const bridgeToken = {
 export default {
   
   [ARBITRUM_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + ARBITRUM_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
-    // multicalToken: '0x9e73d56dd1942743ffdf055449b052a806b854be',
     multicalToken: '0x80C7DD17B01855a6D2347444a0FCC36136a314de',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: ARBITRUM_MAINNET,
     nodeRpcList: [
       ARBITRUM_MAINNET
@@ -83,19 +76,13 @@ export default {
     networkLogo: 'ARBITRUM',
     type: 'main',
     label: ARBITRUM_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
   [ARBITRUM_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + ARBITRUM_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xf27ee99622c3c9b264583dacb2cce056e194494f',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: ARBITRUM_TESTNET,
     nodeRpcList: [
       ARBITRUM_TESTNET
@@ -111,6 +98,5 @@ export default {
     networkLogo: 'ARBITRUM',
     type: 'test',
     label: ARBITRUM_TEST_CHAINID,
-    isSwitch: 1,
   },
 }

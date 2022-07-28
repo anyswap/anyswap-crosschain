@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import { ChainId } from './chainId'
 
 export const REI_MAIN_CHAINID = ChainId.REI
 export const REI_MAINNET = getLocalRPC(REI_MAIN_CHAINID, 'https://rpc-mainnet.rei.network')
 export const REI_MAIN_EXPLORER = 'https://scan.rei.network'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'REI'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [REI_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + REI_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x9e8955847586682971a53e1a2428CA7354A655f2',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: REI_MAINNET,
     nodeRpcList: [
       REI_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'REI mainnet',
     type: 'main',
     label: REI_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

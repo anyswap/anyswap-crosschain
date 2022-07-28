@@ -1,14 +1,9 @@
-import {formatSwapTokenList} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const XRP_MAINNET = ''
 export const XRP_MAIN_CHAINID = ChainId.XRP
 export const XRP_MAIN_EXPLORER = 'https://xrpscan.com'
-
-export const tokenList = [
-
-]
 
 const symbol = 'XRP'
 
@@ -27,13 +22,10 @@ const bridgeToken = {
 
 export default {
   [XRP_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + XRP_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: XRP_MAINNET,
     chainID: XRP_MAIN_CHAINID,
     lookHash: XRP_MAIN_EXPLORER + '/tx/',
@@ -46,8 +38,6 @@ export default {
     networkLogo: 'XRP',
     type: 'main',
     label: XRP_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '',
     // chainType: XRP_MAIN_CHAINID
     chainType: 'BTC'
   },

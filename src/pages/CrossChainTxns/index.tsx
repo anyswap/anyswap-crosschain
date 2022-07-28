@@ -505,8 +505,8 @@ export default function CrossChain() {
     // onSelectChainId(selectChain)
     setSelectDestCurrency('')
     if (selectChain) {
-      const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens
-      const initToken = config.getCurChainInfo(selectChain).swapInitToken
+      const arr = config.getCurChainInfo(selectChain)?.tokenList?.tokens ?? []
+      const initToken:any = ''
 
       for (const obj of arr) {
         if (initToken && obj.address.toLowerCase() === initToken?.toLowerCase()) {

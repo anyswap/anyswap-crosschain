@@ -1,14 +1,10 @@
-import {formatSwapTokenList} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const BLOCK_MAINNET = ''
 export const BLOCK_MAIN_CHAINID = ChainId.BLOCK
 export const BLOCK_MAIN_EXPLORER = ''
-
-export const tokenList = [
-
-]
 
 const symbol = 'BLOCK'
 
@@ -21,13 +17,10 @@ const bridgeToken = {
 
 export default {
   [BLOCK_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + BLOCK_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: BLOCK_MAINNET,
     chainID: BLOCK_MAIN_CHAINID,
     lookHash: BLOCK_MAIN_EXPLORER + '/tx/',
@@ -39,8 +32,6 @@ export default {
     networkName: 'Blocknet mainnet',
     type: 'main',
     label: BLOCK_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '',
     chainType: 'BTC'
   },
 }

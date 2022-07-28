@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const OMGX_MAIN_CHAINID = ''
@@ -9,8 +9,6 @@ export const OMGX_MAIN_EXPLORER = ''
 export const OMGX_TEST_CHAINID = ChainId.OMGX_TEST
 export const OMGX_TESTNET = getLocalRPC(OMGX_TEST_CHAINID, 'https://rinkeby.omgx.network')
 export const OMGX_TEST_EXPLORER = 'https://blockexplorer.rinkeby.omgx.network/?network=OmgX'
-
-export const tokenList = []
 
 const symbol = 'OMGX'
 
@@ -35,15 +33,11 @@ const bridgeToken = {
 export default {
   
   [OMGX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + OMGX_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x9e73d56dd1942743ffdf055449b052a806b854be',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: OMGX_MAINNET,
     nodeRpcList: [
       OMGX_MAINNET,
@@ -59,19 +53,13 @@ export default {
     networkLogo: 'OMGX',
     type: 'main',
     label: OMGX_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
   [OMGX_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + OMGX_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0x667fd83e24ca1d935d36717d305d54fa0cac991c',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: OMGX_TESTNET,
     nodeRpcList: [
       OMGX_TESTNET,
@@ -87,6 +75,5 @@ export default {
     networkLogo: 'OMGX',
     type: 'main',
     label: OMGX_TEST_CHAINID,
-    isSwitch: 1,
   },
 }

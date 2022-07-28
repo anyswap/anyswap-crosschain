@@ -1,13 +1,10 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const ETC_MAIN_CHAINID = ChainId.ETC
 export const ETC_MAINNET = getLocalRPC(ETC_MAIN_CHAINID, 'https://www.ethercluster.com/etc')
 export const ETC_MAIN_EXPLORER = 'https://blockscout.com/etc/mainnet'
-
-export const tokenList = []
-export const testTokenList = []
 
 const symbol = 'ETC'
 
@@ -32,15 +29,11 @@ const bridgeToken = {
 
 export default {
   [ETC_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + ETC_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: ETC_MAINNET,
     nodeRpcList: [
       ETC_MAINNET,
@@ -55,7 +48,5 @@ export default {
     networkName: 'Ethereum Classic mainnet',
     type: 'main',
     label: ETC_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

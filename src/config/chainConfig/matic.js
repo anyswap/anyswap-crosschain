@@ -1,5 +1,5 @@
-import {formatSwapTokenList, getLocalRPC} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {getLocalRPC} from './methods'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const MATIC_MAIN_CHAINID = ChainId.MATIC
@@ -13,25 +13,6 @@ export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
 export const MATIC_TEST_CHAINID = ChainId.MATIC_TEST
 export const MATIC_TESTNET = getLocalRPC(MATIC_TEST_CHAINID, 'https://rpc-mumbai.maticvigil.com')
 export const MATIC_TEST_EXPLORER = 'https://testnet.polygonscan.com'
-// console.log(MATIC_MAINNET)
-export const tokenList = [
-  {
-    "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-    "chainId": MATIC_MAIN_CHAINID,
-    "decimals": 8,
-    "name": "Wrapped BTC",
-    "symbol": "WBTC"
-  },
-  {
-    "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-    "chainId": MATIC_MAIN_CHAINID,
-    "decimals": 18,
-    "name": "Dai Stablecoin",
-    "symbol": "DAI"
-  },
-]
-
-export const testTokenList = []
 
 const symbol = 'MATIC'
 
@@ -85,16 +66,11 @@ const bridgeToken = {
 
 export default {
   [MATIC_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + MATIC_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-    swapInitToken: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-    // multicalToken: '0x95028E5B8a734bb7E2071F96De89BABe75be9C8E',
     multicalToken: '0x02817C1e3543c2d908a590F5dB6bc97f933dB4BD',
     v1FactoryToken: '',
     v2FactoryToken: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    timelock: '0x9a8541Ddf3a932a9A922B607e9CF7301f1d47bD1',
     nodeRpc: MATIC_MAINNET,
     nodeRpcList: [
       MATIC_MAINNET,
@@ -116,19 +92,13 @@ export default {
     networkName: 'Polygon mainnet',
     type: 'main',
     label: MATIC_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
   },
   [MATIC_TEST_CHAINID]: {
-    tokenListUrl: tokenListUrl + MATIC_TEST_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    swapInitToken: '',
     multicalToken: '0xE9058a6685fB99b1dDA6a8aab2865b59f7095C3d',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: MATIC_TESTNET,
     nodeRpcList: [
       MATIC_TESTNET,
@@ -143,7 +113,5 @@ export default {
     networkName: 'Mumbai testnet',
     type: 'test',
     label: MATIC_TEST_CHAINID,
-    isSwitch: 1,
-    anyToken: ''
   },
 }

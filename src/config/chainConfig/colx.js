@@ -1,14 +1,9 @@
-import {formatSwapTokenList} from './methods'
-import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const COLX_MAINNET = ''
 export const COLX_MAIN_CHAINID = ChainId.COLX
 export const COLX_MAIN_EXPLORER = ''
-
-export const tokenList = [
-
-]
 
 const symbol = 'COLX'
 
@@ -21,13 +16,10 @@ const bridgeToken = {
 
 export default {
   [COLX_MAIN_CHAINID]: {
-    tokenListUrl: tokenListUrl + COLX_MAIN_CHAINID,
-    tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
     multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
-    timelock: '',
     nodeRpc: COLX_MAINNET,
     chainID: COLX_MAIN_CHAINID,
     lookHash: COLX_MAIN_EXPLORER + '/tx/',
@@ -39,8 +31,6 @@ export default {
     networkName: 'ColossusXT mainnet',
     type: 'main',
     label: COLX_MAIN_CHAINID,
-    isSwitch: 1,
-    anyToken: '',
     chainType: 'BTC'
   },
 }
