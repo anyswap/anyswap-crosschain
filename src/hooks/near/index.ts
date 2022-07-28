@@ -446,28 +446,30 @@ export function useNearSendTxns(
   } = useNearBalance()
 
   const getBalance = useCallback(() => {
-    if (inputCurrency?.tokenType === 'NATIVE') {
-      getNearBalance().then(res => {
-        if (res?.available) {
-          // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
-          setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
-        } else {
-          setBalance('')
-        }
-      })
-    } else {
-      getNearTokenBalance({token: contractId}).then(res => {
-        // console.log(contractId)
-        // console.log(res)
-        if (res) {
-          // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
-          setBalance(BigAmount.format(inputCurrency?.decimals,res))
-        } else {
-          setBalance('')
-        }
-      })
+    if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
+      if (inputCurrency?.tokenType === 'NATIVE') {
+        getNearBalance().then(res => {
+          if (res?.available) {
+            // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+            setBalance(BigAmount.format(inputCurrency?.decimals,res?.total))
+          } else {
+            setBalance('')
+          }
+        })
+      } else {
+        getNearTokenBalance({token: contractId}).then(res => {
+          // console.log(contractId)
+          // console.log(res)
+          if (res) {
+            // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
+            setBalance(BigAmount.format(inputCurrency?.decimals,res))
+          } else {
+            setBalance('')
+          }
+        })
+      }
     }
-  }, [inputCurrency, contractId])
+  }, [inputCurrency, contractId, chainId])
 
   useEffect(() => {
     getBalance()

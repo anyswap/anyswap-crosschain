@@ -33,22 +33,37 @@ export function formatXlmMemo (address:any, chainId:any) {
   return Buffer.from(resultArr).toString('hex')
 }
 
-
+let isOpenXlmWallet = 0
+let xlmCacheAddress = ''
 export function connectXlmWallet () {
-  const [address, setAddress] = useState<any>()
+  const [address, setAddress] = useState<any>(xlmCacheAddress)
   const loginXlm = useCallback(() => {
-    if (isConnected()) {
-      getPublicKey().then(res => {
-        // console.log(res)
-        setAddress(res)
-      })
-    } else {
-      setAddress('')
+    if (!isOpenXlmWallet) {
+      isOpenXlmWallet = 1
+      if (isConnected()) {
+        getPublicKey().then(res => {
+          // console.log(res)
+          xlmCacheAddress = res
+          setAddress(res)
+          isOpenXlmWallet = 0
+        }).catch(() => {
+          isOpenXlmWallet = 0
+        })
+      } else {
+        setAddress('')
+        if (confirm('Please install Freighter Wallet.') === true) {
+          window.open('https://chrome.google.com/webstore/detail/freighter/bcacfldlkkdogcmkkibnjlakofdplcbk')
+        }
+        isOpenXlmWallet = 0
+      }
     }
-  }, [isConnected])
+  }, [isConnected, isOpenXlmWallet])
+  // console.log(address)
   useEffect(() => {
-    loginXlm()
-  }, [])
+    if (isConnected() || !address) {
+      loginXlm()
+    }
+  }, [address])
   return {
     loginXlm,
     xlmAddress: address
