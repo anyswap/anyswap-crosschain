@@ -3,7 +3,7 @@ import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const DOGE_MAIN_CHAINID = ChainId.DOGE
-export const DOGE_MAINNET = getLocalRPC(DOGE_MAIN_CHAINID, 'https://rpc-sg.dogechain.dog')
+export const DOGE_MAINNET = getLocalRPC(DOGE_MAIN_CHAINID, 'https://rpc01-sg.dogechain.dog')
 export const DOGE_MAIN_EXPLORER = 'https://blockchair.com/dogecoin'
 
 const symbol = 'DOGE'

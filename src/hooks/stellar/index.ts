@@ -3,8 +3,14 @@ import {
   getPublicKey,
   // signTransaction,
 } from "@stellar/freighter-api"
-import { useCallback, useEffect, useState } from "react"
+import { useDispatch, useSelector } from 'react-redux'
+import { useCallback } from "react"
 import {getWeb3} from '../../utils/tools/web3UtilsV2'
+import config from '../../config'
+import { ChainId } from "../../config/chainConfig/chainId"
+import { AppState, AppDispatch } from '../../state'
+
+import {xlmAddress} from './actions'
 
 export function formatXlmMemo (address:any, chainId:any) {
   if (!address || !chainId) return ''
@@ -34,23 +40,30 @@ export function formatXlmMemo (address:any, chainId:any) {
 }
 
 let isOpenXlmWallet = 0
-let xlmCacheAddress = ''
+
+export function useXlmAddress () {
+  const account:any = useSelector<AppState, AppState['xlm']>(state => state.xlm.xlmAddress)
+  // console.log(account)
+  return account
+}
+
 export function connectXlmWallet () {
-  const [address, setAddress] = useState<any>(xlmCacheAddress)
+  const dispatch = useDispatch<AppDispatch>()
+  const account:any = useSelector<AppState, AppState['xlm']>(state => state.xlm.xlmAddress)
+  
   const loginXlm = useCallback(() => {
     if (!isOpenXlmWallet) {
       isOpenXlmWallet = 1
       if (isConnected()) {
-        getPublicKey().then(res => {
+        getPublicKey().then((res:any) => {
           // console.log(res)
-          xlmCacheAddress = res
-          setAddress(res)
+          dispatch(xlmAddress({address: res}))
           isOpenXlmWallet = 0
         }).catch(() => {
           isOpenXlmWallet = 0
         })
       } else {
-        setAddress('')
+        // setAddress('')
         if (confirm('Please install Freighter Wallet.') === true) {
           window.open('https://chrome.google.com/webstore/detail/freighter/bcacfldlkkdogcmkkibnjlakofdplcbk')
         }
@@ -58,14 +71,34 @@ export function connectXlmWallet () {
       }
     }
   }, [isConnected, isOpenXlmWallet])
-  // console.log(address)
-  useEffect(() => {
-    if (isConnected() || !address) {
-      loginXlm()
-    }
-  }, [address])
+  
   return {
     loginXlm,
-    xlmAddress: address
+    xlmAddress: account
+  }
+}
+
+export function useXlmBalance () {
+  const {xlmAddress} = connectXlmWallet()
+
+  const getAllBalance = useCallback((chainId:any, account?:any) => {
+    return new Promise(resolve => {
+      const useAccount = account ? account : xlmAddress
+      if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId) && useAccount) {
+        console.log(useAccount)
+        const url = `${config.chainInfo[chainId].nodeRpc}/accounts/${useAccount}`
+        fetch(url).then(res => res.json()).then(json => {
+          console.log(json)
+          resolve(json)
+        }).catch((err) => {
+          console.log(err)
+          resolve('')
+        })
+      }
+    })
+  }, [xlmAddress])
+
+  return {
+    getAllBalance
   }
 }

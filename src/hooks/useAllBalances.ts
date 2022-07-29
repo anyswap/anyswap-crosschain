@@ -8,8 +8,10 @@ import useTerraBalance, {useTerraBaseBalance} from './useTerraBalance'
 import { useCurrentNasBalance, useNasTokenBalance } from './nas'
 import { useNearBalance } from './near'
 import { useTrxBalance } from './trx'
+import {useXlmBalance} from './stellar'
 import { ChainId } from '../config/chainConfig/chainId'
 import { BigAmount } from '../utils/formatBignumber'
+import { tryParseAmount3 } from '../state/swap/hooks'
 
 export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const connectedWallet = useConnectedWallet()
@@ -21,6 +23,7 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   
   const {getTrxTokenBalance} = useTrxBalance()
 
+  const {getAllBalance} = useXlmBalance()
 
   const savedBalance = useRef<any>()
 
@@ -57,6 +60,24 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
           const bl = res && (dec || dec === 0) ? BigAmount.format(dec, res) : undefined
           savedBalance.current = bl
         })
+      } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectChainId)) {
+        // console.log(selectChainId)
+        getAllBalance(selectChainId).then((res:any) => {
+          // console.log(res)
+          if (res?.balances) {
+            for (const obj of res.balances) {
+              if (
+                (obj.asset_type === token)
+                || (obj.asset_code && obj.asset_issuer && (obj.asset_code + '/' + obj.asset_issuer) === token)
+              ) {
+                const blvalue = tryParseAmount3(obj.balance, dec)
+                const bl = res ? BigAmount.format(dec, blvalue) : undefined
+                savedBalance.current = bl
+                break
+              }
+            }
+          }
+        })
       }
     } else {
       savedBalance.current = ''
@@ -87,6 +108,7 @@ export function useBaseBalances (
   const { getNasBalance } = useCurrentNasBalance()
   const { getNearBalance } = useNearBalance()
   const {getTrxBalance} = useTrxBalance()
+  const {getAllBalance} = useXlmBalance()
 
   const selectChainId = selectNetworkInfo?.label
   
@@ -114,8 +136,24 @@ export function useBaseBalances (
         const bl = res ? BigAmount.format(6, res) : undefined
         setBalance(bl)
       })
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectChainId)) {
+      // console.log(selectChainId)
+      getAllBalance(selectChainId, uncheckedAddresses).then((res:any) => {
+        // console.log(res)
+        if (res?.balances) {
+          for (const obj of res.balances) {
+            if (obj.asset_type === 'native') {
+              const dec = 7
+              const blvalue = tryParseAmount3(obj.balance, dec)
+              const bl = res ? BigAmount.format(dec, blvalue) : undefined
+              setBalance(bl)
+              break
+            }
+          }
+        }
+      })
     }
-  }, [uncheckedAddresses, selectChainId])
+  }, [uncheckedAddresses, selectChainId, getAllBalance])
 
   useEffect(() => {
     fetchBalancesCallback()

@@ -14,6 +14,8 @@ import pools from './pools/reducer'
 import wallet from './wallet/reducer'
 import rpc from './rpc/reducer'
 
+import xlm from '../hooks/stellar/reducer'
+
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools']
 
 const store = configureStore({
@@ -28,7 +30,8 @@ const store = configureStore({
     lists,
     pools,
     wallet,
-    rpc
+    rpc,
+    xlm
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })

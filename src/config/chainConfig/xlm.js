@@ -1,11 +1,11 @@
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const XLM_MAINNET = 'https://horizon.stellar.org/'
+export const XLM_MAINNET = 'https://horizon.stellar.org'
 export const XLM_MAIN_CHAINID = ChainId.XLM
 export const XLM_MAIN_EXPLORER = 'https://steexp.com'
 
-export const XLM_TESTNET = 'https://horizon-testnet.stellar.org/'
+export const XLM_TESTNET = 'https://horizon-testnet.stellar.org'
 export const XLM_TEST_CHAINID = ChainId.XLM_TEST
 export const XLM_TEST_EXPLORER = 'https://testnet.steexp.com'
 

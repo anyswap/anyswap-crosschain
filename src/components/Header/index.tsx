@@ -197,7 +197,7 @@ function ViewAccountInfo () {
   
   const {account, chainId} = useActiveReact()
   const baseBalance = useBaseBalances(account)
-  // console.log(selectNetworkInfo)
+
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
