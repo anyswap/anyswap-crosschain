@@ -94,6 +94,8 @@ export function useXlmBalance () {
           console.log(err)
           resolve('')
         })
+      } else {
+        resolve('')
       }
     })
   }, [xlmAddress])
@@ -101,4 +103,36 @@ export function useXlmBalance () {
   return {
     getAllBalance
   }
+}
+
+
+export function updateXlmHash (hash:any, chainId:any) {
+  const data:any = {
+    msg: 'Error',
+    info: ''
+  }
+  return new Promise(resolve => {
+    // const url = 'https://rpc.testnet.near.org'
+    const url = config.chainInfo[chainId].nodeRpc
+    fetch(`${url}/transactions/${hash}`).then(res => res.json()).then(json => {
+      // console.log(json)
+      if (json) {
+        if (json.successful) {
+          data.msg = 'Success'
+          data.info = json
+        } else {
+          data.msg = 'Failure'
+          data.error = 'Txns is failure!'
+        }
+      } else {
+        data.msg = 'Null'
+        data.error = 'Query is empty!'
+      }
+      resolve(data)
+    }).catch(err => {
+      console.log(err.toString())
+      data.error = 'Query is empty!'
+      resolve(data)
+    })
+  })
 }

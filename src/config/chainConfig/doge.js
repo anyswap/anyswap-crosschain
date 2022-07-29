@@ -31,7 +31,7 @@ export default {
   [DOGE_MAIN_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '0xC43E77E8641d41028785779Df0F3D021bD54a1d6',
+    multicalToken: '0x5D9ab5522c64E1F6ef5e3627ECCc093f56167818',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: DOGE_MAINNET,
