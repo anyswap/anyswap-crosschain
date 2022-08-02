@@ -15,9 +15,9 @@ export function useAllApproved () {
   const useTokenInfo = useMemo(() => {
     if (chainId && nonApproveList[chainId]) {
       return {
-        token: nonApproveList[chainId].token,
-        anyToken: nonApproveList[chainId].anyToken,
-        symbol: nonApproveList[chainId].symbol
+        token: nonApproveList[chainId][0].token,
+        anyToken: nonApproveList[chainId][0].anyToken,
+        symbol: nonApproveList[chainId][0].symbol
       }
     }
     return {
