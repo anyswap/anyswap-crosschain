@@ -197,6 +197,8 @@ export function tryParseAmount6(value?: string): CurrencyAmount | undefined {
   try {
     if (value !== '0') {
       return CurrencyAmount.ether(JSBI.BigInt(value))
+    } else if (value === '0') {
+      return CurrencyAmount.ether(JSBI.BigInt(0))
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)

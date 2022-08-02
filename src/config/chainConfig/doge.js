@@ -39,7 +39,7 @@ export default {
       DOGE_MAINNET,
     ],
     chainID: DOGE_MAIN_CHAINID,
-    lookHash: DOGE_MAIN_EXPLORER + '/transaction/',
+    lookHash: DOGE_MAIN_EXPLORER + '/tx/',
     lookAddr: DOGE_MAIN_EXPLORER + '/address/',
     lookBlock: DOGE_MAIN_EXPLORER + '/block/',
     explorer: DOGE_MAIN_EXPLORER,

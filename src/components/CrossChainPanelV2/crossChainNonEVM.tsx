@@ -13,6 +13,7 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
+// import { useXlmCrossChain } from '../../hooks/stellar'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -180,6 +181,18 @@ export default function CrossChain({
     selectChain,
     destConfig
   )
+
+  // const {execute} = useXlmCrossChain(
+  //   chainId,
+  //   selectCurrency,
+  //   selectChain
+  // )
+
+  // useEffect(() => {
+  //   if (execute) {
+  //     execute()
+  //   }
+  // }, [execute])
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 

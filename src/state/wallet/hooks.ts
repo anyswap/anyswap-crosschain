@@ -212,9 +212,10 @@ export function useOneTokenBalance(token:any): any {
       if (lists[account] && lists[account][chainId] && lists[account][chainId][token]) {
         const blItem = lists[account][chainId][token]
         if (token === 'NATIVE') {
+          // console.log(blItem)
           return {
             ...blItem,
-            balances: tryParseAmount6(blItem.balancestr)
+            balances: blItem.balancestr === '0' ? BigAmount.format(18, '0') : tryParseAmount6(blItem.balancestr)
           }
         }
         
@@ -256,6 +257,7 @@ export function useETHBalances(
         return ethBalance
       } else {
         // console.log(2)
+        // console.log(blItem)
         // console.log(blItem.balances)
         // console.log(ethBalance)
         return addresses.reduce<{ [address: string]: any }>((memo, address) => {

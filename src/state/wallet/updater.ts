@@ -17,10 +17,10 @@ import ERC20_INTERFACE from '../../constants/abis/erc20'
 
 import {useRpcState} from '../rpc/hooks'
 
-import {getContract} from '../../utils/tools/multicall'
+import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
 
-import config from '../../config'
+// import config from '../../config'
 // import { fromWei } from '../../utils/tools/tools'
 // const startTime = Date.now()
 const limit = 80
@@ -78,15 +78,12 @@ export default function Updater(): null {
       if (
         !chainId
         || isNaN(chainId)
-        || !config.getCurChainInfo(chainId)?.multicalToken
         || arr.length <= 0
       ) {
         resolve('')
         return
       }
-      // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
       const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
-      // const contract = getContract({rpc: rpc, abi: '', provider: provider})
       useBatchData({
         chainId, 
         calls: arr.map(({callData, target}: {callData:string, target:string}) => ({type: 'TOKEN', callData, target})), 
@@ -101,7 +98,6 @@ export default function Updater(): null {
             const results = res[i]
             let bl = ''
             try {
-              // console.log(ERC20_INTERFACE.decodeFunctionResult('balanceOf', results))
               bl = results === '0x' ? '0' : ERC20_INTERFACE.decodeFunctionResult('balanceOf', results)[0].toString()
             } catch (error) {
               // console.error(error)
@@ -131,35 +127,28 @@ export default function Updater(): null {
         if (
           !chainId
           || isNaN(chainId)
-          || !config.getCurChainInfo(chainId)?.multicalToken
+          // || !config.getCurChainInfo(chainId)?.multicalToken
         ) {
           resolve('')
           return
         }
-        // const rpc = rpcItem && rpcItem.rpc ? rpcItem.rpc : config.getCurChainInfo(chainId).nodeRpc
-        // const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
         const provider = library ? library?.provider : ''
-        const contract = getContract({rpc: '', abi: '', provider: provider})
-        // console.log(rpcItem)
-        contract.options.address = config.getCurChainInfo(chainId).multicalToken
-        contract.methods.getEthBalance(account).call((err:any, res:any) => {
-          // console.log(err)
+        const web3 = getWeb3('', provider)
+        web3.eth.getBalance(account).then((res:any) => {
           // console.log(res)
-          if (!err) {
-            const blList:any = {}
-            const dec = 18
-            blList['NATIVE'] = {
-              balance: formatUnits(res, dec),
-              balancestr: res,
-              dec: dec,
-              blocknumber: ''
-            }
-            dispatch(tokenBalanceList({
-              chainId,
-              account,
-              tokenList: blList
-            }))
+          const blList:any = {}
+          const dec = 18
+          blList['NATIVE'] = {
+            balance: formatUnits(res, dec),
+            balancestr: res,
+            dec: dec,
+            blocknumber: ''
           }
+          dispatch(tokenBalanceList({
+            chainId,
+            account,
+            tokenList: blList
+          }))
           resolve(res)
         })
       } else {

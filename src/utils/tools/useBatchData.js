@@ -105,6 +105,7 @@ export function getMulticallData ({chainId, rpc, calls, provider}) {
 function getBatchResult ({chainId, rpc, calls, provider}) {
   return new Promise((resolve, reject) => {
     // console.log(config.getCurChainInfo(chainId).multicalToken)
+    // console.log(calls)
     const useMethods = config.getCurChainInfo(chainId).multicalToken ? getMulticallData : getBatchWeb3Data
     // const useMethods = getBatchWeb3Data
     Promise.race([

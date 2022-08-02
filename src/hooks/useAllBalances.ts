@@ -162,6 +162,7 @@ export function useBaseBalances (
   useInterval(fetchBalancesCallback, 1000 * 10)
 
   return useMemo(() => {
+    // console.log(userEthBalance)
     if (!selectChainId) {
       return userEthBalance
     } else if (balance) {

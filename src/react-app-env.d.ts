@@ -97,6 +97,7 @@ interface Window {
   msIDBTransaction: any
   webkitIDBKeyRange: any
   msIDBKeyRange: any
+  freighterApi: any
 }
 
 declare module 'content-hash' {
