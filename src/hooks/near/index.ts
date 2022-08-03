@@ -170,6 +170,7 @@ export function useNearPoolDatas () {
       if (window?.near?.account() && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId) ) {
 
         for (const item of calls) {
+          if (item.token === 'near' || item.anytoken === 'near') continue
           if (item.token) {
             arr.push(window?.near?.account().viewFunction(
               item.token,
