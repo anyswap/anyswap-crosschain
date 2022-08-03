@@ -227,24 +227,34 @@ export function useNearPoolDatas () {
 }
 
 export function useSendNear () {
-  const sendNear = useCallback(async(routerContractId, amount, bindaddr, selectchain) => {
+  const sendNear = useCallback(async(routerContractId, amount, bindaddr, selectchain, tokenType, anyContractId) => {
     return new Promise((resolve, reject) => {
-      console.log('sendNear')
-      const actions = {
-        receiverId: routerContractId,
-        actions: [
-          {
-            methodName: 'swap_out',
-            args: {
-              "receiver_id": `${bindaddr}`,
-              "to_chain_id": `${selectchain}`, 
-            },
-            gas: '300000000000000',
-            // deposit: '1'
-            deposit: amount
-          }
-        ],
-        // amount: amount
+      // console.log('sendNear')
+      const actions:any = {
+        receiverId: tokenType === 'ANYTOKEN' ? anyContractId : routerContractId,
+        actions: [],
+      }
+      if (tokenType === 'ANYTOKEN') {
+        actions.actions.push({
+          methodName: 'swap_out',
+          args: {
+            "receiver_id": `${bindaddr}`,
+            "to_chain_id": `${selectchain}`, 
+            "amount": `${amount}`, 
+          },
+          gas: '300000000000000',
+          deposit: '0'
+        })
+      } else {
+        actions.actions.push({
+          methodName: 'swap_out',
+          args: {
+            "receiver_id": `${bindaddr}`,
+            "to_chain_id": `${selectchain}`, 
+          },
+          gas: '300000000000000',
+          deposit: amount
+        })
       }
       console.log(actions)
       // let res:any
@@ -270,13 +280,10 @@ export function useSendNear () {
         receiverId: contractId,
         actions: [
           {
-            // methodName: 'ft_transfer_call',
             methodName: 'ft_transfer',
             args: {
               'receiver_id': routerContractId,
               amount: amount,  // wNear decimals is 24
-              // msg: `any_swap_out ${anyContractId} ${bindaddr} ${selectchain}`
-              // msg: `${bindaddr} ${selectchain}`
               memo: `${bindaddr} ${selectchain}`
             },
             gas: '300000000000000',
@@ -447,7 +454,7 @@ export function useNearSendTxns(
 
   const getBalance = useCallback(() => {
     if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
-      if (inputCurrency?.tokenType === 'NATIVE') {
+      if (inputCurrency?.tokenType === 'NATIVE' || inputCurrency?.address === 'near') {
         getNearBalance().then(res => {
           if (res?.available) {
             // setBalance(BigAmount.format(inputCurrency?.decimals,res?.available))
@@ -500,7 +507,7 @@ export function useNearSendTxns(
       execute: receiverId && (sufficientBalance || !VALID_BALANCE) && inputAmount ? async () => {
         try {
           
-          const txReceipt:any = inputCurrency?.tokenType === "NATIVE" ? await sendNear(routerToken, inputAmount, receiverId, selectChain) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
+          const txReceipt:any = ["NATIVE", "ANYTOKEN"].includes(inputCurrency?.tokenType) || inputCurrency?.address === 'near' ? await sendNear(routerToken, inputAmount, receiverId, selectChain, inputCurrency?.tokenType, anyContractId) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
           console.log(txReceipt)
           if (txReceipt?.hash) {
             const data:any = {

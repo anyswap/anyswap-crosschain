@@ -47,10 +47,10 @@ import ErrorTip from './errorTip'
 import RouterList from './routerList'
 
 import {usePool} from '../../hooks/usePools'
-import {
-  useNearBalance,
-  useSendNear
-} from '../../hooks/near'
+// import {
+//   useNearBalance,
+//   useSendNear
+// } from '../../hooks/near'
 
 import {
   LogoBox,
@@ -71,7 +71,7 @@ import { BigAmount } from '../../utils/formatBignumber'
 
 import {getUrlData} from '../../utils/tools/axios'
 import {isAddress} from '../../utils/isAddress'
-import useInterval from '../../hooks/useInterval'
+// import useInterval from '../../hooks/useInterval'
 import {formatXlmMemo} from '../../hooks/stellar'
 formatXlmMemo('0xC5107334A3Ae117E3DaD3570b419618C905Aa5eC', 5777)
 
@@ -94,10 +94,10 @@ export default function CrossChain({
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
-  const {getNearStorageBalance} = useNearBalance()
+  // const {getNearStorageBalance} = useNearBalance()
 
   const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
-  const {depositStorageNear} = useSendNear()
+  // const {depositStorageNear} = useSendNear()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -638,28 +638,28 @@ export default function CrossChain({
     }
     return url
   }, [destConfig, selectChain, maxInputValue])
-  const [nearStorageBalance, setNearStorageBalance] = useState<any>()
-  const getNearStorage = useCallback(() => {
-    if (
-      [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain) 
-      && recipient
-    ) {
-      getNearStorageBalance({token: destConfig.address,account: recipient, chainId: selectChain}).then((res:any) => {
-        console.log(res)
-        if (res?.total) {
-          setNearStorageBalance(res.total)
-        } else {
-          setNearStorageBalance('')
-        }
-      })
-    } else {
-      setNearStorageBalance('')
-    }
-  }, [selectChain, recipient, destConfig])
-  useEffect(() => {
-    getNearStorage()
-  }, [selectChain, recipient])
-  useInterval(getNearStorage, 1000 * 10)
+  // const [nearStorageBalance, setNearStorageBalance] = useState<any>()
+  // const getNearStorage = useCallback(() => {
+  //   if (
+  //     [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain) 
+  //     && recipient
+  //   ) {
+  //     getNearStorageBalance({token: destConfig.address,account: recipient, chainId: selectChain}).then((res:any) => {
+  //       console.log(res)
+  //       if (res?.total) {
+  //         setNearStorageBalance(res.total)
+  //       } else {
+  //         setNearStorageBalance('')
+  //       }
+  //     })
+  //   } else {
+  //     setNearStorageBalance('')
+  //   }
+  // }, [selectChain, recipient, destConfig])
+  // useEffect(() => {
+  //   getNearStorage()
+  // }, [selectChain, recipient])
+  // useInterval(getNearStorage, 1000 * 10)
 
   function CrossChainTip () {
     if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
@@ -683,20 +683,22 @@ export default function CrossChain({
       return <ConfirmText>
         Get trust set error, the transaction may fail.Please use <a href={xrpurl} target='__blank'>{xrpurl}</a>
       </ConfirmText>
-    } else if (
-      !nearStorageBalance
-      && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
-    ) {
-      if (window?.near?.account()) {
-        return <ConfirmText>
-          You need to deposit the storage.
-        </ConfirmText>
-      } else {
-        return <ConfirmText>
-          You need to deposit the storage.
-        </ConfirmText>
-      }
-    } else {
+    }
+    // else if (
+    //   !nearStorageBalance
+    //   && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
+    // ) {
+    //   if (window?.near?.account()) {
+    //     return <ConfirmText>
+    //       You need to deposit the storage.
+    //     </ConfirmText>
+    //   } else {
+    //     return <ConfirmText>
+    //       You need to deposit the storage.
+    //     </ConfirmText>
+    //   }
+    // }
+    else {
       let otherTip:any
       if (selectChain === ChainId.XRP && xrplimit === 'ERROR') {
         otherTip = <ConfirmText>
@@ -775,20 +777,22 @@ export default function CrossChain({
       }}>
         TRUST SET
       </ButtonPrimary>
-    } else if (
-      !nearStorageBalance
-      && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
-    ) {
-      return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-        depositStorageNear(destConfig?.address, recipient).then(() => {
-          alert('Deposit storage success.')
-        }).catch(() => {
-          alert('Deposit storage failure.')
-        })
-      }}>
-        Deposit Storage
-      </ButtonPrimary>
-    } else {
+    }
+    // else if (
+    //   !nearStorageBalance
+    //   && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
+    // ) {
+    //   return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+    //     depositStorageNear(destConfig?.address, recipient).then(() => {
+    //       alert('Deposit storage success.')
+    //     }).catch(() => {
+    //       alert('Deposit storage failure.')
+    //     })
+    //   }}>
+    //     Deposit Storage
+    //   </ButtonPrimary>
+    // }
+    else {
       return <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
         handleSwap()
       }}>
