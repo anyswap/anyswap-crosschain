@@ -234,9 +234,9 @@ export function useSendNear () {
         receiverId: routerContractId,
         actions: [
           {
-            methodName: 'swap_out_native',
+            methodName: 'swap_out',
             args: {
-              "to": `${bindaddr}`,
+              "receiver_id": `${bindaddr}`,
               "to_chain_id": `${selectchain}`, 
             },
             gas: '300000000000000',

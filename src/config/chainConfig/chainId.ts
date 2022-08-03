@@ -78,5 +78,5 @@ export enum ChainId {
   GOERLI1_TEST = '420',
   XLM = 'XLM',
   XLM_TEST = 'XLM_TEST',
-  ONG = '58',
+  ONT = '58',
 }

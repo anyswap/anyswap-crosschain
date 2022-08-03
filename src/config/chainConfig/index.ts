@@ -61,7 +61,7 @@ import intain from './intain'
 import pft from './pft'
 import goerli from './goerli'
 import xlm from './xlm'
-import ong from './ong'
+import ont from './ont'
 
 import { ChainId } from './chainId'
 
@@ -71,7 +71,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
-  ...ong,
+  ...ont,
   ...xlm,
   ...goerli,
   ...pft,
@@ -187,7 +187,7 @@ const allChainList = [
   ChainId.KLAY,
   ChainId.KAI,
   ChainId.CUBE,
-  ChainId.ONG,
+  ChainId.ONT,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
