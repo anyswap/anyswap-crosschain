@@ -10,6 +10,7 @@ import {
   Option
 } from '../../components/Header/SelectNetwork'
 import TokenLogo from '../../components/TokenLogo'
+import { useToggleNetworkModal } from '../../state/application/hooks'
 
 import config from '../../config'
 
@@ -19,6 +20,7 @@ interface SelectChainIDProps {
   chainList?: Array<any>
   onChainSelect?: (selectChainId: any) => void
   label?: string
+  type?: string
 }
 
 const SelectChainBox = styled.div`
@@ -51,9 +53,11 @@ export default function SelectChainIDPanel ({
   selectChainId,
   chainList = [],
   onChainSelect,
-  label
+  label,
+  type
 }: SelectChainIDProps) {
   const { chainId } = useActiveWeb3React()
+  const toggleNetworkModal = useToggleNetworkModal()
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -83,13 +87,7 @@ export default function SelectChainIDPanel ({
               <OptionCardClickable
                 key={index}
                 className={selectChainId && selectChainId === item ? 'active' : ''}
-                // onClick={() => {
-                //   setModalOpen(false)
-                //   return (selectChainId && selectChainId === item ? null : handleCurrencySelect(item))
-                // }}
               >
-                {/* {Option(item, selectChainId)} */}
-                {/* <Option curChainId={item} selectChainId={chainId}></Option> */}
                 <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val))}></Option>
               </OptionCardClickable>
             )
@@ -100,7 +98,13 @@ export default function SelectChainIDPanel ({
         selectChainId ? (
           <SelectChainBox
             id={id}
-            onClick={() => setModalOpen(true)}
+            onClick={() => {
+              if (type === 'CURRENT') {
+                toggleNetworkModal()
+              } else {
+                setModalOpen(true)
+              }
+            }}
           >
             {
               label ? (
@@ -118,7 +122,13 @@ export default function SelectChainIDPanel ({
         ) : (
           <SelectChainBox
             id={id}
-            onClick={() => setModalOpen(true)}
+            onClick={() => {
+              if (type === 'CURRENT') {
+                toggleNetworkModal()
+              } else {
+                setModalOpen(true)
+              }
+            }}
           >
             {
               label ? (

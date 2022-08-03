@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
 import { JSBI } from 'anyswap-sdk'
+import { transparentize } from 'polished'
 
 import {useNFT721Callback, useNFT1155Callback, WrapType} from '../../hooks/useNFTCallback'
 import {useApproveCallback, useApprove1155Callback, ApprovalState} from '../../hooks/useNFTApproveCallback'
@@ -42,7 +43,7 @@ const FlexWrapBox = styled.div`
   ${({ theme }) => theme.flexBC};
   flex-wrap: wrap;
   width: 100%;
-  max-width: 360px;
+  // max-width: 360px;
   margin:auto;
 `
 
@@ -56,6 +57,16 @@ const FeeBox = styled.div`
   margin: 5px 0;
   font-size: 12px;
   color: ${({ theme }) => theme.tipColor};
+`
+
+const ContentBody = styled.div`
+  background-color: ${({ theme }) => theme.contentBg};
+  box-shadow: 0 0.25rem 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
+  padding: 60px 50px 60px;
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  border-radius: 20px;
 `
 
 // const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
@@ -109,7 +120,7 @@ export default function CroseNFT () {
   }, [fetchNFTList, chainId])
 
   const tokenList = useMemo(() => {
-    if (nftList) {
+    if (nftList && chainId) {
       const list:any = nftList
       
       const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).nftInitToken))?.toLowerCase()
@@ -119,7 +130,7 @@ export default function CroseNFT () {
       for (const t in list) {
         if (
           (!selectCurrency && urlParams)
-          || selectCurrency.chainId?.toString() !== chainId?.toString()
+          || selectCurrency?.chainId?.toString() !== chainId?.toString()
         ) {
           if (
             t?.toLowerCase() === urlParams
@@ -292,125 +303,128 @@ export default function CroseNFT () {
     <>
       <AppBody>
         <Title
-          title={t('nftrouter')}
+          title={''}
         ></Title>
-        <FlexWrapBox>
-          <SelectChainIDPanel
-            chainList={SUPPORT_CHAIN}
-            selectChainId={chainId}
-            onChainSelect={(value) => {
-              // setSelectChainId(value)
-              setMetamaskNetwork(value)
-            }}
-            label={'From '}
-          />
-          <ArrowRight style={{marginTop: '30px'}} />
-          <SelectChainIDPanel
-            chainList={destChainId}
-            selectChainId={selectChainId}
-            onChainSelect={(value) => {
-              setSelectChainId(value)
-            }}
-            label={'To '}
-          />
+        <ContentBody>
+          <FlexWrapBox>
+            <SelectChainIDPanel
+              chainList={SUPPORT_CHAIN}
+              selectChainId={chainId}
+              onChainSelect={(value) => {
+                // setSelectChainId(value)
+                setMetamaskNetwork(value)
+              }}
+              label={'From '}
+              type="CURRENT"
+            />
+            <ArrowRight style={{marginTop: '30px'}} />
+            <SelectChainIDPanel
+              chainList={destChainId}
+              selectChainId={selectChainId}
+              onChainSelect={(value) => {
+                setSelectChainId(value)
+              }}
+              label={'To '}
+            />
 
-          <SelectCurrencyPanel
-            tokenlist={tokenList}
-            selectCurrency={selectCurrency}
-            selectTokenId={selectTokenId}
-            onSelectCurrency={(value) => {
-              setSelectCurrency(value)
-            }}
-            onSelectTokenId={(value) => {
-              setSelectTokenId(value)
-            }}
-          />
-          {
-            selectCurrency?.nfttype === ERC_TYPE.erc1155 ? (
-              <Input
-                value={inputValue}
-                onUserInput={(value) => {
-                  setInputValue(value)
-                }}
-                style={{marginRight: '0'}}
-              />
-            ) : ''
-          }
-          {
-            selectCurrency && selectTokenId ? (
-              <>
-                <img src={selectTokenId?.image} />
-              </>
-            ) : ''
-          }
-          {
-            fee ? (
-              <FeeBox>
-                {t('fee')}: {fromWei(fee, 18)} {config.getCurChainInfo(chainId).symbol}
-              </FeeBox>
-            ) : ''
-          }
-        </FlexWrapBox>
-        
+            <SelectCurrencyPanel
+              tokenlist={tokenList}
+              selectCurrency={selectCurrency}
+              selectTokenId={selectTokenId}
+              onSelectCurrency={(value) => {
+                setSelectCurrency(value)
+              }}
+              onSelectTokenId={(value) => {
+                setSelectTokenId(value)
+              }}
+            />
+            {
+              selectCurrency?.nfttype === ERC_TYPE.erc1155 ? (
+                <Input
+                  value={inputValue}
+                  onUserInput={(value) => {
+                    setInputValue(value)
+                  }}
+                  style={{marginRight: '0'}}
+                />
+              ) : ''
+            }
+            {
+              selectCurrency && selectTokenId ? (
+                <>
+                  <img src={selectTokenId?.image} />
+                </>
+              ) : ''
+            }
+            {
+              fee ? (
+                <FeeBox>
+                  {t('fee')}: {fromWei(fee, 18)} {config.getCurChainInfo(chainId).symbol}
+                </FeeBox>
+              ) : ''
+            }
+          </FlexWrapBox>
+          
 
-        <BottomGrouping>
-          {
-            !account ? (
-              <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-            ) : (
-              (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) && selectTokenId?.tokenid ? (
-                <ButtonConfirmed
-                  onClick={() => {
+          <BottomGrouping>
+            {
+              !account ? (
+                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+              ) : (
+                (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) && selectTokenId?.tokenid ? (
+                  <ButtonConfirmed
+                    onClick={() => {
+                      onDelay()
+                      if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
+                        if (approveCallback721) approveCallback721().then(() => {
+                          setApprovalSubmitted(true)
+                          onClear()
+                        }).catch(() => {
+                          onClear()
+                        })
+                      } else {
+                        if (approveCallback1155) approveCallback1155().then(() => {
+                          setApprovalSubmitted(true)
+                          onClear()
+                        }).catch(() => {
+                          onClear()
+                        })
+                      }
+                    }}
+                    disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                  >
+                    {approval === ApprovalState.PENDING || approvalSubmitted ? (
+                      <AutoRow gap="6px" justify="center">
+                        {t('Approving')} <Loader stroke="white" />
+                      </AutoRow>
+                    ) : t('Approve') + ' ' + selectCurrency?.symbol + ' ' + selectTokenId?.tokenid}
+                  </ButtonConfirmed>
+                ) : (
+                  <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {
                     onDelay()
                     if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
-                      if (approveCallback721) approveCallback721().then(() => {
-                        setApprovalSubmitted(true)
+                      if (onWrap) onWrap().then(() => {
                         onClear()
+                        setSelectTokenId('')
                       }).catch(() => {
                         onClear()
                       })
-                    } else {
-                      if (approveCallback1155) approveCallback1155().then(() => {
-                        setApprovalSubmitted(true)
+                    } else if (selectCurrency?.nfttype === ERC_TYPE.erc1155) {
+                      if (onWrap1155) onWrap1155().then(() => {
                         onClear()
+                        setSelectTokenId('')
                       }).catch(() => {
                         onClear()
                       })
-                    }
-                  }}
-                  disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                >
-                  {approval === ApprovalState.PENDING || approvalSubmitted ? (
-                    <AutoRow gap="6px" justify="center">
-                      {t('Approving')} <Loader stroke="white" />
-                    </AutoRow>
-                  ) : t('Approve') + ' ' + selectCurrency?.symbol + ' ' + selectTokenId?.tokenid}
-                </ButtonConfirmed>
-              ) : (
-                <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {
-                  onDelay()
-                  if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
-                    if (onWrap) onWrap().then(() => {
-                      onClear()
-                      setSelectTokenId('')
-                    }).catch(() => {
-                      onClear()
-                    })
-                  } else if (selectCurrency?.nfttype === ERC_TYPE.erc1155) {
-                    if (onWrap1155) onWrap1155().then(() => {
-                      onClear()
-                      setSelectTokenId('')
-                    }).catch(() => {
-                      onClear()
-                    })
-                  } 
-                }}>
-                  {btnTxt}
-                </ButtonConfirmed>
+                    } 
+                  }}>
+                    {btnTxt}
+                  </ButtonConfirmed>
+                )
               )
-            )
-          }
-        </BottomGrouping>
+            }
+          </BottomGrouping>
+        </ContentBody>
       </AppBody>
     </>
   )
