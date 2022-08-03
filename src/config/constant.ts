@@ -78,7 +78,7 @@ export const MAIN_COIN_SORT:any = {
   'ETH': {sort: 1},
   'ETHK': {sort: 1},
   'WETH': {sort: 2},
-  'BTC': {sort: 2},
+  'BTC': {sort: 3},
   'WBTC': {sort: 3},
   'WBTC.e': {sort: 3},
   'BTCB': {sort: 3},
