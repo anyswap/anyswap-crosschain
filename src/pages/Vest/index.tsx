@@ -68,8 +68,11 @@ ${({ theme }) => theme.flexSC};
 
 const CreateLock = styled(TokenActionBtn)`
   background:${({ theme }) => theme.primary1};
+  width: 120px;
   color:#fff;
   margin-bottom:10px;
+  padding-left: 12px;
+  padding-right: 12px;
   &.disabled {
     opacity: 0.2;
   }
@@ -904,6 +907,7 @@ export default function Vest () {
             <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
           )
         }
+        <CreateLock to={'/vest/veshare'}>{t('Claim veMULTI')}</CreateLock>
       </VestContent>
 
       <MyBalanceBox>
