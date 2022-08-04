@@ -247,7 +247,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 // }
 
 
-export function useClaimRewardCallback(
+export function useClaimVeshareRewardCallback(
   rewardToken: string | undefined,
   claimReward: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {

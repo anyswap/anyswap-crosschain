@@ -907,7 +907,7 @@ export default function Vest () {
             <CreateLock to={'/vest/create'}>{t('Create Lock')}</CreateLock>
           )
         }
-        <CreateLock to={'/vest/veshare'}>{t('Claim veMULTI')}</CreateLock>
+        {/* <CreateLock to={'/vest/veshare'}>{t('Claim veMULTI')}</CreateLock> */}
       </VestContent>
 
       <MyBalanceBox>

@@ -52,7 +52,7 @@ import {
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN, VESHARE} from './data'
 
 import {
-  useClaimRewardCallback,
+  useClaimVeshareRewardCallback,
   // useWithdrawCallback
 } from './hooks'
 import axios from "axios";
@@ -245,33 +245,29 @@ export default function Vest () {
     }
     return undefined
   }, [chainId])
-  const contract = useVeMULTIContract(useVeMultiToken?.address)
+  const veshareMultiContract = useVeMULTIContract(useVeMultiToken?.address)
   // const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
   const veshareContract = useVeShareContract(useVeshareToken?.address)
   // const ercContract = useTokenContract(useLockToken?.address)
   // const multicallContract = useMulticallContract()
 
 
-  const {execute: onWrap} = useClaimRewardCallback(
+  const {execute: onWrap} = useClaimVeshareRewardCallback(
     useVeMultiRewardToken?.address,
     claimRewardId,
   )
 
   const getVestNFTs = useCallback(async() => {
-    // console.log(contract)
-    // console.log(account)
-    // console.log(veshareContract)
     if (
-      contract
+      veshareMultiContract
       && account
       && useLockToken
       && veshareContract
     ) {
-      // console.log(contract)
       let nftsLength:any = ''
       try {
         // console.log(nftsLength)
-        nftsLength = await contract.balanceOf(account)
+        nftsLength = await veshareMultiContract.balanceOf(account)
         // console.log(nftsLength)
       } catch (error) {
         console.log(error)
@@ -284,11 +280,10 @@ export default function Vest () {
         const nfts = await Promise.all(
           arr.map(async (idx) => {
     
-            const tokenIndex = await contract.tokenOfOwnerByIndex(account, idx)
+            const tokenIndex = await veshareMultiContract.tokenOfOwnerByIndex(account, idx)
             const locked = await veshareContract.tokenInfo(tokenIndex)
             const endTime = locked['endTime'].toNumber()
-            // const lockValue = await contract.balanceOfNFT(tokenIndex)
-            const tokenURI = await contract.tokenURI(tokenIndex)
+            const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
             const {data} = await axios.get(tokenURI)
             // console.log(tokenURI)
             let reward:any
@@ -322,10 +317,10 @@ export default function Vest () {
       }
       
     }
-  }, [contract, account, useLockToken, veshareContract, useRewardToken])
+  }, [veshareMultiContract, account, useLockToken, veshareContract, useRewardToken])
   useEffect(() => {
     getVestNFTs()
-  }, [contract, account, useLockToken, veshareContract, useRewardToken])
+  }, [veshareMultiContract, account, useLockToken, veshareContract, useRewardToken])
   useInterval(getVestNFTs, 1000 * 10)
 
   function ClaimView () {
