@@ -19,6 +19,7 @@ import {useRpcState} from '../rpc/hooks'
 
 import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
+import { isAddress } from '../../utils/isAddress'
 
 // import config from '../../config'
 // import { fromWei } from '../../utils/tools/tools'
@@ -63,11 +64,13 @@ export default function Updater(): null {
       for (let i = 0, len = list.length; i < len; i++) {
         const obj:any = list[i]
         const token:any = obj.address
-        arr.push({
-          dec: obj.decimals,
-          target: token,
-          callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [account]),
-        })
+        if (isAddress(obj.address)) {
+          arr.push({
+            dec: obj.decimals,
+            target: token,
+            callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [account]),
+          })
+        }
       }
     }
     // console.log(arr)

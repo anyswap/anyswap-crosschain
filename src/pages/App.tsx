@@ -29,6 +29,7 @@ const Vest = Lazyload(() => import('./Vest'))
 // import Vest from './Vest'
 import CreateLock from './Vest/create'
 import MangerVest from './Vest/manger'
+import Vemulti from './Vemulti'
 import TestWarpper from './Test'
 
 // import ANYFarming from './Farms/ANYFarming'
@@ -175,6 +176,7 @@ export default function App() {
               <Route exact strict path="/vest" component={() => <Vest duration={ 0 } />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />
               <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
+              <Route exact strict path="/vest/veshare" component={() => <Vemulti />} />
               {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
   
               <Route

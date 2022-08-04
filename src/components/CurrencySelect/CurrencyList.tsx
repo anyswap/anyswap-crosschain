@@ -79,6 +79,9 @@ const Loading = styled.div`
 `
 const MenuItemWrapper = styled(MenuItem)`
   ${({ theme }) => theme.flexBC};
+  &.active: {
+    opacity: 0.5!important;
+  }
 `
 const CurrencyLeft = styled.div`
   ${({ theme }) => theme.flexSC};
@@ -218,13 +221,15 @@ function CurrencyRow({
   // console.log(balance)
   return (
     <MenuItemWrapper
-      style={style}
-      className={`token-item-${key}`}
+      // style={...style, ...{opacity: isSelected ? '0.5' : '1'}}
+      className={`token-item-${key} ` + (isSelected ? 'active' : '')}
       // onClick={() => (isSelected ? null : onSelect())}
-      disabled={isSelected}
+      // disabled={isSelected}
+      style={{opacity: isSelected ? '0.5' : '1', ...style}}
       selected={otherSelected}
     >
-      <CurrencyLeft onClick={() => (isSelected ? null : onSelect())}>
+      {/* <CurrencyLeft onClick={() => (isSelected ? null : onSelect())}> */}
+      <CurrencyLeft onClick={() => (onSelect())}>
         <TokenLogo symbol={currencyObj.symbol} logoUrl={currencyObj?.logoUrl} size={'24px'} style={{marginRight:'10px'}}></TokenLogo>
         <Column>
           <Text title={currencyObj.name} fontWeight={500}>
