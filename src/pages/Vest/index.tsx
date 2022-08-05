@@ -49,6 +49,9 @@ import {
 } from '../Dashboard/styleds'
 
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
+import {
+  useVeshare
+} from './veshare'
 
 import {useClaimRewardCallback, useWithdrawCallback} from './hooks'
 import axios from "axios";
@@ -252,6 +255,8 @@ export default function Vest () {
   const { account, chainId } = useActiveWeb3React()
   const {setUserSelectNetwork} = useUserSelectChainId()
 
+  const {getVeshareNFTs} = useVeshare()
+
   const [vestNFTs, setvestNFTs] = useState<any>()
   const [modalOpen, setModalOpen] = useState(false)
   const [claimRewardId, setClaimRewardId] = useState<any>()
@@ -285,8 +290,6 @@ export default function Vest () {
     if (chainId && REWARD_TOKEN[chainId]) return REWARD_TOKEN[chainId]
     return undefined
   }, [chainId])
-
-  
 
   const useLockToken:any = useMemo(() => {
     // console.log(MULTI_TOKEN)
@@ -501,6 +504,9 @@ export default function Vest () {
   }, [contract, account, useLockToken])
   useEffect(() => {
     getVestNFTs()
+    getVeshareNFTs().then(res => {
+      console.log(res)
+    })
   }, [contract, account, useLockToken])
   useInterval(getVestNFTs, 1000 * 10)
 
