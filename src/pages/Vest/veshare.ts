@@ -154,8 +154,9 @@ export function useVeshare () {
                 id: tokenIndex?.toString(),
                 lockEnds: endTime,
                 lockStart: locked['startTime'].toNumber(),
-                share: BigAmount.format(useVeMultiToken.decimals, locked['share'].toString()).toExact(),
-                reward: reward ? BigAmount.format(useRewardToken.decimals, reward?.toString()).toExact() : 0
+                lockAmount: BigAmount.format(useVeMultiToken.decimals, locked['share'].toString()).toExact(),
+                reward: reward ? BigAmount.format(useRewardToken.decimals, reward?.toString()).toExact() : 0,
+                type: 'VESHARE'
               }
             })
           )

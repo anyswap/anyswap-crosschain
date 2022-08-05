@@ -258,6 +258,7 @@ export default function Vest () {
   const {getVeshareNFTs} = useVeshare()
 
   const [vestNFTs, setvestNFTs] = useState<any>()
+  const [veshareNFTs, setVeshareNFTs] = useState<any>()
   const [modalOpen, setModalOpen] = useState(false)
   const [claimRewardId, setClaimRewardId] = useState<any>()
   const [loadingStatus, setLoadingStatus] = useState<any>(0)
@@ -317,6 +318,17 @@ export default function Vest () {
     return true
   }, [useLockToken])
 
+  const nftList = useMemo(() => {
+    const arr = []
+    if (vestNFTs) {
+      arr.push(...vestNFTs)
+    }
+    if (veshareNFTs) {
+      arr.push(...veshareNFTs)
+    }
+    return arr
+  }, [veshareNFTs, vestNFTs])
+
   const contract = useVeMULTIContract(useVeMultiToken?.address)
   const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
   const ercContract = useTokenContract(useLockToken?.address)
@@ -357,12 +369,6 @@ export default function Vest () {
             // console.log(2)
             totalReward = totalReward.add(data.reward)
           }
-          // console.log(totalReward)
-          // console.log(data.reward)
-          // console.log(data)
-          // console.log('endEpoch',data.endEpoch.toString())
-          // console.log('reward',data.reward.toString())
-          // console.log('startEpoch',data.startEpoch.toString())
           arr.push({
             startEpoch: data.startEpoch.toString(),
             endEpoch: data.endEpoch.toString(),
@@ -396,40 +402,11 @@ export default function Vest () {
           }
         }
       }
-      // console.log(arr)
-      // console.log(arr1)
-      // console.log(totalReward)
-      // console.log(rewardEpochIdList.current)
-      // setLoadingStatus(1)
-      // setRewradNumber('res')
-      // setEpoch([])
       return {list: arr1, totalReward: totalReward?.toString()}
     }
     return undefined
   }, [rewardContract, epochId])
 
-  // useEffect(() => {
-  //   if (multicallContract && useVeMultiRewardToken?.address) {
-
-  //     multicallContract.aggregate([
-  //       [useVeMultiRewardToken?.address, 
-  //         VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,0,30])],
-  //       [useVeMultiRewardToken?.address, 
-  //       VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,240,270])]
-  //     ]
-  //     ).then((res:any) => {
-  //       console.log(res)
-  //       console.log(ercContract)
-  //     })
-  //     // multicallContract.aggregate([
-  //     //   [useVeMultiRewardToken?.address, 
-  //     //   VE_MULTI_REWARD_INTERFACE?.encodeFunctionData('pendingReward', [2,0,30])]
-  //     // ]
-  //     // ).then((res:any) => {
-  //     //   console.log(res)
-  //     // })
-  //   }
-  // }, [multicallContract, useVeMultiRewardToken])
   const getAllRewards = useCallback(async() => {
     if (
       epochId
@@ -491,6 +468,7 @@ export default function Vest () {
               lockEnds: locked.end.toNumber(),
               lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
               lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
+              type: 'VEMULTI'
             }
           })
         )
@@ -506,6 +484,7 @@ export default function Vest () {
     getVestNFTs()
     getVeshareNFTs().then(res => {
       console.log(res)
+      setVeshareNFTs(res)
     })
   }, [contract, account, useLockToken])
   useInterval(getVestNFTs, 1000 * 10)
@@ -930,7 +909,8 @@ export default function Vest () {
           </DBThead>
           <DBTbody>
             {
-              vestNFTs && vestNFTs.map((item:any, index:any) => {
+              // vestNFTs && vestNFTs.map((item:any, index:any) => {
+              nftList.map((item:any, index:any) => {
                 return <tr key={index}>
                   <DBTd>
                     <TokenTableCoinBox>
@@ -938,11 +918,6 @@ export default function Vest () {
                         setNftLogo(item?.image)
                         setNftLogoModel(true)
                       }} style={{cursor: 'pointer'}}>
-                        {/* <TokenLogo
-                          symbol={'MULTI'}
-                          // logoUrl={item.logoUrl}
-                          size={'1.625rem'}
-                        ></TokenLogo> */}
                         <img src={item?.image} />
                       </TokenTableLogo>
                       <TokenNameBox>
@@ -951,18 +926,18 @@ export default function Vest () {
                       </TokenNameBox>
                     </TokenTableCoinBox>
                   </DBTd>
-                  <DBTd className="l">{thousandBit(item.lockAmount, 2)}</DBTd>
-                  <DBTd className="l">{thousandBit(item.lockValue, 2)}</DBTd>
-                  <DBTd className="c">{moment.unix(item.lockEnds).format('YYYY-MM-DD')}</DBTd>
-                  <DBTd className="l">{getUserAPR(item.lockValue, item.lockAmount)}</DBTd>
+                  <DBTd className="l">{item.lockAmount ? thousandBit(item.lockAmount, 2) : '-'}</DBTd>
+                  <DBTd className="l">{item.lockValue ? thousandBit(item.lockValue, 2) : '-'}</DBTd>
+                  <DBTd className="c">{item.lockEnds ? moment.unix(item.lockEnds).format('YYYY-MM-DD') : ''}</DBTd>
+                  <DBTd className="l">{item.type === 'VEMULTI' ? getUserAPR(item.lockValue, item.lockAmount) : ''}</DBTd>
                   <DBTd className="c" width={'260px'}>
                     <Flex>
-                      <TokenActionBtn2 to={"/vest/manger?id=" + item.index}>Manage</TokenActionBtn2>
+                      <TokenActionBtn2 className={item.type === 'VESHARE' ? 'disabled' : ''} to={item.type === 'VESHARE' ? "/vest" : "/vest/manger?id=" + item.index}>Manage</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
                         setClaimRewardId(item.id)
                         setModalOpen(true)
                       }}>{t('Claim')}</TokenActionBtn1>
-                      <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled} onClick={() => {
+                      <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled || item.type === 'VESHARE'} onClick={() => {
                         // console.log(onWithdrarWrap)
                         // const ri = rewardList[item.id]
                         const rewardCount = useVeMultiToken?.decimals && rewardList?.[item.id]?.totalReward? BigAmount.format(useVeMultiToken.decimals, rewardList[item.id].totalReward).toExact() : ''
