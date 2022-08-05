@@ -109,7 +109,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.4.14'
+export const version = '0.4.15'
 export const timeout = 1000 * 60 * 30
 
 export const VALID_BALANCE = true

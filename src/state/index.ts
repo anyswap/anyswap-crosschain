@@ -16,7 +16,7 @@ import rpc from './rpc/reducer'
 
 import xlm from '../hooks/stellar/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc']
 
 const store = configureStore({
   reducer: {
@@ -33,8 +33,8 @@ const store = configureStore({
     rpc,
     xlm
   },
-  middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
-  preloadedState: load({ states: PERSISTED_KEYS })
+  middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS, namespace: 'multichain' })],
+  preloadedState: load({ states: PERSISTED_KEYS, namespace: 'multichain' })
 })
 
 store.dispatch(updateVersion())

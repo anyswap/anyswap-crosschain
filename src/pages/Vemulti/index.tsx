@@ -294,9 +294,6 @@ export default function Vest () {
               
               console.log(error)
             }
-            // console.log(reward.toString())
-            // console.log(locked)
-            // probably do some decimals math before returning info. Maybe get more info. I don't know what it returns.
             return {
               ...data,
               index: idx,
@@ -305,8 +302,6 @@ export default function Vest () {
               lockStart: locked['startTime'].toNumber(),
               share: BigAmount.format(useVeMultiToken.decimals, locked['share'].toString()).toExact(),
               reward: reward ? BigAmount.format(useRewardToken.decimals, reward?.toString()).toExact() : 0
-              // lockAmount: BigAmount.format(useLockToken.decimals, locked.amount).toExact(),
-              // lockValue: BigAmount.format(useVeMultiToken.decimals, lockValue).toExact(),
             }
           })
         )
