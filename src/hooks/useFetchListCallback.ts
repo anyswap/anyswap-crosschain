@@ -98,50 +98,61 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
       if (!chainId) return
       
       return getVersion().then(async(res:any) => {
-        let curTokenList:any = {}
-        if (isSupportIndexedDB) {
-          curTokenList = await getTokenlist(chainId)
-        } else {
-          curTokenList = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
-        }
+        // let curTokenList:any = {}
+        const curDbTokenList:any = await getTokenlist(chainId)
+        const curLSTokenList:any = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
+        const localTokenVersion = curDbTokenList?.version ?? curLSTokenList?.version
+        // if (isSupportIndexedDB) {
+        // } else {
+        //   curTokenList = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
+        // }
   
-        let curPoolList:any = {}
-        if (isSupportIndexedDB) {
-          curPoolList = await getPoollist(chainId)
-        } else {
-          curPoolList = poollists && poollists[chainId] ? poollists[chainId] : {}
-        }
+        // let curPoolList:any = {}
+        const curDbPoolList:any = await getPoollist(chainId)
+        const curLSPoolList:any = poollists && poollists[chainId] ? poollists[chainId] : {}
+        const localPoolVersion = curDbPoolList?.version ?? curLSPoolList?.version
+        // if (isSupportIndexedDB) {
+        //   curPoolList = await getPoollist(chainId)
+        // } else {
+        //   curPoolList = poollists && poollists[chainId] ? poollists[chainId] : {}
+        // }
         
         // console.log(res)
         if (res.msg === 'Success') {
           const serverVersion = res.data
           if (
             !serverVersion
-            || !curTokenList?.version
-            || curTokenList.version !== serverVersion
+            || !localTokenVersion
+            || localTokenVersion !== serverVersion
           ) {
             getServerTokenlist(chainId).then(res => {
               if (res) {
-                if (isSupportIndexedDB) {
-                  setTokenlist(chainId, res, serverVersion)
-                } else {
-                  dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
-                }
+                // if (isSupportIndexedDB) {
+                //   setTokenlist(chainId, res, serverVersion)
+                // } else {
+                //   dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
+                // }
+                setTokenlist(chainId, res, serverVersion)
+                dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
                 dispatch(updateTokenlistTime({}))
               }
             })
           }
           if (
-            !curPoolList?.version || curPoolList.version !== serverVersion
+            !serverVersion
+            || !localPoolVersion
+            || localPoolVersion !== serverVersion
           ) {
             getServerPoolTokenlist(chainId).then(res => {
               // console.log(res)
               if (res) {
-                if (isSupportIndexedDB) {
-                  setPoollist(chainId, res, serverVersion)
-                } else {
-                  dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
-                }
+                // if (isSupportIndexedDB) {
+                //   setPoollist(chainId, res, serverVersion)
+                // } else {
+                //   dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
+                // }
+                setPoollist(chainId, res, serverVersion)
+                dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
                 dispatch(updatePoollistTime({}))
               }
             })

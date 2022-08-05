@@ -8,10 +8,14 @@ const TOKENPATH = 'token-list-table'
 const POOLPATH = 'pool-list-table'
 const TOKENKEY = 'chainId'
 
+// const READWRITE = 'versionchange'
+const READWRITE = 'readwrite'
+
 
 let db:any = {}
 // let objectStore: any = {}
-const tokenlistReauest = w.indexedDB.open(TOKENLIST, 6);
+const tokenlistReauest = w.indexedDB.open(TOKENLIST, 8);
+console.log(tokenlistReauest)
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
   console.log("Why didn't you allow my web app to use IndexedDB?!");
@@ -46,7 +50,7 @@ function getDBdata (path:any, key:any) {
     }
     try {
       // const transaction = db.transaction([path], "readwrite")
-      const transaction = db.transaction([TOKENPATH, POOLPATH], "readwrite")
+      const transaction = db.transaction([TOKENPATH, POOLPATH], READWRITE)
       const objectStore = transaction.objectStore(path);
       const request = objectStore.get(key.toString());
       request.onerror = function(event:any) {
@@ -72,18 +76,31 @@ function getDBdata (path:any, key:any) {
 }
 
 function setDBdata (path:any, data:any) {
-  const request = db.transaction([path], 'readwrite') //readwrite表示有读写权限
-    .objectStore(path)
-    // .add(data) //新增数据
-    .put(data) //更新数据
-  request.onsuccess = function () {
-    // console.log(event);
-    console.log(path + '数据写入成功');
-  };
-  request.onerror = function (event:any) {
-    console.log(event);
-    console.log(path + '数据写入失败');
-  }
+  
+  return new Promise(resolve => {
+    if (!db?.transaction) {
+      console.log(333)
+      // console.log(key)
+      console.log(db)
+      console.log(db?.transaction)
+      resolve('LOADING')
+      return
+    }
+    const request = db.transaction([TOKENPATH, POOLPATH], READWRITE) //readwrite表示有读写权限
+      .objectStore(path)
+      // .add(data) //新增数据
+      .put(data) //更新数据
+    request.onsuccess = function () {
+      // console.log(event);
+      console.log(path + '数据写入成功');
+      resolve('Success')
+    };
+    request.onerror = function (event:any) {
+      console.log(event);
+      console.log(path + '数据写入失败');
+      resolve('Error')
+    }
+  })
 }
 
 export function getTokenlist (chainId:any) {

@@ -8,11 +8,11 @@ w.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB 
 w.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
 w.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
-const isSupportIndexedDB = false
-// let isSupportIndexedDB = true
-// if (!w.indexedDB) {
-//   isSupportIndexedDB = false
-// }
+// const isSupportIndexedDB = false
+let isSupportIndexedDB = true
+if (!w.indexedDB) {
+  isSupportIndexedDB = false
+}
 
 const TOKENLIST = 'token-list'
 const POOLLIST = 'pool-list'

@@ -243,20 +243,6 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   }, [getCurTokenlist, chainId, updateTokenlistTime])
 
   return tokenlist
-  // const init = {}
-  // return useMemo(() => {
-  //   if (!key || !chainId) return init
-  //   const current = lists[key]?.[chainId]?.tokenList
-  //   // console.log(current)
-  //   if (!current) return init
-  //   try {
-  //     // return listsMergeToTokenMap(current)
-  //     return current
-  //   } catch (error) {
-  //     console.error('Could not show token list due to error', error)
-  //     return init
-  //   }
-  // }, [lists, chainId])
 }
 
 
