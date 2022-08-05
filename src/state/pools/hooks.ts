@@ -9,13 +9,13 @@ import {getPoollist, isSupportIndexedDB} from '../../utils/indexedDB'
 // import { JSBI } from 'anyswap-sdk'
 // import axios from 'axios'
 
-export function usePoolsState(): any {
-  const poolLiquidity:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolLiquidity)
-  // console.log(poolLiquidity)
-  if (!poolLiquidity) return {}
+// export function usePoolsState(): any {
+//   const poolLiquidity:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolLiquidity)
+//   // console.log(poolLiquidity)
+//   if (!poolLiquidity) return {}
 
-  return poolLiquidity
-}
+//   return poolLiquidity
+// }
 
 // export function usePoolListState(): any {
 //   const poolList:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)

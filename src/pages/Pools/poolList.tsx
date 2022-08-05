@@ -20,8 +20,8 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 // import { useBridgeTokenList } from '../../state/lists/hooks'
 import { usePoolListState } from '../../state/pools/hooks'
 // import { useUserSelectChainId } from '../../state/user/hooks'
-import {usePoolsState} from '../../state/pools/hooks'
-import {poolLiquidity} from '../../state/pools/actions'
+// import {usePoolsState} from '../../state/pools/hooks'
+// import {poolLiquidity} from '../../state/pools/actions'
 import AppBody from '../AppBody'
 
 import {getGroupTotalsupply} from '../../utils/bridge/getBalanceV2'
@@ -206,7 +206,7 @@ export default function PoolLists ({
   // const allTokensList:any = useBridgeTokenList(BRIDGETYPE, chainId)
   const allTokensList:any = usePoolListState(chainId)
   // const toggleNetworkModal = useToggleNetworkModal()
-  const poolInfo = usePoolsState()
+  // const poolInfo = usePoolsState()
 
   const {getPoolsData} = usePoolDatas()
   // console.log(chainId)
@@ -214,6 +214,7 @@ export default function PoolLists ({
 
   const [poolData, setPoolData] = useState<any>()
   const [poolList, setPoolList] = useState<any>()
+  const [poolInfo, setPoolInfo] = useState<any>()
   // const [count, setCount] = useState<number>(0)
   const [intervalCount, setIntervalCount] = useState<number>(0)
   
@@ -224,7 +225,8 @@ export default function PoolLists ({
     axios.get(`${config.bridgeApi}/data/router/v2/pools`).then(res => {
       const {status, data} = res
       if (status === 200) {
-        dispatch(poolLiquidity({poolLiquidity: data}))
+        // dispatch(poolLiquidity({poolLiquidity: data}))
+        setPoolInfo(data)
       }
     })
   }, [dispatch])

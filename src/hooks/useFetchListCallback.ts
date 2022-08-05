@@ -111,6 +111,9 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
         const curDbPoolList:any = await getPoollist(chainId)
         const curLSPoolList:any = poollists && poollists[chainId] ? poollists[chainId] : {}
         const localPoolVersion = curDbPoolList?.version ?? curLSPoolList?.version
+        // console.log(curDbPoolList?.version)
+        // console.log(curLSPoolList?.version)
+        // console.log(localPoolVersion)
         // if (isSupportIndexedDB) {
         //   curPoolList = await getPoollist(chainId)
         // } else {
@@ -127,11 +130,6 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           ) {
             getServerTokenlist(chainId).then(res => {
               if (res) {
-                // if (isSupportIndexedDB) {
-                //   setTokenlist(chainId, res, serverVersion)
-                // } else {
-                //   dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
-                // }
                 setTokenlist(chainId, res, serverVersion)
                 dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
                 dispatch(updateTokenlistTime({}))
@@ -146,11 +144,6 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
             getServerPoolTokenlist(chainId).then(res => {
               // console.log(res)
               if (res) {
-                // if (isSupportIndexedDB) {
-                //   setPoollist(chainId, res, serverVersion)
-                // } else {
-                //   dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
-                // }
                 setPoollist(chainId, res, serverVersion)
                 dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
                 dispatch(updatePoollistTime({}))
