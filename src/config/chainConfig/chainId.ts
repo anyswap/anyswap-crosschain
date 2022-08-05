@@ -79,4 +79,6 @@ export enum ChainId {
   XLM = 'XLM',
   XLM_TEST = 'XLM_TEST',
   ONT = '58',
+  MINTME = '24734',
+  BCH = '10000',
 }
