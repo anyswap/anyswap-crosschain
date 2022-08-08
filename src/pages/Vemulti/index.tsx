@@ -322,9 +322,9 @@ export default function Vest () {
     const totalReward = claimRewardId?.reward && useRewardToken ? thousandBit(claimRewardId?.reward,2) : ''
     return (
       <>
-      <LogoBox>
-        <TokenLogo symbol={useRewardToken?.symbol} size={'3rem'}></TokenLogo>
-      </LogoBox>
+        <LogoBox>
+          <TokenLogo symbol={useRewardToken?.symbol} size={'3rem'}></TokenLogo>
+        </LogoBox>
         <RewardView>{totalReward} {useRewardToken?.symbol}</RewardView>
         <BottomGrouping>
           <ButtonPrimary disabled={disabled} onClick={() => {

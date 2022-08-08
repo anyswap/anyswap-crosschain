@@ -110,6 +110,7 @@ export function useVeshare () {
     if (chainId && REWARD_TOKEN[chainId]) return REWARD_TOKEN[chainId]
     return undefined
   }, [chainId])
+  
   const veshareMultiContract = useVeMULTIContract(useVeMultiToken?.address)
   // const rewardContract = useVeMULTIRewardContract(useVeMultiRewardToken?.address)
   const veshareContract = useVeShareContract(useVeshareToken?.address)
@@ -177,15 +178,19 @@ export function useVeshare () {
   // }, [veshareMultiContract, account, useLockToken, veshareContract, useRewardToken])
   // useInterval(getVestNFTs, 1000 * 10)
   return {
-    getVeshareNFTs
+    getVeshareNFTs,
+    useVeshareRewardToken: useRewardToken
   }
 }
 
 export function useClaimVeshareRewardCallback(
-  rewardToken: string | undefined,
   claimReward: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { chainId } = useActiveWeb3React()
+  const rewardToken = useMemo(() => {
+    if (chainId && VESHARE[chainId]) return VESHARE[chainId].address
+    return undefined
+  }, [chainId])
   const contract = useVeShareContract(rewardToken)
   // const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()

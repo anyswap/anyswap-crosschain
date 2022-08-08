@@ -50,7 +50,8 @@ import {
 
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 import {
-  useVeshare
+  useVeshare,
+  useClaimVeshareRewardCallback
 } from './veshare'
 
 import {useClaimRewardCallback, useWithdrawCallback} from './hooks'
@@ -255,7 +256,7 @@ export default function Vest () {
   const { account, chainId } = useActiveWeb3React()
   const {setUserSelectNetwork} = useUserSelectChainId()
 
-  const {getVeshareNFTs} = useVeshare()
+  const {getVeshareNFTs, useVeshareRewardToken} = useVeshare()
 
   const [vestNFTs, setvestNFTs] = useState<any>()
   const [veshareNFTs, setVeshareNFTs] = useState<any>()
@@ -274,6 +275,7 @@ export default function Vest () {
   const [price, setPrice] = useState<any>(12)
   const [nftLogoModel, setNftLogoModel] = useState<any>(false)
   const [nftLogo, setNftLogo] = useState<any>()
+  const [totalAPR, setTotalAPR] = useState<any>()
 
   const [disabled, setDisabled] = useState(false)
   // const viewDatas = useRef<any>({})
@@ -303,9 +305,11 @@ export default function Vest () {
   // console.log(useLockToken)
 
   const rewardInfo = useMemo(() => {
-    if (claimRewardId && rewardList && rewardList[claimRewardId]) {
+    if (
+      claimRewardId?.id && rewardList && rewardList[claimRewardId?.id]
+    ) {
       setLoadingStatus(1)
-      return {...rewardList[claimRewardId], id: claimRewardId}
+      return {...rewardList[claimRewardId?.id], id: claimRewardId?.id}
     }
     setLoadingStatus(0)
     return undefined
@@ -340,6 +344,8 @@ export default function Vest () {
     rewardInfo?.id,
     rewardInfo?.list
   )
+
+  const {execute: onVeshareWrap} = useClaimVeshareRewardCallback(claimRewardId)
 
   const {execute: onWithdrarWrap} = useWithdrawCallback(
     useVeMultiToken?.address
@@ -479,15 +485,30 @@ export default function Vest () {
       }
       
     }
-  }, [contract, account, useLockToken])
-  useEffect(() => {
-    getVestNFTs()
+    
     getVeshareNFTs().then(res => {
       console.log(res)
       setVeshareNFTs(res)
     })
   }, [contract, account, useLockToken])
-  useInterval(getVestNFTs, 1000 * 10)
+
+  const getAllNft = useCallback(() => {
+    getVestNFTs()
+    getVeshareNFTs().then(res => {
+      console.log(res)
+      setVeshareNFTs(res)
+    })
+  }, [getVeshareNFTs, getVestNFTs])
+
+  useEffect(() => {
+    // getVestNFTs()
+    // getVeshareNFTs().then(res => {
+    //   console.log(res)
+    //   setVeshareNFTs(res)
+    // })
+    getAllNft()
+  }, [contract, account, useLockToken])
+  useInterval(getAllNft, 1000 * 10)
 
   const getCurrentEpochId = useCallback(() => {
     console.log(rewardContract)
@@ -645,6 +666,7 @@ export default function Vest () {
           loading: false,
           question: 'Assumes 1 veMULTI = 1 MULTI (1 MULTI locked 4 years)'
         })
+        setTotalAPR(apr.toSignificant(2) + '%')
       } else {
         list.push({
           name: 'APR',
@@ -752,6 +774,30 @@ export default function Vest () {
   }
 
   function ClaimView (stutus:number) {
+    if (claimRewardId?.type === 'VESHARE') {
+      const totalReward = claimRewardId?.reward && useVeshareRewardToken ? thousandBit(claimRewardId?.reward,2) : ''
+      return (
+        <>
+          <LogoBox>
+            <TokenLogo symbol={useVeshareRewardToken?.symbol} size={'3rem'}></TokenLogo>
+          </LogoBox>
+          <RewardView>{totalReward} {useVeshareRewardToken?.symbol}</RewardView>
+          <BottomGrouping>
+            <ButtonPrimary disabled={disabled} onClick={() => {
+              if (onVeshareWrap) {
+                setDisabled(true)
+                onVeshareWrap().then(() => {
+                  setDisabled(false)
+                  setModalOpen(false)
+                })
+              }
+            }}>
+              {t('Claim Reward')}
+            </ButtonPrimary>
+          </BottomGrouping>
+        </>
+      )
+    }
     if (stutus === 0) {
       return (
         <>
@@ -929,31 +975,19 @@ export default function Vest () {
                   <DBTd className="l">{item.lockAmount ? thousandBit(item.lockAmount, 2) : '-'}</DBTd>
                   <DBTd className="l">{item.lockValue ? thousandBit(item.lockValue, 2) : '-'}</DBTd>
                   <DBTd className="c">{item.lockEnds ? moment.unix(item.lockEnds).format('YYYY-MM-DD') : ''}</DBTd>
-                  <DBTd className="l">{item.type === 'VEMULTI' ? getUserAPR(item.lockValue, item.lockAmount) : ''}</DBTd>
+                  <DBTd className="l">{item.type === 'VEMULTI' ? getUserAPR(item.lockValue, item.lockAmount) : (totalAPR ? totalAPR : '-')}</DBTd>
                   <DBTd className="c" width={'260px'}>
                     <Flex>
                       <TokenActionBtn2 className={item.type === 'VESHARE' ? 'disabled' : ''} to={item.type === 'VESHARE' ? "/vest" : "/vest/manger?id=" + item.index}>Manage</TokenActionBtn2>
                       <TokenActionBtn1 onClick={() => {
-                        setClaimRewardId(item.id)
+                        setClaimRewardId(item)
                         setModalOpen(true)
                       }}>{t('Claim')}</TokenActionBtn1>
                       <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled || item.type === 'VESHARE'} onClick={() => {
-                        // console.log(onWithdrarWrap)
-                        // const ri = rewardList[item.id]
                         const rewardCount = useVeMultiToken?.decimals && rewardList?.[item.id]?.totalReward? BigAmount.format(useVeMultiToken.decimals, rewardList[item.id].totalReward).toExact() : ''
-                        // if (
-                        //   !rewardList
-                        //   || !rewardList[item.id]
-                        //   || !rewardList[item.id].list
-                        //   || rewardList[item.id].list.length > 0
-                        // ) {
                         if (rewardCount && Number(rewardCount) >= 0.001) {
                           console.log(rewardCount)
                           alert('Please claim the reward first')
-                          // if (rewardCount && Number(rewardCount) >= 10) {
-                          // } else {
-                          //   alert('Loading')
-                          // }
                         } else if (parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)) {
                           alert('Loading')
                         } else {
