@@ -39,12 +39,12 @@ function useChain (data:any) {
   }
   return list
 }
-export const BASE_INFO = {
-  name: 'Multichain',
-  symbol: 'MULTI',
-  decimals: 18,
-  label: 'multichain'
-}
+// export const BASE_INFO = {
+//   name: 'Multichain',
+//   symbol: 'MULTI',
+//   decimals: 18,
+//   label: 'multichain'
+// }
 
 export const VENFT_BASE_INFO = {
   name: 'veMULTI NFT',
@@ -53,19 +53,19 @@ export const VENFT_BASE_INFO = {
 }
 
 
-export const veMULTI:any = useChain({
+export const veSHARE:any = useChain({
   [ChainId.BNB_TEST]: {
     ...VENFT_BASE_INFO,
     address: '0x2aF78D056F2D32C130D791091333575DF592Bb06'
   },
 })
 
-export const MULTI_TOKEN:any = useChain({
-  [ChainId.BNB_TEST]: {
-    ...BASE_INFO,
-    address: '0x89Ea10f213008e4e26483A2d2A6b6852E4997A49'
-  },
-})
+// export const MULTI_TOKEN:any = useChain({
+//   [ChainId.BNB_TEST]: {
+//     ...BASE_INFO,
+//     address: '0x89Ea10f213008e4e26483A2d2A6b6852E4997A49'
+//   },
+// })
 
 export const REWARD_TOKEN:any = useChain({
   [ChainId.BNB_TEST]: {
@@ -76,11 +76,11 @@ export const REWARD_TOKEN:any = useChain({
   },
 })
 
-export const REWARD:any = useChain({
-  [ChainId.BNB_TEST]: {
-    address: '0xbAD169597E88404021435b743E809fC640b526f5'
-  },
-})
+// export const REWARD:any = useChain({
+//   [ChainId.BNB_TEST]: {
+//     address: '0xbAD169597E88404021435b743E809fC640b526f5'
+//   },
+// })
 
 export const VESHARE:any = useChain({
   [ChainId.BNB_TEST]: {
@@ -90,16 +90,16 @@ export const VESHARE:any = useChain({
 
 export function useVeshare () {
   const { account, chainId } = useActiveWeb3React()
-  const useLockToken:any = useMemo(() => {
-    // console.log(MULTI_TOKEN)
-    // console.log(chainId)
-    if (chainId && MULTI_TOKEN[chainId]) {
-      return MULTI_TOKEN[chainId]
-    }
-    return undefined
-  }, [chainId])
+  // const useLockToken:any = useMemo(() => {
+  //   // console.log(MULTI_TOKEN)
+  //   // console.log(chainId)
+  //   if (chainId && MULTI_TOKEN[chainId]) {
+  //     return MULTI_TOKEN[chainId]
+  //   }
+  //   return undefined
+  // }, [chainId])
   const useVeMultiToken = useMemo(() => {
-    if (chainId && veMULTI[chainId]) return veMULTI[chainId]
+    if (chainId && veSHARE[chainId]) return veSHARE[chainId]
     return undefined
   }, [chainId])
   const useVeshareToken = useMemo(() => {
@@ -120,7 +120,6 @@ export function useVeshare () {
       if (
         veshareMultiContract
         && account
-        && useLockToken
         && veshareContract
       ) {
         let nftsLength:any = ''
@@ -172,7 +171,7 @@ export function useVeshare () {
         resolve([])
       }
     })
-  }, [veshareMultiContract, account, useLockToken, veshareContract, useRewardToken])
+  }, [veshareMultiContract, account, veshareContract, useRewardToken])
   // useEffect(() => {
   //   getVestNFTs()
   // }, [veshareMultiContract, account, useLockToken, veshareContract, useRewardToken])

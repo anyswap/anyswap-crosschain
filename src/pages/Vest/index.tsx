@@ -51,7 +51,8 @@ import {
 import {veMULTI,MULTI_TOKEN,REWARD,REWARD_TOKEN} from './data'
 import {
   useVeshare,
-  useClaimVeshareRewardCallback
+  useClaimVeshareRewardCallback,
+  veSHARE
 } from './veshare'
 
 import {useClaimRewardCallback, useWithdrawCallback} from './hooks'
@@ -279,6 +280,21 @@ export default function Vest () {
 
   const [disabled, setDisabled] = useState(false)
   // const viewDatas = useRef<any>({})
+
+  const supportChainList = useMemo(() => {
+    const arr:any = []
+    for (const c in veSHARE) {
+      if (arr.includes(c)) continue
+      arr.push(c)
+    }
+    for (const c in veMULTI) {
+      if (arr.includes(c)) continue
+      arr.push(c)
+    }
+    return arr
+  }, [veSHARE, veMULTI])
+  // console.log(supportChainList)
+
   const useVeMultiToken = useMemo(() => {
     if (chainId && veMULTI[chainId]) return veMULTI[chainId]
     return undefined
@@ -315,12 +331,12 @@ export default function Vest () {
     return undefined
   }, [claimRewardId, rewardList])
 
-  const isSupport = useMemo(() => {
-    if (!useLockToken) {
-      return false
-    }
-    return true
-  }, [useLockToken])
+  // const isSupport = useMemo(() => {
+  //   if (!useLockToken) {
+  //     return false
+  //   }
+  //   return true
+  // }, [useLockToken])
 
   const nftList = useMemo(() => {
     const arr = []
@@ -487,7 +503,7 @@ export default function Vest () {
     }
     
     getVeshareNFTs().then(res => {
-      console.log(res)
+      // console.log(res)
       setVeshareNFTs(res)
     })
   }, [contract, account, useLockToken])
@@ -495,19 +511,15 @@ export default function Vest () {
   const getAllNft = useCallback(() => {
     getVestNFTs()
     getVeshareNFTs().then(res => {
-      console.log(res)
+      // console.log(res)
       setVeshareNFTs(res)
     })
   }, [getVeshareNFTs, getVestNFTs])
 
   useEffect(() => {
-    // getVestNFTs()
-    // getVeshareNFTs().then(res => {
-    //   console.log(res)
-    //   setVeshareNFTs(res)
-    // })
     getAllNft()
   }, [contract, account, useLockToken])
+  
   useInterval(getAllNft, 1000 * 10)
 
   const getCurrentEpochId = useCallback(() => {
@@ -776,6 +788,14 @@ export default function Vest () {
   function ClaimView (stutus:number) {
     if (claimRewardId?.type === 'VESHARE') {
       const totalReward = claimRewardId?.reward && useVeshareRewardToken ? thousandBit(claimRewardId?.reward,2) : ''
+      console.log(totalReward)
+      if (!totalReward || !Number(totalReward)) {
+        return (
+          <>
+            <RewardLoading>{t('No reward.')}</RewardLoading>
+          </>
+        )
+      }
       return (
         <>
           <LogoBox>
@@ -913,10 +933,10 @@ export default function Vest () {
       </DataViews>
       <VestContent>
         {
-          !isSupport ? (
+          (!chainId || !supportChainList.includes(chainId.toString())) ? (
             <>
               {
-                Object.keys(veMULTI).map((item, index) => {
+                supportChainList.map((item:any, index:any) => {
                   return <CreateLock1 key={index} onClick={() => {
                     if (setUserSelectNetwork) {
                       setUserSelectNetwork({

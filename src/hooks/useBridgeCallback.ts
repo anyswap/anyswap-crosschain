@@ -101,11 +101,11 @@ export function useBridgeCallback(
           ? async () => {
               const results:any = {}
               try {
-                console.log(toAddress)
-                console.log(routerToken)
-                console.log(inputToken)
-                console.log(toChainID)
-                console.log(destConfig?.chainId)
+                // console.log(toAddress)
+                // console.log(routerToken)
+                // console.log(inputToken)
+                // console.log(toChainID)
+                // console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
                   inputToken,
@@ -123,7 +123,19 @@ export function useBridgeCallback(
                   routerToken: routerToken,
                   token: inputCurrency?.address,
                   logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity
+                  isLiquidity: isLiquidity,
+                  fromInfo: {
+                    symbol: inputCurrency?.symbol,
+                    name: inputCurrency?.name,
+                    decimals: inputCurrency?.decimals,
+                    address: inputCurrency?.address,
+                  },
+                  toInfo: {
+                    symbol: destConfig?.symbol,
+                    name: destConfig?.name,
+                    decimals: destConfig?.decimals,
+                    address: destConfig?.address,
+                  },
                 })
                 // registerSwap(txReceipt.hash, chainId)
                 if (txReceipt?.hash && account) {
