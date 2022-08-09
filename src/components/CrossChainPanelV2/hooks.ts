@@ -210,10 +210,6 @@ export function useDestCurrency (
   const [initDestCurrency, setInitDestCurrency] = useState<any>('')
   const [initDestCurrencyList, setInitDestCurrencyList] = useState<any>({})
   useEffect(() => {
-    // let initDestCurrency = '',
-    //     initDestCurrencyList = ''
-        // console.log('selectChain', selectChain)
-        // console.log(selectDestCurrencyList)
     if (selectDestCurrencyList) {
       const dl:any = selectDestCurrencyList
       const formatDl:any = {}
@@ -230,39 +226,12 @@ export function useDestCurrency (
       let destTokenMinKey = ''
       // const typeArr = ['swapin', 'swapout']
       for (const tokenKey of destTokenList) {
-        // if (!destTokenKey) destTokenKey = tokenKey
         if (!destTokenMinKey) destTokenMinKey = tokenKey
-        // // console.log(destTokenKey)
-        // if (
-        //   Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
-        //   || (
-        //     Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
-        //     && typeArr.includes(formatDl[tokenKey].type)
-        //   )
-        // ) {
-        //   // console.log(destTokenKey)
-        //   destTokenKey = tokenKey
-        // }
-
         if (formatDl[destTokenMinKey].sortId > formatDl[tokenKey].sortId) {
           destTokenMinKey = tokenKey
         }
       }
       try {
-        // console.log(formatDl)
-        // console.log(destTokenMinKey)
-        // console.log(destTokenKey)
-        // if (
-        //   Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
-        //   || (
-        //     Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
-        //     && typeArr.includes(formatDl[destTokenKey].type)
-        //   )
-        // ) {
-        //   destTokenMinKey = destTokenKey
-        // }
-        // initDestCurrency = formatDl[destTokenMinKey]
-        // initDestCurrencyList = formatDl
         setInitDestCurrency(formatDl[destTokenMinKey])
         setInitDestCurrencyList(formatDl)
       } catch (error) {

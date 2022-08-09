@@ -25,6 +25,7 @@ import veMultiReward from '../constants/abis/veMULTIReward.json'
 import veshare from '../constants/abis/veshare.json'
 
 import NFT from '../constants/abis/bridge/nft.json'
+import anycallNFT from '../constants/abis/bridge/anycallNFT.json'
 import NFT721 from '../constants/abis/bridge/erc721.json'
 import NFT1155 from '../constants/abis/bridge/erc1155.json'
 
@@ -94,6 +95,10 @@ export function useVeShareContract(token?:any, withSignerIfPossible?: boolean): 
 
 export function useNFTContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(routerToken ? routerToken : undefined, NFT, withSignerIfPossible)
+}
+
+export function useAnycallNFTContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(routerToken ? routerToken : undefined, anycallNFT, withSignerIfPossible)
 }
 
 export function useNFT721Contract(tokenAddress?:any, withSignerIfPossible?: boolean): Contract | null {

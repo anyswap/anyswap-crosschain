@@ -56,7 +56,7 @@ export const VENFT_BASE_INFO = {
 export const veSHARE:any = useChain({
   [ChainId.BNB_TEST]: {
     ...VENFT_BASE_INFO,
-    address: '0x2aF78D056F2D32C130D791091333575DF592Bb06'
+    address: '0x09A256d6811B013bd676b7426c487c5809471E07'
   },
 })
 
@@ -84,7 +84,7 @@ export const REWARD_TOKEN:any = useChain({
 
 export const VESHARE:any = useChain({
   [ChainId.BNB_TEST]: {
-    address: '0xA0bA02090D0e893558B81fA4e24Fda8D3dE56D13'
+    address: '0x4Ca79955f377934A1F06547516FcD4d9274aEA6a'
   },
 })
 
