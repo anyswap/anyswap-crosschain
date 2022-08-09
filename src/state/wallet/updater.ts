@@ -19,7 +19,7 @@ import {useRpcState} from '../rpc/hooks'
 
 import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
-import { isAddress } from '../../utils/isAddress'
+import { isAddress } from '../../utils/isAddress/index'
 
 // import config from '../../config'
 // import { fromWei } from '../../utils/tools/tools'
