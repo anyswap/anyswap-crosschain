@@ -16,7 +16,7 @@ if (!w.indexedDB) {
 
 const TOKENLIST = 'token-list'
 
-const version = '0.1.4'
+const version = '0.1.5'
 
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_DB_VERSION'
