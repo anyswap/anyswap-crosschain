@@ -522,6 +522,7 @@ export function useNearSendTxns(
               symbol: inputCurrency?.symbol,
               version: destConfig.type,
               pairid: inputCurrency?.symbol,
+              routerToken: routerToken
             }
             addTransaction(txReceipt, {
               summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`,
@@ -530,7 +531,7 @@ export function useNearSendTxns(
               toAddress: receiverId.indexOf('0x') === 0 ? receiverId?.toLowerCase() : receiverId,
               symbol: inputCurrency?.symbol,
               version: 'swapin',
-              routerToken: '',
+              routerToken: routerToken,
               token: inputCurrency?.address,
               logoUrl: inputCurrency?.logoUrl,
               isLiquidity: destConfig?.isLiquidity,

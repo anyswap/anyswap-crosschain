@@ -54,7 +54,7 @@ export function recordsTxns ({
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)
-    const ip:any = await getUrlData('https://api.ipify.org/?format=json')
+    // const ip:any = await getUrlData('https://api.ipify.org/?format=json')
     const data = {
       hash: hash,
       srcChainID: chainId,
@@ -67,8 +67,8 @@ export function recordsTxns ({
       to: to,
       symbol: symbol,
       pairid: pairid,
-      userAgent: window?.navigator?.userAgent,
-      userIP: window?.returnCitySN ? window?.returnCitySN : (ip?.data?.ip ? {cip: ip?.data?.ip} : '')
+      // userAgent: window?.navigator?.userAgent,
+      // userIP: window?.returnCitySN ? window?.returnCitySN : (ip?.data?.ip ? {cip: ip?.data?.ip} : '')
     }
     if (!registerList[hash]) {
       registerList[hash] = {
