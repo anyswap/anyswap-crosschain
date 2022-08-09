@@ -1,4 +1,4 @@
-
+import {USE_VERSION} from '../../config/constant'
 // In the following line, you should include the prefixes of implementations you want to test.
 // const window = window
 const w:any = {}
@@ -15,11 +15,30 @@ if (!w.indexedDB) {
 }
 
 const TOKENLIST = 'token-list'
-const POOLLIST = 'pool-list'
+
+const version = '0.1.4'
+
+function initVersion (version:any, configVersion:any) {
+  const VERSION = version + '_DB_VERSION'
+  // const VERSION = version + '_VERSION'
+  const curVersion = localStorage.getItem(VERSION)
+  // console.log(curVersion)
+  // console.log(configVersion)
+  if (curVersion && curVersion !== configVersion) {
+    // sessionStorage.clear()
+    // localStorage.clear()
+    w.indexedDB.deleteDatabase(TOKENLIST)
+    localStorage.setItem(VERSION, configVersion)
+  } else if (!curVersion) {
+    localStorage.setItem(VERSION, configVersion)
+  }
+}
+setTimeout(() => {
+  initVersion(USE_VERSION, version)
+},0)
 
 export {
   w,
   isSupportIndexedDB,
   TOKENLIST,
-  POOLLIST
 }

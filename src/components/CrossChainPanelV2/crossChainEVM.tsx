@@ -692,11 +692,11 @@ export default function CrossChain({
     ) {
       if (window?.near?.account()) {
         return <ConfirmText>
-          You need to deposit the storage.
+          Get storage balance of receive account error, the transaction may fail.Please deposit near to the token&apos;s storage.
         </ConfirmText>
       } else {
         return <ConfirmText>
-          You need to deposit the storage.
+          Get storage balance of receive account error, the transaction may fail.Please deposit near to the token&apos;s storage.
         </ConfirmText>
       }
     } else {

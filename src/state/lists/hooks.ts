@@ -245,13 +245,6 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   return tokenlist
 }
 
-
-export function useTokenListVersionUrl(): string | undefined {
-  return useSelector<AppState, AppState['lists']['tokenlistversion']>(state => {
-    return state.lists.tokenlistversion
-  })
-}
-
 export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
   return useBridgeTokenList(key, chainId)
 }

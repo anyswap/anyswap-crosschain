@@ -20,4 +20,3 @@ export const rejectVersionUpdate = createAction<Version>('lists/rejectVersionUpd
 export const mergeTokenList = createAction<{chainId: any, tokenList:any, version: any}>('lists/mergeTokenList')
 export const updateTokenlistTime = createAction<{}>('lists/updateTokenlistTime')
 export const userSelectCurrency = createAction<{chainId: any, token?:any, toChainId?:any}>('lists/userSelectCurrency')
-export const tokenlistversion = createAction<{version:any}>('lists/tokenlistversion')

@@ -9,10 +9,9 @@ import {
   // fetchTokenList,
   mergeTokenList,
   updateTokenlistTime,
-  tokenlistversion
 } from '../state/lists/actions'
-import {useTokenListVersionUrl} from '../state/lists/hooks'
 import { poolList, updatePoollistTime } from '../state/pools/actions'
+import { nftlist, updateNftlistTime } from '../state/nft/actions'
 import { AppState } from '../state'
 
 import {useActiveReact} from './useActiveReact'
@@ -26,9 +25,10 @@ import {getUrlData} from '../utils/tools/axios'
 import {
   setTokenlist,
   getTokenlist,
-  isSupportIndexedDB,
   setPoollist,
   getPoollist,
+  setNftlist,
+  getNftlist
 } from '../utils/indexedDB'
 
 function getVersion () {
@@ -87,42 +87,47 @@ function getServerPoolTokenlist (chainId:any) {
   })
 }
 
+function getServerNftTokenlist (chainId:any) {
+  return new Promise(resolve => {
+    let list:any = {}
+    if (chainId) {
+      const url = `${config.bridgeApi}/v4/nft/${chainId}`
+      getUrlData(url).then((tokenList:any) => {
+        // console.log(tokenList)
+        if (tokenList.msg === 'Success' && tokenList.data) {
+          list = tokenList.data
+          resolve(list)
+        } else {
+          resolve('')
+        }
+      })
+    } else {
+      resolve('')
+    }
+  })
+}
+
 export function useFetchTokenListVersionCallback(): () => Promise<any> {
   const dispatch = useDispatch<AppDispatch>()
 
   const { chainId } = useActiveReact()
   const tokenlists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
   const poollists = useSelector<AppState, AppState['pools']['poolList']>(state => state.pools.poolList)
+  const nftlists = useSelector<AppState, AppState['nft']['nftlist']>(state => state.nft.nftlist)
   return useCallback(
     async () => {
       if (!chainId) return
       
       return getVersion().then(async(res:any) => {
         // let curTokenList:any = {}
-        const curDbTokenList:any = await getTokenlist(chainId)
-        const curLSTokenList:any = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
-        const localTokenVersion = curDbTokenList?.version ?? curLSTokenList?.version
-        // if (isSupportIndexedDB) {
-        // } else {
-        //   curTokenList = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
-        // }
-  
-        // let curPoolList:any = {}
-        const curDbPoolList:any = await getPoollist(chainId)
-        const curLSPoolList:any = poollists && poollists[chainId] ? poollists[chainId] : {}
-        const localPoolVersion = curDbPoolList?.version ?? curLSPoolList?.version
-        // console.log(curDbPoolList?.version)
-        // console.log(curLSPoolList?.version)
-        // console.log(localPoolVersion)
-        // if (isSupportIndexedDB) {
-        //   curPoolList = await getPoollist(chainId)
-        // } else {
-        //   curPoolList = poollists && poollists[chainId] ? poollists[chainId] : {}
-        // }
-        
-        // console.log(res)
+
         if (res.msg === 'Success') {
           const serverVersion = res.data
+
+          
+          const curDbTokenList:any = await getTokenlist(chainId)
+          const curLSTokenList:any = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
+          const localTokenVersion = curDbTokenList?.version ?? curLSTokenList?.version
           if (
             !serverVersion
             || !localTokenVersion
@@ -136,6 +141,10 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
               }
             })
           }
+
+          const curDbPoolList:any = await getPoollist(chainId)
+          const curLSPoolList:any = poollists && poollists[chainId] ? poollists[chainId] : {}
+          const localPoolVersion = curDbPoolList?.version ?? curLSPoolList?.version
           if (
             !serverVersion
             || !localPoolVersion
@@ -150,95 +159,29 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
               }
             })
           }
-          dispatch(tokenlistversion({version: serverVersion}))
+
+          const curDbNftList:any = await getNftlist(chainId)
+          const curLSNftList:any = nftlists && nftlists[chainId] ? nftlists[chainId] : {}
+          const localNftVersion = curDbNftList?.version ?? curLSNftList?.version
+          console.log(curLSNftList)
+          console.log(curDbNftList)
+          if (
+            !serverVersion
+            || !localNftVersion
+            || localNftVersion !== serverVersion
+          ) {
+            getServerNftTokenlist(chainId).then(res => {
+              console.log(res)
+              if (res) {
+                setNftlist(chainId, res, serverVersion)
+                dispatch(nftlist({ chainId: chainId, tokenList:res, version: serverVersion }))
+                dispatch(updateNftlistTime({}))
+              }
+            })
+          }
         }
       })
     },
     [dispatch, chainId]
-  )
-}
-
-
-
-// export function useFetchMergeTokenListCallback(): () => Promise<any> {
-
-//   const { chainId } = useActiveReact()
-//   const dispatch = useDispatch<AppDispatch>()
-//   const lists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
-//   const serverVersion = useTokenListVersionUrl()
-  
-//   return useCallback(
-//     async () => {
-//       if (!chainId) return
-//       let curList:any = {}
-//       if (isSupportIndexedDB) {
-//         curList = await getTokenlist(chainId)
-//       } else {
-//         curList = lists && lists[chainId] ? lists[chainId] : {}
-//       }
-      
-//       if (
-//         // curList?.tokenList
-//         curList
-//         && (
-//           !curList?.version
-//           || curList.version !== serverVersion
-//         )
-//       ) {
-//         return getServerTokenlist(chainId).then(res => {
-//           if (res) {
-//             if (isSupportIndexedDB) {
-//               setTokenlist(chainId, res, serverVersion)
-//             } else {
-//               dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
-//             }
-//             dispatch(updateTokenlistTime({}))
-//           }
-//         })
-//       } else {
-//         dispatch(updateTokenlistTime({}))
-//       }
-//     },
-//     [dispatch, chainId, serverVersion]
-//   )
-// }
-
-
-
-export function useFetchPoolTokenListCallback(): () => Promise<any> {
-  const { chainId } = useActiveReact()
-  const dispatch = useDispatch<AppDispatch>()
-  const lists = useSelector<AppState, AppState['pools']['poolList']>(state => state.pools.poolList)
-  const serverVersion = useTokenListVersionUrl()
-  // const curList = chainId && lists && lists[chainId] ? lists[chainId] : {}
-  // console.log(lists)
-  return useCallback(
-    async () => {
-      if (!chainId) return
-      let curList:any = {}
-      if (isSupportIndexedDB) {
-        curList = await getPoollist(chainId)
-      } else {
-        curList = lists && lists[chainId] ? lists[chainId] : {}
-      }
-      console.log(chainId)
-      console.log(curList)
-      if (curList?.tokenList && (!curList?.version || curList.version !== serverVersion)) {
-        return getServerPoolTokenlist(chainId).then(res => {
-          console.log(res)
-          if (res) {
-            if (isSupportIndexedDB) {
-              setPoollist(chainId, res, serverVersion)
-            } else {
-              dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
-            }
-            dispatch(updatePoollistTime({}))
-          }
-        })
-      } else {
-        dispatch(updatePoollistTime({}))
-      }
-    },
-    [dispatch, chainId, serverVersion]
   )
 }

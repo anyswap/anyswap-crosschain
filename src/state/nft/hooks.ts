@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import { nftlist } from './actions'
+import {
+  // nftlist,
+  nftlistinfo
+} from './actions'
 
 import { JSBI } from 'anyswap-sdk'
 import axios from 'axios'
@@ -10,10 +13,44 @@ import { useMulticallContract } from '../../hooks/useContract'
 // import { useNFTContract, useNFT721Contract } from './useContract'
 import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
 import ERC1155_INTERFACE from '../../constants/abis/bridge/erc1155'
+import {getNftlist, isSupportIndexedDB} from '../../utils/indexedDB'
 
 export enum ERC_TYPE {
   erc1155 = 'erc1155',
   erc721 = 'erc721'
+}
+
+export function useNftListState(chainId?:any): any {
+  const lists:any = useSelector<AppState, AppState['nft']>(state => state.nft.nftlist)
+  // console.log(lists)
+  const updateNftlistTime:any = useSelector<AppState, AppState['nft']>(state => state.nft.updateNftlistTime)
+  // console.log(updateTokenlistTime)
+  const [tokenlist, setTokenlist] = useState<any>({})
+  const getCurTokenlist = useCallback(() => {
+    // console.log(chainId)
+    if (isSupportIndexedDB) {
+      getNftlist(chainId).then((res:any) => {
+        // console.log(res)
+        if (res?.tokenList) {
+          setTokenlist(res.tokenList)
+        } else {
+          let current = lists[chainId]?.tokenList
+          if (!current) current = {}
+          setTokenlist(current)
+        }
+      })
+    } else {
+      let current = lists[chainId]?.tokenList
+      if (!current) current = {}
+      setTokenlist(current)
+    }
+  }, [chainId, updateNftlistTime])
+
+  useEffect(() => {
+    getCurTokenlist()
+  }, [getCurTokenlist, chainId, updateNftlistTime])
+
+  return tokenlist
 }
 
 export function useNftState(): any {
@@ -103,7 +140,7 @@ export function useNFT721GetAllTokenidListCallback(
               uri: arr1[i].uri
             }
           }
-          dispatch(nftlist({ chainId, account, nftlist: list }))
+          dispatch(nftlistinfo({ chainId, tokenList: list }))
           // console.log(list)
         })
       }
@@ -128,7 +165,7 @@ export function useNFT721GetAllTokenidListCallback(
           }
         }
         setImageList(arr)
-        dispatch(nftlist({ chainId, account, nftlist: list }))
+        dispatch(nftlistinfo({ chainId, tokenList: list }))
         // getUriData(arr)
       }).catch((err:any) => {
         console.log(err)
@@ -182,7 +219,7 @@ export function useNFT721GetAllTokenidListCallback(
         }
         // console.log(list)
         setTokenidArr(arr)
-        dispatch(nftlist({ chainId, account, nftlist: list }))
+        dispatch(nftlistinfo({ chainId, tokenList: list }))
       }).catch((err:any) => {
         console.log(err)
       })
@@ -199,10 +236,11 @@ export function useNFT721GetAllTokenidListCallback(
   const getTokenidList = useCallback(() => {
     if (callBLData && multicallContract) {
       const cList:any = []
-      for (const ad in tokenList) {
-        if (tokenList[ad].nfttype === ERC_TYPE.erc1155) continue
+      for (const tokenKey in tokenList) {
+        const obj = tokenList[tokenKey]
+        if (obj.nfttype === ERC_TYPE.erc1155) continue
         cList.push({
-          address: ad
+          address: obj.address
         })
       }
       multicallContract.aggregate(cList.map((obj:any) => [obj.address, callBLData])).then((res:any) => {
@@ -258,9 +296,11 @@ export function useNFT1155GetAllTokenidListCallback(
   const callBLData: any = useMemo( () => {
     const arr:any = []
     if (ERC1155_INTERFACE && account && tokenlist) {
-      for (const token in tokenlist) {
-        if (tokenlist[token].nfttype === ERC_TYPE.erc1155) {
-          const list = tokenlist[token].tokenidList
+      for (const tokenKey in tokenlist) {
+        const obj = tokenlist[tokenKey]
+        const token = obj.address
+        if (obj.nfttype === ERC_TYPE.erc1155) {
+          const list = obj.tokenidList
           for (const tokenid in list) {
             // console.log(tokenid)
             arr.push({

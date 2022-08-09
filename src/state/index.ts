@@ -16,7 +16,7 @@ import rpc from './rpc/reducer'
 
 import xlm from '../hooks/stellar/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools', 'nft']
 
 const store = configureStore({
   reducer: {

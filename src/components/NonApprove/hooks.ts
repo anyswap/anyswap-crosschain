@@ -1,11 +1,11 @@
 import { useEffect, useCallback,useState, useMemo } from "react"
 import { JSBI } from 'anyswap-sdk'
-// import {useMulticall} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import {useActiveWeb3React} from '../../hooks'
-import {nonApproveList} from './nonApproveList'
 import {useNonApproveCallback} from '../../hooks/useApproveCallback'
+
+const nonApproveList = require('./nonApproveList.json')
 
 export function useAllApproved () {
   const {account, chainId} = useActiveWeb3React()

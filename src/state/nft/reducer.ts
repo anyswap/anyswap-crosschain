@@ -1,31 +1,31 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { nftlist } from './actions'
+import { nftlist, nftlistinfo, updateNftlistTime } from './actions'
 
 export interface BurnState {
   readonly nftlist: any
+  readonly nftlistinfo: any
+  readonly updateNftlistTime: any
 }
 
 const initialState: BurnState = {
   nftlist: {},
+  nftlistinfo: {},
+  updateNftlistTime: ''
 }
 
 export default createReducer<BurnState>(initialState, builder =>
   builder
-    .addCase(nftlist, (state, { payload: { chainId, account, nftlist } }) => {
-      // console.log()
-      if (!chainId || !account) return {...state}
-      return {
-        ...state,
-        nftlist: {
-          ...state.nftlist,
-          [chainId]: {
-            ...(state.nftlist[chainId] ? state.nftlist[chainId] : {}),
-            [account]: {
-              ...(state.nftlist[chainId] && state.nftlist[chainId][account] ? state.nftlist[chainId][account] : {}),
-              ...nftlist
-            }
-          }
-        }
+    .addCase(nftlist, (state, { payload: { chainId, tokenList, version } }) => {
+      state.nftlist= {
+        [chainId]: {tokenList, timestamp: Date.now(), version}
       }
+    })
+    .addCase(nftlistinfo, (state, { payload: { chainId, tokenList } }) => {
+      state.nftlistinfo= {
+        [chainId]: {tokenList, timestamp: Date.now()}
+      }
+    })
+    .addCase(updateNftlistTime, (state, { payload: {  } }) => {
+      state.updateNftlistTime = Date.now()
     })
 )

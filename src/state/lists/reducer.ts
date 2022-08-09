@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 // import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 // import { updateVersion } from '../global/actions'
-import { mergeTokenList, userSelectCurrency,updateTokenlistTime, tokenlistversion } from './actions'
+import { mergeTokenList, userSelectCurrency,updateTokenlistTime } from './actions'
 
 // import config from '../../config'
 
@@ -22,7 +22,6 @@ export interface ListsState {
   readonly mergeTokenList: any
   readonly updateTokenlistTime: any
   readonly userSelectCurrency: any
-  readonly tokenlistversion: any
 }
 
 // type ListState = ListsState['byUrl'][string]
@@ -48,15 +47,10 @@ const initialState: ListsState = {
   mergeTokenList: {},
   updateTokenlistTime: '',
   userSelectCurrency: {},
-  tokenlistversion: '',
 }
 
 export default createReducer(initialState, builder =>
   builder
-  
-    .addCase(tokenlistversion, (state, { payload: { version } }) => {
-      state.tokenlistversion = version
-    })
     .addCase(updateTokenlistTime, (state, { payload: {  } }) => {
       state.updateTokenlistTime = Date.now()
     })

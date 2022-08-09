@@ -6,6 +6,7 @@ import {
 
 const TOKENPATH = 'token-list-table'
 const POOLPATH = 'pool-list-table'
+const NFTPATH = 'nft-list-table'
 const TOKENKEY = 'chainId'
 
 // const READWRITE = 'versionchange'
@@ -14,43 +15,51 @@ const READWRITE = 'readwrite'
 
 let db:any = {}
 // let objectStore: any = {}
-const tokenlistReauest = w.indexedDB.open(TOKENLIST, 8);
+const tokenlistReauest = w.indexedDB.open(TOKENLIST, 10);
 console.log(tokenlistReauest)
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
   console.log("Why didn't you allow my web app to use IndexedDB?!");
 };
 tokenlistReauest.onsuccess = function(event:any) {
+  // console.log(event)
   db = event.target.result;
-  // console.log(db)
 };
 
 tokenlistReauest.onupgradeneeded = function (event:any) {
   db = event.target.result;
+  // console.log(event)
   if (!db.objecttables || !db.objecttables.contains(TOKENPATH)) { //判断数据库中是否已经存在该名称的数据表
     db.createObjectStore(TOKENPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
   if (!db.objecttables || !db.objecttables.contains(POOLPATH)) { //判断数据库中是否已经存在该名称的数据表
     db.createObjectStore(POOLPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
+  if (!db.objecttables || !db.objecttables.contains(NFTPATH)) { //判断数据库中是否已经存在该名称的数据表
+    db.createObjectStore(NFTPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+  }
 }
 db.onerror = function(event:any) {
   console.error("Database error: " + event.target.errorCode);
 }
 
+tokenlistReauest.addEventListener('success', (event:any) => {
+  const db = event.target.result;
+  db.addEventListener('versionchange', (event:any) => {
+    console.log(event)
+    console.log('The version of this database has changed');
+  });
+});
+
 function getDBdata (path:any, key:any) {
   return new Promise(resolve => {
     if (!key || !db?.transaction) {
-      // console.log(333)
-      // console.log(key)
-      // console.log(db)
-      // console.log(db?.transaction)
       resolve('LOADING')
       return
     }
     try {
       // const transaction = db.transaction([path], "readwrite")
-      const transaction = db.transaction([TOKENPATH, POOLPATH], READWRITE)
+      const transaction = db.transaction([TOKENPATH, POOLPATH, NFTPATH], READWRITE)
       const objectStore = transaction.objectStore(path);
       const request = objectStore.get(key.toString());
       request.onerror = function(event:any) {
@@ -60,12 +69,8 @@ function getDBdata (path:any, key:any) {
       };
       request.onsuccess = function(event:any) {
         // Do something with the request.result!
-        const data = event.target.result 
-        // console.log(event)
-        // console.log(data)
-        // console.log(key)
+        const data = event.target.result
         resolve(data)
-        // console.log("Name for SSN 444-44-4444 is " + request.result.name);
       }
     } catch (error) {
       console.log(path)
@@ -86,7 +91,7 @@ function setDBdata (path:any, data:any) {
       resolve('LOADING')
       return
     }
-    const request = db.transaction([TOKENPATH, POOLPATH], READWRITE) //readwrite表示有读写权限
+    const request = db.transaction([TOKENPATH, POOLPATH, NFTPATH], READWRITE) //readwrite表示有读写权限
       .objectStore(path)
       // .add(data) //新增数据
       .put(data) //更新数据
@@ -137,4 +142,22 @@ export function setPoollist (chainId:any, tokenList:any, version:any) {
     timestamp: Date.now()
   }
   setDBdata(POOLPATH, data)
+}
+
+export function getNftlist (chainId:any) {
+  return new Promise(resolve => {
+    // console.log(chainId)
+    getDBdata(NFTPATH, chainId).then(res => {
+      resolve(res)
+    })
+  })
+}
+export function setNftlist (chainId:any, tokenList:any, version:any) {
+  const data = {
+    chainId: chainId.toString(),
+    tokenList,
+    version,
+    timestamp: Date.now()
+  }
+  setDBdata(NFTPATH, data)
 }
