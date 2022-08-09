@@ -15,8 +15,6 @@
 
 `cp .env.production .env.local `
 
-> This should not be neccessary as the above is already populated
-
 To have the interface default to a different network when a wallet is not connected:
 
 1. Make a copy of `.env` named `.env.local`
