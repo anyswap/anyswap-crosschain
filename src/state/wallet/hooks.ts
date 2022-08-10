@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
+import {useActiveWeb3React} from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { tryParseAmount5,tryParseAmount6 } from '../swap/hooks'
 import { useMulticallContract } from '../../hooks/useContract'
@@ -12,7 +13,22 @@ import { BigAmount } from '../../utils/formatBignumber'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 import { AppState } from '../index'
 
+import {gnosissafe} from '../../connectors'
+
 // import { tokenBalanceList } from './actions'
+
+export function useIsGnosisSafeWallet () {
+  const { connector } = useActiveWeb3React()
+  const isGnosisSafeWallet =  useMemo(() => {
+    if ( gnosissafe === connector) {
+      return true
+    }
+    return false
+  }, [gnosissafe, connector])
+  return {
+    isGnosisSafeWallet
+  }
+}
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.

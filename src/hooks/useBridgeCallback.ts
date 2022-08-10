@@ -4,7 +4,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
+import { useCurrencyBalance, useETHBalances, useIsGnosisSafeWallet } from '../state/wallet/hooks'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../state/application/hooks'
 // import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
@@ -69,6 +69,7 @@ export function useBridgeCallback(
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   const { t } = useTranslation()
   // console.log(inputCurrency)
   const useAccount:any = isAddress(account, evmChainId)
@@ -138,7 +139,7 @@ export function useBridgeCallback(
                   },
                 })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: evmChainId,
@@ -164,7 +165,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet])
 }
 
 
@@ -191,6 +192,7 @@ export function useBridgeCallback(
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -251,7 +253,7 @@ export function useBridgeCallback(
                   },
                 })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: evmChainId,
@@ -277,7 +279,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet])
 }
 
 
@@ -304,6 +306,7 @@ export function useBridgeNativeCallback(
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -358,7 +361,7 @@ export function useBridgeNativeCallback(
                   },
                 })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: evmChainId,
@@ -382,7 +385,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig, isGnosisSafeWallet])
 }
 
 /**
@@ -537,6 +540,7 @@ export function useBridgeNativeCallback(
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
@@ -589,7 +593,7 @@ export function useBridgeNativeCallback(
                   isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: evmChainId,
@@ -613,7 +617,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet])
 }
 
 /**
@@ -640,6 +644,7 @@ export function useBridgeNativeCallback(
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
@@ -691,7 +696,7 @@ export function useBridgeNativeCallback(
                   isLiquidity: isLiquidity
                 })
                 // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account) {
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
                   const data = {
                     hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
                     chainId: evmChainId,
@@ -715,7 +720,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet])
 }
 
 
@@ -742,6 +747,7 @@ export function useBridgeNativeCallback(
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -843,19 +849,21 @@ export function useBridgeNativeCallback(
                     srcChainID = toChainID
                     destChainID = chainId
                   }
-                  const rdata = {
-                    hash: txData.hash,
-                    chainId: srcChainID,
-                    selectChain: destChainID,
-                    account: account?.toLowerCase(),
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: receiveAddress,
-                    symbol: '',
-                    version: txnsType,
-                    pairid: pairid
+                  if (!isGnosisSafeWallet) {
+                    const rdata = {
+                      hash: txData.hash,
+                      chainId: srcChainID,
+                      selectChain: destChainID,
+                      account: account?.toLowerCase(),
+                      value: inputAmount.raw.toString(),
+                      formatvalue: inputAmount?.toSignificant(6),
+                      to: receiveAddress,
+                      symbol: '',
+                      version: txnsType,
+                      pairid: pairid
+                    }
+                    recordsTxns(rdata)
                   }
-                  recordsTxns(rdata)
                   onChangeViewDtil(txData?.hash, true)
                 }
               } catch (error) {
@@ -866,7 +874,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity, destConfig])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity, destConfig, isGnosisSafeWallet])
 }
 
 /**
@@ -902,6 +910,7 @@ export function useBridgeNativeCallback(
   const connectedWallet = useConnectedWallet()
   const addTransaction = useTransactionAdder()
   const { post, connect } = useWallet()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
   // const addPopup = useAddPopup()
   const {getTerraBalances} = useTerraBalance()
 
@@ -1088,7 +1097,7 @@ export function useBridgeNativeCallback(
                       address: destConfig?.address,
                     },
                   })
-                  if (txData.hash && account && terraRecipient) {
+                  if (txData.hash && account && terraRecipient && !isGnosisSafeWallet) {
                     const data:any = {
                       hash: txData.hash.indexOf('0x') === 0 ? txData.hash?.toLowerCase() : txData.hash,
                       chainId: srcChainid,
@@ -1118,5 +1127,5 @@ export function useBridgeNativeCallback(
           : undefined,
         inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx, destConfig])
+  }, [chainId, inputCurrency, inputAmount, t, toAddress, inputToken, toChainID, terraRecipient, connectedWallet, pairid, srcChainid, balance, sendTx, destConfig, isGnosisSafeWallet])
 }
