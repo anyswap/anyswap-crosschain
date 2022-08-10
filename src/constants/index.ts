@@ -7,7 +7,8 @@ import {
   walletconnect,
   walletlink,
   bsc,
-  clover
+  clover,
+  xdefi
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -29,7 +30,7 @@ export interface WalletInfo {
   mobile?: true
   mobileOnly?: true
 }
-
+// console.log(injected)
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
@@ -107,7 +108,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#269964',
   },
   Xdefi: {
-    connector: injected,
+    // connector: injected,
+    connector: xdefi,
     name: 'Xdefi',
     iconName: 'XDEFI.jpg',
     description: 'Easy-to-use browser extension.',

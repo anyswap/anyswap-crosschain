@@ -1,6 +1,7 @@
 {
-  "short_name": "Uniswap",
-  "name": "Uniswap",
+  "short_name": "MULTI",
+  "name": "Multichain",
+  "description": "Unified cross-chain interface, average transaction speed within 100 secs, no-slippage swap",
   "icons": [
     {
       "src": "./images/192x192_App_Icon.png",
@@ -13,10 +14,35 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "orientation": "portrait",
   "display": "standalone",
   "theme_color": "#2483fe",
-  "background_color": "#fff"
+  "background_color": "#ffffff"
 }

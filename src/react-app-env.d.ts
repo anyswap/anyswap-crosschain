@@ -98,7 +98,10 @@ interface Window {
   webkitIDBKeyRange: any
   msIDBKeyRange: any
   freighterApi: any
+  xfi: any
 }
+
+declare const __DEV__: boolean;
 
 declare module 'content-hash' {
   declare function decode(x: string): string

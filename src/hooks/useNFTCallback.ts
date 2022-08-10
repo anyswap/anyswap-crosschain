@@ -228,14 +228,13 @@ export function useNFT721Callback(
  * @param inputCurrency 选定的输入货币
  * @param typedValue 用户输入值
  */
- export function useAnycallNFTCallback(
+ export function useAnycallNFT721Callback(
   routerToken: string | undefined,
   inputCurrency: any,
   toAddress:  any,
   tokenid: string | undefined,
   toChainID: string | undefined,
   fee: any,
-  amount: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -245,7 +244,7 @@ export function useNFT721Callback(
 
   const contract = useAnycallNFTContract(routerToken)
 
-  const contract1155 = useNFT1155Contract(inputCurrency?.address)
+  const contract721 = useNFT721Contract(inputCurrency?.address)
 
   const { t } = useTranslation()
   
@@ -253,11 +252,11 @@ export function useNFT721Callback(
   const addTransaction = useTransactionAdder()
 
   useEffect(() => {
-    if (contract1155 && tokenid) {
-      contract1155.balanceOf(account, tokenid).then((res:any) => {
+    if (contract721 && tokenid) {
+      contract721.ownerOf(tokenid).then((res:any) => {
         // console.log(res)
         if (res) {
-          setNftBalance(tryParseAmount2(res.toString(), inputCurrency?.decimals ?? 0))
+          setNftBalance(res)
         } else {
           setNftBalance('')
         }
@@ -268,15 +267,13 @@ export function useNFT721Callback(
     } else {
       setNftBalance('')
     }
-  }, [contract1155, tokenid, account])
-
-  const inputAmount = useMemo(() => inputCurrency ? tryParseAmount2(amount, inputCurrency?.decimals ?? 0) : '', [inputCurrency, amount])
+  }, [contract721, tokenid])
 
   return useMemo(() => {
     // console.log(tokenid)
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !inputAmount || !tokenid || !nftBalance) return NOT_APPLICABLE
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !(nftBalance?.toLowerCase() === account?.toLowerCase())) return NOT_APPLICABLE
 
-    const sufficientBalance = ethBalance && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
+    const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
 
     return {
       wrapType: WrapType.WRAP,
@@ -316,5 +313,5 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, inputAmount])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account])
 }

@@ -5,6 +5,7 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import {BscConnector} from '@binance-chain/bsc-connector'
 import {CloverConnector} from '@clover-network/clover-connector'
 import { NetworkConnector } from './NetworkConnector'
+import {XdefiConnector} from './xdefi'
 
 import {spportChainArr as sc} from '../config/chainConfig'
 import config from '../config'
@@ -76,6 +77,9 @@ export const walletlink = new WalletLinkConnector({
 
 
 export const bsc = new BscConnector({
+  supportedChainIds: [...spportChainArr],
+})
+export const xdefi = new XdefiConnector({
   supportedChainIds: [...spportChainArr],
 })
 

@@ -5,7 +5,7 @@ import {ArrowRight} from 'react-feather'
 import { JSBI } from 'anyswap-sdk'
 import { transparentize } from 'polished'
 
-import {useNFT721Callback, useNFT1155Callback, useAnycallNFTCallback} from '../../hooks/useNFTCallback'
+import {useNFT721Callback, useNFT1155Callback, useAnycallNFT721Callback} from '../../hooks/useNFTCallback'
 import {useApproveCallback, useApprove1155Callback, ApprovalState} from '../../hooks/useNFTApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
 // import { useNFT721Contract } from '../../hooks/useContract'
@@ -246,14 +246,13 @@ export default function CroseNFT () {
     fee,
     inputBridgeValue
   )
-  const { wrapType: wrapTypeAnycall, execute: onWrapAnycall, inputError: wrapInputErrorAnycall } = useAnycallNFTCallback(
+  const { wrapType: wrapTypeAnycall, execute: onWrapAnycall, inputError: wrapInputErrorAnycall } = useAnycallNFT721Callback(
     routerToken,
-    nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined,
+    nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined,
     account,
     selectTokenId?.tokenid,
     selectChain,
-    fee,
-    inputBridgeValue
+    fee
   )
 
   const handleSwap = useCallback(() => {
