@@ -153,9 +153,9 @@ export function useBridgeCallback(
                     version: version
                   }
                   recordsTxns(data)
+                  results.hash = txReceipt?.hash
+                  onChangeViewDtil(txReceipt?.hash, true)
                 }
-                results.hash = txReceipt?.hash
-                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.error('Could not swapout', error)
                 onChangeViewErrorTip(error, true)
@@ -267,9 +267,9 @@ export function useBridgeCallback(
                     version: version
                   }
                   recordsTxns(data)
+                  results.hash = txReceipt?.hash
+                  onChangeViewDtil(txReceipt?.hash, true)
                 }
-                results.hash = txReceipt?.hash
-                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
                 onChangeViewErrorTip(error, true)
@@ -375,8 +375,8 @@ export function useBridgeNativeCallback(
                     version: version
                   }
                   recordsTxns(data)
+                  onChangeViewDtil(txReceipt?.hash, true)
                 }
-                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.error('Could not swapout', error)
                 onChangeViewErrorTip(error, true)
@@ -607,8 +607,8 @@ export function useBridgeNativeCallback(
                     version: version
                   }
                   recordsTxns(data)
+                  onChangeViewDtil(txReceipt?.hash, true)
                 }
-                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
                 onChangeViewErrorTip(error,true)
@@ -710,8 +710,8 @@ export function useBridgeNativeCallback(
                     version: version
                   }
                   recordsTxns(data)
+                  onChangeViewDtil(txReceipt?.hash, true)
                 }
-                onChangeViewDtil(txReceipt?.hash, true)
               } catch (error) {
                 console.log('Could not swapout', error)
                 onChangeViewErrorTip(error,true)
@@ -863,8 +863,8 @@ export function useBridgeNativeCallback(
                       pairid: pairid
                     }
                     recordsTxns(rdata)
+                    onChangeViewDtil(txData?.hash, true)
                   }
-                  onChangeViewDtil(txData?.hash, true)
                 }
               } catch (error) {
                 console.log('Could not swapout', error)
@@ -1111,8 +1111,8 @@ export function useBridgeNativeCallback(
                       pairid: pairid,
                     }
                     recordsTxns(data)
+                    onChangeViewDtil(txData?.hash, true)
                   }
-                  onChangeViewDtil(txData?.hash, true)
                 }
               } catch (error) {
                 // const err:any = error
