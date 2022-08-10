@@ -6,6 +6,7 @@ import {BscConnector} from '@binance-chain/bsc-connector'
 import {CloverConnector} from '@clover-network/clover-connector'
 import { NetworkConnector } from './NetworkConnector'
 import {XdefiConnector} from './xdefi'
+import {SafeAppConnector} from './gnosis-safe'
 
 import {spportChainArr as sc} from '../config/chainConfig'
 import config from '../config'
@@ -86,3 +87,4 @@ export const xdefi = new XdefiConnector({
 export const clover =  new CloverConnector({
   supportedChainIds: [...spportChainArr],
 })
+export const gnosissafe =  new SafeAppConnector()

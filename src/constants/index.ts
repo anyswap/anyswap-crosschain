@@ -8,7 +8,8 @@ import {
   walletlink,
   bsc,
   clover,
-  xdefi
+  xdefi,
+  gnosissafe
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -129,6 +130,22 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     connector: injected,
     name: 'TokenPocket',
     iconName: 'TPT.jpg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
+  trustwallet: {
+    connector: walletconnect,
+    name: 'Trust Wallet',
+    iconName: 'TWT.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
+  gnosissafe: {
+    connector: gnosissafe,
+    name: 'Gnosis Safe',
+    iconName: 'GnosisSafe.svg',
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#269964',
