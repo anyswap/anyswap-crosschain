@@ -28,9 +28,9 @@ function initVersion (version:any, configVersion:any) {
     // sessionStorage.clear()
     // localStorage.clear()
     w.indexedDB.deleteDatabase(TOKENLIST)
-    localStorage.setItem(VERSION, configVersion)
+    window.localStorage.setItem(VERSION, configVersion)
   } else if (!curVersion) {
-    localStorage.setItem(VERSION, configVersion)
+    window.localStorage.setItem(VERSION, configVersion)
   }
 }
 setTimeout(() => {

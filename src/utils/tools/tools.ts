@@ -26,13 +26,13 @@ export function getLocalConfig (
   version?: string
 ) {
   version = version ? version : USE_VERSION
-  const curVersion = localStorage.getItem(version + '_' + VERSION)
+  const curVersion = window.localStorage.getItem(version + '_' + VERSION)
   // console.log(curVersion)
   if (curVersion && curVersion !== config.version) {
     sessionStorage.clear()
     return false
   }
-  const lStorage = saveType ? localStorage : sessionStorage
+  const lStorage = saveType ? window.localStorage : window.sessionStorage
   // console.log(version + '_' + type)
   const lstr = lStorage.getItem(version + '_' + type)
   if (!lstr) {
@@ -72,7 +72,7 @@ export function setLocalConfig (
   version?: string
 ) {
   version = version ? version : USE_VERSION 
-  const lStorage = saveType ? localStorage : sessionStorage
+  const lStorage = saveType ? window.localStorage : window.sessionStorage
   const lstr = lStorage.getItem(version + '_' + type)
   let lboj:any = {}
   if (!lstr) {
@@ -108,7 +108,7 @@ export function setLocalConfig (
       }
     }
   }
-  localStorage.setItem(version + '_' + VERSION, config.version)
+  window.localStorage.setItem(version + '_' + VERSION, config.version)
   lStorage.setItem(version + '_' + type, JSON.stringify(lboj))
 }
 
