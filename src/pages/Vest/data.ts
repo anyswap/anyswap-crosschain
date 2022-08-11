@@ -106,6 +106,7 @@ const REWARD:any = useChain({
 })
 
 const INIT_TIME = 14
+const MIN_DAY = 6
 
 export {
   BASE_INFO,
@@ -114,5 +115,6 @@ export {
   MULTI_TOKEN,
   REWARD_TOKEN,
   REWARD,
-  INIT_TIME
+  INIT_TIME,
+  MIN_DAY
 }

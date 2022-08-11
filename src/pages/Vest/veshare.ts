@@ -137,9 +137,10 @@ export function useVeshare () {
               const tokenIndex = await veshareMultiContract.tokenOfOwnerByIndex(account, idx)
               const locked = await veshareContract.tokenInfo(tokenIndex)
               const endTime = locked['endTime'].toNumber()
-              const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
+              // const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
               // console.log(tokenURI)
-              // const {data} = await axios.get(tokenURI)
+              // const url = tokenURI.indexOf('ipfs://') === 0 ? tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : ''
+              // const {data} = await axios.get(url)
               // console.log(data)
               let reward:any
               try {
@@ -150,8 +151,9 @@ export function useVeshare () {
                 console.log(error)
               }
               return {
-                // ...data,
-                image: tokenURI,
+                // ...data,ipfs://QmdfCJixsGErp33CTCom3QiZt24N4q8qFZ58zkVbxQzcyF
+                // image: tokenURI.indexOf('ipfs://') === 0 ? tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : '',
+                image: 'https://bafybeifin45dnnplmrtj66yxl4xkp6yxoxc52mh64pg5gck7kbuaeeri3u.ipfs.dweb.link/',
                 index: idx,
                 id: tokenIndex?.toString(),
                 lockEnds: endTime,
