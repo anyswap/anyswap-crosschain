@@ -4,7 +4,7 @@ import {
   useMemo,
   // useState
 } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useTranslation } from 'react-i18next'
 
 import { 
@@ -138,8 +138,9 @@ export function useVeshare () {
               const locked = await veshareContract.tokenInfo(tokenIndex)
               const endTime = locked['endTime'].toNumber()
               const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
-              const {data} = await axios.get(tokenURI)
               // console.log(tokenURI)
+              // const {data} = await axios.get(tokenURI)
+              // console.log(data)
               let reward:any
               try {
                 // reward = await veshareContract.claimable(idx)
@@ -149,7 +150,8 @@ export function useVeshare () {
                 console.log(error)
               }
               return {
-                ...data,
+                // ...data,
+                image: tokenURI,
                 index: idx,
                 id: tokenIndex?.toString(),
                 lockEnds: endTime,

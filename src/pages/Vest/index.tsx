@@ -255,6 +255,13 @@ const DataViews = styled.div`
   `}
 `
 
+const TokenTableLogoWrapper = styled(TokenTableLogo)`
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+`
+
 export default function Vest () {
   const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
@@ -988,12 +995,12 @@ export default function Vest () {
                 return <tr key={index}>
                   <DBTd>
                     <TokenTableCoinBox>
-                      <TokenTableLogo onClick={() => {
+                      <TokenTableLogoWrapper onClick={() => {
                         setNftLogo(item?.image)
                         setNftLogoModel(true)
                       }} style={{cursor: 'pointer'}}>
                         <img src={item?.image} />
-                      </TokenTableLogo>
+                      </TokenTableLogoWrapper>
                       <TokenNameBox>
                         <h3>{item.id}</h3>
                         {/* <p>{config.getBaseCoin(item?.name, chainId, 1)}</p> */}
