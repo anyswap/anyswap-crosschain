@@ -15,6 +15,10 @@ import {
   SwapInputContent,
 } from './style'
 
+import {
+  INIT_TIME
+} from './data'
+
 const DateInputBox = styled.div`
   width: 100%;
   height:56.8px;
@@ -271,7 +275,7 @@ function RadiosStyle ({
   )
 }
 
-const initweek = 14
+const initweek = INIT_TIME
 
 export default function LockAmount ({
   lockEnds,

@@ -28,7 +28,7 @@ import {selectNetwork} from '../../config/tools/methods'
 
 import AppBody from '../AppBody'
 
-import {MULTI_TOKEN, veMULTI} from './data'
+import {MULTI_TOKEN, veMULTI, INIT_TIME} from './data'
 
 import LockAmount from './lockAmount'
 import LockDuration from './lockDuration'
@@ -72,7 +72,7 @@ const BackArrowView = styled.div`
   top:5px;
 `
 
-const initweek = 14
+const initweek = INIT_TIME
 export default function CreateLock () {
   const { t } = useTranslation()
   const { chainId, evmAccount: account } = useActiveReact()
