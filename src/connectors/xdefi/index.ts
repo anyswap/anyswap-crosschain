@@ -16,7 +16,7 @@ function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
 export class NoXdefiProviderError extends Error {
   public constructor() {
     super();
-    this.name = this.constructor.name;
+    this.name = this?.constructor?.name ?? '';
     this.message = "No Xdefi provider was found on window.xfi.";
   }
 }
@@ -24,7 +24,7 @@ export class NoXdefiProviderError extends Error {
 export class UserRejectedRequestError extends Error {
   public constructor() {
     super();
-    this.name = this.constructor.name;
+    this.name = this?.constructor?.name ?? '';
     this.message = "The user rejected the request.";
   }
 }
