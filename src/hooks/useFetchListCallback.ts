@@ -17,9 +17,12 @@ import { AppState } from '../state'
 import {useActiveReact} from './useActiveReact'
 
 import config from '../config'
+import {spportChainArr} from '../config/chainConfig'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {
-  MAIN_COIN_SORT
+  MAIN_COIN_SORT,
+  USE_VERSION,
+  VERSION
 } from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 import {
@@ -116,7 +119,7 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
   const nftlists = useSelector<AppState, AppState['nft']['nftlist']>(state => state.nft.nftlist)
   return useCallback(
     async () => {
-      if (!chainId) return
+      if (!chainId || !spportChainArr.includes(chainId.toString())) return
       
       return getVersion().then(async(res:any) => {
         // let curTokenList:any = {}
@@ -163,12 +166,15 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           const curDbNftList:any = await getNftlist(chainId)
           const curLSNftList:any = nftlists && nftlists[chainId] ? nftlists[chainId] : {}
           const localNftVersion = curDbNftList?.version ?? curLSNftList?.version
-          console.log(curLSNftList)
-          console.log(curDbNftList)
+          // console.log(curLSNftList)
+          // console.log(curDbNftList)
           if (
-            !serverVersion
-            || !localNftVersion
-            || localNftVersion !== serverVersion
+            USE_VERSION === VERSION.V7_TEST
+            && (
+              !serverVersion
+              || !localNftVersion
+              || localNftVersion !== serverVersion
+            )
           ) {
             getServerNftTokenlist(chainId).then(res => {
               console.log(res)
