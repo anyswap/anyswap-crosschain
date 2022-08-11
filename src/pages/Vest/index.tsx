@@ -1019,11 +1019,17 @@ export default function Vest () {
                         setModalOpen(true)
                       }}>{t('Claim')}</TokenActionBtn1>
                       <TokenActionBtn1 disabled={parseInt(Date.now() / 1000 + '') < Number(item.lockEnds) || disabled || item.type === 'VESHARE'} onClick={() => {
+                        // console.log(rewardList)
+                        // console.log(item)
                         const rewardCount = useVeMultiToken?.decimals && rewardList?.[item.id]?.totalReward? BigAmount.format(useVeMultiToken.decimals, rewardList[item.id].totalReward).toExact() : ''
                         if (rewardCount && Number(rewardCount) >= 0.001) {
                           console.log(rewardCount)
                           alert('Please claim the reward first')
-                        } else if (parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)) {
+                        } else if (
+                          !rewardList
+                          || !rewardList[item.id]
+                          || parseInt(Date.now() / 1000 + '') < Number(item.lockEnds)
+                        ) {
                           alert('Loading')
                         } else {
                           const now = parseInt(Date.now() / 1000 + '')
