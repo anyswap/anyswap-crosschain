@@ -22,6 +22,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: BLOCK_MAINNET,
+    nodeRpcList: [],
     chainID: BLOCK_MAIN_CHAINID,
     lookHash: BLOCK_MAIN_EXPLORER + '/tx/',
     lookAddr: BLOCK_MAIN_EXPLORER + '/address/',

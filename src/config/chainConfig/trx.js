@@ -21,6 +21,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: TRX_MAINNET,
+    nodeRpcList: [],
     chainID: TRX_MAIN_CHAINID,
     lookHash: TRX_MAIN_EXPLORER + '/transaction/',
     lookAddr: TRX_MAIN_EXPLORER + '/address/',

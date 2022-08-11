@@ -22,6 +22,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: NAS_MAINNET,
+    nodeRpcList: [],
     chainID: NAS_MAIN_CHAINID,
     lookHash: NAS_MAIN_EXPLORER + '/tx/',
     lookAddr: NAS_MAIN_EXPLORER + '/address/',
