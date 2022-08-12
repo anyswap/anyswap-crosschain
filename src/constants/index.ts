@@ -50,22 +50,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#E8831D'
   },
-  OKEXCHAIN: {
-    connector: injected,
-    name: 'MetaX',
-    iconName: 'OKT.png',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#E8831D'
-  },
-  COIN98: {
-    connector: injected,
-    name: 'Coin98',
-    iconName: 'Coin98.png',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#E8831D'
-  },
   WALLET_CONNECT: {
     connector: walletconnect,
     name: 'WalletConnect',
@@ -83,6 +67,30 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#315CF5'
   },
+  tokenpocket: {
+    connector: injected,
+    name: 'TokenPocket',
+    iconName: 'TPT.jpg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
+  trustwallet: {
+    connector: walletconnect,
+    name: 'Trust Wallet',
+    iconName: 'TWT.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
+  gnosissafe: {
+    connector: gnosissafe,
+    name: 'Gnosis Safe',
+    iconName: 'GnosisSafe.svg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
   BITKEEP: {
     connector: injected,
     name: 'BitKeep',
@@ -99,6 +107,22 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#F0B90B',
     mobile: true,
+  },
+  OKEXCHAIN: {
+    connector: injected,
+    name: 'MetaX',
+    iconName: 'OKT.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D'
+  },
+  COIN98: {
+    connector: injected,
+    name: 'Coin98',
+    iconName: 'Coin98.png',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D'
   },
   Clover: {
     connector: clover,
@@ -125,30 +149,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#4196FC',
     mobile: true
-  },
-  tokenpocket: {
-    connector: injected,
-    name: 'TokenPocket',
-    iconName: 'TPT.jpg',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#269964',
-  },
-  trustwallet: {
-    connector: walletconnect,
-    name: 'Trust Wallet',
-    iconName: 'TWT.png',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#269964',
-  },
-  gnosissafe: {
-    connector: gnosissafe,
-    name: 'Gnosis Safe',
-    iconName: 'GnosisSafe.svg',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#269964',
   },
 }
 

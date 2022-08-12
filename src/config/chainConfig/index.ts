@@ -64,6 +64,7 @@ import xlm from './xlm'
 import ont from './ont'
 import mintme from './mintme'
 import bch from './bch'
+import nova from './nova'
 
 import { ChainId } from './chainId'
 
@@ -73,6 +74,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...nova,
   ...bch,
   ...mintme,
   ...ont,
@@ -194,6 +196,7 @@ const allChainList = [
   ChainId.ONT,
   ChainId.MINTME,
   ChainId.BCH,
+  ChainId.NOVA,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

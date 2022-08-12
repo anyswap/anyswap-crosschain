@@ -39,12 +39,6 @@ function useChain (data:any) {
   }
   return list
 }
-// export const BASE_INFO = {
-//   name: 'Multichain',
-//   symbol: 'MULTI',
-//   decimals: 18,
-//   label: 'multichain'
-// }
 
 export const VENFT_BASE_INFO = {
   name: 'veMULTI NFT',
@@ -58,14 +52,11 @@ export const veSHARE:any = useChain({
     ...VENFT_BASE_INFO,
     address: '0x4d2E8b5FA1bB62C2e9bBA2b2b23902bf06230345'
   },
+  [ChainId.BNB]: {
+    ...VENFT_BASE_INFO,
+    address: '0x55F8D898760240E6Eff3c2cc23974Ae8C8fcEEfD'
+  },
 })
-
-// export const MULTI_TOKEN:any = useChain({
-//   [ChainId.BNB_TEST]: {
-//     ...BASE_INFO,
-//     address: '0x89Ea10f213008e4e26483A2d2A6b6852E4997A49'
-//   },
-// })
 
 export const REWARD_TOKEN:any = useChain({
   [ChainId.BNB_TEST]: {
@@ -74,17 +65,20 @@ export const REWARD_TOKEN:any = useChain({
     decimals: 18,
     address: '0x86e2c741Bf2BC6772Fed68a75eaa5bfab4a76d16'
   },
+  [ChainId.BNB]: {
+    name: 'USDCoin',
+    symbol: 'USDC',
+    decimals: 18,
+    address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
+  },
 })
-
-// export const REWARD:any = useChain({
-//   [ChainId.BNB_TEST]: {
-//     address: '0xbAD169597E88404021435b743E809fC640b526f5'
-//   },
-// })
 
 export const VESHARE:any = useChain({
   [ChainId.BNB_TEST]: {
     address: '0x76c11a1de011de898802b1C81bce768d22B431b1'
+  },
+  [ChainId.BNB]: {
+    address: '0x13Ee726D95742D437ebb664Bf0d3fEff8Dbe2a26'
   },
 })
 
