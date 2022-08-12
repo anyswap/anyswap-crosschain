@@ -25,7 +25,7 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
     // console.log(value)
     if (value && Number(value) && Number(value) > 0) {
       const dec = Math.min(6, decimals)
-      value = value.toFixed(7)
+      value = value.toFixed(Math.min(7, decimals))
       return {
         fee: fee,
         outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
