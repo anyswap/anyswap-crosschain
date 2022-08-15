@@ -82,4 +82,5 @@ export enum ChainId {
   MINTME = '24734',
   BCH = '10000',
   NOVA = '42170',
+  FITFI = '1234',
 }

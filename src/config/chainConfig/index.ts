@@ -65,6 +65,7 @@ import ont from './ont'
 import mintme from './mintme'
 import bch from './bch'
 import nova from './nova'
+import fitfi from './fitfi'
 
 import { ChainId } from './chainId'
 
@@ -74,6 +75,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...fitfi,
   ...nova,
   ...bch,
   ...mintme,
@@ -197,6 +199,7 @@ const allChainList = [
   ChainId.MINTME,
   ChainId.BCH,
   ChainId.NOVA,
+  ChainId.FITFI,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

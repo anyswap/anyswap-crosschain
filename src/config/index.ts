@@ -25,6 +25,7 @@ const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridg
 const config: ConFig = {
   ...netConfig,
   ...INITBRIDGE,
+  localChainId: ENV,
   env,
   version,
   ENV_NODE_CONFIG,

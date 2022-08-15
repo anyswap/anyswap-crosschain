@@ -9,6 +9,7 @@ import {useNearAddress} from './near'
 import {connectXlmWallet} from './stellar'
 
 import { ChainId } from '../config/chainConfig/chainId'
+import config from '../config'
 
 export function useActiveReact () {
   const { account, chainId } = useActiveWeb3React()
@@ -20,7 +21,9 @@ export function useActiveReact () {
   // console.log(xlmAddress)
   return useMemo(() => {
     let useAccount = account
-    const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : chainId
+    const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : (chainId ? chainId : config.localChainId)
+    // console.log(config)
+    // console.log(useChainId)
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       useAccount = connectedWallet?.walletAddress
     } else if (selectNetworkInfo?.label === ChainId.BTC) {
