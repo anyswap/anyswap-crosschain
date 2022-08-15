@@ -8,7 +8,7 @@ import styled, { css } from 'styled-components'
 import { isMobile } from 'react-device-detect'
 // import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 import { injected } from '../../connectors'
-import { NetworkContextName } from '../../constants'
+// import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import {useActiveReact} from '../../hooks/useActiveReact'
 // import { useWalletModalToggle } from '../../state/application/hooks'
@@ -184,8 +184,8 @@ function Web3StatusInner() {
 }
 
 export default function Web3Status() {
-  const { active } = useWeb3React()
-  const contextNetwork = useWeb3React(NetworkContextName)
+  // const { active } = useWeb3React()
+  // const contextNetwork = useWeb3React(NetworkContextName)
 
   // const {account} = useActiveReact()
 
@@ -198,10 +198,11 @@ export default function Web3Status() {
 
   const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
   const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
-
-  if (!contextNetwork.active && !active) {
-    return null
-  }
+  // console.log(contextNetwork)
+  // console.log(active)
+  // if (!contextNetwork.active && !active) {
+  //   return null
+  // }
 
   return (
     <>

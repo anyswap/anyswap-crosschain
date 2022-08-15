@@ -138,14 +138,14 @@ export default function WalletModal({
 
   // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
   const {walletView, setWalletView} = useWalletViews()
-  // console.log(walletView1)
+
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
 
   const [pendingError, setPendingError] = useState<boolean>()
 
   const walletModalOpen = useModalOpen(ApplicationModal.WALLET)
   const toggleWalletModal = useWalletModalToggle()
-
+  
   const previousAccount = usePrevious(account)
 
   // close on connection, when logged out before

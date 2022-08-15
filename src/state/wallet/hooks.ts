@@ -393,6 +393,7 @@ export function useWalletViews () {
   // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
   const setWalletView = useCallback((type: any) => {
+    // console.log(type)
     dispatch(walletViews({type}))
   }, [])
 
