@@ -30,8 +30,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-export const INIT_VERSION = VERSION.V7
-// export const INIT_VERSION = VERSION.V7_TEST
+// export const INIT_VERSION = VERSION.V7
+export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -91,9 +91,9 @@ export const MAIN_COIN_SORT:any = {
   'MAI': {sort: 8},
 }
 
-export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
+// export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
-// export const bridgeApi = 'http://localhost:8107'
+export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 export const explorer = 'https://anyswap.net'
 

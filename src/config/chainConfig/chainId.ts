@@ -83,4 +83,6 @@ export enum ChainId {
   BCH = '10000',
   NOVA = '42170',
   FITFI = '1234',
+  IOTA = 'IOTA',
+  IOTA_TEST = 'IOTA_TEST',
 }

@@ -13,7 +13,7 @@ export const NEAR_TEST_EXPLORER = 'https://explorer.testnet.near.org'
 const symbol = 'NEAR'
 
 const bridgeToken = {
-  [VERSION.V1]: {
+  [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: ''
   }

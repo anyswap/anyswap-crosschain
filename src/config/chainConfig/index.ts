@@ -66,6 +66,7 @@ import mintme from './mintme'
 import bch from './bch'
 import nova from './nova'
 import fitfi from './fitfi'
+import iota from './iota'
 
 import { ChainId } from './chainId'
 
@@ -75,6 +76,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...iota,
   ...fitfi,
   ...nova,
   ...bch,
@@ -216,6 +218,7 @@ const testChainList = [
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
   ChainId.XLM_TEST,
+  ChainId.IOTA_TEST,
 ]
 
 const useChain:any = {

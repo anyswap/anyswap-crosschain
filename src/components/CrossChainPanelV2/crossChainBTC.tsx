@@ -42,6 +42,7 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 const CrossChainTip = styled.div`
   width: 100%;
@@ -164,7 +165,15 @@ export default function CrossChain({
     setP2pAddress('')
     setMemo('')
     if (recipient && selectCurrency && destConfig && selectChain) {
-      if (chainId === 'XRP') {
+      // if (chainId === 'XRP') {
+        if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+          // console.log(destConfig)
+          setP2pAddress(recipient)
+          // setMemo(`{data: ${recipient}}`)
+          setMemo('')
+          setModalSpecOpen(true)
+          setDelayAction(false)
+        } else if ([ChainId.XRP].includes(chainId)) {
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
@@ -222,9 +231,18 @@ export default function CrossChain({
         }}
       >
         <ListBox>
-          
           {
-            chainId === 'XRP' ? (
+            [ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId) ? (
+              <>
+                <CrossChainTip>
+                  Please use IOTA wallet to transfer IOTA token to deposit address and input receive address on dest chain as input.
+                  <p className='red'>If you don&apos;t input, you will not receive IOTA on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          }
+          {
+            [ChainId.XRP].includes(chainId) ? (
               <>
                 <CrossChainTip>
                   Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
@@ -234,7 +252,7 @@ export default function CrossChain({
             ) : ''
           }
           {
-            chainId === 'XRP' ? '' : (
+            [ChainId.XRP].includes(chainId) ? '' : (
               <div className="item">
                 <p className="label">Value:</p>
                 <p className="value">{inputBridgeValue}</p>
