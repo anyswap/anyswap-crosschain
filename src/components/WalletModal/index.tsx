@@ -13,6 +13,8 @@ import usePrevious from '../../hooks/usePrevious'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
+import {useWalletViews} from '../../state/wallet/hooks'
+import {WALLET_VIEWS} from '../../state/wallet/actions'
 // import { ExternalLink } from '../../theme'
 import AccountDetails from '../AccountDetails'
 
@@ -111,12 +113,12 @@ const HoverText = styled.div`
   }
 `
 
-const WALLET_VIEWS = {
-  OPTIONS: 'options',
-  OPTIONS_SECONDARY: 'options_secondary',
-  ACCOUNT: 'account',
-  PENDING: 'pending'
-}
+// const WALLET_VIEWS = {
+//   OPTIONS: 'options',
+//   OPTIONS_SECONDARY: 'options_secondary',
+//   ACCOUNT: 'account',
+//   PENDING: 'pending'
+// }
 
 export default function WalletModal({
   pendingTransactions,
@@ -134,8 +136,9 @@ export default function WalletModal({
 // console.log(connector)
   const { t } = useTranslation()
 
-  const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
-
+  // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+  const {walletView, setWalletView} = useWalletViews()
+  // console.log(walletView1)
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
 
   const [pendingError, setPendingError] = useState<boolean>()

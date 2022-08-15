@@ -1,5 +1,4 @@
-import { Version } from '@uniswap/token-lists'
 
-export default function listVersionLabel(version: Version): string {
+export default function listVersionLabel(version: any): string {
   return `v${version.major}.${version.minor}.${version.patch}`
 }

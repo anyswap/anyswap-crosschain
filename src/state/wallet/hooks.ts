@@ -1,7 +1,7 @@
 // import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from 'anyswap-sdk'
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from 'anyswap-sdk'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
 import {useActiveWeb3React} from '../../hooks'
@@ -11,11 +11,10 @@ import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { BigAmount } from '../../utils/formatBignumber'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
-import { AppState } from '../index'
+import { AppState, AppDispatch } from '../index'
 
 import {gnosissafe} from '../../connectors'
-
-// import { tokenBalanceList } from './actions'
+import { walletViews } from './actions'
 
 export function useIsGnosisSafeWallet () {
   const { connector } = useActiveWeb3React()
@@ -384,4 +383,21 @@ export function useCurrencyBalance(account?: string, currency?: Currency, chainI
       return undefined
     }
   }, [account, currency, chainId, isETH, balanceWallet, blItem])
+}
+
+
+
+export function useWalletViews () {
+  const walletViewsResult:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.walletViews)
+  const dispatch = useDispatch<AppDispatch>()
+  // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+
+  const setWalletView = useCallback((type: any) => {
+    dispatch(walletViews({type}))
+  }, [])
+
+  return {
+    walletView: walletViewsResult,
+    setWalletView
+  }
 }

@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 
 export type PopupContent =
   | {
@@ -12,8 +11,8 @@ export type PopupContent =
   | {
       listUpdate: {
         listUrl: string
-        oldList: TokenList
-        newList: TokenList
+        oldList: any
+        newList: any
         auto: boolean
       }
     }

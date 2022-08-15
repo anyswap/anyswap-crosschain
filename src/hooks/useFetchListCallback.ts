@@ -1,6 +1,4 @@
-// import { nanoid } from '@reduxjs/toolkit'
-// import { ChainId } from 'anyswap-sdk'
-// import { TokenList } from '@uniswap/token-lists'
+
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
@@ -17,7 +15,7 @@ import { AppState } from '../state'
 import {useActiveReact} from './useActiveReact'
 
 import config from '../config'
-import {spportChainArr} from '../config/chainConfig'
+// import {spportChainArr} from '../config/chainConfig'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {
   MAIN_COIN_SORT,
@@ -119,7 +117,7 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
   const nftlists = useSelector<AppState, AppState['nft']['nftlist']>(state => state.nft.nftlist)
   return useCallback(
     async () => {
-      if (!chainId || !spportChainArr.includes(chainId.toString())) return
+      if (!chainId) return
       
       return getVersion().then(async(res:any) => {
         // let curTokenList:any = {}
