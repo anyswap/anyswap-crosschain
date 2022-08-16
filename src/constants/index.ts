@@ -9,7 +9,7 @@ import {
   bsc,
   clover,
   xdefi,
-  // gnosissafe
+  gnosissafe
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -83,14 +83,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#269964',
   },
-  // gnosissafe: {
-  //   connector: gnosissafe,
-  //   name: 'Gnosis Safe',
-  //   iconName: 'GnosisSafe.svg',
-  //   description: 'Easy-to-use browser extension.',
-  //   href: null,
-  //   color: '#269964',
-  // },
+  gnosissafe: {
+    connector: gnosissafe,
+    name: 'Gnosis Safe',
+    iconName: 'GnosisSafe.svg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#269964',
+  },
   BITKEEP: {
     connector: injected,
     name: 'BitKeep',
