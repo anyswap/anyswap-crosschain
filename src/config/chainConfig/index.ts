@@ -217,8 +217,6 @@ const testChainList = [
   ChainId.INTAIN_TEST,
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
-  ChainId.XLM_TEST,
-  ChainId.IOTA_TEST,
 ]
 
 const useChain:any = {
@@ -328,6 +326,8 @@ const useChain:any = {
   [VERSION.V7_TEST]: [
     ...testChainList,
     ChainId.NEAR_TEST,
+    ChainId.XLM_TEST,
+    ChainId.IOTA_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
