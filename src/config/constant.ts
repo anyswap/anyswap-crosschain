@@ -30,8 +30,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
-export const INIT_VERSION = VERSION.V7_TEST
+export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -58,6 +58,8 @@ function getUrlVersion (init:any) {
     version = VERSION.V6
   } else if (
     url.indexOf('https://app.multichain.org') === 0
+    || url.indexOf('https://bridge.multichain.org') === 0
+    || url.indexOf('https://conflux.multichain.org') === 0
     || url.indexOf('https://app.multichain.tools') === 0
     || url.indexOf('https://conflux.multichain.tools') === 0
   ) {
@@ -91,9 +93,9 @@ export const MAIN_COIN_SORT:any = {
   'MAI': {sort: 8},
 }
 
-// export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
+export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
-export const bridgeApi = 'http://localhost:8107'
+// export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 export const explorer = 'https://anyswap.net'
 

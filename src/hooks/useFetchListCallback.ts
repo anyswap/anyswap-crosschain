@@ -129,6 +129,9 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           const curDbTokenList:any = await getTokenlist(chainId)
           const curLSTokenList:any = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
           const localTokenVersion = curDbTokenList?.version ?? curLSTokenList?.version
+          // console.log(!serverVersion)
+          // console.log(!localTokenVersion)
+          // console.log(localTokenVersion !== serverVersion)
           if (
             !serverVersion
             || !localTokenVersion

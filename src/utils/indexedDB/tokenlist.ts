@@ -15,7 +15,7 @@ const READWRITE = 'readwrite'
 
 let db:any = {}
 // let objectStore: any = {}
-const tokenlistReauest = w.indexedDB.open(TOKENLIST, 10);
+const tokenlistReauest = w.indexedDB.open(TOKENLIST, 11);
 console.log(tokenlistReauest)
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
@@ -28,16 +28,44 @@ tokenlistReauest.onsuccess = function(event:any) {
 
 tokenlistReauest.onupgradeneeded = function (event:any) {
   db = event.target.result;
-  // console.log(event)
-  if (!db.objecttables || !db.objecttables.contains(TOKENPATH)) { //判断数据库中是否已经存在该名称的数据表
+  // console.log(db)
+  // console.log(db.objecttables)
+  // console.log(db.objectStoreNames)
+  const dbTableList:any = {}
+  // console.log(db.objecttables.contains(TOKENPATH))
+  if (db?.objectStoreNames) {
+    for (const key in db?.objectStoreNames) {
+      const val = db?.objectStoreNames[key]
+      // console.log(key)
+      if (val === TOKENPATH) {
+        dbTableList[TOKENPATH] = 1
+      }
+      if (val === POOLPATH) {
+        dbTableList[POOLPATH] = 1
+      }
+      if (val === NFTPATH) {
+        dbTableList[NFTPATH] = 1
+      }
+    }
+  }
+  if (!dbTableList[TOKENPATH]) { //判断数据库中是否已经存在该名称的数据表
     db.createObjectStore(TOKENPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
-  if (!db.objecttables || !db.objecttables.contains(POOLPATH)) { //判断数据库中是否已经存在该名称的数据表
+  if (!dbTableList[POOLPATH]) { //判断数据库中是否已经存在该名称的数据表
     db.createObjectStore(POOLPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
-  if (!db.objecttables || !db.objecttables.contains(NFTPATH)) { //判断数据库中是否已经存在该名称的数据表
+  if (!dbTableList[NFTPATH]) { //判断数据库中是否已经存在该名称的数据表
     db.createObjectStore(NFTPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
   }
+  // if (!db.objecttables || !db.objecttables.contains(TOKENPATH)) { //判断数据库中是否已经存在该名称的数据表
+  //   db.createObjectStore(TOKENPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+  // }
+  // if (!db.objecttables || !db.objecttables.contains(POOLPATH)) { //判断数据库中是否已经存在该名称的数据表
+  //   db.createObjectStore(POOLPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+  // }
+  // if (!db.objecttables || !db.objecttables.contains(NFTPATH)) { //判断数据库中是否已经存在该名称的数据表
+  //   db.createObjectStore(NFTPATH, { keyPath: TOKENKEY }).createIndex(TOKENKEY, TOKENKEY, { unique: true });
+  // }
 }
 db.onerror = function(event:any) {
   console.error("Database error: " + event.target.errorCode);
