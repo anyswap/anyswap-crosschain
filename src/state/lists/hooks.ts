@@ -61,10 +61,10 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
 
   const [tokenlist, setTokenlist] = useState<any>({})
   const getCurTokenlist = useCallback(() => {
-    console.log(useChain)
+    // console.log(useChain)
     if (isSupportIndexedDB) {
       getTokenlist(useChain).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         if (res?.tokenList) {
           setTokenlist(res.tokenList)
         } else {

@@ -418,7 +418,8 @@ export default function HistoryDetails ({
           </span>
         </ChainStatusBox> */}
         
-        <TxnsProgress fromStatus={fromStatus} toStatus={toStatus} />
+        {/* <TxnsProgress fromStatus={fromStatus} toStatus={toStatus} /> */}
+        <TxnsProgress hash={txid} />
         {
           avgTime ? (
             <TxnsDtilList>
