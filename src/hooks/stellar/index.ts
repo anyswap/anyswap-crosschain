@@ -1,12 +1,15 @@
 
 import { useDispatch, useSelector } from 'react-redux'
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useTranslation } from 'react-i18next'
 import {getWeb3} from '../../utils/tools/web3UtilsV2'
 import config from '../../config'
 import { ChainId } from "../../config/chainConfig/chainId"
 import { AppState, AppDispatch } from '../../state'
 
-import {xlmAddress} from './actions'
+import { BigAmount } from '../../utils/formatBignumber'
+import { tryParseAmount3 } from '../../state/swap/hooks'
+import {xlmAddress, balanceList} from './actions'
 
 const StellarSdk = require('stellar-sdk')
 const NOT_APPLICABLE = { }
@@ -79,25 +82,46 @@ export function connectXlmWallet () {
 
 export function useXlmBalance () {
   const {xlmAddress} = connectXlmWallet()
-
+  const dispatch = useDispatch<AppDispatch>()
+  const balanceListResult:any = useSelector<AppState, AppState['xlm']>(state => state.xlm.balanceList)
+  const TimeKey = 'timestamp'
   const getAllBalance = useCallback((chainId:any, account?:any) => {
     return new Promise(resolve => {
       const useAccount = account ? account : xlmAddress
       if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId) && useAccount) {
         // console.log(useAccount)
-        const url = `${config.chainInfo[chainId].nodeRpc}/accounts/${useAccount}`
-        fetch(url).then(res => res.json()).then(json => {
-          // console.log(json)
-          resolve(json)
-        }).catch((err) => {
-          console.log(err)
-          resolve('')
-        })
+        if (balanceListResult && balanceListResult[TimeKey] && Date.now() - balanceListResult[TimeKey] < 5000) {
+          resolve(balanceListResult)
+        } else {
+          const url = `${config.chainInfo[chainId].nodeRpc}/accounts/${useAccount}`
+          fetch(url).then(res => res.json()).then(json => {
+            // console.log(json)
+            const res = json
+            const list:any = {[TimeKey]: Date.now()}
+            for (const obj of res.balances) {
+              let token = obj.asset_code + '/' + obj.asset_issuer
+              if (obj.asset_type === 'native') {
+                token = 'native'
+              } else if (obj.asset_code && obj.asset_issuer) {
+                token = obj.asset_code + '/' + obj.asset_issuer
+              }
+              list[token] = {
+                balance: obj.balance,
+              }
+            }
+            // console.log(list)
+            dispatch(balanceList({list}))
+            resolve(list)
+          }).catch((err) => {
+            console.log(err)
+            resolve('')
+          })
+        }
       } else {
         resolve('')
       }
     })
-  }, [xlmAddress])
+  }, [xlmAddress, balanceListResult])
 
   return {
     getAllBalance
@@ -140,66 +164,101 @@ export function useXlmCrossChain (
   chainId:any,
   selectCurrency:any,
   selectChain:any,
+  receiveAddress:any,
+  receiveXlmAddress:any,
+  typedValue:any
 ): {
   inputError?: string
   balance?: any,
   execute?: undefined | (() => Promise<void>)
 } {
+  const { t } = useTranslation()
   const {xlmAddress} = connectXlmWallet()
   const url = config.chainInfo[chainId].nodeRpc
   const server = new StellarSdk.Server(url)
-  const receiveAddress = '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249'
-  const receiveXlmAddress = 'GC2YB64P5VXJQATUZN7UJOEINHROOIRJLYW3F6Q3AARZJ55UVGHUZRSL'
+  const {getAllBalance} = useXlmBalance()
+
+  const [balance, setBalance] = useState<any>()
+
+  useEffect(() => {
+    getAllBalance(chainId, xlmAddress).then((res:any) => {
+      // console.log(res)
+      const token = selectCurrency?.address
+      const dec = selectCurrency?.decimals
+      // console.log(token)
+      // console.log(res?.[token]?.balance)
+      if (res?.[token]?.balance) {
+        const blvalue = tryParseAmount3(res?.[token]?.balance, dec)
+        const bl = res ? BigAmount.format(dec, blvalue) : undefined
+        setBalance(bl)
+      }
+    })
+  }, [selectCurrency, xlmAddress, chainId])
+  // const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
+
+  let sufficientBalance = false
+  try {
+    // sufficientBalance = true
+    sufficientBalance = selectCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+  } catch (error) {
+    console.log(error)
+  }
+  // const receiveAddress = '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249'
+  // const receiveXlmAddress = 'GC2YB64P5VXJQATUZN7UJOEINHROOIRJLYW3F6Q3AARZJ55UVGHUZRSL'
   return useMemo(() => {
-    if (!xlmAddress || !chainId || !selectCurrency) return NOT_APPLICABLE
+    
+    if (!xlmAddress || !chainId || !selectCurrency || !receiveXlmAddress) return NOT_APPLICABLE
     return {
+      balance,
       execute: async () => {
-        const account = await server.loadAccount(xlmAddress)
-        console.log(account)
-        const fee = await server.fetchBaseFee();
-        const network = await window.freighterApi.getNetwork()
-        console.log(fee)
-        let asset = StellarSdk.Asset.native()
-        if (selectCurrency.tokenType === 'NATIVE' || selectCurrency.address === 'native') {
-          asset = StellarSdk.Asset.native()
-        } else {
-          const tokenArr = selectCurrency.address.split('/')
-          asset = new StellarSdk.Asset(tokenArr[0], tokenArr[1])
-        }
-        console.log(asset)
-        const memo = formatXlmMemo(receiveAddress, selectChain)
-        console.log(memo)
-        const transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: StellarSdk.Networks.TESTNET })
-        .addOperation(
-            // this operation funds the new account with XLM
-            StellarSdk.Operation.payment({
-                destination: receiveXlmAddress,
-                asset: asset,
-                amount: "2"
-            })
-        )
-        .setTimeout(30)
-        .addMemo(StellarSdk.Memo.hash(memo))
-        .build();
-        console.log(transaction)
-        console.log(transaction.toXDR())
-        console.log(window.freighterApi)
-        console.log(network)
-        const signedTransaction = await window.freighterApi.signTransaction(
-        // const signedTransaction = await signTransaction(
-          transaction.toXDR(),
-          network,
-        )
-        console.log(signedTransaction)
-        // const transaction = new Transaction(transactionXDR, networkPassphrase)
-        const tx = StellarSdk.TransactionBuilder.fromXDR(signedTransaction, StellarSdk.Networks.TESTNET)
         try {
+          const account = await server.loadAccount(xlmAddress)
+          console.log(account)
+          const fee = await server.fetchBaseFee();
+          const network = await window.freighterApi.getNetwork()
+          console.log(fee)
+          let asset = StellarSdk.Asset.native()
+          if (selectCurrency.tokenType === 'NATIVE' || selectCurrency.address === 'native') {
+            asset = StellarSdk.Asset.native()
+          } else {
+            const tokenArr = selectCurrency.address.split('/')
+            asset = new StellarSdk.Asset(tokenArr[0], tokenArr[1])
+          }
+          console.log(asset)
+          const memo = formatXlmMemo(receiveAddress, selectChain)
+          console.log(memo)
+          const transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: StellarSdk.Networks.TESTNET })
+          .addOperation(
+              // this operation funds the new account with XLM
+              StellarSdk.Operation.payment({
+                  destination: receiveXlmAddress,
+                  asset: asset,
+                  amount: typedValue
+              })
+          )
+          .setTimeout(30)
+          .addMemo(StellarSdk.Memo.hash(memo))
+          .build();
+          console.log(transaction)
+          console.log(transaction.toXDR())
+          console.log(window.freighterApi)
+          console.log(network)
+          const signedTransaction = await window.freighterApi.signTransaction(
+          // const signedTransaction = await signTransaction(
+            transaction.toXDR(),
+            network,
+          )
+          console.log(signedTransaction)
+          // const transaction = new Transaction(transactionXDR, networkPassphrase)
+          const tx = StellarSdk.TransactionBuilder.fromXDR(signedTransaction, StellarSdk.Networks.TESTNET)
+        
           const transactionResult = await server.submitTransaction(tx);
           console.log(transactionResult);
         } catch (err) {
           console.error(err);
         }
-      }
+      },
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [xlmAddress, chainId, selectCurrency, selectChain])
+  }, [xlmAddress, chainId, selectCurrency, selectChain, balance, receiveAddress, receiveXlmAddress, typedValue])
 }

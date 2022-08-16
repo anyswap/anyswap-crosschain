@@ -65,16 +65,11 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         getAllBalance(selectChainId).then((res:any) => {
           // console.log(res)
           if (res?.balances) {
-            for (const obj of res.balances) {
-              if (
-                (obj.asset_type === token)
-                || (obj.asset_code && obj.asset_issuer && (obj.asset_code + '/' + obj.asset_issuer) === token)
-              ) {
-                const blvalue = tryParseAmount3(obj.balance, dec)
-                const bl = res ? BigAmount.format(dec, blvalue) : undefined
-                savedBalance.current = bl
-                break
-              }
+            if (res?.[token]?.balance) {
+              // const dec = 7
+              const blvalue = tryParseAmount3(res?.[token]?.balance, dec)
+              const bl = res ? BigAmount.format(dec, blvalue) : undefined
+              savedBalance.current = bl
             }
           }
         })
@@ -140,16 +135,11 @@ export function useBaseBalances (
       // console.log(selectChainId)
       getAllBalance(selectChainId, uncheckedAddresses).then((res:any) => {
         // console.log(res)
-        if (res?.balances) {
-          for (const obj of res.balances) {
-            if (obj.asset_type === 'native') {
-              const dec = 7
-              const blvalue = tryParseAmount3(obj.balance, dec)
-              const bl = res ? BigAmount.format(dec, blvalue) : undefined
-              setBalance(bl)
-              break
-            }
-          }
+        if (res?.['native']?.balance) {
+          const dec = 7
+          const blvalue = tryParseAmount3(res?.['native']?.balance, dec)
+          const bl = res ? BigAmount.format(dec, blvalue) : undefined
+          setBalance(bl)
         }
       })
     }

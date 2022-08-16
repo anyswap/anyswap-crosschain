@@ -4,7 +4,7 @@ import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
-import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
+// import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -13,7 +13,8 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
-// import { useXlmCrossChain } from '../../hooks/stellar'
+import { useXlmCrossChain } from '../../hooks/stellar'
+import {useConnectWallet} from '../../hooks/useWallet'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -69,8 +70,8 @@ export default function CrossChain({
   const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   
-  const { connect } = useWallet()
-  // const connectedWallet = useConnectedWallet()
+  // const { connect } = useWallet()
+  const connectWallet = useConnectWallet()
   
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
@@ -182,22 +183,19 @@ export default function CrossChain({
     destConfig
   )
 
-  // const {execute} = useXlmCrossChain(
-  //   chainId,
-  //   selectCurrency,
-  //   selectChain
-  // )
-
-  // useEffect(() => {
-  //   if (execute) {
-  //     execute()
-  //   }
-  // }, [execute])
+  const {balance: xlmBalance,execute: onXlmWrap} = useXlmCrossChain(
+    chainId,
+    selectCurrency,
+    selectChain,
+    recipient,
+    destConfig?.router,
+    inputBridgeValue
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    // console.log(nearBalance)
+    console.log(xlmBalance)
     // console.log(chainId)
     // console.log(ChainId.NEAR)
     if (chainId === ChainId.NAS) {
@@ -209,16 +207,17 @@ export default function CrossChain({
       if (terraBalance) {
         return terraBalance?.toExact()
       }
-    } else if (
-      chainId === ChainId.NEAR
-      || chainId === ChainId.NEAR_TEST
-    ) {
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
       if (nearBalance) {
         return nearBalance?.toExact()
       }
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+      if (xlmBalance) {
+        return xlmBalance?.toExact()
+      }
     }
     return ''
-  }, [terraBalance,chainId,nasBalance, nearBalance])
+  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance])
   // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
@@ -414,12 +413,14 @@ export default function CrossChain({
                     onNebWrap().then(() => {
                       onClear()
                     })
-                  } else if (onNearWrap && (
-                    chainId === ChainId.NEAR
-                    || chainId === ChainId.NEAR_TEST
-                  )) {
+                  } else if (onNearWrap && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
                     console.log('onNebWrap')
                     onNearWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onXlmWrap && [ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+                    console.log('onXlmWrap')
+                    onXlmWrap().then(() => {
                       onClear()
                     })
                   }
@@ -539,20 +540,9 @@ export default function CrossChain({
           <BottomGrouping>
             {!account ? (
                 <>
-
                   <ButtonLight onClick={() => {
-                    if (connect) {
-                      try {
-                        connect(ConnectType.CHROME_EXTENSION)
-                        // setModalView(true)
-                      } catch (error) {
-                        alert('Please install Terra Station!')
-                      }
-                    } else {
-                      alert('Please install Terra Station!')
-                    }
+                    connectWallet()
                   }}>{t('ConnectWallet')}</ButtonLight>
-                  {/* <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight> */}
                 </>
               ) : (
                 <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
