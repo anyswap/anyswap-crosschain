@@ -127,9 +127,9 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
   
   return useCallback(
     async () => {
-      console.log(useChain)
+      // console.log(useChain)
       if (!useChain) return
-      console.log(useChain)
+      // console.log(useChain)
       
       return getVersion().then(async(res:any) => {
         // let curTokenList:any = {}
