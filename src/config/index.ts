@@ -19,13 +19,12 @@ interface ConFig {
 
 const ENV = getNetwork(ENV_NODE_CONFIG, INIT_NODE)
 const netConfig:ConFig = chainInfo[ENV] ? chainInfo[ENV] : chainInfo[INIT_NODE]
-// console.log(ENV)
+
 const INITBRIDGE = getInitBridgeChain(netConfig.bridgeInitChain, netConfig.bridgeInitToken)
 
 const config: ConFig = {
   ...netConfig,
   ...INITBRIDGE,
-  localChainId: ENV,
   env,
   version,
   ENV_NODE_CONFIG,
@@ -74,6 +73,7 @@ const config: ConFig = {
     return controlConfig[version]
   },
   getCurChainInfo (chainID:any) {
+    // console.log(chainID)
     if (chainID && chainInfo[chainID]) {
       return chainInfo[chainID]
     } else {

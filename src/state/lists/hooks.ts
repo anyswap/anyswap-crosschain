@@ -7,6 +7,7 @@ import { isAddress } from 'ethers/lib/utils'
 import {userSelectCurrency} from './actions'
 
 import {getTokenlist, isSupportIndexedDB} from '../../utils/indexedDB'
+import config from '../../config'
 
 
 
@@ -48,30 +49,40 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
   const updateTokenlistTime:any = useSelector<AppState, AppState['lists']>(state => state.lists.updateTokenlistTime)
   // console.log(chainId)
+
+  const useChain = useMemo(() => {
+    if (chainId) {
+      return chainId
+    } else if (config.getCurChainInfo(chainId).chainID) {
+      return config.getCurChainInfo(chainId).chainID
+    }
+    return undefined
+  }, [chainId])
+
   const [tokenlist, setTokenlist] = useState<any>({})
   const getCurTokenlist = useCallback(() => {
-    // console.log(updateTokenlistTime)
+    console.log(useChain)
     if (isSupportIndexedDB) {
-      getTokenlist(chainId).then((res:any) => {
+      getTokenlist(useChain).then((res:any) => {
         console.log(res)
         if (res?.tokenList) {
           setTokenlist(res.tokenList)
         } else {
-          let current = key ? lists[key]?.[chainId]?.tokenList : ''
+          let current = key ? lists[key]?.[useChain]?.tokenList : ''
           if (!current) current = {}
           setTokenlist(current)
         }
       })
     } else {
-      let current = key ? lists[key]?.[chainId]?.tokenList : ''
+      let current = key ? lists[key]?.[useChain]?.tokenList : ''
       if (!current) current = {}
       setTokenlist(current)
     }
-  }, [chainId, updateTokenlistTime])
+  }, [useChain, updateTokenlistTime])
 
   useEffect(() => {
     getCurTokenlist()
-  }, [getCurTokenlist, chainId, updateTokenlistTime])
+  }, [getCurTokenlist, useChain, updateTokenlistTime])
 
   return tokenlist
 }

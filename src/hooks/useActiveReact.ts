@@ -9,7 +9,7 @@ import {useNearAddress} from './near'
 import {connectXlmWallet} from './stellar'
 
 import { ChainId } from '../config/chainConfig/chainId'
-import config from '../config'
+// import config from '../config'
 
 export function useActiveReact () {
   const { account, chainId } = useActiveWeb3React()
@@ -19,9 +19,18 @@ export function useActiveReact () {
   const nearAddress = useNearAddress()
   const {xlmAddress} = connectXlmWallet()
   // console.log(xlmAddress)
+  // const useChain = useMemo(() => {
+  //   if (chainId) {
+  //     return chainId
+  //   } else if (config.getCurChainInfo(chainId).chainID) {
+  //     return config.getCurChainInfo(chainId).chainID
+  //   }
+  //   return undefined
+  // }, [chainId])
   return useMemo(() => {
     let useAccount = account
-    const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : (chainId ? chainId : config.localChainId)
+    // const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : (chainId ? chainId : config.getCurChainInfo(chainId).chainID)
+    const useChainId:any = selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : chainId
     // console.log(config)
     // console.log(useChainId)
     if (selectNetworkInfo?.label === ChainId.TERRA) {

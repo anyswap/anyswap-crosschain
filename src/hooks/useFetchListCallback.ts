@@ -1,5 +1,5 @@
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { getNetworkLibrary, NETWORK_CHAIN_ID } from '../connectors'
 import { AppDispatch } from '../state'
@@ -115,9 +115,21 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
   const tokenlists = useSelector<AppState, AppState['lists']['mergeTokenList']>(state => state.lists.mergeTokenList)
   const poollists = useSelector<AppState, AppState['pools']['poolList']>(state => state.pools.poolList)
   const nftlists = useSelector<AppState, AppState['nft']['nftlist']>(state => state.nft.nftlist)
+
+  const useChain = useMemo(() => {
+    if (chainId) {
+      return chainId
+    } else if (config.getCurChainInfo(chainId).chainID) {
+      return config.getCurChainInfo(chainId).chainID
+    }
+    return undefined
+  }, [chainId])
+  
   return useCallback(
     async () => {
-      if (!chainId) return
+      console.log(useChain)
+      if (!useChain) return
+      console.log(useChain)
       
       return getVersion().then(async(res:any) => {
         // let curTokenList:any = {}
@@ -126,8 +138,8 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           const serverVersion = res.data
 
           
-          const curDbTokenList:any = await getTokenlist(chainId)
-          const curLSTokenList:any = tokenlists && tokenlists[chainId] ? tokenlists[chainId] : {}
+          const curDbTokenList:any = await getTokenlist(useChain)
+          const curLSTokenList:any = tokenlists && tokenlists[useChain] ? tokenlists[useChain] : {}
           const localTokenVersion = curDbTokenList?.version ?? curLSTokenList?.version
           // console.log(!serverVersion)
           // console.log(!localTokenVersion)
@@ -137,35 +149,35 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
             || !localTokenVersion
             || localTokenVersion !== serverVersion
           ) {
-            getServerTokenlist(chainId).then(res => {
+            getServerTokenlist(useChain).then(res => {
               if (res) {
-                setTokenlist(chainId, res, serverVersion)
-                dispatch(mergeTokenList({ chainId: chainId, tokenList:res, version: serverVersion }))
+                setTokenlist(useChain, res, serverVersion)
+                dispatch(mergeTokenList({ chainId: useChain, tokenList:res, version: serverVersion }))
                 dispatch(updateTokenlistTime({}))
               }
             })
           }
 
-          const curDbPoolList:any = await getPoollist(chainId)
-          const curLSPoolList:any = poollists && poollists[chainId] ? poollists[chainId] : {}
+          const curDbPoolList:any = await getPoollist(useChain)
+          const curLSPoolList:any = poollists && poollists[useChain] ? poollists[useChain] : {}
           const localPoolVersion = curDbPoolList?.version ?? curLSPoolList?.version
           if (
             !serverVersion
             || !localPoolVersion
             || localPoolVersion !== serverVersion
           ) {
-            getServerPoolTokenlist(chainId).then(res => {
+            getServerPoolTokenlist(useChain).then(res => {
               // console.log(res)
               if (res) {
-                setPoollist(chainId, res, serverVersion)
-                dispatch(poolList({ chainId: chainId, tokenList:res, version: serverVersion }))
+                setPoollist(useChain, res, serverVersion)
+                dispatch(poolList({ chainId: useChain, tokenList:res, version: serverVersion }))
                 dispatch(updatePoollistTime({}))
               }
             })
           }
 
-          const curDbNftList:any = await getNftlist(chainId)
-          const curLSNftList:any = nftlists && nftlists[chainId] ? nftlists[chainId] : {}
+          const curDbNftList:any = await getNftlist(useChain)
+          const curLSNftList:any = nftlists && nftlists[useChain] ? nftlists[useChain] : {}
           const localNftVersion = curDbNftList?.version ?? curLSNftList?.version
           // console.log(curLSNftList)
           // console.log(curDbNftList)
@@ -177,11 +189,11 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
               || localNftVersion !== serverVersion
             )
           ) {
-            getServerNftTokenlist(chainId).then(res => {
+            getServerNftTokenlist(useChain).then(res => {
               console.log(res)
               if (res) {
-                setNftlist(chainId, res, serverVersion)
-                dispatch(nftlist({ chainId: chainId, tokenList:res, version: serverVersion }))
+                setNftlist(useChain, res, serverVersion)
+                dispatch(nftlist({ chainId: useChain, tokenList:res, version: serverVersion }))
                 dispatch(updateNftlistTime({}))
               }
             })
@@ -189,6 +201,6 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
         }
       })
     },
-    [dispatch, chainId]
+    [dispatch, useChain]
   )
 }

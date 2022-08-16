@@ -1,6 +1,6 @@
 import { createBrowserHistory } from 'history'
 
-import { chainInfo } from '../chainConfig'
+import { chainInfo,spportChainArr } from '../chainConfig'
 import { isAddress } from '../../utils'
 
 // import {ARBITRUM_MAIN_CHAINID} from './chainConfig/arbitrum'
@@ -112,21 +112,24 @@ export function getNetwork(ENV_NODE_CONFIG: any, INIT_NODE: any) {
   const urlParams = getParams('network')
   const srcchainid = getParams('srcchainid')
   const localHost = window.location.host
-  const localStr = window.localStorage.getItem(ENV_NODE_CONFIG)
+  let localStr = window.localStorage.getItem(ENV_NODE_CONFIG)
+  if (localStr && !spportChainArr.includes(localStr.toString())) {
+    localStr = INIT_NODE
+  }
   if (urlParams) {
     nc = getParamNode(urlParams, INIT_NODE)
-    window.localStorage.setItem(ENV_NODE_CONFIG, nc)
+    // window.localStorage.setItem(ENV_NODE_CONFIG, nc)
   } else if (srcchainid) {
     nc = getParamNode(srcchainid, INIT_NODE)
-    window.localStorage.setItem(ENV_NODE_CONFIG, nc)
+    // window.localStorage.setItem(ENV_NODE_CONFIG, nc)
   } else {
     if (localStr) {
       nc = localStr
     } else {
       nc = getNode(localHost, INIT_NODE)
-      window.localStorage.setItem(ENV_NODE_CONFIG, nc)
     }
   }
+  window.localStorage.setItem(ENV_NODE_CONFIG, nc)
   return nc
 }
 
