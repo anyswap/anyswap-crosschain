@@ -15,6 +15,11 @@ export function isEvmAddress(value: any): string | false {
   }
 }
 
+const IotaBech32Helper = {
+  BECH32_DEFAULT_HRP_MAIN: /^iota/,
+  BECH32_DEFAULT_HRP_DEV: /^atoi/
+}
+
 export function isAddress(address: any, chainId?: any) {
   if (!address) return undefined
   if (chainId) {
@@ -30,6 +35,19 @@ export function isAddress(address: any, chainId?: any) {
       return address && address.indexOf('0x') !== 0 ? address : false
     } else if (BTCARR.includes(chainId)) {
       return isBTCAddress(address, chainId)
+    } else if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+      if (chainId === ChainId.IOTA) {
+        if (IotaBech32Helper.BECH32_DEFAULT_HRP_MAIN.test(address)) {
+          return address
+        }
+        return false
+      } else {
+        if (IotaBech32Helper.BECH32_DEFAULT_HRP_DEV.test(address)) {
+          return address
+        }
+        return false
+      }
+      // return address && address.indexOf('0x') !== 0 ? address : false
     } else {
       return isEvmAddress(address)
     }
