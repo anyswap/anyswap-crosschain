@@ -13,7 +13,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import {
   ERC_TYPE,
-  useNftListState
+  useNftListState,
+  useNftInfo
 } from '../../state/nft/hooks'
 
 import { BottomGrouping } from '../../components/swap/styleds'
@@ -79,6 +80,17 @@ const ContentBody = styled.div`
   border-radius: 20px;
 `
 
+const NftImageView = styled.div`
+  ${({ theme }) => theme.flexC};
+  width:100%;
+  height: 300px;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    display:block;
+  }
+`
+
 // const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
 
 function getInitToken () {
@@ -100,6 +112,8 @@ export default function CroseNFT () {
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
 
+  const nftInfo = useNftInfo()
+
   // const [inputValue, setInputValue] = useState<any>('')
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
@@ -116,7 +130,7 @@ export default function CroseNFT () {
 
   useEffect(() => {
     setSelectTokenId('')
-  }, [chainId, selectCurrency])
+  }, [chainId, selectCurrency, account])
 
   useEffect(() => {
     // console.log(nftList)
@@ -161,7 +175,7 @@ export default function CroseNFT () {
   }, [nftList, chainId])
 
   const destConfig = useMemo(() => {
-    // console.log(selectDestCurrency)
+    console.log(selectDestCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -235,7 +249,8 @@ export default function CroseNFT () {
     account,
     selectTokenId?.tokenid,
     selectChain,
-    fee
+    fee,
+    destConfig
   )
   const { wrapType: wrapType1155, execute: onWrap1155, inputError: wrapInputError1155 } = useNFT1155Callback(
     routerToken,
@@ -244,7 +259,8 @@ export default function CroseNFT () {
     selectTokenId?.tokenid,
     selectChain,
     fee,
-    inputBridgeValue
+    inputBridgeValue,
+    destConfig
   )
   const { wrapType: wrapTypeAnycall, execute: onWrapAnycall, inputError: wrapInputErrorAnycall } = useAnycallNFT721Callback(
     routerToken,
@@ -252,22 +268,27 @@ export default function CroseNFT () {
     account,
     selectTokenId?.tokenid,
     selectChain,
-    fee
+    fee,
+    destConfig
   )
 
   const handleSwap = useCallback(() => {
     onDelay()
+    console.log(useSwapMethods)
     if (useSwapMethods) {
       if (useSwapMethods.indexOf('nft721SwapOut') !== -1) {
+        console.log('nft721SwapOut')
         if (onWrap) onWrap().then(() => {
           onClear()
         })
       } else if (useSwapMethods.indexOf('nft1155SwapOut') !== -1) {
+        console.log('nft1155SwapOut')
         if (onWrap1155) onWrap1155().then(() => {
           // console.log(hash)
           onClear()
         })
       } else if (useSwapMethods.indexOf('Swapout_no_fallback') !== -1) {
+        console.log('Swapout_no_fallback')
         if (onWrapAnycall) onWrapAnycall().then(() => {
           onClear()
         })
@@ -312,6 +333,11 @@ export default function CroseNFT () {
         state: 'Error',
         tip: t('selectChainId')
       }
+    } else if (!selectTokenId) {
+      return {
+        state: 'Error',
+        tip: t('selectTokenId')
+      }
     } else if (
       nfttype === ERC_TYPE.erc1155
       && (inputBridgeValue !== '' || inputBridgeValue === '0')
@@ -354,7 +380,7 @@ export default function CroseNFT () {
       }
     }
     return undefined
-  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig])
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, selectTokenId])
 
   const errorTip = useMemo(() => {
     // const isAddr = isAddress( recipient, selectChain)
@@ -364,19 +390,14 @@ export default function CroseNFT () {
     } else if (isInputError) {
       return isInputError
     }
-    // else if (
-    //   !Boolean(isAddr) 
-    // ) {
-    //   return {
-    //     state: 'Error',
-    //     tip: t('invalidRecipient')
-    //   }
-    // }
     return undefined
   }, [isInputError, selectChain, account, chainId])
 
   const isCrossBridge = useMemo(() => {
-    if (errorTip || !inputBridgeValue) {
+    if (
+      errorTip
+      || (!inputBridgeValue && nfttype === ERC_TYPE.erc1155)
+    ) {
       if (
          errorTip
         && errorTip.state === 'Warning'
@@ -387,7 +408,7 @@ export default function CroseNFT () {
       return true
     }
     return false
-  }, [errorTip, selectCurrency, inputBridgeValue])
+  }, [errorTip, selectCurrency, inputBridgeValue, nfttype])
 
   const {approvalState: approval721, approve: approveCallback721} = useApproveCallback(nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined, routerToken, selectTokenId?.tokenid)
   const {approvalState: approval1155, approve: approveCallback1155} = useApprove1155Callback(nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined, routerToken)
@@ -461,7 +482,9 @@ export default function CroseNFT () {
             {
               selectCurrency && selectTokenId ? (
                 <>
-                  <img src={selectTokenId?.image} />
+                  <NftImageView>
+                    <img src={nftInfo?.[selectCurrency?.address]?.[selectTokenId?.tokenid]?.imageUrl} />
+                  </NftImageView>
                 </>
               ) : ''
             }

@@ -21,6 +21,13 @@ export enum WrapType {
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 
+// export function getIPFSImg () {
+//   const url = `https://gateway.pinata.cloud/ipfs/QmXA5ooR2eCj3k85WzG9gDPgjX6FJTZoczd85qEQebjKSK/1.json`
+//   return new Promise(resolve => {
+
+//   })
+// }
+
 /**
  * 跨链any token
  * 给定选定的输入和输出货币，返回一个wrap回调
@@ -33,7 +40,8 @@ export function useNFT721Callback(
   toAddress:  any,
   tokenid: string | undefined,
   toChainID: string | undefined,
-  fee: any
+  fee: any,
+  destConfig: any
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -104,7 +112,7 @@ export function useNFT721Callback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: destConfig?.type
                   }
                   recordsTxns(data)
                 }
@@ -115,7 +123,7 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, destConfig])
 }
 
 /**
@@ -132,6 +140,7 @@ export function useNFT721Callback(
   toChainID: string | undefined,
   fee: any,
   amount: any,
+  destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -206,7 +215,7 @@ export function useNFT721Callback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: destConfig?.type
                   }
                   recordsTxns(data)
                 }
@@ -217,7 +226,7 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, inputAmount])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, inputAmount, destConfig])
 }
 
 
@@ -235,6 +244,7 @@ export function useNFT721Callback(
   tokenid: string | undefined,
   toChainID: string | undefined,
   fee: any,
+  destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -270,20 +280,26 @@ export function useNFT721Callback(
   }, [contract721, tokenid])
 
   return useMemo(() => {
+    // console.log(contract)
+    // console.log(chainId)
+    // console.log(inputCurrency)
+    // console.log(toAddress)
+    // console.log(nftBalance)
     // console.log(tokenid)
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || !(nftBalance?.toLowerCase() === account?.toLowerCase())) return NOT_APPLICABLE
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
 
     const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
-
+    // console.log(sufficientBalance)
     return {
       wrapType: WrapType.WRAP,
       execute:
         sufficientBalance && tokenid
           ? async () => {
               try {
+                console.log(11111)
                 const txReceipt = await contract.Swapout_no_fallback(
                   ...[
-                    inputCurrency?.address,
+                    tokenid,
                     toAddress,
                     toChainID
                   ],
@@ -302,7 +318,7 @@ export function useNFT721Callback(
                     to: toAddress?.toLowerCase(),
                     symbol: inputCurrency?.symbol,
                     routerToken: routerToken,
-                    version: inputCurrency?.version
+                    version: destConfig?.type
                   }
                   recordsTxns(data)
                 }
@@ -313,5 +329,5 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account])
+  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, destConfig])
 }

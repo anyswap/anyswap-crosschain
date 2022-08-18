@@ -10,7 +10,7 @@ import { MenuItem } from '../../components/SearchModal/styleds'
 import TokenLogo from '../../components/TokenLogo'
 
 import { useActiveWeb3React } from '../../hooks'
-import {useNFT721GetAllTokenidListCallback, useNFT1155GetAllTokenidListCallback, ERC_TYPE} from '../../state/nft/hooks'
+import {useNFT721GetAllTokenidListCallback, useNFT1155GetAllTokenidListCallback, ERC_TYPE, useNftInfo} from '../../state/nft/hooks'
 // import {useNFT721GetAllTokenidListCallback, useNFT1155GetAllTokenidListCallback} from '../../state/nft/hooks'
 
 interface SelectCurrencyProps {
@@ -58,7 +58,7 @@ export default function SelectCurrencyPanel ({
 
   const tokenidInfo721:any = useNFT721GetAllTokenidListCallback(tokenlist ? tokenlist : {})
   const tokenidInfo1155:any = useNFT1155GetAllTokenidListCallback(tokenlist ? tokenlist : {})
-
+  const nftInfo = useNftInfo()
   const tokenidList = useMemo(() => {
     const arr:any = []
     const token = selectCurrency?.address
@@ -169,7 +169,7 @@ export default function SelectCurrencyPanel ({
                 key={index}
                 // selected={otherSelected}
               >
-                <TokenLogo logoUrl={item?.image} size={'24px'}></TokenLogo>
+                <TokenLogo logoUrl={nftInfo?.[selectCurrency?.address]?.[item?.tokenid]?.imageUrl} size={'24px'}></TokenLogo>
                 <Column>
                   <Text title={item.tokenid} fontWeight={500}>
                     {item?.name ? item.name : item.tokenid}
@@ -199,7 +199,7 @@ export default function SelectCurrencyPanel ({
         <SelectCurrencyView onClick={() => {
           setModalTokenidOpen(true)
         }}>
-          <TokenLogo logoUrl={selectTokenId?.image} size={'46px'}></TokenLogo>
+          <TokenLogo logoUrl={nftInfo?.[selectCurrency?.address]?.[selectTokenId?.tokenid]?.imageUrl} size={'46px'}></TokenLogo>
           {
             selectTokenId ? (
               selectTokenId?.name ? selectTokenId?.name : selectTokenId?.tokenid

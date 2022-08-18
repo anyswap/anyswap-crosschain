@@ -7,13 +7,14 @@ import {
 } from './actions'
 
 import { JSBI } from 'anyswap-sdk'
-import axios from 'axios'
+// import axios from 'axios'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 // import { useNFTContract, useNFT721Contract } from './useContract'
 import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
 import ERC1155_INTERFACE from '../../constants/abis/bridge/erc1155'
 import {getNftlist, isSupportIndexedDB} from '../../utils/indexedDB'
+import {getAllNftImage} from '../../utils/getNFTimage'
 
 export enum ERC_TYPE {
   erc1155 = 'erc1155',
@@ -60,6 +61,13 @@ export function useNftState(): any {
 
   return list[chainId][account]
 }
+export function useNftInfo(): any {
+  const { chainId } = useActiveWeb3React()
+  const list:any = useSelector<AppState, AppState['nft']>(state => state.nft.nftlistinfo)
+  if (!chainId || !list[chainId] || !list[chainId] || !list[chainId].tokenList) return {}
+
+  return list[chainId].tokenList
+}
 
 export function useNFT721GetAllTokenidListCallback(
   tokenList: any
@@ -71,63 +79,47 @@ export function useNFT721GetAllTokenidListCallback(
   const dispatch = useDispatch<AppDispatch>()
 
   const tokenidInfo:any = useNftState()
-  // console.log(tokenidList)
-  const [tokenidList, setTokenidList] = useState<any>()
+  const nftInfo = useNftInfo()
+  // console.log(nftInfo)
+  // const [tokenidList, setTokenidList] = useState<any>()
   const [tokenidArr, setTokenidArr] = useState<any>()
   const [imageList, setImageList] = useState<any>()
-  // const [imageInfoList, setImageInfoList] = useState<any>()
 
-  const methodTURIName = 'tokenURI'
-  const fragmentTURI:any = useMemo(() => ERC721_INTERFACE?.getFunction(methodTURIName), [ERC721_INTERFACE, methodTURIName])
-
-  const noTokenidImg = useMemo(() => {
-    const arr:any = []
-    if (tokenidArr && tokenidArr.length > 0) {
-      for (let i = 0; i < tokenidArr.length; i++) {
-        const obj = tokenidArr[i]
-        if (Boolean(tokenidInfo[obj.token] && tokenidInfo[obj.token][obj.tokenid]?.image)) continue
-        arr.push(obj)
-      }
-      // console.log(arr)
-      return arr
-    }
-    return arr
-  }, [chainId, tokenidArr])
-
+  // const fragmentTURI:any = ERC721_INTERFACE?.getFunction('tokenURI')
+  const fragmentTURI:any = useMemo(() => ERC721_INTERFACE?.getFunction('tokenURI'), [ERC721_INTERFACE])
   const callsTURI = useMemo(
     () => {
       const arr:any = []
-      if (noTokenidImg && ERC721_INTERFACE && fragmentTURI && noTokenidImg.length > 0) {
-        for (let i = 0; i < noTokenidImg.length; i++) {
+      if (tokenidArr && ERC721_INTERFACE && tokenidArr.length > 0) {
+        for (let i = 0; i < tokenidArr.length; i++) {
+          if (Boolean(nftInfo?.[tokenidArr[i].token]?.[tokenidArr[i].tokenid]?.image)) continue
           arr.push({
-            address: noTokenidImg[i].token,
-            callData: ERC721_INTERFACE?.encodeFunctionData(fragmentTURI, [noTokenidImg[i].tokenid])
+            address: tokenidArr[i].token,
+            callData: ERC721_INTERFACE?.encodeFunctionData(fragmentTURI, [tokenidArr[i].tokenid]),
+            tokenid: tokenidArr[i].tokenid
           })
         }
       }
       return arr
     },
-    [ERC721_INTERFACE, noTokenidImg, fragmentTURI]
+    [ERC721_INTERFACE, tokenidArr]
   )
   useEffect(() => {
     if (imageList) {
       const arr:any = []
       const arr1:any = []
       for (const obj of imageList) {
-        if (Boolean(tokenidInfo[obj.token] && tokenidInfo[obj.token][obj.tokenid]?.image)) continue
+        if (Boolean(nftInfo?.[obj.token]?.[obj.tokenid]?.image)) continue
         if (
           obj.uri
-          // && (
-          //   obj.uri.indexOf('data:application/json;base64') === 0
-          // )
         ) {
-          arr.push(axios.get(obj.uri))
+          arr.push(obj.uri)
           arr1.push(obj)
         }
       }
       // console.log(arr)
       if (arr.length > 0) {
-        axios.all(arr).then((res:any) => {
+        getAllNftImage(arr).then((res:any) => {
           // console.log(res)
           const list:any = {}
           for (let i = 0; i < arr1.length; i++) {
@@ -135,27 +127,25 @@ export function useNFT721GetAllTokenidListCallback(
             const token = arr1[i].token
             if (!list[token]) list[token] = {}
             list[token][tokenid] = {
-              ...(tokenidInfo[token] && tokenidInfo[token][tokenid] ? tokenidInfo[token][tokenid] : {}),
-              ...res[i].data,
-              uri: arr1[i].uri
+              ...(nftInfo[token] && nftInfo[token][tokenid] ? nftInfo[token][tokenid] : {}),
+              ...res[i]
             }
           }
           dispatch(nftlistinfo({ chainId, tokenList: list }))
-          // console.log(list)
         })
       }
     }
-  }, [imageList, account, chainId, tokenidInfo])
+  }, [imageList, chainId])
 
   useEffect(() => {
     if (multicallContract && callsTURI.length > 0) {
       multicallContract.aggregate(callsTURI.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
         const arr = []
         const list:any = {}
-        for (let i = 0; i < noTokenidImg.length; i++) {
+        for (let i = 0; i < callsTURI.length; i++) {
           const obj = res.returnData[i]
-          const tokenid = noTokenidImg[i].tokenid
-          const token = noTokenidImg[i].token
+          const tokenid = callsTURI[i].tokenid
+          const token = callsTURI[i].address
           const uri = ERC721_INTERFACE?.decodeFunctionResult(fragmentTURI, obj)[0]
           arr.push({uri: uri, tokenid: tokenid, token: token})
           if (!list[token]) list[token] = {}
@@ -165,49 +155,33 @@ export function useNFT721GetAllTokenidListCallback(
           }
         }
         setImageList(arr)
-        dispatch(nftlistinfo({ chainId, tokenList: list }))
-        // getUriData(arr)
       }).catch((err:any) => {
         console.log(err)
       })
     }
-  }, [multicallContract, callsTURI, noTokenidImg, account, chainId])
+  }, [multicallContract, callsTURI])
 
-  const methodName = 'tokenOfOwnerByIndex'
-  const fragment = useMemo(() => ERC721_INTERFACE.getFunction(methodName), [ERC721_INTERFACE, methodName])
-  const calls = useMemo(
-    () => {
-      const arr:any = []
-      if (tokenidList && ERC721_INTERFACE && fragment) {
-        // console.log(tokenidList)
-        for (const token in tokenidList) {
-          const index = tokenidList[token]?.balance ? Number(tokenidList[token].balance) : 0
-          if (index > 0) {
-            for (let i = 0; i < index; i++) {
-              // console.log(i)
-              arr.push({
-                address: token,
-                callData: ERC721_INTERFACE?.encodeFunctionData(fragment, [account, i])
-              })
-            }
+  // useEffect(() => {
+  const getTokenIdByIndex = useCallback((tokenidList) => {
+    if (multicallContract) {
+      const calls:any = []
+      const fragment = ERC721_INTERFACE.getFunction('tokenOfOwnerByIndex')
+      for (const token in tokenidList) {
+        const index = tokenidList[token]?.balance ? Number(tokenidList[token].balance) : 0
+        if (index > 0) {
+          for (let i = 0; i < index; i++) {
+            // console.log(i)
+            calls.push([token, ERC721_INTERFACE?.encodeFunctionData(fragment, [account, i])])
           }
         }
       }
-      return arr
-    },
-    [tokenidList, fragment, ERC721_INTERFACE]
-  )
-
-  useEffect(() => {
-    if (multicallContract && calls.length > 0) {
-      // console.log(calls)
-      multicallContract.aggregate(calls.map((obj:any) => [obj.address, obj.callData])).then((res:any) => {
+      multicallContract.aggregate(calls).then((res:any) => {
         const list:any = {}
         const arr:any = []
         for (let i =0, len = res.returnData.length; i < len; i++) {
           const obj = res.returnData[i]
           const tokenid = ERC721_INTERFACE?.decodeFunctionResult(fragment, obj)[0].toString()
-          const token = calls[i].address
+          const token = calls[i][0]
           if (!list[token]) list[token] = {}
           list[token][tokenid] = {
             ...(tokenidInfo[token] && tokenidInfo[token][tokenid] ? tokenidInfo[token][tokenid] : {})
@@ -219,53 +193,44 @@ export function useNFT721GetAllTokenidListCallback(
         }
         // console.log(list)
         setTokenidArr(arr)
-        dispatch(nftlistinfo({ chainId, tokenList: list }))
       }).catch((err:any) => {
         console.log(err)
       })
     }
-  }, [multicallContract, calls, account, chainId])
-
-  const callBLData: string | undefined = useMemo( () => {
-    if (ERC721_INTERFACE && account) {
-      return ERC721_INTERFACE.encodeFunctionData(ERC721_INTERFACE.getFunction('balanceOf'), [account])
-    }
-    return
-  }, [ERC721_INTERFACE, account])
+  }, [multicallContract, chainId, account])
 
   const getTokenidList = useCallback(() => {
-    if (callBLData && multicallContract) {
+    if (multicallContract && account) {
       const cList:any = []
+      const callBLData = ERC721_INTERFACE.encodeFunctionData(ERC721_INTERFACE.getFunction('balanceOf'), [account])
       for (const tokenKey in tokenList) {
         const obj = tokenList[tokenKey]
         if (obj.nfttype === ERC_TYPE.erc1155) continue
-        cList.push({
-          address: obj.address
-        })
+        cList.push([obj.address, callBLData])
       }
-      multicallContract.aggregate(cList.map((obj:any) => [obj.address, callBLData])).then((res:any) => {
+      multicallContract.aggregate(cList).then((res:any) => {
         const list:any = {}
         for (let i = 0, len = res.returnData.length; i < len; i++) {
-          list[cList[i].address] = {balance: JSBI.BigInt(res.returnData[i]).toString()}
+          list[cList[i][0]] = {balance: JSBI.BigInt(res.returnData[i]).toString()}
         }
-        setTokenidList(list)
+        // console.log(list)
+        getTokenIdByIndex(list)
       })
     }
-  }, [multicallContract, callBLData, account, chainId, tokenList])
+  }, [multicallContract, account, chainId, tokenList])
 
   useEffect(() => {
     if (!library || !chainId) return undefined
 
-    library
-      .getBlockNumber()
-      .then(getTokenidList)
-      .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
-    
     library.on('block', getTokenidList)
     return () => {
       library.removeListener('block', getTokenidList)
     }
   }, [account, chainId, library, getTokenidList, tokenList])
+
+  useEffect(() => {
+    getTokenidList()
+  }, [account, chainId])
 
   // return tokenidInfo
   return useMemo(() => {
@@ -281,7 +246,7 @@ export function useNFT721GetAllTokenidListCallback(
       }
     }
     return list
-  }, [tokenidArr, tokenidInfo])
+  }, [tokenidArr, tokenidInfo, account])
 }
 
 export function useNFT1155GetAllTokenidListCallback(

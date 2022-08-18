@@ -19,6 +19,8 @@ import {BigAmount} from '../../utils/formatBignumber'
 import { ChainId } from "../../config/chainConfig/chainId"
 import {spportChainArr} from '../../config/chainConfig'
 
+import {getNftImage} from '../../utils/getNFTimage'
+
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
@@ -131,8 +133,10 @@ export function useVeshare () {
               const tokenIndex = await veshareMultiContract.tokenOfOwnerByIndex(account, idx)
               const locked = await veshareContract.tokenInfo(tokenIndex)
               const endTime = locked['endTime'].toNumber()
-              // const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
+              const tokenURI = await veshareMultiContract.tokenURI(tokenIndex)
+              const data:any = await getNftImage(tokenURI)
               // console.log(tokenURI)
+              // console.log(test)
               // const url = tokenURI.indexOf('ipfs://') === 0 ? tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : ''
               // const {data} = await axios.get(url)
               // console.log(data)
@@ -147,7 +151,8 @@ export function useVeshare () {
               return {
                 // ...data,ipfs://QmdfCJixsGErp33CTCom3QiZt24N4q8qFZ58zkVbxQzcyF
                 // image: tokenURI.indexOf('ipfs://') === 0 ? tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : '',
-                image: 'https://bafybeifin45dnnplmrtj66yxl4xkp6yxoxc52mh64pg5gck7kbuaeeri3u.ipfs.dweb.link/',
+                // image: 'https://bafybeifin45dnnplmrtj66yxl4xkp6yxoxc52mh64pg5gck7kbuaeeri3u.ipfs.dweb.link/',
+                image: data.imageUrl,
                 index: idx,
                 id: tokenIndex?.toString(),
                 lockEnds: endTime,

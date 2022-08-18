@@ -12,7 +12,7 @@ import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
-import { shortenAddress } from '../../utils'
+import { shortenAddress, shortenAddress1 } from '../../utils'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -168,9 +168,10 @@ export default function CrossChain({
       // if (chainId === 'XRP') {
         if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
           // console.log(destConfig)
-          setP2pAddress(recipient)
-          // setMemo(`{data: ${recipient}}`)
-          setMemo('')
+          // setP2pAddress(recipient)
+          setP2pAddress(destConfig?.router)
+          setMemo(`swapOut ${recipient}:${selectChain}`)
+          // setMemo('')
           setModalSpecOpen(true)
           setDelayAction(false)
         } else if ([ChainId.XRP].includes(chainId)) {
@@ -262,7 +263,9 @@ export default function CrossChain({
           <div className="item">
             <p className="label">Deposit Address:</p>
             <p className="value flex-bc">
-              {p2pAddress}
+              {/* {p2pAddress} */}
+              {/* {shortenAddress(p2pAddress,8)} */}
+              {shortenAddress1(p2pAddress, 12)}
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>
