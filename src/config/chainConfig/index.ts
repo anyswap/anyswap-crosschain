@@ -67,6 +67,7 @@ import bch from './bch'
 import nova from './nova'
 import fitfi from './fitfi'
 import iota from './iota'
+import rpg from './rpg'
 
 import { ChainId } from './chainId'
 
@@ -76,6 +77,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...rpg,
   ...iota,
   ...fitfi,
   ...nova,
@@ -202,6 +204,7 @@ const allChainList = [
   ChainId.BCH,
   ChainId.NOVA,
   ChainId.FITFI,
+  ChainId.RPG,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

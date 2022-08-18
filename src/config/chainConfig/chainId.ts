@@ -85,4 +85,5 @@ export enum ChainId {
   FITFI = '1234',
   IOTA = 'IOTA',
   IOTA_TEST = 'IOTA_TEST',
+  RPG = '2025',
 }
