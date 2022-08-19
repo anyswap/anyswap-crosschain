@@ -605,7 +605,7 @@ export default function CrossChain({
     }
   }, [selectChain, recipient, destConfig])
 
-  const [xrplimit, setXrplimit] = useState<any>('NONE')
+  const [xrplimit, setXrplimit] = useState<any>('INIT')
   useEffect(() => {
     if (
       selectChain === ChainId.XRP
@@ -643,8 +643,8 @@ export default function CrossChain({
       setXrplimit('NONE')
     }
   }, [getUrlData, selectChain, recipient, destConfig, inputBridgeValue])
+
   const maxInputValue = Math.ceil(inputBridgeValue)
-  
   const xrpurl = useMemo(() => {
     let url = ''
     if (
@@ -659,6 +659,7 @@ export default function CrossChain({
     }
     return url
   }, [destConfig, selectChain, maxInputValue])
+
   const [nearStorageBalance, setNearStorageBalance] = useState<any>()
   const getNearStorage = useCallback(() => {
     if (
@@ -678,7 +679,6 @@ export default function CrossChain({
       setNearStorageBalance('')
     }
   }, [selectChain, recipient, destConfig])
-
   useEffect(() => {
     getNearStorage()
   }, [selectChain, recipient])
@@ -700,11 +700,19 @@ export default function CrossChain({
         </ConfirmText>
       </>
     } else if (
-      [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
-      && !isNaN(xlmlimit)
-      && !isNaN(inputBridgeValue)
-      && Number(xlmlimit) < Number(inputBridgeValue)
+      xlmlimit === 'INIT'
+      || (
+        [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+        && !isNaN(xlmlimit)
+        && !isNaN(inputBridgeValue)
+        && Number(xlmlimit) < Number(inputBridgeValue)
+      )
     ) {
+      if (xlmlimit === 'INIT') {
+        return <ConfirmText>
+          Loading...
+        </ConfirmText>
+      }
       return <ConfirmText>
         Get trust set error, the transaction may fail.Please set Trustlines.
       </ConfirmText>
@@ -800,10 +808,13 @@ export default function CrossChain({
         )}
       </ButtonConfirmed>
     } else if (
-      [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
-      && !isNaN(xlmlimit)
-      && !isNaN(inputBridgeValue)
-      && Number(xlmlimit) < Number(inputBridgeValue)
+      xlmlimit === 'INIT'
+      || (
+        [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+        && !isNaN(xlmlimit)
+        && !isNaN(inputBridgeValue)
+        && Number(xlmlimit) < Number(inputBridgeValue)
+      )
     ) {
       if (window?.freighterApi?.isConnected()) {
         return <ButtonPrimary onClick={() => {
