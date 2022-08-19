@@ -11,6 +11,10 @@ import { BigAmount } from '../../utils/formatBignumber'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {xlmAddress, balanceList} from './actions'
 
+import {recordsTxns} from '../../utils/bridge/register'
+import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
+
 const StellarSdk = require('stellar-sdk')
 const NOT_APPLICABLE = { }
 
@@ -166,7 +170,8 @@ export function useXlmCrossChain (
   selectChain:any,
   receiveAddress:any,
   receiveXlmAddress:any,
-  typedValue:any
+  typedValue:any,
+  destConfig:any,
 ): {
   inputError?: string
   balance?: any,
@@ -177,6 +182,9 @@ export function useXlmCrossChain (
   const url = config.chainInfo[chainId].nodeRpc
   const server = new StellarSdk.Server(url)
   const {getAllBalance} = useXlmBalance()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const addTransaction = useTransactionAdder()
 
   const [balance, setBalance] = useState<any>()
 
@@ -194,7 +202,7 @@ export function useXlmCrossChain (
       }
     })
   }, [selectCurrency, xlmAddress, chainId])
-  // const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
+  const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
   let sufficientBalance = false
   try {
@@ -252,13 +260,56 @@ export function useXlmCrossChain (
           // const transaction = new Transaction(transactionXDR, networkPassphrase)
           const tx = StellarSdk.TransactionBuilder.fromXDR(signedTransaction, StellarSdk.Networks.TESTNET)
         
-          const transactionResult = await server.submitTransaction(tx);
-          console.log(transactionResult);
+          const txReceipt = await server.submitTransaction(tx);
+          console.log(txReceipt);
+
+          if (txReceipt?.hash) {
+            const data:any = {
+              hash: txReceipt.hash,
+              chainId: chainId,
+              selectChain: selectChain,
+              account: xlmAddress,
+              value: inputAmount,
+              formatvalue: typedValue,
+              to: receiveAddress,
+              symbol: selectCurrency?.symbol,
+              version: destConfig.type,
+              pairid: selectCurrency?.symbol,
+              routerToken: receiveXlmAddress
+            }
+            addTransaction(txReceipt, {
+              summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
+              value: typedValue,
+              toChainId: selectChain,
+              toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+              symbol: selectCurrency?.symbol,
+              version: 'swapin',
+              routerToken: receiveXlmAddress,
+              token: selectCurrency?.address,
+              logoUrl: selectCurrency?.logoUrl,
+              isLiquidity: destConfig?.isLiquidity,
+              fromInfo: {
+                symbol: selectCurrency?.symbol,
+                name: selectCurrency?.name,
+                decimals: selectCurrency?.decimals,
+                address: selectCurrency?.address,
+              },
+              toInfo: {
+                symbol: destConfig?.symbol,
+                name: destConfig?.name,
+                decimals: destConfig?.decimals,
+                address: destConfig?.address,
+              },
+            })
+            recordsTxns(data)
+            onChangeViewDtil(txReceipt?.hash, true)
+          }
         } catch (err) {
           console.error(err);
+          onChangeViewErrorTip('Txns failure.', true)
         }
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [xlmAddress, chainId, selectCurrency, selectChain, balance, receiveAddress, receiveXlmAddress, typedValue])
+  }, [xlmAddress, chainId, selectCurrency, selectChain, balance, receiveAddress, receiveXlmAddress, typedValue, destConfig])
 }

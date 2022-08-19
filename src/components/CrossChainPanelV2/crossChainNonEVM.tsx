@@ -189,7 +189,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     destConfig?.router,
-    inputBridgeValue
+    inputBridgeValue,
+    destConfig
   )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
