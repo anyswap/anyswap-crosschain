@@ -53,6 +53,10 @@ import {
 } from '../../hooks/near'
 
 import {
+  useXlmBalance
+} from '../../hooks/stellar'
+
+import {
   LogoBox,
   ConfirmContent,
   TxnsInfoText,
@@ -94,6 +98,7 @@ export default function CrossChain({
 
   const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
   const {depositStorageNear} = useSendNear()
+  const {getAllBalance} = useXlmBalance()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -480,11 +485,6 @@ export default function CrossChain({
   }, [errorTip, inputBridgeValue, selectCurrency])
 
   const btnTxt = useMemo(() => {
-    // if (errorTip) {
-    //   return errorTip?.tip
-    // } else if (wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP || wrapTypeUnderlying === WrapType.WRAP || wrapTypeCrossBridge === WrapType.WRAP) {
-    //   return t('swap')
-    // }
     return t('swap')
   }, [errorTip, wrapType, wrapTypeNative, wrapTypeUnderlying, wrapTypeCrossBridge])
 
@@ -580,6 +580,18 @@ export default function CrossChain({
       }
     }
   }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap])
+
+  useEffect(() => {
+    if (
+      [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+      && isAddress(recipient, selectChain)
+    ) {
+      getAllBalance(selectChain, recipient).then(res => {
+        console.log(res)
+      })
+    }
+  }, [selectChain, recipient, destConfig])
+
   const [xrplimit, setXrplimit] = useState<any>('NONE')
   useEffect(() => {
     if (
