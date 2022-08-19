@@ -111,6 +111,7 @@ export function useXlmBalance () {
               }
               list[token] = {
                 balance: obj.balance,
+                limit: obj.limit
               }
             }
             // console.log(list)
@@ -162,6 +163,47 @@ export function updateXlmHash (hash:any, chainId:any) {
       resolve(data)
     })
   })
+}
+
+export function useTrustlines() {
+  const {xlmAddress} = connectXlmWallet()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  
+  const setTrustlines = useCallback(async(chainId, receiveAddress, typedValue) => {
+    try {
+      const url = config.chainInfo[chainId].nodeRpc
+      const server = new StellarSdk.Server(url)
+      const account = await server.loadAccount(xlmAddress)
+      console.log(account)
+      const fee = await server.fetchBaseFee();
+      const network = await window.freighterApi.getNetwork()
+      const transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: StellarSdk.Networks.TESTNET })
+      .addOperation(StellarSdk.Operation.changeTrust({
+        // asset: StellarSdk.Asset.native(),
+        destination: receiveAddress,
+        asset: StellarSdk.Asset.native(),
+        amount: typedValue
+      }))
+      .setTimeout(30)
+      .build();
+      const signedTransaction = await window.freighterApi.signTransaction(
+        transaction.toXDR(),
+        network,
+      )
+      console.log(signedTransaction)
+      // const transaction = new Transaction(transactionXDR, networkPassphrase)
+      const tx = StellarSdk.TransactionBuilder.fromXDR(signedTransaction, StellarSdk.Networks.TESTNET)
+      const txReceipt = await server.submitTransaction(tx);
+      alert('Set Trustlines Success, hash: ' + txReceipt?.hash)
+    } catch (error) {
+      console.error(error);
+      onChangeViewErrorTip('Txns failure.', true)
+    }
+  }, [])
+
+  return {
+    setTrustlines
+  }
 }
 
 export function useXlmCrossChain (

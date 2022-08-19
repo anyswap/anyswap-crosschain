@@ -53,7 +53,8 @@ import {
 } from '../../hooks/near'
 
 import {
-  useXlmBalance
+  useXlmBalance,
+  useTrustlines
 } from '../../hooks/stellar'
 
 import {
@@ -99,6 +100,7 @@ export default function CrossChain({
   const {setInitUserSelect} = useInitUserSelectCurrency(chainId)
   const {depositStorageNear} = useSendNear()
   const {getAllBalance} = useXlmBalance()
+  const {setTrustlines} = useTrustlines()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -581,14 +583,25 @@ export default function CrossChain({
     }
   }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap])
 
+  const [xlmlimit, setXlmlimit] = useState<any>('NONE')
   useEffect(() => {
     if (
       [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
       && isAddress(recipient, selectChain)
     ) {
-      getAllBalance(selectChain, recipient).then(res => {
+      getAllBalance(selectChain, recipient).then((res:any) => {
+        console.log(destConfig)
         console.log(res)
+        if (destConfig?.address === 'natvie') {
+          setXlmlimit('Unlimited')
+        } else if (res?.[destConfig?.address]) {
+          setXlmlimit(res?.[destConfig?.address]?.limit)
+        } else {
+          setXlmlimit('NONE')
+        }
       })
+    } else {
+      setXlmlimit('NONE')
     }
   }, [selectChain, recipient, destConfig])
 
@@ -687,6 +700,15 @@ export default function CrossChain({
         </ConfirmText>
       </>
     } else if (
+      [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+      && !isNaN(xlmlimit)
+      && !isNaN(inputBridgeValue)
+      && Number(xlmlimit) < Number(inputBridgeValue)
+    ) {
+      return <ConfirmText>
+        Get trust set error, the transaction may fail.Please set Trustlines.
+      </ConfirmText>
+    } else if (
       selectChain === ChainId.XRP
       && xrplimit === 'NOPASS'
     ) {
@@ -777,6 +799,21 @@ export default function CrossChain({
           t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, chainId)
         )}
       </ButtonConfirmed>
+    } else if (
+      [ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+      && !isNaN(xlmlimit)
+      && !isNaN(inputBridgeValue)
+      && Number(xlmlimit) < Number(inputBridgeValue)
+    ) {
+      if (window?.freighterApi?.isConnected()) {
+        return <ButtonPrimary onClick={() => {
+          setTrustlines(selectChain, recipient, inputBridgeValue)
+        }}>
+          Trustlines
+        </ButtonPrimary>
+      } else {
+        return <></>
+      }
     } else if (
       selectChain === ChainId.XRP
       && xrplimit === 'NOPASS'

@@ -332,7 +332,8 @@ export const controlConfig:any = {
     isOpenRouter: 0,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,
-    isOpenMerge: 1
+    isOpenMerge: 1,
+    isOpenNFT: 1,
   },
   [VERSION.V7_BAS_TEST]: {
     bridgeInitDataChain: '97',

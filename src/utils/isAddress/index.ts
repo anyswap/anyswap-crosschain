@@ -20,6 +20,8 @@ const IotaBech32Helper = {
   BECH32_DEFAULT_HRP_DEV: /^atoi/
 }
 
+const stellarAddress = /^[1-9A-Z]{56}$/
+
 export function isAddress(address: any, chainId?: any) {
   if (!address) return undefined
   if (chainId) {
@@ -47,7 +49,11 @@ export function isAddress(address: any, chainId?: any) {
         }
         return false
       }
-      // return address && address.indexOf('0x') !== 0 ? address : false
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+      if (stellarAddress.test(address)) {
+        return address
+      }
+      return false
     } else {
       return isEvmAddress(address)
     }
