@@ -9,14 +9,18 @@ export enum Status {
   BigAmount = "Big Amount",
 }
 
-export function getStatus (status:any) {
+export function getStatus (status:any, confirmations?:any) {
   let statusType = Status.Confirming
   if ([0, 5].includes(status)) {
     statusType = Status.Confirming
   } else if ([7, 8].includes(status)) {
     statusType = Status.Crosschaining
   } else if ([9, 10].includes(status)) {
-    statusType = Status.Success
+    if (confirmations && confirmations > 0) {
+      statusType = Status.Success
+    } else {
+      statusType = Status.Crosschaining
+    }
   } else if ([1,2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
     statusType = Status.Failure
   }

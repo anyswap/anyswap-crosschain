@@ -274,7 +274,7 @@ export default function CroseNFT () {
 
   const handleSwap = useCallback(() => {
     onDelay()
-    console.log(useSwapMethods)
+    // console.log(useSwapMethods)
     if (useSwapMethods) {
       if (useSwapMethods.indexOf('nft721SwapOut') !== -1) {
         console.log('nft721SwapOut')
