@@ -173,7 +173,7 @@ const StyleDarkToggle = styled.div`
   min-width: 36px;
   height: 36px;
   border-radius: 9px;
-  margin-left: 15px;
+  margin-left: 0px;
   cursor: pointer;
   background-color: ${({ theme }) => theme.lightPuroleBg};
   @media screen and (max-width: 960px) {

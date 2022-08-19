@@ -14,7 +14,7 @@ const HeaderLinks = styled.div`
   ${({ theme }) => theme.flexEC};
   width: 100%;
   height: 100%;
-  padding: 0rem 1.5625rem 0rem;
+  padding: 0rem 1rem 0rem;
   border-bottom: none;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     ${({ theme }) => theme.flexBC}
@@ -43,7 +43,7 @@ const LinkStyle = styled.div.attrs({
     // font-weight: bold;
     font-family: 'Manrope';
     box-sizing: border-box;
-    padding: 1rem 1rem;
+    padding: 1rem 8px;
     line-height: 1rem;
     margin: 0;
     // border-radius: 0.5625rem;
