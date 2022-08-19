@@ -6,7 +6,7 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useETHBalances } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useNFTContract, useNFT721Contract, useNFT1155Contract, useAnycallNFTContract } from './useContract'
-
+import {useTxnsErrorTipOpen} from '../state/application/hooks'
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
 // import { JSBI } from 'anyswap-sdk'
@@ -45,7 +45,7 @@ export function useNFT721Callback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const [nftBalance, setNftBalance] = useState<any>()
   
 
@@ -118,6 +118,7 @@ export function useNFT721Callback(
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
+                onChangeViewErrorTip(error, true)
               }
             }
           : undefined,
@@ -147,7 +148,7 @@ export function useNFT721Callback(
 
   const [nftBalance, setNftBalance] = useState<any>()
   
-
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const contract = useNFTContract(routerToken)
 
   const contract1155 = useNFT1155Contract(inputCurrency?.address)
@@ -221,6 +222,7 @@ export function useNFT721Callback(
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
+                onChangeViewErrorTip(error, true)
               }
             }
           : undefined,
@@ -248,7 +250,7 @@ export function useNFT721Callback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
-
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const [nftBalance, setNftBalance] = useState<any>()
   
 
@@ -324,6 +326,7 @@ export function useNFT721Callback(
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
+                onChangeViewErrorTip(error, true)
               }
             }
           : undefined,
