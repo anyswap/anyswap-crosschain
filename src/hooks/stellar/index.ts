@@ -227,7 +227,7 @@ export function useTrustlines() {
   const {loginXlm} = connectXlmWallet()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   
-  const setTrustlines = useCallback(async(chainId, receiveAddress, typedValue) => {
+  const setTrustlines = useCallback(async(chainId, receiveAddress, typedValue, destConfig) => {
     try {
       const url = config.chainInfo[chainId].nodeRpc
       console.log(url)
@@ -242,12 +242,15 @@ export function useTrustlines() {
         console.log(account)
         const fee = await server.fetchBaseFee();
         const network = await window.freighterApi.getNetwork()
+        const tokenArr = destConfig.address.split('/')
+        const asset = new StellarSdk.Asset(tokenArr[0], tokenArr[1])
+        
         const transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: chainId === ChainId.XLM ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET })
         .addOperation(StellarSdk.Operation.changeTrust({
           // asset: StellarSdk.Asset.native(),
           // destination: receiveAddress,
-          asset: StellarSdk.Asset.native(),
-          // amount: typedValue
+          asset: asset,
+          amount: typedValue
         }))
         .setTimeout(30)
         .build();

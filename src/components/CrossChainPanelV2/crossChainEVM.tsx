@@ -831,7 +831,7 @@ export default function CrossChain({
     ) {
       if (window?.freighterApi?.isConnected()) {
         return <ButtonPrimary onClick={() => {
-          setTrustlines(selectChain, recipient, inputBridgeValue)
+          setTrustlines(selectChain, recipient, inputBridgeValue, destConfig)
         }}>
           Trustlines
         </ButtonPrimary>
