@@ -269,7 +269,9 @@ export default function CroseNFT () {
     selectTokenId?.tokenid,
     selectChain,
     fee,
-    destConfig
+    destConfig,
+    nfttype,
+    inputBridgeValue,
   )
 
   const handleSwap = useCallback(() => {

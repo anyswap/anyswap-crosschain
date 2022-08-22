@@ -9,6 +9,7 @@ import { useNFTContract, useNFT721Contract, useNFT1155Contract, useAnycallNFTCon
 import {useTxnsErrorTipOpen} from '../state/application/hooks'
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
+import { ERC_TYPE } from '../state/nft/hooks'
 // import { JSBI } from 'anyswap-sdk'
 
 export enum WrapType {
@@ -247,6 +248,8 @@ export function useNFT721Callback(
   toChainID: string | undefined,
   fee: any,
   destConfig: any,
+  nfttype: any,
+  amount: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { chainId, account } = useActiveWeb3React()
@@ -254,32 +257,61 @@ export function useNFT721Callback(
   const [nftBalance, setNftBalance] = useState<any>()
   
 
-  const contract = useAnycallNFTContract(routerToken)
+  const contract = useAnycallNFTContract(routerToken, nfttype)
 
   const contract721 = useNFT721Contract(inputCurrency?.address)
+  const contract1155 = useNFT1155Contract(inputCurrency?.address)
 
   const { t } = useTranslation()
   
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const addTransaction = useTransactionAdder()
 
+  const inputAmount = useMemo(() => inputCurrency && amount ? tryParseAmount2(amount, inputCurrency?.decimals ?? 0) : '', [inputCurrency, amount])
+
   useEffect(() => {
-    if (contract721 && tokenid) {
-      contract721.ownerOf(tokenid).then((res:any) => {
-        // console.log(res)
-        if (res) {
-          setNftBalance(res)
-        } else {
+    if (nfttype === ERC_TYPE.erc721) {
+      if (contract721 && tokenid) {
+        contract721.ownerOf(tokenid).then((res:any) => {
+          // console.log(res)
+          if (res) {
+            setNftBalance(res)
+          } else {
+            setNftBalance('')
+          }
+        }).catch((err:any) => {
+          console.log(err)
           setNftBalance('')
-        }
-      }).catch((err:any) => {
-        console.log(err)
+        })
+      } else {
         setNftBalance('')
-      })
+      }
     } else {
-      setNftBalance('')
+      if (contract1155 && tokenid) {
+        contract1155.balanceOf(account, tokenid).then((res:any) => {
+          // console.log(res)
+          if (res) {
+            setNftBalance(tryParseAmount2(res.toString(), inputCurrency?.decimals ?? 0))
+          } else {
+            setNftBalance('')
+          }
+        }).catch((err:any) => {
+          console.log(err)
+          setNftBalance('')
+        })
+      } else {
+        setNftBalance('')
+      }
     }
-  }, [contract721, tokenid])
+  }, [contract721, contract1155, tokenid, nfttype])
+
+  const sufficientBalance = useMemo(() => {
+    if (nfttype === ERC_TYPE.erc721) {
+      return ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
+    } else {
+      return ethBalance && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
+    }
+  }, [ethBalance, nftBalance, account, inputAmount])
 
   return useMemo(() => {
     // console.log(contract)
@@ -288,10 +320,24 @@ export function useNFT721Callback(
     // console.log(toAddress)
     // console.log(nftBalance)
     // console.log(tokenid)
-    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    if (!contract || !chainId || !inputCurrency || !toAddress || !toChainID || (!inputAmount && nfttype === ERC_TYPE.erc1155)) return NOT_APPLICABLE
 
-    const sufficientBalance = ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
-    // console.log(sufficientBalance)
+    let params:any = []
+    if (nfttype === ERC_TYPE.erc721) {
+      params = [
+        tokenid,
+        toAddress,
+        toChainID
+      ]
+    } else {
+      params = [
+        tokenid,
+        inputAmount ? Number(inputAmount.raw.toString()) : '',
+        toAddress,
+        toChainID
+      ]
+    }
+    
     return {
       wrapType: WrapType.WRAP,
       execute:
@@ -300,11 +346,7 @@ export function useNFT721Callback(
               try {
                 console.log(11111)
                 const txReceipt = await contract.Swapout_no_fallback(
-                  ...[
-                    tokenid,
-                    toAddress,
-                    toChainID
-                  ],
+                  ...params,
                   {value: fee}
                 )
                 addTransaction(txReceipt, { summary: `Cross bridge ${tokenid} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
@@ -332,5 +374,5 @@ export function useNFT721Callback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [contract, chainId, inputCurrency, ethBalance, addTransaction, t, toAddress, toChainID, tokenid, nftBalance, account, destConfig])
+  }, [contract, chainId, inputCurrency, addTransaction, t, toAddress, toChainID, tokenid, account, destConfig, sufficientBalance, nfttype, inputAmount])
 }
