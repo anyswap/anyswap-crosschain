@@ -595,9 +595,13 @@ export default function CrossChain({
         if (destConfig?.address === 'natvie') {
           setXlmlimit('Unlimited')
         } else if (res?.[destConfig?.address]) {
-          setXlmlimit(res?.[destConfig?.address]?.limit)
+          if (res?.[destConfig?.address]?.limit) {
+            setXlmlimit(res?.[destConfig?.address]?.limit)
+          } else {
+            setXlmlimit(0)
+          }
         } else {
-          setXlmlimit('NONE')
+          setXlmlimit(0)
         }
       })
     } else {
@@ -685,6 +689,15 @@ export default function CrossChain({
   useInterval(getNearStorage, 1000 * 10)
 
   function CrossChainTip () {
+    // console.log([ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
+    // && !isNaN(xlmlimit)
+    // && !isNaN(inputBridgeValue)
+    // && Number(xlmlimit) < Number(inputBridgeValue))
+    // console.log([ChainId.XLM, ChainId.XLM_TEST].includes(selectChain))
+    // console.log(xlmlimit)
+    // console.log(!isNaN(xlmlimit))
+    // console.log(!isNaN(inputBridgeValue))
+    // console.log(!isNaN(inputBridgeValue))
     if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
       return <>
         <LogoBox>
