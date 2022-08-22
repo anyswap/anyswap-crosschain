@@ -68,6 +68,7 @@ import nova from './nova'
 import fitfi from './fitfi'
 import iota from './iota'
 import rpg from './rpg'
+import trx from './trx'
 
 import { ChainId } from './chainId'
 
@@ -77,6 +78,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...trx,
   ...rpg,
   ...iota,
   ...fitfi,
@@ -328,6 +330,7 @@ const useChain:any = {
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
+    ChainId.TRX_TEST,
     ChainId.NEAR_TEST,
     ChainId.XLM_TEST,
     ChainId.IOTA_TEST,

@@ -54,6 +54,13 @@ export function useConnectWallet () {
         toggleWalletModal()
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectNetworkInfo?.label)) {
+      // if (!account) {
+      //   loginXlm()
+      // } else {
+      //   toggleWalletModal()
+      //   // dispatch(setOpenModal(ApplicationModal.WALLET))
+      // }
     } else {
       toggleWalletModal()
     }

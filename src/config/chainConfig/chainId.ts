@@ -68,6 +68,7 @@ export enum ChainId {
   KAVA = '2222',
   KLAY = '8217',
   TRX = 'TRX',
+  TRX_TEST = 'TRX_TEST',
   KAI = '24',
   CUBE = '1818',
   INTAIN = '',

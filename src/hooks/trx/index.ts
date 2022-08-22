@@ -26,6 +26,10 @@ export function formatTRXAddress (address:string) {
   return address
 }
 
+export function useTrxAddress () {
+  return tronweb?.address
+}
+
 export async function sendTRXTxns ({
   account,
   toAddress,
