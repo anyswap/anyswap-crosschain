@@ -15,6 +15,7 @@ import ERC721_INTERFACE from '../../constants/abis/bridge/erc721'
 import ERC1155_INTERFACE from '../../constants/abis/bridge/erc1155'
 import {getNftlist, isSupportIndexedDB} from '../../utils/indexedDB'
 import {getAllNftImage} from '../../utils/getNFTimage'
+import useInterval from '../../hooks/useInterval'
 
 export enum ERC_TYPE {
   erc1155 = 'erc1155',
@@ -72,7 +73,7 @@ export function useNftInfo(): any {
 export function useNFT721GetAllTokenidListCallback(
   tokenList: any
 ) {
-  const { chainId, account, library } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   // const { chainId, library } = useActiveWeb3React()
   // const account = '0xcFA97Fb420fF5A0F8F5b5400a0fC5a94F3eaEc87'
   const multicallContract = useMulticallContract()
@@ -213,24 +214,26 @@ export function useNFT721GetAllTokenidListCallback(
         for (let i = 0, len = res.returnData.length; i < len; i++) {
           list[cList[i][0]] = {balance: JSBI.BigInt(res.returnData[i]).toString()}
         }
-        // console.log(list)
+        console.log(list)
         getTokenIdByIndex(list)
       })
     }
   }, [multicallContract, account, chainId, tokenList])
 
-  useEffect(() => {
-    if (!library || !chainId) return undefined
+  // useEffect(() => {
+  //   if (!library || !chainId) return undefined
 
-    library.on('block', getTokenidList)
-    return () => {
-      library.removeListener('block', getTokenidList)
-    }
-  }, [account, chainId, library, getTokenidList, tokenList])
+  //   library.on('block', getTokenidList)
+  //   return () => {
+  //     library.removeListener('block', getTokenidList)
+  //   }
+  // }, [account, chainId, library, getTokenidList, tokenList])
 
   useEffect(() => {
     getTokenidList()
   }, [account, chainId])
+
+  useInterval(getTokenidList, 1000 * 10)
 
   // return tokenidInfo
   return useMemo(() => {
