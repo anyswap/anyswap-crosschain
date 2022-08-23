@@ -96,7 +96,7 @@ export default {
   [MATIC_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '0xE9058a6685fB99b1dDA6a8aab2865b59f7095C3d',
+    multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: MATIC_TESTNET,

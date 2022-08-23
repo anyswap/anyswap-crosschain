@@ -197,13 +197,18 @@ export function getTRXTxnsStatus (txid:string) {
   })
 }
 
-export function useTrxCrossChain (): {
+export function useTrxCrossChain (
+
+): {
   inputError?: string
   balance?: any,
   execute?: undefined | (() => Promise<void>)
 } {
   return {
-    
+    balance: '',
+    execute: async () => {
+      // let contract = await window?.tronWeb?.contract()
+    }
   }
 }
 
