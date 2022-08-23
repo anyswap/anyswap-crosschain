@@ -6,7 +6,7 @@ import { trxAddress } from './actions'
 // const tronweb = window.tronWeb
 
 export function toHexAddress (address:string) {
-  const str = window?.tronWeb?.address.toHex(address).toLowerCase()
+  const str = window?.tronWeb?.address?.toHex(address).toLowerCase()
   return '0x' + str.substr(2)
 }
 
@@ -31,9 +31,9 @@ export function formatTRXAddress (address:string) {
 
 export function useTrxAddress () {
   const account:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxAddress)
-
+  // console.log(window?.tronWeb?.isConnected())
   return {
-    trxAddress: account
+    trxAddress: account ? toHexAddress(account) : ''
   }
 }
 
@@ -52,6 +52,10 @@ export function useLoginTrx () {
     loginTrx
   }
 }
+
+// export function useContract () {
+//   let contract = await window?.tronWeb?.contract().at(trc20ContractAddress)
+// }
 
 export async function sendTRXTxns ({
   account,
@@ -116,10 +120,14 @@ export function useTrxBalance () {
   const getTrxBalance = useCallback(({account}) => {
     return new Promise((resolve) => {
       const useAccount = account ? account : TRXAccount
-      window?.tronWeb?.trx.getBalance(useAccount).then((res:any) => {
-        console.log(res)
-        resolve(res)
-      })
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount) {
+        window?.tronWeb?.trx.getBalance(useAccount).then((res:any) => {
+          console.log(res)
+          resolve(res)
+        })
+      } else {
+        resolve('')
+      }
     })
   }, [TRXAccount]) 
 
@@ -128,10 +136,14 @@ export function useTrxBalance () {
       const useAccount = account ? account : TRXAccount
       const parameter1 = [{type:'address',value: useAccount}]
       const tokenID = token
-      window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
-        console.log(res)
-        resolve(res)
-      })
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
+        window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
+          console.log(res)
+          resolve(res)
+        })
+      } else {
+        resolve('')
+      }
     })
   }, [TRXAccount])
 
@@ -183,5 +195,15 @@ export function getTRXTxnsStatus (txid:string) {
       })
     }
   })
+}
+
+export function useTrxCrossChain (): {
+  inputError?: string
+  balance?: any,
+  execute?: undefined | (() => Promise<void>)
+} {
+  return {
+    
+  }
 }
 

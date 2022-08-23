@@ -26,6 +26,9 @@ export default function Updater(): null {
       // console.log(window?.tronWeb?.address)
       // setAccount(window.tronWeb.defaultAddress.base58)
       if (window?.tronWeb?.address) {
+        // window?.tronWeb?.isConnected().then((res:any) => {
+        //   console.log(res)
+        // })
         dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
       } else {
         dispatch(trxAddress({address: ''}))

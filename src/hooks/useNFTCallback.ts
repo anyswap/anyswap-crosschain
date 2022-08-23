@@ -10,6 +10,7 @@ import {useTxnsErrorTipOpen} from '../state/application/hooks'
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
 import { ERC_TYPE } from '../state/nft/hooks'
+import { BigAmount } from '../utils/formatBignumber'
 // import { JSBI } from 'anyswap-sdk'
 
 export enum WrapType {
@@ -268,6 +269,7 @@ export function useNFT721Callback(
   const addTransaction = useTransactionAdder()
 
   const inputAmount = useMemo(() => inputCurrency && amount ? tryParseAmount2(amount, inputCurrency?.decimals ?? 0) : '', [inputCurrency, amount])
+  const inputFee = useMemo(() => fee ? BigAmount.format(18, fee) : '', [fee])
 
   useEffect(() => {
     if (nfttype === ERC_TYPE.erc721) {
@@ -305,13 +307,17 @@ export function useNFT721Callback(
     }
   }, [contract721, contract1155, tokenid, nfttype])
 
+
+
   const sufficientBalance = useMemo(() => {
+    // console.log(ethBalance)
+    // console.log(inputFee)
     if (nfttype === ERC_TYPE.erc721) {
-      return ethBalance && nftBalance?.toLowerCase() === account?.toLowerCase()
+      return ethBalance && inputFee && inputFee.lessThan(ethBalance) && nftBalance?.toLowerCase() === account?.toLowerCase()
     } else {
-      return ethBalance && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
+      return ethBalance && inputFee && inputFee.lessThan(ethBalance) && inputAmount && nftBalance && !nftBalance.lessThan(inputAmount)
     }
-  }, [ethBalance, nftBalance, account, inputAmount])
+  }, [ethBalance, nftBalance, account, inputAmount, inputFee])
 
   return useMemo(() => {
     // console.log(contract)
