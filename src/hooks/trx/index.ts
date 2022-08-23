@@ -1,9 +1,12 @@
 import { useCallback } from "react"
-
-const tronweb = window.tronWeb
+import { useDispatch, useSelector } from 'react-redux'
+// import useInterval from "../useInterval"
+import { AppState, AppDispatch } from '../../state'
+import { trxAddress } from './actions'
+// const tronweb = window.tronWeb
 
 export function toHexAddress (address:string) {
-  const str = tronweb.address.toHex(address).toLowerCase()
+  const str = window?.tronWeb?.address.toHex(address).toLowerCase()
   return '0x' + str.substr(2)
 }
 
@@ -15,19 +18,39 @@ export function isTRXAddress (address:string) {
   if (address.indexOf('0x') === 0) {
     address = address.replace('0x', '41')
   }
-  return tronweb.isAddress(address)
+  return window?.tronWeb?.isAddress(address)
 }
 
 export function formatTRXAddress (address:string) {
   if (address.indexOf('0x') === 0) {
     address = address.replace('0x', '41')
-    address = tronweb.address.fromHex(address)
+    address = window?.tronWeb?.address.fromHex(address)
   }
   return address
 }
 
 export function useTrxAddress () {
-  return tronweb?.address
+  const account:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxAddress)
+
+  return {
+    trxAddress: account
+  }
+}
+
+export function useLoginTrx () {
+  const dispatch = useDispatch<AppDispatch>()
+  const loginTrx = useCallback(() => {
+    if (window.tronWeb) {
+      if (window?.tronWeb?.address && window.tronWeb.defaultAddress.base58) {
+        dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
+      } else {
+        history.go(0)
+      }
+    }
+  }, [])
+  return {
+    loginTrx
+  }
 }
 
 export async function sendTRXTxns ({
@@ -45,21 +68,22 @@ export async function sendTRXTxns ({
 }) {
   // console.log(tronweb)
   if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-    const TRXAccount = tronweb.defaultAddress.base58
+    const TRXAccount = window?.tronWeb?.defaultAddress.base58
     const curTRXAccount = toHexAddress(TRXAccount)
     if (curTRXAccount === account.toLowerCase()) {
       let tx:any = ''
+      /* eslint-disable */
       try {
         if (symbol === 'TRX') {
-          tx = await tronweb.transactionBuilder.sendTrx(toAddress, amount, TRXAccount)
+          tx = await window?.tronWeb?.transactionBuilder.sendTrx(toAddress, amount, TRXAccount)
           // console.log(tx)
         } else {
           const parameter1 = [{type:'address',value: toAddress},{type:'uint256',value: amount}]
-          tx = await tronweb.transactionBuilder.triggerSmartContract(tokenID, "transfer(address,uint256)", {}, parameter1, TRXAccount)
+          tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "transfer(address,uint256)", {}, parameter1, TRXAccount)
           tx = tx.transaction
         }
-        const signedTx = await tronweb.trx.sign(tx)
-        const broastTx = await tronweb.trx.sendRawTransaction(signedTx)
+        const signedTx = await window?.tronWeb?.trx.sign(tx)
+        const broastTx = await window?.tronWeb?.trx.sendRawTransaction(signedTx)
         return {
           msg: 'Success',
           info: broastTx
@@ -68,9 +92,11 @@ export async function sendTRXTxns ({
         console.log(error)
         return {
           msg: 'Error',
-          error: error?.toString()
+          // error: error?.toString()
+          error: error
         }
       }
+      /* eslint-enable */
     } else {
       return {
         msg: 'Error',
@@ -86,11 +112,11 @@ export async function sendTRXTxns ({
 }
 
 export function useTrxBalance () {
-  const TRXAccount = tronweb?.defaultAddress?.base58
+  const TRXAccount = window?.tronWeb?.defaultAddress?.base58
   const getTrxBalance = useCallback(({account}) => {
     return new Promise((resolve) => {
       const useAccount = account ? account : TRXAccount
-      tronweb.trx.getBalance(useAccount).then((res:any) => {
+      window?.tronWeb?.trx.getBalance(useAccount).then((res:any) => {
         console.log(res)
         resolve(res)
       })
@@ -102,7 +128,7 @@ export function useTrxBalance () {
       const useAccount = account ? account : TRXAccount
       const parameter1 = [{type:'address',value: useAccount}]
       const tokenID = token
-      tronweb.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
+      window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
         console.log(res)
         resolve(res)
       })
@@ -139,7 +165,7 @@ export function useTrxBalance () {
 export function getTRXTxnsStatus (txid:string) {
   return new Promise(resolve => {
     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-      tronweb.trx.getTransaction(txid).then((res:any) => {
+      window?.tronWeb?.trx.getTransaction(txid).then((res:any) => {
         console.log(res)
         if (res.ret) {
           resolve({

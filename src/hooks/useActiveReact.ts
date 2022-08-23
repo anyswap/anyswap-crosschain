@@ -18,7 +18,7 @@ export function useActiveReact () {
   const {selectNetworkInfo} = useUserSelectChainId()
   const nebAddress = useCurrentAddress()
   const nearAddress = useNearAddress()
-  const trxAddress = useTrxAddress()
+  const {trxAddress} = useTrxAddress()
   const {xlmAddress} = connectXlmWallet()
   // console.log(xlmAddress)
   // const useChain = useMemo(() => {

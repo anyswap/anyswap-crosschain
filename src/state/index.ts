@@ -15,6 +15,7 @@ import wallet from './wallet/reducer'
 import rpc from './rpc/reducer'
 
 import xlm from '../hooks/stellar/reducer'
+import trx from '../hooks/trx/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools', 'nft']
 
@@ -31,7 +32,8 @@ const store = configureStore({
     pools,
     wallet,
     rpc,
-    xlm
+    xlm,
+    trx
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS, namespace: 'multichain' })],
   preloadedState: load({ states: PERSISTED_KEYS, namespace: 'multichain' })
