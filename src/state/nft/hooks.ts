@@ -212,7 +212,7 @@ export function useNFT721GetAllTokenidListCallback(
       multicallContract.aggregate(cList).then((res:any) => {
         const list:any = {}
         for (let i = 0, len = res.returnData.length; i < len; i++) {
-          list[cList[i][0]] = {balance: JSBI.BigInt(res.returnData[i]).toString()}
+          list[cList[i][0]] = {balance: res.returnData[i] === '0x' ? '' : JSBI.BigInt(res.returnData[i]).toString()}
         }
         console.log(list)
         getTokenIdByIndex(list)

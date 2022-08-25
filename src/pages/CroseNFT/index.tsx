@@ -39,7 +39,8 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import {VALID_BALANCE} from '../../config/constant'
 
-import {fromWei} from '../../utils/tools/tools'
+// import {fromWei} from '../../utils/tools/tools'
+import { BigAmount } from '../../utils/formatBignumber'
 // import {isAddress} from '../../utils/isAddress'
 
 // import NFT_DATA from './nftdata.js'
@@ -196,6 +197,8 @@ export default function CroseNFT () {
           return feePerUnitInBatch
         }
       } else {
+        // console.log(feePerTransaction)
+        // console.log(feePerTransaction?.toString())
         return feePerTransaction ? feePerTransaction?.toString() : ''
       }
     }
@@ -493,7 +496,7 @@ export default function CroseNFT () {
             {
               fee ? (
                 <FeeBox>
-                  {t('fee')}: {fromWei(fee, 18)} {config.getCurChainInfo(chainId).symbol}
+                  {t('fee')}: {BigAmount.format(18, fee).toExact()} {config.getCurChainInfo(chainId).symbol}
                 </FeeBox>
               ) : ''
             }
