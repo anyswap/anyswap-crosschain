@@ -203,22 +203,30 @@ export default function CrossChain({
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toExact()
         return nasBalanceFormat
+      } else if (!nasBalance && account) {
+        return 0
       }
     } else if (chainId === ChainId.TERRA) {
       if (terraBalance) {
         return terraBalance?.toExact()
+      } else if (!terraBalance && account) {
+        return 0
       }
     } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
       if (nearBalance) {
         return nearBalance?.toExact()
+      } else if (!nearBalance && account) {
+        return 0
       }
     } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
       if (xlmBalance) {
         return xlmBalance?.toExact()
+      } else if (!xlmBalance && account) {
+        return '0'
       }
     }
     return ''
-  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance])
+  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account])
   // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {

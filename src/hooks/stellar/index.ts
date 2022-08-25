@@ -314,6 +314,8 @@ export function useXlmCrossChain (
         const blvalue = tryParseAmount3(res?.[token]?.balance, dec)
         const bl = res ? BigAmount.format(dec, blvalue) : undefined
         setBalance(bl)
+      } else {
+        setBalance(0)
       }
     })
   }, [selectCurrency, xlmAddress, chainId])
