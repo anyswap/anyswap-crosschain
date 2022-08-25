@@ -30,8 +30,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
-export const INIT_VERSION = VERSION.V7_TEST
+export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -320,7 +320,8 @@ export const controlConfig:any = {
     isOpenRouter: 0,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,
-    isOpenMerge: 1
+    isOpenMerge: 1,
+    isOpenNFT: 1,
   },
   [VERSION.V7_TEST]: {
     bridgeInitDataChain: '97',

@@ -19,8 +19,8 @@ import config from '../config'
 // import {timeout, USE_VERSION, VERSION, bridgeApi} from '../config/constant'
 import {
   MAIN_COIN_SORT,
-  USE_VERSION,
-  VERSION
+  // USE_VERSION,
+  // VERSION
 } from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
 import {
@@ -182,8 +182,9 @@ export function useFetchTokenListVersionCallback(): () => Promise<any> {
           // console.log(curLSNftList)
           // console.log(curDbNftList)
           if (
-            USE_VERSION === VERSION.V7_TEST
-            && (
+            // USE_VERSION === VERSION.V7_TEST
+            // && 
+            (
               !serverVersion
               || !localNftVersion
               || localNftVersion !== serverVersion
