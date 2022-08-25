@@ -601,7 +601,7 @@ export default function CrossChain({
       getAllBalance(selectChain, recipient).then((res:any) => {
         // console.log(destConfig)
         // console.log(res)
-        if (destConfig?.address === 'natvie') {
+        if (destConfig?.address === 'native') {
           setXlmlimit('Unlimited')
         } else if (res?.[destConfig?.address]) {
           if (res?.[destConfig?.address]?.limit) {
