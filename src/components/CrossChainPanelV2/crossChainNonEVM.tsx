@@ -14,6 +14,7 @@ import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
 import { useXlmCrossChain } from '../../hooks/stellar'
+import {useTrxCrossChain} from '../../hooks/trx'
 import {useConnectWallet} from '../../hooks/useWallet'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
@@ -192,6 +193,16 @@ export default function CrossChain({
     inputBridgeValue,
     destConfig
   )
+  const {balance: trxBalance,execute: onTrxWrap} = useTrxCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    chainId,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -224,9 +235,16 @@ export default function CrossChain({
       } else if (!xlmBalance && account) {
         return '0'
       }
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+      if (trxBalance) {
+        return trxBalance?.toExact()
+      } else if (!trxBalance && account) {
+        return '0'
+      }
     }
+    
     return ''
-  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account])
+  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account, trxBalance])
   // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
@@ -432,7 +450,13 @@ export default function CrossChain({
                     onXlmWrap().then(() => {
                       onClear()
                     })
+                  } else if (onTrxWrap && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+                    console.log('onTrxWrap')
+                    onTrxWrap().then(() => {
+                      onClear()
+                    })
                   }
+                  
                 }}>
                   {t('Confirm')}
                 </ButtonPrimary>

@@ -106,7 +106,7 @@ export default function CrossChain({
 
   const {getNearStorageBalance} = useNearBalance()
 
-  const {setInitUserSelect} = useInitUserSelectCurrency(useChain)
+  const {setUserFromSelect, setUserToSelect} = useInitUserSelectCurrency(useChain)
   const {depositStorageNear} = useSendNear()
   const {getAllBalance} = useXlmBalance()
   const {setTrustlines} = useTrustlines()
@@ -541,16 +541,17 @@ export default function CrossChain({
   // }, [initDestCurrency])
 
   useEffect(() => {
-    setInitUserSelect({useChainId: selectChain, toChainId: useChain, token: selectDestCurrency?.address})
+    setUserToSelect({useChainId: selectChain, toChainId: useChain, token: selectDestCurrency?.address})
   }, [selectDestCurrency, selectChain, useChain])
 
   useEffect(() => {
     // console.log('chainId',chainId)
     // console.log('selectChain',selectChain)
-    if (useChain && selectChain && selectCurrency?.address) {
-      setInitUserSelect({useChainId: useChain, toChainId: selectChain, token: selectCurrency?.address})
+    if (useChain && selectChain) {
+      // setInitUserSelect({useChainId: useChain, toChainId: selectChain, token: selectCurrency?.address})
+      setUserFromSelect({useChainId: useChain, toChainId: selectChain, token: ''})
     }
-  }, [selectCurrency, selectChain, useChain])
+  }, [selectChain, useChain])
 
   useEffect(() => {
     setSelectDestCurrencyList(initDestCurrencyList)
@@ -909,6 +910,7 @@ export default function CrossChain({
           onCurrencySelect={(inputCurrency) => {
             setSelectCurrency(inputCurrency)
             setIsUserSelect(false)
+            setUserFromSelect({useChainId: useChain, toChainId: '', token: inputCurrency?.address})
           }}
           onMax={(value) => {
             handleMaxInput(value)

@@ -57,6 +57,8 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         })
       } else if ([ChainId.TRX].includes(selectChainId)) {
         getTrxTokenBalance({token}).then((res:any) => {
+          console.log(token)
+          console.log(res)
           const bl = res && (dec || dec === 0) ? BigAmount.format(dec, res) : undefined
           savedBalance.current = bl
         })

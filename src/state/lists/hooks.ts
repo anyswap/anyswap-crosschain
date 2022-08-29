@@ -88,20 +88,36 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
 }
 
 export function useInitUserSelectCurrency(chainId?: any) {
-  const userInit = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
+  const userInit:any = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
   const dispatch = useDispatch<AppDispatch>()
   // console.log(userInit)
   // console.log(chainId)
   // console.log(userInit && chainId && userInit[chainId] ? userInit[chainId] : {})
-  const setInitUserSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
-    const id = useChainId ? useChainId : chainId
-    if (id && toChainId && id?.toString() !== toChainId?.toString()){
-      dispatch(userSelectCurrency({chainId: id, token, toChainId}))
-    }
+  const setUserFromSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
+    const id = useChainId
+    // console.log('id', id)
+    // console.log('token', token)
+    // console.log('toChainId', toChainId)
+    dispatch(userSelectCurrency({chainId: id, token, toChainId}))
+    // if (id && toChainId && id?.toString() !== toChainId?.toString()){
+    //   dispatch(userSelectCurrency({chainId: id, token, toChainId}))
+    // }
+  }, [dispatch])
+
+  const setUserToSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
+    const id = useChainId
+    // console.log('id', id)
+    // console.log('token', token)
+    // console.log('toChainId', toChainId)
+    dispatch(userSelectCurrency({chainId: id, token, toChainId}))
+    // if (id && toChainId && id?.toString() !== toChainId?.toString()){
+    //   dispatch(userSelectCurrency({chainId: id, token, toChainId}))
+    // }
   }, [dispatch])
 
   return {
     userInit: userInit && chainId && userInit[chainId] ? userInit[chainId] : {},
-    setInitUserSelect
+    setUserFromSelect,
+    setUserToSelect,
   }
 }
