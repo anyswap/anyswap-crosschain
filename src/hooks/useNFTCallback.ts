@@ -350,7 +350,9 @@ export function useNFT721Callback(
         sufficientBalance && tokenid
           ? async () => {
               try {
-                console.log(11111)
+                // console.log(11111)
+                // console.log(fee)
+                // console.log(inputFee)
                 const txReceipt = await contract.Swapout_no_fallback(
                   ...params,
                   {value: fee}

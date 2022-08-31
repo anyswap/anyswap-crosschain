@@ -14,14 +14,14 @@ import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
 import { useXlmCrossChain } from '../../hooks/stellar'
-import {useTrxCrossChain} from '../../hooks/trx'
+import {useTrxCrossChain, useTrxAllowance} from '../../hooks/trx'
 import {useConnectWallet} from '../../hooks/useWallet'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
 // import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
-import { ButtonLight, ButtonPrimary } from '../Button'
+import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
 import { AutoRow } from '../Row'
 // import Loader from '../Loader'
 import AddressInputPanel from '../AddressInputPanel'
@@ -144,6 +144,10 @@ export default function CrossChain({
     })
   }
 
+  const {trxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender)
+  useEffect(() => {
+    console.log(trxAllowance)
+  }, [trxAllowance])
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
@@ -570,22 +574,54 @@ export default function CrossChain({
             <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
           </BottomGrouping>
         ) : (
-          <BottomGrouping>
-            {!account ? (
-                <>
-                  <ButtonLight onClick={() => {
-                    connectWallet()
-                  }}>{t('ConnectWallet')}</ButtonLight>
-                </>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  setModalTipOpen(true)
-                }}>
-                  {btnTxt}
-                </ButtonPrimary>
-              )
-            }
-          </BottomGrouping>
+          <>
+          {
+            ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) ? (
+              <>
+                <ButtonConfirmed
+                  onClick={() => {
+                    // setModalTipOpen(true)
+                    setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender})
+                  }}
+                  // disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                  width="48%"
+                  // altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                >
+                  {/* {approval === ApprovalState.PENDING ? (
+                    <AutoRow gap="6px" justify="center">
+                      {t('Approving')} <Loader stroke="white" />
+                    </AutoRow>
+                  ) : approvalSubmitted ? (
+                    t('Approved')
+                  ) : (
+                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChain)
+                  )} */}
+                  {t('Approve')}
+                </ButtonConfirmed>
+                <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
+                  {t('swap')}
+                </ButtonConfirmed>
+              </>
+            ) : (
+                <BottomGrouping>
+                  {!account ? (
+                      <>
+                        <ButtonLight onClick={() => {
+                          connectWallet()
+                        }}>{t('ConnectWallet')}</ButtonLight>
+                      </>
+                    ) : (
+                      <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                        setModalTipOpen(true)
+                      }}>
+                        {btnTxt}
+                      </ButtonPrimary>
+                    )
+                  }
+                </BottomGrouping>
+            )
+          }
+          </>
         )
       }
     </>

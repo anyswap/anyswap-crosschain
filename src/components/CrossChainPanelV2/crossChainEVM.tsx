@@ -14,6 +14,7 @@ import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback,
 // import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
+import {useLogin} from '../../hooks/near'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -88,7 +89,7 @@ export default function CrossChain({
   const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   const connectedWallet = useConnectedWallet()
-
+  const {login: loginNear} = useLogin()
   const useChain = useMemo(() => {
     if (chainId) {
       return chainId
@@ -757,7 +758,7 @@ export default function CrossChain({
         </ConfirmText>
       } else {
         return <ConfirmText>
-          Get storage balance of receive account error, the transaction may fail.Please deposit near to the token&apos;s storage.
+          Please connect wallet or install Sender Wallet.
         </ConfirmText>
       }
     } else {
@@ -862,15 +863,32 @@ export default function CrossChain({
       && [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
       && ['TOKEN'].includes(destConfig?.tokenType)
     ) {
-      return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-        depositStorageNear(destConfig?.address, recipient).then(() => {
-          alert('Deposit storage success.')
-        }).catch(() => {
-          alert('Deposit storage failure.')
-        })
-      }}>
-        Deposit Storage
-      </ButtonPrimary>
+      if (window?.near?.account()) {
+        return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+          depositStorageNear(destConfig?.address, recipient).then(() => {
+            alert('Deposit storage success.')
+          }).catch(() => {
+            alert('Deposit storage failure.')
+          })
+        }}>
+          Deposit Storage
+        </ButtonPrimary>
+      } else {
+        return (
+          <BottomGrouping>
+            <ButtonPrimary style={{marginRight: '5px'}} onClick={() => {
+              loginNear()
+            }}>
+              {t('ConnectWallet')}
+            </ButtonPrimary>
+            <ButtonPrimary onClick={() => {
+              window.open('https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg')
+            }}>
+              Install Sender Wallet
+            </ButtonPrimary>
+          </BottomGrouping>
+        )
+      }
     } else {
       return <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
         handleSwap()
@@ -1075,8 +1093,8 @@ export default function CrossChain({
                       )}
                     </ButtonConfirmed>
                     <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
-                        {t('swap')}
-                      </ButtonConfirmed>
+                      {t('swap')}
+                    </ButtonConfirmed>
                   </>
                 ) : (
                   <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 // import useInterval from "../useInterval"
+import { MaxUint256 } from '@ethersproject/constants'
 import { AppState, AppDispatch } from '../../state'
-import { trxAddress } from './actions'
+import { trxAddress, trxApproveList } from './actions'
 import { useActiveReact } from '../useActiveReact'
 
 import { tryParseAmount3 } from '../../state/swap/hooks'
@@ -13,6 +14,8 @@ import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
+
+import {ABI_TO_ADDRESS, ABI_TO_STRING} from './crosschainABI'
 // const tronweb = window.tronWeb
 
 export function toHexAddress (address:string) {
@@ -147,6 +150,7 @@ export function useTrxBalance () {
       const useAccount = account ? account : TRXAccount
       const parameter1 = [{type:'address',value: useAccount}]
       const tokenID = token
+      // console.log('tokenID', tokenID)
       if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
         window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
           console.log(res)
@@ -184,29 +188,110 @@ export function useTrxBalance () {
 //     }
 //   }
 // }
+export enum ApprovalState {
+  UNKNOWN,
+  NOT_APPROVED,
+  PENDING,
+  APPROVED
+}
+export function useTrxAllowance(
+  selectCurrency:any,
+  spender: any
+) {
+  const {chainId} = useActiveReact()
+  const dispatch = useDispatch<AppDispatch>()
+  const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
+  const TRXAccount = useTrxAddress()
+  // const [allowance, setAllowance] = useState<any>()
+  const getTrxAllowance = useCallback(({account, token, spender}) => {
+    return new Promise((resolve) => {
+      const useAccount = account ? account : TRXAccount?.trxAddress
+      if (!token || !spender || !useAccount) resolve('')
+      else {
+        const parameter1 = [{type:'address',value: useAccount}, {type:'address',value: spender}]
+        const tokenID = formatTRXAddress(token)
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
+          window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "allowance(address, address)", {}, parameter1, useAccount).then((res:any) => {
+            // console.log(res)
+            resolve(res)
+          })
+        } else {
+          resolve('')
+        }
+      }
+    })
+  }, [TRXAccount])
+
+  const setTrxAllowance = useCallback(({token, spender}) => {
+    return new Promise((resolve) => {
+      const useAccount = TRXAccount
+      if (!token || !spender || !useAccount) resolve('')
+      else {
+        // const parameter1 = [{type:'address',value: spender}, {type:'uint256',value: MaxUint256.toString()}]
+        const parameter1 = [{type:'address',value: fromHexAddress(toHexAddress(spender))}, {type:'uint256',value: MaxUint256.toString()}]
+        // const parameter1 = [{type:'address',value: spender}, {type:'uint256',value: MaxUint256.toString()}]
+        // const tokenID = formatTRXAddress(token)
+        const tokenID = fromHexAddress(token)
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
+          window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "approve(address, uint256)", {}, parameter1, useAccount).then((res:any) => {
+            // console.log(res)
+            resolve(res)
+          })
+        } else {
+          resolve('')
+        }
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    if (
+      selectCurrency?.address
+      && spender
+      && !tal[selectCurrency?.address]
+      && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)
+    ) {
+
+      getTrxAllowance({
+        token: selectCurrency?.address,
+        spender
+      }).then(res => {
+        // console.log(res)
+        // setAllowance(res)
+        dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
+      })
+    }
+  }, [selectCurrency, TRXAccount, tal])
+
+  return {
+    setTrxAllowance,
+    trxAllowance: tal?.[selectCurrency?.address]
+  }
+}
 
 export function getTRXTxnsStatus (txid:string) {
   return new Promise(resolve => {
+    const data:any = {}
     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
       window?.tronWeb?.trx.getTransaction(txid).then((res:any) => {
         console.log(res)
         if (res.ret) {
-          resolve({
-            status: true
-          })
+          data.msg = 'Success'
+          data.info = res
         } else {
-          resolve({
-            status: false
-          })
+          data.msg = 'Failure'
+          data.error = 'Txns is failure!'
         }
+        resolve(data)
       })
     } else {
-      resolve({
-        status: false
-      })
+      data.msg = 'Null'
+      data.error = 'Txns is failure!'
+      resolve(data)
     }
   })
 }
+
 
 export function useTrxCrossChain (
   routerToken: any,
@@ -266,44 +351,22 @@ export function useTrxCrossChain (
         // let contract = await window?.tronWeb?.contract()
         if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
           const TRXAccount = window?.tronWeb?.defaultAddress.base58
-          // const curTRXAccount = toHexAddress(TRXAccount)
-          // const formatRouterToken = toHexAddress(routerToken)
           const formatRouterToken = routerToken
-          // console.log(TRXAccount)
-          // console.log(account)
+          const formatInputToken = inputToken
+          const formatReceiveAddress = formatTRXAddress(receiveAddress)
           if (TRXAccount.toLowerCase() === account.toLowerCase()) {
-            let tx:any = ''
+            let txResult:any = ''
+            const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_STRING : ABI_TO_ADDRESS, formatRouterToken)
             try {
               if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
-                if (isNaN(selectChain)) {
-                  const parameter1 = [{type:'address',value: inputToken},{type:'string',value: receiveAddress},{type:'uint256',value: selectChain}]
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOutNative(address, string, uint256)", {}, parameter1, TRXAccount)
-                } else {
-                  const parameter1 = [{type:'address',value: inputToken},{type:'address',value: receiveAddress},{type:'uint256',value: selectChain}]
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOutNative(address, address, uint256)", {}, parameter1, TRXAccount)
-                }
+                txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
               } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-                if (isNaN(selectChain)) {
-                  const parameter1 = [{type:'address',value: inputToken},{type:'string',value: receiveAddress},{type:'uint256',value: inputAmount},{type:'uint256',value: selectChain}]
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOutUnderlying(address, string, uint256, uint256)", {}, parameter1, TRXAccount)
-                } else {
-                  const parameter1 = [{type:'address',value: inputToken},{type:'string',value: receiveAddress},{type:'uint256',value: inputAmount},{type:'uint256',value: selectChain}]
-                  console.log(parameter1)
-                  console.log(formatRouterToken)
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOutUnderlying(address, string, uint256, uint256)", {}, parameter1, TRXAccount)
-                }
+                txResult = await instance.anySwapOutUnderlying(formatInputToken, formatReceiveAddress, inputAmount, selectChain).send()
               } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-                if (isNaN(selectChain)) {
-                  const parameter1 = [{type:'address',value: selectCurrency.address},{type:'string',value: receiveAddress},{type:'uint256',value: inputAmount},{type:'uint256',value: selectChain}]
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOut(address, string, uint256, uint256)", {}, parameter1, TRXAccount)
-                } else {
-                  const parameter1 = [{type:'address',value: selectCurrency.address},{type:'address',value: receiveAddress},{type:'uint256',value: inputAmount},{type:'uint256',value: selectChain}]
-                  tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(formatRouterToken, "anySwapOut(address, address, uint256, uint256)", {}, parameter1, TRXAccount)
-                }
+                txResult = await instance.anySwapOut(formatInputToken, formatReceiveAddress, inputAmount, selectChain).send()
               }
-              tx = tx.transaction
-              const signedTx = await window?.tronWeb?.trx.sign(tx)
-              const txReceipt = await window?.tronWeb?.trx.sendRawTransaction(signedTx)
+              const txReceipt:any = {hash: txResult}
+              console.log(txReceipt)
               if (txReceipt?.hash) {
                 const data:any = {
                   hash: txReceipt.hash,
@@ -347,7 +410,6 @@ export function useTrxCrossChain (
               }
             } catch (error) {
               console.log(error);
-              console.error(error);
               onChangeViewErrorTip('Txns failure.', true)
             }
           }
