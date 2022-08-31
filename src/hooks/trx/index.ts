@@ -16,6 +16,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
 
 import {ABI_TO_ADDRESS, ABI_TO_STRING} from './crosschainABI'
+import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
 
 export function toHexAddress (address:string) {
@@ -136,7 +137,7 @@ export function useTrxBalance () {
       const useAccount = account ? account : TRXAccount
       if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount) {
         window?.tronWeb?.trx.getBalance(useAccount).then((res:any) => {
-          console.log(res)
+          // console.log(res)
           resolve(res)
         })
       } else {
@@ -153,7 +154,7 @@ export function useTrxBalance () {
       // console.log('tokenID', tokenID)
       if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
         window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
-          console.log(res)
+          // console.log(res)
           resolve(res)
         })
       } else {
@@ -168,32 +169,6 @@ export function useTrxBalance () {
   }
 }
 
-// export function getTRXBalance (account:any, token:any) {
-//   if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-//     const curAccount = fromHexAddress(account)
-//     const TRXAccount = tronweb.defaultAddress.base58
-
-//     if (token === 'TRX') {
-//       tronweb.trx.getBalance(curAccount).then((res:any) => {
-//         console.log(res)
-//       })
-//     } else {
-//       const parameter1 = [{type:'address',value: curAccount}]
-//       const tokenID = token
-//       tronweb.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, TRXAccount).then((res:any) => {
-//         console.log(res)
-//         // const bl = res.constant_result[0]
-//         // setLocalOutBalance(TRX_MAIN_CHAINID, account, token, {balance: '0x' + bl.toString()})
-//       })
-//     }
-//   }
-// }
-export enum ApprovalState {
-  UNKNOWN,
-  NOT_APPROVED,
-  PENDING,
-  APPROVED
-}
 export function useTrxAllowance(
   selectCurrency:any,
   spender: any
@@ -202,66 +177,88 @@ export function useTrxAllowance(
   const dispatch = useDispatch<AppDispatch>()
   const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
   const TRXAccount = useTrxAddress()
+  const addTransaction = useTransactionAdder()
   // const [allowance, setAllowance] = useState<any>()
-  const getTrxAllowance = useCallback(({account, token, spender}) => {
-    return new Promise((resolve) => {
-      const useAccount = account ? account : TRXAccount?.trxAddress
-      if (!token || !spender || !useAccount) resolve('')
-      else {
-        const parameter1 = [{type:'address',value: useAccount}, {type:'address',value: spender}]
-        const tokenID = formatTRXAddress(token)
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
-          window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "allowance(address, address)", {}, parameter1, useAccount).then((res:any) => {
-            // console.log(res)
-            resolve(res)
-          })
-        } else {
-          resolve('')
-        }
-      }
-    })
-  }, [TRXAccount])
 
   const setTrxAllowance = useCallback(({token, spender}) => {
-    return new Promise((resolve) => {
+    return new Promise(async(resolve) => {
       const useAccount = TRXAccount
       if (!token || !spender || !useAccount) resolve('')
       else {
-        // const parameter1 = [{type:'address',value: spender}, {type:'uint256',value: MaxUint256.toString()}]
-        const parameter1 = [{type:'address',value: fromHexAddress(toHexAddress(spender))}, {type:'uint256',value: MaxUint256.toString()}]
-        // const parameter1 = [{type:'address',value: spender}, {type:'uint256',value: MaxUint256.toString()}]
-        // const tokenID = formatTRXAddress(token)
         const tokenID = fromHexAddress(token)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
-          window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "approve(address, uint256)", {}, parameter1, useAccount).then((res:any) => {
-            // console.log(res)
-            resolve(res)
-          })
+          try {
+            const instance:any = await window?.tronWeb?.contract([{
+              "constant": false,
+              "inputs": [
+                { "name": "_spender", "type": "address" },
+                { "name": "_value", "type": "uint256" }
+              ],
+              "name": "approve",
+              "outputs": [{ "name": "", "type": "bool" }],
+              "payable": false,
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }], tokenID)
+            const result  = await instance.approve(spender, MaxUint256.toString()).send()
+            console.log(result)
+            const txObj:any = {hash: result}
+            addTransaction(txObj, {
+              summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
+              approval: { tokenAddress: token.address, spender: spender }
+            })
+            resolve(result)
+          } catch (error) {
+            resolve('')
+          }
         } else {
           resolve('')
         }
       }
     })
-  }, [])
+  }, [selectCurrency?.address, spender])
+
+  const getTrxAllowance = useCallback(() => {
+    return new Promise(async(resolve) => {
+      const useAccount = TRXAccount?.trxAddress
+      if (!selectCurrency?.address || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
+      else {
+        // const parameter1 = [{type:'address',value: useAccount}, {type:'address',value: spender}]
+        const tokenID = formatTRXAddress(selectCurrency?.address)
+        // console.log('tokenID', tokenID)
+        // console.log('parameter1', parameter1)
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
+          const instance:any = await window?.tronWeb?.contract([{
+            "constant": true,
+            "inputs": [
+              { "name": "_owner", "type": "address" },
+              { "name": "_spender", "type": "address" }
+            ],
+            "name": "allowance",
+            "outputs": [{ "name": "", "type": "uint256" }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+          }], tokenID)
+          const result  = await instance.allowance(useAccount, spender).call()
+          // console.log(result.toString())
+          resolve(result.toString())
+        } else {
+          resolve('')
+        }
+      }
+    })
+  }, [TRXAccount, chainId, selectCurrency])
 
   useEffect(() => {
-    if (
-      selectCurrency?.address
-      && spender
-      && !tal[selectCurrency?.address]
-      && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)
-    ) {
+    getTrxAllowance().then(res => {
+      console.log(res)
+      // setAllowance(res)
+      dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
+    })
+  }, [selectCurrency, TRXAccount])
 
-      getTrxAllowance({
-        token: selectCurrency?.address,
-        spender
-      }).then(res => {
-        // console.log(res)
-        // setAllowance(res)
-        dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
-      })
-    }
-  }, [selectCurrency, TRXAccount, tal])
+  useInterval(getTrxAllowance, 10000)
 
   return {
     setTrxAllowance,
@@ -322,15 +319,15 @@ export function useTrxCrossChain (
     if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && selectCurrency?.address) {
       const dec = selectCurrency?.decimals
       if (selectCurrency?.tokenType === 'NATIVE') {
-        getTrxBalance({}).then((res:any) => {
+        getTrxBalance({account}).then((res:any) => {
           console.log(res)
           setBalance('')
         })
       } else {
         const token = fromHexAddress(selectCurrency.address)
-        console.log(token)
-        getTrxTokenBalance({token: token}).then((res:any) => {
-          console.log(res)
+        // console.log(token)
+        getTrxTokenBalance({token: token,account}).then((res:any) => {
+          // console.log(res)
           if (res?.constant_result) {
             const bl = '0x' + res?.constant_result[0]
             // console.log(BigAmount.format(dec, bl))
@@ -341,7 +338,7 @@ export function useTrxCrossChain (
         })
       }
     }
-  }, [selectCurrency, chainId])
+  }, [selectCurrency, chainId, account])
 
   return useMemo(() => {
     if (!account || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) || !routerToken) return {}

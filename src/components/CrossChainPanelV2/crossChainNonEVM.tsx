@@ -16,6 +16,7 @@ import { useNearSendTxns } from '../../hooks/near'
 import { useXlmCrossChain } from '../../hooks/stellar'
 import {useTrxCrossChain, useTrxAllowance} from '../../hooks/trx'
 import {useConnectWallet} from '../../hooks/useWallet'
+import { ApprovalState } from '../../hooks/useApproveCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
@@ -145,9 +146,21 @@ export default function CrossChain({
   }
 
   const {trxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender)
-  useEffect(() => {
-    console.log(trxAllowance)
-  }, [trxAllowance])
+  // useEffect(() => {
+  //   console.log(trxAllowance)
+  // }, [trxAllowance])
+
+  const isApprove = useMemo(() => {
+    if (inputBridgeValue) {
+      if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+        if (trxAllowance && Number(inputBridgeValue) > Number(trxAllowance)) {
+          return ApprovalState.NOT_APPROVED
+        }
+      }
+    }
+    return ApprovalState.UNKNOWN
+  }, [chainId, trxAllowance, inputBridgeValue])
+
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
@@ -211,7 +224,7 @@ export default function CrossChain({
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    console.log(xlmBalance)
+    // console.log(xlmBalance)
     // console.log(chainId)
     // console.log(ChainId.NEAR)
     if (chainId === ChainId.NAS) {
@@ -576,31 +589,25 @@ export default function CrossChain({
         ) : (
           <>
           {
-            ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) ? (
+            isApprove === ApprovalState.NOT_APPROVED ? (
               <>
-                <ButtonConfirmed
-                  onClick={() => {
-                    // setModalTipOpen(true)
-                    setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender})
-                  }}
-                  // disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
-                  width="48%"
-                  // altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                >
-                  {/* {approval === ApprovalState.PENDING ? (
-                    <AutoRow gap="6px" justify="center">
-                      {t('Approving')} <Loader stroke="white" />
-                    </AutoRow>
-                  ) : approvalSubmitted ? (
-                    t('Approved')
-                  ) : (
-                    t('Approve') + ' ' + config.getBaseCoin(selectCurrency?.symbol ?? selectCurrency?.symbol, useChain)
-                  )} */}
-                  {t('Approve')}
-                </ButtonConfirmed>
-                <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
-                  {t('swap')}
-                </ButtonConfirmed>
+                <BottomGrouping>
+
+                  <ButtonConfirmed
+                    onClick={() => {
+                      onDelay()
+                      setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender})
+                    }}
+                    disabled={delayAction}
+                    width="48%"
+                    // altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                  >
+                    {t('Approve')}
+                  </ButtonConfirmed>
+                  <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
+                    {t('swap')}
+                  </ButtonConfirmed>
+                </BottomGrouping>
               </>
             ) : (
                 <BottomGrouping>
