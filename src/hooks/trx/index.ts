@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // import useInterval from "../useInterval"
 import { MaxUint256 } from '@ethersproject/constants'
 import { AppState, AppDispatch } from '../../state'
-import { trxAddress, trxApproveList } from './actions'
+import { trxAddress } from './actions'
 import { useActiveReact } from '../useActiveReact'
 
 import { tryParseAmount3 } from '../../state/swap/hooks'
@@ -16,7 +16,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
 
 import {ABI_TO_ADDRESS, ABI_TO_STRING} from './crosschainABI'
-import useInterval from "../useInterval"
+// import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
 
 export function toHexAddress (address:string) {
@@ -171,19 +171,21 @@ export function useTrxBalance () {
 
 export function useTrxAllowance(
   selectCurrency:any,
-  spender: any
+  spender: any,
+  chainId: any,
+  account: any,
 ) {
-  const {chainId} = useActiveReact()
-  const dispatch = useDispatch<AppDispatch>()
-  const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
-  const TRXAccount = useTrxAddress()
+  // const {chainId} = useActiveReact()
+  // const dispatch = useDispatch<AppDispatch>()
+  // const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
+  // const TRXAccount = useTrxAddress()
   const addTransaction = useTransactionAdder()
   // const [allowance, setAllowance] = useState<any>()
 
   const setTrxAllowance = useCallback(({token, spender}) => {
     return new Promise(async(resolve) => {
-      const useAccount = TRXAccount
-      if (!token || !spender || !useAccount) resolve('')
+      const useAccount = account
+      if (!token || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
       else {
         const tokenID = fromHexAddress(token)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
@@ -201,7 +203,9 @@ export function useTrxAllowance(
               "type": "function"
             }], tokenID)
             const result  = await instance.approve(spender, MaxUint256.toString()).send()
-            console.log(result)
+            // const result  = await instance.approve(spender, 0).send()
+            // console.log(result)
+            // console.log(MaxUint256)
             const txObj:any = {hash: result}
             addTransaction(txObj, {
               summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
@@ -216,11 +220,11 @@ export function useTrxAllowance(
         }
       }
     })
-  }, [selectCurrency?.address, spender])
+  }, [selectCurrency?.address, spender, account, chainId])
 
   const getTrxAllowance = useCallback(() => {
     return new Promise(async(resolve) => {
-      const useAccount = TRXAccount?.trxAddress
+      const useAccount = account
       if (!selectCurrency?.address || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
       else {
         // const parameter1 = [{type:'address',value: useAccount}, {type:'address',value: spender}]
@@ -248,21 +252,22 @@ export function useTrxAllowance(
         }
       }
     })
-  }, [TRXAccount, chainId, selectCurrency])
+  }, [account, chainId, selectCurrency, spender])
 
-  useEffect(() => {
-    getTrxAllowance().then(res => {
-      console.log(res)
-      // setAllowance(res)
-      dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
-    })
-  }, [selectCurrency, TRXAccount])
+  // useEffect(() => {
+  //   getTrxAllowance().then(res => {
+  //     // console.log(res)
+  //     // setAllowance(res)
+  //     dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
+  //   })
+  // }, [selectCurrency, TRXAccount])
 
-  useInterval(getTrxAllowance, 10000)
+  // useInterval(getTrxAllowance, 10000)
 
   return {
     setTrxAllowance,
-    trxAllowance: tal?.[selectCurrency?.address]
+    getTrxAllowance,
+    // trxAllowance: tal?.[selectCurrency?.address]
   }
 }
 

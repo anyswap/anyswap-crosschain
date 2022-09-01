@@ -60,6 +60,7 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
+import useInterval from '../../hooks/useInterval'
 
 // let intervalFN:any = ''
 
@@ -145,20 +146,37 @@ export default function CrossChain({
     })
   }
 
-  const {trxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender)
+  const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender, chainId, account)
+  const [trxAllowance, setTrxAllowances] = useState<any>()
   // useEffect(() => {
   //   console.log(trxAllowance)
   // }, [trxAllowance])
+  const getTrxAllowanceResult = useCallback(() => {
+    getTrxAllowance().then(res => {
+      // console.log(res)
+      // setAllowance(res)
+      setTrxAllowances(res)
+      // dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
+    })
+  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
+  useEffect(() => {
+    getTrxAllowanceResult()
+  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
+  useInterval(getTrxAllowanceResult, 1000 * 5)
 
   const isApprove = useMemo(() => {
+    // console.log(trxAllowance)
     if (inputBridgeValue) {
       if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
         if (trxAllowance && Number(inputBridgeValue) > Number(trxAllowance)) {
+        // if (trxAllowance && Number(inputBridgeValue) < Number(trxAllowance)) {
           return ApprovalState.NOT_APPROVED
         }
+        return ApprovalState.UNKNOWN
       }
     }
     return ApprovalState.UNKNOWN
+    // return ApprovalState.NOT_APPROVED
   }, [chainId, trxAllowance, inputBridgeValue])
 
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
@@ -596,7 +614,9 @@ export default function CrossChain({
                   <ButtonConfirmed
                     onClick={() => {
                       onDelay()
-                      setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender})
+                      setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender}).then(() => {
+                        setDelayAction(false)
+                      })
                     }}
                     disabled={delayAction}
                     width="48%"
