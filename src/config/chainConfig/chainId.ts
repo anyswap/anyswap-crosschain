@@ -87,4 +87,5 @@ export enum ChainId {
   IOTA = 'IOTA',
   IOTA_TEST = 'IOTA_TEST',
   RPG = '2025',
+  BOBABEAM = '1294',
 }
