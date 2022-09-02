@@ -12,7 +12,7 @@ export const MATIC_MAIN_EXPLORER = 'https://polygonscan.com'
 
 export const MATIC_TEST_CHAINID = ChainId.MATIC_TEST
 export const MATIC_TESTNET = getLocalRPC(MATIC_TEST_CHAINID, 'https://rpc-mumbai.maticvigil.com')
-export const MATIC_TEST_EXPLORER = 'https://testnet.polygonscan.com'
+export const MATIC_TEST_EXPLORER = 'https://mumbai.polygonscan.com'
 
 const symbol = 'MATIC'
 

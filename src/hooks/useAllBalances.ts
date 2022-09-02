@@ -131,7 +131,7 @@ export function useBaseBalances (
     } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId)) {
       getTrxBalance({}).then((res:any) => {
         // console.log(res)
-        const bl = res ? BigAmount.format(6, res) : undefined
+        const bl = res || res === 0 ? BigAmount.format(6, res) : undefined
         setBalance(bl)
       })
     } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectChainId)) {

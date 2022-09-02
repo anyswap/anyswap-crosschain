@@ -10,10 +10,11 @@ import {trxAddress} from './actions'
 
 // import config from '../../config'
 import { ChainId } from '../../config/chainConfig/chainId'
-
+let onlyone = 0
 export default function Updater(): null {
   const { chainId } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
+  
 
   // const [account, setAccount] = useState<any>()
   const getTrxAddress = useCallback(() => {
@@ -29,7 +30,25 @@ export default function Updater(): null {
         // window?.tronWeb?.isConnected().then((res:any) => {
         //   console.log(res)
         // })
-        dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
+        if (ChainId.TRX_TEST === chainId) {
+          if (window?.tronWeb?.fullNode?.host.indexOf('shasta') === -1 && !onlyone) {
+            onlyone = 1
+            alert('Please switch to Shasta Network.')
+          } else {
+            dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
+          }
+        } else {
+          if (window?.tronWeb?.fullNode?.host.indexOf('api.trongrid.io') === -1 && !onlyone) {
+            onlyone = 1
+            alert('Please switch to Main Network.')
+          } else {
+            dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
+          }
+        }
+        // const HttpProvider = window?.tronWeb?.providers.HttpProvider
+        // // window?.tronWeb?.setFullNode(new HttpProvider("https://api.shasta.trongrid.io"))
+        // window?.tronWeb?.setFullNode(new HttpProvider("https://api.trongrid.io"))
+        // dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
       } else {
         dispatch(trxAddress({address: ''}))
       }

@@ -59,7 +59,10 @@ export function useLoginTrx () {
       if (window?.tronWeb?.address && window.tronWeb.defaultAddress.base58) {
         dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
       } else {
-        history.go(0)
+        // history.go(0)
+        if (confirm('Please connect TronLink or install TronLink.') === true) {
+          window.open('https://www.tronlink.org/')
+        }
       }
     }
   }, [])
