@@ -175,7 +175,7 @@ export default function CrossChain({
   }, [destConfig])
 
   const isNativeToken = useMemo(() => {
-    console.log(selectCurrency)
+    // console.log(selectCurrency)
     if (
       selectCurrency
       && selectCurrency?.tokenType === 'NATIVE'
@@ -522,9 +522,12 @@ export default function CrossChain({
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, useChain)
 
   useEffect(() => {
-    console.log(initChainId)
+    // console.log(initChainId)
     setSelectChain(initChainId)
-  }, [initChainId])
+  }, [initChainId, selectCurrency])
+// console.log(initChainId)
+// console.log(selectChain)
+
 
   useEffect(() => {
     setSelectChainList(initChainList)
@@ -926,6 +929,7 @@ export default function CrossChain({
             setInputBridgeValue(value)
           }}
           onCurrencySelect={(inputCurrency) => {
+            console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
             setIsUserSelect(false)
             setUserFromSelect({useChainId: useChain, toChainId: '', token: inputCurrency?.address})
@@ -1007,6 +1011,7 @@ export default function CrossChain({
             setInputBridgeValue(value)
           }}
           onChainSelect={(chainID) => {
+            console.log(chainID)
             setSelectChain(chainID)
             setIsUserSelect(false)
           }}

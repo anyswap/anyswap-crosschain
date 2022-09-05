@@ -457,6 +457,7 @@ export default function CroseNFT () {
               chainList={selectChainList}
               selectChainId={selectChain}
               onChainSelect={(value) => {
+                console.log(value)
                 setSelectChain(value)
               }}
               label={'To '}
@@ -470,6 +471,7 @@ export default function CroseNFT () {
                 setSelectCurrency(value)
               }}
               onSelectTokenId={(value) => {
+                console.log(value)
                 setSelectTokenId(value)
               }}
             />

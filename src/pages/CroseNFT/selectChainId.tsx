@@ -66,6 +66,7 @@ export default function SelectChainIDPanel ({
     (chainID) => {
       if (onChainSelect) {
         onChainSelect(chainID)
+        setModalOpen(false)
       }
     },
     [onChainSelect]
@@ -88,7 +89,7 @@ export default function SelectChainIDPanel ({
                 key={index}
                 className={selectChainId && selectChainId === item ? 'active' : ''}
               >
-                <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val))}></Option>
+                <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val.chainID))}></Option>
               </OptionCardClickable>
             )
           })

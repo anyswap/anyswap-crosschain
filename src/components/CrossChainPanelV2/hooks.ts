@@ -193,8 +193,13 @@ export function useDestChainid (
           }
         }
       }
+      // console.log(useChain)
+      // console.log(arr)
       setInitChainId(useChain)
       setInitChainList(arr)
+    } else {
+      setInitChainId('')
+      setInitChainList([])
     }
   }, [selectCurrency])
   return {

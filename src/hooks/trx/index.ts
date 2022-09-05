@@ -15,7 +15,10 @@ import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hook
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
 
-import {ABI_TO_ADDRESS, ABI_TO_STRING} from './crosschainABI'
+import {
+  // ABI_TO_ADDRESS,
+  ABI_TO_STRING
+} from './crosschainABI'
 // import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
 
@@ -358,17 +361,23 @@ export function useTrxCrossChain (
           const TRXAccount = window?.tronWeb?.defaultAddress.base58
           const formatRouterToken = routerToken
           const formatInputToken = inputToken
-          const formatReceiveAddress = formatTRXAddress(receiveAddress)
+          // const formatReceiveAddress = formatTRXAddress(receiveAddress)
+          const formatReceiveAddress = receiveAddress
           if (TRXAccount.toLowerCase() === account.toLowerCase()) {
             let txResult:any = ''
-            const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_STRING : ABI_TO_ADDRESS, formatRouterToken)
+            // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_STRING, formatRouterToken)
+            const instance:any = await window?.tronWeb?.contract(ABI_TO_STRING, formatRouterToken)
             try {
               if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
                 txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
               } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-                txResult = await instance.anySwapOutUnderlying(formatInputToken, formatReceiveAddress, inputAmount, selectChain).send()
+                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+                console.log(parameArr)
+                txResult = await instance.anySwapOutUnderlying(...parameArr).send()
               } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-                txResult = await instance.anySwapOut(formatInputToken, formatReceiveAddress, inputAmount, selectChain).send()
+                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+                console.log(parameArr)
+                txResult = await instance.anySwapOut(...parameArr).send()
               }
               const txReceipt:any = {hash: txResult}
               console.log(txReceipt)
