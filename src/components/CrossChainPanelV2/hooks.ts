@@ -61,6 +61,10 @@ export function useInitSelectCurrency (
     // console.log(useChainId)
     // console.log(userInit)
     // console.log(initToken)
+    // if (!useChainId) return {
+    //   initCurrency: undefined,
+    //   underlyingList: {}
+    // }
     let t = []
     if (initToken) {
       t = [initToken]
@@ -82,8 +86,8 @@ export function useInitSelectCurrency (
 
     let initCurrency:any
     // console.log(allTokensList)
+    let useToken = ''
     if (Object.keys(allTokensList).length > 0) {
-      let useToken = ''
       let noMatchInitToken = ''
       for (const tokenKey in allTokensList) {
         const item = allTokensList[tokenKey]
@@ -121,14 +125,16 @@ export function useInitSelectCurrency (
           }
         }
       }
-      // console.log(useToken)
-      // console.log(list)
-      if (useToken) {
+      if (useToken && list[useToken].chainId === useChainId?.toString()) {
         initCurrency = list[useToken]
-      } else if (noMatchInitToken) {
+      } else if (noMatchInitToken && list[noMatchInitToken].chainId === useChainId?.toString()) {
         initCurrency = list[noMatchInitToken]
       }
     }
+    // console.log(useChainId)
+    // console.log(useToken)
+    // console.log(initCurrency)
+    // console.log(list[useToken])
     return {
       initCurrency,
       underlyingList
@@ -140,6 +146,7 @@ export function useDestChainid (
   selectCurrency:any,
   selectChain:any,
   useChainId:any,
+  // initToChainId:any,
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
   const [initChainId, setInitChainId] = useState<any>('')

@@ -91,9 +91,12 @@ export default function CrossChain({
   const connectedWallet = useConnectedWallet()
   const {login: loginNear} = useLogin()
   const useChain = useMemo(() => {
+    // console.log(chainId)
+    // console.log(config.getCurChainInfo(chainId).chainID)
     if (chainId) {
       return chainId
-    } else if (config.getCurChainInfo(chainId).chainID) {
+    }
+    else if (config.getCurChainInfo(chainId).chainID) {
       return config.getCurChainInfo(chainId).chainID
     }
     return undefined
@@ -111,19 +114,30 @@ export default function CrossChain({
   const {depositStorageNear} = useSendNear()
   const {getAllBalance} = useXlmBalance()
   const {setTrustlines} = useTrustlines()
+
+  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
+  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+
+  const initSelectCurrencyKey = initBridgeToken ? 'evm' + initBridgeToken : ''
+
+  let initToChainId:any = getParams('toChainId') ? getParams('toChainId') : ''
+  initToChainId = initToChainId ? initToChainId.toLowerCase() : ''
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
-  const [selectCurrency, setSelectCurrency] = useState<any>()
+  const [selectCurrency, setSelectCurrency] = useState<any>(allTokensList?.[initSelectCurrencyKey] ? allTokensList?.[initSelectCurrencyKey] : '')
   const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectDestCurrencyList, setSelectDestCurrencyList] = useState<any>()
-  const [selectChain, setSelectChain] = useState<any>()
+  const [selectChain, setSelectChain] = useState<any>(initToChainId)
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
 
   const [isUserSelect, setIsUserSelect] = useState(false)
   
+  // useEffect(() => {
+  //   console.log(selectCurrency)
+  // }, [selectCurrency])
 
   const [modalOpen, setModalOpen] = useState(false)
   const [modalTipOpen, setModalTipOpen] = useState(false)
@@ -143,8 +157,7 @@ export default function CrossChain({
     bl: ''
   })
 
-  let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
-  initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
+
 
   const destConfig = useMemo(() => {
     // console.log(selectDestCurrency)
@@ -503,6 +516,7 @@ export default function CrossChain({
   const {initCurrency} = useInitSelectCurrency(allTokensList, useChain, initBridgeToken)
 
   useEffect(() => {
+    // console.log(initCurrency)
     setSelectCurrency(initCurrency)
   }, [initCurrency])
 
