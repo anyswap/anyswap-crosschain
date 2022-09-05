@@ -70,6 +70,7 @@ import iota from './iota'
 import rpg from './rpg'
 import trx from './trx'
 import bobabeam from './bobabeam'
+import cardano from './cardano'
 
 import { ChainId } from './chainId'
 
@@ -79,6 +80,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...cardano,
   ...bobabeam,
   ...trx,
   ...rpg,
@@ -337,6 +339,7 @@ const useChain:any = {
     ChainId.NEAR_TEST,
     ChainId.XLM_TEST,
     ChainId.IOTA_TEST,
+    ChainId.ADA_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

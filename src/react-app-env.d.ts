@@ -99,6 +99,7 @@ interface Window {
   msIDBKeyRange: any
   freighterApi: any
   xfi: any
+  cardano: any
 }
 
 declare const __DEV__: boolean;
