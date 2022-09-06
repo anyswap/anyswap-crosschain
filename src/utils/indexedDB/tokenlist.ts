@@ -16,7 +16,7 @@ const READWRITE = 'readwrite'
 let db:any = {}
 // let objectStore: any = {}
 const tokenlistReauest = w.indexedDB.open(TOKENLIST, 11);
-console.log(tokenlistReauest)
+// console.log(tokenlistReauest)
 tokenlistReauest.onerror = function(event:any) {
   console.log(event)
   console.log("Why didn't you allow my web app to use IndexedDB?!");

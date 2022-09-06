@@ -18,18 +18,8 @@ export default function Updater(): null {
 
   // const [account, setAccount] = useState<any>()
   const getTrxAddress = useCallback(() => {
-    // console.log(chainId)
-    // console.log(window.tronWeb)
-    // console.log(window.tronWeb.defaultAddress.base58)
-    // if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && window.tronWeb && window.tronWeb.defaultAddress.base58) {
     if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && window.tronWeb) {
-      // console.log(window.tronWeb.defaultAddress.base58)
-      // console.log(window?.tronWeb?.address)
-      // setAccount(window.tronWeb.defaultAddress.base58)
       if (window?.tronWeb?.address) {
-        // window?.tronWeb?.isConnected().then((res:any) => {
-        //   console.log(res)
-        // })
         if (ChainId.TRX_TEST === chainId) {
           if (window?.tronWeb?.fullNode?.host.indexOf('shasta') === -1 && !onlyone) {
             onlyone = 1
@@ -45,10 +35,6 @@ export default function Updater(): null {
             dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
           }
         }
-        // const HttpProvider = window?.tronWeb?.providers.HttpProvider
-        // // window?.tronWeb?.setFullNode(new HttpProvider("https://api.shasta.trongrid.io"))
-        // window?.tronWeb?.setFullNode(new HttpProvider("https://api.trongrid.io"))
-        // dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
       } else {
         dispatch(trxAddress({address: ''}))
       }
