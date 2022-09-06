@@ -559,7 +559,24 @@ export default function CrossChain({
   // }, [initDestCurrency])
 
   useEffect(() => {
-    setUserToSelect({useChainId: selectChain, toChainId: useChain, token: selectDestCurrency?.address})
+    let tokenKey = ''
+    if (selectDestCurrency?.address && selectChain) {
+
+      if (selectDestCurrency?.tokenType === 'NATIVE') {
+        if (isNaN(selectChain)) {
+          tokenKey = selectChain + selectDestCurrency?.address
+        } else {
+          tokenKey = 'evm' + config.getCurChainInfo(selectChain).symbol + selectDestCurrency?.address
+        }
+      } else {
+        if (isNaN(selectChain)) {
+          tokenKey = selectChain + selectDestCurrency?.address
+        } else {
+          tokenKey = 'evm' + selectDestCurrency?.address
+        }
+      }
+    }
+    setUserToSelect({useChainId: selectChain, toChainId: useChain, token: selectDestCurrency?.address,tokenKey: tokenKey.toLowerCase()})
   }, [selectDestCurrency, selectChain, useChain])
 
   useEffect(() => {
@@ -946,7 +963,7 @@ export default function CrossChain({
             console.log(inputCurrency)
             setSelectCurrency(inputCurrency)
             setIsUserSelect(false)
-            setUserFromSelect({useChainId: useChain, toChainId: '', token: inputCurrency?.address})
+            setUserFromSelect({useChainId: useChain, toChainId: '', token: inputCurrency?.address, tokenKey: inputCurrency?.key})
           }}
           onMax={(value) => {
             handleMaxInput(value)

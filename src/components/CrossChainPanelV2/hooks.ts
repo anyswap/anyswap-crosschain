@@ -68,6 +68,8 @@ export function useInitSelectCurrency (
     let t = []
     if (initToken) {
       t = [initToken]
+    } else if (userInit?.tokenKey) {
+      t = [userInit?.tokenKey?.toLowerCase()]
     } else if (userInit?.token) {
       t = [userInit?.token?.toLowerCase()]
     } else if (config.getCurChainInfo(useChainId)?.bridgeInitToken || config.getCurChainInfo(useChainId)?.crossBridgeInitToken) {
@@ -92,23 +94,24 @@ export function useInitSelectCurrency (
       for (const tokenKey in allTokensList) {
         const item = allTokensList[tokenKey]
         const token = item.address
-        list[token] = {
+        list[tokenKey] = {
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,
         }
-        if(!list[token].name || !list[token].symbol) continue
-        if (!noMatchInitToken) noMatchInitToken = token
+        if(!list[tokenKey].name || !list[tokenKey].symbol) continue
+        if (!noMatchInitToken) noMatchInitToken = tokenKey
         if ( !useToken ) {
           if (
             t.includes(token?.toLowerCase())
-            || t.includes(list[token]?.symbol?.toLowerCase())
+            || t.includes(list[tokenKey]?.symbol?.toLowerCase())
+            || t.includes(tokenKey?.toLowerCase())
           ) {
-            useToken = token
+            useToken = tokenKey
           }
         }
         if (onlyUnderlying) {
-          for (const destChainId in list[token].destChains) {
-            const destChainIdList = list[token].destChains[destChainId]
+          for (const destChainId in list[tokenKey].destChains) {
+            const destChainIdList = list[tokenKey].destChains[destChainId]
             let isUnderlying = false
             for (const tokenKey in destChainIdList) {
               const destChainIdItem = destChainIdList[tokenKey]
@@ -118,8 +121,8 @@ export function useInitSelectCurrency (
               }
             }
             if (isUnderlying) {
-              underlyingList[token] = {
-                ...list[token]
+              underlyingList[tokenKey] = {
+                ...list[tokenKey]
               }
             }
           }
