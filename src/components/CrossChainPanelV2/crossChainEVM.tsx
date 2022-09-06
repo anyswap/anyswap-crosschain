@@ -560,23 +560,28 @@ export default function CrossChain({
 
   useEffect(() => {
     let tokenKey = ''
-    if (selectDestCurrency?.address && selectChain) {
+    const token = selectDestCurrency?.address?.toLowerCase()
+    if (token && selectChain) {
 
       if (selectDestCurrency?.tokenType === 'NATIVE') {
         if (isNaN(selectChain)) {
-          tokenKey = selectChain + selectDestCurrency?.address
+          tokenKey = selectChain + token
         } else {
-          tokenKey = 'evm' + config.getCurChainInfo(selectChain).symbol + selectDestCurrency?.address
+          if (config.getCurChainInfo(selectChain).symbol.toLowerCase() === token) {
+            tokenKey = token
+          } else {
+            tokenKey = 'evm' + config.getCurChainInfo(selectChain).symbol + token
+          }
         }
       } else {
         if (isNaN(selectChain)) {
-          tokenKey = selectChain + selectDestCurrency?.address
+          tokenKey = selectChain + token
         } else {
-          tokenKey = 'evm' + selectDestCurrency?.address
+          tokenKey = 'evm' + token
         }
       }
     }
-    setUserToSelect({useChainId: selectChain, toChainId: useChain, token: selectDestCurrency?.address,tokenKey: tokenKey.toLowerCase()})
+    setUserToSelect({useChainId: selectChain, toChainId: useChain, token: token,tokenKey: tokenKey.toLowerCase()})
   }, [selectDestCurrency, selectChain, useChain])
 
   useEffect(() => {
