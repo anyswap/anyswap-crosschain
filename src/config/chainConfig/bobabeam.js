@@ -21,7 +21,7 @@ export default {
   [BOBABEAM_MAIN_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '',
+    multicalToken: '0x6aB6d61428fde76768D7b45D8BFeec19c6eF91A8',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: BOBABEAM_MAINNET,

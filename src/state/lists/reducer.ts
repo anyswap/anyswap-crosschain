@@ -23,6 +23,7 @@ export interface ListsState {
     readonly [chainId: string]: {
       readonly token: string | null
       readonly toChainId: string | null
+      readonly tokenKey: string | null
     }
   }
 }
@@ -74,13 +75,14 @@ export default createReducer(initialState, builder =>
         }
       }
     })
-    .addCase(userSelectCurrency, (state, { payload: { chainId, token, toChainId } }) => {
+    .addCase(userSelectCurrency, (state, { payload: { chainId, token, toChainId, tokenKey } }) => {
       // console.log(state)
       if (chainId) {
         if (!state.userSelectCurrency) state.userSelectCurrency = {}
         if (!state.userSelectCurrency[chainId]) state.userSelectCurrency[chainId] = {
           token: '',
-          toChainId: ''
+          toChainId: '',
+          tokenKey: '',
         }
         // console.log(state.userSelectCurrency[chainId])
         // console.log(token)
@@ -90,6 +92,9 @@ export default createReducer(initialState, builder =>
         }
         if (toChainId) {
           state.userSelectCurrency[chainId].toChainId = toChainId
+        }
+        if (tokenKey) {
+          state.userSelectCurrency[chainId].tokenKey = tokenKey
         }
       }
     })

@@ -71,6 +71,7 @@ import rpg from './rpg'
 import trx from './trx'
 import bobabeam from './bobabeam'
 import cardano from './cardano'
+import ckb from './ckb'
 
 import { ChainId } from './chainId'
 
@@ -80,6 +81,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...ckb,
   ...cardano,
   ...bobabeam,
   ...trx,
@@ -212,6 +214,7 @@ const allChainList = [
   ChainId.FITFI,
   ChainId.RPG,
   ChainId.BOBABEAM,
+  ChainId.CKB,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

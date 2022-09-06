@@ -90,4 +90,5 @@ export enum ChainId {
   BOBABEAM = '1294',
   ADA = 'ADA',
   ADA_TEST = 'ADA_TEST',
+  CKB = '71402',
 }
