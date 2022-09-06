@@ -18,6 +18,9 @@ export default function Updater(): null {
       cardano.getUnusedAddresses().then((res:any) => {
         console.log(res)
       })
+      cardano.getRewardAddress().then((res:any) => {
+        console.log(res)
+      })
       cardano.nami.enable().then((res:any) => {
         console.log(res)
       })
@@ -39,10 +42,12 @@ export default function Updater(): null {
         }
       }
 
-      if (cardano.on) {
-        cardano.on('chainChanged', handleChainChanged)
-        cardano.on('accountsChanged', handleAccountsChanged)
+      if (cardano?.experimental?.on) {
+        console.log(1)
+        cardano?.experimental?.on('chainChanged', handleChainChanged)
+        cardano?.experimental?.on('accountsChanged', handleAccountsChanged)
       } else {
+        console.log(2)
         cardano.onAccountChange(handleChainChanged)
         cardano.onNetworkChange(handleAccountsChanged)
       }

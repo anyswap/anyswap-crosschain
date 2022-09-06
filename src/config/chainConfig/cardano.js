@@ -4,11 +4,11 @@ import {ChainId} from './chainId'
 
 export const ADA_MAINNET = 'https://graphql-api.mainnet.dandelion.link/'
 export const ADA_MAIN_CHAINID = ChainId.ADA
-export const ADA_MAIN_EXPLORER = 'https://explorer.cardano-testnet.iohkdev.io/en/'
+export const ADA_MAIN_EXPLORER = 'https://explorer.cardano.org/en/'
 
 export const ADA_TESTNET = 'https://graphql-api.testnet.dandelion.link/'
 export const ADA_TEST_CHAINID = ChainId.ADA_TEST
-export const ADA_TEST_EXPLORER = 'https://explorer.cardano.org/en/'
+export const ADA_TEST_EXPLORER = 'https://explorer.cardano-testnet.iohkdev.io/en/'
 
 const symbol = 'ADA'
 
@@ -28,9 +28,9 @@ export default {
     nodeRpc: ADA_MAINNET,
     nodeRpcList: [],
     chainID: ADA_MAIN_CHAINID,
-    lookHash: ADA_MAIN_EXPLORER + '/transactions/',
+    lookHash: ADA_MAIN_EXPLORER + 'transaction?id=',
     lookAddr: ADA_MAIN_EXPLORER + 'address?address=',
-    lookBlock: ADA_MAIN_EXPLORER + '/blocks/',
+    lookBlock: ADA_MAIN_EXPLORER + 'block?id=',
     explorer: ADA_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Cardano',
@@ -48,9 +48,9 @@ export default {
     nodeRpc: ADA_TESTNET,
     nodeRpcList: [],
     chainID: ADA_TEST_CHAINID,
-    lookHash: ADA_TEST_EXPLORER + '/transactions/',
+    lookHash: ADA_TEST_EXPLORER + 'transaction?id=',
     lookAddr: ADA_TEST_EXPLORER + 'address?address=',
-    lookBlock: ADA_TEST_EXPLORER + '/blocks/',
+    lookBlock: ADA_TEST_EXPLORER + 'block?id=',
     explorer: ADA_TEST_EXPLORER,
     symbol: symbol,
     name: 'Cardano',
