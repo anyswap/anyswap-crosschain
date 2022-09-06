@@ -10,7 +10,7 @@ import _ from 'lodash'
 
 import { useConnectedWallet } from '@terra-money/wallet-provider'
 import { useCallback } from 'react'
-import {terraExt} from './terra'
+import {terraExt} from '../nonevm/terra'
 
 const jsonTryParse = <T>(value: string): T | undefined => {
   try {

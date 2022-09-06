@@ -28,7 +28,7 @@ import {
   // MnemonicKey
 } from '@terra-money/terra.js'
 
-import {useTerraSend} from './terra'
+import {useTerraSend} from '../nonevm/terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'

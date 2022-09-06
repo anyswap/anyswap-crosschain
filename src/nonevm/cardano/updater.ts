@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ChainId } from "../../config/chainConfig/chainId";
 
-import {useActiveReact} from '../useActiveReact'
+import {useActiveReact} from '../../hooks/useActiveReact'
 
 export default function Updater(): null {
   const {chainId} = useActiveReact()

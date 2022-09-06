@@ -5,7 +5,7 @@ import nebulas from 'nebulas'
 import { ChainId } from "../../config/chainConfig/chainId"
 import {isBTCAddress, BTCARR} from './BTC'
 
-import {isTRXAddress} from '../../hooks/trx'
+import {isTRXAddress} from '../../nonevm/trx'
 
 export function isEvmAddress(value: any): string | false {
   try {

@@ -14,7 +14,7 @@ import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback,
 // import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
-import {useLogin} from '../../hooks/near'
+import {useLogin} from '../../nonevm/near'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -51,12 +51,12 @@ import {usePool} from '../../hooks/usePools'
 import {
   useNearBalance,
   useSendNear
-} from '../../hooks/near'
+} from '../../nonevm/near'
 
 import {
   useXlmBalance,
   useTrustlines
-} from '../../hooks/stellar'
+} from '../../nonevm/stellar'
 
 import {
   LogoBox,

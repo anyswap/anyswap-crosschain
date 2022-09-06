@@ -1,7 +1,7 @@
 
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { useActiveReact } from '../useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import useInterval from '../../hooks/useInterval'
 
 import { AppDispatch } from '../../state'

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { MaxUint256 } from '@ethersproject/constants'
 import { AppState, AppDispatch } from '../../state'
 import { trxAddress } from './actions'
-import { useActiveReact } from '../useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import { ChainId } from "../../config/chainConfig/chainId"

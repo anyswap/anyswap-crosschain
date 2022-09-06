@@ -12,7 +12,7 @@ import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 import currency from './currency'
-import { useActiveReact } from '../useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { ChainId } from '../../config/chainConfig/chainId'
 
 

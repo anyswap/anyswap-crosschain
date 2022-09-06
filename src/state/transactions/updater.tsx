@@ -6,7 +6,7 @@ import { useActiveWeb3React } from '../../hooks'
 // import {updateTerraHash} from '../../hooks/terra'
 // import {updateNasHash} from '../../hooks/nas'
 
-import {getHashInfo} from '../../hooks/getHash'
+import {getHashInfo} from '../../nonevm/getHash'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useAddPopup, useBlockNumber } from '../application/hooks'

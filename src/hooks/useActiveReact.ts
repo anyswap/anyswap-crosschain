@@ -3,10 +3,10 @@ import { useConnectedWallet } from '@terra-money/wallet-provider'
 import { useUserSelectChainId } from '../state/user/hooks'
 import { useMemo } from 'react'
 
-import { useCurrentAddress } from './nas'
-import {useNearAddress} from './near'
-import {connectXlmWallet} from './stellar'
-import {useTrxAddress} from './trx'
+import { useCurrentAddress } from '../nonevm/nas'
+import {useNearAddress} from '../nonevm/near'
+import {connectXlmWallet} from '../nonevm/stellar'
+import {useTrxAddress} from '../nonevm/trx'
 
 
 import { ChainId } from '../config/chainConfig/chainId'

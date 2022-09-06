@@ -3,7 +3,7 @@ import {useEvmPools, useEvmPool, useEvmPoolDatas} from './evm'
 import { useCallback, useEffect, useState } from 'react'
 import useInterval from '../useInterval'
 import { ChainId } from '../../config/chainConfig/chainId'
-import {useNearPoolDatas} from '../near'
+import {useNearPoolDatas} from '../../nonevm/near'
 
 export function usePoolDatas () {
   const {getNearPoolDatas} = useNearPoolDatas()

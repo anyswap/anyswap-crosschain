@@ -14,8 +14,8 @@ import pools from './pools/reducer'
 import wallet from './wallet/reducer'
 import rpc from './rpc/reducer'
 
-import xlm from '../hooks/stellar/reducer'
-import trx from '../hooks/trx/reducer'
+import xlm from '../nonevm/stellar/reducer'
+import trx from '../nonevm/trx/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists', 'rpc', 'pools', 'nft']
 

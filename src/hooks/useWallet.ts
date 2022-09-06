@@ -10,9 +10,9 @@ import { useUserSelectChainId } from '../state/user/hooks'
 import { ChainId } from '../config/chainConfig/chainId'
 
 import {useActiveReact} from './useActiveReact'
-import {useLogin} from './near'
-import {connectXlmWallet} from './stellar'
-import {useLoginTrx} from './trx'
+import {useLogin} from '../nonevm/near'
+import {connectXlmWallet} from '../nonevm/stellar'
+import {useLoginTrx} from '../nonevm/trx'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
