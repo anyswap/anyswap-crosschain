@@ -8,7 +8,7 @@ export function selectNetwork (chainID:any, type?: any) {
     const { ethereum } = window
     const ethereumFN: any = ethereum;
     ethereumFN.request = (ethereum as any).request ?? '';
-    localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
+    window.localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
     if (ethereumFN && ethereumFN.request) {
       // console.log(ethereumFN)
       // console.log(ethereumFN.chainId)
@@ -33,7 +33,6 @@ export function selectNetwork (chainID:any, type?: any) {
       ethereumFN.request(data).then((res: any) => {
         // console.log(chainID)
         console.log(res)
-        // localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
         if (!type) {
           history.go(0)
         }

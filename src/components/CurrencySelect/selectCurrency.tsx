@@ -48,7 +48,7 @@ interface SelectCurrencyInputPanelProps {
   showMaxButton: boolean // is view max function
   onMax?: (value: any) => void // input max token amount
   label?: string 
-  onCurrencySelect?: (currency: Currency) => void // user select token
+  onCurrencySelect?: (currency: any) => void // user select token
   // currency?: Currency | null
   currency?: any // select token
   disableCurrencySelect?: boolean // disabled select

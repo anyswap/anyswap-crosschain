@@ -21,6 +21,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: TERRA_MAINNET,
+    nodeRpcList: [],
     chainID: TERRA_MAIN_CHAINID,
     lookHash: TERRA_MAIN_EXPLORER + '/tx/',
     lookAddr: TERRA_MAIN_EXPLORER + '/address/',

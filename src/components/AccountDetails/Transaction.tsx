@@ -83,7 +83,7 @@ export default function Transaction({ hash }: { hash: string }) {
         return null
       } else if (tx.info?.status || tx.info?.status === 0) {
         const status = tx.info?.status
-        const statusType = getStatus(status)
+        const statusType = getStatus(status, tx?.info?.confirmations)
         return statusType
       } else {
         return Status.Failure

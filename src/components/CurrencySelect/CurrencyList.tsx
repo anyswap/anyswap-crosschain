@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'anyswap-sdk'
-// import { Currency, CurrencyAmount, ETHER, Token } from 'anyswap-sdk'
 import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -9,14 +8,13 @@ import { Star } from 'react-feather'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { useLocalToken } from '../../hooks/Tokens'
-import { WrappedTokenInfo } from '../../state/lists/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {useStarToken} from '../../state/user/hooks'
 
 import Column from '../Column'
 import { RowFixed } from '../Row'
 import TokenLogo from '../TokenLogo'
-import { MouseoverTooltip } from '../Tooltip'
+// import { MouseoverTooltip } from '../Tooltip'
 import { MenuItem } from '../SearchModal/styleds'
 import Loader from '../Loader'
 import { LazyList } from '../Lazyload/LazyList';
@@ -39,20 +37,6 @@ const StyledBalanceText = styled(Text)`
   text-overflow: ellipsis;
 `
 
-const Tag = styled.div`
-  background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text2};
-  font-size: 14px;
-  border-radius: 4px;
-  padding: 0.25rem 0.3rem 0.25rem 0.3rem;
-  max-width: 6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  justify-self: flex-end;
-  margin-right: 4px;
-`
-
 const ListBox = styled.div`
   overflow:auto;
 `
@@ -67,10 +51,6 @@ function Balance({ balance }: { balance: any }) {
   return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? (balance ? balance?.toSignificant(6) : '') : (balance?.balances ? balance?.balances?.toSignificant(6) : '')}</StyledBalanceText>
 }
 
-const TagContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`
 
 const Loading = styled.div`
   line-height: 56px;
@@ -94,18 +74,6 @@ const CurrencyRight = styled.div`
 const FlexSC = styled.div`
   ${({ theme }) => theme.flexSC};
 `
-// const PlusIcon = styled(Plus)`
-//   height: 20px;
-//   width: 20px;
-//   min-height: 20px;
-//   min-width: 20px;
-//   margin-left: 5px;
-
-//   > * {
-//     stroke: ${({ theme }) => theme.text1};
-//   }
-// `
-
 
 const MetamaskIcon = styled(Metamask)`
   height: 16px;
@@ -130,35 +98,6 @@ const StyledStarIcon = styled(Star)`
     }
   }
 `
-
-function TokenTags({ currency }: { currency: Currency }) {
-  if (!(currency instanceof WrappedTokenInfo)) {
-    return <span />
-  }
-
-  const tags = currency.tags
-  if (!tags || tags.length === 0) return <span />
-
-  const tag = tags[0]
-  // console.log(tag)
-  return (
-    <TagContainer>
-      <MouseoverTooltip text={tag.description}>
-        <Tag key={tag.id + Math.random()}>{tag.name}</Tag>
-      </MouseoverTooltip>
-      {tags.length > 1 ? (
-        <MouseoverTooltip
-          text={tags
-            .slice(1)
-            .map(({ name, description }) => `${name}: ${description}`)
-            .join('; \n')}
-        >
-          <Tag>...</Tag>
-        </MouseoverTooltip>
-      ) : null}
-    </TagContainer>
-  )
-}
 
 function CurrencyRow({
   currency,
@@ -187,17 +126,9 @@ function CurrencyRow({
   const currencyObj = currency
   const key = currencyKey(currencyObj)
   const currencies = useLocalToken(currencyObj)
-  // const isNativeToken = config.getCurChainInfo(chainId)?.nativeToken
-  // && currencyObj?.address.toLowerCase() === config.getCurChainInfo(chainId)?.nativeToken.toLowerCase()
-  // && !CROSS_BRIDGE_LIST.includes(bridgeKey)
-  //  ? true : false
+  
   const isNativeToken = currencyObj?.tokenType === 'NATIVE' && !CROSS_BRIDGE_LIST.includes(bridgeKey) ? true : false
-  // if (isNativeToken) {
-  //   console.log(currencyObj)
-  // }
-  // const balance = ''
-  // const ETHBalance = ''
-  // const balance1 = useCurrencyBalance(account ?? undefined, currencies ?? undefined, '', isNativeToken)
+  
   const balance1 = ''
   const balance = useMemo(() => {
     // console.log(currencyObj)
@@ -258,7 +189,7 @@ function CurrencyRow({
             <Text fontSize={'10px'}>{currencyObj.name ? config.getBaseCoin(currencyObj.symbol, isDestChainId, 1, currencyObj.name) : ''}</Text>
           </Text>
         </Column>
-        <TokenTags currency={currencyObj} />
+        {/* <TokenTags currency={currencyObj} /> */}
       </CurrencyLeft>
       <CurrencyRight>
         {
@@ -268,14 +199,6 @@ function CurrencyRow({
             </RowFixed>
           )
         }
-        {/* {
-          isNativeToken || isNaN(chainId) || currencyObj?.type ? '' : (
-            <PlusIcon onClick={() => {
-              // console.log(currencyObj)
-              addToken(currencyObj.address, currencyObj.symbol, currencyObj.decimals, currencyObj.logoUrl)
-            }} />
-          )
-        } */}
       </CurrencyRight>
     </MenuItemWrapper>
   )

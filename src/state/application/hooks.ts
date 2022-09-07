@@ -132,6 +132,8 @@ export function useTxnsErrorTipOpen(): any {
       if (errorTip?.data?.data) {
         if (errorTip?.data?.data.indexOf('burn amount exceeds minter total') !== -1) {
           errorContent = 'No bridging quota on conflux chain.'
+        } else if (errorTip?.data?.message) {
+          errorContent = errorTip?.data?.message
         }
       } else if (errorTip?.message) {
         errorContent = errorTip?.message

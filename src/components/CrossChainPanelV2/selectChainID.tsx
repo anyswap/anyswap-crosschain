@@ -1,8 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Text } from 'rebass'
-import { Currency } from 'anyswap-sdk'
-// import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
@@ -59,7 +57,7 @@ interface SelectChainIdInputPanel {
   disableCurrencySelect?: boolean
   hideInput?: boolean
   id: string
-  onCurrencySelect?: (currency: Currency) => void // user select token
+  onCurrencySelect?: (currency: any) => void // user select token
   onOpenModalView?: (value: any) => void,
   bridgeConfig: any,
   intervalCount?: any,

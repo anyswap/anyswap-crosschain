@@ -7,7 +7,7 @@ function getApiUrlData (url:string, token:string, address?:string) {
     axios.get(url).then((res:any) => {
       if (res && res.data && res.status === 200) {
         // let price = res.data[0].current_price
-        localStorage.setItem(token, JSON.stringify({
+        window.localStorage.setItem(token, JSON.stringify({
           timestamp: Date.now(),
           data: res.data,
           address: address
@@ -17,7 +17,7 @@ function getApiUrlData (url:string, token:string, address?:string) {
           data: res.data
         })
       } else {
-        localStorage.setItem(token, '')
+        window.localStorage.setItem(token, '')
         resolve({
           msg: 'Error',
           data: ''
@@ -25,7 +25,7 @@ function getApiUrlData (url:string, token:string, address?:string) {
       }
     }).catch((err:any) => {
       console.log(err)
-      localStorage.setItem(token, '')
+      window.localStorage.setItem(token, '')
       resolve({
         msg: 'Error',
         data: ''
@@ -35,7 +35,7 @@ function getApiUrlData (url:string, token:string, address?:string) {
 }
 
 function getApiData (url:string, token:string, intarval:number, address?:string) {
-  const localData = localStorage.getItem(token)
+  const localData = window.localStorage.getItem(token)
   return new Promise(resolve => {
     if (localData) {
       const localObj = JSON.parse(localData)

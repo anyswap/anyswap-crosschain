@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -7,37 +7,41 @@ import {
   Info
 } from 'react-feather'
 
-import {Status} from '../../config/status'
+// import {Status} from '../../config/status'
+
+
+import { useAllTransactions } from '../../state/transactions/hooks'
 
 import Loader from "../Loader";
 
 const ProgressBox = styled.div`
-  width:100%;
+  // width:100%;
+  width: 380px;
   margin-bottom: 10px;
-  border-radius: 10px;
+  // border-radius: 10px;
   // border: solid 0.5px ${({ theme }) => theme.tipBorder};
   // background-color: ${({ theme }) => theme.tipBg};
-  border: 1px solid ${({theme}) => theme.bg3};
-  padding:10px;
-  .list {
+  // border: 1px solid ${({theme}) => theme.bg3};
+  padding:10px 0;
+  .list-box {
     position:relative;
-    ${({ theme }) => theme.flexBC};
     font-size: 12px;
+    width: 100%;
     .lineBox {
-      width:100%;
+      width:75%;
       height:20px;
       position: absolute;
       top:0;
-      left:0;
-      right:0;
+      left:12.5%;
+      right:12.5%;
       z-index:0;
-      padding-left: 12px;
+      // padding-left: 12px;
       .lineWrapper {
-        width:90%;
+        width:100%;
         position: relative;
         background: ${({ theme }) => theme.text1};
         margin-top:10px;
-        margin-left: 10px;
+        // margin-left: 10px;
         height: 1px;
         .line {
           width: 30%;
@@ -46,53 +50,58 @@ const ProgressBox = styled.div`
         }
       }
     }
-    .item {
-      z-index:1;
-      ${({ theme }) => theme.text1};
-      .step {
-        ${({ theme }) => theme.flexC};
-        .num {
-          display:block;
-          width:20px;
-          height:20px;
-          line-height:18px;
-          border-radius: 100%;
-          border: 1px solid ${({ theme }) => theme.text1};
-          font-size:12px;
-          text-align:center;
-          background:${({ theme }) => theme.contentBg};
-        }
-      }
-      .label {
-        ${({ theme }) => theme.flexC};
-      }
-      &.yellow {
-        color: ${({ theme }) => theme.birdgeStateBorder};
+    .list {
+      width: 100%;
+      ${({ theme }) => theme.flexBC};
+      .item {
+        z-index:1;
+        width: 25%;
+        ${({ theme }) => theme.text1};
         .step {
+          ${({ theme }) => theme.flexC};
           .num {
-            border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
+            display:block;
+            width:20px;
+            height:20px;
+            line-height:18px;
+            border-radius: 100%;
+            border: 1px solid ${({ theme }) => theme.text1};
+            font-size:12px;
+            text-align:center;
+            background:${({ theme }) => theme.contentBg};
           }
         }
-      }
-      &.green{
-        color: #10f732;
-        // .lineBox {
-        //   .line {
-        //     background: #10f732;
-        //   }
-        // }
-        .step {
-          // color: #10f732;
-          .num {
-            border: 1px solid #10f732;
+        .label {
+          ${({ theme }) => theme.flexC};
+        }
+        &.yellow {
+          color: ${({ theme }) => theme.birdgeStateBorder};
+          .step {
+            .num {
+              border: 1px solid ${({ theme }) => theme.birdgeStateBorder};
+            }
           }
         }
-      }
-      &.red{
-        color: ${({ theme }) => theme.birdgeStateBorder2};
-        .step {
-          .num {
-            border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
+        &.green{
+          color: #10f732;
+          // .lineBox {
+          //   .line {
+          //     background: #10f732;
+          //   }
+          // }
+          .step {
+            // color: #10f732;
+            .num {
+              border: 1px solid #10f732;
+            }
+          }
+        }
+        &.red{
+          color: ${({ theme }) => theme.birdgeStateBorder2};
+          .step {
+            .num {
+              border: 1px solid ${({ theme }) => theme.birdgeStateBorder2};
+            }
           }
         }
       }
@@ -118,154 +127,180 @@ const FailureBox = styled.div`
 `
 
 export default function TxnsProgress({
-  fromStatus,
-  toStatus
+  hash
 }:any) {
-  const ProgressNum = useMemo(() => {
-    if (!toStatus) {
-      if ([Status.Null].includes(fromStatus)) {
-        return 0
-      } else if ([Status.Pending].includes(fromStatus)) {
-        return 1
-      } else if ([Status.Success].includes(fromStatus)) {
-        return 2
-      } else if ([Status.Failure].includes(fromStatus)) {
-        return -1
-      }
-    } else {
-      if ([Status.Confirming].includes(toStatus)) {
-        return 3
-      } else if ([Status.Crosschaining].includes(toStatus)) {
-        return 4
-      } else if ([Status.Success].includes(toStatus)) {
-        return 5
-      } else if ([Status.BigAmount].includes(toStatus)) {
-        return 6
-      } else if (!toStatus || [Status.Failure, Status.Null].includes(toStatus)) {
-        return -2
+  const allTransactions = useAllTransactions()
+  const tx:any = allTransactions?.[hash]
+
+  const [step, setStep] = useState(0)
+
+  useEffect(() => {
+    let stepNum = 1
+    if (tx) {
+      if (tx?.info) {
+        const status = tx?.info?.status ?? ''
+        if (status === '' || [-1, 0, 5].includes(status)) {
+          stepNum = 3 // Confirming
+        } else if ([0, 5].includes(status)) {
+          stepNum = 4 // Confirmed
+        } else if ([7, 8].includes(status)) {
+          stepNum = 5 // Routing
+        } else if ([9].includes(status)) {
+          stepNum = 6 // Routed
+        } else if (tx?.info?.confirmations > 1 || [10].includes(status)) {
+          stepNum = 7 // Success
+        } else if ([1, 2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
+          stepNum = -2
+        } else if ([12].includes(status)) {
+          stepNum = 98
+        }
+      } else {
+        if (!tx.receipt) {
+          stepNum = 1 // pending
+        } else if (tx.receipt?.status === 1 || typeof tx.receipt?.status === 'undefined') {
+          stepNum = 2 // Sent
+        } else {
+          stepNum = -1
+        }
       }
     }
-    return 0
-  }, [fromStatus, toStatus])
+    setStep(stepNum)
+  }, [tx])
+
+  // const ProgressNum = useMemo(() => {
+  //   if (!toStatus) {
+  //     if ([Status.Null].includes(fromStatus)) {
+  //       return 0
+  //     } else if ([Status.Pending].includes(fromStatus)) {
+  //       return 1
+  //     } else if ([Status.Success].includes(fromStatus)) {
+  //       return 2
+  //     } else if ([Status.Failure].includes(fromStatus)) {
+  //       return -1
+  //     }
+  //   } else {
+  //     if ([Status.Confirming].includes(toStatus)) {
+  //       return 3
+  //     } else if ([Status.Crosschaining].includes(toStatus)) {
+  //       return 4
+  //     } else if ([Status.Success].includes(toStatus)) {
+  //       return 5
+  //     } else if ([Status.BigAmount].includes(toStatus)) {
+  //       return 6
+  //     } else if (!toStatus || [Status.Failure, Status.Null].includes(toStatus)) {
+  //       return -2
+  //     }
+  //   }
+  //   return 0
+  // }, [fromStatus, toStatus])
 
   // const ChevronsRightView = <div className="item"><ChevronsRight className="arrow" size={14} /></div>
   const CheckCircleView = <CheckCircle size={12} style={{marginRight: 5, display: 'none'}} />
   const LoaderView = <Loading size={'14px'} stroke="#5f6bfb" style={{marginRight: 5}} />
 
   const PendingView = (status:any) => {
-    if (status === 0) {
-      return <div className={"item"}>
-        <div className="step"><span className="num">1</span></div>
-        <div className="label">{LoaderView}Pending</div>
-      </div>
-    }
-    return <div className={"item green"}>
+    if (status >= 2) {
+      return <div className={"item green"}>
       <div className="step"><span className="num">1</span></div>
       <div className="label">{CheckCircleView}Sent</div>
     </div>
+    }
+    return <div className={"item"}>
+      <div className="step"><span className="num">1</span></div>
+      <div className="label">{status === 1 ? LoaderView : ''}Pending</div>
+    </div>
   }
   const ConfirmingView = (status:any) => {
-    if (status >= 1 && status < 2) {
-      return <div className={"item"}>
-        <div className="step"><span className="num">2</span></div>
-        <div className="label">{LoaderView}Confirming</div>
-      </div>
-    }
-    return <div className={"item green"}>
+    if (status >= 4) {
+      return <div className={"item green"}>
       <div className="step"><span className="num">2</span></div>
       <div className="label">{CheckCircleView}Confirmed</div>
     </div>
-  }
-  const CrosschainingView = (status:any) => {
-    if (status < 4) {
-      return <div className={"item"}>
-        <div className="step"><span className="num">3</span></div>
-        <div className="label">{status >= 2 ? LoaderView : ''}Routing</div>
-      </div>
     }
-    return <div className={"item green"}>
+    return <div className={"item"}>
+      <div className="step"><span className="num">2</span></div>
+      <div className="label">{[2,3].includes(status) ? LoaderView : ''}Confirming</div>
+    </div>
+  }
+  const RoutingView = (status:any) => {
+    if (status >= 6) {
+      return <div className={"item green"}>
       <div className="step"><span className="num">3</span></div>
       <div className="label">{CheckCircleView}Routing</div>
     </div>
+    }
+    return <div className={"item"}>
+      <div className="step"><span className="num">3</span></div>
+      <div className="label">{[4,5].includes(status) ? LoaderView : ''}Routing</div>
+    </div>
   }
-  // const FailureView = <div className={"item red"}><Info size={12} style={{marginRight: 5}} />Failure</div>
   const SuccessView = (status:any) => {
-    if (status >= 4 && status < 5) {
-      return <div className={"item"}>
-        <div className="step"><span className="num">4</span></div>
-        <div className="label">{status >= 3 ? LoaderView : ''}Success</div>
-      </div>
-    } else if (status === 6) {
-      return <div className={"item yellow"}>
-        <div className="step"><span className="num">4</span></div>
-        <div className="label"><Info size={12} style={{marginRight: 5}} />Big Amount</div>
-      </div>
-    } else if (status === 5) {
+    if (status >= 7 && status < 98) {
       return <div className={"item green"}>
         <div className="step"><span className="num">4</span></div>
         <div className="label">{CheckCircleView}Success</div>
       </div>
+    } else if (status === 98) {
+      return <div className={"item yellow"}>
+        <div className="step"><span className="num">4</span></div>
+        <div className="label"><Info size={12} style={{marginRight: 5}} />Big Amount</div>
+      </div>
     }
     return <div className={"item"}>
       <div className="step"><span className="num">4</span></div>
-      <div className="label">{CheckCircleView}Success</div>
+      <div className="label">{[6].includes(status) ? LoaderView : ''}Success</div>
     </div>
   }
   // console.log(ProgressNum)
   function ProgressView (status:any) {
-    console.log(status)
-    if (status >= 0) {
-      return (
-        <>
-          {PendingView(status)}
-          {/* {ChevronsRightView} */}
-
-          {ConfirmingView(status)}
-          {/* {ChevronsRightView} */}
-
-          {CrosschainingView(status)}
-          {/* {ChevronsRightView} */}
-
-          {SuccessView(status)}
-        </>
-      )
-    } else {
+    // console.log(status)
+    if (status === 99) {
       return (
         <FailureBox>
           <Info size={16} style={{marginRight: 5}} />Failure
         </FailureBox>
       )
     }
+    return (
+      <>
+        {PendingView(status)}
+
+        {ConfirmingView(status)}
+
+        {RoutingView(status)}
+
+        {SuccessView(status)}
+      </>
+    )
   }
   function LineView (ProgressNum:any) {
-    if (ProgressNum > 4) {
+    if (ProgressNum > 6) {
       return <div className={"line "}style={{ width: '100%' }}></div>
-    } else if (ProgressNum >= 3) {
-      return <div className={"line "}style={{ width: '65%' }}></div>
-    } if (ProgressNum >= 2) {
-      return <div className={"line "}style={{ width: '30%' }}></div>
+    } else if (ProgressNum >= 5) {
+      return <div className={"line "}style={{ width: '66%' }}></div>
+    } if (ProgressNum >= 3) {
+      return <div className={"line "}style={{ width: '33%' }}></div>
     }
     return <div className={"line "}style={{ width: '0%' }}></div>
   }
   return (
     <>
-          {/* {ProgressView(-1)} */}
       {
-        ProgressNum < 0 ? (
+        step < 0 ? (
           <>
             {ProgressView(-1)}
           </>
         ) : (
           <ProgressBox>
-            <div className="list">
+            <div className="list-box">
               <div className="lineBox">
                 <div className="lineWrapper">
-                  {LineView(ProgressNum)}
-                  {/* {LineView(4)} */}
+                  {LineView(step)}
                 </div>
-                {/* <div className={"line line1" + (ProgressNum >= 3 ? 'green' : '')}></div> */}
               </div>
-              {ProgressView(ProgressNum)}
+              <div className="list">
+                {ProgressView(step)}
+              </div>
             </div>
           </ProgressBox>
         )

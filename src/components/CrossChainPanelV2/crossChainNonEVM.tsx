@@ -4,7 +4,7 @@ import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
-import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
+// import {  useWallet, ConnectType } from '@terra-money/wallet-provider'
 
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
@@ -13,13 +13,16 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../hooks/nas'
 import { useNearSendTxns } from '../../hooks/near'
-// import { useXlmCrossChain } from '../../hooks/stellar'
+import { useXlmCrossChain } from '../../hooks/stellar'
+import {useTrxCrossChain, useTrxAllowance} from '../../hooks/trx'
+import {useConnectWallet} from '../../hooks/useWallet'
+import { ApprovalState } from '../../hooks/useApproveCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
 // import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
-import { ButtonLight, ButtonPrimary } from '../Button'
+import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
 import { AutoRow } from '../Row'
 // import Loader from '../Loader'
 import AddressInputPanel from '../AddressInputPanel'
@@ -57,6 +60,7 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
+import useInterval from '../../hooks/useInterval'
 
 // let intervalFN:any = ''
 
@@ -69,8 +73,8 @@ export default function CrossChain({
   const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   
-  const { connect } = useWallet()
-  // const connectedWallet = useConnectedWallet()
+  // const { connect } = useWallet()
+  const connectWallet = useConnectWallet()
   
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
@@ -97,7 +101,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (selectDestCurrency) {
       return selectDestCurrency
     }
@@ -142,6 +146,39 @@ export default function CrossChain({
     })
   }
 
+  const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender, chainId, account)
+  const [trxAllowance, setTrxAllowances] = useState<any>()
+  // useEffect(() => {
+  //   console.log(trxAllowance)
+  // }, [trxAllowance])
+  const getTrxAllowanceResult = useCallback(() => {
+    getTrxAllowance().then(res => {
+      // console.log(res)
+      // setAllowance(res)
+      setTrxAllowances(res)
+      // dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
+    })
+  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
+  useEffect(() => {
+    getTrxAllowanceResult()
+  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
+  useInterval(getTrxAllowanceResult, 1000 * 5)
+
+  const isApprove = useMemo(() => {
+    // console.log(trxAllowance)
+    if (inputBridgeValue) {
+      if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+        if (trxAllowance && Number(inputBridgeValue) > Number(trxAllowance)) {
+        // if (trxAllowance && Number(inputBridgeValue) < Number(trxAllowance)) {
+          return ApprovalState.NOT_APPROVED
+        }
+        return ApprovalState.UNKNOWN
+      }
+    }
+    return ApprovalState.UNKNOWN
+    // return ApprovalState.NOT_APPROVED
+  }, [chainId, trxAllowance, inputBridgeValue])
+
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
@@ -182,43 +219,67 @@ export default function CrossChain({
     destConfig
   )
 
-  // const {execute} = useXlmCrossChain(
-  //   chainId,
-  //   selectCurrency,
-  //   selectChain
-  // )
-
-  // useEffect(() => {
-  //   if (execute) {
-  //     execute()
-  //   }
-  // }, [execute])
+  const {balance: xlmBalance,execute: onXlmWrap} = useXlmCrossChain(
+    chainId,
+    selectCurrency,
+    selectChain,
+    recipient,
+    destConfig?.router,
+    inputBridgeValue,
+    destConfig
+  )
+  const {balance: trxBalance,execute: onTrxWrap} = useTrxCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    chainId,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
-    // console.log(nearBalance)
+    // console.log(xlmBalance)
     // console.log(chainId)
     // console.log(ChainId.NEAR)
     if (chainId === ChainId.NAS) {
       if (nasBalance) {
         const nasBalanceFormat = nasBalance?.toExact()
         return nasBalanceFormat
+      } else if (!nasBalance && account) {
+        return 0
       }
     } else if (chainId === ChainId.TERRA) {
       if (terraBalance) {
         return terraBalance?.toExact()
+      } else if (!terraBalance && account) {
+        return 0
       }
-    } else if (
-      chainId === ChainId.NEAR
-      || chainId === ChainId.NEAR_TEST
-    ) {
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
       if (nearBalance) {
         return nearBalance?.toExact()
+      } else if (!nearBalance && account) {
+        return 0
+      }
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+      if (xlmBalance) {
+        return xlmBalance?.toExact()
+      } else if (!xlmBalance && account) {
+        return '0'
+      }
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+      if (trxBalance) {
+        return trxBalance?.toExact()
+      } else if (!trxBalance && account) {
+        return '0'
       }
     }
+    
     return ''
-  }, [terraBalance,chainId,nasBalance, nearBalance])
+  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account, trxBalance])
   // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
@@ -414,15 +475,23 @@ export default function CrossChain({
                     onNebWrap().then(() => {
                       onClear()
                     })
-                  } else if (onNearWrap && (
-                    chainId === ChainId.NEAR
-                    || chainId === ChainId.NEAR_TEST
-                  )) {
+                  } else if (onNearWrap && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
                     console.log('onNebWrap')
                     onNearWrap().then(() => {
                       onClear()
                     })
+                  } else if (onXlmWrap && [ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+                    console.log('onXlmWrap')
+                    onXlmWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onTrxWrap && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+                    console.log('onTrxWrap')
+                    onTrxWrap().then(() => {
+                      onClear()
+                    })
                   }
+                  
                 }}>
                   {t('Confirm')}
                 </ButtonPrimary>
@@ -536,33 +605,50 @@ export default function CrossChain({
             <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
           </BottomGrouping>
         ) : (
-          <BottomGrouping>
-            {!account ? (
-                <>
+          <>
+          {
+            isApprove === ApprovalState.NOT_APPROVED ? (
+              <>
+                <BottomGrouping>
 
-                  <ButtonLight onClick={() => {
-                    if (connect) {
-                      try {
-                        connect(ConnectType.CHROME_EXTENSION)
-                        // setModalView(true)
-                      } catch (error) {
-                        alert('Please install Terra Station!')
-                      }
-                    } else {
-                      alert('Please install Terra Station!')
-                    }
-                  }}>{t('ConnectWallet')}</ButtonLight>
-                  {/* <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight> */}
-                </>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                  setModalTipOpen(true)
-                }}>
-                  {btnTxt}
-                </ButtonPrimary>
-              )
-            }
-          </BottomGrouping>
+                  <ButtonConfirmed
+                    onClick={() => {
+                      onDelay()
+                      setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender}).then(() => {
+                        setDelayAction(false)
+                      })
+                    }}
+                    disabled={delayAction}
+                    width="48%"
+                    // altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                  >
+                    {t('Approve')}
+                  </ButtonConfirmed>
+                  <ButtonConfirmed disabled={true} width="45%" style={{marginLeft:'10px'}}>
+                    {t('swap')}
+                  </ButtonConfirmed>
+                </BottomGrouping>
+              </>
+            ) : (
+                <BottomGrouping>
+                  {!account ? (
+                      <>
+                        <ButtonLight onClick={() => {
+                          connectWallet()
+                        }}>{t('ConnectWallet')}</ButtonLight>
+                      </>
+                    ) : (
+                      <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
+                        setModalTipOpen(true)
+                      }}>
+                        {btnTxt}
+                      </ButtonPrimary>
+                    )
+                  }
+                </BottomGrouping>
+            )
+          }
+          </>
         )
       }
     </>

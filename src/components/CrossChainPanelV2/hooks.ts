@@ -25,7 +25,7 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
     // console.log(value)
     if (value && Number(value) && Number(value) > 0) {
       const dec = Math.min(6, decimals)
-      value = value.toFixed(16)
+      value = value.toFixed(Math.min(7, decimals))
       return {
         fee: fee,
         outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
@@ -61,9 +61,15 @@ export function useInitSelectCurrency (
     // console.log(useChainId)
     // console.log(userInit)
     // console.log(initToken)
+    // if (!useChainId) return {
+    //   initCurrency: undefined,
+    //   underlyingList: {}
+    // }
     let t = []
     if (initToken) {
       t = [initToken]
+    } else if (userInit?.tokenKey) {
+      t = [userInit?.tokenKey?.toLowerCase()]
     } else if (userInit?.token) {
       t = [userInit?.token?.toLowerCase()]
     } else if (config.getCurChainInfo(useChainId)?.bridgeInitToken || config.getCurChainInfo(useChainId)?.crossBridgeInitToken) {
@@ -82,29 +88,30 @@ export function useInitSelectCurrency (
 
     let initCurrency:any
     // console.log(allTokensList)
+    let useToken = ''
     if (Object.keys(allTokensList).length > 0) {
-      let useToken = ''
       let noMatchInitToken = ''
       for (const tokenKey in allTokensList) {
         const item = allTokensList[tokenKey]
         const token = item.address
-        list[token] = {
+        list[tokenKey] = {
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,
         }
-        if(!list[token].name || !list[token].symbol) continue
-        if (!noMatchInitToken) noMatchInitToken = token
+        if(!list[tokenKey].name || !list[tokenKey].symbol) continue
+        if (!noMatchInitToken) noMatchInitToken = tokenKey
         if ( !useToken ) {
           if (
             t.includes(token?.toLowerCase())
-            || t.includes(list[token]?.symbol?.toLowerCase())
+            || t.includes(list[tokenKey]?.symbol?.toLowerCase())
+            || t.includes(tokenKey?.toLowerCase())
           ) {
-            useToken = token
+            useToken = tokenKey
           }
         }
         if (onlyUnderlying) {
-          for (const destChainId in list[token].destChains) {
-            const destChainIdList = list[token].destChains[destChainId]
+          for (const destChainId in list[tokenKey].destChains) {
+            const destChainIdList = list[tokenKey].destChains[destChainId]
             let isUnderlying = false
             for (const tokenKey in destChainIdList) {
               const destChainIdItem = destChainIdList[tokenKey]
@@ -114,21 +121,23 @@ export function useInitSelectCurrency (
               }
             }
             if (isUnderlying) {
-              underlyingList[token] = {
-                ...list[token]
+              underlyingList[tokenKey] = {
+                ...list[tokenKey]
               }
             }
           }
         }
       }
-      // console.log(useToken)
-      // console.log(list)
-      if (useToken) {
+      if (useToken && list[useToken].chainId === useChainId?.toString()) {
         initCurrency = list[useToken]
-      } else if (noMatchInitToken) {
+      } else if (noMatchInitToken && list[noMatchInitToken].chainId === useChainId?.toString()) {
         initCurrency = list[noMatchInitToken]
       }
     }
+    // console.log(useChainId)
+    // console.log(useToken)
+    // console.log(initCurrency)
+    // console.log(list[useToken])
     return {
       initCurrency,
       underlyingList
@@ -140,6 +149,7 @@ export function useDestChainid (
   selectCurrency:any,
   selectChain:any,
   useChainId:any,
+  // initToChainId:any,
 ) {
   const {userInit} = useInitUserSelectCurrency(useChainId)
   const [initChainId, setInitChainId] = useState<any>('')
@@ -193,8 +203,13 @@ export function useDestChainid (
           }
         }
       }
+      // console.log(useChain)
+      // console.log(arr)
       setInitChainId(useChain)
       setInitChainList(arr)
+    } else {
+      setInitChainId('')
+      setInitChainList([])
     }
   }, [selectCurrency])
   return {
@@ -210,10 +225,6 @@ export function useDestCurrency (
   const [initDestCurrency, setInitDestCurrency] = useState<any>('')
   const [initDestCurrencyList, setInitDestCurrencyList] = useState<any>({})
   useEffect(() => {
-    // let initDestCurrency = '',
-    //     initDestCurrencyList = ''
-        // console.log('selectChain', selectChain)
-        // console.log(selectDestCurrencyList)
     if (selectDestCurrencyList) {
       const dl:any = selectDestCurrencyList
       const formatDl:any = {}
@@ -230,39 +241,12 @@ export function useDestCurrency (
       let destTokenMinKey = ''
       // const typeArr = ['swapin', 'swapout']
       for (const tokenKey of destTokenList) {
-        // if (!destTokenKey) destTokenKey = tokenKey
         if (!destTokenMinKey) destTokenMinKey = tokenKey
-        // // console.log(destTokenKey)
-        // if (
-        //   Number(formatDl[destTokenKey].MinimumSwapFee) > Number(formatDl[tokenKey].MinimumSwapFee)
-        //   || (
-        //     Number(formatDl[destTokenKey].MinimumSwapFee) === Number(formatDl[tokenKey].MinimumSwapFee)
-        //     && typeArr.includes(formatDl[tokenKey].type)
-        //   )
-        // ) {
-        //   // console.log(destTokenKey)
-        //   destTokenKey = tokenKey
-        // }
-
         if (formatDl[destTokenMinKey].sortId > formatDl[tokenKey].sortId) {
           destTokenMinKey = tokenKey
         }
       }
       try {
-        // console.log(formatDl)
-        // console.log(destTokenMinKey)
-        // console.log(destTokenKey)
-        // if (
-        //   Number(formatDl[destTokenMinKey].MinimumSwapFee) > Number(formatDl[destTokenKey].MinimumSwapFee)
-        //   || (
-        //     Number(formatDl[destTokenMinKey].MinimumSwapFee) === Number(formatDl[destTokenKey].MinimumSwapFee)
-        //     && typeArr.includes(formatDl[destTokenKey].type)
-        //   )
-        // ) {
-        //   destTokenMinKey = destTokenKey
-        // }
-        // initDestCurrency = formatDl[destTokenMinKey]
-        // initDestCurrencyList = formatDl
         setInitDestCurrency(formatDl[destTokenMinKey])
         setInitDestCurrencyList(formatDl)
       } catch (error) {

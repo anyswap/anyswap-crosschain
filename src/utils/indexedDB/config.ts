@@ -16,7 +16,7 @@ if (!w.indexedDB) {
 
 const TOKENLIST = 'token-list'
 
-const version = '0.1.5'
+const version = '0.1.6'
 
 function initVersion (version:any, configVersion:any) {
   const VERSION = version + '_DB_VERSION'
@@ -28,9 +28,9 @@ function initVersion (version:any, configVersion:any) {
     // sessionStorage.clear()
     // localStorage.clear()
     w.indexedDB.deleteDatabase(TOKENLIST)
-    localStorage.setItem(VERSION, configVersion)
+    window.localStorage.setItem(VERSION, configVersion)
   } else if (!curVersion) {
-    localStorage.setItem(VERSION, configVersion)
+    window.localStorage.setItem(VERSION, configVersion)
   }
 }
 setTimeout(() => {

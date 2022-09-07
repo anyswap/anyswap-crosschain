@@ -9,10 +9,10 @@ import { useUserSelectChainId } from '../state/user/hooks'
 
 import { ChainId } from '../config/chainConfig/chainId'
 
-import {useLogin} from './near'
 import {useActiveReact} from './useActiveReact'
-
+import {useLogin} from './near'
 import {connectXlmWallet} from './stellar'
+import {useLoginTrx} from './trx'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -22,6 +22,7 @@ export function useConnectWallet () {
   const { connect } = useWallet()
   const {login} = useLogin()
   const {loginXlm} = connectXlmWallet()
+  const {loginTrx} = useLoginTrx()
   return useCallback(() => {
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       if (connect) {
@@ -54,6 +55,16 @@ export function useConnectWallet () {
         toggleWalletModal()
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectNetworkInfo?.label)) {
+      // console.log(account)
+      if (!account) {
+        // console.log(123)
+        loginTrx()
+      } else {
+        toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
+      }
+      // loginTrx()
     } else {
       toggleWalletModal()
     }

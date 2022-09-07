@@ -58,6 +58,8 @@ function getUrlVersion (init:any) {
     version = VERSION.V6
   } else if (
     url.indexOf('https://app.multichain.org') === 0
+    || url.indexOf('https://bridge.multichain.org') === 0
+    || url.indexOf('https://conflux.multichain.org') === 0
     || url.indexOf('https://app.multichain.tools') === 0
     || url.indexOf('https://conflux.multichain.tools') === 0
   ) {
@@ -318,7 +320,8 @@ export const controlConfig:any = {
     isOpenRouter: 0,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,
-    isOpenMerge: 1
+    isOpenMerge: 1,
+    isOpenNFT: 1,
   },
   [VERSION.V7_TEST]: {
     bridgeInitDataChain: '97',
@@ -330,7 +333,8 @@ export const controlConfig:any = {
     isOpenRouter: 0,
     isOpenRouterTxns: env === 'dev' ? 1 : 0,
     isOpenBridge: 0,
-    isOpenMerge: 1
+    isOpenMerge: 1,
+    isOpenNFT: 1,
   },
   [VERSION.V7_BAS_TEST]: {
     bridgeInitDataChain: '97',

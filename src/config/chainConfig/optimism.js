@@ -74,6 +74,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: OPTIMISM_TESTNET,
+    nodeRpcList: [],
     chainID: OPTIMISM_TEST_CHAINID,
     lookHash: OPTIMISM_TEST_EXPLORER + '/tx/',
     lookAddr: OPTIMISM_TEST_EXPLORER + '/address/',

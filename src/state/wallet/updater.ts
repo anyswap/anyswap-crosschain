@@ -46,7 +46,7 @@ export default function Updater(): null {
   const tokenListRef = useRef<any>(0)
 
   const allTransactions = useAllTransactions()
-  // console.log(allTokens)
+  // console.log(library)
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
     return txs.filter(isTransactionRecent).sort(newTransactionsFirst)

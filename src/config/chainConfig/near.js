@@ -13,7 +13,7 @@ export const NEAR_TEST_EXPLORER = 'https://explorer.testnet.near.org'
 const symbol = 'NEAR'
 
 const bridgeToken = {
-  [VERSION.V1]: {
+  [VERSION.V7]: {
     bridgeInitToken: '',
     bridgeInitChain: ''
   }
@@ -26,6 +26,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: NEAR_MAINNET,
+    nodeRpcList: [],
     chainID: NEAR_MAIN_CHAINID,
     lookHash: NEAR_MAIN_EXPLORER + '/transactions/',
     lookAddr: NEAR_MAIN_EXPLORER + '/accounts/',
@@ -45,6 +46,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: NEAR_TESTNET,
+    nodeRpcList: [],
     chainID: NEAR_TEST_CHAINID,
     lookHash: NEAR_TEST_EXPLORER + '/transactions/',
     lookAddr: NEAR_TEST_EXPLORER + '/accounts/',

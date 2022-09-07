@@ -27,6 +27,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: XRP_MAINNET,
+    nodeRpcList: [],
     chainID: XRP_MAIN_CHAINID,
     lookHash: XRP_MAIN_EXPLORER + '/tx/',
     lookAddr: XRP_MAIN_EXPLORER + '/address/',

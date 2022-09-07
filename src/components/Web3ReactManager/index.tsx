@@ -7,6 +7,9 @@ import { useWeb3React } from '@web3-react/core'
 import { network } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { NetworkContextName } from '../../constants'
+
+import {useSafeAppConnection} from '../../connectors/gnosis-safe/hooks'
+import {gnosissafe} from '../../connectors'
 // import Loader from '../Loader'
 
 // const MessageWrapper = styled.div`
@@ -28,13 +31,19 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   // console.log(networkActive)
   // 尝试急切地连接到注入的提供者（如果它存在并且已经授予访问权限）
   const triedEager = useEagerConnect()
+  const triedToConnectToSafe = useSafeAppConnection(gnosissafe)
 
   // 在急切地尝试注入后，如果网络连接从未处于活动状态或处于错误状态，请激活itd
   useEffect(() => {
-    if (triedEager && !networkActive && !networkError && !active) {
-      activateNetwork(network)
+    if (!networkActive && !networkError && !active) {
+      if (triedToConnectToSafe) {
+        activateNetwork(gnosissafe)
+      } else if (triedEager) {
+        activateNetwork(network)
+      }
     }
-  }, [triedEager, networkActive, networkError, activateNetwork, active])
+  }, [triedEager, networkActive, networkError, activateNetwork, active, triedToConnectToSafe, gnosissafe])
+  // }, [triedEager, networkActive, networkError, activateNetwork, active])
 
   // 当没有连接帐户时，对注入的提供程序（如果存在）上的登录（广义地说）作出反应
   useInactiveListener(!triedEager)

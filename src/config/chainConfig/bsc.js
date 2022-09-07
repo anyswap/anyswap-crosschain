@@ -20,7 +20,8 @@ const useNode = 'https://bsc-dataseed3.ninicoin.io/'
 // const useNode = 'https://bsc-dataseed4.binance.org/'
 
 export const BNB_MAIN_CHAINID = ChainId.BNB
-export const BNB_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(BNB_MAIN_CHAINID, useNode) : getLocalRPC(BNB_MAIN_CHAINID, 'https://bscnode1.anyswap.exchange')
+// export const BNB_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(BNB_MAIN_CHAINID, useNode) : getLocalRPC(BNB_MAIN_CHAINID, 'https://bscnode1.anyswap.exchange')
+export const BNB_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(BNB_MAIN_CHAINID, useNode) : getLocalRPC(BNB_MAIN_CHAINID, 'https://rpc.ankr.com/bsc')
 export const BNB_MAIN_EXPLORER = 'https://bscscan.com'
 // console.log(BNB_MAINNET)
 export const BNB_TEST_CHAINID = ChainId.BNB_TEST

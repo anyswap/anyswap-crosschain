@@ -22,7 +22,7 @@ export function formatSwapTokenList (name, tokenlist) {
 
 const LOCAL_RPC = 'LOCAL_RPC'
 export function getLocalRPC (chainId, initRpc) {
-  const lStr = localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
+  const lStr = window.localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
   if (lStr) {
     const lObj = JSON.parse(lStr)
     if (lObj[chainId]) {
@@ -36,7 +36,7 @@ export function getLocalRPC (chainId, initRpc) {
 }
 
 export function setLocalRPC (chainId, initRpc) {
-  const lStr = localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
+  const lStr = window.localStorage.getItem(USE_VERSION + '_' + LOCAL_RPC)
   let lObj ={}
   if (lStr) {
     lObj = JSON.parse(lStr)
@@ -44,5 +44,5 @@ export function setLocalRPC (chainId, initRpc) {
   } else {
     lObj[chainId] = initRpc
   }
-  localStorage.setItem(USE_VERSION + '_' + LOCAL_RPC, JSON.stringify(lObj))
+  window.localStorage.setItem(USE_VERSION + '_' + LOCAL_RPC, JSON.stringify(lObj))
 }

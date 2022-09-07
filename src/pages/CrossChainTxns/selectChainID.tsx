@@ -279,7 +279,7 @@ export default function SelectChainIdInputPanel({
                       >
                         {/* {Option(item, selectChainId)} */}
                         {/* <Option curChainId={item} selectChainId={chainId}></Option> */}
-                        <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val))}></Option>
+                        <Option curChainId={item} selectChainId={chainId} changeNetwork={(val) => (selectChainId && selectChainId === item ? null : handleCurrencySelect(val.chainID))}></Option>
                       </OptionCardClickable>
                     )
                   })

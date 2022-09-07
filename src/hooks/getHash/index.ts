@@ -2,6 +2,7 @@ import {updateTerraHash} from '../terra'
 import {updateNasHash} from '../nas'
 import {updateNearHash} from '../near'
 import {updateXlmHash} from '../stellar'
+import {getTRXTxnsStatus} from '../trx'
 import { ChainId } from '../../config/chainConfig/chainId'
 
 export function getHashInfo(hash: any, chainId: any) {
@@ -20,6 +21,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
       updateXlmHash(hash, chainId).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+      getTRXTxnsStatus(hash).then(res => {
         resolve(res)
       })
     }

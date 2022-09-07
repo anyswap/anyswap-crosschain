@@ -64,6 +64,14 @@ import xlm from './xlm'
 import ont from './ont'
 import mintme from './mintme'
 import bch from './bch'
+import nova from './nova'
+import fitfi from './fitfi'
+import iota from './iota'
+import rpg from './rpg'
+import trx from './trx'
+import bobabeam from './bobabeam'
+import cardano from './cardano'
+import ckb from './ckb'
 
 import { ChainId } from './chainId'
 
@@ -73,6 +81,14 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...ckb,
+  ...cardano,
+  ...bobabeam,
+  ...trx,
+  ...rpg,
+  ...iota,
+  ...fitfi,
+  ...nova,
   ...bch,
   ...mintme,
   ...ont,
@@ -194,6 +210,11 @@ const allChainList = [
   ChainId.ONT,
   ChainId.MINTME,
   ChainId.BCH,
+  ChainId.NOVA,
+  ChainId.FITFI,
+  ChainId.RPG,
+  ChainId.BOBABEAM,
+  ChainId.CKB,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -209,7 +230,6 @@ const testChainList = [
   ChainId.INTAIN_TEST,
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
-  ChainId.XLM_TEST,
 ]
 
 const useChain:any = {
@@ -318,7 +338,11 @@ const useChain:any = {
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
+    ChainId.TRX_TEST,
     ChainId.NEAR_TEST,
+    ChainId.XLM_TEST,
+    ChainId.IOTA_TEST,
+    ChainId.ADA_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

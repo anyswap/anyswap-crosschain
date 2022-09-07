@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
 import { JSBI } from 'anyswap-sdk'
 import { transparentize } from 'polished'
 
-import {useNFT721Callback, useNFT1155Callback, WrapType} from '../../hooks/useNFTCallback'
+import {useNFT721Callback, useNFT1155Callback, useAnycallNFT721Callback} from '../../hooks/useNFTCallback'
 import {useApproveCallback, useApprove1155Callback, ApprovalState} from '../../hooks/useNFTApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
 // import { useNFT721Contract } from '../../hooks/useContract'
@@ -13,7 +13,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import {
   ERC_TYPE,
-  useNftListState
+  useNftListState,
+  useNftInfo
 } from '../../state/nft/hooks'
 
 import { BottomGrouping } from '../../components/swap/styleds'
@@ -22,6 +23,11 @@ import Title from '../../components/Title'
 import Input from '../../components/NumericalInput'
 import { AutoRow } from '../../components/Row'
 import Loader from '../../components/Loader'
+import ErrorTip from '../../components/CrossChainPanelV2/errorTip'
+import {
+  useDestChainid,
+  useDestCurrency
+} from '../../components/CrossChainPanelV2/hooks'
 
 import AppBody from '../AppBody'
 import SelectChainIDPanel from './selectChainId'
@@ -31,8 +37,11 @@ import config from '../../config'
 import {spportChainArr} from '../../config/chainConfig'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
+import {VALID_BALANCE} from '../../config/constant'
 
-import {fromWei} from '../../utils/tools/tools'
+// import {fromWei} from '../../utils/tools/tools'
+import { BigAmount } from '../../utils/formatBignumber'
+// import {isAddress} from '../../utils/isAddress'
 
 // import NFT_DATA from './nftdata.js'
 // import { getUrlData } from '../../utils/tools/axios'
@@ -72,6 +81,17 @@ const ContentBody = styled.div`
   border-radius: 20px;
 `
 
+const NftImageView = styled.div`
+  ${({ theme }) => theme.flexC};
+  width:100%;
+  height: 300px;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    display:block;
+  }
+`
+
 // const SelectNFTTokenLabel = 'SelectNFTTokenLabel'
 
 function getInitToken () {
@@ -93,205 +113,323 @@ export default function CroseNFT () {
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
 
-  const [selectChainId, setSelectChainId] = useState<any>()
-  const [inputValue, setInputValue] = useState<any>('')
+  const nftInfo = useNftInfo()
+
+  // const [inputValue, setInputValue] = useState<any>('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>()
+  const [selectDestCurrency, setSelectDestCurrency] = useState<any>()
   const [selectTokenId, setSelectTokenId] = useState<any>()
+  const [selectChain, setSelectChain] = useState<any>()
+  const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const [delayAction, setDelayAction] = useState<boolean>(false)
-  // const [nftList, setNftList] = useState<any>({})
+  const [tokenList, setTokenList] = useState<any>({})
   const nftList = useNftListState(chainId)
 
   const initBridgeToken = getInitToken()
 
   useEffect(() => {
     setSelectTokenId('')
-  }, [chainId, selectCurrency])
+  }, [chainId, selectCurrency, account])
 
-  const tokenList = useMemo(() => {
-    console.log(nftList)
+  useEffect(() => {
+    // console.log(nftList)
+    const list:any = {}
     if (nftList && chainId) {
-      const list:any = nftList
-      
-      const urlParams = (selectCurrency && selectCurrency?.chainId?.toString() === chainId?.toString() ? selectCurrency?.address : (initBridgeToken ? initBridgeToken : config.getCurChainInfo(chainId).nftInitToken))?.toLowerCase()
+      let t = []
+      if (initBridgeToken) {
+        t = [initBridgeToken]
+      } else if (config.getCurChainInfo(chainId)?.nftInitToken) {
+        t.push(config.getCurChainInfo(chainId)?.nftInitToken?.toLowerCase())
+      }
       // console.log(urlParams)
-      let isUseToken = 0
-      let useToken
-      for (const tokenKey in list) {
-        const obj = list[tokenKey]
+      let useToken = ''
+      let noMatchInitToken = ''
+      for (const tokenKey in nftList) {
+        const obj = nftList[tokenKey]
         const token = obj.address
-        if (
-          (!selectCurrency && urlParams)
-          || selectCurrency?.chainId?.toString() !== chainId?.toString()
-        ) {
+        if(!obj.name || !obj.symbol) continue
+        list[token] = {
+          ...obj,
+          key: tokenKey,
+        }
+        if (!noMatchInitToken) noMatchInitToken = token
+        if ( !useToken ) {
           if (
-            token?.toLowerCase() === urlParams
-            || obj?.symbol?.toLowerCase() === urlParams
-            || obj?.name?.toLowerCase() === urlParams
+            t.includes(token?.toLowerCase())
+            || t.includes(list[token]?.symbol?.toLowerCase())
           ) {
-            useToken = tokenKey
-            break
+            useToken = token
           }
-        } else if (!selectCurrency && !urlParams && !isUseToken) {
-          useToken = tokenKey
-          isUseToken = 1
-          break
         }
       }
       // console.log(useToken)
-      if (
-        useToken
-        && (
-          !selectCurrency
-          || selectCurrency?.chainId?.toString() !== chainId?.toString()
-        )
-      ) {
-        setSelectCurrency({
-          ...list[useToken],
-          key: useToken
-        })
+      // console.log(noMatchInitToken)
+      if (useToken) {
+        setSelectCurrency(list[useToken])
+      } else if (noMatchInitToken) {
+        setSelectCurrency(list[noMatchInitToken])
       }
-      return list
     }
-    return {}
+    setTokenList(list)
   }, [nftList, chainId])
+
+  const destConfig = useMemo(() => {
+    console.log(selectDestCurrency)
+    if (selectDestCurrency) {
+      return selectDestCurrency
+    }
+    return false
+  }, [selectDestCurrency])
   
   const fee = useMemo(() => {
-    if (selectCurrency) {
-      // console.log(selectCurrency)
-      const feePerTransaction = JSBI.BigInt(selectCurrency.fee.feePerTransaction)
-      const feePerUnitInBatch = JSBI.BigInt(selectCurrency.fee.feePerUnitInBatch)
-      if (selectCurrency.nfttype === ERC_TYPE.erc1155) {
-        return JSBI.add(feePerTransaction, feePerUnitInBatch)?.toString()
+    // console.log(destConfig)
+    if (destConfig) {
+      const feePerTransaction = destConfig?.feePerTransaction ? JSBI.BigInt(destConfig.feePerTransaction) : ''
+      const feePerUnitInBatch = destConfig?.feePerUnitInBatch ? JSBI.BigInt(destConfig.feePerUnitInBatch) : ''
+      if (destConfig.nfttype === ERC_TYPE.erc1155) {
+        if (feePerTransaction && feePerUnitInBatch) {
+          return JSBI.add(feePerTransaction, feePerUnitInBatch)?.toString()
+        } else if (feePerTransaction && !feePerUnitInBatch) {
+          return feePerTransaction
+        } else if (!feePerTransaction && feePerUnitInBatch) {
+          return feePerUnitInBatch
+        }
       } else {
-        return feePerTransaction?.toString()
+        // console.log(feePerTransaction)
+        // console.log(feePerTransaction?.toString())
+        return feePerTransaction ? feePerTransaction?.toString() : ''
       }
     }
     return 
-  }, [selectCurrency])
+  }, [destConfig])
 
   const routerToken = useMemo(() => {
-    if (selectCurrency) {
-      return selectCurrency.routerToken
+    if (destConfig) {
+      return destConfig.router
     }
     return
-  }, [selectCurrency])
+  }, [destConfig])
 
-  const destChainId = useMemo(() => {
-    const arr:any = []
-    if (selectCurrency) {
-      let useChain = ''
-      let isUseToken = 0
-      for (const c in selectCurrency.destChains) {
-        arr.push(c)
-        if (
-          (!selectChainId || !useChain)
-          && !isUseToken
-        ) {
-          isUseToken = 1
-          useChain = c
-        }
-      }
-      
-      if (
-        !selectChainId
-        || selectChainId?.toString() === chainId?.toString()
-        || !arr.includes(selectChainId)
-      ) {
-        setSelectChainId(useChain)
-      }
-    }
-    return arr
-  }, [selectCurrency, chainId])
+  const useSwapMethods = useMemo(() => {
+    return destConfig.routerABI
+  }, [destConfig])
+
+  const nfttype = useMemo(() => {
+    return destConfig.nfttype
+  }, [destConfig])
+
+  const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
+
+  useEffect(() => {
+    setSelectChain(initChainId)
+  }, [initChainId])
+
+  useEffect(() => {
+    setSelectChainList(initChainList)
+  }, [initChainList])
+
+  const {
+    initDestCurrency,
+  } = useDestCurrency(selectCurrency, selectCurrency?.destChains?.[selectChain])
+
+  useEffect(() => {
+    setSelectDestCurrency(initDestCurrency)
+  }, [initDestCurrency])
+
   
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
-    routerToken,
-    selectCurrency?.nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined,
-    account,
-    selectTokenId?.tokenid,
-    selectChainId,
-    fee
-  )
-  const { wrapType: wrapType1155, execute: onWrap1155, inputError: wrapInputError1155 } = useNFT1155Callback(
-    routerToken,
-    selectCurrency?.nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined,
-    account,
-    selectTokenId?.tokenid,
-    selectChainId,
-    fee,
-    inputValue
-  )
-  const {approvalState: approval721, approve: approveCallback721} = useApproveCallback(selectCurrency?.nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined, routerToken, selectTokenId?.tokenid)
-  const {approvalState: approval1155, approve: approveCallback1155} = useApprove1155Callback(selectCurrency?.nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined, routerToken)
-    // console.log(tokenidUri)
-
-  const approval = useMemo(() => {
-    if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
-      return approval721
-    } else {
-      return approval1155
-    }
-  }, [approval721, approval1155, selectCurrency])
-
-  function setMetamaskNetwork (item:any) {
-    selectNetwork(item).then((res:any) => {
-      if (res.msg === 'Error') {
-        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(item).networkName}))
-      }
-    })
-  }
-
   function onDelay () {
     setDelayAction(true)
   }
   function onClear () {
     setDelayAction(false)
   }
+  
+  const { wrapType, execute: onWrap, inputError: wrapInputError } = useNFT721Callback(
+    routerToken,
+    nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined,
+    account,
+    selectTokenId?.tokenid,
+    selectChain,
+    fee,
+    destConfig
+  )
+  const { wrapType: wrapType1155, execute: onWrap1155, inputError: wrapInputError1155 } = useNFT1155Callback(
+    routerToken,
+    nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined,
+    account,
+    selectTokenId?.tokenid,
+    selectChain,
+    fee,
+    inputBridgeValue,
+    destConfig
+  )
+  const { wrapType: wrapTypeAnycall, execute: onWrapAnycall, inputError: wrapInputErrorAnycall } = useAnycallNFT721Callback(
+    routerToken,
+    nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined,
+    account,
+    selectTokenId?.tokenid,
+    selectChain,
+    fee,
+    destConfig,
+    nfttype,
+    inputBridgeValue,
+  )
+
+  const handleSwap = useCallback(() => {
+    onDelay()
+    // console.log(useSwapMethods)
+    if (useSwapMethods) {
+      if (useSwapMethods.indexOf('nft721SwapOut') !== -1) {
+        console.log('nft721SwapOut')
+        if (onWrap) onWrap().then(() => {
+          onClear()
+        })
+      } else if (useSwapMethods.indexOf('nft1155SwapOut') !== -1) {
+        console.log('nft1155SwapOut')
+        if (onWrap1155) onWrap1155().then(() => {
+          // console.log(hash)
+          onClear()
+        })
+      } else if (useSwapMethods.indexOf('Swapout_no_fallback') !== -1) {
+        console.log('Swapout_no_fallback')
+        if (onWrapAnycall) onWrapAnycall().then(() => {
+          onClear()
+        })
+      }
+    }
+  }, [onWrap, onWrap1155, onWrapAnycall, useSwapMethods])
 
   const isWrapInputError = useMemo(() => {
-    // console.log(wrapInputError)
-    if (wrapInputError && selectCurrency?.nfttype === ERC_TYPE.erc721) {
-      return wrapInputError
-    } else if (wrapInputError1155 && selectCurrency?.nfttype === ERC_TYPE.erc1155) {
-      return wrapInputError1155
+    if (useSwapMethods) {
+      if (useSwapMethods.indexOf('nft721SwapOut') !== -1) {
+        if (wrapInputError) {
+          return wrapInputError
+        } else {
+          return false
+        }
+      } else if (useSwapMethods.indexOf('nft1155SwapOut') !== -1) {
+        if (wrapInputError1155) {
+          return wrapInputError1155
+        } else {
+          return false
+        }
+      } else if (useSwapMethods.indexOf('Swapout_no_fallback') !== -1) {
+        if (wrapInputErrorAnycall) {
+          return wrapInputErrorAnycall
+        } else {
+          return false
+        }
+      }
     }
-    return
-  }, [wrapInputError, wrapInputError1155, selectCurrency])
+    return false
+  }, [useSwapMethods, wrapInputError, wrapInputError1155, wrapInputErrorAnycall])
+
+  const isInputError = useMemo(() => {
+    // console.log(isWrapInputError)
+    if (!selectCurrency) {
+      return {
+        state: 'Error',
+        tip: t('selectToken')
+      }
+    } else if (!selectChain) {
+      return {
+        state: 'Error',
+        tip: t('selectChainId')
+      }
+    } else if (!selectTokenId) {
+      return {
+        state: 'Error',
+        tip: t('selectTokenId')
+      }
+    } else if (
+      nfttype === ERC_TYPE.erc1155
+      && (inputBridgeValue !== '' || inputBridgeValue === '0')
+    ) {
+      if (isNaN(inputBridgeValue)) {
+        return {
+          state: 'Error',
+          tip: t('inputNotValid')
+        }
+      } else if (inputBridgeValue === '0') {
+        return {
+          state: 'Error',
+          tip: t('noZero')
+        }
+      } else if (isWrapInputError) {
+        if (VALID_BALANCE) {
+          return {
+            state: 'Error',
+            tip: isWrapInputError
+          }
+        } else {
+          return undefined
+        }
+      } else if (destConfig.MinimumSwap && Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedMinLimit', {
+            amount: destConfig.MinimumSwap,
+            symbol: selectCurrency.symbol
+          })
+        }
+      } else if (destConfig.MaximumSwap && Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+        return {
+          state: 'Error',
+          tip: t('ExceedMaxLimit', {
+            amount: destConfig.MaximumSwap,
+            symbol: selectCurrency.symbol
+          })
+        }
+      }
+    }
+    return undefined
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, selectTokenId])
+
+  const errorTip = useMemo(() => {
+    // const isAddr = isAddress( recipient, selectChain)
+    // console.log(isAddr)
+    if (!account || !chainId) {
+      return undefined
+    } else if (isInputError) {
+      return isInputError
+    }
+    return undefined
+  }, [isInputError, selectChain, account, chainId])
 
   const isCrossBridge = useMemo(() => {
     if (
-      account
-      && selectCurrency
-      && !isWrapInputError
-      && selectChainId
-      && selectTokenId
-      && (
-        (
-          selectCurrency?.nfttype === ERC_TYPE.erc1155
-          && inputValue
-          && !isNaN(inputValue)
-          && selectTokenId?.balance
-          && Number(selectTokenId?.balance) > Number(inputValue)
-        ) || selectCurrency?.nfttype !== ERC_TYPE.erc1155
-      )
+      errorTip
+      || (!inputBridgeValue && nfttype === ERC_TYPE.erc1155)
     ) {
-      return false
-    } else {
+      if (
+         errorTip
+        && errorTip.state === 'Warning'
+      ) {
+      // if (selectCurrency && selectCurrency.chainId === '56' && selectCurrency.symbol === "USDC") {
+        return false
+      }
       return true
     }
-  }, [selectCurrency, account, isWrapInputError, selectTokenId, selectChainId, inputValue])
+    return false
+  }, [errorTip, selectCurrency, inputBridgeValue, nfttype])
+
+  const {approvalState: approval721, approve: approveCallback721} = useApproveCallback(nfttype === ERC_TYPE.erc721 ? selectCurrency : undefined, routerToken, selectTokenId?.tokenid)
+  const {approvalState: approval1155, approve: approveCallback1155} = useApprove1155Callback(nfttype === ERC_TYPE.erc1155 ? selectCurrency : undefined, routerToken)
+    // console.log(tokenidUri)
+
+  const approval = useMemo(() => {
+    if (nfttype === ERC_TYPE.erc721) {
+      return approval721
+    } else {
+      return approval1155
+    }
+  }, [approval721, approval1155, nfttype])
 
   const btnTxt = useMemo(() => {
-    // console.log(isWrapInputError)
-    if (isWrapInputError && selectCurrency?.nfttype === ERC_TYPE.erc721) {
-      return isWrapInputError
-    } else if (wrapInputError1155 && selectCurrency?.nfttype === ERC_TYPE.erc1155) {
-      return wrapInputError1155
-    } else if (wrapType === WrapType.WRAP || wrapType1155 === WrapType.WRAP) {
-      return t('swap')
-    }
     return t('swap')
-  }, [t, isWrapInputError, inputValue, wrapType, wrapType1155, wrapInputError1155])
+  }, [t,  wrapType, wrapType1155, wrapInputError1155, wrapTypeAnycall])
 
   return (
     <>
@@ -305,18 +443,22 @@ export default function CroseNFT () {
               chainList={SUPPORT_CHAIN}
               selectChainId={chainId}
               onChainSelect={(value) => {
-                // setSelectChainId(value)
-                setMetamaskNetwork(value)
+                selectNetwork(value).then((res:any) => {
+                  if (res.msg === 'Error') {
+                    alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(value).networkName}))
+                  }
+                })
               }}
               label={'From '}
               type="CURRENT"
             />
             <ArrowRight style={{marginTop: '30px'}} />
             <SelectChainIDPanel
-              chainList={destChainId}
-              selectChainId={selectChainId}
+              chainList={selectChainList}
+              selectChainId={selectChain}
               onChainSelect={(value) => {
-                setSelectChainId(value)
+                console.log(value)
+                setSelectChain(value)
               }}
               label={'To '}
             />
@@ -329,15 +471,16 @@ export default function CroseNFT () {
                 setSelectCurrency(value)
               }}
               onSelectTokenId={(value) => {
+                console.log(value)
                 setSelectTokenId(value)
               }}
             />
             {
-              selectCurrency?.nfttype === ERC_TYPE.erc1155 ? (
+              nfttype === ERC_TYPE.erc1155 ? (
                 <Input
-                  value={inputValue}
+                  value={inputBridgeValue}
                   onUserInput={(value) => {
-                    setInputValue(value)
+                    setInputBridgeValue(value)
                   }}
                   style={{marginRight: '0'}}
                 />
@@ -346,17 +489,20 @@ export default function CroseNFT () {
             {
               selectCurrency && selectTokenId ? (
                 <>
-                  <img src={selectTokenId?.image} />
+                  <NftImageView>
+                    <img src={nftInfo?.[selectCurrency?.address]?.[selectTokenId?.tokenid]?.imageUrl} />
+                  </NftImageView>
                 </>
               ) : ''
             }
             {
               fee ? (
                 <FeeBox>
-                  {t('fee')}: {fromWei(fee, 18)} {config.getCurChainInfo(chainId).symbol}
+                  {t('fee')}: {BigAmount.format(18, fee).toExact()} {config.getCurChainInfo(chainId).symbol}
                 </FeeBox>
               ) : ''
             }
+            <ErrorTip errorTip={errorTip} />
           </FlexWrapBox>
           
 
@@ -369,7 +515,7 @@ export default function CroseNFT () {
                   <ButtonConfirmed
                     onClick={() => {
                       onDelay()
-                      if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
+                      if (nfttype === ERC_TYPE.erc721) {
                         if (approveCallback721) approveCallback721().then(() => {
                           setApprovalSubmitted(true)
                           onClear()
@@ -395,22 +541,7 @@ export default function CroseNFT () {
                   </ButtonConfirmed>
                 ) : (
                   <ButtonConfirmed disabled={isCrossBridge || delayAction} onClick={() => {
-                    onDelay()
-                    if (selectCurrency?.nfttype === ERC_TYPE.erc721) {
-                      if (onWrap) onWrap().then(() => {
-                        onClear()
-                        setSelectTokenId('')
-                      }).catch(() => {
-                        onClear()
-                      })
-                    } else if (selectCurrency?.nfttype === ERC_TYPE.erc1155) {
-                      if (onWrap1155) onWrap1155().then(() => {
-                        onClear()
-                        setSelectTokenId('')
-                      }).catch(() => {
-                        onClear()
-                      })
-                    } 
+                    handleSwap()
                   }}>
                     {btnTxt}
                   </ButtonConfirmed>

@@ -1,8 +1,6 @@
 import React, {useContext} from "react"
 import { useTranslation } from 'react-i18next'
 import { CheckCircle } from 'react-feather'
-// import {useNonApproveCallback} from '../../hooks/useApproveCallback'
-// import { JSBI } from 'anyswap-sdk'
 import { ButtonConfirmed, ButtonLight } from '../Button'
 import TokenLogo from "../TokenLogo"
 import Loader from '../Loader'

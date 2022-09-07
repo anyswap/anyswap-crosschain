@@ -1,6 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit'
-// import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
-// import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 // import { updateVersion } from '../global/actions'
 import { mergeTokenList, userSelectCurrency,updateTokenlistTime } from './actions'
@@ -21,7 +19,13 @@ export interface ListsState {
   readonly selectedListUrl: string | undefined
   readonly mergeTokenList: any
   readonly updateTokenlistTime: any
-  readonly userSelectCurrency: any
+  readonly userSelectCurrency: {
+    readonly [chainId: string]: {
+      readonly token: string | null
+      readonly toChainId: string | null
+      readonly tokenKey: string | null
+    }
+  }
 }
 
 // type ListState = ListsState['byUrl'][string]
@@ -71,44 +75,26 @@ export default createReducer(initialState, builder =>
         }
       }
     })
-    .addCase(userSelectCurrency, (state, { payload: { chainId, token, toChainId } }) => {
+    .addCase(userSelectCurrency, (state, { payload: { chainId, token, toChainId, tokenKey } }) => {
       // console.log(state)
       if (chainId) {
-        if (state.userSelectCurrency) {
-          if (state.userSelectCurrency[chainId]) {
-            if (token) {
-              state.userSelectCurrency[chainId].token = token
-            }
-            if (toChainId) {
-              state.userSelectCurrency[chainId].toChainId = toChainId
-            }
-          } else {
-            state.userSelectCurrency[chainId] = {}
-            if (token) {
-              state.userSelectCurrency[chainId].token = token
-            }
-            if (toChainId) {
-              state.userSelectCurrency[chainId].toChainId = toChainId
-            }
-          }
-        } else {
-          state.userSelectCurrency = {}
-          if (state.userSelectCurrency[chainId]) {
-            if (token) {
-              state.userSelectCurrency[chainId].token = token
-            }
-            if (toChainId) {
-              state.userSelectCurrency[chainId].toChainId = toChainId
-            }
-          } else {
-            state.userSelectCurrency[chainId] = {}
-            if (token) {
-              state.userSelectCurrency[chainId].token = token
-            }
-            if (toChainId) {
-              state.userSelectCurrency[chainId].toChainId = toChainId
-            }
-          }
+        if (!state.userSelectCurrency) state.userSelectCurrency = {}
+        if (!state.userSelectCurrency[chainId]) state.userSelectCurrency[chainId] = {
+          token: '',
+          toChainId: '',
+          tokenKey: '',
+        }
+        // console.log(state.userSelectCurrency[chainId])
+        // console.log(token)
+        // console.log(toChainId)
+        if (token) {
+          state.userSelectCurrency[chainId].token = token
+        }
+        if (toChainId) {
+          state.userSelectCurrency[chainId].toChainId = toChainId
+        }
+        if (tokenKey) {
+          state.userSelectCurrency[chainId].tokenKey = tokenKey
         }
       }
     })

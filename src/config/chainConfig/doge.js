@@ -6,7 +6,7 @@ export const DOGE_MAIN_CHAINID = ChainId.DOGE
 export const DOGE_MAINNET = getLocalRPC(DOGE_MAIN_CHAINID, 'https://rpc01-sg.dogechain.dog')
 export const DOGE_MAIN_EXPLORER = 'https://explorer.dogechain.dog'
 
-const symbol = 'DOGE'
+const symbol = 'WDOGE'
 
 const bridgeToken = {
   [VERSION.V1]: {

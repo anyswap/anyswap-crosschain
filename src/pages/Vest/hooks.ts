@@ -10,6 +10,10 @@ import {useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useVeMULTIContract, useVeMULTIRewardContract } from '../../hooks/useContract'
 
+import {
+  MIN_DAY
+} from './data'
+
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
@@ -301,12 +305,12 @@ export function useLockDurationTip (
     if ( selectTime ) {
       const st = moment(selectTime).unix()
       if (min) {
-        const mt = moment.unix(min).add(6, 'days').unix()
+        const mt = moment.unix(min).add(MIN_DAY, 'days').unix()
         if (st < mt) {
           return 'Locking time is too short'
         }
       } else {
-        const now = moment().add(6, 'days').unix()
+        const now = moment().add(MIN_DAY, 'days').unix()
         if (st < now) {
           return 'Locking time is too short'
         }

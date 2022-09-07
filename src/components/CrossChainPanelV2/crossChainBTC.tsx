@@ -12,7 +12,7 @@ import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
-import { shortenAddress } from '../../utils'
+import { shortenAddress, shortenAddress1 } from '../../utils'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -42,6 +42,7 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 const CrossChainTip = styled.div`
   width: 100%;
@@ -164,7 +165,16 @@ export default function CrossChain({
     setP2pAddress('')
     setMemo('')
     if (recipient && selectCurrency && destConfig && selectChain) {
-      if (chainId === 'XRP') {
+      // if (chainId === 'XRP') {
+        if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+          // console.log(destConfig)
+          // setP2pAddress(recipient)
+          setP2pAddress(destConfig?.router)
+          setMemo(`swapOut ${recipient}:${selectChain}`)
+          // setMemo('')
+          setModalSpecOpen(true)
+          setDelayAction(false)
+        } else if ([ChainId.XRP].includes(chainId)) {
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
@@ -222,9 +232,18 @@ export default function CrossChain({
         }}
       >
         <ListBox>
-          
           {
-            chainId === 'XRP' ? (
+            [ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId) ? (
+              <>
+                <CrossChainTip>
+                  Please use IOTA wallet to transfer IOTA token to deposit address and input receive address on dest chain as input.
+                  <p className='red'>If you don&apos;t input, you will not receive IOTA on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          }
+          {
+            [ChainId.XRP].includes(chainId) ? (
               <>
                 <CrossChainTip>
                   Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
@@ -234,7 +253,7 @@ export default function CrossChain({
             ) : ''
           }
           {
-            chainId === 'XRP' ? '' : (
+            [ChainId.XRP].includes(chainId) ? '' : (
               <div className="item">
                 <p className="label">Value:</p>
                 <p className="value">{inputBridgeValue}</p>
@@ -244,7 +263,9 @@ export default function CrossChain({
           <div className="item">
             <p className="label">Deposit Address:</p>
             <p className="value flex-bc">
-              {p2pAddress}
+              {/* {p2pAddress} */}
+              {/* {shortenAddress(p2pAddress,8)} */}
+              {shortenAddress1(p2pAddress, 12)}
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>

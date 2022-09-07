@@ -1,18 +1,33 @@
 // import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from 'anyswap-sdk'
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from 'anyswap-sdk'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
+import {useActiveWeb3React} from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { tryParseAmount5,tryParseAmount6 } from '../swap/hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { BigAmount } from '../../utils/formatBignumber'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
-import { AppState } from '../index'
+import { AppState, AppDispatch } from '../index'
 
-// import { tokenBalanceList } from './actions'
+import {gnosissafe} from '../../connectors'
+import { walletViews } from './actions'
+
+export function useIsGnosisSafeWallet () {
+  const { connector } = useActiveWeb3React()
+  const isGnosisSafeWallet =  useMemo(() => {
+    if ( gnosissafe === connector) {
+      return true
+    }
+    return false
+  }, [gnosissafe, connector])
+  return {
+    isGnosisSafeWallet
+  }
+}
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -368,4 +383,22 @@ export function useCurrencyBalance(account?: string, currency?: Currency, chainI
       return undefined
     }
   }, [account, currency, chainId, isETH, balanceWallet, blItem])
+}
+
+
+
+export function useWalletViews () {
+  const walletViewsResult:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.walletViews)
+  const dispatch = useDispatch<AppDispatch>()
+  // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+
+  const setWalletView = useCallback((type: any) => {
+    // console.log(type)
+    dispatch(walletViews({type}))
+  }, [])
+
+  return {
+    walletView: walletViewsResult,
+    setWalletView
+  }
 }

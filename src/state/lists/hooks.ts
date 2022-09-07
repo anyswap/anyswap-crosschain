@@ -1,134 +1,17 @@
-import { ChainId, Token } from 'anyswap-sdk'
-import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import config from '../../config'
+// import config from '../../config'
 import { isAddress } from 'ethers/lib/utils'
 import {userSelectCurrency} from './actions'
 
 import {getTokenlist, isSupportIndexedDB} from '../../utils/indexedDB'
+import config from '../../config'
 
-type TagDetails = Tags[keyof Tags]
-export interface TagInfo extends TagDetails {
-  id: string
-}
 
-/**
- * Token instances created from token info.
- */
-export class WrappedTokenInfo extends Token {
-  public readonly tokenInfo: TokenInfo
-  public readonly tags: TagInfo[]
-  constructor(tokenInfo: TokenInfo, tags: TagInfo[]) {
-    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
-    this.tokenInfo = tokenInfo
-    this.tags = tags
-  }
-  public get logoURI(): string | undefined {
-    return this.tokenInfo.logoURI
-  }
-}
 
-export class WrappedBridgeTokenInfo extends Token {
-  public readonly tokenInfo: any
-  public readonly ContractVersion: any
-  public readonly destChains: any
-  public readonly logoUrl: any
-  public readonly price: any
-  public readonly sort: any
-  // public readonly tags: TagInfo[]
-  constructor(tokenInfo: any) {
-    super(
-      tokenInfo.chainId,
-      tokenInfo.address,
-      tokenInfo.decimals,
-      tokenInfo.symbol,
-      tokenInfo.name,
-      tokenInfo.underlying,
-    )
-    this.tokenInfo = tokenInfo
-    this.ContractVersion = tokenInfo.ContractVersion
-    this.destChains = tokenInfo.destChains
-    this.logoUrl = tokenInfo.logoUrl
-    this.price = tokenInfo.price
-    this.sort = tokenInfo.sort
-    // this.tags = tags
-  }
-  public get logoURI(): string | undefined {
-    return this.tokenInfo.logoURI
-  }
-}
-
-export class WrappedAllTokenInfo extends Token {
-  public readonly tokenInfo: TokenInfo
-  constructor(tokenInfo: TokenInfo) {
-    super(tokenInfo.chainId, tokenInfo.address, tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
-    this.tokenInfo = tokenInfo
-  }
-  public get logoURI(): string | undefined {
-    return this.tokenInfo.logoURI
-  }
-}
-
-export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>
-
-/**
- * An empty result, useful as a default.
- */
-const EMPTY_LIST: TokenAddressMap = {
-  [ChainId.KOVAN]: {},
-  [ChainId.RINKEBY]: {},
-  [ChainId.ROPSTEN]: {},
-  [ChainId.GÖRLI]: {},
-  [ChainId.MAINNET]: {},
-  [ChainId.HTTEST]: {},
-  [ChainId.HTMAIN]: {},
-  [ChainId.BNBMAIN]: {},
-  [ChainId.BNBTEST]: {},
-  [ChainId.MATICMAIN]: {},
-  [ChainId.XDAIMAIN]: {},
-  [ChainId.FTMMAIN]: {},
-  [ChainId.OKEX]: {},
-  [ChainId.HARMONY]: {},
-  [ChainId.AVALANCHE]: {},
-}
-
-const listCache: WeakMap<TokenList, TokenAddressMap> | null =
-  typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
-
-export function listToTokenMap(list: TokenList): TokenAddressMap {
-  const result = listCache?.get(list)
-  if (result) return result
-
-  // console.log(listCache)
-  // console.log(result)
-  // console.log(list)
-  const map = list.tokens.reduce<TokenAddressMap>(
-    (tokenMap, tokenInfo) => {
-      const tags: TagInfo[] =
-        tokenInfo.tags
-          ?.map(tagId => {
-            if (!list.tags?.[tagId]) return undefined
-            return { ...list.tags[tagId], id: tagId }
-          })
-          ?.filter((x): x is TagInfo => Boolean(x)) ?? []
-      const token = new WrappedTokenInfo(tokenInfo, tags)
-      if (tokenMap[token.chainId][token.address] !== undefined) throw Error('Duplicate tokens.')
-      return {
-        ...tokenMap,
-        [token.chainId]: {
-          ...tokenMap[token.chainId],
-          [token.address]: token
-        }
-      }
-    },
-    { ...EMPTY_LIST }
-  )
-  listCache?.set(list, map)
-  return map
-}
+export type TokenAddressMap = Readonly<{ [chainId in any]: Readonly<{ [tokenAddress: string]: any }> }>
 
 export function listsToTokenMap(list:any): TokenAddressMap {
 
@@ -137,62 +20,11 @@ export function listsToTokenMap(list:any): TokenAddressMap {
   for (const t in list) {
     if(!isAddress(t) || !list[t].name || !list[t].symbol) continue
     // console.log(list[t])
-    map[t] = new WrappedBridgeTokenInfo(list[t])
+    map[t] = list[t]
   }
   return map
 }
 
-export function listsMergeToTokenMap(list:any): TokenAddressMap {
-
-  // console.log(list)
-  const map:any = {}
-  for (const t in list) {
-    // if(!isAddress(t)) continue
-    map[t] = new WrappedBridgeTokenInfo(list[t])
-  }
-  return map
-}
-
-export function allListsToTokenMap(mlist:any, chainId:any): TokenAddressMap {
-
-  // console.log(list)
-  const map:any = {}
-  if (config.getCurChainInfo(chainId).anyToken) {
-    map[config.getCurChainInfo(chainId).anyToken] = new WrappedAllTokenInfo({
-      chainId: chainId,
-      address: config.getCurChainInfo(chainId).anyToken,
-      symbol: "ANY",
-      name: "Anyswap",
-      decimals: 18
-    })
-  }
-
-  for (const t in mlist) {
-    if(!isAddress(t)) continue
-    if (mlist[t].underlying) {
-      map[mlist[t].underlying.address] = new WrappedAllTokenInfo(mlist[t].underlying)
-    }
-    map[t] = new WrappedAllTokenInfo(mlist[t])
-  }
-  // console.log(map)
-  return map
-}
-
-// export function useTokenList(url: string | undefined): TokenAddressMap {
-//   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
-//   // console.log(lists)
-//   return useMemo(() => {
-//     if (!url) return EMPTY_LIST
-//     const current = lists[url]?.current
-//     if (!current) return EMPTY_LIST
-//     try {
-//       return listToTokenMap(current)
-//     } catch (error) {
-//       console.error('Could not show token list due to error', error)
-//       return EMPTY_LIST
-//     }
-//   }, [lists, url])
-// }
 
 export function useBridgeTokenList(key?: string | undefined, chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
@@ -216,55 +48,61 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): any 
 export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
   const updateTokenlistTime:any = useSelector<AppState, AppState['lists']>(state => state.lists.updateTokenlistTime)
-  // console.log(updateTokenlistTime)
+  // console.log(chainId)
+
+  const useChain = useMemo(() => {
+    if (chainId) {
+      return chainId
+    } else if (config.getCurChainInfo(chainId).chainID) {
+      return config.getCurChainInfo(chainId).chainID
+    }
+    return undefined
+  }, [chainId])
+
   const [tokenlist, setTokenlist] = useState<any>({})
   const getCurTokenlist = useCallback(() => {
-    // console.log(updateTokenlistTime)
+    // console.log(useChain)
     if (isSupportIndexedDB) {
-      getTokenlist(chainId).then((res:any) => {
-        console.log(res)
+      getTokenlist(useChain).then((res:any) => {
+        // console.log(res)
         if (res?.tokenList) {
           setTokenlist(res.tokenList)
         } else {
-          let current = key ? lists[key]?.[chainId]?.tokenList : ''
+          let current = key ? lists[key]?.[useChain]?.tokenList : ''
           if (!current) current = {}
           setTokenlist(current)
         }
       })
     } else {
-      let current = key ? lists[key]?.[chainId]?.tokenList : ''
+      let current = key ? lists[key]?.[useChain]?.tokenList : ''
       if (!current) current = {}
       setTokenlist(current)
     }
-  }, [chainId, updateTokenlistTime])
+  }, [useChain, updateTokenlistTime])
 
   useEffect(() => {
     getCurTokenlist()
-  }, [getCurTokenlist, chainId, updateTokenlistTime])
+  }, [getCurTokenlist, useChain, updateTokenlistTime])
 
   return tokenlist
 }
 
-export function useBridgeSelectedTokenList(key?: string | undefined, chainId?:any): TokenAddressMap {
-  return useBridgeTokenList(key, chainId)
-}
-
-
 export function useInitUserSelectCurrency(chainId?: any) {
-  const userInit = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
+  const userInit:any = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
   const dispatch = useDispatch<AppDispatch>()
-  // console.log(userInit)
-  // console.log(chainId)
-  // console.log(userInit && chainId && userInit[chainId] ? userInit[chainId] : {})
-  const setInitUserSelect = useCallback(({useChainId, token, toChainId}: {useChainId?: any, token?:any, toChainId?:any}) => {
-    const id = useChainId ? useChainId : chainId
-    if (id && toChainId && id?.toString() !== toChainId?.toString()){
-      dispatch(userSelectCurrency({chainId: id, token, toChainId}))
-    }
+  const setUserFromSelect = useCallback(({useChainId, token, toChainId, tokenKey}: {useChainId?: any, token?:any, toChainId?:any, tokenKey?:any}) => {
+    const id = useChainId
+    dispatch(userSelectCurrency({chainId: id, token, toChainId, tokenKey}))
+  }, [dispatch])
+
+  const setUserToSelect = useCallback(({useChainId, token, toChainId, tokenKey}: {useChainId?: any, token?:any, toChainId?:any, tokenKey?:any}) => {
+    const id = useChainId
+    dispatch(userSelectCurrency({chainId: id, token, toChainId, tokenKey}))
   }, [dispatch])
 
   return {
     userInit: userInit && chainId && userInit[chainId] ? userInit[chainId] : {},
-    setInitUserSelect
+    setUserFromSelect,
+    setUserToSelect,
   }
 }

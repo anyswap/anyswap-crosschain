@@ -57,6 +57,8 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         })
       } else if ([ChainId.TRX].includes(selectChainId)) {
         getTrxTokenBalance({token}).then((res:any) => {
+          console.log(token)
+          console.log(res)
           const bl = res && (dec || dec === 0) ? BigAmount.format(dec, res) : undefined
           savedBalance.current = bl
         })
@@ -65,16 +67,11 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         getAllBalance(selectChainId).then((res:any) => {
           // console.log(res)
           if (res?.balances) {
-            for (const obj of res.balances) {
-              if (
-                (obj.asset_type === token)
-                || (obj.asset_code && obj.asset_issuer && (obj.asset_code + '/' + obj.asset_issuer) === token)
-              ) {
-                const blvalue = tryParseAmount3(obj.balance, dec)
-                const bl = res ? BigAmount.format(dec, blvalue) : undefined
-                savedBalance.current = bl
-                break
-              }
+            if (res?.[token]?.balance) {
+              // const dec = 7
+              const blvalue = tryParseAmount3(res?.[token]?.balance, dec)
+              const bl = res ? BigAmount.format(dec, blvalue) : undefined
+              savedBalance.current = bl
             }
           }
         })
@@ -131,25 +128,21 @@ export function useBaseBalances (
         const bl = res?.total ? BigAmount.format(24, res?.total) : undefined
         setBalance(bl)
       })
-    } else if ([ChainId.TRX].includes(selectChainId)) {
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId)) {
       getTrxBalance({}).then((res:any) => {
-        const bl = res ? BigAmount.format(6, res) : undefined
+        // console.log(res)
+        const bl = res || res === 0 ? BigAmount.format(6, res) : undefined
         setBalance(bl)
       })
     } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectChainId)) {
       // console.log(selectChainId)
       getAllBalance(selectChainId, uncheckedAddresses).then((res:any) => {
         // console.log(res)
-        if (res?.balances) {
-          for (const obj of res.balances) {
-            if (obj.asset_type === 'native') {
-              const dec = 7
-              const blvalue = tryParseAmount3(obj.balance, dec)
-              const bl = res ? BigAmount.format(dec, blvalue) : undefined
-              setBalance(bl)
-              break
-            }
-          }
+        if (res?.['native']?.balance) {
+          const dec = 7
+          const blvalue = tryParseAmount3(res?.['native']?.balance, dec)
+          const bl = res ? BigAmount.format(dec, blvalue) : undefined
+          setBalance(bl)
         }
       })
     }

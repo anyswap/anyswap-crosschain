@@ -22,6 +22,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: BTC_MAINNET,
+    nodeRpcList: [],
     chainID: BTC_MAIN_CHAINID,
     lookHash: BTC_MAIN_EXPLORER + '/tx/',
     lookAddr: BTC_MAIN_EXPLORER + '/address/',

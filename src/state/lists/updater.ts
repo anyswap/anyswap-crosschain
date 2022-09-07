@@ -1,5 +1,5 @@
-// import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-import { useCallback, useEffect } from 'react'
+
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {
@@ -11,24 +11,35 @@ import useInterval from '../../hooks/useInterval'
 
 import { AppDispatch } from '../index'
 
+import config from '../../config'
+
 export default function Updater(): null {
   const { chainId } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
+
+  const useChain = useMemo(() => {
+    if (chainId) {
+      return chainId
+    } else if (config.getCurChainInfo(chainId).chainID) {
+      return config.getCurChainInfo(chainId).chainID
+    }
+    return undefined
+  }, [chainId])
   
   const fetchTokenListVersion = useFetchTokenListVersionCallback()
 
   const fetchTokenListsVersionCallback = useCallback(() => {
-    if (chainId) {
+    if (useChain) {
       fetchTokenListVersion().catch(error => console.debug('interval list fetching error', error))
     }
-  }, [fetchTokenListVersion, chainId])
+  }, [fetchTokenListVersion, useChain])
 
   // 每 半 分钟获取所有列表，但仅在我们初始化库之后
   useInterval(fetchTokenListsVersionCallback, 1000 * 30, false)
 
   useEffect(() => {
     fetchTokenListsVersionCallback()
-  }, [dispatch, fetchTokenListsVersionCallback, chainId])
+  }, [dispatch, fetchTokenListsVersionCallback, useChain])
 
   return null
 }

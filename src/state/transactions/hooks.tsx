@@ -10,6 +10,8 @@ import { TransactionDetails } from './reducer'
 
 import config from '../../config'
 
+import {useIsGnosisSafeWallet} from '../wallet/hooks'
+
 // 可以接受ether库事务响应并将其添加到事务列表的助手
 export function useTransactionAdder(): (
   response: TransactionResponse,
@@ -32,6 +34,7 @@ export function useTransactionAdder(): (
 ) => void {
   const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
 
   return useCallback(
     (
@@ -70,6 +73,7 @@ export function useTransactionAdder(): (
     ) => {
       if (!account) return
       if (!chainId) return
+      if (isGnosisSafeWallet) return
 
       const { hash } = response
       if (!hash) {
@@ -95,7 +99,7 @@ export function useTransactionAdder(): (
         toInfo
       }))
     },
-    [dispatch, chainId, account]
+    [dispatch, chainId, account, isGnosisSafeWallet]
   )
 }
 

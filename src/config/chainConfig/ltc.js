@@ -21,6 +21,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: LTC_MAINNET,
+    nodeRpcList: [],
     chainID: LTC_MAIN_CHAINID,
     lookHash: LTC_MAIN_EXPLORER + '/tx/',
     lookAddr: LTC_MAIN_EXPLORER + '/address/',

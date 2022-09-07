@@ -1,0 +1,1012 @@
+{
+  "entrys": [
+    {
+      "inputs": [
+        {
+          "name": "_factory",
+          "type": "address"
+        },
+        {
+          "name": "_wNATIVE",
+          "type": "address"
+        },
+        {
+          "name": "_mpc",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "Nonpayable",
+      "type": "Constructor"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "txhash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogAnySwapIn",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogAnySwapOut",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogAnySwapOut",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogAnySwapTradeTokensForNative",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "indexed": true,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogAnySwapTradeTokensForTokens",
+      "type": "Event"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "oldMPC",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newMPC",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "effectiveTime",
+          "type": "uint256"
+        },
+        {
+          "name": "chainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogChangeMPC",
+      "type": "Event"
+    },
+    {
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ],
+      "name": "DELAY",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapFeeTo",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32[]"
+        },
+        {
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address[]"
+        },
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "name": "fromChainIDs",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "anySwapIn",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapIn",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapInAuto",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32"
+        },
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapInExactTokensForNative",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32"
+        },
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapInExactTokensForTokens",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "txs",
+          "type": "bytes32"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "fromChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapInUnderlying",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOut",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOut",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address[]"
+        },
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "name": "toChainIDs",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "anySwapOut",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutExactTokensForNative",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutExactTokensForNativeUnderlying",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutExactTokensForTokens",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "amountOutMin",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutExactTokensForTokensUnderlying",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutNative",
+      "stateMutability": "Payable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutNative",
+      "stateMutability": "Payable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutUnderlying",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "toChainID",
+          "type": "uint256"
+        }
+      ],
+      "name": "anySwapOutUnderlying",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "applyMinter",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ],
+      "name": "cID",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "bool"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "newMPC",
+          "type": "address"
+        }
+      ],
+      "name": "changeMPC",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "bool"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "newVault",
+          "type": "address"
+        }
+      ],
+      "name": "changeVault",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "depositNative",
+      "stateMutability": "Payable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "bool"
+        }
+      ],
+      "name": "enableSwapTrade",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "address"
+        }
+      ],
+      "name": "factory",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveIn",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveOut",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAmountIn",
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amountOut",
+          "type": "uint256"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveIn",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveOut",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAmountOut",
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        }
+      ],
+      "name": "getAmountsIn",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amounts",
+          "type": "uint256[]"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "name": "path",
+          "type": "address[]"
+        }
+      ],
+      "name": "getAmountsOut",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "address"
+        }
+      ],
+      "name": "mpc",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "name": "amountB",
+          "type": "uint256"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "amountA",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveA",
+          "type": "uint256"
+        },
+        {
+          "name": "reserveB",
+          "type": "uint256"
+        }
+      ],
+      "name": "quote",
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "_auth",
+          "type": "address"
+        }
+      ],
+      "name": "revokeMinter",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "enable",
+          "type": "bool"
+        }
+      ],
+      "name": "setEnableSwapTrade",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "_auth",
+          "type": "address"
+        }
+      ],
+      "name": "setMinter",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "address"
+        }
+      ],
+      "name": "wNATIVE",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "withdrawNative",
+      "stateMutability": "Nonpayable",
+      "type": "Function"
+    },
+    {
+      "stateMutability": "Payable",
+      "type": "Receive"
+    }
+  ]
+}

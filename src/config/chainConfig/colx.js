@@ -21,6 +21,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: COLX_MAINNET,
+    nodeRpcList: [],
     chainID: COLX_MAIN_CHAINID,
     lookHash: COLX_MAIN_EXPLORER + '/tx/',
     lookAddr: COLX_MAIN_EXPLORER + '/address/',
