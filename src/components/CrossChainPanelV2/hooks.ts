@@ -80,7 +80,7 @@ export function useInitSelectCurrency (
       }
       // t = [config.getCurChainInfo(useChainId)?.bridgeInitToken?.toLowerCase(), config.getCurChainInfo(useChainId)?.crossBridgeInitToken?.toLowerCase()]
     } else {
-      t = [config.getCurChainInfo(useChainId)?.symbol]
+      t = [config.getCurChainInfo(useChainId)?.symbol?.toLowerCase()]
     }
     // console.log(t)
     const list:any = {}

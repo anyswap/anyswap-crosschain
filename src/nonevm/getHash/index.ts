@@ -3,6 +3,7 @@ import {updateNasHash} from '../nas'
 import {updateNearHash} from '../near'
 import {updateXlmHash} from '../stellar'
 import {getTRXTxnsStatus} from '../trx'
+import {getADATxnsStatus} from '../cardano'
 import { ChainId } from '../../config/chainConfig/chainId'
 
 export function getHashInfo(hash: any, chainId: any) {
@@ -25,6 +26,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
       getTRXTxnsStatus(hash).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+      getADATxnsStatus(hash, chainId).then(res => {
         resolve(res)
       })
     }

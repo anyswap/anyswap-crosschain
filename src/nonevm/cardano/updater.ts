@@ -37,12 +37,12 @@ export default function Updater(): null {
       // cardano.getUsedAddresses().then((res:any) => {
       //   console.log(res)
       // })
-      cardano.getCollateral().then((res:any) => {
-        console.log(res)
-      })
-      cardano.getUtxos().then((res:any) => {
-        console.log(res)
-      })
+      // cardano.getCollateral().then((res:any) => {
+      //   console.log(res)
+      // })
+      // cardano.getUtxos().then((res:any) => {
+      //   console.log(res)
+      // })
       cardano.nami.enable().then((res:any) => {
         res.getChangeAddress().then((res:any) => {
           if (res) {
@@ -59,12 +59,12 @@ export default function Updater(): null {
         if (accounts.length > 0) {
           setAdaAddress(accounts[0])
         }
-        cardano.getCollateral().then((res:any) => {
-          console.log(res)
-        })
-        cardano.getUtxos().then((res:any) => {
-          console.log(res)
-        })
+        // cardano.getCollateral().then((res:any) => {
+        //   console.log(res)
+        // })
+        // cardano.getUtxos().then((res:any) => {
+        //   console.log(res)
+        // })
       }
 
       if (cardano?.experimental?.on) {

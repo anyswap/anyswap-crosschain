@@ -13,6 +13,7 @@ import {useActiveReact} from './useActiveReact'
 import {useLogin} from '../nonevm/near'
 import {connectXlmWallet} from '../nonevm/stellar'
 import {useLoginTrx} from '../nonevm/trx'
+import {useAdaLogin} from '../nonevm/cardano'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -23,6 +24,7 @@ export function useConnectWallet () {
   const {login} = useLogin()
   const {loginXlm} = connectXlmWallet()
   const {loginTrx} = useLoginTrx()
+  const loginAda = useAdaLogin()
   return useCallback(() => {
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       if (connect) {
@@ -56,15 +58,17 @@ export function useConnectWallet () {
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
     } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectNetworkInfo?.label)) {
-      // console.log(account)
       if (!account) {
-        // console.log(123)
         loginTrx()
       } else {
         toggleWalletModal()
-        // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
-      // loginTrx()
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(selectNetworkInfo?.label)) {
+      if (!account) {
+        loginAda()
+      } else {
+        toggleWalletModal()
+      }
     } else {
       toggleWalletModal()
     }
