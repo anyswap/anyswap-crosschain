@@ -1,10 +1,28 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { 
+  useDispatch,
+  // useSelector
+} from 'react-redux'
+import { 
+  // AppState,
+  AppDispatch
+} from '../../state'
 import { ChainId } from "../../config/chainConfig/chainId";
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 
+import {
+  adaAddress
+} from './actions'
+
 export default function Updater(): null {
   const {chainId} = useActiveReact()
+  const dispatch = useDispatch<AppDispatch>()
+
+  const setAdaAddress = useCallback((address:any) => {
+    console.log(address)
+    dispatch(adaAddress({address}))
+  }, [dispatch])
 
   useEffect(() => {
     const { cardano } = window
@@ -12,34 +30,41 @@ export default function Updater(): null {
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && cardano) {
 
       console.log(cardano)
-      cardano.getChangeAddress().then((res:any) => {
+      // console.log(Buffer.from('001c5a34aca42e95587698068ffb83e6d95313c7ac74b4c35016b6cbdcdc93f8e856f05e630b245bd85e55180b4dd19def9dbf8fcf6ddaf5dc', 'hex'))
+      cardano.getBalance().then((res:any) => {
         console.log(res)
       })
-      cardano.getUnusedAddresses().then((res:any) => {
+      // cardano.getUsedAddresses().then((res:any) => {
+      //   console.log(res)
+      // })
+      cardano.getCollateral().then((res:any) => {
         console.log(res)
       })
-      cardano.getRewardAddress().then((res:any) => {
+      cardano.getUtxos().then((res:any) => {
         console.log(res)
       })
       cardano.nami.enable().then((res:any) => {
-        console.log(res)
+        res.getChangeAddress().then((res:any) => {
+          if (res) {
+            setAdaAddress(res)
+          }
+        })
       })
-      // console.log(cardano.nami.enable())
+      
       const handleChainChanged = (chainID:any) => {
         console.log(chainID)
-        // activate(injected, undefined, true).catch(error => {
-        //   console.error('Failed to activate after chain changed', error)
-        // })
       }
 
       const handleAccountsChanged = (accounts: string[]) => {
-        console.log(accounts)
         if (accounts.length > 0) {
-          // eat errors
-          // activate(injected, undefined, true).catch(error => {
-          //   console.error('Failed to activate after accounts changed', error)
-          // })
+          setAdaAddress(accounts[0])
         }
+        cardano.getCollateral().then((res:any) => {
+          console.log(res)
+        })
+        cardano.getUtxos().then((res:any) => {
+          console.log(res)
+        })
       }
 
       if (cardano?.experimental?.on) {
@@ -48,8 +73,8 @@ export default function Updater(): null {
         cardano?.experimental?.on('accountsChanged', handleAccountsChanged)
       } else {
         console.log(2)
-        cardano.onAccountChange(handleChainChanged)
-        cardano.onNetworkChange(handleAccountsChanged)
+        cardano.onNetworkChange(handleChainChanged)
+        cardano.onAccountChange(handleAccountsChanged)
       }
 
       return () => {

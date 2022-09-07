@@ -222,6 +222,31 @@ export default function CrossChain({
     setSelectDestCurrencyList(initDestCurrencyList)
   }, [initDestCurrencyList])
 
+  function MemoView () {
+    if (memo) {
+      if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+        const arr = memo.split(' ')
+        const indexStr = arr[0]
+        const dataStr = arr[1]
+        return <>
+          <div className="item">
+            <p className="label">Index:</p>
+            <p className="value flex-bc">{indexStr}<CopyHelper toCopy={indexStr} /></p>
+          </div>
+          <div className="item">
+            <p className="label">Data:</p>
+            <p className="value flex-bc">{shortenAddress(dataStr,8)}<CopyHelper toCopy={dataStr} /></p>
+          </div>
+        </>
+      }
+      return <div className="item">
+        <p className="label">Memo:</p>
+        <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
+      </div>
+    }
+    return <></>
+  }
+
   return (
     <>
       <ModalContent
@@ -269,14 +294,15 @@ export default function CrossChain({
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>
-          {
+          {/* {
             memo ? (
               <div className="item">
                 <p className="label">Memo:</p>
                 <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
               </div>
             ) : ''
-          }
+          } */}
+          <MemoView />
           <div className="item">
             <QRcode uri={p2pAddress} size={160}></QRcode>
           </div>
