@@ -307,6 +307,7 @@
   "mintTip2": "Minimum Crosschain Amount is",
   "mintTip3": "Maximum Crosschain Amount is",
   "mintTip4": "Estimated Time of Crosschain Arrival is 10-30 min",
+  "mintTip4_1": "Estimated Time of Crosschain Arrival is 60-120 min",
   "mintTip5": "Crosschain amount larger than {{depositBigValMoreTime}} {{coin}} could take up to 12 hours",
 
   "redeemTip1": "Crosschain Fee is {{dFee}} %, Minimum Crosschain Fee is {{dMinFee}} {{coin}}, Maximum Crosschain Fee is {{dMaxFee}} {{coin}}",

@@ -20,14 +20,14 @@ export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>()
 
   const setAdaAddress = useCallback((address:any) => {
-    const { cardano } = window
+    // const { cardano } = window
     console.log(address)
-    console.log(cardano.signData(address))
-    cardano.signData(address, '00').then((res:any) => {
-      console.log(res)
-    }).catch((err:any) => {
-      console.log(err)
-    })
+    // console.log(cardano.signData(address))
+    // cardano.signData(address, '00').then((res:any) => {
+    //   console.log(res)
+    // }).catch((err:any) => {
+    //   console.log(err)
+    // })
     dispatch(adaAddress({address}))
   }, [dispatch])
 
