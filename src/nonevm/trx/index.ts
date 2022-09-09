@@ -401,7 +401,7 @@ export function useTrxCrossChain (
                   toChainId: selectChain,
                   toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
                   symbol: selectCurrency?.symbol,
-                  version: 'swapin',
+                  version: destConfig.type,
                   routerToken: routerToken,
                   token: selectCurrency?.address,
                   logoUrl: selectCurrency?.logoUrl,

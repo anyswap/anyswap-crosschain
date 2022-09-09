@@ -95,7 +95,7 @@ export function getADATxnsStatus (txid:string, chainId:any) {
         validContract
       }
     }`
-    let url = 'https://graphql-api.dandelion.link/'
+    let url = 'https://graphql-api.mainnet.dandelion.link/'
     if (chainId === 'ADA_TEST') {
       url = 'https://graphql-api.testnet.dandelion.link/'
     }
@@ -147,6 +147,7 @@ export function useAdaCrossChain (
   const {account} = useActiveReact()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const { cardano } = window
   const addTransaction = useTransactionAdder()
 
   const [balance, setBalance] = useState<any>()
@@ -182,85 +183,81 @@ export function useAdaCrossChain (
   }, [selectCurrency, chainId, account])
 
   return useMemo(() => {
-    if (!account || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) || !routerToken) return {}
+    if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !cardano) return {}
     return {
       balance: balance,
       execute: async () => {
         // let contract = await window?.tronWeb?.contract()
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-          const TRXAccount = window?.tronWeb?.defaultAddress.base58
-          const formatRouterToken = routerToken
-          const formatInputToken = inputToken
-          // const formatReceiveAddress = formatTRXAddress(receiveAddress)
-          const formatReceiveAddress = receiveAddress
-          if (TRXAccount.toLowerCase() === account.toLowerCase()) {
-            let txResult:any = ''
-            // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_STRING, formatRouterToken)
-            const instance:any = await window?.tronWeb?.contract('ABI_TO_STRING', formatRouterToken)
-            try {
-              if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
-                txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
-              } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
-                console.log(parameArr)
-                txResult = await instance.anySwapOutUnderlying(...parameArr).send()
-              } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
-                console.log(parameArr)
-                txResult = await instance.anySwapOut(...parameArr).send()
-              }
-              const txReceipt:any = {hash: txResult}
-              console.log(txReceipt)
-              if (txReceipt?.hash) {
-                const data:any = {
-                  hash: txReceipt.hash,
-                  chainId: chainId,
-                  selectChain: selectChain,
-                  account: TRXAccount,
-                  value: inputAmount,
-                  formatvalue: typedValue,
-                  to: receiveAddress,
-                  symbol: selectCurrency?.symbol,
-                  version: destConfig.type,
-                  pairid: selectCurrency?.symbol,
-                  routerToken: routerToken
-                }
-                addTransaction(txReceipt, {
-                  summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
-                  value: typedValue,
-                  toChainId: selectChain,
-                  toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
-                  symbol: selectCurrency?.symbol,
-                  version: 'swapin',
-                  routerToken: routerToken,
-                  token: selectCurrency?.address,
-                  logoUrl: selectCurrency?.logoUrl,
-                  isLiquidity: destConfig?.isLiquidity,
-                  fromInfo: {
-                    symbol: selectCurrency?.symbol,
-                    name: selectCurrency?.name,
-                    decimals: selectCurrency?.decimals,
-                    address: selectCurrency?.address,
-                  },
-                  toInfo: {
-                    symbol: destConfig?.symbol,
-                    name: destConfig?.name,
-                    decimals: destConfig?.decimals,
-                    address: destConfig?.address,
-                  },
-                })
-                recordsTxns(data)
-                onChangeViewDtil(txReceipt?.hash, true)
-              }
-            } catch (error) {
-              console.log(error);
-              onChangeViewErrorTip('Txns failure.', true)
+        const TRXAccount = window?.tronWeb?.defaultAddress.base58
+        const formatRouterToken = routerToken
+        const formatInputToken = inputToken
+        // const formatReceiveAddress = formatTRXAddress(receiveAddress)
+        const formatReceiveAddress = receiveAddress
+        if (TRXAccount.toLowerCase() === account.toLowerCase()) {
+          let txResult:any = ''
+          // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_STRING, formatRouterToken)
+          const instance:any = await window?.tronWeb?.contract('ABI_TO_STRING', formatRouterToken)
+          try {
+            if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
+              txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
+            } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
+              const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+              console.log(parameArr)
+              txResult = await instance.anySwapOutUnderlying(...parameArr).send()
+            } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
+              const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+              console.log(parameArr)
+              txResult = await instance.anySwapOut(...parameArr).send()
             }
+            const txReceipt:any = {hash: txResult}
+            console.log(txReceipt)
+            if (txReceipt?.hash) {
+              const data:any = {
+                hash: txReceipt.hash,
+                chainId: chainId,
+                selectChain: selectChain,
+                account: TRXAccount,
+                value: inputAmount,
+                formatvalue: typedValue,
+                to: receiveAddress,
+                symbol: selectCurrency?.symbol,
+                version: destConfig.type,
+                pairid: selectCurrency?.symbol,
+                routerToken: routerToken
+              }
+              addTransaction(txReceipt, {
+                summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
+                value: typedValue,
+                toChainId: selectChain,
+                toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+                symbol: selectCurrency?.symbol,
+                version: destConfig.type,
+                routerToken: routerToken,
+                token: selectCurrency?.address,
+                logoUrl: selectCurrency?.logoUrl,
+                isLiquidity: destConfig?.isLiquidity,
+                fromInfo: {
+                  symbol: selectCurrency?.symbol,
+                  name: selectCurrency?.name,
+                  decimals: selectCurrency?.decimals,
+                  address: selectCurrency?.address,
+                },
+                toInfo: {
+                  symbol: destConfig?.symbol,
+                  name: destConfig?.name,
+                  decimals: destConfig?.decimals,
+                  address: destConfig?.address,
+                },
+              })
+              recordsTxns(data)
+              onChangeViewDtil(txReceipt?.hash, true)
+            }
+          } catch (error) {
+            console.log(error);
+            onChangeViewErrorTip('Txns failure.', true)
           }
-        } else {
-          onChangeViewErrorTip('Please install TronLink.', true)
         }
       }
     }
-  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance])
+  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance, cardano])
 }
