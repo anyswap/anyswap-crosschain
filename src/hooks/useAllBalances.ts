@@ -9,6 +9,8 @@ import { useCurrentNasBalance, useNasTokenBalance } from '../nonevm/nas'
 import { useNearBalance } from '../nonevm/near'
 import { useTrxBalance } from '../nonevm/trx'
 import {useXlmBalance} from '../nonevm/stellar'
+import {useAdaBalance} from '../nonevm/cardano'
+
 import { ChainId } from '../config/chainConfig/chainId'
 import { BigAmount } from '../utils/formatBignumber'
 import { tryParseAmount3 } from '../state/swap/hooks'
@@ -24,6 +26,8 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
   const {getTrxTokenBalance} = useTrxBalance()
 
   const {getAllBalance} = useXlmBalance()
+
+  const {adaBalanceList} = useAdaBalance()
 
   const savedBalance = useRef<any>()
 
@@ -75,12 +79,17 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
             }
           }
         })
+      } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(selectChainId)) {
+        if (adaBalanceList?.[token]) {
+          const bl = BigAmount.format(dec, adaBalanceList?.[token])
+          savedBalance.current = bl
+        }
       }
     } else {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId])
+  }, [token, connectedWallet, selectChainId, adaBalanceList])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -106,6 +115,7 @@ export function useBaseBalances (
   const { getNearBalance } = useNearBalance()
   const {getTrxBalance} = useTrxBalance()
   const {getAllBalance} = useXlmBalance()
+  const {adaBalanceList} = useAdaBalance()
 
   const selectChainId = selectNetworkInfo?.label
   
@@ -145,8 +155,14 @@ export function useBaseBalances (
           setBalance(bl)
         }
       })
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(selectChainId)) {
+
+      if (adaBalanceList?.['NATIVE']) {
+        const bl = BigAmount.format(6, adaBalanceList?.['NATIVE'])
+        setBalance(bl)
+      }
     }
-  }, [uncheckedAddresses, selectChainId, getAllBalance])
+  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList])
 
   useEffect(() => {
     fetchBalancesCallback()

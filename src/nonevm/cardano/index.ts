@@ -1,5 +1,5 @@
 
-import { useCallback, useState, useMemo, useEffect } from 'react'
+import { useCallback, useMemo } from 'react'
 import {  useDispatch, useSelector } from 'react-redux'
 
 import { AppState, AppDispatch } from '../../state'
@@ -8,7 +8,7 @@ import { tryParseAmount3 } from '../../state/swap/hooks'
 import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
-// import { BigAmount } from "../../utils/formatBignumber"
+import { BigAmount } from "../../utils/formatBignumber"
 import { ChainId } from "../../config/chainConfig/chainId"
 
 import {adaAddress} from './actions'
@@ -21,42 +21,62 @@ export function useAdaAddress () {
 }
 
 export function useAdaLogin() {
-  const { cardano } = window
+  const {chainId} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => {
-    if (cardano?.nami?.enable) {
-      cardano.nami.enable().then((res:any) => {
-        res.getChangeAddress().then((res:any) => {
-          if (res) {
-            dispatch(adaAddress({address: res}))
-          }
-        })
+    const adaWallet = window?.cardano?.typhon
+    // console.log(adaWallet)
+    if (adaWallet?.enable) {
+      adaWallet.enable().then((res:any) => {
+        // console.log(res)
+        if (res) {
+          adaWallet.getNetworkId().then((res:any) => {
+            // console.log(res)
+            if (
+              (res.data === 0 && ChainId.ADA_TEST === chainId)
+              || (res.data === 1 && ChainId.ADA === chainId)
+            ) {
+              adaWallet.getAddress().then((res:any) => {
+                // console.log(res)
+                if (res) {
+                  dispatch(adaAddress({address: res.data}))
+                }
+              })
+            } else {
+              alert('Network Error.')
+            }
+          })
+        }
       })
     } else {
-      if (confirm('Please connect Nami or install Nami.') === true) {
-        window.open('https://namiwallet.io/')
+      if (confirm('Please connect Typhon or install Typhon.') === true) {
+        // window.open('https://namiwallet.io/')
+        window.open('https://typhonwallet.io/#/download')
       }
     }
-  }, [cardano])
+  }, [])
 }
 
 export function useAdaBalance () {
-  const { cardano } = window
+  const adaBalanceList:any = useSelector<AppState, AppState['ada']>(state => state.ada.adaBalanceList)
   const getAdaBalance = useCallback(() => {
-    cardano.getBalance().then((res:any) => {
-      console.log(res)
-    })
-  }, [])
-
-  const getAdaTokenBalance = useCallback(() => {
-    cardano.getBalance().then((res:any) => {
-      console.log(res)
+    return new Promise(resolve => {
+      const adaWallet = window?.cardano?.typhon
+      if (adaWallet) {
+        adaWallet.getBalance().then((res:any) => {
+          // console.log(res)
+          resolve(res)
+        })
+      } else {
+        resolve('')
+      }
     })
   }, [])
 
   return {
     getAdaBalance,
-    getAdaTokenBalance
+    adaBalanceList
+    // getAdaTokenBalance
   }
 }
 
@@ -147,117 +167,125 @@ export function useAdaCrossChain (
   const {account} = useActiveReact()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
-  const { cardano } = window
+
+  const {adaBalanceList} = useAdaBalance()
+
+  const adaWallet = window?.cardano?.typhon
   const addTransaction = useTransactionAdder()
-
-  const [balance, setBalance] = useState<any>()
-
-  // const {getTrxBalance, getTrxTokenBalance} = useTrxBalance()
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
-  useEffect(() => {
-    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && selectCurrency?.address) {
-      setBalance('')
-      // const dec = selectCurrency?.decimals
-      // if (selectCurrency?.tokenType === 'NATIVE') {
-      //   getTrxBalance({account}).then((res:any) => {
-      //     console.log(res)
-      //     setBalance('')
-      //   })
-      // } else {
-      //   const token = fromHexAddress(selectCurrency.address)
-      //   // console.log(token)
-      //   getTrxTokenBalance({token: token,account}).then((res:any) => {
-      //     // console.log(res)
-      //     if (res?.constant_result) {
-      //       const bl = '0x' + res?.constant_result[0]
-      //       // console.log(BigAmount.format(dec, bl))
-      //       setBalance(BigAmount.format(dec, bl))
-      //     } else {
-      //       setBalance('')
-      //     }
-      //   })
-      // }
+  const useBalance = useMemo(() => {
+    if (selectCurrency?.tokenType && adaBalanceList) {
+      const dec = selectCurrency?.decimals
+      if (selectCurrency?.tokenType === 'NATIVE' && adaBalanceList['NATIVE']) {
+        return BigAmount.format(dec, adaBalanceList['NATIVE'])
+      } else if (selectCurrency?.tokenType === 'TOKEN' && adaBalanceList[selectCurrency?.address]) {
+        return BigAmount.format(dec, adaBalanceList[selectCurrency?.address])
+      }
     }
-  }, [selectCurrency, chainId, account])
+    return ''
+  }, [adaBalanceList, selectCurrency])
 
   return useMemo(() => {
-    if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !cardano) return {}
+    if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !adaWallet) return {}
     return {
-      balance: balance,
+      balance: useBalance,
       execute: async () => {
-        // let contract = await window?.tronWeb?.contract()
-        const TRXAccount = window?.tronWeb?.defaultAddress.base58
-        const formatRouterToken = routerToken
-        const formatInputToken = inputToken
-        // const formatReceiveAddress = formatTRXAddress(receiveAddress)
-        const formatReceiveAddress = receiveAddress
-        if (TRXAccount.toLowerCase() === account.toLowerCase()) {
-          let txResult:any = ''
-          // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_STRING, formatRouterToken)
-          const instance:any = await window?.tronWeb?.contract('ABI_TO_STRING', formatRouterToken)
-          try {
-            if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
-              txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
-            } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-              const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
-              console.log(parameArr)
-              txResult = await instance.anySwapOutUnderlying(...parameArr).send()
-            } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-              const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
-              console.log(parameArr)
-              txResult = await instance.anySwapOut(...parameArr).send()
+        // let txResult:any = ''
+        console.log(adaWallet)
+        // const auxiliaryDataCbor = adaWallet.utils
+        //   .createAuxiliaryDataCbor({
+        //     metadata: [
+        //       // {
+        //       //   label: 674,
+        //       //   data: {
+        //       //     msg: ["This is a comment for the transaction xyz, thank you very much!"],
+        //       //   },
+        //       // },
+        //       {
+        //         "123":{
+        //           "bind": receiveAddress,
+        //           "toChainId": selectChain
+        //         }
+        //       }
+        //     ],
+        //   })
+        //   .toString("hex");
+        const outputs = []
+        if (selectCurrency?.tokenType === 'NATIVE') {
+          outputs.push({
+            address: routerToken,
+            amount: inputAmount,
+          })
+        } else {
+          const tokenArr = selectCurrency?.address.split('.')
+          const tokenArrLen = tokenArr.length
+          outputs.push({
+            address: routerToken,
+            amount: '2000000',
+            tokens: [
+              {
+                assetName: tokenArrLen === 2 ? tokenArr[1] : '',
+                policyId: tokenArr[0],
+                amount: inputAmount,
+              },
+            ],
+          })
+        }
+        const txResult = await adaWallet.paymentTransaction({
+          // auxiliaryDataCbor: auxiliaryDataCbor,
+          outputs: [...outputs],
+        });
+        try {
+          const txReceipt:any = {hash: txResult?.data?.transactionId}
+          console.log(txReceipt)
+          if (txReceipt?.hash) {
+            const data:any = {
+              hash: txReceipt.hash,
+              chainId: chainId,
+              selectChain: selectChain,
+              account: account,
+              value: inputAmount,
+              formatvalue: typedValue,
+              to: receiveAddress,
+              symbol: selectCurrency?.symbol,
+              version: destConfig.type,
+              pairid: selectCurrency?.symbol,
+              routerToken: routerToken
             }
-            const txReceipt:any = {hash: txResult}
-            console.log(txReceipt)
-            if (txReceipt?.hash) {
-              const data:any = {
-                hash: txReceipt.hash,
-                chainId: chainId,
-                selectChain: selectChain,
-                account: TRXAccount,
-                value: inputAmount,
-                formatvalue: typedValue,
-                to: receiveAddress,
+            addTransaction(txReceipt, {
+              summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
+              value: typedValue,
+              toChainId: selectChain,
+              toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+              symbol: selectCurrency?.symbol,
+              version: destConfig.type,
+              routerToken: routerToken,
+              token: selectCurrency?.address,
+              logoUrl: selectCurrency?.logoUrl,
+              isLiquidity: destConfig?.isLiquidity,
+              fromInfo: {
                 symbol: selectCurrency?.symbol,
-                version: destConfig.type,
-                pairid: selectCurrency?.symbol,
-                routerToken: routerToken
-              }
-              addTransaction(txReceipt, {
-                summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
-                value: typedValue,
-                toChainId: selectChain,
-                toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
-                symbol: selectCurrency?.symbol,
-                version: destConfig.type,
-                routerToken: routerToken,
-                token: selectCurrency?.address,
-                logoUrl: selectCurrency?.logoUrl,
-                isLiquidity: destConfig?.isLiquidity,
-                fromInfo: {
-                  symbol: selectCurrency?.symbol,
-                  name: selectCurrency?.name,
-                  decimals: selectCurrency?.decimals,
-                  address: selectCurrency?.address,
-                },
-                toInfo: {
-                  symbol: destConfig?.symbol,
-                  name: destConfig?.name,
-                  decimals: destConfig?.decimals,
-                  address: destConfig?.address,
-                },
-              })
-              recordsTxns(data)
-              onChangeViewDtil(txReceipt?.hash, true)
-            }
-          } catch (error) {
-            console.log(error);
-            onChangeViewErrorTip('Txns failure.', true)
+                name: selectCurrency?.name,
+                decimals: selectCurrency?.decimals,
+                address: selectCurrency?.address,
+              },
+              toInfo: {
+                symbol: destConfig?.symbol,
+                name: destConfig?.name,
+                decimals: destConfig?.decimals,
+                address: destConfig?.address,
+              },
+            })
+            recordsTxns(data)
+            onChangeViewDtil(txReceipt?.hash, true)
           }
+        } catch (error) {
+          console.log(error);
+          onChangeViewErrorTip('Txns failure.', true)
         }
       }
     }
-  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance, cardano])
+  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, useBalance, adaWallet])
 }

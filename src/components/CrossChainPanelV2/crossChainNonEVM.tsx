@@ -15,6 +15,7 @@ import { useNebBridgeCallback, useCurrentWNASBalance } from '../../nonevm/nas'
 import { useNearSendTxns } from '../../nonevm/near'
 import { useXlmCrossChain } from '../../nonevm/stellar'
 import {useTrxCrossChain, useTrxAllowance} from '../../nonevm/trx'
+import {useAdaCrossChain} from '../../nonevm/cardano'
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
@@ -238,6 +239,16 @@ export default function CrossChain({
     inputBridgeValue,
     destConfig
   )
+  const {balance: adaBalance,execute: onAdaWrap} = useAdaCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    chainId,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -276,10 +287,16 @@ export default function CrossChain({
       } else if (!trxBalance && account) {
         return '0'
       }
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+      if (adaBalance) {
+        return adaBalance?.toExact()
+      } else if (!adaBalance && account) {
+        return '0'
+      }
     }
     
     return ''
-  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account, trxBalance])
+  }, [terraBalance,chainId,nasBalance, nearBalance, xlmBalance, account, trxBalance, adaBalance])
   // console.log(useBalance)
   const isWrapInputError = useMemo(() => {
     if (wrapInputErrorTerra && chainId === ChainId.TERRA) {
@@ -488,6 +505,11 @@ export default function CrossChain({
                   } else if (onTrxWrap && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
                     console.log('onTrxWrap')
                     onTrxWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onAdaWrap && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+                    console.log('onAdaWrap')
+                    onAdaWrap().then(() => {
                       onClear()
                     })
                   }

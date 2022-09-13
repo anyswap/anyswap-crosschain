@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { 
   useDispatch,
   // useSelector
@@ -12,50 +12,87 @@ import { ChainId } from "../../config/chainConfig/chainId";
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {
-  adaAddress
+  adaAddress,
+  adaBalanceList
 } from './actions'
+import useInterval from "../../hooks/useInterval";
+
+// import {
+//   useAdaBalance
+// } from './index'
 
 export default function Updater(): null {
-  const {chainId} = useActiveReact()
+  const {chainId, account} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 
+  // const {getAdaBalance} = useAdaBalance()
+
   const setAdaAddress = useCallback((address:any) => {
-    // const { cardano } = window
     console.log(address)
-    // console.log(cardano.signData(address))
-    // cardano.signData(address, '00').then((res:any) => {
-    //   console.log(res)
-    // }).catch((err:any) => {
-    //   console.log(err)
-    // })
     dispatch(adaAddress({address}))
   }, [dispatch])
 
-  useEffect(() => {
-    const { cardano } = window
 
-    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && cardano) {
+  const typhonRef = useRef<any>()
 
-      console.log(cardano)
-      // console.log(Buffer.from('001c5a34aca42e95587698068ffb83e6d95313c7ac74b4c35016b6cbdcdc93f8e856f05e630b245bd85e55180b4dd19def9dbf8fcf6ddaf5dc', 'hex'))
-      cardano.getBalance().then((res:any) => {
+  window.onload = () => {
+    typhonRef.current = window.cardano.typhon
+  };
+
+  const getBalance = useCallback(() => {
+    const adaWallet = typhonRef.current
+
+    // getAdaBalance()
+    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
+      adaWallet.getBalance().then((res:any) => {
         console.log(res)
-      })
-      // cardano.getUsedAddresses().then((res:any) => {
-      //   console.log(res)
-      // })
-      // cardano.getCollateral().then((res:any) => {
-      //   console.log(res)
-      // })
-      // cardano.getUtxos().then((res:any) => {
-      //   console.log(res)
-      // })
-      cardano.nami.enable().then((res:any) => {
-        res.getChangeAddress().then((res:any) => {
-          if (res) {
-            setAdaAddress(res)
+        const blList:any = {}
+        if (res.status) {
+          const result = res.data
+          blList['NATIVE'] = result.ada
+          if (result.tokens && result.tokens.length > 0) {
+            for (const obj of result.tokens) {
+              const key = obj.policyId + '.' + obj.assetName
+              blList[key] = obj.amount
+            }
           }
-        })
+          dispatch(adaBalanceList({list: blList}))
+        }
+      })
+    }
+  }, [chainId, typhonRef.current, account])
+
+  useEffect(() => {
+    getBalance()
+  }, [chainId, typhonRef.current, account])
+
+  useInterval(getBalance, 1000 * 10)
+
+  useEffect(() => {
+    const adaWallet = typhonRef.current
+    console.log(adaWallet)
+    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
+
+      adaWallet.enable().then((res:any) => {
+        // console.log(res)
+        if (res) {
+          adaWallet.getNetworkId().then((res:any) => {
+            // console.log(res)
+            if (
+              (res.data === 0 && ChainId.ADA_TEST === chainId)
+              || (res.data === 1 && ChainId.ADA === chainId)
+            ) {
+              adaWallet.getAddress().then((res:any) => {
+                // console.log(res)
+                if (res) {
+                  setAdaAddress(res.data)
+                }
+              })
+            } else {
+              alert('Network Error.')
+            }
+          })
+        }
       })
       
       const handleChainChanged = (chainID:any) => {
@@ -63,36 +100,40 @@ export default function Updater(): null {
       }
 
       const handleAccountsChanged = (accounts: string[]) => {
-        if (accounts.length > 0) {
-          setAdaAddress(accounts[0])
-        }
-        // cardano.getCollateral().then((res:any) => {
-        //   console.log(res)
-        // })
-        // cardano.getUtxos().then((res:any) => {
-        //   console.log(res)
-        // })
+        console.log(accounts)
+        adaWallet.getNetworkId().then((res:any) => {
+          // console.log(res)
+          if (
+            (res.data === 0 && ChainId.ADA_TEST === chainId)
+            || (res.data === 1 && ChainId.ADA === chainId)
+          ) {
+            adaWallet.getAddress().then((res:any) => {
+              // console.log(res)
+              if (res) {
+                setAdaAddress(res.data)
+              }
+            })
+          } else {
+            alert('Network Error.')
+          }
+        })
       }
 
-      if (cardano?.experimental?.on) {
-        console.log(1)
-        cardano?.experimental?.on('chainChanged', handleChainChanged)
-        cardano?.experimental?.on('accountsChanged', handleAccountsChanged)
-      } else {
-        console.log(2)
-        cardano.onNetworkChange(handleChainChanged)
-        cardano.onAccountChange(handleAccountsChanged)
+      if (adaWallet?.on) {
+        console.log(1.1)
+        adaWallet?.on('networkChanged', handleChainChanged)
+        adaWallet?.on('accountChanged', handleAccountsChanged)
       }
 
       return () => {
-        if (cardano.removeListener) {
-          cardano.removeListener('chainChanged', handleChainChanged)
-          cardano.removeListener('accountsChanged', handleAccountsChanged)
+        if (adaWallet.removeListener) {
+          adaWallet.removeListener('chainChanged', handleChainChanged)
+          adaWallet.removeListener('accountsChanged', handleAccountsChanged)
         }
       }
     }
     return undefined
-  }, [chainId])
+  }, [chainId, typhonRef.current])
 
   return null
 }

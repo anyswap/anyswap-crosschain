@@ -100,6 +100,8 @@ interface Window {
   freighterApi: any
   xfi: any
   cardano: any
+  typhon: any
+  typhoncip30: any
 }
 
 declare const __DEV__: boolean;
