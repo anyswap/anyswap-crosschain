@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 // import useInterval from "../useInterval"
 import { MaxUint256 } from '@ethersproject/constants'
 import { AppState, AppDispatch } from '../../state'
@@ -316,6 +317,7 @@ export function useTrxCrossChain (
   execute?: undefined | (() => Promise<void>)
 } {
   const {account} = useActiveReact()
+  const { t } = useTranslation()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
@@ -350,6 +352,14 @@ export function useTrxCrossChain (
       }
     }
   }, [selectCurrency, chainId, account])
+
+  let sufficientBalance = false
+  try {
+    // sufficientBalance = true
+    sufficientBalance = selectCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+  } catch (error) {
+    console.log(error)
+  }
 
   return useMemo(() => {
     if (!account || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) || !routerToken) return {}
@@ -430,7 +440,8 @@ export function useTrxCrossChain (
         } else {
           onChangeViewErrorTip('Please install TronLink.', true)
         }
-      }
+      },
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
   }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance])
 }

@@ -23,6 +23,7 @@ import SelectNetwork from './SelectNetwork'
 import NavListTop from './NavListTop'
 // import usePrevious from '../../hooks/usePrevious'
 import config from '../../config'
+import { thousandBit } from '../../utils/tools/tools'
 
 
 const HeaderFrameBox = styled.div`
@@ -197,7 +198,7 @@ function ViewAccountInfo () {
   
   const {account, chainId} = useActiveReact()
   const baseBalance = useBaseBalances(account)
-// console.log(baseBalance)
+// console.log(baseBalance?.toSignificant(3))
   if (selectNetworkInfo?.label === 'BTC') {
     return <></>
   }
@@ -205,7 +206,8 @@ function ViewAccountInfo () {
     <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
       {account && baseBalance ? (
         <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-          {baseBalance?.toSignificant(3)} {config.getCurChainInfo(chainId).symbol}
+          {/* {baseBalance?.toSignificant(6)} {config.getCurChainInfo(chainId).symbol} */}
+          {thousandBit(baseBalance?.toExact(), 2)} {config.getCurChainInfo(chainId).symbol}
         </BalanceText>
       ) : null}
       <Web3Status />

@@ -220,7 +220,7 @@ export default function CrossChain({
     destConfig
   )
 
-  const {balance: xlmBalance,execute: onXlmWrap} = useXlmCrossChain(
+  const {balance: xlmBalance,execute: onXlmWrap, inputError: wrapInputErrorXlm} = useXlmCrossChain(
     chainId,
     selectCurrency,
     selectChain,
@@ -229,7 +229,7 @@ export default function CrossChain({
     inputBridgeValue,
     destConfig
   )
-  const {balance: trxBalance,execute: onTrxWrap} = useTrxCrossChain(
+  const {balance: trxBalance,execute: onTrxWrap, inputError: wrapInputErrorTrx} = useTrxCrossChain(
     destConfig?.router,
     anyToken?.address,
     chainId,
@@ -239,7 +239,7 @@ export default function CrossChain({
     inputBridgeValue,
     destConfig
   )
-  const {balance: adaBalance,execute: onAdaWrap} = useAdaCrossChain(
+  const {balance: adaBalance,execute: onAdaWrap, inputError: wrapInputErrorAda} = useAdaCrossChain(
     destConfig?.router,
     anyToken?.address,
     chainId,
@@ -303,15 +303,18 @@ export default function CrossChain({
       return wrapInputErrorTerra
     } else if (wrapInputErrorNeb && chainId === ChainId.NAS) {
       return wrapInputErrorNeb
-    } else if (wrapInputErrorNear && (
-      chainId === ChainId.NEAR
-      || chainId === ChainId.NEAR_TEST
-    )) {
+    } else if (wrapInputErrorNear && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
       return wrapInputErrorNear
+    } else if (wrapInputErrorXlm && [ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+      return wrapInputErrorXlm
+    } else if (wrapInputErrorTrx && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+      return wrapInputErrorTrx
+    } else if (wrapInputErrorAda && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+      return wrapInputErrorAda
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {

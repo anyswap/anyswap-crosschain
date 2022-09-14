@@ -1,7 +1,7 @@
 
 import { useCallback, useMemo } from 'react'
 import {  useDispatch, useSelector } from 'react-redux'
-
+import { useTranslation } from 'react-i18next'
 import { AppState, AppDispatch } from '../../state'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { tryParseAmount3 } from '../../state/swap/hooks'
@@ -163,6 +163,8 @@ export function getADATxnsStatus (txid:string, chainId:any) {
   })
 }
 
+const baseValue = 2
+
 export function useAdaCrossChain (
   routerToken: any,
   inputToken: any,
@@ -178,6 +180,7 @@ export function useAdaCrossChain (
   execute?: undefined | (() => Promise<void>)
 } {
   const {account} = useActiveReact()
+  const { t } = useTranslation()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
 
@@ -186,7 +189,9 @@ export function useAdaCrossChain (
   const adaWallet = window?.cardano?.typhon
   const addTransaction = useTransactionAdder()
 
-  const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
+  const inputValue = selectCurrency?.tokenType === 'NATIVE' ? Number(typedValue) + baseValue : typedValue
+
+  const inputAmount = useMemo(() => tryParseAmount3(inputValue + '', selectCurrency?.decimals), [inputValue, selectCurrency])
 
   const useBalance = useMemo(() => {
     if (selectCurrency?.tokenType && adaBalanceList) {
@@ -199,7 +204,13 @@ export function useAdaCrossChain (
     }
     return ''
   }, [adaBalanceList, selectCurrency])
-
+  let sufficientBalance:any = false
+  try {
+    // sufficientBalance = true
+    sufficientBalance = selectCurrency && typedValue && useBalance && (Number(useBalance?.toExact()) >= Number(inputValue))
+  } catch (error) {
+    console.log(error)
+  }
   return useMemo(() => {
     if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !adaWallet) return {}
     return {
@@ -232,7 +243,7 @@ export function useAdaCrossChain (
           const tokenArrLen = tokenArr.length
           outputs.push({
             address: routerToken,
-            amount: '2000000',
+            amount: tryParseAmount3(baseValue + '', 6),
             tokens: [
               {
                 assetName: tokenArrLen === 2 ? tokenArr[1] : '',
@@ -294,7 +305,8 @@ export function useAdaCrossChain (
           console.log(error);
           onChangeViewErrorTip('Txns failure.', true)
         }
-      }
+      },
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
   }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, useBalance, adaWallet])
 }
