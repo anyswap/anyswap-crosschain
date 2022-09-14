@@ -23,7 +23,7 @@ import * as typhonjs from '@stricahq/typhonjs'
 // import CardanoWasm from '@dcspark/cardano-multiplatform-lib-browser'
 // import * as CardanoWasm from '@dcspark/cardano-multiplatform-lib-browser'
 // const CardanoWasm = require('@dcspark/cardano-multiplatform-lib-browser')
-console.log(typhonjs)
+// console.log(typhonjs)
 // console.log(CardanoWasm)
 
 export function useAdaAddress () {
@@ -257,53 +257,60 @@ export function useAdaCrossChain (
           auxiliaryDataCbor: auxDataCbor,
           outputs: [...outputs],
         });
-        try {
-          const txReceipt:any = {hash: txResult?.data?.transactionId}
-          console.log(txReceipt)
-          if (txReceipt?.hash) {
-            const data:any = {
-              hash: txReceipt.hash,
-              chainId: chainId,
-              selectChain: selectChain,
-              account: account,
-              value: inputAmount,
-              formatvalue: typedValue,
-              to: receiveAddress,
-              symbol: selectCurrency?.symbol,
-              version: destConfig.type,
-              pairid: selectCurrency?.symbol,
-              routerToken: routerToken
-            }
-            addTransaction(txReceipt, {
-              summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
-              value: typedValue,
-              toChainId: selectChain,
-              toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
-              symbol: selectCurrency?.symbol,
-              version: destConfig.type,
-              routerToken: routerToken,
-              token: selectCurrency?.address,
-              logoUrl: selectCurrency?.logoUrl,
-              isLiquidity: destConfig?.isLiquidity,
-              fromInfo: {
+        console.log(txResult)
+        if (txResult?.status) {
+
+          try {
+            const txReceipt:any = {hash: txResult?.data?.transactionId}
+            console.log(txReceipt)
+            if (txReceipt?.hash) {
+              const data:any = {
+                hash: txReceipt.hash,
+                chainId: chainId,
+                selectChain: selectChain,
+                account: account,
+                value: inputAmount,
+                formatvalue: typedValue,
+                to: receiveAddress,
                 symbol: selectCurrency?.symbol,
-                name: selectCurrency?.name,
-                decimals: selectCurrency?.decimals,
-                address: selectCurrency?.address,
-              },
-              toInfo: {
-                symbol: destConfig?.symbol,
-                name: destConfig?.name,
-                decimals: destConfig?.decimals,
-                address: destConfig?.address,
-              },
-            })
-            recordsTxns(data)
-            onChangeViewDtil(txReceipt?.hash, true)
+                version: destConfig.type,
+                pairid: selectCurrency?.symbol,
+                routerToken: routerToken
+              }
+              addTransaction(txReceipt, {
+                summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
+                value: typedValue,
+                toChainId: selectChain,
+                toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+                symbol: selectCurrency?.symbol,
+                version: destConfig.type,
+                routerToken: routerToken,
+                token: selectCurrency?.address,
+                logoUrl: selectCurrency?.logoUrl,
+                isLiquidity: destConfig?.isLiquidity,
+                fromInfo: {
+                  symbol: selectCurrency?.symbol,
+                  name: selectCurrency?.name,
+                  decimals: selectCurrency?.decimals,
+                  address: selectCurrency?.address,
+                },
+                toInfo: {
+                  symbol: destConfig?.symbol,
+                  name: destConfig?.name,
+                  decimals: destConfig?.decimals,
+                  address: destConfig?.address,
+                },
+              })
+              recordsTxns(data)
+              onChangeViewDtil(txReceipt?.hash, true)
+            }
+          } catch (error) {
+            console.log(error);
+            onChangeViewErrorTip('Txns failure.', true)
           }
-        } catch (error) {
-          console.log(error);
-          onChangeViewErrorTip('Txns failure.', true)
+        } else {
+          // onChangeViewErrorTip('Txns failure.', true)
+          onChangeViewErrorTip(JSON.stringify(txResult), true)
         }
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})

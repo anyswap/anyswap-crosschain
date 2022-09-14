@@ -104,6 +104,8 @@ interface Window {
   typhoncip30: any
 }
 
+declare module '@onflow/fcl';
+
 declare const __DEV__: boolean;
 
 declare module 'content-hash' {

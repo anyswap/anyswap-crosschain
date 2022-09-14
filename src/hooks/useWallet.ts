@@ -1,5 +1,5 @@
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useWallet, ConnectType } from '@terra-money/wallet-provider'
 // import { useDispatch } from 'react-redux'
 // import { setOpenModal, ApplicationModal } from '../state/application/actions'
@@ -14,6 +14,7 @@ import {useLogin} from '../nonevm/near'
 import {connectXlmWallet} from '../nonevm/stellar'
 import {useLoginTrx} from '../nonevm/trx'
 import {useAdaLogin} from '../nonevm/cardano'
+import {useLoginFlow} from '../nonevm/flow'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -25,11 +26,18 @@ export function useConnectWallet () {
   const {loginXlm} = connectXlmWallet()
   const {loginTrx} = useLoginTrx()
   const loginAda = useAdaLogin()
+  const {loginFlow} = useLoginFlow()
   return useCallback(() => {
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       if (connect) {
         try {
-          connect(ConnectType.CHROME_EXTENSION)
+          // connect(ConnectType.CHROME_EXTENSION)
+          if (!account) {
+            connect(ConnectType.CHROME_EXTENSION)
+          } else {
+            toggleWalletModal()
+            // dispatch(setOpenModal(ApplicationModal.WALLET))
+          }
         } catch (error) {
           alert('Please install Terra Station!')
         }
@@ -69,8 +77,36 @@ export function useConnectWallet () {
       } else {
         toggleWalletModal()
       }
+    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+      if (!account) {
+        loginFlow()
+      } else {
+        toggleWalletModal()
+      }
     } else {
       toggleWalletModal()
     }
   }, [selectNetworkInfo, toggleWalletModal, account])
+}
+
+export function useLogoutWallet () {
+  const {selectNetworkInfo} = useUserSelectChainId()
+  const {logoutFlow} = useLoginFlow()
+  const logoutWallet = useCallback(() => {
+    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+      logoutFlow()
+    }
+  }, [selectNetworkInfo])
+
+  const isSupportLogout = useMemo(() => {
+    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+      return true
+    }
+    return false
+  }, [selectNetworkInfo])
+
+  return {
+    logoutWallet,
+    isSupportLogout
+  }
 }

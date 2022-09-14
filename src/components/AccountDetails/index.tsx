@@ -21,6 +21,9 @@ import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 
 import config from '../../config'
+// import { ChainId } from '../../config/chainConfig/chainId'
+// import {useLoginFlow} from '../../nonevm/flow'
+import {useLogoutWallet} from '../../hooks/useWallet'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -226,6 +229,11 @@ export default function AccountDetails({
   const theme = useContext(ThemeContext)
   const {account, chainId} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
+  // const {logoutFlow} = useLoginFlow()
+  const {
+    logoutWallet,
+    isSupportLogout
+  } = useLogoutWallet()
 
   function formatConnectorName() {
     // const { ethereum } = window
@@ -249,6 +257,29 @@ export default function AccountDetails({
       )
     }
     return null
+  }
+
+  function changeWallet () {
+    if (
+      !isNaN(chainId)
+      || isSupportLogout
+    ) {
+      return <WalletAction
+        style={{ fontSize: '.825rem', fontWeight: 400 }}
+        onClick={() => {
+          if (isSupportLogout) {
+            // console.log(1)
+            logoutWallet()
+          } else {
+            // console.log(2)
+            openOptions()
+          }
+        }}
+      >
+        {t('Change')}
+      </WalletAction>
+    }
+    return 
   }
 
   const clearAllTransactionsCallback = useCallback(() => {
@@ -278,7 +309,7 @@ export default function AccountDetails({
                       {t('Disconnect')}
                     </WalletAction>
                   )}
-                  {
+                  {/* {
                     !isNaN(chainId) && <WalletAction
                       style={{ fontSize: '.825rem', fontWeight: 400 }}
                       onClick={() => {
@@ -287,7 +318,8 @@ export default function AccountDetails({
                     >
                       {t('Change')}
                     </WalletAction>
-                  }
+                  } */}
+                  {changeWallet()}
                 </div>
               </AccountGroupingRow>
               <AccountGroupingRow id="web3-account-identifier-row">

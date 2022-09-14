@@ -67,6 +67,12 @@ export function isAddress(address: any, chainId?: any) {
         }
       }
       return false
+    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(chainId)) {
+      const pattern = /^0x[0-9a-zA-Z]{16}/
+      if (pattern.test(address)) {
+        return address
+      }
+      return false
     } else {
       return isEvmAddress(address)
     }

@@ -91,4 +91,6 @@ export enum ChainId {
   ADA = 'ADA',
   ADA_TEST = 'ADA_TEST',
   CKB = '71402',
+  FLOW = 'FLOW',
+  FLOW_TEST = 'FLOW_TEST',
 }

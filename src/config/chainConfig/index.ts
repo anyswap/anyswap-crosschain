@@ -72,6 +72,7 @@ import trx from './trx'
 import bobabeam from './bobabeam'
 import cardano from './cardano'
 import ckb from './ckb'
+import flow from './flow'
 
 import { ChainId } from './chainId'
 
@@ -81,6 +82,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...flow,
   ...ckb,
   ...cardano,
   ...bobabeam,
@@ -343,6 +345,7 @@ const useChain:any = {
     ChainId.XLM_TEST,
     ChainId.IOTA_TEST,
     ChainId.ADA_TEST,
+    ChainId.FLOW_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
