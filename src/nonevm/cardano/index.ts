@@ -13,6 +13,19 @@ import { ChainId } from "../../config/chainConfig/chainId"
 
 import {adaAddress} from './actions'
 
+import * as typhonjs from '@stricahq/typhonjs'
+// export const CardanoWasm = () => { // 路由懒加载
+//   return () => Promise.resolve(require(`@emurgo/cardano-serialization-lib-nodejs`).default)
+// }
+// const CardanoWasm = require('@emurgo/cardano-serialization-lib-nodejs')
+// import * as CardanoWasm from '@dcspark/cardano-multiplatform-lib-browser'
+// import CardanoWasm from "@emurgo/cardano-serialization-lib-asmjs"
+// import CardanoWasm from '@dcspark/cardano-multiplatform-lib-browser'
+// import * as CardanoWasm from '@dcspark/cardano-multiplatform-lib-browser'
+// const CardanoWasm = require('@dcspark/cardano-multiplatform-lib-browser')
+console.log(typhonjs)
+// console.log(CardanoWasm)
+
 export function useAdaAddress () {
   const account:any = useSelector<AppState, AppState['ada']>(state => state.ada.adaAddress)
   return {
@@ -51,7 +64,7 @@ export function useAdaLogin() {
     } else {
       if (confirm('Please connect Typhon or install Typhon.') === true) {
         // window.open('https://namiwallet.io/')
-        window.open('https://typhonwallet.io/#/download')
+        window.open('https://typhonjs.io/#/download')
       }
     }
   }, [])
@@ -194,24 +207,20 @@ export function useAdaCrossChain (
       execute: async () => {
         // let txResult:any = ''
         console.log(adaWallet)
-        // const auxiliaryDataCbor = adaWallet.utils
-        //   .createAuxiliaryDataCbor({
-        //     metadata: [
-        //       // {
-        //       //   label: 674,
-        //       //   data: {
-        //       //     msg: ["This is a comment for the transaction xyz, thank you very much!"],
-        //       //   },
-        //       // },
-        //       {
-        //         "123":{
-        //           "bind": receiveAddress,
-        //           "toChainId": selectChain
-        //         }
-        //       }
-        //     ],
-        //   })
-        //   .toString("hex");
+        const MetaDatum:any =  {
+          "bind": receiveAddress,
+          "toChainId": selectChain
+        }
+        const auxDataCbor = typhonjs.utils
+        .createAuxiliaryDataCbor({
+          metadata: [
+            {
+              label: 123,
+              data: MetaDatum,
+            },
+          ],
+        })
+        .toString("hex");
         const outputs = []
         if (selectCurrency?.tokenType === 'NATIVE') {
           outputs.push({
@@ -234,7 +243,7 @@ export function useAdaCrossChain (
           })
         }
         const txResult = await adaWallet.paymentTransaction({
-          // auxiliaryDataCbor: auxiliaryDataCbor,
+          auxiliaryDataCbor: auxDataCbor,
           outputs: [...outputs],
         });
         try {
