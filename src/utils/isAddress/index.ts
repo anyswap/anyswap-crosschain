@@ -54,6 +54,19 @@ export function isAddress(address: any, chainId?: any) {
         return address
       }
       return false
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+      if (chainId === ChainId.ADA) {
+        const pattern = /^addr[0-9a-zA-Z]{54,99}/
+        if (pattern.test(address)) {
+          return address
+        }
+      } else {
+        const pattern = /^addr_test[0-9a-zA-Z]{54,99}/
+        if (pattern.test(address)) {
+          return address
+        }
+      }
+      return false
     } else {
       return isEvmAddress(address)
     }
