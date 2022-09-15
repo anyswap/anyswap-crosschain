@@ -39,9 +39,32 @@ export function useFlowAddress () {
 export function useFlowBalance () {
   const flowBalanceList:any = useSelector<AppState, AppState['flow']>(state => state.flow.flowBalanceList)
   // console.log(flowBalanceList)
+
+  const getFlowTokenBalance = useCallback(() => {
+    return new Promise(resolve => {
+      fcl.query({
+        cadence: `
+            import FungibleToken from FlowToken // will be replaced with 0xf233dcee88fe0abe because of the configuration
+    
+            pub fun main():UFix64 {
+              // Get the accounts' public account objects
+              let recipient = getAccount(0x79126cfa5c96017c)
+              let receiverRef = recipient.getCapability<&{FungibleToken.Balance}>(/public/exampleTokenBalance)
+              let tokenBalance=receiverRef.borrow()??panic("get receiver for capability fails")
+              return tokenBalance.balance
+          }
+          `,
+      }).then((res:any) => {
+        console.log(res)
+      }).catch((err:any) => {
+        console.log(err)
+      })
+    })
+  }, [])
+
   return {
-    flowBalanceList
-    // getAdaTokenBalance
+    flowBalanceList,
+    getFlowTokenBalance
   }
 }
 
