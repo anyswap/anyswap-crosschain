@@ -1,4 +1,5 @@
 {
+  "logout": "Logout",
   "noWallet": "No wallet found",
   "wrongNetwork": "You are on the wrong network",
   "switchNetwork": "Please switch to {{ correctNetwork }}",

@@ -260,23 +260,25 @@ export default function AccountDetails({
   }
 
   function changeWallet () {
-    if (
-      !isNaN(chainId)
-      || isSupportLogout
-    ) {
+    if (!isNaN(chainId)) {
       return <WalletAction
         style={{ fontSize: '.825rem', fontWeight: 400 }}
         onClick={() => {
-          if (isSupportLogout) {
-            // console.log(1)
-            logoutWallet()
-          } else {
-            // console.log(2)
-            openOptions()
-          }
+          openOptions()
+          // logoutWallet()
         }}
       >
         {t('Change')}
+      </WalletAction>
+    } else if (isSupportLogout) {
+      return <WalletAction
+        style={{ fontSize: '.825rem', fontWeight: 400 }}
+        onClick={() => {
+          logoutWallet()
+          toggleWalletModal()
+        }}
+      >
+        {t('logout')}
       </WalletAction>
     }
     return 
@@ -309,16 +311,6 @@ export default function AccountDetails({
                       {t('Disconnect')}
                     </WalletAction>
                   )}
-                  {/* {
-                    !isNaN(chainId) && <WalletAction
-                      style={{ fontSize: '.825rem', fontWeight: 400 }}
-                      onClick={() => {
-                        openOptions()
-                      }}
-                    >
-                      {t('Change')}
-                    </WalletAction>
-                  } */}
                   {changeWallet()}
                 </div>
               </AccountGroupingRow>
