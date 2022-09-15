@@ -18,10 +18,10 @@ import {
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
-// import {
-//   // useAdaBalance
-//   getFLOWTxnsStatus
-// } from './index'
+import {
+  useFlowBalance
+  // getFLOWTxnsStatus
+} from './index'
 
 // const transactionScript = `
 //   transaction() {
@@ -51,6 +51,8 @@ export default function Updater(): null {
   const {chainId, account} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 
+  const {getFlowTokenBalance} = useFlowBalance()
+
   const getBalance = useCallback(async() => {
     // getAdaBalance()
     // console.log(account)
@@ -60,7 +62,7 @@ export default function Updater(): null {
       // fcl.account(account).then((res:any) => {
       const useAccount = '0x79126cfa5c96017c'
       // const useAccount = account
-
+      getFlowTokenBalance(useAccount)
       // try {
         
       //   // const blockResponse = await fcl.send([
@@ -147,45 +149,45 @@ export default function Updater(): null {
           //   console.log(err)
           // })
 
-          const transactionId = await fcl.mutate({
-            cadence: `
-              import FungibleToken from FungibleToken
-              import FlowToken from FlowToken
-              transaction( ) {
+          // const transactionId = await fcl.mutate({
+          //   cadence: `
+          //     import FungibleToken from FungibleToken
+          //     import FlowToken from FlowToken
+          //     transaction( ) {
 
-                // The Vault resource that holds the tokens that are being transferred
-                let sentVault: @FungibleToken.Vault
+          //       // The Vault resource that holds the tokens that are being transferred
+          //       let sentVault: @FungibleToken.Vault
             
-                prepare(signer: AuthAccount) {
+          //       prepare(signer: AuthAccount) {
             
-                    // Get a reference to the signer's stored vault
-                    let vaultRef = signer.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
-                  ?? panic("Could not borrow reference to the owner's Vault!")
+          //           // Get a reference to the signer's stored vault
+          //           let vaultRef = signer.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
+          //         ?? panic("Could not borrow reference to the owner's Vault!")
             
-                    // Withdraw tokens from the signer's stored vault
-                    self.sentVault <- vaultRef.withdraw(amount: 1.0)
-                }
+          //           // Withdraw tokens from the signer's stored vault
+          //           self.sentVault <- vaultRef.withdraw(amount: 1.0)
+          //       }
             
-                execute {
+          //       execute {
             
-                    // Get a reference to the recipient's Receiver
-                    let receiverRef =  getAccount(0x7e303c43f3a868fd)
-                        .getCapability(/public/flowTokenReceiver)
-                        .borrow<&{FungibleToken.Receiver}>()
-                  ?? panic("Could not borrow receiver reference to the recipient's Vault")
+          //           // Get a reference to the recipient's Receiver
+          //           let receiverRef =  getAccount(0x7e303c43f3a868fd)
+          //               .getCapability(/public/flowTokenReceiver)
+          //               .borrow<&{FungibleToken.Receiver}>()
+          //         ?? panic("Could not borrow receiver reference to the recipient's Vault")
             
-                    // Deposit the withdrawn tokens in the recipient's receiver
-                    receiverRef.deposit(from: <-self.sentVault)
-                }
-            }
-            `,
-            proposer: fcl.currentUser,
-            payer: fcl.currentUser,
-            limit: 50
-          })
+          //           // Deposit the withdrawn tokens in the recipient's receiver
+          //           receiverRef.deposit(from: <-self.sentVault)
+          //       }
+          //   }
+          //   `,
+          //   proposer: fcl.currentUser,
+          //   payer: fcl.currentUser,
+          //   limit: 50
+          // })
           
-          const transaction = await fcl.tx(transactionId).onceSealed()
-          console.log(transaction)
+          // const transaction = await fcl.tx(transactionId).onceSealed()
+          // console.log(transaction)
           // const profile = await fcl.query({
           //   cadence: `
           //     import Profile from 0xProfile
@@ -234,8 +236,8 @@ export default function Updater(): null {
       .put("app.detail.title", "Multichain - Cross Chain")
       .put("app.detail.icon", "https://assets.coingecko.com/coins/images/22087/large/1_Wyot-SDGZuxbjdkaOeT2-A.png")
       // .put("0xFlowToken", "0x7e60df042a9c0868")
-      .put("FungibleToken", FungibleToken)
-      .put("FlowToken", FlowToken)
+      .put("0xFungibleToken", FungibleToken)
+      .put("0xFlowToken", FlowToken)
 
       console.log(fcl)
 

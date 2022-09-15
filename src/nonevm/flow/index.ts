@@ -40,24 +40,26 @@ export function useFlowBalance () {
   const flowBalanceList:any = useSelector<AppState, AppState['flow']>(state => state.flow.flowBalanceList)
   // console.log(flowBalanceList)
 
-  const getFlowTokenBalance = useCallback(() => {
+  const getFlowTokenBalance = useCallback((account) => {
     return new Promise(resolve => {
       fcl.query({
         cadence: `
-            import FungibleToken from FlowToken // will be replaced with 0xf233dcee88fe0abe because of the configuration
-    
-            pub fun main():UFix64 {
-              // Get the accounts' public account objects
-              let recipient = getAccount(0x79126cfa5c96017c)
-              let receiverRef = recipient.getCapability<&{FungibleToken.Balance}>(/public/exampleTokenBalance)
-              let tokenBalance=receiverRef.borrow()??panic("get receiver for capability fails")
-              return tokenBalance.balance
-          }
-          `,
+          import FungibleToken from 0xFungibleToken
+  
+          pub fun main():UFix64 {
+            // Get the accounts' public account objects
+            let recipient = getAccount(${account})
+            let receiverRef = recipient.getCapability<&{FungibleToken.Balance}>(/public/exampleTokenBalance)
+            let tokenBalance=receiverRef.borrow()??panic("get receiver for capability fails")
+            return tokenBalance.balance
+        }
+        `,
       }).then((res:any) => {
         console.log(res)
+        resolve(res)
       }).catch((err:any) => {
         console.log(err)
+        resolve('')
       })
     })
   }, [])
@@ -101,3 +103,50 @@ export function getFLOWTxnsStatus (txid:string, chainId:any) {
   })
 }
 
+export function sendTxns () {
+  const transferFn = useCallback((receiveAddress:any, amount:any) => {
+    return new Promise(resolve => {
+      fcl.mutate({
+        cadence: `
+          import FungibleToken from 0xFungibleToken
+          import FlowToken from 0xFlowToken
+          transaction( ) {
+
+            // The Vault resource that holds the tokens that are being transferred
+            let sentVault: @FungibleToken.Vault
+        
+            prepare(signer: AuthAccount) {
+        
+                // Get a reference to the signer's stored vault
+                let vaultRef = signer.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
+              ?? panic("Could not borrow reference to the owner's Vault!")
+        
+                // Withdraw tokens from the signer's stored vault
+                self.sentVault <- vaultRef.withdraw(amount: ${amount})
+            }
+        
+            execute {
+        
+                // Get a reference to the recipient's Receiver
+                let receiverRef =  getAccount(${receiveAddress})
+                    .getCapability(/public/flowTokenReceiver)
+                    .borrow<&{FungibleToken.Receiver}>()
+              ?? panic("Could not borrow receiver reference to the recipient's Vault")
+        
+                // Deposit the withdrawn tokens in the recipient's receiver
+                receiverRef.deposit(from: <-self.sentVault)
+            }
+        }
+        `,
+      }).then((res:any) => {
+        console.log(res)
+        resolve(res)
+      }).catch((err:any) => {
+        console.log(err)
+      })
+    })
+  }, [])
+  return {
+    transferFn
+  }
+}
