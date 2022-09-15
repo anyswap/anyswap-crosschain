@@ -218,49 +218,49 @@ export function useAdaCrossChain (
       execute: async () => {
         // let txResult:any = ''
         console.log(adaWallet)
-        const MetaDatum:any =  {
-          "bind": receiveAddress,
-          "toChainId": selectChain
-        }
-        const auxDataCbor = typhonjs.utils
-        .createAuxiliaryDataCbor({
-          metadata: [
-            {
-              label: 123,
-              data: MetaDatum,
-            },
-          ],
-        })
-        .toString("hex");
-        const outputs = []
-        if (selectCurrency?.tokenType === 'NATIVE') {
-          outputs.push({
-            address: routerToken,
-            amount: inputAmount,
-          })
-        } else {
-          const tokenArr = selectCurrency?.address.split('.')
-          const tokenArrLen = tokenArr.length
-          outputs.push({
-            address: routerToken,
-            amount: tryParseAmount3(baseValue + '', 6),
-            tokens: [
+        
+        try {
+          const MetaDatum:any =  {
+            "bind": receiveAddress,
+            "toChainId": selectChain
+          }
+          const auxDataCbor = typhonjs.utils
+          .createAuxiliaryDataCbor({
+            metadata: [
               {
-                assetName: tokenArrLen === 2 ? tokenArr[1] : '',
-                policyId: tokenArr[0],
-                amount: inputAmount,
+                label: 123,
+                data: MetaDatum,
               },
             ],
           })
-        }
-        const txResult = await adaWallet.paymentTransaction({
-          auxiliaryDataCbor: auxDataCbor,
-          outputs: [...outputs],
-        });
-        console.log(txResult)
-        if (txResult?.status) {
-
-          try {
+          .toString("hex");
+          const outputs = []
+          if (selectCurrency?.tokenType === 'NATIVE') {
+            outputs.push({
+              address: routerToken,
+              amount: inputAmount,
+            })
+          } else {
+            const tokenArr = selectCurrency?.address.split('.')
+            const tokenArrLen = tokenArr.length
+            outputs.push({
+              address: routerToken,
+              amount: tryParseAmount3(baseValue + '', 6),
+              tokens: [
+                {
+                  assetName: tokenArrLen === 2 ? tokenArr[1] : '',
+                  policyId: tokenArr[0],
+                  amount: inputAmount,
+                },
+              ],
+            })
+          }
+          const txResult = await adaWallet.paymentTransaction({
+            auxiliaryDataCbor: auxDataCbor,
+            outputs: [...outputs],
+          });
+          console.log(txResult)
+          if (txResult?.status) {
             const txReceipt:any = {hash: txResult?.data?.transactionId}
             console.log(txReceipt)
             if (txReceipt?.hash) {
@@ -304,13 +304,13 @@ export function useAdaCrossChain (
               recordsTxns(data)
               onChangeViewDtil(txReceipt?.hash, true)
             }
-          } catch (error) {
-            console.log(error);
-            onChangeViewErrorTip('Txns failure.', true)
+          } else {
+            // onChangeViewErrorTip('Txns failure.', true)
+            onChangeViewErrorTip(JSON.stringify(txResult), true)
           }
-        } else {
-          // onChangeViewErrorTip('Txns failure.', true)
-          onChangeViewErrorTip(JSON.stringify(txResult), true)
+        } catch (error) {
+          console.log(error);
+          onChangeViewErrorTip('Txns failure.', true)
         }
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})

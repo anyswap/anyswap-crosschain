@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 
-import {isAddress} from 'multichain-bridge'
+// import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
@@ -39,6 +39,7 @@ import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
+import { isAddress } from '../../utils/isAddress'
 
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -371,17 +372,14 @@ export default function CrossChain({
       return undefined
     } else if (isInputError) {
       return isInputError
-    } else if (
-      !recipient
-      || recipient && !Boolean(isAddr)
-    ) {
+    } else if (!Boolean(isAddr)) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
       }
     }
     return undefined
-  }, [isInputError, selectChain, recipient])
+  }, [isInputError, selectChain, recipient, account])
 
   const isCrossBridge = useMemo(() => {
     if (errorTip || !inputBridgeValue) {
@@ -617,7 +615,7 @@ export default function CrossChain({
         />
         {
           swapType == 'send' || (isNaN(selectChain) && destConfig?.type === 'swapout') || isNaN(chainId) ? (
-            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} selectChainId={selectChain} />
+            <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
           ) : ''
         }
       </AutoColumn>

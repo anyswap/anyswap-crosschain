@@ -88,6 +88,7 @@ export default createReducer(initialState, builder =>
         fromInfo,
         toInfo
       }
+      // console.log(txs)
       transactions[chainId] = txs
     })
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
