@@ -14,12 +14,13 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {
   flowAddress,
-  // adaBalanceList
+  flowBalanceList
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
 // import {
-//   useAdaBalance
+//   // useAdaBalance
+//   getFLOWTxnsStatus
 // } from './index'
 
 export default function Updater(): null {
@@ -28,10 +29,26 @@ export default function Updater(): null {
 
   const getBalance = useCallback(() => {
     // getAdaBalance()
-    console.log(account)
+    // console.log(account)
     if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(chainId) && account) {
-      fcl.account(account).then((res:any) => {
+      // getFLOWTxnsStatus('a133c54d778fbb59bd4fb06ba4e41d8aa0d0e97c54dda283ac77c9d281cae150', chainId)
+      // getFLOWTxnsStatus('90f105a707a2f8cf6114347d6ad7769a616e98f8b37d302004b2f039f2cb5413', chainId)
+      // fcl.account(account).then((res:any) => {
+      fcl.account('0x79126cfa5c96017c').then((res:any) => {
         console.log(res)
+        if (res) {
+          const blList:any = {}
+          const result = res
+          blList['NATIVE'] = result.balance
+          if (result.contracts && result.contracts.length > 0) {
+            for (const obj of result.contracts) {
+              const key = obj.policyId + '.' + obj.assetName
+              blList[key] = obj.amount
+            }
+          }
+          // console.log(blList)
+          dispatch(flowBalanceList({list: blList}))
+        }
       }).catch((err:any) => {
         console.log(err)
       })
@@ -58,6 +75,10 @@ export default function Updater(): null {
       .put("challenge.scope", "email")
       .put("accessNode.api", flowNetwork) // connect to Flow testnet
       .put("challenge.handshake", BloctoWallet) // use Blocto testnet wallet
+      // .put("flow.network", "testnet")
+      // .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn")
+      .put("app.detail.title", "Multichain - Cross Chain")
+      .put("app.detail.icon", "https://assets.coingecko.com/coins/images/22087/large/1_Wyot-SDGZuxbjdkaOeT2-A.png")
 
       console.log(fcl)
 

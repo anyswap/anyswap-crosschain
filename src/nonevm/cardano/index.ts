@@ -64,7 +64,7 @@ export function useAdaLogin() {
     } else {
       if (confirm('Please connect Typhon or install Typhon.') === true) {
         // window.open('https://namiwallet.io/')
-        window.open('https://typhonjs.io/#/download')
+        window.open('https://typhonwallet.io/#/download')
       }
     }
   }, [])

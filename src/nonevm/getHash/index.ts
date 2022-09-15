@@ -4,6 +4,7 @@ import {updateNearHash} from '../near'
 import {updateXlmHash} from '../stellar'
 import {getTRXTxnsStatus} from '../trx'
 import {getADATxnsStatus} from '../cardano'
+import {getFLOWTxnsStatus} from '../flow'
 import { ChainId } from '../../config/chainConfig/chainId'
 
 export function getHashInfo(hash: any, chainId: any) {
@@ -30,6 +31,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
       getADATxnsStatus(hash, chainId).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(chainId)) {
+      getFLOWTxnsStatus(hash, chainId).then(res => {
         resolve(res)
       })
     }
