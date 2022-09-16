@@ -71,6 +71,7 @@ export function useTrxAddress () {
 export function useLoginTrx () {
   const dispatch = useDispatch<AppDispatch>()
   const loginTrx = useCallback(() => {
+    // window.open('tronlinkoutside://pull.activity?param={}')
     if (window.tronWeb) {
       if (window?.tronWeb?.address && window.tronWeb.defaultAddress.base58) {
         dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
