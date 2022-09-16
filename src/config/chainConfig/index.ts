@@ -73,6 +73,7 @@ import bobabeam from './bobabeam'
 import cardano from './cardano'
 import ckb from './ckb'
 import flow from './flow'
+import ethw from './ethw'
 
 import { ChainId } from './chainId'
 
@@ -83,6 +84,7 @@ interface ConFig {
 }
 export const chainInfo:ConFig = {
   ...flow,
+  ...ethw,
   ...ckb,
   ...cardano,
   ...bobabeam,
@@ -217,6 +219,7 @@ const allChainList = [
   ChainId.RPG,
   ChainId.BOBABEAM,
   ChainId.CKB,
+  ChainId.ETHW,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

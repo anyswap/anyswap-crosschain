@@ -20,15 +20,17 @@ export default function Updater(): null {
   const getTrxAddress = useCallback(() => {
     if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && window.tronWeb) {
       if (window?.tronWeb?.address) {
+        console.log(window?.tronWeb?.fullNode)
+        console.log(window?.tronWeb?.fullNode?.host)
         if (ChainId.TRX_TEST === chainId) {
-          if (window?.tronWeb?.fullNode?.host.indexOf('shasta') === -1 && !onlyone) {
+          if (window?.tronWeb?.fullNode?.host.indexOf('shasta') === -1 && !onlyone && window?.tronWeb?.fullNode?.ready) {
             onlyone = 1
             alert('Please switch to Shasta Network.')
           } else {
             dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
           }
         } else {
-          if (window?.tronWeb?.fullNode?.host.indexOf('api.trongrid.io') === -1 && !onlyone) {
+          if (window?.tronWeb?.fullNode?.host.indexOf('api.trongrid.io') === -1 && !onlyone && window?.tronWeb?.fullNode?.ready) {
             onlyone = 1
             alert('Please switch to Main Network.')
           } else {

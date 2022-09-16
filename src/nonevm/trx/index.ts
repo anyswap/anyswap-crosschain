@@ -18,10 +18,22 @@ import { BigAmount } from "../../utils/formatBignumber"
 
 import {
   // ABI_TO_ADDRESS,
-  ABI_TO_STRING
+  ABI_TO_STRING,
+  POOL_ABI
 } from './crosschainABI'
+import {VALID_BALANCE} from '../../config/constant'
+import config from '../../config'
 // import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
+
+export enum WrapType {
+  NOT_APPLICABLE,
+  WRAP,
+  UNWRAP,
+  NOCONNECT
+}
+
+const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 export function toHexAddress (address:string) {
   const str = window?.tronWeb?.address?.toHex(address).toLowerCase()
@@ -64,76 +76,16 @@ export function useLoginTrx () {
         dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
       } else {
         // history.go(0)
-        if (confirm('Please connect TronLink or install TronLink.') === true) {
-          window.open('https://www.tronlink.org/')
-        }
+        alert('Please connect TronLink.')
+      }
+    } else {
+      if (confirm('Please open TronLink or install TronLink.') === true) {
+        window.open('https://www.tronlink.org/')
       }
     }
   }, [])
   return {
     loginTrx
-  }
-}
-
-// export function useContract () {
-//   let contract = await window?.tronWeb?.contract().at(trc20ContractAddress)
-// }
-
-export async function sendTRXTxns ({
-  account,
-  toAddress,
-  amount,
-  symbol,
-  tokenID
-}: {
-  account: string,
-  toAddress: string,
-  amount: string,
-  symbol: string,
-  tokenID: string
-}) {
-  // console.log(tronweb)
-  if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-    const TRXAccount = window?.tronWeb?.defaultAddress.base58
-    const curTRXAccount = toHexAddress(TRXAccount)
-    if (curTRXAccount === account.toLowerCase()) {
-      let tx:any = ''
-      /* eslint-disable */
-      try {
-        if (symbol === 'TRX') {
-          tx = await window?.tronWeb?.transactionBuilder.sendTrx(toAddress, amount, TRXAccount)
-          // console.log(tx)
-        } else {
-          const parameter1 = [{type:'address',value: toAddress},{type:'uint256',value: amount}]
-          tx = await window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "transfer(address,uint256)", {}, parameter1, TRXAccount)
-          tx = tx.transaction
-        }
-        const signedTx = await window?.tronWeb?.trx.sign(tx)
-        const broastTx = await window?.tronWeb?.trx.sendRawTransaction(signedTx)
-        return {
-          msg: 'Success',
-          info: broastTx
-        }
-      } catch (error) {
-        console.log(error)
-        return {
-          msg: 'Error',
-          // error: error?.toString()
-          error: error
-        }
-      }
-      /* eslint-enable */
-    } else {
-      return {
-        msg: 'Error',
-        error: 'Account verification failed!'
-      }
-    }
-  } else {
-    return {
-      msg: 'Error',
-      error: 'Not Supported!'
-    }
   }
 }
 
@@ -446,3 +398,82 @@ export function useTrxCrossChain (
   }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance])
 }
 
+
+export function useSwapNativeCallback(
+  inputCurrency: any,
+  inputToken: string | undefined,
+  typedValue: string | undefined,
+  swapType: string | undefined,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  const { account, chainId } = useActiveReact()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const { t } = useTranslation()
+  // console.log(balance)
+  // console.log(inputCurrency)
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+  const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+
+  const [balance, setBalance] = useState<any>()
+
+  const {getTrxBalance, getTrxTokenBalance} = useTrxBalance()
+
+  useEffect(() => {
+    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && inputCurrency?.address) {
+      const dec = inputCurrency?.decimals
+      if (inputCurrency?.tokenType === 'NATIVE') {
+        getTrxBalance({account}).then((res:any) => {
+          console.log(res)
+          setBalance('')
+        })
+      } else {
+        const token = fromHexAddress(inputCurrency.address)
+        // console.log(token)
+        getTrxTokenBalance({token: token,account}).then((res:any) => {
+          // console.log(res)
+          if (res?.constant_result) {
+            const bl = '0x' + res?.constant_result[0]
+            // console.log(BigAmount.format(dec, bl))
+            setBalance(BigAmount.format(dec, bl))
+          } else {
+            setBalance('')
+          }
+        })
+      }
+    }
+  }, [inputCurrency, chainId, account])
+
+  return useMemo(() => {
+    // console.log(routerToken)
+    // console.log(bridgeContract)
+    // console.log(chainId)
+    // console.log(inputCurrency)
+    // console.log(inputToken)
+    if (!chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+    // console.log(sufficientBalance && inputAmount)
+    return {
+      wrapType: WrapType.WRAP,
+      execute:
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
+        ? async () => {
+            try {
+              
+              if (window.tronWeb && window.tronWeb.defaultAddress.base58 && inputToken) {
+                const instance:any = await window?.tronWeb?.contract(POOL_ABI, inputToken)
+                const txReceipt = swapType === 'deposit' ? await instance.deposit(inputAmount) : await instance.withdraw(inputAmount)
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+              }
+            } catch (error) {
+              console.log('Could not swapout', error)
+              onChangeViewErrorTip(error, true)
+            }
+          }
+        : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
+}

@@ -133,3 +133,38 @@ export const ABI_TO_STRING = [
     "type": "Function"
   }
 ]
+
+export const POOL_ABI = [
+  {
+    "outputs": [
+      {
+        "type": "uint256"
+      }
+    ],
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "deposit",
+    "stateMutability": "Nonpayable",
+    "type": "Function"
+  },
+  {
+    "outputs": [
+      {
+        "type": "uint256"
+      }
+    ],
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdraw",
+    "stateMutability": "Nonpayable",
+    "type": "Function"
+  },
+]

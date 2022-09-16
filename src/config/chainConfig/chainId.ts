@@ -93,4 +93,5 @@ export enum ChainId {
   CKB = '71402',
   FLOW = 'FLOW',
   FLOW_TEST = 'FLOW_TEST',
+  ETHW = '10001',
 }
