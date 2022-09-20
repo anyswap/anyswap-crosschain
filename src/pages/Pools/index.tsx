@@ -44,6 +44,8 @@ import Reminder from '../../components/CrossChainPanelV2/reminder'
 import {useDestChainid, useDestCurrency, useInitSelectCurrency, outputValue} from '../../components/CrossChainPanelV2/hooks'
 import { BigAmount } from '../../utils/formatBignumber'
 
+import {useSwapPoolCallback} from '../../nonevm/pools'
+
 const BackBox = styled.div`
   cursor:pointer;
   display:inline-block;
@@ -88,15 +90,6 @@ export default function SwapNative() {
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
-  // const [intervalCount, setIntervalCount] = useState<number>(0)
-
-  // const [allTokens, setAllTokens] = useState<any>({})
-
-  // const [destChain, setDestChain] = useState<any>({
-  //   chain: '',
-  //   ts: '',
-  //   bl: ''
-  // })
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
@@ -165,8 +158,14 @@ export default function SwapNative() {
     destConfig,
     swapType
   )
-    // console.log(wrapType)
-    // console.log('wrapInputError', wrapInputError)
+
+  const {execute: onWrapNonevm, inputError: wrapInputErrorNonevm} = useSwapPoolCallback(
+    useSelectCurrency,
+    selectAnyToken?.address,
+    inputBridgeValue,
+    swapType
+  )
+  
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
     underlyingCurrency ? underlyingCurrency : undefined,
     selectAnyToken?.address,
@@ -202,10 +201,11 @@ export default function SwapNative() {
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})
   const {poolData: destPoolData} = usePool(selectChain, account, chainId?.toString() === selectChain?.toString() || !destConfig?.isLiquidity ? undefined : destConfig?.anytoken?.address, destConfig?.underlying?.address)
 
-  useEffect(() => {
-    console.log(destPoolData)
-    console.log(poolData)
-  }, [destPoolData, poolData])
+  // useEffect(() => {
+  //   console.log(destPoolData)
+  //   console.log(poolTokenList)
+  //   console.log(poolData)
+  // }, [destPoolData, poolData, poolTokenList])
 
   function onDelay () {
     setDelayAction(true)
@@ -227,10 +227,18 @@ export default function SwapNative() {
         }
       } else {
         // console.log(wrapInputErrorUnderlying)
-        if (wrapInputErrorUnderlying) {
-          return wrapInputErrorUnderlying
+        if (isNaN(chainId)) {
+          if (wrapInputErrorNonevm) {
+            return wrapInputErrorNonevm
+          } else {
+            return false
+          }
         } else {
-          return false
+          if (wrapInputErrorUnderlying) {
+            return wrapInputErrorUnderlying
+          } else {
+            return false
+          }
         }
       }
     }  else {
@@ -248,15 +256,23 @@ export default function SwapNative() {
             return false
           }
         } else {
-          if (wrapInputErrorUnderlying) {
-            return wrapInputErrorUnderlying
+          if (isNaN(chainId)) {
+            if (wrapInputErrorNonevm) {
+              return wrapInputErrorNonevm
+            } else {
+              return false
+            }
           } else {
-            return false
+            if (wrapInputErrorUnderlying) {
+              return wrapInputErrorUnderlying
+            } else {
+              return false
+            }
           }
         }
       }
     }
-  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType])
+  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType, chainId, wrapInputErrorNonevm])
 
   const isInputError = useMemo(() => {
     if (!selectCurrency) {
@@ -287,8 +303,8 @@ export default function SwapNative() {
           tip: isWrapInputError
         }
       } else if (swapType !== 'deposit') {
-        console.log(selectAnyToken)
-        console.log(poolData)
+        // console.log(selectAnyToken)
+        // console.log(poolData)
         const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address]?.balanceOf ? BigAmount.format(selectAnyToken.decimals, poolData?.[selectAnyToken?.address].balanceOf).toExact() : ''
         const destLiquidity = destConfig?.anytoken?.address &&  destPoolData?.[destConfig?.anytoken?.address]?.balanceOf ? BigAmount.format(destConfig?.anytoken.decimals, destPoolData?.[destConfig?.anytoken?.address].balanceOf).toExact() : ''
         // console.log('curLiquidity', curLiquidity)
@@ -674,21 +690,28 @@ export default function SwapNative() {
                     <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                       onDelay()
                       if (openAdvance && chainId?.toString() !== selectChain?.toString()) {
-                        console.log(1)
+                        console.log('onWrap')
                         if (onWrap) onWrap().then(() => {
                           onClear()
                         })
                       } else {
-                        if (isNativeToken) {
-                          console.log(2)
-                          if (onWrapNative) onWrapNative().then(() => {
+                        if (isNaN(chainId)) {
+                          console.log('onWrapNonevm')
+                          if (onWrapNonevm) onWrapNonevm().then(() => {
                             onClear()
                           })
                         } else {
-                          console.log(3)
-                          if (onWrapUnderlying) onWrapUnderlying().then(() => {
-                            onClear()
-                          })
+                          if (isNativeToken) {
+                            console.log('onWrapNative')
+                            if (onWrapNative) onWrapNative().then(() => {
+                              onClear()
+                            })
+                          } else {
+                            console.log('onWrapUnderlying')
+                            if (onWrapUnderlying) onWrapUnderlying().then(() => {
+                              onClear()
+                            })
+                          }
                         }
                       }
                     }}>

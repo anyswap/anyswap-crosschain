@@ -17,13 +17,15 @@ import {gnosissafe} from '../../connectors'
 import { walletViews } from './actions'
 
 export function useIsGnosisSafeWallet () {
-  const { connector } = useActiveWeb3React()
+  const { connector, account } = useActiveWeb3React()
   const isGnosisSafeWallet =  useMemo(() => {
-    if ( gnosissafe === connector) {
+    // console.log(gnosissafe)
+    // console.log(connector)
+    if ( gnosissafe === connector && account) {
       return true
     }
     return false
-  }, [gnosissafe, connector])
+  }, [gnosissafe, connector, account])
   return {
     isGnosisSafeWallet
   }
@@ -112,6 +114,44 @@ export function useTokenBalancesWithLoadingIndicator(
     ),
     anyLoading
   ]
+}
+
+export function useTokenBalancesWithLoadingIndicator1(
+  address?: any,
+  token?: any,
+  decimals?: any,
+  chainId?:any
+): any {
+  // const validatedTokens: any[] = useMemo(
+  //   () => tokens?.filter((t?: any): t is any => isAddress(t?.address) !== false) ?? [],
+  //   [tokens]
+  // )
+
+  const validatedTokenAddresses = isAddress(token) ? [token] : [undefined]
+  const validatedAddresses = isAddress(address) ? [address] : [undefined]
+  // console.log(chainId)
+  // console.log(validatedTokenAddresses)
+  // console.log(validatedAddresses)
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', validatedAddresses, undefined, chainId)
+  // console.log(validatedTokenAddresses)
+  // console.log(address)
+  // console.log(balances)
+
+  const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+
+  return useMemo(
+    () => {
+      // console.log(balances)
+      if (address && token && anyLoading) {
+        const value = balances?.[0]?.result?.[0]
+        const amount = value ? value.toString() : undefined
+        return BigAmount.format(decimals, amount)
+      } else {
+        return undefined
+      }
+    },
+    [address, token, balances, anyLoading]
+  )
 }
 
 export function useTokenTotalSupplyWithLoadingIndicator(

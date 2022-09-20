@@ -333,7 +333,6 @@ export default function CrossChain({
           // onMax={() => {}}
           currency={selectCurrency}
           disableCurrencySelect={false}
-          disableChainSelect={true}
           showMaxButton={true}
           isViewNetwork={true}
           id="selectCurrency"

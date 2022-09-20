@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 import useInterval from '../../hooks/useInterval'
-import {useNonEVMDestBalance} from '../../hooks/useAllBalances'
+import {useTokensBalance} from '../../hooks/useAllBalances'
 
 import { RowBetween } from '../Row'
 import Column from '../Column'
@@ -167,7 +167,7 @@ export default function SelectChainIdInputPanel({
 
 
   
-  const nonEVMbl = useNonEVMDestBalance(destChainInfo?.Unit, destChainInfo?.decimals, selectChainId)
+  const nonEVMbl = useTokensBalance(destChainInfo?.Unit, destChainInfo?.decimals, selectChainId)
 
   // useEffect(() => {
   const getDestBalance = useCallback(() => {

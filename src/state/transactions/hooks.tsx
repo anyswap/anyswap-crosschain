@@ -71,11 +71,13 @@ export function useTransactionAdder(): (
         toInfo?: any,
       } = {}
     ) => {
+      // console.log(account, chainId, isGnosisSafeWallet)
       if (!account) return
       if (!chainId) return
       if (isGnosisSafeWallet) return
-
+      
       const { hash } = response
+      // console.log(hash)
       if (!hash) {
         throw Error('No transaction hash found.')
       }

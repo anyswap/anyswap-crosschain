@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 // import useInterval from "../useInterval"
@@ -7,6 +7,8 @@ import { AppState, AppDispatch } from '../../state'
 import { trxAddress } from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 
+import {useBaseBalances, useTokensBalance} from '../../hooks/useAllBalances'
+
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import { ChainId } from "../../config/chainConfig/chainId"
 
@@ -14,7 +16,7 @@ import { ChainId } from "../../config/chainConfig/chainId"
 import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { BigAmount } from "../../utils/formatBignumber"
+// import { BigAmount } from "../../utils/formatBignumber"
 import { isAddress } from '../../utils/isAddress'
 
 import {
@@ -140,7 +142,7 @@ export function useTrxBalance () {
     return new Promise((resolve) => {
       const useAccount = account ? account : TRXAccount
       const parameter1 = [{type:'address',value: useAccount}]
-      const tokenID = token
+      const tokenID = fromHexAddress(token)
       // console.log('tokenID', tokenID)
       if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
         window?.tronWeb?.transactionBuilder.triggerSmartContract(tokenID, "balanceOf(address)", {}, parameter1, useAccount).then((res:any) => {
@@ -190,7 +192,7 @@ export function useTrxAllowance(
               summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
               approval: { tokenAddress: token.address, spender: spender }
             })
-            resolve(result)
+            resolve(txObj)
           } catch (error) {
             resolve('')
           }
@@ -243,13 +245,17 @@ export function getTRXTxnsStatus (txid:string) {
   return new Promise(resolve => {
     const data:any = {}
     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-      window?.tronWeb?.trx.getTransaction(txid).then((res:any) => {
+      // window?.tronWeb?.trx.getTransaction(txid).then((res:any) => {
+      window?.tronWeb?.trx.getTransactionInfo(txid).then((res:any) => {
         console.log(res)
-        if (res.ret) {
+        if (res?.receipt?.result === 'SUCCESS') {
           data.msg = 'Success'
           data.info = res
-        } else {
+        } else if (res?.receipt?.result && res?.receipt?.result !== 'SUCCESS') {
           data.msg = 'Failure'
+          data.error = 'Txns is failure!'
+        } else {
+          data.msg = 'Null'
           data.error = 'Txns is failure!'
         }
         resolve(data)
@@ -283,36 +289,15 @@ export function useTrxCrossChain (
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
 
-  const [balance, setBalance] = useState<any>()
+  const nativeBalance = useBaseBalances(account)
+  const tokenBalance = useTokensBalance(selectCurrency?.address, selectCurrency?.decimals, chainId)
+  const balance = selectCurrency?.tokenType === 'NATIVE' ? nativeBalance : tokenBalance
 
-  const {getTrxBalance, getTrxTokenBalance} = useTrxBalance()
+  // const [balance, setBalance] = useState<any>()
+
+  // const {getTrxBalance, getTrxTokenBalance} = useTrxBalance()
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
-
-  useEffect(() => {
-    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && selectCurrency?.address) {
-      const dec = selectCurrency?.decimals
-      if (selectCurrency?.tokenType === 'NATIVE') {
-        getTrxBalance({account}).then((res:any) => {
-          console.log(res)
-          setBalance('')
-        })
-      } else {
-        const token = fromHexAddress(selectCurrency.address)
-        // console.log(token)
-        getTrxTokenBalance({token: token,account}).then((res:any) => {
-          // console.log(res)
-          if (res?.constant_result) {
-            const bl = '0x' + res?.constant_result[0]
-            // console.log(BigAmount.format(dec, bl))
-            setBalance(BigAmount.format(dec, bl))
-          } else {
-            setBalance('')
-          }
-        })
-      }
-    }
-  }, [selectCurrency, chainId, account])
 
   let sufficientBalance = false
   try {
@@ -410,7 +395,7 @@ export function useTrxCrossChain (
 }
 
 
-export function useSwapNativeCallback(
+export function useTrxSwapPoolCallback(
   inputCurrency: any,
   inputToken: string | undefined,
   typedValue: string | undefined,
@@ -425,57 +410,40 @@ export function useSwapNativeCallback(
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
 
-  const [balance, setBalance] = useState<any>()
-
-  const {getTrxBalance, getTrxTokenBalance} = useTrxBalance()
-
-  useEffect(() => {
-    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId) && inputCurrency?.address) {
-      const dec = inputCurrency?.decimals
-      if (inputCurrency?.tokenType === 'NATIVE') {
-        getTrxBalance({account}).then((res:any) => {
-          console.log(res)
-          setBalance('')
-        })
-      } else {
-        const token = fromHexAddress(inputCurrency.address)
-        // console.log(token)
-        getTrxTokenBalance({token: token,account}).then((res:any) => {
-          // console.log(res)
-          if (res?.constant_result) {
-            const bl = '0x' + res?.constant_result[0]
-            // console.log(BigAmount.format(dec, bl))
-            setBalance(BigAmount.format(dec, bl))
-          } else {
-            setBalance('')
-          }
-        })
-      }
-    }
-  }, [inputCurrency, chainId, account])
-
+  const nativeBalance = useBaseBalances(account)
+  const tokenBalance = useTokensBalance(inputCurrency?.address, inputCurrency?.decimals, chainId)
+  const balance = inputCurrency?.tokenType === 'NATIVE' ? nativeBalance : tokenBalance
+  
   return useMemo(() => {
     // console.log(routerToken)
     // console.log(bridgeContract)
     // console.log(chainId)
     // console.log(inputCurrency)
-    // console.log(inputToken)
+    // console.log(swapType)
+    // console.log(balance)
+    // console.log(inputAmount)
     if (!chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
-    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-    // console.log(sufficientBalance && inputAmount)
+    const sufficientBalance = typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+    // console.log(sufficientBalance)
     return {
       wrapType: WrapType.WRAP,
       execute:
       (sufficientBalance || !VALID_BALANCE) && inputAmount
         ? async () => {
             try {
-              
               if (window.tronWeb && window.tronWeb.defaultAddress.base58 && inputToken) {
+                // console.log(123)
+                // console.log(inputToken)
                 const instance:any = await window?.tronWeb?.contract(POOL_ABI, fromHexAddress(inputToken))
-                const txReceipt = swapType === 'deposit' ? await instance.deposit(inputAmount) : await instance.withdraw(inputAmount)
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                // console.log(instance)
+                const txResult = swapType === 'deposit' ? await instance.deposit(inputAmount).send() : await instance.withdraw(inputAmount).send()
+                const txReceipt:any = {hash: txResult}
+                console.log(txReceipt)
+                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+              } else {
+                console.log('Could not swapout')
               }
             } catch (error) {
               console.log('Could not swapout', error)
@@ -500,6 +468,7 @@ export function useTrxPoolDatas () {
         // const useAccount = window.tronWeb.defaultAddress.base58
         for (const item of calls) {
           const anytoken = item.anytoken ? fromHexAddress(item.anytoken) : ''
+          const anytokenSource = item.anytoken
           // const anytoken = item.anytoken ? toHexAddress(item.anytoken) : ''
           // const anytoken = item.anytoken
           // const underlyingToken = item.token
@@ -507,18 +476,18 @@ export function useTrxPoolDatas () {
           // console.log('anytoken', anytoken)
           // console.log('underlyingToken', underlyingToken)
           if (underlyingToken && anytoken) {
-            console.log(underlyingToken, anytoken)
+            // console.log(underlyingToken, anytoken)
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
             arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).balanceOf(anytoken).call())
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
             labelArr.push({
-              key: anytoken,
+              key: anytokenSource,
               label: 'balanceOf'
             })
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "totalSupply()", {}, {}, useAccount))
             arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).totalSupply().call())
             labelArr.push({
-              key: anytoken,
+              key: anytokenSource,
               label: 'totalSupply'
             })
           }
@@ -527,7 +496,7 @@ export function useTrxPoolDatas () {
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(anytoken, "balanceOf(address)", {}, {type:'address',value: item.account}, useAccount))
             arr.push(window?.tronWeb?.contract(ERC20_ABI, anytoken).balanceOf(item.account).call())
             labelArr.push({
-              key: anytoken,
+              key: anytokenSource,
               label: 'balance'
             })
           }

@@ -11,12 +11,15 @@ import { useTrxBalance } from '../nonevm/trx'
 import {useXlmBalance} from '../nonevm/stellar'
 import {useAdaBalance} from '../nonevm/cardano'
 import {useFlowBalance} from '../nonevm/flow'
+import {useTokenBalancesWithLoadingIndicator1} from '../state/wallet/hooks'
+import {useActiveReact} from './useActiveReact'
 
 import { ChainId } from '../config/chainConfig/chainId'
 import { BigAmount } from '../utils/formatBignumber'
 import { tryParseAmount3 } from '../state/swap/hooks'
 
-export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
+export function useTokensBalance (token:any, dec:any, selectChainId:any) {
+  const {account} = useActiveReact()
   const connectedWallet = useConnectedWallet()
   const {getTerraBalances} = useTerraBalance()
 
@@ -33,8 +36,10 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
 
   const savedBalance = useRef<any>()
 
+  const evmBalance = useTokenBalancesWithLoadingIndicator1(account, token, dec, selectChainId)
+
   const fetchBalance = useCallback(() => {
-    // console.log(token)
+    // console.log([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId))
     if (token) {
       if ([ChainId.TERRA].includes(selectChainId) && connectedWallet?.walletAddress) {
         getTerraBalances({
@@ -61,12 +66,12 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
         }).catch(() => {
           savedBalance.current = ''
         })
-      } else if ([ChainId.TRX].includes(selectChainId)) {
+      } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId)) {
         getTrxTokenBalance({token}).then((res:any) => {
-          console.log(token)
-          console.log(res)
-          const bl = res && (dec || dec === 0) ? BigAmount.format(dec, res) : undefined
-          savedBalance.current = bl
+          // console.log(token)
+          // console.log(res)
+          const bl:any = '0x' + res?.constant_result?.[0]
+          savedBalance.current = bl && (dec || dec === 0) ? BigAmount.format(dec, bl) : undefined
         })
       } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectChainId)) {
         // console.log(selectChainId)
@@ -91,12 +96,14 @@ export function useNonEVMDestBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, flowBalanceList?.[token])
           savedBalance.current = bl
         }
+      } else {
+        savedBalance.current = evmBalance
       }
     } else {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -124,6 +131,7 @@ export function useBaseBalances (
   const {getAllBalance} = useXlmBalance()
   const {adaBalanceList} = useAdaBalance()
   const {flowBalanceList} = useFlowBalance()
+  
 
   const selectChainId = selectNetworkInfo?.label
   

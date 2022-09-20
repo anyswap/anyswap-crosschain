@@ -3,7 +3,10 @@ import React, { useState, useContext, useCallback, useEffect, useMemo} from 'rea
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import { useCurrencyBalance, useETHBalances } from '../../state/wallet/hooks'
+// import {
+//   // useCurrencyBalance,
+//   useETHBalances
+// } from '../../state/wallet/hooks'
 import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 import TokenLogo from '../TokenLogo'
@@ -12,7 +15,7 @@ import { TYPE } from '../../theme'
 
 // import { useActiveWeb3React } from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
-import { useLocalToken } from '../../hooks/Tokens'
+// import { useLocalToken } from '../../hooks/Tokens'
 import { useToggleNetworkModal } from '../../state/application/hooks'
 import config from '../../config'
 // import {CROSS_BRIDGE_LIST} from '../../config/constant'
@@ -38,6 +41,11 @@ import {
 import SearchModal from './searchModal'
 import { isAddress } from '../../utils/isAddress'
 
+import {
+  useTokensBalance,
+  useBaseBalances
+} from '../../hooks/useAllBalances'
+
 const HeadterRightBox = styled.div`
 
 `
@@ -52,7 +60,6 @@ interface SelectCurrencyInputPanelProps {
   // currency?: Currency | null
   currency?: any // select token
   disableCurrencySelect?: boolean // disabled select
-  disableChainSelect?: boolean // disabled select
   disableInput?: boolean // disabled input
   hideBalance?: boolean // hide balance
   hideInput?: boolean // hide input
@@ -86,7 +93,6 @@ export default function SelectCurrencyInputPanel({
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
-  disableChainSelect = false,
   disableInput = false,
   hideBalance = false,
   hideInput = false,
@@ -130,36 +136,37 @@ export default function SelectCurrencyInputPanel({
       onOpenModalView(false)
     }
   }, [setModalOpen])
-  const formatCurrency = useLocalToken(currency ?? undefined)
+  // const formatCurrency = useLocalToken(currency ?? undefined)
   const useAccount:any = isAddress(account, evmChainId)
-  const selectedCurrencyBalance = useCurrencyBalance(useAccount ?? undefined, formatCurrency ?? undefined)
-  const selectedETHBalance = useETHBalances(useAccount ? [useAccount] : [])?.[useAccount ?? '']
-
+  // const selectedCurrencyBalance = useCurrencyBalance(useAccount ?? undefined, formatCurrency ?? undefined)
+  // const selectedETHBalance = useETHBalances(useAccount ? [useAccount] : [])?.[useAccount ?? '']
+  const selectedNativeBalance = useBaseBalances(useAccount)
+  const selectTokenBalance = useTokensBalance(currency?.address, currency?.decimals, chainId)
+  // console.log(currency)
+  // console.log(selectTokenBalance)
   const useBalance = useMemo(() => {
     // console.log(hideBalance)
     // console.log(customBalance)
-    if (customBalance || isNaN(useChainId)) {
+    // console.log(isNativeToken)
+    if (customBalance) {
       return customBalance
-    } else if (selectedCurrencyBalance && (!isNativeToken)) {
-      // console.log(isNativeToken)
-      // console.log(selectedCurrencyBalance)
-      return selectedCurrencyBalance
-    } else if (isNativeToken || !isAddress(currency?.address, evmChainId)) {
-      if (inputType && inputType.swapType === 'withdraw' && selectedCurrencyBalance) {
-        return selectedCurrencyBalance
-      } else if ((inputType && inputType.swapType === 'deposit') || selectedETHBalance) {
-        // console.log(selectedCurrencyBalance)
-        return selectedETHBalance
+    } else if (selectTokenBalance && !isNativeToken) {
+      return selectTokenBalance
+    } else if (isNativeToken) {
+      if (inputType && inputType.swapType === 'withdraw' && selectTokenBalance) {
+        return selectTokenBalance
+      } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
+        return selectedNativeBalance
       }
       return undefined
     } else {
       return undefined
     }
-  }, [selectedCurrencyBalance, isNativeToken, selectedETHBalance, customBalance, currency, inputType, disableChainSelect])
+  }, [selectTokenBalance, isNativeToken, selectedNativeBalance, customBalance, inputType])
   // console.log(useBalance)
   const viewBalance = useMemo(() => {
     if (useBalance) {
-      // console.log(typeof useBalance)
+      // console.log(useBalance)
       if (typeof useBalance === 'string' || typeof useBalance === 'number') {
         return useBalance
       } else {
