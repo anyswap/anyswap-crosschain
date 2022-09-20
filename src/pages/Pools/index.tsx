@@ -202,10 +202,10 @@ export default function SwapNative() {
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})
   const {poolData: destPoolData} = usePool(selectChain, account, chainId?.toString() === selectChain?.toString() || !destConfig?.isLiquidity ? undefined : destConfig?.anytoken?.address, destConfig?.underlying?.address)
 
-  // useEffect(() => {
-  //   console.log(destPoolData)
-  //   console.log(poolData)
-  // }, [destPoolData, poolData])
+  useEffect(() => {
+    console.log(destPoolData)
+    console.log(poolData)
+  }, [destPoolData, poolData])
 
   function onDelay () {
     setDelayAction(true)
@@ -287,8 +287,8 @@ export default function SwapNative() {
           tip: isWrapInputError
         }
       } else if (swapType !== 'deposit') {
-        // console.log(selectAnyToken)
-        // console.log(poolData)
+        console.log(selectAnyToken)
+        console.log(poolData)
         const curLiquidity = selectAnyToken?.address &&  poolData?.[selectAnyToken?.address]?.balanceOf ? BigAmount.format(selectAnyToken.decimals, poolData?.[selectAnyToken?.address].balanceOf).toExact() : ''
         const destLiquidity = destConfig?.anytoken?.address &&  destPoolData?.[destConfig?.anytoken?.address]?.balanceOf ? BigAmount.format(destConfig?.anytoken.decimals, destPoolData?.[destConfig?.anytoken?.address].balanceOf).toExact() : ''
         // console.log('curLiquidity', curLiquidity)

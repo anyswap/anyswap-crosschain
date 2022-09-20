@@ -25,7 +25,7 @@ const stellarAddress = /^[1-9A-Z]{56}$/
 export function isAddress(address: any, chainId?: any) {
   if (!address) return undefined
   if (chainId) {
-    if ([ChainId.TRX].includes(chainId)) {
+    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
       return isTRXAddress(address)
     } else if ([ChainId.NAS].includes(chainId)) {
       return nebulas.Account.isValidAddress(address) ? address : false

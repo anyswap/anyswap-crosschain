@@ -15,17 +15,21 @@ import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
+import { isAddress } from '../../utils/isAddress'
 
 import {
   // ABI_TO_ADDRESS,
   ABI_TO_STRING,
-  POOL_ABI
+  POOL_ABI,
+  ERC20_ABI
 } from './crosschainABI'
 import {VALID_BALANCE} from '../../config/constant'
 import config from '../../config'
 // import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
 
+import TronWeb from 'tronweb'
+// console.log(TronWeb)
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
@@ -35,8 +39,26 @@ export enum WrapType {
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
+export function initTronWeb (chainId?:any) {
+  let fullNode = 'https://api.shasta.trongrid.io';
+  let solidityNode = 'https://api.shasta.trongrid.io';
+  let eventServer = 'https://api.shasta.trongrid.io';
+  if (chainId === ChainId.TRX) {
+    fullNode = 'https://api.trongrid.io';
+    solidityNode = 'https://api.trongrid.io';
+    eventServer = 'https://api.trongrid.io';
+  }
+  const tronWeb = new TronWeb(
+    fullNode,
+    solidityNode,
+    eventServer
+  );
+  return tronWeb
+}
+
 export function toHexAddress (address:string) {
-  const str = window?.tronWeb?.address?.toHex(address).toLowerCase()
+  const tronWeb = initTronWeb()
+  const str = tronWeb?.address?.toHex(address).toLowerCase()
   return '0x' + str.substr(2)
 }
 
@@ -45,16 +67,18 @@ export function fromHexAddress (address:string) {
 }
 
 export function isTRXAddress (address:string) {
+  const tronWeb = initTronWeb()
   if (address.indexOf('0x') === 0) {
     address = address.replace('0x', '41')
   }
-  return window?.tronWeb?.isAddress(address)
+  return tronWeb?.isAddress(address)
 }
 
 export function formatTRXAddress (address:string) {
+  const tronWeb = initTronWeb()
   if (address.indexOf('0x') === 0) {
     address = address.replace('0x', '41')
-    address = window?.tronWeb?.address.fromHex(address)
+    address = tronWeb?.address.fromHex(address)
   }
   return address
 }
@@ -73,12 +97,18 @@ export function useLoginTrx () {
   const loginTrx = useCallback(() => {
     // window.open('tronlinkoutside://pull.activity?param={}')
     if (window.tronWeb) {
-      if (window?.tronWeb?.address && window.tronWeb.defaultAddress.base58) {
-        dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
-      } else {
-        // history.go(0)
+      window.tronWeb.request({method: 'tron_requestAccounts'}).then((res:any) => {
+        if (res?.code === 200) {
+          dispatch(trxAddress({address: window.tronWeb.defaultAddress.base58}))
+        } else {
+          dispatch(trxAddress({address: ''}))
+          alert('Please connect TronLink.')
+        }
+      }).catch((err:any) => {
+        console.log(err)
+        dispatch(trxAddress({address: ''}))
         alert('Please connect TronLink.')
-      }
+      })
     } else {
       if (confirm('Please open TronLink or install TronLink.') === true) {
         window.open('https://www.tronlink.org/')
@@ -150,18 +180,7 @@ export function useTrxAllowance(
         const tokenID = fromHexAddress(token)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
           try {
-            const instance:any = await window?.tronWeb?.contract([{
-              "constant": false,
-              "inputs": [
-                { "name": "_spender", "type": "address" },
-                { "name": "_value", "type": "uint256" }
-              ],
-              "name": "approve",
-              "outputs": [{ "name": "", "type": "bool" }],
-              "payable": false,
-              "stateMutability": "nonpayable",
-              "type": "function"
-            }], tokenID)
+            const instance:any = await window?.tronWeb?.contract(ERC20_ABI, tokenID)
             const result  = await instance.approve(spender, MaxUint256.toString()).send()
             // const result  = await instance.approve(spender, 0).send()
             // console.log(result)
@@ -192,18 +211,7 @@ export function useTrxAllowance(
         // console.log('tokenID', tokenID)
         // console.log('parameter1', parameter1)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
-          const instance:any = await window?.tronWeb?.contract([{
-            "constant": true,
-            "inputs": [
-              { "name": "_owner", "type": "address" },
-              { "name": "_spender", "type": "address" }
-            ],
-            "name": "allowance",
-            "outputs": [{ "name": "", "type": "uint256" }],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-          }], tokenID)
+          const instance:any = await window?.tronWeb?.contract(ERC20_ABI, tokenID)
           const result  = await instance.allowance(useAccount, spender).call()
           // console.log(result.toString())
           resolve(result.toString())
@@ -322,8 +330,10 @@ export function useTrxCrossChain (
         // let contract = await window?.tronWeb?.contract()
         if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
           const TRXAccount = window?.tronWeb?.defaultAddress.base58
-          const formatRouterToken = routerToken
-          const formatInputToken = inputToken
+          const formatRouterToken = fromHexAddress(routerToken)
+          const formatInputToken = fromHexAddress(inputToken)
+          // console.log('formatRouterToken',formatRouterToken)
+          // console.log('formatInputToken',formatInputToken)
           // const formatReceiveAddress = formatTRXAddress(receiveAddress)
           const formatReceiveAddress = receiveAddress
           if (TRXAccount.toLowerCase() === account.toLowerCase()) {
@@ -412,7 +422,6 @@ export function useSwapNativeCallback(
   const { t } = useTranslation()
   // console.log(balance)
   // console.log(inputCurrency)
-  // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
 
@@ -464,7 +473,7 @@ export function useSwapNativeCallback(
             try {
               
               if (window.tronWeb && window.tronWeb.defaultAddress.base58 && inputToken) {
-                const instance:any = await window?.tronWeb?.contract(POOL_ABI, inputToken)
+                const instance:any = await window?.tronWeb?.contract(POOL_ABI, fromHexAddress(inputToken))
                 const txReceipt = swapType === 'deposit' ? await instance.deposit(inputAmount) : await instance.withdraw(inputAmount)
                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
               }
@@ -477,4 +486,70 @@ export function useSwapNativeCallback(
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
   }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
+}
+
+
+export function useTrxPoolDatas () {
+  const getTrxPoolDatas = useCallback(async(calls, chainId) => {
+    return new Promise(resolve => {
+      const arr = []
+      const labelArr:any = []
+      // console.log(calls)
+      if (window.tronWeb && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId) ) {
+        // console.log(calls)
+        // const useAccount = window.tronWeb.defaultAddress.base58
+        for (const item of calls) {
+          const anytoken = item.anytoken ? fromHexAddress(item.anytoken) : ''
+          // const anytoken = item.anytoken ? toHexAddress(item.anytoken) : ''
+          // const anytoken = item.anytoken
+          // const underlyingToken = item.token
+          const underlyingToken = item.token ? fromHexAddress(item.token) : ''
+          // console.log('anytoken', anytoken)
+          // console.log('underlyingToken', underlyingToken)
+          if (underlyingToken && anytoken) {
+            console.log(underlyingToken, anytoken)
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
+            arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).balanceOf(anytoken).call())
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
+            labelArr.push({
+              key: anytoken,
+              label: 'balanceOf'
+            })
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "totalSupply()", {}, {}, useAccount))
+            arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).totalSupply().call())
+            labelArr.push({
+              key: anytoken,
+              label: 'totalSupply'
+            })
+          }
+          
+          if (anytoken && isAddress(item.account, chainId)) {
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(anytoken, "balanceOf(address)", {}, {type:'address',value: item.account}, useAccount))
+            arr.push(window?.tronWeb?.contract(ERC20_ABI, anytoken).balanceOf(item.account).call())
+            labelArr.push({
+              key: anytoken,
+              label: 'balance'
+            })
+          }
+        }
+      }
+      // console.log(arr)
+      Promise.all(arr).then(res => {
+        // console.log(res)
+        const list:any = {}
+        for (let i = 0, len = arr.length; i < len; i++) {
+          const k = labelArr[i].key
+          const l = labelArr[i].label
+          if (!list[k]) list[k] = {}
+          list[k][l] = res[i].toString()
+        }
+        // console.log(list)
+        resolve(list)
+      })
+    })
+  }, [])
+
+  return {
+    getTrxPoolDatas,
+  }
 }

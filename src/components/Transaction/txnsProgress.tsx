@@ -123,7 +123,8 @@ const FailureBox = styled.div`
   border: solid 0.5px ${({ theme }) => theme.tipBorder};
   background-color: ${({ theme }) => theme.tipBg};
   padding:10px;
-  color: ${({ theme }) => theme.birdgeStateBorder2};
+  // color: ${({ theme }) => theme.birdgeStateBorder2};
+  color: ${({ theme }) => theme.red1};
 `
 
 export default function TxnsProgress({
@@ -149,8 +150,8 @@ export default function TxnsProgress({
           stepNum = 6 // Routed
         } else if (([9].includes(status) && tx?.info?.confirmations > 1) || [10].includes(status)) {
           stepNum = 7 // Success
-        } else if ([1, 2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
-          stepNum = -2
+        } else if ([-3, -2, 1, 2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
+          stepNum = 99
         } else if ([12].includes(status)) {
           stepNum = 98
         }
@@ -167,34 +168,6 @@ export default function TxnsProgress({
     setStep(stepNum)
   }, [tx])
 
-  // const ProgressNum = useMemo(() => {
-  //   if (!toStatus) {
-  //     if ([Status.Null].includes(fromStatus)) {
-  //       return 0
-  //     } else if ([Status.Pending].includes(fromStatus)) {
-  //       return 1
-  //     } else if ([Status.Success].includes(fromStatus)) {
-  //       return 2
-  //     } else if ([Status.Failure].includes(fromStatus)) {
-  //       return -1
-  //     }
-  //   } else {
-  //     if ([Status.Confirming].includes(toStatus)) {
-  //       return 3
-  //     } else if ([Status.Crosschaining].includes(toStatus)) {
-  //       return 4
-  //     } else if ([Status.Success].includes(toStatus)) {
-  //       return 5
-  //     } else if ([Status.BigAmount].includes(toStatus)) {
-  //       return 6
-  //     } else if (!toStatus || [Status.Failure, Status.Null].includes(toStatus)) {
-  //       return -2
-  //     }
-  //   }
-  //   return 0
-  // }, [fromStatus, toStatus])
-
-  // const ChevronsRightView = <div className="item"><ChevronsRight className="arrow" size={14} /></div>
   const CheckCircleView = <CheckCircle size={12} style={{marginRight: 5, display: 'none'}} />
   const LoaderView = <Loading size={'14px'} stroke="#5f6bfb" style={{marginRight: 5}} />
 
@@ -285,26 +258,22 @@ export default function TxnsProgress({
   }
   return (
     <>
-      {
-        step < 0 ? (
-          <>
-            {ProgressView(-1)}
-          </>
-        ) : (
-          <ProgressBox>
-            <div className="list-box">
+      <ProgressBox>
+        <div className="list-box">
+          {
+            step === 99 ? '' : (
               <div className="lineBox">
                 <div className="lineWrapper">
                   {LineView(step)}
                 </div>
               </div>
-              <div className="list">
-                {ProgressView(step)}
-              </div>
-            </div>
-          </ProgressBox>
-        )
-      }
+            )
+          }
+          <div className="list">
+            {ProgressView(step)}
+          </div>
+        </div>
+      </ProgressBox>
     </>
   )
 }

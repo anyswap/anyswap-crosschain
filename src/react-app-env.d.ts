@@ -79,6 +79,8 @@ declare module 'toformat';
 
 declare module 'big.js';
 
+declare module 'tronweb';
+
 interface Window {
   ethereum?: {
     isMetaMask?: true
@@ -87,6 +89,7 @@ interface Window {
   }
   okexchain:any
   tronWeb:any
+  tronLink:any
   web3?: {}
   returnCitySN?: {},
   near: any,
