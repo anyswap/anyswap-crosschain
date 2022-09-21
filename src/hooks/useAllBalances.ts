@@ -108,6 +108,8 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   useInterval(fetchBalance, 1000 * 10, false)
 
   useEffect(() => {
+    
+    savedBalance.current = ''
     fetchBalance()
   }, [fetchBalance, token])
 

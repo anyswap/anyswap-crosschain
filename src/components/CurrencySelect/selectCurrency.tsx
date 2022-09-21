@@ -144,25 +144,53 @@ export default function SelectCurrencyInputPanel({
   const selectTokenBalance = useTokensBalance(currency?.address, currency?.decimals, chainId)
   // console.log(currency)
   // console.log(selectTokenBalance)
-  const useBalance = useMemo(() => {
-    // console.log(hideBalance)
-    // console.log(customBalance)
-    // console.log(isNativeToken)
+  const [useBalance, setUseBalance] = useState<any>()
+
+  useEffect(() => {
+    // console.log(inputType)
+    setUseBalance('')
+  }, [inputType, currency])
+
+  // useEffect(() => {
+  //   console.log(useBalance)
+  // }, [useBalance])
+
+  useEffect(() => {
     if (customBalance) {
-      return customBalance
+      setUseBalance(customBalance)
     } else if (selectTokenBalance && !isNativeToken) {
-      return selectTokenBalance
+      setUseBalance(selectTokenBalance)
     } else if (isNativeToken) {
       if (inputType && inputType.swapType === 'withdraw' && selectTokenBalance) {
-        return selectTokenBalance
+        setUseBalance(selectTokenBalance)
       } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
-        return selectedNativeBalance
+        setUseBalance(selectedNativeBalance)
       }
-      return undefined
+      setUseBalance(undefined)
     } else {
-      return undefined
+      setUseBalance(undefined)
     }
   }, [selectTokenBalance, isNativeToken, selectedNativeBalance, customBalance, inputType])
+
+  // const useBalance = useMemo(() => {
+  //   // console.log(hideBalance)
+  //   // console.log(customBalance)
+  //   // console.log(isNativeToken)
+  //   if (customBalance) {
+  //     return customBalance
+  //   } else if (selectTokenBalance && !isNativeToken) {
+  //     return selectTokenBalance
+  //   } else if (isNativeToken) {
+  //     if (inputType && inputType.swapType === 'withdraw' && selectTokenBalance) {
+  //       return selectTokenBalance
+  //     } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
+  //       return selectedNativeBalance
+  //     }
+  //     return undefined
+  //   } else {
+  //     return undefined
+  //   }
+  // }, [selectTokenBalance, isNativeToken, selectedNativeBalance, customBalance, inputType])
   // console.log(useBalance)
   const viewBalance = useMemo(() => {
     if (useBalance) {

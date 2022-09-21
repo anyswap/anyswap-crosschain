@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
-
+import AddressInputPanel from '../../components/AddressInputPanel'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
@@ -47,6 +47,8 @@ import { BigAmount } from '../../utils/formatBignumber'
 import {useSwapPoolCallback} from '../../nonevm/pools'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 
+import { isAddress } from '../../utils/isAddress'
+
 const BackBox = styled.div`
   cursor:pointer;
   display:inline-block;
@@ -58,7 +60,7 @@ const BRIDGETYPE = 'routerTokenList'
 // let intervalFN:any
 export default function SwapNative() {
   // const { account, chainId } = useActiveWeb3React()
-  const { account, chainId } = useActiveReact()
+  const { account, chainId, evmAccount } = useActiveReact()
   const history = createBrowserHistory()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -90,6 +92,16 @@ export default function SwapNative() {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
+  const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
+
+  useEffect(() => {
+    // console.log(evmAccount)
+    if (evmAccount) {
+      setRecipient(evmAccount)
+    } else {
+      setRecipient('')
+    }
+  }, [evmAccount])
 
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
@@ -199,10 +211,13 @@ export default function SwapNative() {
   )
 
   const {execute: onWrapNonevm, inputError: wrapInputErrorNonevm} = useSwapPoolCallback(
+    useRouterToken,
     useSelectCurrency,
     selectAnyToken?.address,
     inputBridgeValue,
-    swapType
+    swapType,
+    selectChain,
+    recipient
   )
   
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
@@ -394,6 +409,7 @@ export default function SwapNative() {
 
   const errorTip = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
+    const isAddr = isAddress( recipient, selectChain)
     if (isInputError) {
       return isInputError
     } else if (!inputBridgeValue) {
@@ -401,9 +417,14 @@ export default function SwapNative() {
         state: 'Error',
         tip: bt
       }
+    } else if (swapType !== 'deposit' && !Boolean(isAddr)) {
+      return {
+        state: 'Error',
+        tip: t('invalidRecipient')
+      }
     }
     return undefined
-  }, [isInputError, inputBridgeValue, swapType])
+  }, [isInputError, inputBridgeValue, swapType, recipient, selectChain])
 
   const isCrossBridge = useMemo(() => {
     if (errorTip) {
@@ -665,7 +686,11 @@ export default function SwapNative() {
               </>
             ) : ''
           }
-
+          {
+            swapType !== 'deposit' && isNaN(chainId) && chainId?.toString() !== selectChain?.toString() ? (
+              <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
+            ) : ''
+          }
         </AutoColumn>
         {/* <PoolTip 
           anyCurrency={anyCurrency}
@@ -737,10 +762,17 @@ export default function SwapNative() {
                     <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
                       onDelay()
                       if (openAdvance && chainId?.toString() !== selectChain?.toString()) {
-                        console.log('onWrap')
-                        if (onWrap) onWrap().then(() => {
-                          onClear()
-                        })
+                        if (isNaN(chainId)) {
+                          console.log('onWrapNonevm')
+                          if (onWrapNonevm) onWrapNonevm().then(() => {
+                            onClear()
+                          })
+                        } else {
+                          console.log('onWrap')
+                          if (onWrap) onWrap().then(() => {
+                            onClear()
+                          })
+                        }
                       } else {
                         if (isNaN(chainId)) {
                           console.log('onWrapNonevm')

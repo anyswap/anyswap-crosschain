@@ -20,10 +20,10 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { isAddress } from '../../utils/isAddress'
 
 import {
+  ABI_TO_ADDRESS,
   // ABI_TO_ADDRESS,
-  ABI_TO_STRING,
-  POOL_ABI,
-  ERC20_ABI
+  // ABI_TO_ADDRESS,
+  // ABI_TO_ADDRESS
 } from './crosschainABI'
 import {VALID_BALANCE} from '../../config/constant'
 import config from '../../config'
@@ -188,7 +188,7 @@ export function useTrxAllowance(
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
           try {
             // console.log(tokenID)
-            const instance:any = await window?.tronWeb?.contract(ERC20_ABI, tokenID)
+            const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, tokenID)
             const result  = await instance.approve(spenderID, MaxUint256.toString()).send()
             // const result  = await instance.approve(spenderID, 0).send()
             // console.log(result)
@@ -220,7 +220,7 @@ export function useTrxAllowance(
         // console.log('tokenID', tokenID)
         // console.log('parameter1', parameter1)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
-          const instance:any = await window?.tronWeb?.contract(ERC20_ABI, tokenID)
+          const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, tokenID)
           const result  = await instance.allowance(useAccount, spender).call()
           // console.log(result.toString())
           resolve(result.toString())
@@ -230,16 +230,6 @@ export function useTrxAllowance(
       }
     })
   }, [account, chainId, selectCurrency, spender])
-
-  // useEffect(() => {
-  //   getTrxAllowance().then(res => {
-  //     // console.log(res)
-  //     // setAllowance(res)
-  //     dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
-  //   })
-  // }, [selectCurrency, TRXAccount])
-
-  // useInterval(getTrxAllowance, 10000)
 
   return {
     setTrxAllowance,
@@ -330,8 +320,8 @@ export function useTrxCrossChain (
           const formatReceiveAddress = receiveAddress
           if (TRXAccount.toLowerCase() === account.toLowerCase()) {
             let txResult:any = ''
-            // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_STRING, formatRouterToken)
-            const instance:any = await window?.tronWeb?.contract(ABI_TO_STRING, formatRouterToken)
+            // const instance:any = await window?.tronWeb?.contract(isNaN(selectChain) ? ABI_TO_ADDRESS : ABI_TO_ADDRESS, formatRouterToken)
+            const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
             try {
               if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
                 txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
@@ -403,10 +393,13 @@ export function useTrxCrossChain (
 
 
 export function useTrxSwapPoolCallback(
+  routerToken:any,
   inputCurrency: any,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
+  selectChain: any,
+  receiveAddress: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
@@ -443,9 +436,29 @@ export function useTrxSwapPoolCallback(
               if (window.tronWeb && window.tronWeb.defaultAddress.base58 && inputToken) {
                 // console.log(123)
                 // console.log(inputToken)
-                const instance:any = await window?.tronWeb?.contract(POOL_ABI, fromHexAddress(inputToken))
-                // console.log(instance)
-                const txResult = swapType === 'deposit' ? await instance.deposit(inputAmount).send() : await instance.withdraw(inputAmount).send()
+                // const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS)
+                const formatInputToken = fromHexAddress(inputToken)
+                const formatRouterToken = fromHexAddress(routerToken)
+                let txResult:any
+                if (inputCurrency?.tokenType === 'NATIVE') {
+                  if (chainId.toString() === selectChain.toString()) {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
+                    txResult = swapType === 'deposit' ? await instance.depositNative(...[inputToken, account], {value: inputAmount}).send() : await instance.withdrawNative(inputToken,inputAmount,account).send()
+                  } else {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
+                    const parameArr = [formatInputToken, receiveAddress, selectChain]
+                    txResult = await instance.anySwapOutNative(...parameArr, {value: inputAmount}).send()
+                  }
+                } else {
+                  if (chainId.toString() === selectChain.toString()) {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
+                    txResult = swapType === 'deposit' ? await instance.deposit(inputAmount).send() : await instance.withdraw(inputAmount).send()
+                  } else {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
+                    const parameArr = [formatInputToken, receiveAddress, inputAmount, selectChain]
+                    txResult = await instance.anySwapOut(...parameArr).send()
+                  }
+                }
                 const txReceipt:any = {hash: txResult}
                 console.log(txReceipt)
                 addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
@@ -460,7 +473,7 @@ export function useTrxSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain])
 }
 
 
@@ -485,14 +498,14 @@ export function useTrxPoolDatas () {
           if (underlyingToken && anytoken) {
             // console.log(underlyingToken, anytoken)
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
-            arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).balanceOf(anytoken).call())
+            arr.push(window?.tronWeb?.contract(ABI_TO_ADDRESS, underlyingToken).balanceOf(anytoken).call())
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
             labelArr.push({
               key: anytokenSource,
               label: 'balanceOf'
             })
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "totalSupply()", {}, {}, useAccount))
-            arr.push(window?.tronWeb?.contract(ERC20_ABI, underlyingToken).totalSupply().call())
+            arr.push(window?.tronWeb?.contract(ABI_TO_ADDRESS, underlyingToken).totalSupply().call())
             labelArr.push({
               key: anytokenSource,
               label: 'totalSupply'
@@ -501,7 +514,7 @@ export function useTrxPoolDatas () {
           
           if (anytoken && isAddress(item.account, chainId)) {
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(anytoken, "balanceOf(address)", {}, {type:'address',value: item.account}, useAccount))
-            arr.push(window?.tronWeb?.contract(ERC20_ABI, anytoken).balanceOf(item.account).call())
+            arr.push(window?.tronWeb?.contract(ABI_TO_ADDRESS, anytoken).balanceOf(item.account).call())
             labelArr.push({
               key: anytokenSource,
               label: 'balance'

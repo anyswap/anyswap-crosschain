@@ -63,78 +63,7 @@ export const ABI_TO_ADDRESS = [
     "name": "anySwapOut",
     "stateMutability": "Nonpayable",
     "type": "Function"
-  }
-]
-
-export const ABI_TO_STRING = [
-  {
-    "inputs": [
-      {
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "name": "to",
-        "type": "string"
-      },
-      {
-        "name": "toChainID",
-        "type": "uint256"
-      }
-    ],
-    "name": "anySwapOutNative",
-    "stateMutability": "Payable",
-    "type": "Function"
   },
-  {
-    "inputs": [
-      {
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "name": "to",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "name": "toChainID",
-        "type": "uint256"
-      }
-    ],
-    "name": "anySwapOutUnderlying",
-    "stateMutability": "Nonpayable",
-    "type": "Function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "name": "to",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "name": "toChainID",
-        "type": "uint256"
-      }
-    ],
-    "name": "anySwapOut",
-    "stateMutability": "Nonpayable",
-    "type": "Function"
-  }
-]
-
-export const POOL_ABI = [
   {
     "outputs": [
       {
@@ -167,9 +96,6 @@ export const POOL_ABI = [
     "stateMutability": "Nonpayable",
     "type": "Function"
   },
-]
-
-export const ERC20_ABI = [
   {
     "constant": true,
     "inputs": [{ "name": "_owner", "type": "address" }],
@@ -210,6 +136,48 @@ export const ERC20_ABI = [
     "outputs": [{ "name": "", "type": "uint256" }],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{
+      "internalType": "address",
+      "name": "token",
+      "type": "address"
+    }, {
+      "internalType": "uint256",
+      "name": "amount",
+      "type": "uint256"
+    }, {
+      "internalType": "address",
+      "name": "to",
+      "type": "address"
+    }],
+    "name": "withdrawNative",
+    "outputs": [{
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{
+      "internalType": "address",
+      "name": "token",
+      "type": "address"
+    }, {
+      "internalType": "address",
+      "name": "to",
+      "type": "address"
+    }],
+    "name": "depositNative",
+    "outputs": [{
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }],
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

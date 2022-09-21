@@ -11,14 +11,17 @@ export enum WrapType {
 }
 
 export function useSwapPoolCallback(
+  routerToken: any,
   inputCurrency: any,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
+  selectChain: any,
+  receiveAddress: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 // ): any {
   const {chainId} = useActiveReact()
-  const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(inputCurrency, inputToken, typedValue, swapType)
+  const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress)
   
   return useMemo(() => {
     // console.log(chainId)
