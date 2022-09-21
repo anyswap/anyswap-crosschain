@@ -1,44 +1,114 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 import { ChainId } from '../../config/chainConfig/chainId'
 import {useTrxAllowance} from '../trx'
+import useInterval from '../../hooks/useInterval'
+import {useTxnsErrorTipOpen} from '../../state/application/hooks'
+import {
+  // useDispatch,
+  useSelector
+} from 'react-redux'
+import {
+  AppState,
+  // AppDispatch
+} from '../../state'
+
+import {
+  useApproveState
+} from '../hooks'
+
+export enum ApprovalState {
+  UNKNOWN,
+  NOT_APPROVED,
+  PENDING,
+  APPROVED
+}
+
+interface ApproveResult {
+  hash: string
+}
 
 export function useNonevmAllowances (
+  isApprove: boolean,
   selectCurrency:any,
-  spender:any,
+  spender: any,
   chainId:any,
   account:any,
+  inputValue:any,
 ) {
+  const addTransaction = useTransactionAdder()
+  const {setApprovalState} = useApproveState()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, spender, chainId, account)
-  const allowanceList = useRef<any>()
-  const setNonevmAllowance = useCallback(({token, spender}) => {
-    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
-      return setTrxAllowance({token, spender})
-    }
-    return
-  }, [])
+  // const allowanceList = useRef<any>()
+  const allowanceList:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.approveList)
+
+  const [loading, setLoading] = useState<boolean>(false)
 
   const token = useMemo(() => {
     return selectCurrency?.address
   }, [selectCurrency])
 
-  const getNonevmAllowance = useCallback(() => {
-    if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
-      getTrxAllowance().then(res => {
-        // console.log(res)
-        // setAllowance(res)
-        allowanceList.current = res
-      })
+  const allowanceResult = useMemo(() => {
+    console.log(allowanceList)
+    if (allowanceList?.[chainId]?.[account]?.[token]?.[spender]?.allowance) {
+      return allowanceList?.[chainId]?.[account]?.[token]?.[spender]?.allowance
     } else {
-      allowanceList.current = ''
+      return 0
     }
+  }, [token, spender, chainId, account, allowanceList])
+
+  const setNonevmAllowance = useCallback(async() => {
+    let approveResult:ApproveResult | undefined | null
+    try {
+      if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+        approveResult = await setTrxAllowance({token, spender})
+      }
+      if (approveResult) {
+        setLoading(true)
+        addTransaction(approveResult, {
+          summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
+          approval: { tokenAddress: token.address, spender: spender }
+        })
+      } else {
+        setLoading(false)
+      }
+    } catch (error) {
+      setLoading(false)
+      onChangeViewErrorTip(error, true)
+    }
+    return
   }, [token, spender, chainId, account])
+
+  const getNonevmAllowance = useCallback(() => {
+    // console.log(allowanceList)
+    // console.log(allowanceResult)
+    // console.log(token)
+    // console.log(spender)
+    if (isApprove && inputValue && Number(inputValue) > Number(allowanceResult)) {
+      if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+        getTrxAllowance().then(res => {
+          // console.log(res)
+          setApprovalState({chainId, account, token, spender, allowance: res})
+        })
+      } else {
+        // allowanceList.current = ''
+      }
+    }
+  }, [token, spender, chainId, account, allowanceResult, inputValue, isApprove])
 
   useEffect(() => {
     getNonevmAllowance()
+  }, [token, spender, chainId, account, inputValue, isApprove])
+  useEffect(() => {
+    setLoading(false)
   }, [token, spender, chainId, account])
 
+  useInterval(getNonevmAllowance, 1000 * 3)
+
   return {
-    allowance: allowanceList.current,
+    allowance: allowanceResult,
+    loading,
     setNonevmAllowance
   }
 }

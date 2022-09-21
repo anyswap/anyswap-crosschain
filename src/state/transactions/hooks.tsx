@@ -1,4 +1,4 @@
-import { TransactionResponse } from '@ethersproject/providers'
+// import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
@@ -11,6 +11,10 @@ import { TransactionDetails } from './reducer'
 import config from '../../config'
 
 import {useIsGnosisSafeWallet} from '../wallet/hooks'
+
+interface TransactionResponse {
+  hash: string
+}
 
 // 可以接受ether库事务响应并将其添加到事务列表的助手
 export function useTransactionAdder(): (

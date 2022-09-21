@@ -14,8 +14,10 @@ import {useTerraCrossBridgeCallback} from '../../hooks/useBridgeCallback'
 import { useNebBridgeCallback, useCurrentWNASBalance } from '../../nonevm/nas'
 import { useNearSendTxns } from '../../nonevm/near'
 import { useXlmCrossChain } from '../../nonevm/stellar'
-import {useTrxCrossChain, useTrxAllowance} from '../../nonevm/trx'
+import {useTrxCrossChain} from '../../nonevm/trx'
 import {useAdaCrossChain} from '../../nonevm/cardano'
+import {useNonevmAllowances} from '../../nonevm/allowances'
+
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
@@ -62,7 +64,7 @@ import {
   useDestChainid,
   useDestCurrency
 } from './hooks'
-import useInterval from '../../hooks/useInterval'
+// import useInterval from '../../hooks/useInterval'
 
 // let intervalFN:any = ''
 
@@ -110,6 +112,10 @@ export default function CrossChain({
     return false
   }, [selectDestCurrency])
 
+  const isApprove = useMemo(() => {
+    return destConfig.isApprove
+  }, [destConfig])
+
   const anyToken = useMemo(() => {
     if (destConfig?.fromanytoken) {
       return destConfig.fromanytoken
@@ -148,38 +154,24 @@ export default function CrossChain({
     })
   }
 
-  const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, destConfig?.spender, chainId, account)
-  const [trxAllowance, setTrxAllowances] = useState<any>()
-  // useEffect(() => {
-  //   console.log(trxAllowance)
-  // }, [trxAllowance])
-  const getTrxAllowanceResult = useCallback(() => {
-    getTrxAllowance().then(res => {
-      // console.log(res)
-      // setAllowance(res)
-      setTrxAllowances(res)
-      // dispatch(trxApproveList({token: selectCurrency?.address, result: res}))
-    })
-  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
-  useEffect(() => {
-    getTrxAllowanceResult()
-  }, [selectCurrency, account, getTrxAllowance, destConfig, chainId])
-  useInterval(getTrxAllowanceResult, 1000 * 5)
+  const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, destConfig?.spender, chainId, account, inputBridgeValue)
 
-  const isApprove = useMemo(() => {
+  const approveState = useMemo(() => {
     // console.log(trxAllowance)
-    if (inputBridgeValue) {
-      if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
-        if (trxAllowance && Number(inputBridgeValue) > Number(trxAllowance)) {
-        // if (trxAllowance && Number(inputBridgeValue) < Number(trxAllowance)) {
+    if (inputBridgeValue && isApprove) {
+      if ((allowance || allowance === 0) && Number(inputBridgeValue) > Number(allowance)) {
+      // if (trxAllowance && Number(inputBridgeValue) < Number(trxAllowance)) {
+        if (loading) {
+          return ApprovalState.PENDING
+        } else {
           return ApprovalState.NOT_APPROVED
         }
-        return ApprovalState.UNKNOWN
       }
+      return ApprovalState.UNKNOWN
     }
     return ApprovalState.UNKNOWN
     // return ApprovalState.NOT_APPROVED
-  }, [chainId, trxAllowance, inputBridgeValue])
+  }, [chainId, allowance, inputBridgeValue, isApprove, loading])
 
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
@@ -630,14 +622,15 @@ export default function CrossChain({
         ) : (
           <>
           {
-            isApprove === ApprovalState.NOT_APPROVED ? (
+            approveState === ApprovalState.NOT_APPROVED ? (
               <>
                 <BottomGrouping>
 
                   <ButtonConfirmed
                     onClick={() => {
                       onDelay()
-                      setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender}).then(() => {
+                      // setTrxAllowance({token: selectCurrency?.address, spender: destConfig?.spender}).then(() => {
+                      setNonevmAllowance().then(() => {
                         setDelayAction(false)
                       })
                     }}

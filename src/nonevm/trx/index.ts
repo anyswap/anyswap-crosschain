@@ -171,37 +171,44 @@ export function useTrxAllowance(
   // const dispatch = useDispatch<AppDispatch>()
   // const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
   // const TRXAccount = useTrxAddress()
-  const addTransaction = useTransactionAdder()
+  // const addTransaction = useTransactionAdder()
   // const [allowance, setAllowance] = useState<any>()
 
-  const setTrxAllowance = useCallback(({token, spender}) => {
-    return new Promise(async(resolve) => {
+  const setTrxAllowance = useCallback(({token, spender}): Promise<any> => {
+    return new Promise(async(resolve, reject) => {
       const useAccount = account
+      // console.log(token)
+      // console.log(spender)
+      // console.log(useAccount)
+      // console.log(chainId)
       if (!token || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
       else {
         const tokenID = fromHexAddress(token)
+        const spenderID = fromHexAddress(spender)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
           try {
+            // console.log(tokenID)
             const instance:any = await window?.tronWeb?.contract(ERC20_ABI, tokenID)
-            const result  = await instance.approve(spender, MaxUint256.toString()).send()
-            // const result  = await instance.approve(spender, 0).send()
+            const result  = await instance.approve(spenderID, MaxUint256.toString()).send()
+            // const result  = await instance.approve(spenderID, 0).send()
             // console.log(result)
             // console.log(MaxUint256)
             const txObj:any = {hash: result}
-            addTransaction(txObj, {
-              summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
-              approval: { tokenAddress: token.address, spender: spender }
-            })
+            // addTransaction(txObj, {
+            //   summary: selectCurrency?.symbol + ' approved, you can continue the cross chain transaction',
+            //   approval: { tokenAddress: token.address, spender: spender }
+            // })
             resolve(txObj)
           } catch (error) {
-            resolve('')
+            console.log(error)
+            reject(error)
           }
         } else {
           resolve('')
         }
       }
     })
-  }, [selectCurrency?.address, spender, account, chainId])
+  }, [spender, account, chainId])
 
   const getTrxAllowance = useCallback(() => {
     return new Promise(async(resolve) => {

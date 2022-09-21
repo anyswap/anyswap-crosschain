@@ -45,6 +45,7 @@ import {useDestChainid, useDestCurrency, useInitSelectCurrency, outputValue} fro
 import { BigAmount } from '../../utils/formatBignumber'
 
 import {useSwapPoolCallback} from '../../nonevm/pools'
+import {useNonevmAllowances} from '../../nonevm/allowances'
 
 const BackBox = styled.div`
   cursor:pointer;
@@ -103,6 +104,16 @@ export default function SwapNative() {
     }
     return false
   }, [selectDestCurrency])
+
+  const isApprove = useMemo(() => {
+    // return destConfig.isApprove
+    // return true
+    if (swapType === 'deposit') {
+      return true
+    }
+    return false
+  }, [swapType])
+
   useEffect(() => {
     // console.log(selectDestCurrency)
     if (selectDestCurrency) {
@@ -144,6 +155,34 @@ export default function SwapNative() {
 
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectAnyToken?.address)
+  const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, selectAnyToken?.address, chainId, account, inputBridgeValue)
+
+  const approveState = useMemo(() => {
+    // console.log(trxAllowance)
+    if (inputBridgeValue && isApprove) {
+      if (isNaN(chainId)) {
+        // if ((allowance || allowance === 0) && Number(inputBridgeValue) < Number(allowance)) {
+        if ((allowance || allowance === 0) && Number(inputBridgeValue) > Number(allowance)) {
+          if (loading) {
+            return ApprovalState.PENDING
+          } else {
+            return ApprovalState.NOT_APPROVED
+          }
+        }
+        return ApprovalState.UNKNOWN
+      } else {
+        return approval
+      }
+    }
+    return ApprovalState.UNKNOWN
+    // return ApprovalState.NOT_APPROVED
+  }, [chainId, allowance, inputBridgeValue, approval, isApprove, loading])
+
+  // useEffect(() => {
+  //   console.log('ApprovalState', ApprovalState)
+  //   console.log('approveState', approveState)
+  //   console.log('selectAnyToken', selectAnyToken)
+  // }, [approveState, selectAnyToken])
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     useRouterToken,
@@ -663,20 +702,28 @@ export default function SwapNative() {
               {!account ? (
                   <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
                 ) : (
-                  inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)? (
+                  inputBridgeValue && (approveState === ApprovalState.NOT_APPROVED || approveState === ApprovalState.PENDING)? (
                     <ButtonConfirmed
                       onClick={() => {
                         onDelay()
-                        approveCallback().then(() => {
-                          onClear(1)
-                        })
+                        if (isNaN(chainId)) {
+                          console.log('setNonevmAllowance')
+                          setNonevmAllowance().then(() => {
+                            onClear(1)
+                          })
+                        } else {
+                          console.log('approveCallback')
+                          approveCallback().then(() => {
+                            onClear(1)
+                          })
+                        }
                       }}
-                      disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
+                      disabled={approveState !== ApprovalState.NOT_APPROVED || approvalSubmitted || delayAction}
                       width="48%"
-                      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+                      altDisabledStyle={approveState === ApprovalState.PENDING} // show solid button while waiting
                       // confirmed={approval === ApprovalState.APPROVED}
                     >
-                      {approval === ApprovalState.PENDING ? (
+                      {approveState === ApprovalState.PENDING ? (
                         <AutoRow gap="6px" justify="center">
                           {t('Approving')} <Loader stroke="white" />
                         </AutoRow>
