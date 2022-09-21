@@ -142,7 +142,7 @@ export default function SelectCurrencyInputPanel({
   // const selectedETHBalance = useETHBalances(useAccount ? [useAccount] : [])?.[useAccount ?? '']
   const selectedNativeBalance = useBaseBalances(useAccount)
   const selectTokenBalance = useTokensBalance(currency?.address, currency?.decimals, chainId)
-  // console.log(currency)
+  // console.log(currency?.address)
   // console.log(selectTokenBalance)
   const [useBalance, setUseBalance] = useState<any>()
 

@@ -127,8 +127,20 @@ export function useTokenBalancesWithLoadingIndicator1(
   //   [tokens]
   // )
 
-  const validatedTokenAddresses = isAddress(token) ? [token] : [undefined]
-  const validatedAddresses = isAddress(address) ? [address] : [undefined]
+  // const validatedTokenAddresses = isAddress(token) ? [token] : []
+  // const validatedAddresses = isAddress(address) ? [address] : [undefined]
+  const validatedTokenAddresses = useMemo(() => {
+    if (isAddress(token)) {
+      return [token]
+    } 
+    return [undefined]
+  }, [token])
+  const validatedAddresses = useMemo(() => {
+    if (isAddress(address)) {
+      return [address]
+    } 
+    return [undefined]
+  }, [address])
   // console.log(chainId)
   // console.log(validatedTokenAddresses)
   // console.log(validatedAddresses)
@@ -142,10 +154,13 @@ export function useTokenBalancesWithLoadingIndicator1(
   return useMemo(
     () => {
       // console.log(balances)
-      if (address && token && anyLoading) {
+      if (address && token && !anyLoading) {
         const value = balances?.[0]?.result?.[0]
         const amount = value ? value.toString() : undefined
-        return BigAmount.format(decimals, amount)
+        // console.log(amount)
+        // console.log(decimals)
+        // console.log(balances)
+        return amount ? BigAmount.format(decimals, amount) : undefined
       } else {
         return undefined
       }
@@ -153,6 +168,62 @@ export function useTokenBalancesWithLoadingIndicator1(
     [address, token, balances, anyLoading]
   )
 }
+
+export function useOneTokenBalance(token:any): any {
+  const { chainId, account } = useActiveReact()
+  const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
+  // console.log(lists)
+  return useMemo(() => {
+    if (chainId && account && lists && token) {
+      // console.log(lists)
+      // console.log(account)
+      // console.log(chainId)
+      // console.log(token)
+      if (lists?.[account]?.[chainId]?.[token]) {
+        const blItem = lists[account][chainId][token]
+        if (token === 'NATIVE') {
+          // console.log(blItem)
+          return {
+            ...blItem,
+            balances: blItem.balancestr === '0' ? BigAmount.format(18, '0') : tryParseAmount6(blItem.balancestr)
+          }
+        }
+        
+        const tokens = new Token(chainId,token,blItem.dec)
+        const amount = blItem.balancestr ? JSBI.BigInt(blItem.balancestr.toString()) : undefined
+        return {
+          ...blItem,
+          balances1: tryParseAmount6(blItem.balancestr),
+          balances2: tryParseAmount5(blItem.balancestr, blItem.dec),
+          balances: tokens && amount ? new TokenAmount(tokens, amount) : ''
+        }
+      }
+      return {}
+    }
+    return {}
+  }, [lists, chainId, account, token])
+}
+
+export function useCurrencyBalance1(account?: string | null, token?: string, decimals?: any, chainId?:any): CurrencyAmount | undefined {
+  // const balances = useTokenBalanceList()
+  // console.log(currency)
+  const balanceWallet  = useTokenBalancesWithLoadingIndicator1(account, token, decimals, chainId)
+  const blItem = useOneTokenBalance(token ? token?.toLowerCase() : undefined)
+  return useMemo(() => {
+    // console.log(blItem)
+    // console.log(balanceWallet)
+    if (balanceWallet) {
+      return balanceWallet
+    } else {
+      if (blItem?.balances) {
+        // return BigAmount.format(decimals, blItem.balances)
+        return blItem.balances
+      }
+      return undefined
+    }
+  }, [account, token, chainId, balanceWallet, blItem?.balances, decimals])
+}
+
 
 export function useTokenTotalSupplyWithLoadingIndicator(
   tokens?: (Token | undefined)[],
@@ -258,36 +329,7 @@ export function useTokenBalanceList(): any {
   }, [lists, chainId, account])
 }
 
-export function useOneTokenBalance(token:any): any {
-  const { chainId, account } = useActiveReact()
-  const lists:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalanceList)
-  // console.log(lists)
-  return useMemo(() => {
-    if (chainId && account && lists && token) {
-      if (lists[account] && lists[account][chainId] && lists[account][chainId][token]) {
-        const blItem = lists[account][chainId][token]
-        if (token === 'NATIVE') {
-          // console.log(blItem)
-          return {
-            ...blItem,
-            balances: blItem.balancestr === '0' ? BigAmount.format(18, '0') : tryParseAmount6(blItem.balancestr)
-          }
-        }
-        
-        const tokens = new Token(chainId,token,blItem.dec)
-        const amount = blItem.balancestr ? JSBI.BigInt(blItem.balancestr.toString()) : undefined
-        return {
-          ...blItem,
-          balances1: tryParseAmount6(blItem.balancestr),
-          balances2: tryParseAmount5(blItem.balancestr, blItem.dec),
-          balances: tokens && amount ? new TokenAmount(tokens, amount) : ''
-        }
-      }
-      return {}
-    }
-    return {}
-  }, [lists, chainId, account, token])
-}
+
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[],
   chainId?: any

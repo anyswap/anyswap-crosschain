@@ -11,7 +11,7 @@ import { useTrxBalance } from '../nonevm/trx'
 import {useXlmBalance} from '../nonevm/stellar'
 import {useAdaBalance} from '../nonevm/cardano'
 import {useFlowBalance} from '../nonevm/flow'
-import {useTokenBalancesWithLoadingIndicator1} from '../state/wallet/hooks'
+import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -36,7 +36,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
 
   const savedBalance = useRef<any>()
 
-  const evmBalance = useTokenBalancesWithLoadingIndicator1(account, token, dec, selectChainId)
+  const evmBalance = useCurrencyBalance1(account, token, dec, selectChainId)
 
   const fetchBalance = useCallback(() => {
     // console.log([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId))
