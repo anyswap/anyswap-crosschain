@@ -245,7 +245,8 @@ export default function PoolLists ({
       if (isNaN(c)) {
         // console.log(c)
         // console.log(account)
-        arr.push(getPoolsData(c, destList[c], account))
+        // console.log(destList[c])
+        arr.push(getPoolsData(c, destList[c], undefined))
       } else {
         arr.push(getGroupTotalsupply(destList[c], c, evmAccount))
       }

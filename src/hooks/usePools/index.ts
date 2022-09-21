@@ -38,10 +38,12 @@ export function usePoolDatas () {
           // console.log(arr)
           resolve(res)
         })
-      } else {
+      } else if (!isNaN(chainId)) {
         getEvmPoolsDatas(chainId, list, account).then(res => {
           resolve(res)
         })
+      } else {
+        resolve('')
       }
     })
   }, [getNearPoolDatas, getEvmPoolsDatas, getTrxPoolDatas])
