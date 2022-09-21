@@ -145,9 +145,9 @@ export default function TxnsProgress({
           stepNum = 4 // Confirmed
         } else if ([7, 8].includes(status)) {
           stepNum = 5 // Routing
-        } else if ([9].includes(status)) {
+        } else if ([9].includes(status) && tx?.info?.confirmations <= 1) {
           stepNum = 6 // Routed
-        } else if (tx?.info?.confirmations > 1 || [10].includes(status)) {
+        } else if (([9].includes(status) && tx?.info?.confirmations > 1) || [10].includes(status)) {
           stepNum = 7 // Success
         } else if ([1, 2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
           stepNum = -2

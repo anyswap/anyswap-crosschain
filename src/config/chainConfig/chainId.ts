@@ -91,4 +91,5 @@ export enum ChainId {
   ADA = 'ADA',
   ADA_TEST = 'ADA_TEST',
   CKB = '71402',
+  ETHW = '10001',
 }

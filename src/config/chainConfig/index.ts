@@ -72,6 +72,7 @@ import trx from './trx'
 import bobabeam from './bobabeam'
 import cardano from './cardano'
 import ckb from './ckb'
+import ethw from './ethw'
 
 import { ChainId } from './chainId'
 
@@ -81,6 +82,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...ethw,
   ...ckb,
   ...cardano,
   ...bobabeam,
@@ -201,12 +203,12 @@ const allChainList = [
   ChainId.GOERLI,
   ChainId.GT,
   ChainId.TOMO,
-  ChainId.HOO,
+  // ChainId.HOO,
   ChainId.TT,
   ChainId.KAVA,
   ChainId.KLAY,
   ChainId.KAI,
-  ChainId.CUBE,
+  // ChainId.CUBE,
   ChainId.ONT,
   ChainId.MINTME,
   ChainId.BCH,
@@ -215,6 +217,7 @@ const allChainList = [
   ChainId.RPG,
   ChainId.BOBABEAM,
   ChainId.CKB,
+  // ChainId.ETHW,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
