@@ -362,7 +362,7 @@ export default function PoolLists ({
               //   console.log(destTokenItem.symbol + '-local', poolLocalValue)
               // }
               const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,destTokenItem.decimals) : ''
-              const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+              const bl = poolLocalValue?.balance ? fromWei(poolLocalValue.balance,destTokenItem.decimals) : ''
               objExtend.totalV += ts ? ts : 0
               destTokenItem.ts = ts
               destTokenItem.bl = bl
@@ -375,7 +375,7 @@ export default function PoolLists ({
                 const poolValue = poolInfo?.[obj.chainId]?.[curAnyToken] ? poolInfo[obj.chainId][curAnyToken] : {}
                 const poolLocalValue = poolData?.[obj.chainId]?.[curAnyToken] ? poolData?.[obj.chainId]?.[curAnyToken] : {}
                 const ts = poolValue?.liquidity ? fromWei(poolValue.liquidity,objExtend.decimals) : ''
-                const bl = poolLocalValue?.balance ? poolLocalValue.balance : ''
+                const bl = poolLocalValue?.balance ? fromWei(poolLocalValue.balance,objExtend.decimals) : ''
                 objExtend.totalV += ts ? ts : 0
                 objExtend.curPool.push({
                   ts,

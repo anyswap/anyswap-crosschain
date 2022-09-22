@@ -31,7 +31,7 @@ import config from '../../config'
 // const tronweb = window.tronWeb
 
 import TronWeb from 'tronweb'
-import { BigAmount } from "../../utils/formatBignumber"
+// import { BigAmount } from "../../utils/formatBignumber"
 // console.log(TronWeb)
 export enum WrapType {
   NOT_APPLICABLE,
@@ -565,9 +565,10 @@ export function useTrxPoolDatas () {
         for (let i = 0, len = arr.length; i < len; i++) {
           const k = labelArr[i].key
           const l = labelArr[i].label
-          const dec = labelArr[i].dec
+          // const dec = labelArr[i].dec
           if (!list[k]) list[k] = {}
-          list[k][l] = res[i] ? BigAmount.format(dec, res[i].toString()).toExact() : ''
+          // list[k][l] = res[i] ? BigAmount.format(dec, res[i].toString()).toExact() : ''
+          list[k][l] = res[i].toString()
         }
         // console.log(list)
         resolve(list)

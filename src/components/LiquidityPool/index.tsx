@@ -135,7 +135,7 @@ export default function LiquidityPool ({
                 </span>
                 <span className='cont'>{destChain.ts ? thousandBit(destChain.ts, 2) + ' ' + selectCurrency?.symbol : '0.00'}</span>
               </div>
-              {isViewAll ? '' : (
+              {isViewAll || isNaN(destChain.chain) ? '' : (
                 <div className='item' title={'Please switch network to ' + config.getCurChainInfo(destChain.chain).name + '.'}>
                   <span className="label">
                   {t('yourPoolShare')}:

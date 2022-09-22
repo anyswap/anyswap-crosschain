@@ -136,7 +136,8 @@ function getBlandTs (tokenList:any, chainId?:any, account?:string | null | undef
             if (res[i]) {
               const bl = ERC20_INTERFACE?.decodeFunctionResult('balanceOf', res[i])?.toString()
               if (!list[arr[i].token]) list[arr[i].token] = {}
-              list[arr[i].token][arr[i].key] = fromWei(bl, arr[i].dec)
+              // list[arr[i].token][arr[i].key] = fromWei(bl, arr[i].dec)
+              list[arr[i].token][arr[i].key] = bl
             }
           }
         } catch (error) {

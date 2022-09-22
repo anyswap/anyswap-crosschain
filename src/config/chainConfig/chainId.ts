@@ -94,4 +94,6 @@ export enum ChainId {
   FLOW = 'FLOW',
   FLOW_TEST = 'FLOW_TEST',
   ETHW = '10001',
+  SOL = 'SOL',
+  SOL_TEST = 'SOL_TEST',
 }
