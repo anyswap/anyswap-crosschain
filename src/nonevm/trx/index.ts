@@ -31,6 +31,7 @@ import config from '../../config'
 // const tronweb = window.tronWeb
 
 import TronWeb from 'tronweb'
+import { BigAmount } from "../../utils/formatBignumber"
 // console.log(TronWeb)
 export enum WrapType {
   NOT_APPLICABLE,
@@ -544,22 +545,26 @@ export function useTrxPoolDatas () {
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
             labelArr.push({
               key: anytokenSource,
-              label: 'balanceOf'
+              label: 'balanceOf',
+              dec: item.dec
             })
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "totalSupply()", {}, {}, useAccount))
             arr.push(window?.tronWeb?.contract(ABI_TO_ADDRESS, underlyingToken).totalSupply().call())
             labelArr.push({
               key: anytokenSource,
-              label: 'totalSupply'
+              label: 'totalSupply',
+              dec: item.dec
             })
           }
-          
+          // console.log(item)
+          // console.log(chainId)
           if (anytoken && isAddress(item.account, chainId)) {
             // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(anytoken, "balanceOf(address)", {}, {type:'address',value: item.account}, useAccount))
             arr.push(window?.tronWeb?.contract(ABI_TO_ADDRESS, anytoken).balanceOf(item.account).call())
             labelArr.push({
               key: anytokenSource,
-              label: 'balance'
+              label: 'balance',
+              dec: item.dec
             })
           }
         }
@@ -571,8 +576,9 @@ export function useTrxPoolDatas () {
         for (let i = 0, len = arr.length; i < len; i++) {
           const k = labelArr[i].key
           const l = labelArr[i].label
+          const dec = labelArr[i].dec
           if (!list[k]) list[k] = {}
-          list[k][l] = res[i].toString()
+          list[k][l] = res[i] ? BigAmount.format(dec, res[i].toString()).toExact() : ''
         }
         // console.log(list)
         resolve(list)

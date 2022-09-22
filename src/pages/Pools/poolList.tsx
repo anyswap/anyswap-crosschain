@@ -51,6 +51,7 @@ import {
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+import { isAddress } from '../../utils/isAddress'
 
 const BalanceTxt = styled.div`
 .p1 {
@@ -246,7 +247,7 @@ export default function PoolLists ({
         // console.log(c)
         // console.log(account)
         // console.log(destList[c])
-        arr.push(getPoolsData(c, destList[c], undefined))
+        arr.push(getPoolsData(c, destList[c], isAddress(account, c) ? account : undefined))
       } else {
         arr.push(getGroupTotalsupply(destList[c], c, evmAccount))
       }
