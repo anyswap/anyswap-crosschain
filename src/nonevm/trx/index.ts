@@ -400,6 +400,7 @@ export function useTrxSwapPoolCallback(
   swapType: string | undefined,
   selectChain: any,
   receiveAddress: any,
+  destConfig: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
@@ -441,27 +442,68 @@ export function useTrxSwapPoolCallback(
                 const formatRouterToken = fromHexAddress(routerToken)
                 let txResult:any
                 if (inputCurrency?.tokenType === 'NATIVE') {
-                  if (chainId.toString() === selectChain.toString()) {
-                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
-                    txResult = swapType === 'deposit' ? await instance.depositNative(...[inputToken, account], {value: inputAmount}).send() : await instance.withdrawNative(inputToken,inputAmount,account).send()
-                  } else {
+                  if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
                     const parameArr = [formatInputToken, receiveAddress, selectChain]
                     txResult = await instance.anySwapOutNative(...parameArr, {value: inputAmount}).send()
+                  } else {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
+                    txResult = swapType === 'deposit' ? await instance.depositNative(...[inputToken, account], {value: inputAmount}).send() : await instance.withdrawNative(inputToken,inputAmount,account).send()
                   }
                 } else {
-                  if (chainId.toString() === selectChain.toString()) {
-                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
-                    txResult = swapType === 'deposit' ? await instance.deposit(inputAmount).send() : await instance.withdraw(inputAmount).send()
-                  } else {
+                  if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
                     const parameArr = [formatInputToken, receiveAddress, inputAmount, selectChain]
                     txResult = await instance.anySwapOut(...parameArr).send()
+                  } else {
+                    const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
+                    txResult = swapType === 'deposit' ? await instance.deposit(inputAmount).send() : await instance.withdraw(inputAmount).send()
                   }
                 }
                 const txReceipt:any = {hash: txResult}
                 console.log(txReceipt)
-                addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
+                  addTransaction(txReceipt, {
+                    summary: `Cross bridge ${typedValue} ${inputCurrency?.symbol}`,
+                    value: typedValue,
+                    toChainId: selectChain,
+                    toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+                    symbol: inputCurrency?.symbol,
+                    version: destConfig.type,
+                    routerToken: routerToken,
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl,
+                    isLiquidity: destConfig?.isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
+                  })
+                  const data:any = {
+                    hash: txReceipt.hash,
+                    chainId: chainId,
+                    selectChain: selectChain,
+                    account: account,
+                    value: inputAmount,
+                    formatvalue: typedValue,
+                    to: receiveAddress,
+                    symbol: inputCurrency?.symbol,
+                    version: destConfig.type,
+                    pairid: inputCurrency?.symbol,
+                    routerToken: routerToken
+                  }
+                  recordsTxns(data)
+                } else {
+                  addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
+                }
               } else {
                 console.log('Could not swapout')
               }
@@ -473,7 +515,7 @@ export function useTrxSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig])
 }
 
 

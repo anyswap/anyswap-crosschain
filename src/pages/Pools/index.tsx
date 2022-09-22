@@ -217,7 +217,8 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType,
     selectChain,
-    recipient
+    recipient,
+    destConfig,
   )
   
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
