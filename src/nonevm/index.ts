@@ -3,10 +3,12 @@ import trx from './trx/reducer'
 import ada from './cardano/reducer'
 import flow from './flow/reducer'
 import nonevm from './hooks/reducer'
+import temp from './temp/reducer'
 export default {
   xlm,
   trx,
   ada,
   flow,
-  nonevm
+  nonevm,
+  temp
 }

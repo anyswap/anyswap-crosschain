@@ -39,15 +39,16 @@ export function useNonevmAllowances (
   const addTransaction = useTransactionAdder()
   const {setApprovalState} = useApproveState()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
-  const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(selectCurrency, spender, chainId, account)
-  // const allowanceList = useRef<any>()
-  const allowanceList:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.approveList)
-
-  const [loading, setLoading] = useState<boolean>(false)
 
   const token = useMemo(() => {
     return selectCurrency?.address
   }, [selectCurrency])
+
+  const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(token, spender, chainId, account)
+  // const allowanceList = useRef<any>()
+  const allowanceList:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.approveList)
+
+  const [loading, setLoading] = useState<boolean>(false)
 
   const allowanceResult = useMemo(() => {
     console.log(allowanceList)
@@ -62,7 +63,7 @@ export function useNonevmAllowances (
     let approveResult:ApproveResult | undefined | null
     try {
       if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
-        approveResult = await setTrxAllowance({token, spender})
+        approveResult = await setTrxAllowance()
       }
       if (approveResult) {
         setLoading(true)

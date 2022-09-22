@@ -163,25 +163,14 @@ export function useTrxBalance () {
 }
 
 export function useTrxAllowance(
-  selectCurrency:any,
+  token:any,
   spender: any,
   chainId: any,
   account: any,
 ) {
-  // const {chainId} = useActiveReact()
-  // const dispatch = useDispatch<AppDispatch>()
-  // const tal:any = useSelector<AppState, AppState['trx']>(state => state.trx.trxApproveList)
-  // const TRXAccount = useTrxAddress()
-  // const addTransaction = useTransactionAdder()
-  // const [allowance, setAllowance] = useState<any>()
-
-  const setTrxAllowance = useCallback(({token, spender}): Promise<any> => {
+  const setTrxAllowance = useCallback((): Promise<any> => {
     return new Promise(async(resolve, reject) => {
       const useAccount = account
-      // console.log(token)
-      // console.log(spender)
-      // console.log(useAccount)
-      // console.log(chainId)
       if (!token || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
       else {
         const tokenID = fromHexAddress(token)
@@ -209,15 +198,15 @@ export function useTrxAllowance(
         }
       }
     })
-  }, [spender, account, chainId])
+  }, [token, spender, account, chainId])
 
   const getTrxAllowance = useCallback(() => {
     return new Promise(async(resolve) => {
       const useAccount = account
-      if (!selectCurrency?.address || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
+      if (!token || !spender || !useAccount || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) resolve('')
       else {
         // const parameter1 = [{type:'address',value: useAccount}, {type:'address',value: spender}]
-        const tokenID = formatTRXAddress(selectCurrency?.address)
+        const tokenID = formatTRXAddress(token)
         // console.log('tokenID', tokenID)
         // console.log('parameter1', parameter1)
         if (window.tronWeb && window.tronWeb.defaultAddress.base58 && useAccount && tokenID) {
@@ -230,7 +219,7 @@ export function useTrxAllowance(
         }
       }
     })
-  }, [account, chainId, selectCurrency, spender])
+  }, [account, chainId, token, spender])
 
   return {
     setTrxAllowance,
