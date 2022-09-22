@@ -9,6 +9,7 @@ import {connectXlmWallet} from '../nonevm/stellar'
 import {useTrxAddress} from '../nonevm/trx'
 import {useAdaAddress} from '../nonevm/cardano'
 import {useFlowAddress} from '../nonevm/flow'
+import {useSolAddress} from '../nonevm/solana'
 
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -24,6 +25,7 @@ export function useActiveReact () {
   const {xlmAddress} = connectXlmWallet()
   const {adaAddress} = useAdaAddress()
   const {flowAddress} = useFlowAddress()
+  const {solAddress} = useSolAddress()
   // console.log(xlmAddress)
   // const useChain = useMemo(() => {
   //   if (chainId) {
@@ -60,6 +62,9 @@ export function useActiveReact () {
     } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
       // console.log(adaAddress)
       useAccount = flowAddress
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectNetworkInfo?.label)) {
+      // console.log(adaAddress)
+      useAccount = solAddress
     }
     return {
       account: useAccount,
@@ -67,5 +72,5 @@ export function useActiveReact () {
       evmAccount: account,
       evmChainId: useChainId === chainId ? chainId : '',
     }
-  }, [account, connectedWallet, selectNetworkInfo?.label, chainId, nebAddress, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress])
+  }, [account, connectedWallet, selectNetworkInfo?.label, chainId, nebAddress, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress, solAddress])
 }

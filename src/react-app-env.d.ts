@@ -105,6 +105,7 @@ interface Window {
   cardano: any
   typhon: any
   typhoncip30: any
+  solana: any
 }
 
 declare module '@onflow/fcl';

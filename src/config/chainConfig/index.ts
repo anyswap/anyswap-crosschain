@@ -74,6 +74,7 @@ import cardano from './cardano'
 import ckb from './ckb'
 import flow from './flow'
 import ethw from './ethw'
+import sol from './sol'
 
 import { ChainId } from './chainId'
 
@@ -83,6 +84,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...sol,
   ...flow,
   ...ethw,
   ...ckb,
@@ -349,6 +351,7 @@ const useChain:any = {
     ChainId.IOTA_TEST,
     ChainId.ADA_TEST,
     ChainId.FLOW_TEST,
+    ChainId.SOL_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
