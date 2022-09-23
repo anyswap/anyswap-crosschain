@@ -51,6 +51,7 @@ import {
 
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
+import {spportChainArr} from '../../config/chainConfig'
 
 const BalanceTxt = styled.div`
 .p1 {
@@ -283,7 +284,8 @@ export default function PoolLists ({
         if (!destList[tObj.chainId]) destList[tObj.chainId] = []
         for (const chainID in tObj.destChains) {
           if (chainID?.toString() === tObj.chainId?.toString()) continue
-          if (!config.chainInfo[chainID]) continue
+          // if (!config.chainInfo[chainID]) continue
+          if (!spportChainArr.includes(chainID)) continue
           if (!destList[chainID]) destList[chainID] = []
           const destTokenList = tObj.destChains[chainID]
           for (const destTokenKey in destTokenList) {
@@ -347,7 +349,8 @@ export default function PoolLists ({
           const curPoolArr:any = []
           for (const destChainId in obj.destChains) {
             const destTokenList:any = {...obj.destChains[destChainId]}
-            if (!config.chainInfo[destChainId]) continue
+            // if (!config.chainInfo[destChainId]) continue
+            if (!spportChainArr.includes(destChainId)) continue
             for (const destTokenKey in destTokenList) {
               const destTokenItem:any = {...destTokenList[destTokenKey], ts: '', bl: ''}
               // const destToken = destTokenItem.address
