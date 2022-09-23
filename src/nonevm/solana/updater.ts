@@ -18,8 +18,11 @@ export default function Updater(): null {
   const {getSolBalance, getSolTokenBalance} = useSolBalance()
 
   const getBalance = useCallback(() => {
+    // const params = {chainId, account}
+    // const params = {chainId, account: '4fZikRtyoW2qZ2f5EVRKYw3qCkPwhrxCmCgixQ4HXVU6'}
+    const params = {chainId: 'SOL', account: '4fZikRtyoW2qZ2f5EVRKYw3qCkPwhrxCmCgixQ4HXVU6'}
     Promise.all([
-      getSolBalance({chainId, account}), getSolTokenBalance({chainId, account})
+      getSolBalance(params), getSolTokenBalance(params)
     ]).then((res) => {
       console.log(res)
     })

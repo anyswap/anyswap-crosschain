@@ -75,6 +75,7 @@ import ckb from './ckb'
 import flow from './flow'
 import ethw from './ethw'
 import sol from './sol'
+import xana from './xana'
 
 import { ChainId } from './chainId'
 
@@ -84,6 +85,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...xana,
   ...sol,
   ...flow,
   ...ethw,
@@ -237,6 +239,7 @@ const testChainList = [
   ChainId.INTAIN_TEST,
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
+  ChainId.XANA_TEST
 ]
 
 const useChain:any = {

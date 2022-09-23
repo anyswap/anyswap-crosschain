@@ -96,4 +96,6 @@ export enum ChainId {
   ETHW = '10001',
   SOL = 'SOL',
   SOL_TEST = 'SOL_TEST',
+  XANA = '',
+  XANA_TEST = '76798',
 }
