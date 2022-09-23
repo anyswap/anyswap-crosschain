@@ -1,27 +1,38 @@
 
 import { useCallback, useEffect } from 'react'
 import { useActiveReact } from '../../hooks/useActiveReact'
+import useInterval from '../../hooks/useInterval'
 
 import {
   useLoginSol,
+  useSolBalance
   // getSolanaInfo
-  getSolTxnsStatus
+  // getSolTxnsStatus
 } from './index'
 
 export default function Updater(): null {
-  const { chainId } = useActiveReact()
+  const { chainId, account } = useActiveReact()
   
   const {loginSol} = useLoginSol()
 
-  const getTempAddress = useCallback(() => {
-    // getSolanaInfo(chainId, 'requestAirdrop', ["C5WYGHYJ3oAeHPtAZJMLnhFN8eVDjSZqJGKtJNSVvo8K", 100000000000])
-    getSolTxnsStatus('37wB4pxA9F5bmhxnnCX7zENDS1ugFoSQe77i3chgESCUo9zpv8bqL4GnFaKqZ4tyZaGUwW8dLiEz8RBqaQcKxgf1', chainId)
-    getSolTxnsStatus('37wB4pxA9F5bmhxnnCX7zENDS1ugFoSQe77i3chgESCUo9zpv8bqL4GnFaKqZ4tyZaGUwW8dLiEz8RBqaQcKxgfN', chainId)
-    loginSol()
-  }, [chainId])
+  const {getSolBalance, getSolTokenBalance} = useSolBalance()
+
+  const getBalance = useCallback(() => {
+    Promise.all([
+      getSolBalance({chainId, account}), getSolTokenBalance({chainId, account})
+    ]).then((res) => {
+      console.log(res)
+    })
+  }, [getSolBalance, getSolTokenBalance, chainId, account])
 
   useEffect(() => {
-    getTempAddress()
+    getBalance()
+  }, [getSolBalance, getSolTokenBalance, chainId, account])
+
+  useInterval(getBalance, 1000 * 10)
+
+  useEffect(() => {
+    loginSol()
   }, [chainId])
 
   return null

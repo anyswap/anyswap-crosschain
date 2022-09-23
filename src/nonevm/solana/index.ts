@@ -76,13 +76,22 @@ export function useSolBalance () {
           console.log(err)
           resolve('')
         })
+      } else {
+        resolve('')
       }
     })
   }, []) 
 
-  const getSolTokenBalance = useCallback(({chainId, account, token}: {chainId: any, account:string|null|undefined, token:string|null|undefined}) => {
+  const getSolTokenBalance = useCallback(({chainId, account}: {chainId: any, account:string|null|undefined}) => {
     return new Promise((resolve) => {
-      if (chainId && account && token) {
+      if (chainId && account) {
+        getSolanaInfo(chainId, 'getTokenAccountBalance', [account]).then((res:any) => {
+          resolve(res)
+        }).catch((err:any) => {
+          console.log(err)
+          resolve('')
+        })
+      } else {
         resolve('')
       }
     })
@@ -142,9 +151,18 @@ export function getSolTxnsStatus (txid:string, chainId:any) {
     }
     if (txid) {
       getSolanaInfo(chainId, 'getTransaction', [txid, "json"]).then((res:any) => {
-        console.log(res)
-
-        resolve(res)
+        // console.log(res)
+        if (res?.result?.meta?.status?.Ok === null) {
+          data.msg = State.Success
+          data.info = res?.result
+        } else if (res?.result?.meta?.status?.Err) {
+          data.msg = State.Failure
+          data.error = 'Txns is failure!'
+        } else {
+          data.msg = State.Null
+          data.error = 'Query is empty!'
+        }
+        resolve(data)
       }).catch((err:any) => {
         console.log(err)
         data.msg = State.Null
