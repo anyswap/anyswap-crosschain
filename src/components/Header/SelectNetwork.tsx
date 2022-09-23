@@ -397,7 +397,7 @@ export function Option ({
           </div>
           <div className='right'>
             {
-              item.nodeRpc ? (
+              item.nodeRpc && !isNaN(curChainId) ? (
                 <StyledMenuIcon id={'chain_list_set_' + curChainId} onClick={e => {
                   const htmlNameNode = document.getElementById('chain_list_name_' + curChainId)
                   const htmlNameNode1 = document.getElementById('chain_list_set_' + curChainId)
