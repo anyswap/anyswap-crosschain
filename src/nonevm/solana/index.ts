@@ -3,8 +3,31 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState, AppDispatch } from '../../state'
 import {solAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
+import config from "../../config"
 
 const solAddressReg = /^[1-9A-Z]{44}$/
+
+let solId = 0
+
+// export function getSolanaInfo(chainId:any, params:any) {
+export function getSolanaInfo(chainId:any, method: string, params: any) {
+  return new Promise((resolve, reject) => {
+    fetch(config.chainInfo[chainId].nodeRpc, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({
+        "jsonrpc": "2.0",
+        "id": solId ++,
+        "method": method,
+        "params": params
+      })
+    }).then(res => res.json()).then(json => {
+      resolve(json)
+    }).catch((err:any) => {
+      reject(err)
+    })
+  })
+}
 
 export function isSolAddress (address:string):boolean | string {
   if (solAddressReg.test(address)) {

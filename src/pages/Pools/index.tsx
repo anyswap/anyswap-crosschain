@@ -96,12 +96,12 @@ export default function SwapNative() {
 
   useEffect(() => {
     // console.log(evmAccount)
-    if (evmAccount) {
+    if (evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
     } else {
       setRecipient('')
     }
-  }, [evmAccount])
+  }, [evmAccount, selectChain])
 
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
@@ -688,7 +688,7 @@ export default function SwapNative() {
             ) : ''
           }
           {
-            swapType !== 'deposit' && isNaN(chainId) && chainId?.toString() !== selectChain?.toString() ? (
+            swapType !== 'deposit' && (isNaN(chainId) || isNaN(selectChain)) && chainId?.toString() !== selectChain?.toString() ? (
               <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
             ) : ''
           }

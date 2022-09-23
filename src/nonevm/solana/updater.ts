@@ -2,7 +2,10 @@
 import { useCallback, useEffect } from 'react'
 import { useActiveReact } from '../../hooks/useActiveReact'
 
-import {useLoginSol} from './index'
+import {
+  useLoginSol,
+  getSolanaInfo
+} from './index'
 
 export default function Updater(): null {
   const { chainId } = useActiveReact()
@@ -10,6 +13,7 @@ export default function Updater(): null {
   const {loginSol} = useLoginSol()
 
   const getTempAddress = useCallback(() => {
+    getSolanaInfo(chainId, 'requestAirdrop', ["C5WYGHYJ3oAeHPtAZJMLnhFN8eVDjSZqJGKtJNSVvo8K", 100000000000])
     loginSol()
   }, [chainId])
 

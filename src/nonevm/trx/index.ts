@@ -395,6 +395,7 @@ export function useTrxSwapPoolCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   // console.log(balance)
   // console.log(inputCurrency)
@@ -491,6 +492,7 @@ export function useTrxSwapPoolCallback(
                     routerToken: routerToken
                   }
                   recordsTxns(data)
+                  onChangeViewDtil(txReceipt?.hash, true)
                 } else {
                   addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}` })
                 }
