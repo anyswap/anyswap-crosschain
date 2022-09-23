@@ -194,8 +194,7 @@ export default function RouterList ({
 
   useEffect(() => {
     const arr:any = []
-    // console.log(useFTMPool)
-    if (routerlist && poolData && feeList) {
+    if (routerlist && feeList) {
 
       for (const k in routerlist) {
         const obj = routerlist[k]

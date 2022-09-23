@@ -45,6 +45,7 @@ export async function initConnect (chainId:any, token:any) {
     } else if (chainId === ChainId.NEAR) {
       connectConfig = {
         networkId: 'mainnet',
+        keyStore: new keyStores.InMemoryKeyStore(),
         nodeUrl: 'https://rpc.mainnet.near.org',
         walletUrl: 'https://wallet.near.org',
         helperUrl: 'https://helper.mainnet.near.org',
@@ -52,6 +53,7 @@ export async function initConnect (chainId:any, token:any) {
       }
     }
     const near = await connect(connectConfig);
+    // console.log(near)
     account = await near.account(token);
   } catch (error) {
     console.log('initConnect')
@@ -154,10 +156,27 @@ export function useNearBalance () {
     return bl
   }, [])
 
+  const getNearStorageBalanceBounds = useCallback(async({token, chainId}) => {
+    let bl:any
+    const accountFn = await initConnect(chainId, token);
+    try {
+      if (accountFn && isAddress(token, chainId)) {
+        bl = await accountFn.viewFunction(
+          token,
+          'storage_balance_bounds',
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    return bl
+  }, [])
+
   return {
     getNearBalance,
     getNearTokenBalance,
-    getNearStorageBalance
+    getNearStorageBalance,
+    getNearStorageBalanceBounds
   }
 }
 
@@ -308,7 +327,7 @@ export function useSendNear () {
     })
   }, [])
 
-  const depositStorageNear = useCallback((contractid, accountId) => {
+  const depositStorageNear = useCallback((contractid, accountId, nearStorageBalanceBounds) => {
     return new Promise((resolve, reject) => {
       console.log('sendNearToken')
       const actions = {
@@ -322,7 +341,7 @@ export function useSendNear () {
             },
             gas: '300000000000000',
             // deposit: 1e24
-            deposit: '1250000000000000000000'
+            deposit: nearStorageBalanceBounds ? nearStorageBalanceBounds : '1250000000000000000000'
             // deposit: amount
           }
         ],

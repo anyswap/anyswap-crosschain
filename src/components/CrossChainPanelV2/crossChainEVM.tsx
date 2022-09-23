@@ -108,7 +108,7 @@ export default function CrossChain({
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
-  const {getNearStorageBalance} = useNearBalance()
+  const {getNearStorageBalance, getNearStorageBalanceBounds} = useNearBalance()
 
   const {setUserFromSelect, setUserToSelect} = useInitUserSelectCurrency(useChain)
   const {depositStorageNear} = useSendNear()
@@ -188,7 +188,7 @@ export default function CrossChain({
   }, [destConfig])
 
   const isNativeToken = useMemo(() => {
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (
       selectCurrency
       && selectCurrency?.tokenType === 'NATIVE'
@@ -594,6 +594,7 @@ export default function CrossChain({
   }, [selectChain, useChain])
 
   useEffect(() => {
+    // console.log(initDestCurrencyList)
     setSelectDestCurrencyList(initDestCurrencyList)
   }, [initDestCurrencyList])
 
@@ -715,12 +716,22 @@ export default function CrossChain({
   }, [destConfig, selectChain, maxInputValue])
 
   const [nearStorageBalance, setNearStorageBalance] = useState<any>()
+  const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
   const getNearStorage = useCallback(() => {
     if (
-      [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain) 
-      && recipient
+      [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
+      && destConfig?.address
+      && isAddress(recipient, selectChain)
       && ['TOKEN'].includes(destConfig?.tokenType)
     ) {
+      getNearStorageBalanceBounds({token: destConfig.address, chainId: selectChain}).then((res:any) => {
+        console.log(res)
+        if (res?.min) {
+          setNearStorageBalanceBounds(res?.min)
+        } else {
+          setNearStorageBalanceBounds('')
+        }
+      })
       getNearStorageBalance({token: destConfig.address,account: recipient, chainId: selectChain}).then((res:any) => {
         console.log(res)
         if (res?.total) {
@@ -728,11 +739,13 @@ export default function CrossChain({
         } else {
           setNearStorageBalance('')
         }
+        
       })
     } else {
       setNearStorageBalance('')
     }
   }, [selectChain, recipient, destConfig])
+
   useEffect(() => {
     getNearStorage()
   }, [selectChain, recipient])
@@ -904,7 +917,7 @@ export default function CrossChain({
     ) {
       if (window?.near?.account()) {
         return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-          depositStorageNear(destConfig?.address, recipient).then(() => {
+          depositStorageNear(destConfig?.address, recipient, nearStorageBalanceBounds).then(() => {
             alert('Deposit storage success.')
           }).catch(() => {
             alert('Deposit storage failure.')
