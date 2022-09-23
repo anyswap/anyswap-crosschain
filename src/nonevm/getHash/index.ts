@@ -5,6 +5,8 @@ import {updateXlmHash} from '../stellar'
 import {getTRXTxnsStatus} from '../trx'
 import {getADATxnsStatus} from '../cardano'
 import {getFLOWTxnsStatus} from '../flow'
+import {getSolTxnsStatus} from '../solana'
+
 import { ChainId } from '../../config/chainConfig/chainId'
 
 export function getHashInfo(hash: any, chainId: any) {
@@ -35,6 +37,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(chainId)) {
       getFLOWTxnsStatus(hash, chainId).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+      getSolTxnsStatus(hash, chainId).then(res => {
         resolve(res)
       })
     }

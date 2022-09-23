@@ -11,6 +11,8 @@ import { useTrxBalance } from '../nonevm/trx'
 import {useXlmBalance} from '../nonevm/stellar'
 import {useAdaBalance} from '../nonevm/cardano'
 import {useFlowBalance} from '../nonevm/flow'
+import {useSolBalance} from '../nonevm/solana'
+
 import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
 
@@ -133,6 +135,7 @@ export function useBaseBalances (
   const {getAllBalance} = useXlmBalance()
   const {adaBalanceList} = useAdaBalance()
   const {flowBalanceList} = useFlowBalance()
+  const {getSolBalance} = useSolBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -180,11 +183,20 @@ export function useBaseBalances (
         setBalance(bl)
       }
     } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectChainId)) {
-
       if (flowBalanceList?.['NATIVE']) {
         const bl = BigAmount.format(8, flowBalanceList?.['NATIVE'])
         setBalance(bl)
       }
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChainId)) {
+      getSolBalance({chainId: selectChainId, account: uncheckedAddresses}).then((res:any) => {
+        if (res?.result?.value) {
+          const bl = BigAmount.format(9, res?.result?.value)
+          setBalance(bl)
+        } else {
+          setBalance('')
+        }
+        // console.log(res)
+      })
     }
   }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList])
 

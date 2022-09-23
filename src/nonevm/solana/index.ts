@@ -67,17 +67,22 @@ export function useLoginSol () {
 
 
 export function useSolBalance () {
-  const getSolBalance = useCallback(({account}: {account:string|null|undefined}) => {
+  const getSolBalance = useCallback(({chainId, account}: {chainId: any, account:string|null|undefined}) => {
     return new Promise((resolve) => {
       if (account) {
-        resolve('')
+        getSolanaInfo(chainId, 'getBalance', [account]).then((res:any) => {
+          resolve(res)
+        }).catch((err:any) => {
+          console.log(err)
+          resolve('')
+        })
       }
     })
   }, []) 
 
-  const getSolTokenBalance = useCallback(({account, token}: {account:string|null|undefined, token:string|null|undefined}) => {
+  const getSolTokenBalance = useCallback(({chainId, account, token}: {chainId: any, account:string|null|undefined, token:string|null|undefined}) => {
     return new Promise((resolve) => {
-      if (account && token) {
+      if (chainId && account && token) {
         resolve('')
       }
     })
@@ -128,7 +133,7 @@ interface TxDataResult {
   info: any,
   error: any
 }
-export function getSolTxnsStatus (txid:string) {
+export function getSolTxnsStatus (txid:string, chainId:any) {
   return new Promise(resolve => {
     const data:TxDataResult = {
       msg: State.Null,
@@ -136,7 +141,15 @@ export function getSolTxnsStatus (txid:string) {
       error: ''
     }
     if (txid) {
-      resolve(data)
+      getSolanaInfo(chainId, 'getTransaction', [txid, "json"]).then((res:any) => {
+        console.log(res)
+        resolve(res)
+      }).catch((err:any) => {
+        console.log(err)
+        data.msg = State.Null
+        data.error = 'Query is empty!'
+        resolve(data)
+      })
     }
   })
 }

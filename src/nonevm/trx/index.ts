@@ -243,13 +243,13 @@ export function getTRXTxnsStatus (txid:string) {
           data.error = 'Txns is failure!'
         } else {
           data.msg = 'Null'
-          data.error = 'Txns is failure!'
+          data.error = 'Query is empty!'
         }
         resolve(data)
       })
     } else {
       data.msg = 'Null'
-      data.error = 'Txns is failure!'
+      data.error = 'Query is empty!'
       resolve(data)
     }
   })
