@@ -3,6 +3,8 @@ import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
 
+import {spportChainArr} from '../../config/chainConfig'
+
 import { useInitUserSelectCurrency } from '../../state/lists/hooks'
 import {useStarChain} from '../../state/user/hooks'
 
@@ -165,7 +167,8 @@ export function useDestChainid (
     if (selectCurrency) {
       const arr = []
       for (const c in selectCurrency?.destChains) {
-        if (c?.toString() === useChainId?.toString() || !config.chainInfo[c]) continue
+        // if (c?.toString() === useChainId?.toString() || !config.chainInfo[c]) continue
+        if (c?.toString() === useChainId?.toString() || !spportChainArr.includes(c)) continue
         // if (c?.toString() === useChainId?.toString()) continue
         arr.push(c)
       }

@@ -26,6 +26,7 @@ import {thousandBit} from '../../utils/tools/tools'
 import {useStarChain} from '../../state/user/hooks'
 
 import config from '../../config'
+import {spportChainArr} from '../../config/chainConfig'
 
 import {
   InputRow,
@@ -117,7 +118,8 @@ export default function SelectChainIdInputPanel({
     const starArr:any = []
     // console.log(selectChainList)
     for (const c of selectChainList) {
-      if (!config.chainInfo[c]) continue
+      // if (!config.chainInfo[c]) continue
+      if (!spportChainArr.includes(c)) continue
       if (starChainList?.[c]) {
         starArr.push(config.chainInfo[c])
       } else {
