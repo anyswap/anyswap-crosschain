@@ -143,6 +143,7 @@ export function getSolTxnsStatus (txid:string, chainId:any) {
     if (txid) {
       getSolanaInfo(chainId, 'getTransaction', [txid, "json"]).then((res:any) => {
         console.log(res)
+        
         resolve(res)
       }).catch((err:any) => {
         console.log(err)
