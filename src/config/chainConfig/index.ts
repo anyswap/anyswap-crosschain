@@ -76,6 +76,7 @@ import flow from './flow'
 import ethw from './ethw'
 import sol from './sol'
 import xana from './xana'
+import twemix from './twemix'
 
 import { ChainId } from './chainId'
 
@@ -85,6 +86,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...twemix,
   ...xana,
   ...sol,
   ...flow,
@@ -239,7 +241,8 @@ const testChainList = [
   ChainId.INTAIN_TEST,
   ChainId.PFT_TEST,
   ChainId.GOERLI1_TEST,
-  ChainId.XANA_TEST
+  ChainId.XANA_TEST,
+  ChainId.TWEMIX_TEST,
 ]
 
 const useChain:any = {

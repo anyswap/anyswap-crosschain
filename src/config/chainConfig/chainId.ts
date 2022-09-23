@@ -98,4 +98,6 @@ export enum ChainId {
   SOL_TEST = 'SOL_TEST',
   XANA = '',
   XANA_TEST = '76798',
+  TWEMIX = '',
+  TWEMIX_TEST = '1112',
 }

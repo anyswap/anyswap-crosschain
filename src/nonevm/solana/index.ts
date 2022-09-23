@@ -198,62 +198,62 @@ export function useSolCrossChain (
   }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account])
 }
 
-enum SwapType {
-  withdraw = 'withdraw',
-  deposit = 'deposit',
-}
+// enum SwapType {
+//   withdraw = 'withdraw',
+//   deposit = 'deposit',
+// }
 
-export function useSolSwapPoolCallback(
-  routerToken: string | null | undefined,
-  selectCurrency: string | null | undefined,
-  inputToken: string | null | undefined,
-  typedValue: string | null | undefined,
-  swapType: SwapType,
-  selectChain: string | null | undefined,
-  receiveAddress: string | null | undefined,
-  destConfig: any,
-): { execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { account, chainId } = useActiveReact()
-  return useMemo(() => {
-    return {
-      balance: '',
-      execute: async () => {
+// export function useSolSwapPoolCallback(
+//   routerToken: string | null | undefined,
+//   selectCurrency: string | null | undefined,
+//   inputToken: string | null | undefined,
+//   typedValue: string | null | undefined,
+//   swapType: SwapType,
+//   selectChain: string | null | undefined,
+//   receiveAddress: string | null | undefined,
+//   destConfig: any,
+// ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
+//   const { account, chainId } = useActiveReact()
+//   return useMemo(() => {
+//     return {
+//       balance: '',
+//       execute: async () => {
 
-        console.log(1)
-      },
-      inputError: ''
-    }
-  }, [routerToken, inputToken, swapType, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, chainId])
-}
+//         console.log(1)
+//       },
+//       inputError: ''
+//     }
+//   }, [routerToken, inputToken, swapType, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, chainId])
+// }
 
-interface PoolCalls {
-  token: string | null | undefined,
-  account: string | null | undefined,
-  anytoken: string | null | undefined,
-  dec: number
-}
+// interface PoolCalls {
+//   token: string | null | undefined,
+//   account: string | null | undefined,
+//   anytoken: string | null | undefined,
+//   dec: number
+// }
 
-interface PoolResult {
-  [key:string]: {
-    balanceOf: string,
-    totalSupply: string,
-    balance: string,
-  }
-}
+// interface PoolResult {
+//   [key:string]: {
+//     balanceOf: string,
+//     totalSupply: string,
+//     balance: string,
+//   }
+// }
 
-export function useSolPoolDatas () {
-  const getSolPoolDatas = useCallback(async(calls: Array<[PoolCalls]>, chainId: string | null | undefined): Promise<PoolResult> => {
-    console.log(calls)
-    console.log(chainId)
-    return {
-      'anytoken': {
-        balanceOf: '',
-        totalSupply: '',
-        balance: '',
-      }
-    }
-  }, [])
-  return {
-    getSolPoolDatas
-  }
-}
+// export function useSolPoolDatas () {
+//   const getSolPoolDatas = useCallback(async(calls: Array<[PoolCalls]>, chainId: string | null | undefined): Promise<PoolResult> => {
+//     console.log(calls)
+//     console.log(chainId)
+//     return {
+//       'anytoken': {
+//         balanceOf: '',
+//         totalSupply: '',
+//         balance: '',
+//       }
+//     }
+//   }, [])
+//   return {
+//     getSolPoolDatas
+//   }
+// }
