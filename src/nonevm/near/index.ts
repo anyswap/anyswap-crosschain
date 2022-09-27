@@ -355,7 +355,7 @@ export function useSendNear () {
           tx = res?.response[0]?.transaction
           resolve(tx)
         } else {
-          reject(res?.response?.error)
+          resolve(res?.response?.error)
         }
       }).catch((error:any) => {
         console.log(error)

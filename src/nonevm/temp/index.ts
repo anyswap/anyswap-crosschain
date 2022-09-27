@@ -15,6 +15,10 @@ export function useTempAddress () {
   }
 }
 
+
+/**
+ * Connect wallet and get account address
+ */
 export function useLoginTemp () {
   const dispatch = useDispatch<AppDispatch>()
   const loginTemp = useCallback(() => {
@@ -25,7 +29,12 @@ export function useLoginTemp () {
   }
 }
 
-
+/**
+ * Get native balance and token balance
+ *
+ * @param account wallet address
+ * @param token token address
+ */
 export function useTempBalance () {
   const getTempBalance = useCallback(({account}: {account:string|null|undefined}) => {
     return new Promise((resolve) => {
@@ -49,6 +58,13 @@ export function useTempBalance () {
   }
 }
 
+/**
+ * Authorization and obtaining authorization information
+ *
+ * @param account wallet address
+ * @param token token address
+ * @param spender spender address
+ */
 export function useTempAllowance(
   token: string | null | undefined,
   spender: string | null | undefined,
@@ -88,6 +104,11 @@ interface TxDataResult {
   info: any,
   error: any
 }
+/**
+ * Get transaction info
+ *
+ * @param txid transaction hash
+ */
 export function getTempTxnsStatus (txid:string) {
   return new Promise(resolve => {
     const data:TxDataResult = {
@@ -101,6 +122,17 @@ export function getTempTxnsStatus (txid:string) {
   })
 }
 
+/**
+ * Cross chain 
+ *
+ * @param routerToken router token address
+ * @param inputToken any or underlying address
+ * @param selectCurrency select current token info
+ * @param selectChain to chainId
+ * @param receiveAddress receive address
+ * @param typedValue typed Value
+ * @param destConfig to chain info
+ */
 export function useTempCrossChain (
   routerToken: string | null | undefined,
   inputToken: string | null | undefined,
@@ -131,6 +163,18 @@ enum SwapType {
   deposit = 'deposit',
 }
 
+/**
+ * Cross chain 
+ *
+ * @param routerToken router token address
+ * @param selectCurrency select current token info
+ * @param inputToken any or underlying address
+ * @param typedValue typed Value
+ * @param swapType deposit or withdraw
+ * @param selectChain to chainId
+ * @param receiveAddress receive address
+ * @param destConfig to chain info
+ */
 export function useTempSwapPoolCallback(
   routerToken: string | null | undefined,
   selectCurrency: string | null | undefined,
@@ -168,6 +212,13 @@ interface PoolResult {
   }
 }
 
+/**
+ * Get pool info
+ *
+ * @param chainId router token address
+ * @param calls [{token: '', anytoken: '', account: ''}]
+ * @return {'anytoken': {'balanceOf': '', 'totalSupply': '', 'balance': ''}}
+ */
 export function useTempPoolDatas () {
   const getTempPoolDatas = useCallback(async(calls: Array<[PoolCalls]>, chainId: string | null | undefined): Promise<PoolResult> => {
     return {
