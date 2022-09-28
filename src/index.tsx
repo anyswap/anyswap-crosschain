@@ -89,14 +89,14 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle, ThemeGlobalClassNam
 
 ReactDOM.render(
   <StrictMode>
-  <Provider store={store}>
-    <FixedGlobalStyle />
-    <ThemeProvider>
-      <ThemeGlobalClassName />
-      <ThemedGlobalStyle />
-      <AppContainer />
-    </ThemeProvider>
-  </Provider>
+    <Provider store={store}>
+      <FixedGlobalStyle />
+      <ThemeProvider>
+        <ThemeGlobalClassName />
+        <ThemedGlobalStyle />
+        <AppContainer />
+      </ThemeProvider>
+    </Provider>
   </StrictMode>,
   document.getElementById('root')
 )

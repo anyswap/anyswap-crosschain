@@ -1,6 +1,7 @@
 
 import { useCallback, useMemo } from 'react'
 import { useWallet, ConnectType } from '@terra-money/wallet-provider'
+// import { useWallet as useSolWallet } from '@solana/wallet-adapter-react';
 // import { useDispatch } from 'react-redux'
 // import { setOpenModal, ApplicationModal } from '../state/application/actions'
 import { useWalletModalToggle } from '../state/application/hooks'
@@ -27,6 +28,9 @@ export function useConnectWallet () {
   const {loginTrx} = useLoginTrx()
   const loginAda = useAdaLogin()
   const {loginFlow} = useLoginFlow()
+
+  // const {publicKey} = useSolWallet()
+
   return useCallback(() => {
     if (selectNetworkInfo?.label === ChainId.TERRA) {
       if (connect) {

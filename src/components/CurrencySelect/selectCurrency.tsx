@@ -152,8 +152,10 @@ export default function SelectCurrencyInputPanel({
   }, [inputType, currency])
 
   // useEffect(() => {
+  //   console.log(isNativeToken)
   //   console.log(useBalance)
-  // }, [useBalance])
+  //   console.log(selectedNativeBalance)
+  // }, [useBalance, selectedNativeBalance, isNativeToken])
 
   useEffect(() => {
     if (customBalance) {
@@ -165,8 +167,9 @@ export default function SelectCurrencyInputPanel({
         setUseBalance(selectTokenBalance)
       } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
         setUseBalance(selectedNativeBalance)
+      } else {
+        setUseBalance(undefined)
       }
-      setUseBalance(undefined)
     } else {
       setUseBalance(undefined)
     }

@@ -17,6 +17,7 @@ import { useXlmCrossChain } from '../../nonevm/stellar'
 import {useTrxCrossChain} from '../../nonevm/trx'
 import {useAdaCrossChain} from '../../nonevm/cardano'
 import {useNonevmAllowances} from '../../nonevm/allowances'
+import {useSolCrossChain} from '../../nonevm/solana'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -242,6 +243,15 @@ export default function CrossChain({
     inputBridgeValue,
     destConfig
   )
+  const {execute: onSolWrap, inputError: wrapInputErrorSol} = useSolCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -304,10 +314,12 @@ export default function CrossChain({
       return wrapInputErrorTrx
     } else if (wrapInputErrorAda && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
       return wrapInputErrorAda
+    } else if (wrapInputErrorSol && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+      return wrapInputErrorSol
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -503,6 +515,11 @@ export default function CrossChain({
                   } else if (onAdaWrap && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
                     console.log('onAdaWrap')
                     onAdaWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onSolWrap && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+                    console.log('onSolWrap')
+                    onSolWrap().then(() => {
                       onClear()
                     })
                   }

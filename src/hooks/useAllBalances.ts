@@ -35,6 +35,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
 
   const {adaBalanceList} = useAdaBalance()
   const {flowBalanceList} = useFlowBalance()
+  const {getSolTokenBalance, getSolBalance} = useSolBalance()
 
   const savedBalance = useRef<any>()
 
@@ -98,6 +99,25 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, flowBalanceList?.[token])
           savedBalance.current = bl
         }
+      } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChainId)) {
+        // console.log(token)
+        if (token === 'native') {
+          getSolBalance({chainId: selectChainId, account: account}).then((res:any) => {
+            // console.log(res)
+            if (res?.result?.value) {
+              const bl = BigAmount.format(dec, res?.result?.value)
+              savedBalance.current = bl
+            }
+          })
+        } else {
+          getSolTokenBalance({chainId: selectChainId, account: account, token}).then((res:any) => {
+            // console.log(res)
+            if (res?.result?.value?.amount) {
+              const bl = BigAmount.format(dec, res?.result?.value?.amount)
+              savedBalance.current = bl
+            }
+          })
+        }
       } else {
         savedBalance.current = evmBalance
       }
@@ -105,7 +125,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -113,7 +133,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
     
     savedBalance.current = ''
     fetchBalance()
-  }, [fetchBalance, token])
+  }, [fetchBalance, token, account])
 
   return useMemo(() => {
     // console.log(savedBalance)

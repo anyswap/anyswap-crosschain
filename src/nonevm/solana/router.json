@@ -1,0 +1,548 @@
+{
+  "version": "0.1.0",
+  "name": "router",
+  "instructions": [
+    {
+      "name": "initialize",
+      "docs": [
+        "Create pda account `router_account`, init `mpc`",
+        "`mpc` is the authority account to manage `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "initializer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mpc",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpSeed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "createAssociatedToken",
+      "docs": [
+        "create router account's associated token"
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "changeMpc",
+      "docs": [
+        "Set pending manage account of pda account `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newMpc",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "new",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "applyMpc",
+      "docs": [
+        "Change manage account of pda account `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newMpc",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "new",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "enableSwapTrade",
+      "docs": [
+        "Pause this contract"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "enable",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "swapinMint",
+      "docs": [
+        "Swapin by mint token from pda account `router_account` to receiver",
+        "The signer must be `router_account.mpc`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tx",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "fromChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swapinTransfer",
+      "docs": [
+        "Swapin by transfer token from pda account `router_account` to receiver",
+        "The signer must be `router_account.mpc`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tx",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "fromChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swapinNative",
+      "docs": [
+        "Swapin by transfer native SOL from pda account `router_account` to receiver",
+        "The signer must be `router_account.mpc`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tx",
+          "type": "string"
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "fromChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swapoutBurn",
+      "docs": [
+        "Swapout by burn token whose mint authority is pda account `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "toChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swapoutTransfer",
+      "docs": [
+        "Swapout by transfer token to pda account `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "toChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "swapoutNative",
+      "docs": [
+        "Swapout by transfer native SOL to pda account `router_account`"
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "toChainid",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "skimLamports",
+      "docs": [
+        "Skim lamports from pda account `router_account` to mpc account",
+        "The signer must be `router_account.mpc`"
+      ],
+      "accounts": [
+        {
+          "name": "mpc",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "routerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "RouterAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mpc",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "pendingMpc",
+            "type": "publicKey"
+          },
+          {
+            "name": "enableSwapTrade",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidArgument",
+      "msg": "Router argument invalid"
+    },
+    {
+      "code": 6001,
+      "name": "OnlyMPC",
+      "msg": "Only mpc can operate"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidRouterMintAuthority",
+      "msg": "Invalid router mint authority"
+    },
+    {
+      "code": 6003,
+      "name": "SwapinTransferFromWrongAccount",
+      "msg": "Swapin from wrong account"
+    },
+    {
+      "code": 6004,
+      "name": "SwapoutTransferToWrongAccount",
+      "msg": "Swapout to wrong account"
+    },
+    {
+      "code": 6005,
+      "name": "ApplyWrongAccount",
+      "msg": "Apply mpc is different from pending mpc"
+    },
+    {
+      "code": 6006,
+      "name": "HasBeenSuspended",
+      "msg": "This router program has been suspended"
+    }
+  ],
+  "metadata": {
+    "address": "Au7kVdUXhuCMGqfNkYe7dendX8nAGS4bASjRyVcgbxUQ"
+  }
+}

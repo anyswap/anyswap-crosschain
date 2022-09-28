@@ -232,6 +232,7 @@ const allChainList = [
 
 const testChainList = [
   ChainId.RINKEBY,
+  ChainId.GOERLI,
   ChainId.FTM_TEST,
   ChainId.BNB_TEST,
   ChainId.MATIC_TEST,

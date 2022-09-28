@@ -74,6 +74,8 @@ declare module 'fortmatic'
 declare module 'qrcode.react'
 
 declare module '@makerdao/multicall';
+declare module '@solana/spl-token';
+declare module '@solana/wallet-adapter-react';
 
 declare module 'toformat';
 
