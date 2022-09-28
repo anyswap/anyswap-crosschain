@@ -102,8 +102,75 @@ export function useLoginSol () {
   }
 }
 
+export function useSolCreateAccount () {
+
+  const getAccount = useCallback((account, token) => {
+    return new Promise(async(resolve) => {
+      if (account && token) {
+        try {
+          const base58publicKey = new solanaWeb3.PublicKey(account)
+          const tokenpublicKey = new solanaWeb3.PublicKey(token)
+          const acctontToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, base58publicKey, true)
+          resolve(acctontToToken)
+        } catch (error) {
+          console.log(error)
+          resolve('')
+        }
+      } else {
+        resolve('')
+      }
+    })
+  }, [])
+
+  const createAccount = useCallback(async() => {
+    try {
+      // const account = '8fBfAE4gVbv253UgwkwBT5TaV5SaZ7JJWgmQoqbEEei5'
+      const account = 'C5WYGHYJ3oAeHPtAZJMLnhFN8eVDjSZqJGKtJNSVvo8K'
+      const connection = new solanaWeb3.Connection(config.chainInfo['SOL_TEST'].nodeRpc)
+      const tokenpublicKey = new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
+      const token  = new Token(connection, tokenpublicKey, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey(account))
+      // token.createAssociatedTokenAccount(new solanaWeb3.PublicKey(account))
+      // token.createAccount(new solanaWeb3.PublicKey(account))
+      // const token  = Token.createAssociatedTokenAccountInstruction(
+      //   ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), base58publicKey, base58publicKey
+      // )
+      console.log(token)
+      const tx = new solanaWeb3.Transaction()
+      tx.add(
+        token
+      )
+      console.log(tx)
+      // tx.add(
+      //   // spl.createTransferCheckedInstruction(
+      //   //   base58publicKey, // from
+      //   //   new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), // mint
+      //   //   base58publicKey, // to
+      //   //   base58publicKey, // from's owner
+      //   //   1, // amount
+      //   //   0 // decimals
+      //   // )
+      // )
+      const result = await connection.getLatestBlockhash()
+      // const result = await connection.getConfirmedBlock(blockNumber)
+      console.log(result)
+      tx.lastValidBlockHeight = result.lastValidBlockHeight;
+      tx.recentBlockhash = result.blockhash;
+      tx.feePayer = new solanaWeb3.PublicKey(account)
+      const tsResult = await window?.solana?.signAndSendTransaction(tx)
+      console.log(tsResult)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
+  return {
+    getAccount,
+    createAccount
+  }
+}
+
 
 export function useSolBalance () {
+  const {getAccount} = useSolCreateAccount()
   const getSolBalance = useCallback(({chainId, account}: {chainId: any, account:string|null|undefined}) => {
     return new Promise((resolve) => {
       if (account) {
@@ -122,71 +189,71 @@ export function useSolBalance () {
   const getSolTokenBalance = useCallback(({chainId, account, token}: {chainId: any, account:string|null|undefined, token:string|null|undefined}) => {
     return new Promise(async(resolve) => {
       if (chainId && account && token) {
-        let acctontToToken
-        try {
-          const base58publicKey = new solanaWeb3.PublicKey(account)
-          // const tokenpublicKey = new solanaWeb3.PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
-          // const tokenpublicKey = Buffer.from('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
-          // const tokenpublicKey = new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
-          const tokenpublicKey = new solanaWeb3.PublicKey(token)
-          // const tokenpublicKey = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-          // console.log(new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'))
-          // console.log(tokenpublicKey)
-          // const base58publicKey = new solanaWeb3.PublicKey(account)
-          // programAddressFromKey = await solanaWeb3.PublicKey.createProgramAddress([tokenpublicKey], base58publicKey)
-          // const programAddressFromKey = await solanaWeb3.PublicKey.createProgramAddress([tokenpublicKey.slice(0,32)], base58publicKey)
-          // console.log(programAddressFromKey.toString())
-          // console.log(programAddressFromKey.toBase58())
-          acctontToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, base58publicKey, true)
-          // console.log(t.toBase58())
-          // const validProgramAddress = await solanaWeb3.PublicKey.findProgramAddress(
-          //   [tokenpublicKey],
-          //   base58publicKey,
-          // )
-          // console.log(validProgramAddress[0]?.toBase58())
-          // const connection = new solanaWeb3.Connection(config.chainInfo[chainId].nodeRpc)
-          // console.log(connection)
-          // const blockNumber = await connection.getBlockHeight()
-          // const result = await connection.getBlock(blockNumber)
-          // console.log(result)
+        const acctontToToken:any = await getAccount(account, token)
+        // try {
+        //   const base58publicKey = new solanaWeb3.PublicKey(account)
+        //   // const tokenpublicKey = new solanaWeb3.PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
+        //   // const tokenpublicKey = Buffer.from('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
+        //   // const tokenpublicKey = new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
+        //   const tokenpublicKey = new solanaWeb3.PublicKey(token)
+        //   // const tokenpublicKey = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+        //   // console.log(new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'))
+        //   // console.log(tokenpublicKey)
+        //   // const base58publicKey = new solanaWeb3.PublicKey(account)
+        //   // programAddressFromKey = await solanaWeb3.PublicKey.createProgramAddress([tokenpublicKey], base58publicKey)
+        //   // const programAddressFromKey = await solanaWeb3.PublicKey.createProgramAddress([tokenpublicKey.slice(0,32)], base58publicKey)
+        //   // console.log(programAddressFromKey.toString())
+        //   // console.log(programAddressFromKey.toBase58())
+        //   acctontToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, base58publicKey, true)
+        //   // console.log(t.toBase58())
+        //   // const validProgramAddress = await solanaWeb3.PublicKey.findProgramAddress(
+        //   //   [tokenpublicKey],
+        //   //   base58publicKey,
+        //   // )
+        //   // console.log(validProgramAddress[0]?.toBase58())
+        //   // const connection = new solanaWeb3.Connection(config.chainInfo[chainId].nodeRpc)
+        //   // console.log(connection)
+        //   // const blockNumber = await connection.getBlockHeight()
+        //   // const result = await connection.getBlock(blockNumber)
+        //   // console.log(result)
 
           
-          // const token  = new Token(connection, tokenpublicKey, TOKEN_PROGRAM_ID)
-          // const token  = Token.createAssociatedTokenAccountInstruction(
-          //   ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), base58publicKey, base58publicKey
-          // )
-          // const tx = new solanaWeb3.Transaction()
-          // // tx.add(
-          // //   token
-          // // )
-          // tx.add(
-          //   spl.createTransferCheckedInstruction(
-          //     base58publicKey, // from
-          //     new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), // mint
-          //     base58publicKey, // to
-          //     base58publicKey, // from's owner
-          //     1, // amount
-          //     0 // decimals
-          //   )
-          // )
-          // tx.lastValidBlockHeight = blockNumber;
-          // tx.recentBlockhash = result.blockhash;
-          // tx.feePayer = base58publicKey
-          // console.log(tx)
-          // // window?.solana?.signAndSendTransaction(tx)
-          // window?.solana?.signTransaction(tx)
-          // connection.sendTransaction(tx, [base58publicKey])
-          // token.createAccount(base58publicKey)
-          // token.createAssociatedTokenAccount(base58publicKey)
-          // anchor.setProvider(config.chainInfo[chainId].nodeRpc)
-          // const token = Token(tokenpublicKey)
-          // const token = Token(config.chainInfo[chainId].nodeRpc)
-          // console.log(await connection.sendTransaction(tx, [base58publicKey]))
-          // console.log(Token.createAssociatedTokenAccountInstruction())
-          // console.log(token.transaction.approve())
-        } catch (error) {
-          console.log(error)
-        }
+        //   // const token  = new Token(connection, tokenpublicKey, TOKEN_PROGRAM_ID)
+        //   // const token  = Token.createAssociatedTokenAccountInstruction(
+        //   //   ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), base58publicKey, base58publicKey
+        //   // )
+        //   // const tx = new solanaWeb3.Transaction()
+        //   // // tx.add(
+        //   // //   token
+        //   // // )
+        //   // tx.add(
+        //   //   spl.createTransferCheckedInstruction(
+        //   //     base58publicKey, // from
+        //   //     new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), // mint
+        //   //     base58publicKey, // to
+        //   //     base58publicKey, // from's owner
+        //   //     1, // amount
+        //   //     0 // decimals
+        //   //   )
+        //   // )
+        //   // tx.lastValidBlockHeight = blockNumber;
+        //   // tx.recentBlockhash = result.blockhash;
+        //   // tx.feePayer = base58publicKey
+        //   // console.log(tx)
+        //   // // window?.solana?.signAndSendTransaction(tx)
+        //   // window?.solana?.signTransaction(tx)
+        //   // connection.sendTransaction(tx, [base58publicKey])
+        //   // token.createAccount(base58publicKey)
+        //   // token.createAssociatedTokenAccount(base58publicKey)
+        //   // anchor.setProvider(config.chainInfo[chainId].nodeRpc)
+        //   // const token = Token(tokenpublicKey)
+        //   // const token = Token(config.chainInfo[chainId].nodeRpc)
+        //   // console.log(await connection.sendTransaction(tx, [base58publicKey]))
+        //   // console.log(Token.createAssociatedTokenAccountInstruction())
+        //   // console.log(token.transaction.approve())
+        // } catch (error) {
+        //   console.log(error)
+        // }
         // getSolanaInfo(chainId, 'getTokenAccountBalance', [account]).then((res:any) => {
         if (acctontToToken) {
           getSolanaInfo(chainId, 'getTokenAccountBalance', [acctontToToken.toBase58()]).then((res:any) => {
@@ -327,6 +394,7 @@ export function useSolCrossChain (
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
+  const {getAccount} = useSolCreateAccount()
 
   const balance = useTokensBalance(selectCurrency?.address, selectCurrency?.decimals, chainId)
 
@@ -362,9 +430,7 @@ export function useSolCrossChain (
               }
             );
           } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-            const base58publicKey = new solanaWeb3.PublicKey(account)
-            const tokenpublicKey = new solanaWeb3.PublicKey(inputToken)
-            const acctontToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, base58publicKey, true)
+            const acctontToToken = await getAccount(account, inputToken)
             instruction = await contract.instruction.swapoutBurn(
               receiveAddress,
               new anchor.BN(inputAmount),
@@ -380,10 +446,8 @@ export function useSolCrossChain (
               }
             );
           } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-            const base58publicKey = new solanaWeb3.PublicKey(account)
-            const tokenpublicKey = new solanaWeb3.PublicKey(inputToken)
-            const acctontToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, base58publicKey, true)
-            const routerToToken = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, tokenpublicKey, routeraccount, true)
+            const acctontToToken = await getAccount(account, inputToken)
+            const routerToToken = await getAccount(routeraccount, inputToken)
             instruction = await contract.instruction.swapoutTransfer(
               receiveAddress,
               new anchor.BN(inputAmount),
@@ -410,6 +474,7 @@ export function useSolCrossChain (
           tx.lastValidBlockHeight = result.lastValidBlockHeight;
           tx.recentBlockhash = result.blockhash;
           tx.feePayer = new solanaWeb3.PublicKey(account)
+          console.log(tx)
           const tsResult = await window?.solana?.signAndSendTransaction(tx)
           console.log(tsResult)
           const txReceipt = {hash: tsResult.signature}
