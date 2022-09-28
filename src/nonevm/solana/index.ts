@@ -30,14 +30,14 @@ const solanaWeb3 = anchor.web3
 const Program = anchor.Program
 // const spl = new anchor.Spl()
 // const Token = anchor.Spl.token
-console.log(anchor )
+// console.log(anchor )
 // console.log(solanaWeb3 )
-console.log(spl )
+// console.log(spl )
 // console.log(Token )
 // console.log(solanaWeb3.SystemProgram.programId )
 // console.log(AnchorProvider.env() )
-console.log(ASSOCIATED_TOKEN_PROGRAM_ID )
-console.log(TOKEN_PROGRAM_ID )
+// console.log(ASSOCIATED_TOKEN_PROGRAM_ID )
+// console.log(TOKEN_PROGRAM_ID )
 /* eslint-disable */
 
 const solAddressReg = /^[1-9A-Z]{44}$/

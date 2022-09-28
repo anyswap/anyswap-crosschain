@@ -51,7 +51,7 @@ export function useNonevmAllowances (
   const [loading, setLoading] = useState<boolean>(false)
 
   const allowanceResult = useMemo(() => {
-    console.log(allowanceList)
+    // console.log(allowanceList)
     if (allowanceList?.[chainId]?.[account]?.[token]?.[spender]?.allowance) {
       return allowanceList?.[chainId]?.[account]?.[token]?.[spender]?.allowance
     } else {

@@ -1,7 +1,11 @@
 
 import { useEffect } from 'react'
+import { ChainId } from '../../config/chainConfig/chainId'
 import { useActiveReact } from '../../hooks/useActiveReact'
 // import useInterval from '../../hooks/useInterval'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
+import {solAddress} from './actions'
 
 import {
   useLoginSol,
@@ -12,6 +16,7 @@ import {
 
 export default function Updater(): null {
   const { chainId } = useActiveReact()
+  const dispatch = useDispatch<AppDispatch>()
   
   const {loginSol} = useLoginSol()
 
@@ -41,6 +46,15 @@ export default function Updater(): null {
 
   useEffect(() => {
     loginSol()
+
+    if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+      window?.solana?.on('accountChanged', (pub:any) => {
+        console.log(pub.toBase58())
+        if (pub) {
+          dispatch(solAddress({address: pub.toBase58()}))
+        }
+      })
+    }
   }, [chainId])
 
   return null

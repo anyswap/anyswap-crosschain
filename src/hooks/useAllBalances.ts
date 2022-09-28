@@ -138,7 +138,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   return useMemo(() => {
     // console.log(savedBalance)
     return savedBalance.current
-  }, [savedBalance.current, selectChainId, token])
+  }, [savedBalance.current, selectChainId, token, account])
 }
 
 
