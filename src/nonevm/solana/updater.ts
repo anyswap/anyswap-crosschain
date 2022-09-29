@@ -12,15 +12,18 @@ import {
   // useSolBalance
   // getSolanaInfo
   // getSolTxnsStatus
-  useSolCreateAccount
+  // useSolCreateAccount
 } from './index'
 
 export default function Updater(): null {
-  const { chainId } = useActiveReact()
+  const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   
   const {loginSol} = useLoginSol()
-  const {createAccount, getAccount} = useSolCreateAccount()
+  // const {
+  //   getSolAccountInfo,
+  //   // getAccount
+  // } = useSolCreateAccount()
   // const {getSolBalance, getSolTokenBalance, getSolTokenInfo} = useSolBalance()
 
   // const getBalance = useCallback(() => {
@@ -48,8 +51,17 @@ export default function Updater(): null {
   useEffect(() => {
     loginSol()
     if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
-      getAccount('8fBfAE4gVbv253UgwkwBT5TaV5SaZ7JJWgmQoqbEEei5', 'GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX').then((res:any) => console.log(res.toBase58()))
-      createAccount()
+      // Promise.all([
+      //   getSolAccountInfo({account, chainId}),
+      //   getSolAccountInfo({account: 'DCLzsK2u5CNaeEgFv2f4SYsH85gR86C4N753wfD6V5Yy', chainId}),
+      // ]).then((res:any) => {
+      //   console.log(res)
+      // })
+      // getAccount('8fBfAE4gVbv253UgwkwBT5TaV5SaZ7JJWgmQoqbEEei5', 'GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX').then((res:any) => console.log(res.toBase58()))
+      // setTimeout(() => {
+
+      //   createAccount()
+      // }, 1000 * 3)
       window?.solana?.on('accountChanged', (pub:any) => {
         console.log(pub.toBase58())
         if (pub) {
@@ -57,7 +69,7 @@ export default function Updater(): null {
         }
       })
     }
-  }, [chainId])
+  }, [chainId, account])
 
   return null
 }

@@ -59,6 +59,11 @@ import {
 } from '../../nonevm/stellar'
 
 import {
+  useSolCreateAccount,
+  useLoginSol
+} from '../../nonevm/solana'
+
+import {
   LogoBox,
   ConfirmContent,
   TxnsInfoText,
@@ -114,6 +119,8 @@ export default function CrossChain({
   const {depositStorageNear} = useSendNear()
   const {getAllBalance} = useXlmBalance()
   const {setTrustlines} = useTrustlines()
+  const {validAccount, createAccount} = useSolCreateAccount()
+  const {loginSol} = useLoginSol()
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
@@ -717,7 +724,9 @@ export default function CrossChain({
 
   const [nearStorageBalance, setNearStorageBalance] = useState<any>()
   const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
-  const getNearStorage = useCallback(() => {
+  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+
+  const getNonevmInfo = useCallback(() => {
     if (
       [ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)
       && destConfig?.address
@@ -741,26 +750,25 @@ export default function CrossChain({
         }
         
       })
-    } else {
-      setNearStorageBalance('')
+    } else if (
+      [ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)
+      && destConfig?.address
+      && isAddress(recipient, selectChain)
+    ) {
+      validAccount({chainId: selectChain, account: recipient, token: destConfig?.address}).then((res:any) => {
+        console.log(res)
+        setSolTokenAddress(res)
+      })
     }
   }, [selectChain, recipient, destConfig])
 
   useEffect(() => {
-    getNearStorage()
-  }, [selectChain, recipient])
-  useInterval(getNearStorage, 1000 * 10)
+    getNonevmInfo()
+  }, [selectChain, recipient, destConfig])
+
+  useInterval(getNonevmInfo, 1000 * 10)
 
   function CrossChainTip () {
-    // console.log([ChainId.XLM, ChainId.XLM_TEST].includes(selectChain)
-    // && !isNaN(xlmlimit)
-    // && !isNaN(inputBridgeValue)
-    // && Number(xlmlimit) < Number(inputBridgeValue))
-    // console.log([ChainId.XLM, ChainId.XLM_TEST].includes(selectChain))
-    // console.log(xlmlimit)
-    // console.log(!isNaN(xlmlimit))
-    // console.log(!isNaN(inputBridgeValue))
-    // console.log(!isNaN(inputBridgeValue))
     if (isApprove && inputBridgeValue && (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING)) {
       return <>
         <LogoBox>
@@ -811,6 +819,19 @@ export default function CrossChain({
       } else {
         return <ConfirmText>
           Please connect wallet or install Sender Wallet.
+        </ConfirmText>
+      }
+    } else if (
+      !solTokenAddress
+      && [ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)
+    ) {
+      if (window?.solana) {
+        return <ConfirmText>
+          Please create address.
+        </ConfirmText>
+      } else {
+        return <ConfirmText>
+          Please open or install Solana wallet.
         </ConfirmText>
       }
     } else {
@@ -937,6 +958,31 @@ export default function CrossChain({
               window.open('https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg')
             }}>
               Install Sender Wallet
+            </ButtonPrimary>
+          </BottomGrouping>
+        )
+      }
+    } else if (
+      !solTokenAddress
+      && [ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)
+    ) {
+      if (window?.solana) {
+        return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+          createAccount({token: destConfig?.address, account: recipient, chainId: selectChain}).then(() => {
+            alert('Create success.')
+          }).catch(() => {
+            alert('Create failure.')
+          })
+        }}>
+          Create
+        </ButtonPrimary>
+      } else {
+        return (
+          <BottomGrouping>
+            <ButtonPrimary style={{marginRight: '5px'}} onClick={() => {
+              loginSol()
+            }}>
+              {t('ConnectWallet')}
             </ButtonPrimary>
           </BottomGrouping>
         )
