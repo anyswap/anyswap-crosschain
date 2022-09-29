@@ -30,7 +30,7 @@ const solanaWeb3 = anchor.web3
 const Program = anchor.Program
 // const spl = new anchor.Spl()
 // const Token = anchor.Spl.token
-// console.log(anchor )
+console.log(anchor )
 // console.log(solanaWeb3 )
 // console.log(spl )
 // console.log(Token )
@@ -124,10 +124,50 @@ export function useSolCreateAccount () {
 
   const createAccount = useCallback(async() => {
     try {
+      // const key = [{
+      //   pubkey: 'payer',
+      //   isSigner: true,
+      //   isWritable: true
+      // }, {
+      //   pubkey: 'associatedAccount',
+      //   isSigner: false,
+      //   isWritable: true
+      // }, {
+      //   pubkey: 'owner',
+      //   isSigner: false,
+      //   isWritable: false
+      // }, {
+      //   pubkey: 'mint',
+      //   isSigner: false,
+      //   isWritable: false
+      // }, {
+      //   pubkey: web3_js.SystemProgram.programId,
+      //   isSigner: false,
+      //   isWritable: false
+      // }, {
+      //   pubkey: programId,
+      //   isSigner: false,
+      //   isWritable: false
+      // }, {
+      //   pubkey: web3_js.SYSVAR_RENT_PUBKEY,
+      //   isSigner: false,
+      //   isWritable: false
+      // }]
       // const account = '8fBfAE4gVbv253UgwkwBT5TaV5SaZ7JJWgmQoqbEEei5'
-      const account = 'C5WYGHYJ3oAeHPtAZJMLnhFN8eVDjSZqJGKtJNSVvo8K'
+      // const account = 'C5WYGHYJ3oAeHPtAZJMLnhFN8eVDjSZqJGKtJNSVvo8K'
+      const account = '8fBfAE4gVbv253UgwkwBT5TaV5SaZ7JJWgmQoqbEEei5'
+      const t = 'GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'
+      const tokenpublicKey = new solanaWeb3.PublicKey(t)
+      const associatedAddress1:any = await getAccount(account, t)
+      const associatedAddress = await Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        tokenpublicKey,
+        new solanaWeb3.PublicKey(account),
+      );
+      console.log('associatedAddress1', associatedAddress1.toBase58())
+      console.log('associatedAddress', associatedAddress.toBase58())
       const connection = new solanaWeb3.Connection(config.chainInfo['SOL_TEST'].nodeRpc)
-      const tokenpublicKey = new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX')
       const token  = new Token(connection, tokenpublicKey, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey(account))
       // token.createAssociatedTokenAccount(new solanaWeb3.PublicKey(account))
       // token.createAccount(new solanaWeb3.PublicKey(account))
@@ -135,11 +175,34 @@ export function useSolCreateAccount () {
       //   ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, new solanaWeb3.PublicKey('GkzTnqZSasjZ5geL4cbvPErNVB9xWby4zYN7hpW5k5iX'), base58publicKey, base58publicKey
       // )
       console.log(token)
+      console.log(Token)
+      // console.log(token.mintTo())
       const tx = new solanaWeb3.Transaction()
       tx.add(
-        token
+        Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          tokenpublicKey,
+          associatedAddress,
+          new solanaWeb3.PublicKey(account),
+          new solanaWeb3.PublicKey(account),
+        )
+        // Token.createAssociatedTokenAccountInstruction(
+        //   new solanaWeb3.PublicKey(account),
+        //   associatedAddress,
+        //   new solanaWeb3.PublicKey(account),
+        //   tokenpublicKey
+        // )
       )
       console.log(tx)
+      console.log(Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        tokenpublicKey,
+        associatedAddress,
+        new solanaWeb3.PublicKey(account),
+        new solanaWeb3.PublicKey(account),
+      ))
       // tx.add(
       //   // spl.createTransferCheckedInstruction(
       //   //   base58publicKey, // from
