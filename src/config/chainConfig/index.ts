@@ -244,6 +244,7 @@ const testChainList = [
   ChainId.GOERLI1_TEST,
   ChainId.XANA_TEST,
   ChainId.TWEMIX_TEST,
+  ChainId.KLAY_TEST,
 ]
 
 const useChain:any = {

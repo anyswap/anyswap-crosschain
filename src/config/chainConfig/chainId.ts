@@ -100,4 +100,5 @@ export enum ChainId {
   XANA_TEST = '76798',
   TWEMIX = '',
   TWEMIX_TEST = '1112',
+  KLAY_TEST = '1001',
 }

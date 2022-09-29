@@ -6,6 +6,10 @@ export const KLAY_MAIN_CHAINID = ChainId.KLAY
 export const KLAY_MAINNET = getLocalRPC(KLAY_MAIN_CHAINID, 'https://public-node-api.klaytnapi.com/v1/cypress')
 export const KLAY_MAIN_EXPLORER = 'https://scope.klaytn.com'
 
+export const KLAY_TEST_CHAINID = ChainId.KLAY_TEST
+export const KLAY_TESTNET = getLocalRPC(KLAY_TEST_CHAINID, 'https://klaytn-baobab-rpc.allthatnode.com:8551/')
+export const KLAY_TEST_EXPLORER = 'https://baobab.scope.klaytn.com'
+
 const symbol = 'KLAY'
 
 const bridgeToken = {
@@ -48,5 +52,26 @@ export default {
     networkName: 'Klaytn mainnet',
     type: 'main',
     label: KLAY_MAIN_CHAINID,
+  },
+  [KLAY_TEST_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: KLAY_TESTNET,
+    nodeRpcList: [
+      KLAY_TESTNET,
+    ],
+    chainID: KLAY_TEST_CHAINID,
+    lookHash: KLAY_TEST_EXPLORER + '/tx/',
+    lookAddr: KLAY_TEST_EXPLORER + '/account/',
+    lookBlock: KLAY_TEST_EXPLORER + '/block/',
+    explorer: KLAY_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Klaytn',
+    networkName: 'Klaytn testnet',
+    type: 'test',
+    label: KLAY_TEST_CHAINID,
   },
 }
