@@ -73,7 +73,7 @@ export default {
   [AVAX_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '0xd8e95abcce8901cc2640d2ff4444c85506fb829d',
+    multicalToken: '',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: AVAX_TESTNET,
