@@ -153,6 +153,10 @@ export default function CrossChain({
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
+  const [nearStorageBalance, setNearStorageBalance] = useState<any>()
+  const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
+  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+
   const [curChain, setCurChain] = useState<any>({
     chain: useChain,
     ts: '',
@@ -165,7 +169,6 @@ export default function CrossChain({
   })
 
 
-
   const destConfig = useMemo(() => {
     // console.log(selectDestCurrency)
     if (selectDestCurrency) {
@@ -173,7 +176,21 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
-  // console.log(destConfig)
+
+  const useReceiveAddress = useMemo(() => {
+    if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)) {
+      if (destConfig.tokenType === 'NATIVE' && solTokenAddress) {
+        return recipient
+      } else if (destConfig.tokenType !== 'NATIVE' && solTokenAddress) {
+        return solTokenAddress?.toString()
+      }
+      return undefined
+    } else {
+      return recipient
+    }
+  }, [selectChain, recipient, solTokenAddress, destConfig])
+
+  // console.log(useReceiveAddress)
   const isRouter = useMemo(() => {
     // console.log(destConfig)
     if (['swapin', 'swapout'].includes(destConfig?.type)) {
@@ -328,7 +345,7 @@ export default function CrossChain({
     routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -341,7 +358,7 @@ export default function CrossChain({
     routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -353,7 +370,7 @@ export default function CrossChain({
     routerToken,
     formatCurrency ? formatCurrency : undefined,
     anyToken?.address,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -364,14 +381,14 @@ export default function CrossChain({
 
   const { wrapType: wrapTypeCrossBridge, execute: onWrapCrossBridge, inputError: wrapInputErrorCrossBridge } = useCrossBridgeCallback(
     formatCurrency ? formatCurrency : undefined,
-    destConfig?.type === 'swapin' ? destConfig?.DepositAddress : recipient,
+    destConfig?.type === 'swapin' ? destConfig?.DepositAddress : useReceiveAddress,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
     anyToken?.address ,
     destConfig?.pairid,
     isLiquidity,
-    recipient,
+    useReceiveAddress,
     selectCurrency,
     destConfig
   )
@@ -722,9 +739,7 @@ export default function CrossChain({
     return url
   }, [destConfig, selectChain, maxInputValue])
 
-  const [nearStorageBalance, setNearStorageBalance] = useState<any>()
-  const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
-  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+
 
   const getNonevmInfo = useCallback(() => {
     if (
