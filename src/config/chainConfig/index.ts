@@ -225,7 +225,7 @@ const allChainList = [
   ChainId.RPG,
   ChainId.BOBABEAM,
   ChainId.CKB,
-  // ChainId.ETHW,
+  ChainId.ETHW,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
