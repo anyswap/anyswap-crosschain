@@ -418,14 +418,18 @@ export default function SwapNative() {
         state: 'Error',
         tip: bt
       }
-    } else if (swapType !== 'deposit' && !Boolean(isAddr)) {
+    } else if (
+      swapType !== 'deposit'
+      && !Boolean(isAddr)
+      && chainId.toString() !== selectChain.toString()
+    ) {
       return {
         state: 'Error',
         tip: t('invalidRecipient')
       }
     }
     return undefined
-  }, [isInputError, inputBridgeValue, swapType, recipient, selectChain])
+  }, [isInputError, inputBridgeValue, swapType, recipient, selectChain, chainId])
 
   const isCrossBridge = useMemo(() => {
     if (errorTip) {
