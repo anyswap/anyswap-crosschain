@@ -95,7 +95,7 @@ export function useLoginSol () {
       })
     } else {
       if (confirm('Please open or install Solana wallet.') === true) {
-        window.open('https://solana.com/ecosystem/explore?categories=wallet')
+        window.open('https://phantom.app/download')
       }
     }
   }, [])
