@@ -2,7 +2,7 @@ import {formatSwapTokenList, getLocalRPC} from './methods'
 import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 
 export const CRO_MAIN_CHAINID = 25
-export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://cronode1.anyswap.exchange')
+export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://mmf-rpc.xstaking.sg')
 export const CRO_MAIN_EXPLORER = 'https://cronoscan.com'
 
 export const tokenList = []

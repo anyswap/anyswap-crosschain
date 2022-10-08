@@ -1,5 +1,5 @@
 // import './wdyr'
-
+import doNothing from './fix-rpc'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
 import React, { StrictMode } from 'react'
@@ -20,9 +20,11 @@ import PoolsUpdater from './state/pools/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 
+
 import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+
 
 if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false
@@ -44,6 +46,8 @@ const walletConnectChainIds: Record<number, NetworkInfo> = {
   0: testnet,
   1: mainnet
 }
+
+doNothing()
 
 function Updaters() {
   return (

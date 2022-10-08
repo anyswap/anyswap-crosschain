@@ -4,11 +4,11 @@ import {tokenListUrl, VERSION, USE_VERSION} from '../constant'
 const navLang = navigator.language
 
 export const ETH_MAIN_CHAINID = 1
-export const ETH_MAINNET = getLocalRPC(ETH_MAIN_CHAINID, process.env.REACT_APP_NETWORK_URL)
+export const ETH_MAINNET = getLocalRPC(ETH_MAIN_CHAINID, 'https://mainnet.infura.io/v3/fdd4494101ed4a28b41bb66d7fe9c692')
 export const ETH_MAIN_EXPLORER = navLang === 'zh-CN' ? 'https://cn.etherscan.com' : 'https://etherscan.io'
 
 export const ETH_TEST_CHAINID = 4
-export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/59c24a75202249aa92607c1b19158373')
+export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura.io/v3/fdd4494101ed4a28b41bb66d7fe9c692')
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
 export const ETH_TEST1_CHAINID = 5

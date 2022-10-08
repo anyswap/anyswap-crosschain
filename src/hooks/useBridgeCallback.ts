@@ -8,9 +8,10 @@ import { useCurrencyBalance, useETHBalances } from '../state/wallet/hooks'
 import { useAddPopup, useAppState } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
 import { useBridgeContract, useSwapUnderlyingContract } from './useContract'
-import {signSwapoutData, signSwapinData} from 'multichain-bridge'
+import {signSwapoutData, signSwapinData } from 'multichain-bridge'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 // import { MsgSend } from '@terra-money/terra.js';
+
 import {
   MsgSend,
   Coins,
