@@ -135,8 +135,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   Xdefi: {
     // connector: injected,
     connector: xdefi,
-    name: 'Xdefi',
-    iconName: 'XDEFI.jpg',
+    name: 'XDEFI',
+    iconName: 'XDEFI.png',
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#269964',
