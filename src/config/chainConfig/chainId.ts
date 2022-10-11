@@ -5,6 +5,7 @@ export enum ChainId {
   AURORA = '1313161554',
   AVAX = '43114',
   AVAX_TEST = '43113',
+  APTOS_TEST = '2',
   BLOCK = 'BLOCK',
   BNB = '56',
   BNB_TEST = '97',

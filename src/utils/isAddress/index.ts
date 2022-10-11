@@ -7,6 +7,7 @@ import {isBTCAddress, BTCARR} from './BTC'
 
 import {isTRXAddress} from '../../nonevm/trx'
 import {isSolAddress} from '../../nonevm/solana'
+import {isAptosAddress} from '../../nonevm/aptos'
 
 export function isEvmAddress(value: any): string | false {
   try {
@@ -76,6 +77,8 @@ export function isAddress(address: any, chainId?: any) {
       return false
     } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
       return isSolAddress(address)
+    } else if ([ChainId.APTOS_TEST].includes(chainId)) {
+      return isAptosAddress(address)
     } else {
       return isEvmAddress(address)
     }
