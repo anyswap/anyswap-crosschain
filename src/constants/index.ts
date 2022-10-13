@@ -9,7 +9,8 @@ import {
   bsc,
   clover,
   xdefi,
-  gnosissafe
+  gnosissafe,
+  bitkeep
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -92,9 +93,9 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#269964',
   },
   BITKEEP: {
-    connector: injected,
+    connector: bitkeep,
     name: 'BitKeep',
-    iconName: 'BitKeep.png',
+    iconName: 'BitKeep.svg',
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D'

@@ -108,6 +108,7 @@ interface Window {
   typhon: any
   typhoncip30: any
   solana: any
+  bitkeep: any
 }
 
 declare module '@onflow/fcl';
