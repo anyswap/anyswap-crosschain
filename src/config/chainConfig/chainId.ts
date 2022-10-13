@@ -32,6 +32,7 @@ export enum ChainId {
   MATIC_TEST = '80001',
   METIS = '1088',
   GLMR = '1284',
+  GLMR_TEST = '1287',
   MOVR = '1285',
   NAS = 'NAS',
   BOBA = '288',

@@ -245,6 +245,7 @@ const testChainList = [
   ChainId.XANA_TEST,
   ChainId.TWEMIX_TEST,
   ChainId.KLAY_TEST,
+  ChainId.GLMR_TEST,
 ]
 
 const useChain:any = {
