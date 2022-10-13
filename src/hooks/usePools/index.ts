@@ -27,10 +27,12 @@ export function usePoolDatas () {
         getNearPoolDatas(arr, chainId).then(res => {
           resolve(res)
         })
-      } else {
+      } else if (!isNaN(chainId)) {
         getEvmPoolsDatas(chainId, list, account).then(res => {
           resolve(res)
         })
+      } else {
+        resolve('')
       }
     })
   }, [getNearPoolDatas, getEvmPoolsDatas])

@@ -100,6 +100,7 @@ interface Window {
   freighterApi: any
   xfi: any
   cardano: any
+  bitkeep: any
 }
 
 declare const __DEV__: boolean;
