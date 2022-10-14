@@ -77,6 +77,7 @@ import ethw from './ethw'
 import sol from './sol'
 import xana from './xana'
 import twemix from './twemix'
+import milkalgo from './milkalgo'
 
 import { ChainId } from './chainId'
 
@@ -90,6 +91,7 @@ export const chainInfo:ConFig = {
   ...xana,
   ...sol,
   ...flow,
+  ...milkalgo,
   ...ethw,
   ...ckb,
   ...cardano,
@@ -226,6 +228,7 @@ const allChainList = [
   ChainId.BOBABEAM,
   ChainId.CKB,
   ChainId.ETHW,
+  ChainId.MILKALGO,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
