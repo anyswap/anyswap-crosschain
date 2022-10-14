@@ -470,6 +470,8 @@ export function useBridgeNativeCallback(
   const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
   const balance = swapType === 'deposit' ? ethbalance : anybalance
   // console.log(balance)
+  // console.log(anybalance)
+  // console.log(inputCurrency)
   // console.log(inputCurrency)
   // 我们总是可以解析输入货币的金额，因为包装是1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])

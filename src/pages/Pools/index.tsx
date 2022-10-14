@@ -155,7 +155,7 @@ export default function SwapNative() {
 
   const useSelectCurrency = useMemo(() => {
     // console.log(selectAnyToken)
-    // console.log(selectCurrency)
+    console.log(selectCurrency)
     if (swapType === 'deposit') {
       return selectCurrency
     }

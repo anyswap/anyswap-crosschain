@@ -57,6 +57,7 @@ export default function Updater(): null {
   
   const calls = useMemo(() => {
     const arr = []
+    const norepeat:any = []
     const list = allTokens ? Object.values(allTokens ?? {}) : []
     // console.log(list)
     if (account && !isNaN(chainId)) {
@@ -65,6 +66,21 @@ export default function Updater(): null {
         const obj:any = list[i]
         const token:any = obj.address
         if (isAddress(obj.address)) {
+          if (norepeat.includes(token)) continue
+          const destList = obj.destChains
+          for (const destChainid in destList) {
+            const destChainList = destList[destChainid]
+            for (const destTokenKey in destChainList) {
+              const destTokenItem = destChainList[destTokenKey]
+              if (!norepeat.includes(destTokenItem.fromanytoken.address)) {
+                arr.push({
+                  dec: destTokenItem.fromanytoken.decimals,
+                  target: destTokenItem.fromanytoken.address,
+                  callData: ERC20_INTERFACE.encodeFunctionData('balanceOf', [account]),
+                })
+              }
+            }
+          }
           arr.push({
             dec: obj.decimals,
             target: token,

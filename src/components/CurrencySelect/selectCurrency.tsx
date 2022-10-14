@@ -152,11 +152,12 @@ export default function SelectCurrencyInputPanel({
   }, [inputType, currency])
 
   // useEffect(() => {
+  //   console.log('currency',currency)
   //   console.log('isNativeToken',isNativeToken)
   //   console.log('useBalance', useBalance)
   //   console.log('selectTokenBalance',selectTokenBalance)
   //   console.log('selectedNativeBalance', selectedNativeBalance)
-  // }, [useBalance, selectedNativeBalance, isNativeToken, selectTokenBalance])
+  // }, [useBalance, selectedNativeBalance, isNativeToken, selectTokenBalance, currency])
 
   useEffect(() => {
     if (customBalance) {
