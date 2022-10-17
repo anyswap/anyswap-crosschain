@@ -95,6 +95,13 @@ export default function CrossChain({
     return false
   }, [selectDestCurrency])
 
+  const routerToken = useMemo(() => {
+    if (destConfig?.router) {
+      return destConfig?.router
+    }
+    return undefined
+  }, [destConfig])
+
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -247,6 +254,17 @@ export default function CrossChain({
     return <></>
   }
 
+  function ViewBtn () {
+    if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+      return <ButtonLight onClick={() => {
+        window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${selectChain}&receiverAddress=${recipient}`)
+      }}>{t('Confirm')}</ButtonLight>
+    }
+    return <ButtonLight onClick={() => {
+      setModalSpecOpen(false)
+    }}>{t('Confirm')}</ButtonLight>
+  }
+
   return (
     <>
       <ModalContent
@@ -308,9 +326,10 @@ export default function CrossChain({
           </div>
         </ListBox>
         <BottomGrouping>
-          <ButtonLight onClick={() => {
+          {ViewBtn()}
+          {/* <ButtonLight onClick={() => {
             setModalSpecOpen(false)
-          }}>{t('Confirm')}</ButtonLight>
+          }}>{t('Confirm')}</ButtonLight> */}
         </BottomGrouping>
       </ModalContent>
       <AutoColumn gap={'sm'}>
