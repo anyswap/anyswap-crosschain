@@ -78,6 +78,7 @@ import sol from './sol'
 import xana from './xana'
 import twemix from './twemix'
 import milkalgo from './milkalgo'
+import kek from './kek'
 
 import { ChainId } from './chainId'
 
@@ -87,6 +88,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...kek,
   ...twemix,
   ...xana,
   ...sol,
@@ -249,6 +251,7 @@ const testChainList = [
   ChainId.TWEMIX_TEST,
   ChainId.KLAY_TEST,
   ChainId.GLMR_TEST,
+  ChainId.KEK_TEST,
 ]
 
 const useChain:any = {
