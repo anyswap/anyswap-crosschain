@@ -38,7 +38,7 @@ export default {
     explorer: MILKALGO_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Algorand',
-    networkName: 'Algorand mainnet',
+    networkName: 'Milkomeda A1 (Algorand) mainnet',
     type: 'main',
     label: MILKALGO_MAIN_CHAINID,
   },
