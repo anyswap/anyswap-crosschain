@@ -37,7 +37,7 @@ export default {
     lookBlock: MILKALGO_MAIN_EXPLORER + '/block/',
     explorer: MILKALGO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Algorand',
+    name: 'Milkomeda A1 (Algorand)',
     networkName: 'Algorand mainnet',
     type: 'main',
     label: MILKALGO_MAIN_CHAINID,
