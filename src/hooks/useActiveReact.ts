@@ -10,6 +10,7 @@ import {useTrxAddress} from '../nonevm/trx'
 import {useAdaAddress} from '../nonevm/cardano'
 import {useFlowAddress} from '../nonevm/flow'
 import {useSolAddress} from '../nonevm/solana'
+import {useNonevmAddress} from '../nonevm/hooks'
 
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -26,7 +27,8 @@ export function useActiveReact () {
   const {adaAddress} = useAdaAddress()
   const {flowAddress} = useFlowAddress()
   const {solAddress} = useSolAddress()
-  // console.log(xlmAddress)
+  const {nonevmAccount} = useNonevmAddress(selectNetworkInfo?.chainId && selectNetworkInfo?.label ? selectNetworkInfo?.chainId : chainId)
+  // console.log(nonevmAccount)
   // const useChain = useMemo(() => {
   //   if (chainId) {
   //     return chainId
@@ -47,24 +49,25 @@ export function useActiveReact () {
       useAccount = ''
     } else if (selectNetworkInfo?.label === ChainId.NAS) {
       useAccount = nebAddress
-    } else if (
-      selectNetworkInfo?.label === ChainId.NEAR
-      || selectNetworkInfo?.label === ChainId.NEAR_TEST
-    ) {
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId)) {
       useAccount = nearAddress
-    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(useChainId)) {
       useAccount = xlmAddress
-    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(useChainId)) {
       useAccount = trxAddress
-    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(useChainId)) {
       // console.log(adaAddress)
       useAccount = adaAddress
-    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
       // console.log(adaAddress)
       useAccount = flowAddress
-    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(useChainId)) {
       // console.log(adaAddress)
       useAccount = solAddress
+    } else if (!isNaN(useChainId)) {
+      useAccount = account
+    } else {
+      useAccount = nonevmAccount
     }
     return {
       account: useAccount,
@@ -72,5 +75,5 @@ export function useActiveReact () {
       evmAccount: account,
       evmChainId: useChainId === chainId ? chainId : '',
     }
-  }, [account, connectedWallet, selectNetworkInfo?.label, chainId, nebAddress, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress, solAddress])
+  }, [account, connectedWallet, selectNetworkInfo?.label, chainId, nebAddress, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress, solAddress, nonevmAccount])
 }

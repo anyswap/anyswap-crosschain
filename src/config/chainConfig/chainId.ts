@@ -104,4 +104,6 @@ export enum ChainId {
   KLAY_TEST = '1001',
   MILKALGO = '2002',
   KEK_TEST = '420666',
+  APT = 'APT',
+  APT_TEST = 'APT_TEST',
 }

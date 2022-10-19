@@ -4,6 +4,7 @@ import CardanoUpdater from './cardano/updater'
 import TrxUpdater from './trx/updater'
 import FlowUpdater from './flow/updater'
 import SolUpdater from './solana/updater'
+import AptUpdater from './apt/updater'
 
 import {useActiveReact} from '../hooks/useActiveReact'
 import { ChainId } from '../config/chainConfig/chainId'
@@ -18,6 +19,8 @@ export default function Updaters() {
     return <FlowUpdater />
   } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
     return <SolUpdater />
+  } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+    return <AptUpdater />
   }
   return <></>
 }

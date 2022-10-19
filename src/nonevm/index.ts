@@ -5,6 +5,7 @@ import flow from './flow/reducer'
 import nonevm from './hooks/reducer'
 import temp from './temp/reducer'
 import sol from './solana/reducer'
+import apt from './apt/reducer'
 export default {
   xlm,
   trx,
@@ -12,5 +13,6 @@ export default {
   flow,
   nonevm,
   temp,
-  sol
+  sol,
+  apt
 }

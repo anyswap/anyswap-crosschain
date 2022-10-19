@@ -1,13 +1,22 @@
 import { useCallback } from 'react'
 import {
   useDispatch,
-  // useSelector
+  useSelector
 } from 'react-redux'
 import {
-  // AppState,
+  AppState,
   AppDispatch
 } from '../../state'
 import {approveList} from './actions'
+
+export function useNonevmAddress (chainId:any) {
+  const account:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.nonevmAddress)
+  // console.log(account)
+  // console.log(chainId)
+  return {
+    nonevmAccount: account?.[chainId]?.account ?? undefined
+  }
+}
 
 export function useApproveState () {
   // const allowanceList:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.approveList)

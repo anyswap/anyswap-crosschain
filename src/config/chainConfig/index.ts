@@ -79,6 +79,7 @@ import xana from './xana'
 import twemix from './twemix'
 import milkalgo from './milkalgo'
 import kek from './kek'
+import apt from './apt'
 
 import { ChainId } from './chainId'
 
@@ -88,6 +89,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...apt,
   ...kek,
   ...twemix,
   ...xana,
@@ -368,6 +370,7 @@ const useChain:any = {
     ChainId.ADA_TEST,
     ChainId.FLOW_TEST,
     ChainId.SOL_TEST,
+    ChainId.APT_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

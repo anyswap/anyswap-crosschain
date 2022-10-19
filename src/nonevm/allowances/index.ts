@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { ChainId } from '../../config/chainConfig/chainId'
+import { MaxUint256 } from '@ethersproject/constants'
 import {useTrxAllowance} from '../trx'
+import {useAptosBalance, useAptAllowance} from '../apt'
+
 import useInterval from '../../hooks/useInterval'
 import {useTxnsErrorTipOpen} from '../../state/application/hooks'
 import {
@@ -45,6 +48,9 @@ export function useNonevmAllowances (
   }, [selectCurrency])
 
   const {getTrxAllowance, setTrxAllowance} = useTrxAllowance(token, spender, chainId, account)
+  const {setAptAllowance} = useAptAllowance()
+
+  const {aptBalanceList} = useAptosBalance()
   // const allowanceList = useRef<any>()
   const allowanceList:any = useSelector<AppState, AppState['nonevm']>(state => state.nonevm.approveList)
 
@@ -64,6 +70,8 @@ export function useNonevmAllowances (
     try {
       if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
         approveResult = await setTrxAllowance()
+      } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+        approveResult = await setAptAllowance(token, chainId, account)
       }
       if (approveResult) {
         setLoading(true)
@@ -92,11 +100,17 @@ export function useNonevmAllowances (
           // console.log(res)
           setApprovalState({chainId, account, token, spender, allowance: res})
         })
+      } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+        if (aptBalanceList?.[token]) {
+          setApprovalState({chainId, account, token, spender, allowance: MaxUint256.toString()})
+        } else {
+          setApprovalState({chainId, account, token, spender, allowance: 0})
+        }
       } else {
         // allowanceList.current = ''
       }
     }
-  }, [token, spender, chainId, account, allowanceResult, inputValue, isApprove])
+  }, [token, spender, chainId, account, allowanceResult, inputValue, isApprove, aptBalanceList])
 
   useEffect(() => {
     getNonevmAllowance()

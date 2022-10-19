@@ -12,6 +12,7 @@ import {useXlmBalance} from '../nonevm/stellar'
 import {useAdaBalance} from '../nonevm/cardano'
 import {useFlowBalance} from '../nonevm/flow'
 import {useSolBalance} from '../nonevm/solana'
+import {useAptosBalance} from '../nonevm/apt'
 
 import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
@@ -36,6 +37,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {adaBalanceList} = useAdaBalance()
   const {flowBalanceList} = useFlowBalance()
   const {getSolTokenBalance, getSolBalance} = useSolBalance()
+  const {aptBalanceList} = useAptosBalance()
 
   const savedBalance = useRef<any>()
 
@@ -118,6 +120,19 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
             }
           })
         }
+      } else if ([ChainId.APT, ChainId.APT_TEST].includes(selectChainId)) {
+        // console.log(account)
+        if (aptBalanceList?.[token]) {
+          const bl = BigAmount.format(dec, aptBalanceList?.[token]?.balance)
+          savedBalance.current = bl
+        }
+        // getAptosResource(selectChainId, account, token).then((res:any) => {
+        //   // console.log(res)
+        //   if (res?.result?.value) {
+        //     const bl = BigAmount.format(dec, res?.result?.value)
+        //     savedBalance.current = bl
+        //   }
+        // })
       } else {
         savedBalance.current = evmBalance
       }
@@ -125,7 +140,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -156,6 +171,7 @@ export function useBaseBalances (
   const {adaBalanceList} = useAdaBalance()
   const {flowBalanceList} = useFlowBalance()
   const {getSolBalance} = useSolBalance()
+  const {aptBalanceList} = useAptosBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -217,8 +233,25 @@ export function useBaseBalances (
         }
         // console.log(res)
       })
+    } else if ([ChainId.APT, ChainId.APT_TEST].includes(selectChainId)) {
+      const nativetoken = '0x1::aptos_coin::AptosCoin'
+      // console.log(aptBalanceList)
+      if (aptBalanceList?.[nativetoken]) {
+          const bl = BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
+          setBalance(bl)
+      }
+      // console.log('uncheckedAddresses',uncheckedAddresses)
+      // getAptosResource(selectChainId, uncheckedAddresses).then((res:any) => {
+      //   if (res?.result?.value) {
+      //     const bl = BigAmount.format(9, res?.result?.value)
+      //     setBalance(bl)
+      //   } else {
+      //     setBalance('')
+      //   }
+      //   // console.log(res)
+      // })
     }
-  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList])
+  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList])
 
   useEffect(() => {
     fetchBalancesCallback()

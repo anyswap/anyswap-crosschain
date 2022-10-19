@@ -30,7 +30,7 @@ const solanaWeb3 = anchor.web3
 const Program = anchor.Program
 // const spl = new anchor.Spl()
 // const Token = anchor.Spl.token
-console.log(anchor )
+// console.log(anchor )
 // console.log(solanaWeb3 )
 // console.log(spl )
 // console.log(Token )

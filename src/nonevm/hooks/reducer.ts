@@ -1,12 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { approveList } from './actions'
+import { approveList, nonevmAddress } from './actions'
 
 export interface BurnState {
   readonly approveList: any
+  readonly nonevmAddress: any
 }
 
 const initialState: BurnState = {
   approveList: {},
+  nonevmAddress: {},
 }
 
 export default createReducer<BurnState>(initialState, builder =>
@@ -19,5 +21,9 @@ export default createReducer<BurnState>(initialState, builder =>
       state.approveList[chainId][account][token][spender] = {
         allowance
       }
+    })
+    .addCase(nonevmAddress, (state, { payload: { chainId, account} }) => {
+      if (!state.nonevmAddress) state.nonevmAddress = {}
+      state.nonevmAddress[chainId] = {account}
     })
 )

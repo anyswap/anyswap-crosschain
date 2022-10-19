@@ -109,9 +109,11 @@ interface Window {
   typhoncip30: any
   solana: any
   bitkeep: any
+  aptos: any
 }
 
 declare module '@onflow/fcl';
+declare module 'aptos';
 
 declare const __DEV__: boolean;
 
