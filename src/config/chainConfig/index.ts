@@ -95,6 +95,7 @@ export const chainInfo:ConFig = {
   ...xana,
   ...sol,
   ...flow,
+  ...twemix,
   ...milkalgo,
   ...ethw,
   ...ckb,
@@ -233,6 +234,7 @@ const allChainList = [
   ChainId.CKB,
   ChainId.ETHW,
   ChainId.MILKALGO,
+  ChainId.TWEMIX,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

@@ -99,11 +99,11 @@ export enum ChainId {
   SOL_TEST = 'SOL_TEST',
   XANA = '',
   XANA_TEST = '76798',
-  TWEMIX = '',
-  TWEMIX_TEST = '1112',
   KLAY_TEST = '1001',
   MILKALGO = '2002',
   KEK_TEST = '420666',
   APT = 'APT',
   APT_TEST = 'APT_TEST',
+  TWEMIX = '1111',
+  TWEMIX_TEST = '1112',
 }

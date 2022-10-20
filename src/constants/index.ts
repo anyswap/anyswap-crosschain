@@ -68,6 +68,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#315CF5'
   },
+  BITKEEP: {
+    connector: bitkeep,
+    name: 'BitKeep',
+    iconName: 'BitKeep.svg',
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D'
+  },
   tokenpocket: {
     connector: injected,
     name: 'TokenPocket',
@@ -91,14 +99,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#269964',
-  },
-  BITKEEP: {
-    connector: bitkeep,
-    name: 'BitKeep',
-    iconName: 'BitKeep.svg',
-    description: 'Easy-to-use browser extension.',
-    href: null,
-    color: '#E8831D'
   },
   Binance: {
     connector: bsc,

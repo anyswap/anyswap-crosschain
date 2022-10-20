@@ -45,7 +45,7 @@ export default {
     explorer: MIKO_MAIN_EXPLORER,
     symbol: symbol,
     name: 'Milkomeda',
-    networkName: 'Milkomeda mainnet',
+    networkName: 'Milkomeda (Cardano) mainnet',
     type: 'main',
     label: MIKO_MAIN_CHAINID,
   },
