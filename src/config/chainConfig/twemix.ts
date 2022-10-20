@@ -3,14 +3,14 @@ import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const TWEMIX_MAIN_CHAINID = ChainId.TWEMIX
-export const TWEMIX_MAINNET = getLocalRPC(TWEMIX_MAIN_CHAINID, '')
-export const TWEMIX_MAIN_EXPLORER = ''
+export const TWEMIX_MAINNET = getLocalRPC(TWEMIX_MAIN_CHAINID, 'https://api.wemix.com/')
+export const TWEMIX_MAIN_EXPLORER = 'https://explorer.wemix.com'
 
 export const TWEMIX_TEST_CHAINID = ChainId.TWEMIX_TEST
 export const TWEMIX_TESTNET = getLocalRPC(TWEMIX_TEST_CHAINID, 'https://api.test.wemix.com')
 export const TWEMIX_TEST_EXPLORER = 'https://microscope.test.wemix.com'
 
-const symbol = 'tWEMIX'
+const symbol = 'WEMIX'
 
 const bridgeToken:any = {
   [VERSION.V7]: {

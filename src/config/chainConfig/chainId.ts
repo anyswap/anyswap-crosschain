@@ -93,4 +93,6 @@ export enum ChainId {
   CKB = '71402',
   ETHW = '10001',
   MILKALGO = '2002',
+  TWEMIX = '1111',
+  TWEMIX_TEST = '1112',
 }

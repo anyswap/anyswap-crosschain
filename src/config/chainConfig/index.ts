@@ -74,6 +74,7 @@ import cardano from './cardano'
 import ckb from './ckb'
 import ethw from './ethw'
 import milkalgo from './milkalgo'
+import twemix from './twemix'
 
 import { ChainId } from './chainId'
 
@@ -83,6 +84,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...twemix,
   ...milkalgo,
   ...ethw,
   ...ckb,
@@ -221,6 +223,7 @@ const allChainList = [
   ChainId.CKB,
   ChainId.ETHW,
   ChainId.MILKALGO,
+  ChainId.TWEMIX,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
