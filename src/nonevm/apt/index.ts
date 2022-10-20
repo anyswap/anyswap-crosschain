@@ -29,15 +29,12 @@ import { tryParseAmount3 } from '../../state/swap/hooks'
 //   // return new AptosClient(rpc)
 //   return rpc
 // }
-
+const aptAddressReg = /^0x[0-9A-Za-z]{64}$/
 export function isAptosAddress (address: string) {
-  const inputAddress = address;
-  if (!address || address.indexOf("0x") === -1) {
-    return null
-  } else {
-    address = address.substring(2)
+  if (aptAddressReg.test(address)) {
+    return address
   }
-  return address.length === 64 ? inputAddress : null
+  return false
 }
 
 /**
@@ -247,8 +244,8 @@ export function useTempCrossChain (
       execute: async () => {
 
         const transaction = {
-          arguments: [],
-          function: '0x1::managed_coin::register',
+          arguments: [inputAmount, receiveAddress, selectChain],
+          function: routerToken + '::Router::swapout',
           type: 'entry_function_payload',
           'type_arguments': [inputToken],
         }
@@ -370,13 +367,31 @@ export function useTempSwapPoolCallback(
       balance: balance,
       execute: async () => {
 
-        const transaction = {
-          arguments: [],
-          function: '0x1::managed_coin::register',
-          type: 'entry_function_payload',
-          'type_arguments': [inputToken],
+        let transaction = {}
+        if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
+          transaction = {
+            arguments: [inputAmount, receiveAddress, selectChain],
+            function: routerToken + '::Router::swapout',
+            type: 'entry_function_payload',
+            'type_arguments': [inputToken],
+          }
+        } else {
+          if (swapType === 'deposit') {
+            transaction = {
+              arguments: [inputAmount],
+              function: routerToken + '::Pool::deposit',
+              type: 'entry_function_payload',
+              'type_arguments': [selectCurrency.address,inputToken],
+            }
+          } else {
+            transaction = {
+              arguments: [inputAmount],
+              function: routerToken + '::Pool::withdraw',
+              type: 'entry_function_payload',
+              'type_arguments': [inputToken, selectCurrency.address],
+            }
+          }
         }
-      
         try {
           const txReceipt:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
           console.log(txReceipt)

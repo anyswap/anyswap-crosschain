@@ -39,6 +39,9 @@ export default function Updater(): null {
 
   useEffect(() => {
     // setAptAllowance('0x5f31dac7618ccf2df75e0f5c458603d7a3ee2acb48d977ee41da3e562d7a90f6::USDT::Coin',chainId, account)
+    // getAptosResource(chainId, '0xc7e368b409404fd9bd27c0f6317996a7d36d94804ff72322586af0fd973126a3', '0x5f31dac7618ccf2df75e0f5c458603d7a3ee2acb48d977ee41da3e562d7a90f6::USDT::Coin').then((res:any) => {
+    //   console.log(res)
+    // })
     getBalance()
   }, [account, chainId, dispatch])
 
