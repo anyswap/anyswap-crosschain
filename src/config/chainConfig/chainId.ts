@@ -95,4 +95,5 @@ export enum ChainId {
   MILKALGO = '2002',
   TWEMIX = '1111',
   TWEMIX_TEST = '1112',
+  BRISE = '32520',
 }

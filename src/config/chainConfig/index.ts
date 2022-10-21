@@ -75,6 +75,7 @@ import ckb from './ckb'
 import ethw from './ethw'
 import milkalgo from './milkalgo'
 import twemix from './twemix'
+import brise from './brise'
 
 import { ChainId } from './chainId'
 
@@ -84,6 +85,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...brise,
   ...twemix,
   ...milkalgo,
   ...ethw,
@@ -224,6 +226,7 @@ const allChainList = [
   ChainId.ETHW,
   ChainId.MILKALGO,
   ChainId.TWEMIX,
+  ChainId.BRISE,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
