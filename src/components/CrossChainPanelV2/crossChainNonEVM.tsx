@@ -156,7 +156,7 @@ export default function CrossChain({
     })
   }
 
-  const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, destConfig?.spender, chainId, account, inputBridgeValue)
+  const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, destConfig?.spender, chainId, account, inputBridgeValue, anyToken)
 
   const approveState = useMemo(() => {
     // console.log(trxAllowance)

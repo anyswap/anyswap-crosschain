@@ -113,7 +113,7 @@ export function isAptosAddress (address: string) {
  * @param token token address
  * @param spender spender address
  */
-const bytecode = 'a11ceb0b0500000006010004030411041508051d0e072b36086120000000010102000100000301040100000400020100010302030105020501060c010500010900010101090104636f696e067369676e65720a616464726573735f6f661569735f6163636f756e745f7265676973746572656408726567697374657200000000000000000000000000000000000000000000000000000000000000010200000001150a0011000c010a013800200308050a0a0038010b01380220030f05120b00380305140b000102'
+export const bytecode = 'a11ceb0b0500000006010004030411041508051d0e072b36086120000000010102000100000301040100000400020100010302030105020501060c010500010900010101090104636f696e067369676e65720a616464726573735f6f661569735f6163636f756e745f7265676973746572656408726567697374657200000000000000000000000000000000000000000000000000000000000000010200000001150a0011000c010a013800200308050a0a0038010b01380220030f05120b00380305140b000102'
 export function useAptAllowance() {
   const setAptAllowance = useCallback((
     token: string | null | undefined,
@@ -129,13 +129,21 @@ export function useAptAllowance() {
         if (token && account && chainId && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
           const transaction = {
             arguments: [],
-            code: {
-              bytecode: bytecode
-            },
-            type: 'script_payload',
-            'type_arguments': [token, anytoken ? anytoken : token],
+            function: '0x1::managed_coin::register',
+            type: 'entry_function_payload',
+            'type_arguments': [token],
           }
-        
+          // const transaction = {
+          //   arguments: [],
+          //   code: {
+          //     bytecode: bytecode
+          //   },
+          //   function: '0x1::coin::transfer',
+          //   type: 'script_payload',
+          //   'type_arguments': [token, anytoken ? anytoken : token],
+          // }
+          console.log(anytoken)
+          console.log(transaction)
           try {
             const txResult:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
             console.log(txResult)
@@ -261,9 +269,9 @@ export function useAptCrossChain (
           arguments: [inputAmount, receiveAddress, selectChain],
           function: routerToken + '::Router::swapout',
           type: 'entry_function_payload',
-          'type_arguments': [inputToken],
+          'type_arguments': [selectCurrency.address],
         }
-      
+        console.log(transaction)
         try {
           const txReceipt:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
           console.log(txReceipt)

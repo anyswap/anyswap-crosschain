@@ -38,6 +38,7 @@ export function useNonevmAllowances (
   chainId:any,
   account:any,
   inputValue:any,
+  anyToken:any,
 ) {
   const addTransaction = useTransactionAdder()
   const {setApprovalState} = useApproveState()
@@ -71,7 +72,13 @@ export function useNonevmAllowances (
       if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
         approveResult = await setTrxAllowance()
       } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
-        approveResult = await setAptAllowance(token, chainId, account)
+        let useToken
+        if (!aptBalanceList?.[token]) {
+          useToken = token
+        } else if (!aptBalanceList?.[anyToken?.address]) {
+          useToken = anyToken?.address
+        }
+        approveResult = await setAptAllowance(useToken, chainId, account, anyToken?.address)
       }
       if (approveResult) {
         setLoading(true)
@@ -87,7 +94,7 @@ export function useNonevmAllowances (
       onChangeViewErrorTip(error, true)
     }
     return
-  }, [token, spender, chainId, account])
+  }, [token, spender, chainId, account, aptBalanceList])
 
   const getNonevmAllowance = useCallback(() => {
     // console.log(allowanceList)
@@ -101,7 +108,9 @@ export function useNonevmAllowances (
           setApprovalState({chainId, account, token, spender, allowance: res})
         })
       } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
-        if (aptBalanceList?.[token]) {
+        // console.log(token)
+        // console.log(aptBalanceList)
+        if (aptBalanceList?.[token] && aptBalanceList?.[anyToken?.address]) {
           setApprovalState({chainId, account, token, spender, allowance: MaxUint256.toString()})
         } else {
           setApprovalState({chainId, account, token, spender, allowance: 0})

@@ -1051,15 +1051,30 @@ export default function CrossChain({
       && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address])
     ) {
       if (window?.aptos) {
-        return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-          setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
-            alert('Register success.')
-          }).catch((error:any) => {
-            alert(error.toString())
-          })
-        }}>
-          Register
-        </ButtonPrimary>
+        let btnList:any = ''
+        if (!aptRegisterList?.[destConfig?.address]) {
+          btnList = <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+            setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
+              alert('Register success.')
+            }).catch((error:any) => {
+              alert(error.toString())
+            })
+          }}>
+            Register {destConfig?.symbol}
+          </ButtonPrimary>
+        }
+        if (!aptRegisterList?.[destConfig?.anytoken?.address]) {
+          btnList +=<ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+            setAptAllowance(destConfig?.anytoken?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
+              alert('Register success.')
+            }).catch((error:any) => {
+              alert(error.toString())
+            })
+          }}>
+            Register {destConfig?.anytoken?.symbol}
+          </ButtonPrimary>
+        }
+        return btnList
       } else {
         return (
           <BottomGrouping>
