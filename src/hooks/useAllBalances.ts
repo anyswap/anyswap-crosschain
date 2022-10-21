@@ -240,16 +240,6 @@ export function useBaseBalances (
           const bl = BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
           setBalance(bl)
       }
-      // console.log('uncheckedAddresses',uncheckedAddresses)
-      // getAptosResource(selectChainId, uncheckedAddresses).then((res:any) => {
-      //   if (res?.result?.value) {
-      //     const bl = BigAmount.format(9, res?.result?.value)
-      //     setBalance(bl)
-      //   } else {
-      //     setBalance('')
-      //   }
-      //   // console.log(res)
-      // })
     }
   }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList])
 

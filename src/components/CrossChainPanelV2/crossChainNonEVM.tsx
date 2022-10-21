@@ -18,6 +18,7 @@ import {useTrxCrossChain} from '../../nonevm/trx'
 import {useAdaCrossChain} from '../../nonevm/cardano'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 import {useSolCrossChain} from '../../nonevm/solana'
+import {useAptCrossChain} from '../../nonevm/apt'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -253,6 +254,16 @@ export default function CrossChain({
     destConfig
   )
 
+  const {execute: onAptWrap, inputError: wrapInputErrorApt} = useAptCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
+
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
@@ -316,10 +327,12 @@ export default function CrossChain({
       return wrapInputErrorAda
     } else if (wrapInputErrorSol && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
       return wrapInputErrorSol
+    } else if (wrapInputErrorApt && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+      return wrapInputErrorApt
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -520,6 +533,11 @@ export default function CrossChain({
                   } else if (onSolWrap && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
                     console.log('onSolWrap')
                     onSolWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onAptWrap && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+                    console.log('onAptWrap')
+                    onAptWrap().then(() => {
                       onClear()
                     })
                   }

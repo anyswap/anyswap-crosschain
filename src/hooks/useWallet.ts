@@ -16,6 +16,7 @@ import {connectXlmWallet} from '../nonevm/stellar'
 import {useLoginTrx} from '../nonevm/trx'
 import {useAdaLogin} from '../nonevm/cardano'
 import {useLoginFlow} from '../nonevm/flow'
+import {useLoginAptos} from '../nonevm/apt'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -28,6 +29,7 @@ export function useConnectWallet () {
   const {loginTrx} = useLoginTrx()
   const loginAda = useAdaLogin()
   const {loginFlow} = useLoginFlow()
+  const {loginAptos} = useLoginAptos()
 
   // const {publicKey} = useSolWallet()
 
@@ -84,6 +86,12 @@ export function useConnectWallet () {
     } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
       if (!account) {
         loginFlow()
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.APT, ChainId.APT_TEST].includes(selectNetworkInfo?.label)) {
+      if (!account) {
+        loginAptos(selectNetworkInfo?.label)
       } else {
         toggleWalletModal()
       }

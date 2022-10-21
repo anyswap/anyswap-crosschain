@@ -18,6 +18,8 @@ import {recordsTxns} from '../../utils/bridge/register'
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
+import { ChainId } from "../../config/chainConfig/chainId"
+
 
 // import {AptosClient} from 'aptos'
 // import {connect} from 'Aptos-api-js'
@@ -111,30 +113,39 @@ export function isAptosAddress (address: string) {
  * @param token token address
  * @param spender spender address
  */
+const bytecode = 'a11ceb0b0500000006010004030411041508051d0e072b36086120000000010102000100000301040100000400020100010302030105020501060c010500010900010101090104636f696e067369676e65720a616464726573735f6f661569735f6163636f756e745f7265676973746572656408726567697374657200000000000000000000000000000000000000000000000000000000000000010200000001150a0011000c010a013800200308050a0a0038010b01380220030f05120b00380305140b000102'
 export function useAptAllowance() {
   const setAptAllowance = useCallback((
     token: string | null | undefined,
-    chainId: string | null | undefined,
+    chainId: any,
     account: string | null | undefined,
+    anytoken?: any
   ): Promise<any> => {
     return new Promise(async(resolve, reject) => {
-      if (token && account && chainId) {
-        const transaction = {
-          arguments: [],
-          function: '0x1::managed_coin::register',
-          type: 'entry_function_payload',
-          'type_arguments': [token],
-        }
-      
-        try {
-          const txResult:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
-          console.log(txResult)
-          resolve({hash: txResult?.hash})
-        } catch (error) {
-          reject(error)
-        }
+      const curAccount = await window.aptos.account()
+      if (curAccount?.address !== account) {
+        alert('This address is not the current wallet address. Please switch wallets.')
       } else {
-        reject('Parameter error.')
+        if (token && account && chainId && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+          const transaction = {
+            arguments: [],
+            code: {
+              bytecode: bytecode
+            },
+            type: 'script_payload',
+            'type_arguments': [token, anytoken ? anytoken : token],
+          }
+        
+          try {
+            const txResult:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
+            console.log(txResult)
+            resolve({hash: txResult?.hash})
+          } catch (error) {
+            reject(error)
+          }
+        } else {
+          reject('Parameter error.')
+        }
       }
     })
   }, [])
@@ -195,7 +206,7 @@ export function getAptTxnsStatus (txid:string, chainId:any) {
  * @param typedValue typed Value
  * @param destConfig to chain info
  */
-export function useTempCrossChain (
+export function useAptCrossChain (
   routerToken: string | null | undefined,
   inputToken: string | null | undefined,
   selectCurrency: any,
@@ -219,17 +230,20 @@ export function useTempCrossChain (
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
   const balance = useMemo(() => {
-    const token = selectCurrency.address
-    if (selectCurrency.tokenType === 'NATIVE') {
-      const nativetoken = '0x1::aptos_coin::AptosCoin'
-      return BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
-    } else if (aptBalanceList?.[token]?.balance) {
-      return BigAmount.format(selectCurrency.decimals, aptBalanceList?.[token]?.balance)
+    const token = selectCurrency?.address
+    if (token) {
+      if (selectCurrency?.tokenType === 'NATIVE') {
+        const nativetoken = '0x1::aptos_coin::AptosCoin'
+        return BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
+      } else if (aptBalanceList?.[token]?.balance) {
+        return BigAmount.format(selectCurrency?.decimals, aptBalanceList?.[token]?.balance)
+      }
+      return BigAmount.format(selectCurrency?.decimals, '0')
     }
-    return BigAmount.format(selectCurrency.decimals, '0')
+    return undefined
   }, [selectCurrency])
 
-  let sufficientBalance = false
+  let sufficientBalance:any = false
   try {
     // sufficientBalance = true
     sufficientBalance = selectCurrency && typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
@@ -322,7 +336,7 @@ enum SwapType {
  * @param receiveAddress receive address
  * @param destConfig to chain info
  */
-export function useTempSwapPoolCallback(
+export function useAptSwapPoolCallback(
   routerToken: string | null | undefined,
   selectCurrency: any,
   inputToken: string | null | undefined,
@@ -452,20 +466,6 @@ export function useTempSwapPoolCallback(
   }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
 }
 
-interface PoolCalls {
-  token: string | null | undefined,
-  account: string | null | undefined,
-  anytoken: string | null | undefined,
-  dec: number
-}
-
-interface PoolResult {
-  [key:string]: {
-    balanceOf: string,
-    totalSupply: string,
-    balance: string,
-  }
-}
 
 /**
  * Get pool info
@@ -474,19 +474,78 @@ interface PoolResult {
  * @param calls [{token: '', anytoken: '', account: ''}]
  * @return {'anytoken': {'balanceOf': '', 'totalSupply': '', 'balance': ''}}
  */
-export function useTempPoolDatas () {
-  const getTempPoolDatas = useCallback(async(calls: Array<[PoolCalls]>, chainId: string | null | undefined): Promise<PoolResult> => {
-    console.log(calls)
-    console.log(chainId)
-    return {
-      'anytoken': {
-        balanceOf: '',
-        totalSupply: '',
-        balance: '',
+export function useAptPoolDatas () {
+  const {getAptosResource} = useAptosBalance()
+  const getAptPoolDatas = useCallback(async(calls: any, chainId: any): Promise<void> => {
+    return new Promise(resolve => {
+      const arr = []
+      const labelArr:any = []
+      // console.log(calls)
+      if ([ChainId.APT, ChainId.APT_TEST].includes(chainId) ) {
+        // console.log(calls)
+        // const useAccount = window.tronWeb.defaultAddress.base58
+        for (const item of calls) {
+          const anytoken = item.anytoken ? item.anytoken.split('::')[0] : ''
+          const anytokenSource = item.anytoken
+          const underlyingToken = item.token
+          // console.log('anytoken', anytoken)
+          // console.log('underlyingToken', underlyingToken)
+          if (underlyingToken && anytoken) {
+            // console.log(underlyingToken, anytoken)
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
+            arr.push(getAptosResource(chainId, anytoken))
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(underlyingToken, "balanceOf(address)", {}, {type:'address',value: anytoken}, useAccount))
+            labelArr.push({
+              key: anytokenSource,
+              label: 'balanceOf',
+              dec: item.dec
+            })
+          }
+          // console.log(item)
+          // console.log(chainId)
+          if (anytoken && isAptosAddress(item.account)) {
+            // arr.push(window?.tronWeb?.transactionBuilder.triggerSmartContract(anytoken, "balanceOf(address)", {}, {type:'address',value: item.account}, useAccount))
+            arr.push(getAptosResource(chainId, item.account))
+            labelArr.push({
+              key: anytokenSource,
+              label: 'balance',
+              dec: item.dec
+            })
+          }
+        }
       }
-    }
+      // console.log(arr)
+      const list:any = {}
+      Promise.all(arr).then(res => {
+        console.log(res)
+        for (let i = 0, len = arr.length; i < len; i++) {
+          const k = labelArr[i].key
+          const l = labelArr[i].label
+          const result = res[i]
+          // const dec = labelArr[i].dec
+          if (!list[k]) list[k] = {}
+          // list[k][l] = res[i] ? BigAmount.format(dec, res[i].toString()).toExact() : ''
+          // list[k][l] = result
+          if (result) {
+            for (const obj of result) {
+              const type = obj.type
+              const tokenKey = type.replace('0x1::coin::CoinStore<', '').replace('>', '')
+              if (tokenKey === k) {
+                list[k][l] = obj.data.coin.value
+                break
+              }
+            }
+          }
+        }
+        // console.log(list)
+        resolve(list)
+      }).catch((error:any) => {
+        console.log(error)
+        resolve(list)
+      })
+    })
   }, [])
   return {
-    getTempPoolDatas
+    getAptPoolDatas
   }
 }

@@ -64,6 +64,12 @@ import {
 } from '../../nonevm/solana'
 
 import {
+  useAptosBalance,
+  useAptAllowance,
+  useLoginAptos
+} from '../../nonevm/apt'
+
+import {
   LogoBox,
   ConfirmContent,
   TxnsInfoText,
@@ -121,6 +127,9 @@ export default function CrossChain({
   const {setTrustlines} = useTrustlines()
   const {validAccount, createAccount} = useSolCreateAccount()
   const {loginSol} = useLoginSol()
+  const {getAptosResource} = useAptosBalance()
+  const {setAptAllowance} = useAptAllowance()
+  const {loginAptos} = useLoginAptos()
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
@@ -156,6 +165,7 @@ export default function CrossChain({
   const [nearStorageBalance, setNearStorageBalance] = useState<any>()
   const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
   const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+  const [aptRegisterList, setAptRegisterList] = useState<any>({})
 
   const [curChain, setCurChain] = useState<any>({
     chain: useChain,
@@ -774,6 +784,27 @@ export default function CrossChain({
         console.log(res)
         setSolTokenAddress(res)
       })
+    } else if (
+      [ChainId.APT, ChainId.APT_TEST].includes(selectChain)
+      && destConfig?.address
+      && isAddress(recipient, selectChain)
+    ) {
+      getAptosResource(selectChain, recipient).then((res:any) => {
+        console.log(res)
+        const list:any = {}
+        if (res) {
+          for (const obj of res) {
+            const type = obj.type
+            const token = type.replace('0x1::coin::CoinStore<', '').replace('>', '')
+            if (obj?.data?.coin?.value) {
+              list[token] = {
+                balance: obj?.data?.coin?.value
+              }
+            }
+          }
+        }
+        setAptRegisterList(list)
+      })
     }
   }, [selectChain, recipient, destConfig])
 
@@ -847,6 +878,19 @@ export default function CrossChain({
       } else {
         return <ConfirmText>
           Please open or install Solana wallet.
+        </ConfirmText>
+      }
+    } else if (
+      [ChainId.APT, ChainId.APT].includes(selectChain)
+      && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address])
+    ) {
+      if (window?.aptos) {
+        return <ConfirmText>
+          Please register address, and wallet address must have APT.
+        </ConfirmText>
+      } else {
+        return <ConfirmText>
+          Please open or install Petra wallet.
         </ConfirmText>
       }
     } else {
@@ -996,6 +1040,31 @@ export default function CrossChain({
           <BottomGrouping>
             <ButtonPrimary style={{marginRight: '5px'}} onClick={() => {
               loginSol()
+            }}>
+              {t('ConnectWallet')}
+            </ButtonPrimary>
+          </BottomGrouping>
+        )
+      }
+    } else if (
+      [ChainId.APT, ChainId.APT].includes(selectChain)
+      && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address])
+    ) {
+      if (window?.aptos) {
+        return <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
+          setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
+            alert('Register success.')
+          }).catch((error:any) => {
+            alert(error.toString())
+          })
+        }}>
+          Register
+        </ButtonPrimary>
+      } else {
+        return (
+          <BottomGrouping>
+            <ButtonPrimary style={{marginRight: '5px'}} onClick={() => {
+              loginAptos(selectChain)
             }}>
               {t('ConnectWallet')}
             </ButtonPrimary>

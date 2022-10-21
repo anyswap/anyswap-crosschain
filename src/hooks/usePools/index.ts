@@ -5,11 +5,13 @@ import useInterval from '../useInterval'
 import { ChainId } from '../../config/chainConfig/chainId'
 import {useNearPoolDatas} from '../../nonevm/near'
 import {useTrxPoolDatas} from '../../nonevm/trx'
+import {useAptPoolDatas} from '../../nonevm/apt'
 
 export function usePoolDatas () {
   const {getNearPoolDatas} = useNearPoolDatas()
   const {getEvmPoolsDatas} = useEvmPoolDatas()
   const {getTrxPoolDatas} = useTrxPoolDatas()
+  const {getAptPoolDatas} = useAptPoolDatas()
 
   const getPoolsData = useCallback((chainId, list, account) => {
     return new Promise(resolve => {
@@ -32,6 +34,9 @@ export function usePoolDatas () {
         } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
           // console.log(2)
           resultFn = getTrxPoolDatas
+        } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+          // console.log(2)
+          resultFn = getAptPoolDatas
         }
         resultFn(arr, chainId).then((res:any) => {
           // console.log(res)
@@ -46,7 +51,7 @@ export function usePoolDatas () {
         resolve('')
       }
     })
-  }, [getNearPoolDatas, getEvmPoolsDatas, getTrxPoolDatas])
+  }, [getNearPoolDatas, getEvmPoolsDatas, getTrxPoolDatas, getAptPoolDatas])
 
   return {
     getPoolsData
@@ -67,6 +72,7 @@ export function usePools ({
   })
   const {getNearPoolDatas} = useNearPoolDatas()
   const {getTrxPoolDatas} = useTrxPoolDatas()
+  const {getAptPoolDatas} = useAptPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
     // let fetchCallback:any
@@ -97,6 +103,9 @@ export function usePools ({
       } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
         // console.log(2)
         resultFn = getTrxPoolDatas
+      } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+        // console.log(2)
+        resultFn = getAptPoolDatas
       }
       resultFn(arr, chainId).then((res:any) => {
         // console.log(res)
@@ -105,7 +114,7 @@ export function usePools ({
         setPoolData(res)
       })
     }
-  }, [chainId, getEvmPoolsData, getNearPoolDatas, getTrxPoolDatas])
+  }, [chainId, getEvmPoolsData, getNearPoolDatas, getTrxPoolDatas, getAptPoolDatas])
 
   useEffect(() => {
     if (chainId) {
@@ -128,6 +137,7 @@ export function usePool (
   const [poolData, setPoolData] = useState<any>()
   const {getEvmPoolsData} = useEvmPool(chainId, account, anytoken, underlying)
   const {getTrxPoolDatas} = useTrxPoolDatas()
+  const {getAptPoolDatas} = useAptPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
     if (!isNaN(chainId)) {
@@ -140,6 +150,9 @@ export function usePool (
       if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
         // console.log(2)
         resultFn = getTrxPoolDatas
+      } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+        // console.log(2)
+        resultFn = getAptPoolDatas
       }
       if (resultFn) {
         resultFn([{
