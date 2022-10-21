@@ -24,7 +24,7 @@ export default {
   [CKB_MAIN_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '',
+    multicalToken: '0x218c3c3D49d0E7B37aff0D8bB079de36Ae61A4c0',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: CKB_MAINNET,
