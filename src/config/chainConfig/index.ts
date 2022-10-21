@@ -80,6 +80,7 @@ import twemix from './twemix'
 import milkalgo from './milkalgo'
 import kek from './kek'
 import apt from './apt'
+import brise from './brise'
 
 import { ChainId } from './chainId'
 
@@ -95,6 +96,7 @@ export const chainInfo:ConFig = {
   ...xana,
   ...sol,
   ...flow,
+  ...brise,
   ...twemix,
   ...milkalgo,
   ...ethw,
@@ -235,6 +237,7 @@ const allChainList = [
   ChainId.ETHW,
   ChainId.MILKALGO,
   ChainId.TWEMIX,
+  ChainId.BRISE,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

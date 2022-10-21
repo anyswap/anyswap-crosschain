@@ -106,4 +106,5 @@ export enum ChainId {
   APT_TEST = 'APT_TEST',
   TWEMIX = '1111',
   TWEMIX_TEST = '1112',
+  BRISE = '32520',
 }
