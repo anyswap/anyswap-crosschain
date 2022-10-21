@@ -792,7 +792,7 @@ export default function CrossChain({
       getAptosResource(selectChain, recipient).then((res:any) => {
         console.log(res)
         const list:any = {}
-        if (res) {
+        if (res && !res.error_code) {
           for (const obj of res) {
             const type = obj.type
             const token = type.replace('0x1::coin::CoinStore<', '').replace('>', '')

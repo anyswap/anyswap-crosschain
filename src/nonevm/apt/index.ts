@@ -536,11 +536,13 @@ export function useAptPoolDatas () {
           // list[k][l] = result
           if (result) {
             for (const obj of result) {
-              const type = obj.type
-              const tokenKey = type.replace('0x1::coin::CoinStore<', '').replace('>', '')
-              if (tokenKey === k) {
-                list[k][l] = obj.data.coin.value
-                break
+              if (obj && !obj.error_code) {
+                const type = obj.type
+                const tokenKey = type.replace('0x1::coin::CoinStore<', '').replace('>', '')
+                if (tokenKey === k) {
+                  list[k][l] = obj.data.coin.value
+                  break
+                }
               }
             }
           }

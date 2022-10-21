@@ -21,7 +21,8 @@ export default function Updater(): null {
   const getBalance = useCallback(() => {
     getAptosResource(chainId, account).then((res:any) => {
       const list:any = {}
-      if (res) {
+      console.log(res)
+      if (res && !res.error_code) {
         for (const obj of res) {
           const type = obj.type
           const token = type.replace('0x1::coin::CoinStore<', '').replace('>', '')
