@@ -547,7 +547,7 @@ export function useAptPoolDatas () {
             }
           }
         }
-        // console.log(list)
+        console.log(list)
         resolve(list)
       }).catch((error:any) => {
         console.log(error)

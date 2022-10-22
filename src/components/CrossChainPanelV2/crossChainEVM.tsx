@@ -802,7 +802,10 @@ export default function CrossChain({
               }
             }
           }
+        } else if (res?.error_code && res?.error_code === 'account_not_found') {
+          list.error = res.message
         }
+        console.log(list)
         setAptRegisterList(list)
       })
     }
@@ -881,12 +884,13 @@ export default function CrossChain({
         </ConfirmText>
       }
     } else if (
-      [ChainId.APT, ChainId.APT].includes(selectChain)
-      && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address])
+      [ChainId.APT, ChainId.APT_TEST].includes(selectChain)
+      && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address || aptRegisterList.error])
     ) {
       if (window?.aptos) {
         return <ConfirmText>
-          Please register address, and wallet address must have APT.
+          {aptRegisterList.error ? aptRegisterList.error : 'Please register token first. Token registration is Aptos security policy, which required in your first interaction with an asset.'}
+          
         </ConfirmText>
       } else {
         return <ConfirmText>
@@ -1047,34 +1051,38 @@ export default function CrossChain({
         )
       }
     } else if (
-      [ChainId.APT, ChainId.APT].includes(selectChain)
+      [ChainId.APT, ChainId.APT_TEST].includes(selectChain)
       && (!aptRegisterList?.[destConfig?.address] || !aptRegisterList?.[destConfig?.anytoken?.address])
     ) {
       if (window?.aptos) {
-        let btnList:any = ''
-        if (!aptRegisterList?.[destConfig?.address]) {
-          btnList = <ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-            setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
-              alert('Register success.')
-            }).catch((error:any) => {
-              alert(error.toString())
-            })
-          }}>
-            Register {destConfig?.symbol}
-          </ButtonPrimary>
-        }
-        if (!aptRegisterList?.[destConfig?.anytoken?.address]) {
-          btnList +=<ButtonPrimary disabled={!isAddress(recipient, selectChain)} onClick={() => {
-            setAptAllowance(destConfig?.anytoken?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
-              alert('Register success.')
-            }).catch((error:any) => {
-              alert(error.toString())
-            })
-          }}>
-            Register {destConfig?.anytoken?.symbol}
-          </ButtonPrimary>
-        }
-        return btnList
+        return <>
+          {
+            !aptRegisterList?.[destConfig?.address] ? (
+              <ButtonPrimary disabled={!isAddress(recipient, selectChain)} style={{margin: '0 5px'}} onClick={() => {
+                setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
+                  alert('Register success.')
+                }).catch((error:any) => {
+                  alert(error.toString())
+                })
+              }}>
+                Register {destConfig?.symbol}
+              </ButtonPrimary>
+            ) : ''
+          }
+          {
+            !aptRegisterList?.[destConfig?.anytoken?.address] ? (
+              <ButtonPrimary disabled={!isAddress(recipient, selectChain)} style={{margin: '0 5px'}} onClick={() => {
+                setAptAllowance(destConfig?.anytoken?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
+                  alert('Register success.')
+                }).catch((error:any) => {
+                  alert(error.toString())
+                })
+              }}>
+                Register {destConfig?.anytoken?.symbol}
+              </ButtonPrimary>
+            ) : ''
+          }
+        </>
       } else {
         return (
           <BottomGrouping>
