@@ -3,7 +3,7 @@ import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const MIKO_MAIN_CHAINID = ChainId.MIKO
-export const MIKO_MAINNET = getLocalRPC(MIKO_MAIN_CHAINID, 'https://rpc.c1.milkomeda.com:8545')
+export const MIKO_MAINNET = getLocalRPC(MIKO_MAIN_CHAINID, 'https://rpc-mainnet-cardano-evm.c1.milkomeda.com')
 export const MIKO_MAIN_EXPLORER = 'https://rpc.c1.milkomeda.com:4000'
 
 const symbol = 'milkADA'
@@ -44,7 +44,7 @@ export default {
     lookBlock: MIKO_MAIN_EXPLORER + '/block/',
     explorer: MIKO_MAIN_EXPLORER,
     symbol: symbol,
-    name: 'Milkomeda',
+    name: 'Milkomeda C1',
     networkName: 'Milkomeda (Cardano) mainnet',
     type: 'main',
     label: MIKO_MAIN_CHAINID,
