@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
 import { getEtherscanLink } from '../../utils'
@@ -24,7 +24,7 @@ export default function TransactionPopup({
   success?: boolean
   summary?: string
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const { t } = useTranslation()
 
   const theme = useContext(ThemeContext)

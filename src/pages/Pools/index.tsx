@@ -219,6 +219,7 @@ export default function SwapNative() {
     selectChain,
     recipient,
     destConfig,
+    selectCurrency
   )
   
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
@@ -250,7 +251,7 @@ export default function SwapNative() {
         }
       }
     }
-    // console.log(arr)
+    console.log(arr)
     return arr
   }, [selectCurrency, anyTokenList])
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})

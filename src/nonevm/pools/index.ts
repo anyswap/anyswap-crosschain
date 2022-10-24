@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {useTrxSwapPoolCallback} from '../trx'
+import {useAptSwapPoolCallback} from '../apt'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { ChainId } from '../../config/chainConfig/chainId';
 
@@ -19,10 +20,12 @@ export function useSwapPoolCallback(
   selectChain: any,
   receiveAddress: any,
   destConfig: any,
+  selectCurrency: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 // ): any {
   const {chainId} = useActiveReact()
   const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig)
+  const {execute: onAptSwar, inputError: inputErrorApt} = useAptSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, selectCurrency)
   
   return useMemo(() => {
     // console.log(chainId)
@@ -35,10 +38,17 @@ export function useSwapPoolCallback(
         execute: onTrxSwar,
         inputError: inputErrorTrx
       }
+    } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+      return {
+        wrapType: WrapType.WRAP,
+        execute: onAptSwar,
+        inputError: inputErrorApt
+      }
     }
     return { wrapType: WrapType.NOT_APPLICABLE }
   }, [
     wrapTypeTrx, onTrxSwar, inputErrorTrx,
+    onAptSwar, inputErrorApt,
     inputCurrency, inputToken, typedValue, swapType,
     chainId
   ])

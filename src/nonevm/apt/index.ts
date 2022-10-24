@@ -178,12 +178,15 @@ export function getAptTxnsStatus (txid:string, chainId:any) {
       fetch(url).then(res => res.json()).then(json => {
         console.log(json)
         if (json) {
-          if (json.success) {
+          if (json.success === true) {
             data.msg = 'Success'
             data.info = json
-          } else {
+          } else if (json.success === false) {
             data.msg = 'Failure'
             data.error = 'Txns is failure!'
+          } else {
+            data.msg = 'Null'
+            data.error = 'Query is empty!'
           }
         } else {
           data.msg = 'Null'
@@ -327,10 +330,6 @@ export function useAptCrossChain (
   }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
 }
 
-enum SwapType {
-  withdraw = 'withdraw',
-  deposit = 'deposit',
-}
 
 /**
  * Cross chain 
@@ -349,10 +348,11 @@ export function useAptSwapPoolCallback(
   selectCurrency: any,
   inputToken: string | null | undefined,
   typedValue: any,
-  swapType: SwapType,
+  swapType: any,
   selectChain: any,
   receiveAddress: string | null | undefined,
   destConfig: any,
+  inputCurrency: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
   const {aptBalanceList} = useAptosBalance()
@@ -364,15 +364,17 @@ export function useAptSwapPoolCallback(
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
-  const balance = useMemo(() => {
-    const token = selectCurrency.address
-    if (selectCurrency.tokenType === 'NATIVE') {
-      const nativetoken = '0x1::aptos_coin::AptosCoin'
-      return BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
-    } else if (aptBalanceList?.[token]?.balance) {
-      return BigAmount.format(selectCurrency.decimals, aptBalanceList?.[token]?.balance)
+  const balance:any = useMemo(() => {
+    const token = selectCurrency?.address
+    if (token) {
+      if (selectCurrency?.tokenType === 'NATIVE' && aptBalanceList?.[token]?.balance) {
+        return BigAmount.format(8, aptBalanceList?.[token]?.balance)
+      } else if (aptBalanceList?.[token]?.balance && aptBalanceList?.[token]?.balance) {
+        return BigAmount.format(selectCurrency.decimals, aptBalanceList?.[token]?.balance)
+      }
+      return BigAmount.format(selectCurrency.decimals, '0')
     }
-    return BigAmount.format(selectCurrency.decimals, '0')
+    return undefined
   }, [selectCurrency])
 
   let sufficientBalance = false
@@ -384,7 +386,7 @@ export function useAptSwapPoolCallback(
   }
 
   return useMemo(() => {
-    if (!account || !chainId || !selectCurrency || !receiveAddress) return {}
+    if (!account || !chainId || !selectCurrency || !swapType) return {}
     return {
       balance: balance,
       execute: async () => {
@@ -403,17 +405,18 @@ export function useAptSwapPoolCallback(
               arguments: [inputAmount],
               function: routerToken + '::Pool::deposit',
               type: 'entry_function_payload',
-              'type_arguments': [selectCurrency.address,inputToken],
+              'type_arguments': [inputCurrency.address,inputToken],
             }
           } else {
             transaction = {
               arguments: [inputAmount],
               function: routerToken + '::Pool::withdraw',
               type: 'entry_function_payload',
-              'type_arguments': [inputToken, selectCurrency.address],
+              'type_arguments': [inputToken, inputCurrency.address],
             }
           }
         }
+        console.log(transaction)
         try {
           const txReceipt:any = await (window as any).aptos.signAndSubmitTransaction(transaction);
           console.log(txReceipt)
@@ -438,7 +441,7 @@ export function useAptSwapPoolCallback(
                 summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
                 value: typedValue,
                 toChainId: selectChain,
-                toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+                toAddress: receiveAddress?.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
                 symbol: selectCurrency?.symbol,
                 version: 'swapin',
                 routerToken: routerToken,
@@ -471,7 +474,7 @@ export function useAptSwapPoolCallback(
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, inputCurrency])
 }
 
 
@@ -525,7 +528,7 @@ export function useAptPoolDatas () {
       // console.log(arr)
       const list:any = {}
       Promise.all(arr).then(res => {
-        console.log(res)
+        // console.log(res)
         for (let i = 0, len = arr.length; i < len; i++) {
           const k = labelArr[i].key
           const l = labelArr[i].label
@@ -547,7 +550,7 @@ export function useAptPoolDatas () {
             }
           }
         }
-        console.log(list)
+        // console.log(list)
         resolve(list)
       }).catch((error:any) => {
         console.log(error)

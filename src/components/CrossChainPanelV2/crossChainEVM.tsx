@@ -1057,7 +1057,14 @@ export default function CrossChain({
       if (window?.aptos) {
         return <>
           {
-            !aptRegisterList?.[destConfig?.address] ? (
+            aptRegisterList.error ? (
+              <ButtonPrimary disabled style={{margin: '0 5px'}}>
+                Deposit APT
+              </ButtonPrimary>
+            ) : ''
+          }
+          {
+            !aptRegisterList?.[destConfig?.address] && !aptRegisterList.error ? (
               <ButtonPrimary disabled={!isAddress(recipient, selectChain)} style={{margin: '0 5px'}} onClick={() => {
                 setAptAllowance(destConfig?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
                   alert('Register success.')
@@ -1070,7 +1077,7 @@ export default function CrossChain({
             ) : ''
           }
           {
-            !aptRegisterList?.[destConfig?.anytoken?.address] ? (
+            !aptRegisterList?.[destConfig?.anytoken?.address] && !aptRegisterList.error ? (
               <ButtonPrimary disabled={!isAddress(recipient, selectChain)} style={{margin: '0 5px'}} onClick={() => {
                 setAptAllowance(destConfig?.anytoken?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
                   alert('Register success.')

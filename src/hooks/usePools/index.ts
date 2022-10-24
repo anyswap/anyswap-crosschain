@@ -17,7 +17,7 @@ export function usePoolDatas () {
     return new Promise(resolve => {
       // console.log(chainId)
       // console.log(list)
-      if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+      if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST,ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
         const arr:any = []
         for (const item of list) {
           arr.push({
@@ -82,7 +82,7 @@ export function usePools ({
         // console.log(res)
         setPoolData(res)
       })
-    } else if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST, ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
       const arr = []
       for (const item of tokenList) {
         arr.push({
