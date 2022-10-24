@@ -125,6 +125,9 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
         if (aptBalanceList?.[token]) {
           const bl = BigAmount.format(dec, aptBalanceList?.[token]?.balance)
           savedBalance.current = bl
+        } else if (dec) {
+          const bl = BigAmount.format(dec, '0')
+          savedBalance.current = bl
         }
         // getAptosResource(selectChainId, account, token).then((res:any) => {
         //   // console.log(res)
@@ -237,8 +240,11 @@ export function useBaseBalances (
       const nativetoken = '0x1::aptos_coin::AptosCoin'
       // console.log(aptBalanceList)
       if (aptBalanceList?.[nativetoken]) {
-          const bl = BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
-          setBalance(bl)
+        const bl = BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
+        setBalance(bl)
+      } else {
+        const bl = BigAmount.format(8, '0')
+        setBalance(bl)
       }
     }
   }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList])
