@@ -240,19 +240,18 @@ export function useAptCrossChain (
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
-  const balance = useMemo(() => {
+  const balance:any = useMemo(() => {
     const token = selectCurrency?.address
     if (token) {
-      if (selectCurrency?.tokenType === 'NATIVE') {
-        const nativetoken = '0x1::aptos_coin::AptosCoin'
-        return BigAmount.format(8, aptBalanceList?.[nativetoken]?.balance)
-      } else if (aptBalanceList?.[token]?.balance) {
+      if (selectCurrency?.tokenType === 'NATIVE' && aptBalanceList?.[token]?.balance) {
+        return BigAmount.format(8, aptBalanceList?.[token]?.balance)
+      } else if (aptBalanceList?.[token]?.balance && aptBalanceList?.[token]?.balance) {
         return BigAmount.format(selectCurrency?.decimals, aptBalanceList?.[token]?.balance)
       }
       return BigAmount.format(selectCurrency?.decimals, '0')
     }
     return undefined
-  }, [selectCurrency])
+  }, [selectCurrency, aptBalanceList])
 
   let sufficientBalance:any = false
   try {
@@ -375,7 +374,7 @@ export function useAptSwapPoolCallback(
       return BigAmount.format(selectCurrency.decimals, '0')
     }
     return undefined
-  }, [selectCurrency])
+  }, [selectCurrency, aptBalanceList])
 
   let sufficientBalance = false
   try {
