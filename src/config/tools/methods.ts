@@ -6,12 +6,9 @@ import {
 export function selectNetwork (chainID:any, type?: any) {
   return new Promise(resolve => {
     const { ethereum } = window
-    const ethereumFN:any = {
-      request: '',
-      ...ethereum
-    }
+    const ethereumFN: any = ethereum ?? {};
     window.localStorage.setItem(ENV_NODE_CONFIG, chainInfo[chainID].label)
-    if (ethereumFN && ethereumFN.request) {
+    if (ethereumFN.request) {
       // console.log(ethereumFN)
       // console.log(ethereumFN.chainId)
       const data = {
@@ -58,11 +55,8 @@ export function selectNetwork (chainID:any, type?: any) {
 export function addToken (address:string, symbol: string, decimals: number, logoUrl?:string) {
   return new Promise(resolve => {
     const { ethereum } = window
-    const ethereumFN:any = {
-      request: '',
-      ...ethereum
-    }
-    if (ethereumFN && ethereumFN.request) {
+    const ethereumFN: any = ethereum ?? {};
+    if (ethereumFN.request) {
       const params = {
         method: 'wallet_watchAsset',
         params: {
