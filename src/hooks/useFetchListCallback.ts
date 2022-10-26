@@ -34,7 +34,7 @@ import {
 
 function getVersion () {
   return new Promise(resolve => {
-    const url = `${config.bridgeApi}/token/version`
+    const url = `${config.multiAridgeApi}/token/version`
     getUrlData(url).then((version:any) => {
       resolve(version)
     })
@@ -45,7 +45,7 @@ function getServerTokenlist (chainId:any) {
   return new Promise(resolve => {
     let list:any = {}
     if (chainId) {
-      const url = `${config.bridgeApi}/v4/tokenlistv4/${chainId}`
+      const url = `${config.multiAridgeApi}/v4/tokenlistv4/${chainId}`
       getUrlData(url).then((tokenList:any) => {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {
@@ -65,7 +65,7 @@ function getServerPoolTokenlist (chainId:any) {
   return new Promise(resolve => {
     const list:any = {}
     if (chainId) {
-      const url = `${config.bridgeApi}/v4/poollist/${chainId}`
+      const url = `${config.multiAridgeApi}/v4/poollist/${chainId}`
       getUrlData(url).then((tokenList:any) => {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {
@@ -92,7 +92,7 @@ function getServerNftTokenlist (chainId:any) {
   return new Promise(resolve => {
     let list:any = {}
     if (chainId) {
-      const url = `${config.bridgeApi}/v4/nft/${chainId}`
+      const url = `${config.multiAridgeApi}/v4/nft/${chainId}`
       getUrlData(url).then((tokenList:any) => {
         // console.log(tokenList)
         if (tokenList.msg === 'Success' && tokenList.data) {

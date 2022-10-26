@@ -703,7 +703,7 @@ export default function CrossChain({
       && destConfig?.address !== 'XRP'
     ) {
       // const symbol = destConfig.symbol
-      getUrlData(`${config.bridgeApi}/xrp/trustset/${recipient}`).then((res:any) => {
+      getUrlData(`${config.multiAridgeApi}/xrp/trustset/${recipient}`).then((res:any) => {
         console.log(res)
         if (res.msg === 'Success') {
           const data = res.data?.result?.lines ?? []
