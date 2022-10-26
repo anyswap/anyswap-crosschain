@@ -159,19 +159,32 @@ export default function SelectCurrencyInputPanel({
   //   console.log('selectedNativeBalance', selectedNativeBalance)
   // }, [useBalance, selectedNativeBalance, isNativeToken, selectTokenBalance, currency])
 
+  const nativeBalance = useMemo(() => {
+    if (selectedNativeBalance) {
+      return selectedNativeBalance.toSignificant(6)
+    }
+    return undefined
+  }, [selectedNativeBalance])
+  const tokenBalance = useMemo(() => {
+    if (selectTokenBalance) {
+      return selectTokenBalance.toSignificant(6)
+    }
+    return undefined
+  }, [selectTokenBalance])
+
   useEffect(() => {
     if (customBalance) {
       // console.log(1)
       setUseBalance(customBalance)
-    } else if (selectTokenBalance && !isNativeToken) {
+    } else if (tokenBalance && !isNativeToken) {
       // console.log(2)
-      setUseBalance(selectTokenBalance)
+      setUseBalance(tokenBalance)
     } else if (isNativeToken) {
       // console.log(3)
-      if (inputType && inputType.swapType === 'withdraw' && selectTokenBalance) {
-        setUseBalance(selectTokenBalance)
-      } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
-        setUseBalance(selectedNativeBalance)
+      if (inputType && inputType.swapType === 'withdraw' && tokenBalance) {
+        setUseBalance(tokenBalance)
+      } else if ((inputType && inputType.swapType === 'deposit') || nativeBalance) {
+        setUseBalance(nativeBalance)
       } else {
         setUseBalance(undefined)
       }
@@ -179,7 +192,7 @@ export default function SelectCurrencyInputPanel({
       // console.log(4)
       setUseBalance(undefined)
     }
-  }, [selectTokenBalance, isNativeToken, selectedNativeBalance, customBalance, inputType, currency])
+  }, [tokenBalance, isNativeToken, nativeBalance, customBalance, inputType])
 
   // const useBalance = useMemo(() => {
   //   // console.log(hideBalance)
