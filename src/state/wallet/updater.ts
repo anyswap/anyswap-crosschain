@@ -72,7 +72,7 @@ export default function Updater(): null {
             const destChainList = destList[destChainid]
             for (const destTokenKey in destChainList) {
               const destTokenItem = destChainList[destTokenKey]
-              if (!norepeat.includes(destTokenItem.fromanytoken.address)) {
+              if (!norepeat.includes(destTokenItem.fromanytoken.address) && isAddress(destTokenItem.fromanytoken.address)) {
                 arr.push({
                   dec: destTokenItem.fromanytoken.decimals,
                   target: destTokenItem.fromanytoken.address,
