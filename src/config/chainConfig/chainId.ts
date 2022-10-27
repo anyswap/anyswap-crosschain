@@ -101,10 +101,13 @@ export enum ChainId {
   XANA_TEST = '76798',
   KLAY_TEST = '1001',
   MILKALGO = '2002',
+  KEK = '420420',
   KEK_TEST = '420666',
   APT = 'APT',
   APT_TEST = 'APT_TEST',
   TWEMIX = '1111',
   TWEMIX_TEST = '1112',
   BRISE = '32520',
+  MINT = '',
+  DND = '7363',
 }

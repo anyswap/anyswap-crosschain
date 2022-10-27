@@ -11,6 +11,7 @@ import {
 import {nonevmAddress} from '../hooks/actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import config from '../../config'
+import {VALID_BALANCE} from '../../config/constant'
 
 import {BigAmount} from '../../utils/formatBignumber'
 
@@ -262,10 +263,14 @@ export function useAptCrossChain (
   }
 
   return useMemo(() => {
+    // console.log(sufficientBalance)
+    // console.log(balance ? balance?.toExact() : '')
+    // console.log(typedValue)
     if (!account || !chainId || !selectCurrency || !receiveAddress) return {}
     return {
       balance: balance,
-      execute: async () => {
+      execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
+      ? async () => {
 
         const transaction = {
           arguments: [inputAmount, receiveAddress, selectChain],
@@ -298,7 +303,7 @@ export function useAptCrossChain (
               toChainId: selectChain,
               toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
               symbol: selectCurrency?.symbol,
-              version: 'swapin',
+              version: destConfig?.type,
               routerToken: routerToken,
               token: selectCurrency?.address,
               logoUrl: selectCurrency?.logoUrl,
@@ -323,7 +328,7 @@ export function useAptCrossChain (
           // reject(error)
           onChangeViewErrorTip('Txns failure.', true)
         }
-      },
+      } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
   }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
@@ -442,7 +447,7 @@ export function useAptSwapPoolCallback(
                 toChainId: selectChain,
                 toAddress: receiveAddress?.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
                 symbol: selectCurrency?.symbol,
-                version: 'swapin',
+                version: destConfig?.type,
                 routerToken: routerToken,
                 token: selectCurrency?.address,
                 logoUrl: selectCurrency?.logoUrl,

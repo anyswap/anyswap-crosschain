@@ -327,7 +327,7 @@ export default function CrossChain({
       return wrapInputErrorAda
     } else if (wrapInputErrorSol && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
       return wrapInputErrorSol
-    } else if (wrapInputErrorApt && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+    } else if (wrapInputErrorApt && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
       return wrapInputErrorApt
     } else {
       return false

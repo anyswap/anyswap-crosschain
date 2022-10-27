@@ -2,9 +2,9 @@ import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-// export const KEK_MAIN_CHAINID = ChainId.KEK
-// export const KEK_MAINNET = getLocalRPC(KEK_MAIN_CHAINID, 'https://v1.mainnet.godwoken.io/rpc')
-// export const KEK_MAIN_EXPLORER = 'https://gw-mainnet-explorer.nervosdao.community'
+export const KEK_MAIN_CHAINID = ChainId.KEK
+export const KEK_MAINNET = getLocalRPC(KEK_MAIN_CHAINID, 'https://mainnet.kekchain.com')
+export const KEK_MAIN_EXPLORER = 'http://explorer.kekchain.com'
 
 export const KEK_TEST_CHAINID = ChainId.KEK_TEST
 export const KEK_TESTNET = getLocalRPC(KEK_TEST_CHAINID, 'https://testnet.kekchain.com')
@@ -21,27 +21,27 @@ const bridgeToken:any = {
 }
 
 export default {
-  // [KEK_MAIN_CHAINID]: {
-  //   ...bridgeToken[USE_VERSION],
-  //   swapRouterToken: '',
-  //   multicalToken: '',
-  //   v1FactoryToken: '',
-  //   v2FactoryToken: '',
-  //   nodeRpc: KEK_MAINNET,
-  //   nodeRpcList: [
-  //     KEK_MAINNET,
-  //   ],
-  //   chainID: KEK_MAIN_CHAINID,
-  //   lookHash: KEK_MAIN_EXPLORER + '/tx/',
-  //   lookAddr: KEK_MAIN_EXPLORER + '/address/',
-  //   lookBlock: KEK_MAIN_EXPLORER + '/block/',
-  //   explorer: KEK_MAIN_EXPLORER,
-  //   symbol: symbol,
-  //   name: 'Godwoken',
-  //   networkName: 'Godwoken mainnet',
-  //   type: 'main',
-  //   label: KEK_MAIN_CHAINID,
-  // },
+  [KEK_MAIN_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: KEK_MAINNET,
+    nodeRpcList: [
+      KEK_MAINNET,
+    ],
+    chainID: KEK_MAIN_CHAINID,
+    lookHash: KEK_MAIN_EXPLORER + '/tx/',
+    lookAddr: KEK_MAIN_EXPLORER + '/address/',
+    lookBlock: KEK_MAIN_EXPLORER + '/block/',
+    explorer: KEK_MAIN_EXPLORER,
+    symbol: symbol,
+    name: 'Kekchain',
+    networkName: 'Kekchain mainnet',
+    type: 'main',
+    label: KEK_MAIN_CHAINID,
+  },
   [KEK_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',

@@ -16,7 +16,10 @@ export function getStatus (status:any, confirmations?:any) {
   } else if ([7, 8].includes(status)) {
     statusType = Status.Crosschaining
   } else if ([9, 10].includes(status)) {
-    if (confirmations && confirmations > 0) {
+    if (
+      status === 10
+      || (confirmations && confirmations > 0)
+    ) {
       statusType = Status.Success
     } else {
       statusType = Status.Crosschaining

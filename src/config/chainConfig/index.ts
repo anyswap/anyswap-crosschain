@@ -81,6 +81,8 @@ import milkalgo from './milkalgo'
 import kek from './kek'
 import apt from './apt'
 import brise from './brise'
+// import mint from './mint'
+import dnd from './dnd'
 
 import { ChainId } from './chainId'
 
@@ -90,6 +92,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...dnd,
+  // ...mint,
   ...apt,
   ...kek,
   ...twemix,
@@ -238,6 +242,9 @@ const allChainList = [
   ChainId.MILKALGO,
   ChainId.TWEMIX,
   ChainId.BRISE,
+  ChainId.KEK,
+  // ChainId.MINT,
+  // ChainId.DND,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -365,7 +372,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    // ChainId.APT,
+    ChainId.APT,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
