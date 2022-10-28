@@ -24,12 +24,12 @@ export function selectNetwork (chainID:any, type?: any) {
               decimals: 18,
             },
             rpcUrls: [chainInfo[chainID].nodeRpc],
-            blockExplorerUrls: chainInfo[chainID].explorer ? [chainInfo[chainID].explorer] : [],
+            blockExplorerUrls: chainInfo[chainID].explorer && chainInfo[chainID].explorer.indexOf('https') === 0 ? [chainInfo[chainID].explorer] : null,
             iconUrls: null // Currently ignored.
           }
         ],
       }
-      // console.log(data)
+      console.log(data)
       ethereumFN.request(data).then((res: any) => {
         // console.log(chainID)
         console.log(res)
