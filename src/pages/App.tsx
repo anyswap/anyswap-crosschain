@@ -42,6 +42,8 @@ import HistoryDetails from './History/details'
 // import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
+import CrossChainGas from '../components/crossChainGas'
+
 import config from '../config'
 // import farmlist from '../config/farmlist'
 
@@ -162,29 +164,25 @@ export default function App() {
           <Web3ReactManager>
             <Switch>
               {/* <Route exact strict path="/dashboard" component={() => <Dashboard />} /> */}
-              <Route exact strict path="/pool" component={() => <PoolList  duration={ 0 } />} />
+              <Route exact strict path="/pool" component={() => <PoolList duration={0} />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
               {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/test" component={() => <TestWarpper />} />
               {/* <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} /> */}
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
-              <Route exact strict path="/multi" component={() => <SwapMULTI duration={ 0 } />} />
+              <Route exact strict path="/multi" component={() => <SwapMULTI duration={0} />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
               <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
-              <Route exact strict path="/vest" component={() => <Vest duration={ 0 } />} />
+              <Route exact strict path="/vest" component={() => <Vest duration={0} />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />
               <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
+              <Route exact strict path="/crossChainGas" component={() => <CrossChainGas />} />
               {/* <Route exact strict path="/vest/veshare" component={() => <Vemulti />} /> */}
               {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
-  
-              <Route
-                path={[
-                  '/router'
-                ]}
-                component={() => <MergeCrossChainV2 />}
-              />
+
+              <Route path={['/router']} component={() => <MergeCrossChainV2 />} />
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>

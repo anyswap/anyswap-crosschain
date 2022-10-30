@@ -1,4 +1,3 @@
-
 import React from 'react'
 // import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
@@ -7,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
-import {LinkList} from './nav'
+import { LinkList } from './nav'
 // import config from '../../config'
 
 const HeaderLinks = styled.div`
@@ -96,50 +95,50 @@ const StyledNavLink1 = styled(ExternalLink)`
 
 export default function NavList() {
   const { t } = useTranslation()
-
+  console.info('useTranslation()', useTranslation())
   return (
     <>
       <HeaderLinks>
         <LinkStyle>
-          {
-            LinkList.map((item, index) => {
-              if (!item.isView) return ''
-              if (!item.isOutLink) {
-                return (
-                  <StyledNavLink
-                    key={index}
-                    to={item.path}
-                    isActive={(match, { pathname }) => {
-                      Boolean(match)
-                      || pathname.startsWith('/router')
-                      || pathname.startsWith('/v1/router')
-                      || pathname.startsWith('/swap')
-                      if (Boolean(match)) {
-                        return true
-                      } else if (item.isActive) {
-                        let isAc = false
-                        for (const k of item.isActive) {
-                          if (pathname.startsWith(k)) isAc = true; break;
-                        }
-                        return isAc
-                      } else {
-                        return false
+          {LinkList.map((item, index) => {
+            if (!item.isView) return ''
+            if (!item.isOutLink) {
+              return (
+                <StyledNavLink
+                  key={index}
+                  to={item.path}
+                  isActive={(match, { pathname }) => {
+                    Boolean(match) ||
+                      pathname.startsWith('/router') ||
+                      pathname.startsWith('/v1/router') ||
+                      pathname.startsWith('/swap')
+                    if (Boolean(match)) {
+                      return true
+                    } else if (item.isActive) {
+                      let isAc = false
+                      for (const k of item.isActive) {
+                        if (pathname.startsWith(k)) isAc = true
+                        break
                       }
-                    }}
-                    className={(item.className ? item.className : '')} 
-                  >
-                    {t(item.textKey)}
-                  </StyledNavLink>
-                )
-              } else {
-                return (
-                  <StyledNavLink1 key={index} href={item.path}>
-                    {t(item.textKey)}
-                  </StyledNavLink1>
-                )
-              }
-            })
-          }
+                      return isAc
+                    } else {
+                      return false
+                    }
+                  }}
+                  className={item.className ? item.className : ''}
+                >
+                  {t(item.textKey)}
+                  {console.info('t', t(item.textKey))}
+                </StyledNavLink>
+              )
+            } else {
+              return (
+                <StyledNavLink1 key={index} href={item.path}>
+                  {t(item.textKey)}
+                </StyledNavLink1>
+              )
+            }
+          })}
         </LinkStyle>
       </HeaderLinks>
     </>

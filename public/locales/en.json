@@ -302,7 +302,7 @@
   "bridgeTxns": "Bridge Transactions",
 
   "Reminder": "Reminder",
-  
+
   "mintTip0": "You need have <strong>{{coin}} and 0.02 {{coin2}} gas fee</strong> on your same eth wallet first:",
   "mintTip1": "Crosschain Fee is {{dFee}} %, Minimum Crosschain Fee is {{dMinFee}} {{coin}}, Maximum Crosschain Fee is {{dMaxFee}} {{coin}}",
   "mintTip2": "Minimum Crosschain Amount is",
@@ -368,5 +368,6 @@
   "agree": "Agree",
   "addLiquidityTip": "Add liquidity to Router {{index}} pool",
   "removeLiquidityTip": "Remove liquidity from Router {{index}} pool",
-  "removeanytokentip": "Due to the volatility of pool liquidity, you received pool token anyXXX. Please redeem XXX when there is enough liquidity. Click here for more details. "
+  "removeanytokentip": "Due to the volatility of pool liquidity, you received pool token anyXXX. Please redeem XXX when there is enough liquidity. Click here for more details. ",
+  "gas": "gas"
 }

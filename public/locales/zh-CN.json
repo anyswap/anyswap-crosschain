@@ -367,5 +367,6 @@
   "agree": "同意",
   "addLiquidityTip": "添加流动性至路由{{index}}资金池",
   "removeLiquidityTip": "提取流动性从路由{{index}}资金池",
-  "removeanytokentip": "由于资金池的流动易变性质 您收到了流动资金池资金。请您在资金池有足够流动资金的时候兑换您的资产。请查看一下链接"
+  "removeanytokentip": "由于资金池的流动易变性质 您收到了流动资金池资金。请您在资金池有足够流动资金的时候兑换您的资产。请查看一下链接",
+  "gas": "gas"
 }
