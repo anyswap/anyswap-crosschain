@@ -222,7 +222,7 @@ export default function NavList() {
             <MenuFlyout>
               <AutoColumn gap="md" style={{ padding: '1rem' }}>
                 {
-                  viewNavList.more.map((item, index) => {
+                  viewNavList.more.map((item:any, index:any) => {
                     if (!item.isView) return ''
                     if (!item.isOutLink) {
                       return (
