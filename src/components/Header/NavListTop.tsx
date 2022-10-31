@@ -1,14 +1,24 @@
 
-import React from 'react'
+import React, {useMemo, useRef} from 'react'
 // import { Text } from 'rebass'
+import { MoreHorizontal } from 'react-feather'
 import { NavLink } from 'react-router-dom'
 // import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
+// import styled, {ThemeContext} from 'styled-components'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
 import {LinkList} from './nav'
+import { ApplicationModal } from '../../state/application/actions'
+import { useModalOpen, useToggleNavMenu } from '../../state/application/hooks'
+import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 // import config from '../../config'
+import { AutoColumn } from '../Column'
+// import Modal from '../Modal'
+// import QuestionHelper from '../QuestionHelper'
+import { RowBetween, RowFixed } from '../Row'
+// import { TYPE } from '../../theme'
 
 const HeaderLinks = styled.div`
   ${({ theme }) => theme.flexEC};
@@ -16,10 +26,24 @@ const HeaderLinks = styled.div`
   height: 100%;
   padding: 0rem 1rem 0rem;
   border-bottom: none;
+  position:relative;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     ${({ theme }) => theme.flexBC}
     padding: 0.5rem 1rem;
   `};
+`
+const MoreIcon = styled(MoreHorizontal)`
+color: ${({ theme }) => theme.textNav};
+min-width: 41px;
+max-width: 41px;
+cursor:pointer;
+padding: 0 8px;
+// width: 100%;
+// height: 100%;
+// font-size: 16px;
+  // ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  //   display: none;
+  // `};
 `
 
 const activeClassName = 'ACTIVE'
@@ -50,7 +74,9 @@ const LinkStyle = styled.div.attrs({
     position: relative;
     white-space: nowrap;
     border-bottom: 2px solid transparent;;
-  
+    &.small {
+      padding: 0.5rem 8px;
+    }
     &:hover {
       color: ${({ theme }) => theme.textColor};
       font-weight: 600;
@@ -82,6 +108,9 @@ const StyledNavLink = styled(NavLink).attrs({
   activeClassName
 })`
   text-decoration: auto;
+  &.small {
+    padding: 0.5rem 8px;
+  }
   &:hover {
     text-decoration: auto;
   }
@@ -94,15 +123,63 @@ const StyledNavLink1 = styled(ExternalLink)`
   }
 `
 
+const MenuFlyout = styled.span`
+  min-width: 20.125rem;
+  background-color: ${({ theme }) => theme.bg2};
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
+    0px 24px 32px rgba(0, 0, 0, 0.01);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  position: absolute;
+  top: 4rem;
+  right: 0rem;
+  z-index: 100;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    min-width: 18.125rem;
+    right: -0px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-width: 18.125rem;
+    top: -22rem;
+  `};
+`
+
 export default function NavList() {
+  const node = useRef<HTMLDivElement>()
   const { t } = useTranslation()
+  const open = useModalOpen(ApplicationModal.NAV)
+  const toggle = useToggleNavMenu()
+  useOnClickOutside(node, open ? toggle : undefined)
+  // const theme = useContext(ThemeContext)
+
+  const viewNavList = useMemo(() => {
+    const arr = []
+    for (const obj of LinkList) {
+      if (!obj.isView) continue
+      arr.push(obj)
+    }
+    console.log(arr)
+    console.log(arr.slice(4))
+    return {
+      list: arr,
+      more: []
+    }
+    // return {
+    //   list: arr.slice(0,4),
+    //   more: arr.slice(4)
+    // }
+  }, [LinkList])
 
   return (
     <>
       <HeaderLinks>
         <LinkStyle>
           {
-            LinkList.map((item, index) => {
+            viewNavList.list.map((item, index) => {
               if (!item.isView) return ''
               if (!item.isOutLink) {
                 return (
@@ -140,6 +217,59 @@ export default function NavList() {
               }
             })
           }
+          {viewNavList.more.length > 0 ? <MoreIcon onClick={() => toggle()}></MoreIcon> : ''}
+          {open && (
+            <MenuFlyout>
+              <AutoColumn gap="md" style={{ padding: '1rem' }}>
+                {
+                  viewNavList.more.map((item, index) => {
+                    if (!item.isView) return ''
+                    if (!item.isOutLink) {
+                      return (
+                        <RowBetween key={index}>
+                          <StyledNavLink
+                            to={item.path}
+                            isActive={(match, { pathname }) => {
+                              Boolean(match)
+                              || pathname.startsWith('/router')
+                              || pathname.startsWith('/v1/router')
+                              || pathname.startsWith('/swap')
+                              if (Boolean(match)) {
+                                return true
+                              } else if (item.isActive) {
+                                let isAc = false
+                                for (const k of item.isActive) {
+                                  if (pathname.startsWith(k)) isAc = true; break;
+                                }
+                                return isAc
+                              } else {
+                                return false
+                              }
+                            }}
+                            className={(item.className ? item.className : '') + '  small'} 
+                          >
+                            <RowFixed>
+                              {t(item.textKey)}
+                            </RowFixed>
+                          </StyledNavLink>
+                        </RowBetween>
+                      )
+                    } else {
+                      return (
+                        <RowBetween key={index}>
+                          <StyledNavLink1 key={index} href={item.path} className="small">
+                            <RowFixed>
+                                {t(item.textKey)}
+                            </RowFixed>
+                          </StyledNavLink1>
+                        </RowBetween>
+                      )
+                    }
+                  })
+                }
+              </AutoColumn>
+            </MenuFlyout>
+          )}
         </LinkStyle>
       </HeaderLinks>
     </>
