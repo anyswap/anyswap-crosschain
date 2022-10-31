@@ -316,7 +316,7 @@ export default function CrossChain({
 
   const {poolData} = usePool(useChain, evmAccount, destConfig?.isFromLiquidity && !isBridgeFTM && destConfig?.isLiquidity ? anyToken?.address : undefined, selectCurrency?.address)
   useEffect(() => {
-    // console.log(poolData)
+    // console.log('poolData', poolData)
     // console.log(curFTMChain)
     if (poolData && anyToken?.address && !isBridgeFTM && poolData?.[anyToken?.address]?.balanceOf) {
       setCurChain({
@@ -334,7 +334,7 @@ export default function CrossChain({
   }, [poolData, anyToken, curFTMChain, isBridgeFTM])
   const {poolData: destPoolData} = usePool(selectChain, evmAccount, destConfig?.isLiquidity && !isBridgeFTM ? destConfig?.anytoken?.address : undefined, destConfig?.underlying?.address)
   useEffect(() => {
-    // console.log(destPoolData)
+    // console.log('destPoolData',destPoolData)
     // console.log(destFTMChain)
     if (destPoolData && destConfig?.anytoken?.address && !isBridgeFTM && destPoolData?.[destConfig?.anytoken?.address]?.balanceOf) {
       setDestChain({
