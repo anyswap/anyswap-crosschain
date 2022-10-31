@@ -190,7 +190,7 @@ const allChainList = [
   ChainId.MOVR,
   ChainId.ONE,
   ChainId.OPTIMISM,
-  ChainId.AURORA,
+  // ChainId.AURORA,
   ChainId.BOBA,
   ChainId.CRO,
   ChainId.OKT,
@@ -372,7 +372,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    // ChainId.APT,
+    ChainId.APT,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
