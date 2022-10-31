@@ -24,7 +24,8 @@ import {
   starToken,
   addTokenToWallet,
   removeTokenToWallet,
-  changeStarTab
+  changeStarTab,
+  updateInterfaceMode
 } from './actions'
 
 import config from '../../config'
@@ -89,6 +90,17 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+export function useInterfaceModeManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userInterfaceMode = useSelector<AppState, AppState['user']['userInterfaceMode']>(state => state.user.userInterfaceMode)
+
+  const toggleSetInterfaceMode = useCallback(() => {
+    dispatch(updateInterfaceMode({ userInterfaceMode: !userInterfaceMode }))
+  }, [userInterfaceMode, dispatch])
+
+  return [userInterfaceMode, toggleSetInterfaceMode]
 }
 
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {

@@ -29,6 +29,13 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../state/lists/hooks'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  useInterfaceModeManager,
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 
 import config from '../../config'
 import {VALID_BALANCE} from '../../config/constant'
@@ -118,6 +125,7 @@ export default function CrossChain({
   // console.log(allTokensList)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const [userInterfaceMode] = useInterfaceModeManager()
 
   const {getNearStorageBalance, getNearStorageBalanceBounds} = useNearBalance()
 
@@ -1164,7 +1172,7 @@ export default function CrossChain({
           isRouter={isRouter}
         />
         {
-          evmAccount && useChain && curChain?.ts ? (
+          evmAccount && useChain && curChain?.ts && !userInterfaceMode ? (
             <>
               <LiquidityPool
                 curChain={curChain}
@@ -1238,7 +1246,7 @@ export default function CrossChain({
           bridgeKey={bridgeKey}
         />
         {
-          evmAccount && useChain && destChain?.ts ? (
+          evmAccount && useChain && destChain?.ts && !userInterfaceMode ? (
             <LiquidityPool
               destChain={destChain}
               // isDestUnderlying={isDestUnderlying}
@@ -1272,8 +1280,11 @@ export default function CrossChain({
           }}
         />
       </AutoColumn>
-
-      <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+      {
+         !userInterfaceMode ? (
+           <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+         ) : ''
+      }
 
       <ErrorTip errorTip={errorTip} />
       {

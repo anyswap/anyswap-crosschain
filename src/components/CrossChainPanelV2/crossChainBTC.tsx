@@ -14,6 +14,14 @@ import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 import {setLocalConfig} from '../../utils/tools/tools'
 import { shortenAddress, shortenAddress1 } from '../../utils'
 
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  useInterfaceModeManager,
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
+
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
@@ -61,6 +69,7 @@ export default function CrossChain({
   const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const [userInterfaceMode] = useInterfaceModeManager()
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -393,8 +402,11 @@ export default function CrossChain({
         />
         <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
       </AutoColumn>
-
-      <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+      {
+        !userInterfaceMode ? (
+          <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+        ) : ''
+      }
       <ErrorTip errorTip={errorTip} />
       {/* {ButtonView('INIT')} */}
       <BottomGrouping>

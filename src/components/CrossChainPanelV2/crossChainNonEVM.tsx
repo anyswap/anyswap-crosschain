@@ -38,6 +38,13 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 // import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  useInterfaceModeManager,
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
@@ -85,6 +92,7 @@ export default function CrossChain({
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
+  const [userInterfaceMode] = useInterfaceModeManager()
   
 
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -646,8 +654,11 @@ export default function CrossChain({
           ) : ''
         }
       </AutoColumn>
-
-      <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+      {
+        !userInterfaceMode ? (
+          <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+        ) : ''
+      }
       <ErrorTip errorTip={errorTip} />
       {
         config.isStopSystem ? (
