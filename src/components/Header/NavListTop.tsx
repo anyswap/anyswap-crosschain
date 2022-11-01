@@ -38,6 +38,7 @@ min-width: 41px;
 max-width: 41px;
 cursor:pointer;
 padding: 0 8px;
+display:block;
 // width: 100%;
 // height: 100%;
 // font-size: 16px;
@@ -51,7 +52,6 @@ const activeClassName = 'ACTIVE'
 const LinkStyle = styled.div.attrs({
   activeClassName
 })`
-  ${({ theme }) => theme.flexSC};
   height:100%;
   a {
     ${({ theme }) => theme.flexSC}
@@ -99,8 +99,20 @@ const LinkStyle = styled.div.attrs({
       margin:0;
     `}
   }
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  &.top {
+    ${({ theme }) => theme.flexSC};
+  }
+  &.bottom {
     display:none;
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.top {
+      display:none;
+    }
+    &.bottom {
+      width:100%;
+      ${({ theme }) => theme.flexBC};
+    }
   `}
 `
 
@@ -124,7 +136,7 @@ const StyledNavLink1 = styled(ExternalLink)`
 `
 
 const MenuFlyout = styled.span`
-  min-width: 20.125rem;
+  min-width: 15.125rem;
   background-color: ${({ theme }) => theme.bg2};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
@@ -137,24 +149,33 @@ const MenuFlyout = styled.span`
   right: 0rem;
   z-index: 100;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    min-width: 18.125rem;
-    right: -0px;
-  `};
+  // ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  //   min-width: 18.125rem;
+  //   right: -0px;
+  // `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     min-width: 18.125rem;
-    top: -22rem;
+    top: auto;
+    bottom:4.2rem;
+    right: 10px;
   `};
 `
 
-export default function NavList() {
+export default function NavList({position}:{position:string}) {
   const node = useRef<HTMLDivElement>()
   const { t } = useTranslation()
-  const open = useModalOpen(ApplicationModal.NAV)
-  const toggle = useToggleNavMenu()
+  const navKey = useMemo(() => {
+    if (position === 'top') {
+      return ApplicationModal.NAV_TOP
+    }
+    return ApplicationModal.NAV_BOTTOM
+  }, [position, ApplicationModal])
+  const open = useModalOpen(navKey)
+  const toggle = useToggleNavMenu(navKey)
   useOnClickOutside(node, open ? toggle : undefined)
   // const theme = useContext(ThemeContext)
+  console.log(open)
 
   const viewNavList = useMemo(() => {
     const arr = []
@@ -162,22 +183,22 @@ export default function NavList() {
       if (!obj.isView) continue
       arr.push(obj)
     }
-    console.log(arr)
-    console.log(arr.slice(4))
-    return {
-      list: arr,
-      more: []
-    }
+    // console.log(arr)
+    // console.log(arr.slice(4))
     // return {
-    //   list: arr.slice(0,4),
-    //   more: arr.slice(4)
+    //   list: arr,
+    //   more: []
     // }
+    return {
+      list: arr.slice(0,4),
+      more: arr.slice(4)
+    }
   }, [LinkList])
 
   return (
     <>
-      <HeaderLinks>
-        <LinkStyle>
+      <HeaderLinks ref={node as any}>
+        <LinkStyle className={position}>
           {
             viewNavList.list.map((item, index) => {
               if (!item.isView) return ''
@@ -217,7 +238,11 @@ export default function NavList() {
               }
             })
           }
-          {viewNavList.more.length > 0 ? <MoreIcon onClick={() => toggle()}></MoreIcon> : ''}
+          {/* {viewNavList.more.length > 0 ? <MoreIcon onClick={() => {
+            console.log(111111)
+            toggle()
+          }}></MoreIcon> : ''} */}
+          <MoreIcon id={"open-settings-dialog-button-" + position} onClick={toggle}></MoreIcon>
           {open && (
             <MenuFlyout>
               <AutoColumn gap="md" style={{ padding: '1rem' }}>

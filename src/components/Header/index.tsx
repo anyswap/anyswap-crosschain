@@ -233,7 +233,7 @@ export default function Header() {
             V1↗
           </VersionLinkBox>
         </HeaderRow>
-        <NavListTop />
+        <NavListTop position='top' />
         <HeaderControls>
           <HeaderElement>
             <SelectNetwork />

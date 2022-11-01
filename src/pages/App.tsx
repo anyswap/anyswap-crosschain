@@ -2,7 +2,8 @@ import React, { Suspense } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import Header from '../components/Header'
-import NavList from '../components/Header/NavList'
+// import NavList from '../components/Header/NavList'
+import NavList from '../components/Header/NavListTop'
 import Polling from '../components/Header/Polling'
 import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
@@ -92,7 +93,7 @@ const NavBottom = styled.div`
   width: 100%;
   box-shadow: ${({ theme }) => theme.contentShadow};
   background: ${({ theme }) => theme.contentBg};
-  overflow: auto;
+  // overflow: auto;
   display: none;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display:block;
@@ -190,7 +191,7 @@ export default function App() {
           </Web3ReactManager>
           <Marginer />
           <NavBottom>
-            <NavList />
+            <NavList position='bottom' />
           </NavBottom>
         </BodyWrapper>
       </AppWrapper>
