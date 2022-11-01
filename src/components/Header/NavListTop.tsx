@@ -9,7 +9,11 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme'
-import {LinkList} from './nav'
+import {
+  // LinkList,
+  navList,
+  moreList
+} from './nav'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleNavMenu } from '../../state/application/hooks'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
@@ -177,30 +181,30 @@ export default function NavList({position}:{position:string}) {
   // const theme = useContext(ThemeContext)
   console.log(open)
 
-  const viewNavList = useMemo(() => {
-    const arr = []
-    for (const obj of LinkList) {
-      if (!obj.isView) continue
-      arr.push(obj)
-    }
-    // console.log(arr)
-    // console.log(arr.slice(4))
-    // return {
-    //   list: arr,
-    //   more: []
-    // }
-    return {
-      list: arr.slice(0,4),
-      more: arr.slice(4)
-    }
-  }, [LinkList])
+  // const viewNavList = useMemo(() => {
+  //   const arr = []
+  //   for (const obj of LinkList) {
+  //     if (!obj.isView) continue
+  //     arr.push(obj)
+  //   }
+  //   // console.log(arr)
+  //   // console.log(arr.slice(4))
+  //   // return {
+  //   //   list: arr,
+  //   //   more: []
+  //   // }
+  //   return {
+  //     list: arr.slice(0,4),
+  //     more: arr.slice(4)
+  //   }
+  // }, [LinkList])
 
   return (
     <>
       <HeaderLinks ref={node as any}>
         <LinkStyle className={position}>
           {
-            viewNavList.list.map((item, index) => {
+            navList.map((item, index) => {
               if (!item.isView) return ''
               if (!item.isOutLink) {
                 return (
@@ -247,7 +251,7 @@ export default function NavList({position}:{position:string}) {
             <MenuFlyout>
               <AutoColumn gap="md" style={{ padding: '1rem' }}>
                 {
-                  viewNavList.more.map((item:any, index:any) => {
+                  moreList.map((item:any, index:any) => {
                     if (!item.isView) return ''
                     if (!item.isOutLink) {
                       return (
