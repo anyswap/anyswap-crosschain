@@ -10,6 +10,7 @@ export enum ChainId {
   BNB_TEST = '97',
   BAS_TEST = '14000',
   BTC = 'BTC',
+  BTC_TEST = 'BTC_TEST',
   CELO = '42220',
   CLV = '1024',
   COLX = 'COLX',

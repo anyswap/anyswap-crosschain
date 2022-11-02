@@ -38,7 +38,7 @@ export default {
     networkLogo: 'IOTA',
     type: 'main',
     label: IOTA_MAIN_CHAINID,
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
   [IOTA_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
@@ -58,6 +58,6 @@ export default {
     networkLogo: 'IOTA',
     type: 'test',
     label: IOTA_TEST_CHAINID,
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
 }

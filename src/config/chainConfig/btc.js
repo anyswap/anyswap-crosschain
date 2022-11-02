@@ -1,10 +1,14 @@
-
+import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const BTC_MAINNET = ''
 export const BTC_MAIN_CHAINID = ChainId.BTC
-export const BTC_MAIN_EXPLORER = ''
+export const BTC_MAIN_EXPLORER = 'https://blockstream.info'
+
+export const BTC_TEST_CHAINID = ChainId.BTC_TEST
+export const BTC_TESTNET = getLocalRPC(BTC_TEST_CHAINID, 'https://blockstream.info/testnet/api/')
+export const BTC_TEST_EXPLORER = 'https://blockstream.info/testnet'
 
 const symbol = 'BTC'
 
@@ -33,6 +37,28 @@ export default {
     networkName: 'Bitcoin mainnet',
     type: 'main',
     label: BTC_MAIN_CHAINID,
-    chainType: 'BTC'
+    chainType: BTC_MAIN_CHAINID
   },
+  [BTC_TEST_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: BTC_TESTNET,
+    nodeRpcList: [
+      BTC_TESTNET
+    ],
+    chainID: BTC_TEST_CHAINID,
+    lookHash: BTC_TEST_EXPLORER + '/tx/',
+    lookAddr: BTC_TEST_EXPLORER + '/address/',
+    lookBlock: BTC_TEST_EXPLORER + '/block/',
+    explorer: BTC_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Bitcoin',
+    networkName: 'Bitcoin testnet',
+    type: 'test',
+    label: BTC_TEST_CHAINID,
+    chainType: BTC_TEST_CHAINID
+  }
 }

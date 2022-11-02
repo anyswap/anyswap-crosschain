@@ -32,6 +32,6 @@ export default {
     networkName: 'Litecoin mainnet',
     type: 'main',
     label: LTC_MAIN_CHAINID,
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
 }

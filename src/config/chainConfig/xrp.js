@@ -39,7 +39,6 @@ export default {
     networkLogo: 'XRP',
     type: 'main',
     label: XRP_MAIN_CHAINID,
-    // chainType: XRP_MAIN_CHAINID
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
 }

@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const KEK_MAIN_CHAINID = ChainId.KEK
 export const KEK_MAINNET = getLocalRPC(KEK_MAIN_CHAINID, 'https://mainnet.kekchain.com')
-export const KEK_MAIN_EXPLORER = 'http://explorer.kekchain.com'
+export const KEK_MAIN_EXPLORER = 'https://mainnet-explorer.kekchain.com'
 
 export const KEK_TEST_CHAINID = ChainId.KEK_TEST
 export const KEK_TESTNET = getLocalRPC(KEK_TEST_CHAINID, 'https://testnet.kekchain.com')

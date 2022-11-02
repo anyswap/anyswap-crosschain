@@ -15,13 +15,13 @@ function CrossChainView ({
 }) {
   const {selectNetworkInfo} = useUserSelectChainId()
   // console.log(selectNetworkInfo)
-  if (selectNetworkInfo?.label === 'BTC') {
+  if (selectNetworkInfo?.label === 'NOWALLET') {
     return (
       <>
         <CrossChainBTC bridgeKey={bridgeKey} />
       </>
     )
-  } else if (selectNetworkInfo?.label && selectNetworkInfo?.label !== 'BTC') {
+  } else if (selectNetworkInfo?.label && selectNetworkInfo?.label !== 'NOWALLET') {
     return (
       <>
         <CrossChainNonEVM bridgeKey={bridgeKey} />

@@ -1085,7 +1085,7 @@ export default function CrossChain({
             ) : ''
           }
           {
-            !aptRegisterList?.[destConfig?.anytoken?.address] && !aptRegisterList.error ? (
+            !aptRegisterList?.[destConfig?.anytoken?.address] && !aptRegisterList.error && destConfig?.address !== destConfig?.anytoken?.address ? (
               <ButtonPrimary disabled={!isAddress(recipient, selectChain)} style={{margin: '0 5px'}} onClick={() => {
                 setAptAllowance(destConfig?.anytoken?.address, selectChain, recipient, destConfig?.anytoken?.address).then(() => {
                   alert('Register success.')

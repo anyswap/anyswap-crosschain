@@ -110,6 +110,7 @@ interface Window {
   solana: any
   bitkeep: any
   aptos: any
+  bitcoin: any
 }
 
 declare module '@onflow/fcl';

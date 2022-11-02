@@ -33,6 +33,6 @@ export default {
     networkName: 'Blocknet mainnet',
     type: 'main',
     label: BLOCK_MAIN_CHAINID,
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
 }

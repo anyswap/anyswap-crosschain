@@ -13,6 +13,7 @@ import {useAdaBalance} from '../nonevm/cardano'
 import {useFlowBalance} from '../nonevm/flow'
 import {useSolBalance} from '../nonevm/solana'
 import {useAptosBalance} from '../nonevm/apt'
+import {useBtcBalance} from '../nonevm/btc'
 
 import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
@@ -38,6 +39,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {flowBalanceList} = useFlowBalance()
   const {getSolTokenBalance, getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
+  const {getBtcBalance} = useBtcBalance()
 
   const savedBalance = useRef<any>()
 
@@ -129,13 +131,13 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
-        // getAptosResource(selectChainId, account, token).then((res:any) => {
-        //   // console.log(res)
-        //   if (res?.result?.value) {
-        //     const bl = BigAmount.format(dec, res?.result?.value)
-        //     savedBalance.current = bl
-        //   }
-        // })
+      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId)) {
+        // console.log(account)
+        getBtcBalance(selectChainId, account).then((res:any) => {
+          console.log(res)
+          const bl = BigAmount.format(dec, '0')
+          savedBalance.current = bl
+        })
       } else {
         savedBalance.current = evmBalance
       }
@@ -175,6 +177,7 @@ export function useBaseBalances (
   const {flowBalanceList} = useFlowBalance()
   const {getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
+  const {getBtcBalance} = useBtcBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -246,6 +249,13 @@ export function useBaseBalances (
         const bl = BigAmount.format(8, '0')
         setBalance(bl)
       }
+    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId)) {
+      // console.log(account)
+      getBtcBalance(selectChainId, uncheckedAddresses).then((res:any) => {
+        console.log(res)
+        const bl = BigAmount.format(8, '0')
+        setBalance(bl)
+      })
     }
   }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList])
 

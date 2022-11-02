@@ -384,6 +384,7 @@ const useChain:any = {
     ChainId.FLOW_TEST,
     ChainId.SOL_TEST,
     ChainId.APT_TEST,
+    ChainId.BTC_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

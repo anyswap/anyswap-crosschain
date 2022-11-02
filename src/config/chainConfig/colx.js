@@ -32,6 +32,6 @@ export default {
     networkName: 'ColossusXT mainnet',
     type: 'main',
     label: COLX_MAIN_CHAINID,
-    chainType: 'BTC'
+    chainType: 'NOWALLET'
   },
 }

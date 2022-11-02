@@ -44,7 +44,9 @@ function getNetwork (chainId?:string) {
   let network = NETWORK
   chainId = chainId ? chainId.toUpperCase() : ''
   if (chainId === ChainId.BTC) {
-    network = NETWORK
+    network = bitcoin.networks.bitcoin
+  } else if (chainId === ChainId.BTC_TEST) {
+    network = bitcoin.networks.testnet
   } else if (chainId === ChainId.LTC) {
     network = LITECOIN
   } else if (chainId === ChainId.BLOCK) {
@@ -82,7 +84,7 @@ export function createAddress (address:string, chainId:string | undefined, initA
   return p2shAddress.address;
 }
 
-export const BTCARR = [ChainId.BTC, ChainId.LTC, ChainId.BLOCK, ChainId.COLX]
+export const BTCARR = [ChainId.BTC, ChainId.BTC_TEST, ChainId.LTC, ChainId.BLOCK, ChainId.COLX]
 
 export function isBTCAddress (address:string, chainId?:string) {
   const network = getNetwork(chainId)

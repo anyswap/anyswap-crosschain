@@ -179,7 +179,7 @@ export default function NavList({position}:{position:string}) {
   const toggle = useToggleNavMenu(navKey)
   useOnClickOutside(node, open ? toggle : undefined)
   // const theme = useContext(ThemeContext)
-  console.log(open)
+  // console.log(open)
 
   // const viewNavList = useMemo(() => {
   //   const arr = []
