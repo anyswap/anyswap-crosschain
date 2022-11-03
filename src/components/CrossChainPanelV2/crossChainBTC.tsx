@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo, useContext, useCallback} from 'react'
-import {createAddress, isAddress} from 'multichain-bridge'
+// import {createAddress, isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
@@ -13,6 +13,9 @@ import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
 import { shortenAddress, shortenAddress1 } from '../../utils'
+import { isAddress } from '../../utils/isAddress'
+import { createAddress } from '../../utils/isAddress/BTC'
+
 
 import {
   // useDarkModeManager,

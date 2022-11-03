@@ -37,7 +37,8 @@ export default {
     networkName: 'Bitcoin mainnet',
     type: 'main',
     label: BTC_MAIN_CHAINID,
-    chainType: BTC_MAIN_CHAINID
+    // chainType: BTC_MAIN_CHAINID
+    chainType: 'NOWALLET'
   },
   [BTC_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

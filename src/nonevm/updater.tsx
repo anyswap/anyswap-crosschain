@@ -22,7 +22,8 @@ export default function Updaters() {
     return <SolUpdater />
   } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
     return <AptUpdater />
-  } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+  // } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+  } else if ([ChainId.BTC_TEST].includes(chainId)) {
     return <BtcUpdater />
   }
   return <></>

@@ -25,6 +25,7 @@ const IotaBech32Helper = {
 const stellarAddress = /^[1-9A-Z]{56}$/
 
 export function isAddress(address: any, chainId?: any) {
+  // console.log(chainId, address)
   if (!address) return undefined
   if (chainId) {
     if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {

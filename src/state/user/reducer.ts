@@ -77,7 +77,7 @@ export const initialState: UserState = {
   userExpertMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   showBetaMessage: true,
-  userInterfaceMode: true,
+  userInterfaceMode: false,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   pairAddress: undefined,
   tokens: {},
