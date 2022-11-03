@@ -4,71 +4,72 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
+import CrossChainTitle from '../../CrossChainTitle'
 // import nebulas from 'nebulas'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-import { useActiveReact } from '../../hooks/useActiveReact'
+import { useActiveReact } from '../../../hooks/useActiveReact'
 
 import {
   useBridgeCallback,
   useBridgeUnderlyingCallback,
   useBridgeNativeCallback,
   useCrossBridgeCallback
-} from '../../hooks/useBridgeCallback'
-// import { WrapType } from '../../hooks/useWrapCallback'
-import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-import { useLocalToken } from '../../hooks/Tokens'
-import { useLogin } from '../../nonevm/near'
+} from '../../../hooks/useBridgeCallback'
+// import { WrapType } from '../../../hooks/useWrapCallback'
+import { useApproveCallback, ApprovalState } from '../../../hooks/useApproveCallback'
+import { useLocalToken } from '../../../hooks/Tokens'
+import { useLogin } from '../../../nonevm/near'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
-import { AutoColumn } from '../Column'
-import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
-import { AutoRow } from '../Row'
-import Loader from '../Loader'
-import AddressInputPanel from '../AddressInputPanel'
-import { ArrowWrapper, BottomGrouping } from '../swap/styleds'
-import ModalContent from '../Modal/ModalContent'
+import { AutoColumn } from '../../Column'
+import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../Button'
+import { AutoRow } from '../../Row'
+import Loader from '../../Loader'
+import AddressInputPanel from '../../AddressInputPanel'
+import { ArrowWrapper, BottomGrouping } from '../../swap/styleds'
+import ModalContent from '../../Modal/ModalContent'
 
-import { useWalletModalToggle } from '../../state/application/hooks'
-import { tryParseAmount } from '../../state/swap/hooks'
-// import { useMergeBridgeTokenList } from '../../state/lists/hooks'
-import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../state/lists/hooks'
+import { useWalletModalToggle } from '../../../state/application/hooks'
+import { tryParseAmount } from '../../../state/swap/hooks'
+// import { useMergeBridgeTokenList } from '../../../state/lists/hooks'
+import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../../state/lists/hooks'
 
-import config from '../../config'
-import { VALID_BALANCE } from '../../config/constant'
-import { getParams } from '../../config/tools/getUrlParams'
-import { selectNetwork } from '../../config/tools/methods'
-import { ChainId } from '../../config/chainConfig/chainId'
+import config from '../../../config'
+import { VALID_BALANCE } from '../../../config/constant'
+import { getParams } from '../../../config/tools/getUrlParams'
+import { selectNetwork } from '../../../config/tools/methods'
+import { ChainId } from '../../../config/chainConfig/chainId'
 
-// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import {formatDecimal, thousandBit} from '../../utils/tools/tools'
+// import {getNodeTotalsupply} from '../../../utils/bridge/getBalanceV2'
+// import {formatDecimal, thousandBit} from '../../../utils/tools/tools'
 
-import TokenLogo from '../TokenLogo'
-import LiquidityPool from '../LiquidityPool'
+import TokenLogo from '../../TokenLogo'
+import LiquidityPool from '../../LiquidityPool'
 
 import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
 
 import RouterList from './routerList'
 
-import { usePool } from '../../hooks/usePools'
-import { useNearBalance, useSendNear } from '../../nonevm/near'
+import { usePool } from '../../../hooks/usePools'
+import { useNearBalance, useSendNear } from '../../../nonevm/near'
 
-import { useXlmBalance, useTrustlines } from '../../nonevm/stellar'
+import { useXlmBalance, useTrustlines } from '../../../nonevm/stellar'
 
-import { useSolCreateAccount, useLoginSol } from '../../nonevm/solana'
+import { useSolCreateAccount, useLoginSol } from '../../../nonevm/solana'
 
-import { useAptosBalance, useAptAllowance, useLoginAptos } from '../../nonevm/apt'
+import { useAptosBalance, useAptAllowance, useLoginAptos } from '../../../nonevm/apt'
 
-import { LogoBox, ConfirmContent, TxnsInfoText, ConfirmText, FlexEC } from '../../pages/styled'
+import { LogoBox, ConfirmContent, TxnsInfoText, ConfirmText, FlexEC } from '../../../pages/styled'
 
 import { outputValue, useInitSelectCurrency, useDestChainid, useDestCurrency, getFTMSelectPool } from './hooks'
-import { BigAmount } from '../../utils/formatBignumber'
+import { BigAmount } from '../../../utils/formatBignumber'
 
-import { getUrlData } from '../../utils/tools/axios'
-import { isAddress } from '../../utils/isAddress'
-import useInterval from '../../hooks/useInterval'
+import { getUrlData } from '../../../utils/tools/axios'
+import { isAddress } from '../../../utils/isAddress'
+import useInterval from '../../../hooks/useInterval'
 
 export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -114,7 +115,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   let initToChainId: any = getParams('toChainId') ? getParams('toChainId') : ''
   initToChainId = initToChainId ? initToChainId.toLowerCase() : ''
 
-  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('666')
   const [selectCurrency, setSelectCurrency] = useState<any>(
     allTokensList?.[initSelectCurrencyKey] ? allTokensList?.[initSelectCurrencyKey] : ''
   )
@@ -936,6 +937,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       }
       return (
         <>
+          <CrossChainTitle />
           <ConfirmView
             fromChainId={useChain}
             value={inputBridgeValue}
@@ -1254,7 +1256,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         ) : (
           ''
         )}
-
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper
             clickable={false}
@@ -1265,6 +1266,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
             }}
           >
             <ArrowDown size="16" color={theme.text2} />
+            1122
           </ArrowWrapper>
           {// destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
           destConfig?.type !== 'swapin' && !isNaN(selectChain) && !isNaN(useChain) ? (
@@ -1298,10 +1300,10 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
             ''
           )}
         </AutoRow>
-
+        {console.info('selectChainselectChain', selectChain)}
         <SelectChainIdInputPanel
           label={t('to')}
-          value={outputBridgeValue.toString()}
+          // value={outputBridgeValue.toString()}
           onUserInput={value => {
             setInputBridgeValue(value)
           }}
@@ -1348,7 +1350,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         ) : (
           ''
         )}
-
         <RouterList
           selectCurrency={selectCurrency}
           // tipTitleKey=""
@@ -1368,9 +1369,10 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         />
       </AutoColumn>
 
-      <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} />
+      {/* <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} /> */}
 
-      <ErrorTip errorTip={errorTip} />
+      {/* <ErrorTip errorTip={errorTip} /> */}
+      {console.info('config.isStopSystem', config.isStopSystem)}
       {config.isStopSystem ? (
         <BottomGrouping>
           <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
@@ -1378,7 +1380,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       ) : (
         <BottomGrouping>
           {!evmAccount ? (
-            <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
+            <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}111</ButtonLight>
           ) : isApprove &&
             inputBridgeValue &&
             (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (

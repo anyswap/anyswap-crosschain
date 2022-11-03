@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { thousandBit } from '../../utils/tools/tools'
-import { useActiveWeb3React } from '../../hooks'
-import BulbIcon from '../../assets/images/icon/bulb.svg'
-import config from '../../config'
+import { thousandBit } from '../../../utils/tools/tools'
+import { useActiveWeb3React } from '../../../hooks'
+import BulbIcon from '../../../assets/images/icon/bulb.svg'
+import config from '../../../config'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;
@@ -80,30 +80,24 @@ const SubCurrencySelectBox = styled.div`
 `
 
 interface ReminderType {
-  bridgeConfig: any
+  destConfig: any
   bridgeType: string | undefined
   currency: any
   selectChain: any
 }
 
-function CrossBridge(bridgeConfig: any, currency: any, selectChain: any, bridgeType?: string) {
+function CrossBridge(destConfig: any, currency: any, selectChain: any, bridgeType?: string) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
-  // console.log(selectChain)
-  // console.log(bridgeConfig)
-  if (!bridgeConfig || !currency) {
+
+  if (!destConfig || !currency) {
     return <></>
   }
-  const destConfig =
-    bridgeConfig && bridgeConfig?.destChains && bridgeConfig?.destChains[selectChain]
-      ? bridgeConfig?.destChains[selectChain]
-      : {}
   const isSwapfeeon = true
   const viewSymbol = config.getBaseCoin(currency?.symbol, chainId)
   const tipType = bridgeType === 'swapout' ? 'redeemTip' : 'mintTip'
   const dFee = Number(destConfig?.SwapFeeRatePerMillion)
-  // console.log(bridgeConfig)
-  // console.log(destConfig)
+  const useDfee = destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? 0 : dFee
   return (
     <SubCurrencySelectBox>
       <dl className="list">
@@ -111,15 +105,26 @@ function CrossBridge(bridgeConfig: any, currency: any, selectChain: any, bridgeT
           <img src={BulbIcon} alt="" />
           {t('Reminder')}:
         </dt>
-        <dd>
-          <i></i>
-          {t(tipType + '1', {
-            dMinFee: isSwapfeeon ? thousandBit(destConfig?.MinimumSwapFee, 'no') : 0,
-            coin: viewSymbol,
-            dMaxFee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
-            dFee: isSwapfeeon ? thousandBit(dFee, 'no') : 0
-          })}
-        </dd>
+        {destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
+          <dd>
+            <i></i>
+            {t('feeTip', {
+              coin: viewSymbol,
+              fee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
+              dFee: isSwapfeeon ? thousandBit(useDfee, 'no') : 0
+            })}
+          </dd>
+        ) : (
+          <dd>
+            <i></i>
+            {t(tipType + '1', {
+              dMinFee: isSwapfeeon ? thousandBit(destConfig?.MinimumSwapFee, 'no') : 0,
+              coin: viewSymbol,
+              dMaxFee: isSwapfeeon ? thousandBit(destConfig?.MaximumSwapFee, 'no') : 0,
+              dFee: isSwapfeeon ? thousandBit(useDfee, 'no') : 0
+            })}
+          </dd>
+        )}
         <dd>
           <i></i>
           {t(tipType + '2')} {thousandBit(destConfig?.MinimumSwap, 'no')} {viewSymbol}
@@ -130,7 +135,7 @@ function CrossBridge(bridgeConfig: any, currency: any, selectChain: any, bridgeT
         </dd>
         <dd>
           <i></i>
-          {t(tipType + '4')}
+          {chainId && ['61'].includes(chainId.toString()) ? t(tipType + '4_1') : t(tipType + '4')}
         </dd>
         <dd>
           <i></i>
@@ -144,10 +149,9 @@ function CrossBridge(bridgeConfig: any, currency: any, selectChain: any, bridgeT
   )
 }
 
-export default function Reminder({ bridgeConfig, bridgeType, currency, selectChain }: ReminderType) {
-  // console.log(bridgeType)
+export default function Reminder({ destConfig, bridgeType, currency, selectChain }: ReminderType) {
   if (bridgeType) {
-    return CrossBridge(bridgeConfig, currency, selectChain, bridgeType)
+    return CrossBridge(destConfig, currency, selectChain, bridgeType)
   }
   return <></>
 }
