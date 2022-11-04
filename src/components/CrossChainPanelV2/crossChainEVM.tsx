@@ -897,7 +897,7 @@ export default function CrossChain({
     ) {
       if (window?.aptos) {
         return <ConfirmText>
-          {aptRegisterList.error ? aptRegisterList.error : 'Please register token first. Token registration is Aptos security policy, which required in your first interaction with an asset.'}
+          {aptRegisterList.error ? `Please deposit APT, the gas token of Aptos, to activate your account (${recipient}). Multichain gas swap tool will come soon.` : 'Please register token first. Token registration is Aptos security policy, which required in your first interaction with an asset.'}
           
         </ConfirmText>
       } else {

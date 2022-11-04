@@ -7,6 +7,7 @@ import {getADATxnsStatus} from '../cardano'
 import {getFLOWTxnsStatus} from '../flow'
 import {getSolTxnsStatus} from '../solana'
 import {getAptTxnsStatus} from '../apt'
+import {getBtcHash} from '../btc'
 
 import { ChainId } from '../../config/chainConfig/chainId'
 
@@ -46,6 +47,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
       getAptTxnsStatus(hash, chainId).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+      getBtcHash(hash, chainId).then(res => {
         resolve(res)
       })
     }

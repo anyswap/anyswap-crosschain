@@ -44,7 +44,7 @@ import jewel from './jewel'
 import btt from './btt'
 import bas from './bas'
 import evmos from './evmos'
-import ron from './ron'
+// import ron from './ron'
 import etc from './etc'
 import cmp from './cmp'
 import gt from './gt'
@@ -81,7 +81,7 @@ import milkalgo from './milkalgo'
 import kek from './kek'
 import apt from './apt'
 import brise from './brise'
-// import mint from './mint'
+import mint from './mint'
 import dnd from './dnd'
 
 import { ChainId } from './chainId'
@@ -93,7 +93,7 @@ interface ConFig {
 }
 export const chainInfo:ConFig = {
   ...dnd,
-  // ...mint,
+  ...mint,
   ...apt,
   ...kek,
   ...twemix,
@@ -131,7 +131,7 @@ export const chainInfo:ConFig = {
   ...gt,
   ...cmp,
   ...etc,
-  ...ron,
+  // ...ron,
   ...evmos,
   ...bas,
   ...btt,
@@ -243,7 +243,7 @@ const allChainList = [
   ChainId.TWEMIX,
   ChainId.BRISE,
   ChainId.KEK,
-  // ChainId.MINT,
+  ChainId.MINT,
   // ChainId.DND,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
@@ -372,7 +372,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    // ChainId.APT,
+    ChainId.APT,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,

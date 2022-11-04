@@ -30,7 +30,6 @@ export default {
     nodeRpc: MINT_MAINNET,
     nodeRpcList: [
       MINT_MAINNET,
-      'https://api.roninchain.com/rpc'
     ],
     chainID: MINT_MAIN_CHAINID,
     lookHash: MINT_MAIN_EXPLORER + '/tx/',

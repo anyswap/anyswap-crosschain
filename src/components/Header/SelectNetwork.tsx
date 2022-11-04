@@ -493,13 +493,22 @@ function ChainListBox ({
   function List({ records }: { records?: any [] }) {
     return (<>{
       records?.map((item:any, index:any) => {
+        // console.log(searchQuery)
+        // console.log(item)
+        // if (!item) {
+        //   console.log(records)
+
+        // }
         if (
-          (searchQuery
-          && (
-            item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-            || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
-            || searchQuery.toLowerCase() === item.chainID.toString().toLowerCase()
-          ))
+          (
+            searchQuery
+            && item
+            && (
+              item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || searchQuery.toLowerCase() === item.chainID.toString().toLowerCase()
+            )
+          )
           || !searchQuery
         ) {
           return (

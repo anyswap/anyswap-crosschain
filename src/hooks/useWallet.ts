@@ -17,6 +17,7 @@ import {useLoginTrx} from '../nonevm/trx'
 import {useAdaLogin} from '../nonevm/cardano'
 import {useLoginFlow} from '../nonevm/flow'
 import {useLoginAptos} from '../nonevm/apt'
+import {useLoginBtc} from '../nonevm/btc'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -30,11 +31,15 @@ export function useConnectWallet () {
   const loginAda = useAdaLogin()
   const {loginFlow} = useLoginFlow()
   const {loginAptos} = useLoginAptos()
+  const {loginBtc} = useLoginBtc()
 
+  const useChainId = useMemo(() => {
+    return selectNetworkInfo?.chainId
+  }, [selectNetworkInfo])
   // const {publicKey} = useSolWallet()
-
+  // console.log(selectNetworkInfo)
   return useCallback(() => {
-    if (selectNetworkInfo?.label === ChainId.TERRA) {
+    if (useChainId === ChainId.TERRA) {
       if (connect) {
         try {
           // connect(ConnectType.CHROME_EXTENSION)
@@ -50,72 +55,77 @@ export function useConnectWallet () {
       } else {
         alert('Please install Terra Station!')
       }
-    } else if (selectNetworkInfo?.label === ChainId.BTC) {
+    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(useChainId)) {
+      if (!account) {
+        loginBtc(useChainId)
+      } else {
+        toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
+      }
+    } else if (useChainId === ChainId.NAS) {
       
-    } else if (selectNetworkInfo?.label === ChainId.NAS) {
-      
-    } else if (
-      selectNetworkInfo?.label === ChainId.NEAR
-      || selectNetworkInfo?.label === ChainId.NEAR_TEST
-    ) {
+    } else if ( [ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId) ) {
       if (!account) {
         login()
       } else {
         toggleWalletModal()
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
-    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(useChainId)) {
       if (!account) {
         loginXlm()
       } else {
         toggleWalletModal()
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
-    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(useChainId)) {
       if (!account) {
         loginTrx()
       } else {
         toggleWalletModal()
       }
-    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(useChainId)) {
       if (!account) {
         loginAda()
       } else {
         toggleWalletModal()
       }
-    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
       if (!account) {
         loginFlow()
       } else {
         toggleWalletModal()
       }
-    } else if ([ChainId.APT, ChainId.APT_TEST].includes(selectNetworkInfo?.label)) {
+    } else if ([ChainId.APT, ChainId.APT_TEST].includes(useChainId)) {
       if (!account) {
-        loginAptos(selectNetworkInfo?.label)
+        loginAptos(useChainId)
       } else {
         toggleWalletModal()
       }
     } else {
       toggleWalletModal()
     }
-  }, [selectNetworkInfo, toggleWalletModal, account])
+  }, [useChainId, toggleWalletModal, account])
 }
 
 export function useLogoutWallet () {
   const {selectNetworkInfo} = useUserSelectChainId()
   const {logoutFlow} = useLoginFlow()
+  const useChainId = useMemo(() => {
+    return selectNetworkInfo?.chainId
+  }, [selectNetworkInfo])
   const logoutWallet = useCallback(() => {
-    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
       logoutFlow()
     }
-  }, [selectNetworkInfo])
+  }, [useChainId])
 
   const isSupportLogout = useMemo(() => {
-    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(selectNetworkInfo?.label)) {
+    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
       return true
     }
     return false
-  }, [selectNetworkInfo])
+  }, [useChainId])
 
   return {
     logoutWallet,

@@ -109,6 +109,6 @@ export enum ChainId {
   TWEMIX = '1111',
   TWEMIX_TEST = '1112',
   BRISE = '32520',
-  MINT = '',
+  MINT = '2020',
   DND = '7363',
 }

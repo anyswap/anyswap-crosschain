@@ -2,12 +2,12 @@ import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const BTC_MAINNET = ''
-export const BTC_MAIN_CHAINID = ChainId.BTC
+export const BTC_MAINNET = ChainId.BTC
+export const BTC_MAIN_CHAINID = getLocalRPC(BTC_MAINNET, 'https://blockstream.info/api')
 export const BTC_MAIN_EXPLORER = 'https://blockstream.info'
 
 export const BTC_TEST_CHAINID = ChainId.BTC_TEST
-export const BTC_TESTNET = getLocalRPC(BTC_TEST_CHAINID, 'https://blockstream.info/testnet/api/')
+export const BTC_TESTNET = getLocalRPC(BTC_TEST_CHAINID, 'https://blockstream.info/testnet/api')
 export const BTC_TEST_EXPLORER = 'https://blockstream.info/testnet'
 
 const symbol = 'BTC'
