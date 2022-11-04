@@ -477,12 +477,18 @@ function ChainListBox ({
     const arr:any = []
     // const starArr:any = []
     for (const c of spportChainArr) {
+      // if (!chainInfo[c]) {
+      //   console.log(c)
+      //   console.log(chainInfo)
+      // }
       if (selectTab === 0 && starChainList?.[c]) {
         arr.push(chainInfo[c])
       } else if (selectTab === 1) {
         arr.push(chainInfo[c])
       }
     }
+    // console.log(arr)
+    // console.log([...(selectTab === 0 ? arr.sort(comparator) : arr)])
     return [
       // ...starArr.sort(comparator),
       // ...arr.sort(comparator),
@@ -497,6 +503,8 @@ function ChainListBox ({
         // console.log(item)
         // if (!item) {
         //   console.log(records)
+        //   console.log(useChainId)
+        //   console.log(item)
 
         // }
         if (
@@ -512,7 +520,7 @@ function ChainListBox ({
           || !searchQuery
         ) {
           return (
-            <OptionCardClickable key={index} className={ useChainId?.toString() === item.chainID?.toString()  ? 'active' : ''}>
+            <OptionCardClickable key={index} className={ useChainId?.toString() === item?.chainID?.toString()  ? 'active' : ''}>
               <Option curChainId={item.chainID} selectChainId={useChainId} changeNetwork={(val) => {
                 openUrl(val)
               }}></Option>
