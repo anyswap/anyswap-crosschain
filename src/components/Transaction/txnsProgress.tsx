@@ -146,7 +146,7 @@ export default function TxnsProgress({
           stepNum = 4 // Confirmed
         } else if ([7, 8].includes(status)) {
           stepNum = 5 // Routing
-        } else if ([9].includes(status) && tx?.info?.confirmations <= 1) {
+        } else if ([9].includes(status) && (!tx?.info?.confirmations || tx?.info?.confirmations <= 1)) {
           stepNum = 6 // Routed
         } else if (([9].includes(status) && tx?.info?.confirmations > 1) || [10].includes(status)) {
           stepNum = 7 // Success
@@ -165,6 +165,8 @@ export default function TxnsProgress({
         }
       }
     }
+    // console.log(tx)
+    // console.log(stepNum)
     setStep(stepNum)
   }, [tx])
 

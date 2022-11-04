@@ -76,17 +76,17 @@ export default function Transaction({ hash }: { hash: string }) {
     }
   }, [tx])
   const toStatus:any = useMemo(() => {
+    // console.log(tx)
     if (tx) {
       if (fromStatus === Status.Failure) {
         return Status.Failure
       } else if (!tx.info) {
         return null
-      } else if (tx.info?.status || tx.info?.status === 0) {
+      }  else {
         const status = tx.info?.status
         const statusType = getStatus(status, tx?.info?.confirmations)
         return statusType
-      } else {
-        return Status.Failure
+        // return Status.Failure
       }
     } else {
       return null
