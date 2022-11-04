@@ -95,10 +95,14 @@ export default function Transaction({ hash }: { hash: string }) {
   // const pending = !tx?.receipt
   const pending = useMemo(() => {
     if (tx?.version) {
-      if (!toStatus || [Status.Pending, Status.Confirming, Status.Crosschaining].includes(toStatus)) {
-        return true
+      // if (!toStatus || [Status.Pending, Status.Confirming, Status.Crosschaining].includes(toStatus)) {
+      //   return true
+      // }
+      // return false
+      if (toStatus && [Status.Failure, Status.Success].includes(toStatus)) {
+        return false
       }
-      return false
+      return true
     } else {
       return !tx?.receipt
     }
