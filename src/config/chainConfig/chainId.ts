@@ -16,6 +16,7 @@ export enum ChainId {
   COLX = 'COLX',
   CRAB = '44',
   CRO = '25',
+  CRO_TEST = '338',
   ETH = '1',
   RINKEBY = '4',
   GOERLI = '5',

@@ -266,6 +266,7 @@ const testChainList = [
   ChainId.KLAY_TEST,
   ChainId.GLMR_TEST,
   ChainId.KEK_TEST,
+  ChainId.CRO_TEST,
 ]
 
 const useChain:any = {

@@ -7,6 +7,10 @@ export const CRO_MAIN_CHAINID = ChainId.CRO
 export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://evm.cronos.org')
 export const CRO_MAIN_EXPLORER = 'https://cronoscan.com'
 
+export const CRO_TEST_CHAINID = ChainId.CRO_TEST
+export const CRO_TESTNET = getLocalRPC(CRO_TEST_CHAINID, 'https://evm-t3.cronos.org')
+export const CRO_TEST_EXPLORER = 'https://testnet.cronoscan.com'
+
 const symbol = 'CRO'
 
 const bridgeToken = {
@@ -50,5 +54,26 @@ export default {
     networkName: 'Cronos mainnet',
     type: 'main',
     label: CRO_MAIN_CHAINID,
+  },
+  [CRO_TEST_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: CRO_TESTNET,
+    nodeRpcList: [
+      CRO_TESTNET,
+    ],
+    chainID: CRO_TEST_CHAINID,
+    lookHash: CRO_TEST_EXPLORER + '/tx/',
+    lookAddr: CRO_TEST_EXPLORER + '/address/',
+    lookBlock: CRO_TEST_EXPLORER + '/block/',
+    explorer: CRO_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Cronos',
+    networkName: 'Cronos testnet',
+    type: 'test',
+    label: CRO_TEST_CHAINID,
   },
 }
