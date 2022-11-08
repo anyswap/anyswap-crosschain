@@ -19,6 +19,7 @@ import {useAdaCrossChain} from '../../nonevm/cardano'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 import {useSolCrossChain} from '../../nonevm/solana'
 import {useAptCrossChain} from '../../nonevm/apt'
+import {useBtcCrossChain} from '../../nonevm/btc'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -51,6 +52,10 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
 import { isAddress } from '../../utils/isAddress'
+// import {getP2PInfo} from '../../utils/bridge/register'
+// import { createAddress } from '../../utils/isAddress/BTC'
+// import {setLocalConfig} from '../../utils/tools/tools'
+// import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
 // import {formatDecimal, thousandBit} from '../../utils/tools/tools'
@@ -103,6 +108,7 @@ export default function CrossChain({
   const [selectChainList, setSelectChainList] = useState<Array<any>>([])
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
   const [swapType, setSwapType] = useState('swap')
+  // const [p2pAddress, setP2pAddress] = useState<any>('')
   
   // const [intervalCount, setIntervalCount] = useState<number>(0)
 
@@ -182,6 +188,27 @@ export default function CrossChain({
     return ApprovalState.UNKNOWN
     // return ApprovalState.NOT_APPROVED
   }, [chainId, allowance, inputBridgeValue, isApprove, loading])
+
+  // const onCreateP2pAddress = useCallback(() => {
+  //   setP2pAddress('')
+  //   if (recipient && selectCurrency && destConfig && selectChain) {
+  //     getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+  //       // console.log(res)
+  //       // console.log(selectCurrency)
+  //       if (res?.p2pAddress) {
+  //         const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
+  //         if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
+  //           // console.log(localAddress)
+  //           setP2pAddress(localAddress)
+  //           setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+  //         }
+  //       }
+  //       setDelayAction(false)
+  //     })
+  //   } else {
+  //     setDelayAction(false)
+  //   }
+  // }, [recipient, selectCurrency, destConfig, selectChain, chainId])
 
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
 
@@ -272,6 +299,16 @@ export default function CrossChain({
     destConfig
   )
 
+  const {execute: onBtcWrap, inputError: wrapInputErrorBtc} = useBtcCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
+
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
@@ -337,10 +374,12 @@ export default function CrossChain({
       return wrapInputErrorSol
     } else if (wrapInputErrorApt && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
       return wrapInputErrorApt
+    } else if (wrapInputErrorBtc && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
+      return wrapInputErrorBtc
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -548,7 +587,13 @@ export default function CrossChain({
                     onAptWrap().then(() => {
                       onClear()
                     })
+                  } else if (onBtcWrap && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
+                    console.log('onBtcWrap')
+                    onBtcWrap().then(() => {
+                      onClear()
+                    })
                   }
+                  
                   
                 }}>
                   {t('Confirm')}

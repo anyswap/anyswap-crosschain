@@ -6,6 +6,7 @@ import nonevm from './hooks/reducer'
 import temp from './temp/reducer'
 import sol from './solana/reducer'
 import apt from './apt/reducer'
+import btc from './btc/reducer'
 export default {
   xlm,
   trx,
@@ -14,5 +15,6 @@ export default {
   nonevm,
   temp,
   sol,
-  apt
+  apt,
+  btc,
 }

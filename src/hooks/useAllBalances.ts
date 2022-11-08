@@ -22,6 +22,8 @@ import { ChainId } from '../config/chainConfig/chainId'
 import { BigAmount } from '../utils/formatBignumber'
 import { tryParseAmount3 } from '../state/swap/hooks'
 
+import config from '../config'
+
 export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {account} = useActiveReact()
   const connectedWallet = useConnectedWallet()
@@ -39,7 +41,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {flowBalanceList} = useFlowBalance()
   const {getSolTokenBalance, getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
-  const {getBtcBalance} = useBtcBalance()
+  const {btcBalanceList} = useBtcBalance()
 
   const savedBalance = useRef<any>()
 
@@ -131,13 +133,15 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
-      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId)) {
+      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId) && config?.chainInfo?.[selectChainId]?.chainType !== 'NOWALLET') {
         // console.log(account)
-        getBtcBalance(selectChainId, account).then((res:any) => {
-          console.log(res)
+        if (btcBalanceList?.NATIVE) {
+          const bl = BigAmount.format(dec, btcBalanceList?.NATIVE)
+          savedBalance.current = bl
+        } else if (dec) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
-        })
+        }
       } else {
         savedBalance.current = evmBalance
       }
@@ -145,7 +149,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList, btcBalanceList])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -177,7 +181,7 @@ export function useBaseBalances (
   const {flowBalanceList} = useFlowBalance()
   const {getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
-  const {getBtcBalance} = useBtcBalance()
+  const {btcBalanceList} = useBtcBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -249,15 +253,17 @@ export function useBaseBalances (
         const bl = BigAmount.format(8, '0')
         setBalance(bl)
       }
-    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId)) {
-      // console.log(account)
-      getBtcBalance(selectChainId, uncheckedAddresses).then((res:any) => {
-        console.log(res)
+    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(selectChainId) && config?.chainInfo?.[selectChainId]?.chainType !== 'NOWALLET') {
+      // console.log(btcBalanceList)
+      if (btcBalanceList?.NATIVE) {
+        const bl = BigAmount.format(8, btcBalanceList?.NATIVE)
+        setBalance(bl)
+      } else {
         const bl = BigAmount.format(8, '0')
         setBalance(bl)
-      })
+      }
     }
-  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList])
+  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList, btcBalanceList])
 
   useEffect(() => {
     fetchBalancesCallback()

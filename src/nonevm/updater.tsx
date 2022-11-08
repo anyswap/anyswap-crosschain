@@ -9,9 +9,11 @@ import BtcUpdater from './btc/updater'
 
 import {useActiveReact} from '../hooks/useActiveReact'
 import { ChainId } from '../config/chainConfig/chainId'
+import config from '../config'
 
 export default function Updaters() {
   const { chainId } = useActiveReact()
+  // console.log(config)
   if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
     return <CardanoUpdater />
   } else if ([ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
@@ -22,8 +24,8 @@ export default function Updaters() {
     return <SolUpdater />
   } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
     return <AptUpdater />
-  // } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
-  } else if ([ChainId.BTC_TEST].includes(chainId)) {
+  } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
+  // } else if ([ChainId.BTC_TEST].includes(chainId)) {
     return <BtcUpdater />
   }
   return <></>

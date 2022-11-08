@@ -185,36 +185,43 @@ export default function CrossChain({
     setMemo('')
     if (recipient && selectCurrency && destConfig && selectChain) {
       // if (chainId === 'XRP') {
-        if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
-          // console.log(destConfig)
-          // setP2pAddress(recipient)
-          setP2pAddress(destConfig?.router)
-          setMemo(`swapOut ${recipient}:${selectChain}`)
-          // setMemo('')
-          setModalSpecOpen(true)
-          setDelayAction(false)
-        } else if ([ChainId.XRP].includes(chainId)) {
+      if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
+        // console.log(destConfig)
+        // setP2pAddress(recipient)
+        setP2pAddress(destConfig?.router)
+        setMemo(`swapOut ${recipient}:${selectChain}`)
+        // setMemo('')
+        setModalSpecOpen(true)
+        setDelayAction(false)
+      } else if ([ChainId.XRP].includes(chainId)) {
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
         setMemo(recipient + ":" + selectChain)
         setModalSpecOpen(true)
         setDelayAction(false)
-      } else {
-        getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-          // console.log(res)
-          // console.log(selectCurrency)
-          if (res?.p2pAddress) {
-            const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
-            if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
-              // console.log(localAddress)
-              setP2pAddress(localAddress)
-              setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+        if (['swapin', 'swapout'].includes(destConfig?.type)) {
+          getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+            // console.log(res)
+            // console.log(selectCurrency)
+            if (res?.p2pAddress) {
+              const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
+              if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
+                // console.log(localAddress)
+                setP2pAddress(localAddress)
+                setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+              }
             }
-          }
+            setModalSpecOpen(true)
+            setDelayAction(false)
+          })
+        } else {
+          setP2pAddress(destConfig?.router)
+          setMemo(recipient + ":" + selectChain)
           setModalSpecOpen(true)
           setDelayAction(false)
-        })
+        }
       }
     } else {
       setDelayAction(false)

@@ -9,6 +9,7 @@ import { useWalletModalToggle } from '../state/application/hooks'
 import { useUserSelectChainId } from '../state/user/hooks'
 
 import { ChainId } from '../config/chainConfig/chainId'
+import config from '../config'
 
 import {useActiveReact} from './useActiveReact'
 import {useLogin} from '../nonevm/near'
@@ -55,7 +56,7 @@ export function useConnectWallet () {
       } else {
         alert('Please install Terra Station!')
       }
-    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(useChainId)) {
+    } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(useChainId) && config?.chainInfo?.[useChainId]?.chainType !== 'NOWALLET') {
       if (!account) {
         loginBtc(useChainId)
       } else {

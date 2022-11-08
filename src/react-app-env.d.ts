@@ -111,6 +111,7 @@ interface Window {
   bitkeep: any
   aptos: any
   bitcoin: any
+  providerManager: any
 }
 
 declare module '@onflow/fcl';

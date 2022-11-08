@@ -60,6 +60,7 @@ export default {
     networkName: 'Bitcoin testnet',
     type: 'test',
     label: BTC_TEST_CHAINID,
-    chainType: BTC_TEST_CHAINID
+    chainType: BTC_TEST_CHAINID,
+    chainType: 'NOWALLET'
   }
 }
