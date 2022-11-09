@@ -36,7 +36,9 @@ export const ConfirmText = styled.div`
   color: #734be2;
   padding: 0.8rem 0;
   border-top: 0.0625rem solid rgba(0, 0, 0, 0.08);
-  margin-top:1.25rem
+  margin-top:1.25rem,
+  word-break: break-all;
+  word-wrap: break-word;
 `
 
 export const FlexEC = styled.div`

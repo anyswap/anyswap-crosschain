@@ -153,14 +153,14 @@ export function useTokenBalancesWithLoadingIndicator1(
 
   return useMemo(
     () => {
-      // console.log(balances)
+      // console.log(token, address, balances)
       if (address && token && !anyLoading) {
         const value = balances?.[0]?.result?.[0]
         const amount = value ? value.toString() : undefined
-        // console.log(amount)
-        // console.log(decimals)
+        // console.log('amount', amount)
+        // console.log('decimals', decimals)
         // console.log(balances)
-        return amount ? BigAmount.format(decimals, amount) : undefined
+        return amount || amount === 0 ? BigAmount.format(decimals, amount) : undefined
       } else {
         return undefined
       }
@@ -209,9 +209,10 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
   // console.log(currency)
   const balanceWallet  = useTokenBalancesWithLoadingIndicator1(account, token, decimals, chainId)
   const blItem = useOneTokenBalance(token ? token?.toLowerCase() : undefined)
+  // console.log('balanceWallet', token, balanceWallet)
   return useMemo(() => {
-    // console.log(blItem)
-    // console.log(balanceWallet)
+    // console.log('blItem', blItem)
+    // console.log('balanceWallet', token, balanceWallet)
     if (balanceWallet) {
       return balanceWallet
     } else {
@@ -221,7 +222,8 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
       }
       return undefined
     }
-  }, [account, token, chainId, balanceWallet, blItem?.balances, decimals])
+  }, [balanceWallet, blItem?.balances, decimals])
+  // }, [account, token, chainId, balanceWallet, blItem?.balances, decimals])
 }
 
 

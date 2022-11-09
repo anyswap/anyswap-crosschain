@@ -30,8 +30,8 @@ export enum VERSION {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
-export const INIT_VERSION = VERSION.V7_TEST
+export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -91,6 +91,7 @@ export const MAIN_COIN_SORT:any = {
   'DAI': {sort: 6},
   'MIM': {sort: 7},
   'MAI': {sort: 8},
+  'BUSD': {sort: 9},
 }
 
 export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'

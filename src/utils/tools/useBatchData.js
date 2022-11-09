@@ -94,6 +94,8 @@ export function getMulticallData ({chainId, rpc, calls, provider}) {
     contract.methods.aggregate(arr).call((err, res) => {
       // console.log(res)
       if (err) {
+        // console.log(err)
+        // console.log(calls)
         reject(err)
       } else {
         resolve(res.returnData)

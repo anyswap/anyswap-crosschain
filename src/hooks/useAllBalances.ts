@@ -143,6 +143,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           savedBalance.current = bl
         }
       } else {
+        // console.log('evmBalance', evmBalance ? evmBalance.toExact() : '')
         savedBalance.current = evmBalance
       }
     } else {

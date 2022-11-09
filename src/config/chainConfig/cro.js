@@ -8,7 +8,7 @@ export const CRO_MAINNET = getLocalRPC(CRO_MAIN_CHAINID, 'https://evm.cronos.org
 export const CRO_MAIN_EXPLORER = 'https://cronoscan.com'
 
 export const CRO_TEST_CHAINID = ChainId.CRO_TEST
-export const CRO_TESTNET = getLocalRPC(CRO_TEST_CHAINID, 'https://evm-t3.cronos.org')
+export const CRO_TESTNET = getLocalRPC(CRO_TEST_CHAINID, 'https://testnet-archive.cronoslabs.com/v1/ea75c3ba4d1119d22cffaa6f83c96a94')
 export const CRO_TEST_EXPLORER = 'https://testnet.cronoscan.com'
 
 const symbol = 'CRO'
