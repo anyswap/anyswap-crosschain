@@ -758,6 +758,7 @@ export default function CrossChain() {
     // const web3 = getWeb3('https://rpc.testnet.fantom.network/')
     const web3 = getWeb3()
     const recipientAccount = (Number(outputBridgeValue) * (price[selectCurrency.chainId] || 0)) / price[selectChain]
+    
     const transactionData = {
       from: account,
       to: chains[selectChain]['RouterContract'],
