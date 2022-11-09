@@ -24,7 +24,7 @@ export function getNodeBalance(account?:any, token?:string, chainID?:any, dec?:a
       const tokenKey = isNativeToken ? 'NATIVE' + token : token
       const lObj = getLocalConfig(account, tokenKey, chainID, DESTBALANCE, 1000 * 10)
       if (lObj && lObj.balance) {
-        resolve(fromWei(lObj.balance, dec))
+        resolve(isNaN(lObj.balance) ? '' : fromWei(lObj.balance, dec))
       } else {
         if (isNativeToken || !isAddress(token)) {
           useWeb3(chainID, 'eth', 'getBalance', [account]).then((res:any) => {
