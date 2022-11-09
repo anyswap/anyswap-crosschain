@@ -174,7 +174,6 @@ export default function CrossChain() {
     })
   }
   useEffect(() => {
-    // debugger
     const arr = [selectCurrency.chainId, selectChain]
 
     if (arr.some(r => !Boolean(r))) {
@@ -759,12 +758,31 @@ export default function CrossChain() {
     const web3 = getWeb3()
     const recipientAccount = (Number(outputBridgeValue) * (price[selectCurrency.chainId] || 0)) / price[selectChain]
 
-    const transactionData = {
+    const transactionData: any = {
       from: account,
       to: chains[selectChain]['RouterContract'],
       value: web3.utils.numberToHex(String(inputBridgeValue * Math.pow(10, chains[selectCurrency.chainId].decimal))),
       data: Buffer.from(`${recipient}:${selectChain}:${recipientAccount / 1.2}`, 'utf8').toString('hex')
+      // nonce: '',
+      // gas: '',
+      // gasPrice: ''
     }
+    const nonce = await (window as any)?.ethereum?.request({
+      method: 'eth_getTransactionCount',
+      params: [account]
+    })
+    const gas = await (window as any)?.ethereum?.request({
+      method: 'eth_estimateGas',
+      params: [{ to: transactionData.to }]
+    })
+    const gasPrice = await (window as any)?.ethereum?.request({
+      method: 'eth_gasPrice',
+      params: []
+    })
+    transactionData.nonce = nonce
+    transactionData.gas = String(Number(gas) * 2)
+    transactionData.gasPrice = String(Number(gasPrice))
+
     const txHash = await (window as any)?.ethereum?.request({
       method: 'eth_sendTransaction',
       params: [transactionData]
