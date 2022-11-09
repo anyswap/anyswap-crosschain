@@ -34,6 +34,14 @@ export const navList = [
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenNFT,
   },
+  {
+    path: '/gasswap',
+    textKey: 'gasswap',
+    regex: /\/gasswap/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: config.getCurConfigInfo().isOpenGasSwap,
+  },
 ]
 
 export const moreList = [

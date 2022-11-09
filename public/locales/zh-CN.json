@@ -374,5 +374,6 @@
   "removeanytokentip": "由于资金池的流动易变性质 您收到了流动资金池资金。请您在资金池有足够流动资金的时候兑换您的资产。请查看一下链接",
   "crosschain": "跨链",
   "SimpleMode": "简洁模式",
-  "AdvanceMode": "高级模式"
+  "AdvanceMode": "高级模式",
+  "gasswap": "Gas Swap"
 }

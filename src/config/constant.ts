@@ -324,6 +324,7 @@ export const controlConfig:any = {
     isOpenBridge: 0,
     isOpenMerge: 1,
     isOpenNFT: 1,
+    isOpenGasSwap: 0,
   },
   [VERSION.V7_TEST]: {
     bridgeInitDataChain: '97',
@@ -337,6 +338,7 @@ export const controlConfig:any = {
     isOpenBridge: 0,
     isOpenMerge: 1,
     isOpenNFT: 1,
+    isOpenGasSwap: 1,
   },
   [VERSION.V7_BAS_TEST]: {
     bridgeInitDataChain: '97',
