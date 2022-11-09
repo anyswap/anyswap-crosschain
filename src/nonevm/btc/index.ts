@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from 'react-i18next'
 import {
   useDispatch,
@@ -20,15 +20,12 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import { ChainId } from "../../config/chainConfig/chainId"
 import config from '../../config'
-// import {VALID_BALANCE} from '../../config/constant'
 
-// import {BigAmount} from '../../utils/formatBignumber'
+import {getP2PInfo} from '../../utils/bridge/register'
+import { createAddress } from '../../utils/isAddress/BTC'
+import {setLocalConfig} from '../../utils/tools/tools'
+import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 
-// import {recordsTxns} from '../../utils/bridge/register'
-// import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
-// import { useTransactionAdder } from '../../state/transactions/hooks'
-// import { tryParseAmount3 } from '../../state/swap/hooks'
-// import { ChainId } from "../../config/chainConfig/chainId"
 import { isAddress } from "../../utils/isAddress"
 
 export function useLoginBtc() {
@@ -188,6 +185,8 @@ export function useBtcCrossChain (
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
 
+  const [p2pAddress, setP2pAddress] = useState<any>('')
+
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
   const balance:any = useMemo(() => {
@@ -200,6 +199,29 @@ export function useBtcCrossChain (
     }
     return undefined
   }, [selectCurrency, btcBalanceList])
+
+  const onCreateP2pAddress = useCallback(() => {
+    setP2pAddress('')
+    if (receiveAddress && selectCurrency && destConfig && selectChain && destConfig?.type === 'swapin') {
+      getP2PInfo(receiveAddress, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
+        // console.log(res)
+        // console.log(selectCurrency)
+        if (res?.p2pAddress) {
+          const localAddress = createAddress(receiveAddress, selectCurrency?.symbol, destConfig?.DepositAddress)
+          if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
+            // console.log(localAddress)
+            setP2pAddress(localAddress)
+            setLocalConfig(receiveAddress, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
+          }
+        }
+      })
+    }
+  }, [receiveAddress, selectCurrency, destConfig, selectChain, chainId])
+
+  useEffect(() => {
+    onCreateP2pAddress()
+  }, [receiveAddress, selectCurrency, destConfig, selectChain, chainId])
+
   // console.log(balance)
   let sufficientBalance:any = false
   try {
@@ -213,7 +235,13 @@ export function useBtcCrossChain (
     // console.log(sufficientBalance)
     // console.log(balance ? balance?.toExact() : '')
     // console.log(typedValue)
-    if (!account || !chainId || !selectCurrency || !receiveAddress) return {}
+    if (
+      !account
+      || !chainId
+      || !selectCurrency
+      || (!receiveAddress && destConfig?.type !== 'swapin')
+      || (!p2pAddress && destConfig?.type === 'swapin')
+    ) return {}
     return {
       balance: balance,
       execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
@@ -286,5 +314,5 @@ export function useBtcCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, p2pAddress])
 }
