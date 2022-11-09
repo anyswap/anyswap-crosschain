@@ -18,6 +18,9 @@ import {
   TabList
 } from '../CurrencySelect/styleds'
 
+import {useSafeAppConnection} from '../../connectors/gnosis-safe/hooks'
+import {gnosissafe} from '../../connectors'
+
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import { ApplicationModal } from '../../state/application/actions'
@@ -554,6 +557,8 @@ export default function SelectNetwork () {
   const networkModalOpen = useModalOpen(ApplicationModal.NETWORK)
   const toggleNetworkModal = useToggleNetworkModal()
 
+  const isGnosisSafe = useSafeAppConnection(gnosissafe)
+
   const {selectNetworkInfo, setUserSelectNetwork} = useUserSelectChainId()
   const [searchQuery, setSearchQuery] = useState<string>('')
 
@@ -655,7 +660,7 @@ export default function SelectNetwork () {
   return (
     <>
       {changeNetwork()}
-      <HideSmall onClick={() => toggleNetworkModal()}>
+      <HideSmall onClick={() => isGnosisSafe ? '' : toggleNetworkModal()}>
         {<NetworkCard title={config.getCurChainInfo(chainId).networkName}>
           <TokenLogo symbol={config.getCurChainInfo(chainId).networkLogo ?? config.getCurChainInfo(chainId).symbol} size={'20px'} style={{marginRight:'5px'}}></TokenLogo> 
           {config.getCurChainInfo(chainId).name}
