@@ -32,7 +32,7 @@ import glmr from './moonbeam'
 import astar from './astar'
 import rose from './rose'
 import vlx from './vlx'
-import clv from'./clv'
+import clv from './clv'
 import crab from './crab'
 import nas from './nas'
 import xrp from './xrp'
@@ -84,12 +84,12 @@ import brise from './brise'
 
 import { ChainId } from './chainId'
 
-import {VERSION, USE_VERSION} from '../constant'
+import { VERSION, USE_VERSION } from '../constant'
 
 interface ConFig {
   [key: string]: any
 }
-export const chainInfo:ConFig = {
+export const chainInfo: ConFig = {
   ...apt,
   ...kek,
   ...twemix,
@@ -173,7 +173,7 @@ export const chainInfo:ConFig = {
   ...milkada,
   ...rei,
   ...cfx,
-  ...rbtc,
+  ...rbtc
 }
 const allChainList = [
   ChainId.ETH,
@@ -237,7 +237,7 @@ const allChainList = [
   ChainId.ETHW,
   ChainId.MILKALGO,
   ChainId.TWEMIX,
-  ChainId.BRISE,
+  ChainId.BRISE
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -258,34 +258,14 @@ const testChainList = [
   ChainId.TWEMIX_TEST,
   ChainId.KLAY_TEST,
   ChainId.GLMR_TEST,
-  ChainId.KEK_TEST,
+  ChainId.KEK_TEST
 ]
 
-const useChain:any = {
-  [VERSION.V1]: [
-    ChainId.ETH,
-    ChainId.BNB,
-  ],
-  [VERSION.V1_1]: [
-    ChainId.ETH,
-    ChainId.BNB,
-    ChainId.MATIC,
-    ChainId.AVAX,
-    ChainId.HT,
-    ChainId.OKT,
-  ],
-  [VERSION.V2]: [
-    ChainId.ETH,
-    ChainId.BNB,
-    ChainId.FTM,
-    ChainId.MATIC
-  ],
-  [VERSION.V2_1]: [
-    ChainId.ETH,
-    ChainId.BNB,
-    ChainId.FTM,
-    ChainId.MATIC
-  ],
+const useChain: any = {
+  [VERSION.V1]: [ChainId.ETH, ChainId.BNB],
+  [VERSION.V1_1]: [ChainId.ETH, ChainId.BNB, ChainId.MATIC, ChainId.AVAX, ChainId.HT, ChainId.OKT],
+  [VERSION.V2]: [ChainId.ETH, ChainId.BNB, ChainId.FTM, ChainId.MATIC],
+  [VERSION.V2_1]: [ChainId.ETH, ChainId.BNB, ChainId.FTM, ChainId.MATIC],
   [VERSION.V2_2]: [
     ChainId.ETH,
     ChainId.BNB,
@@ -294,34 +274,13 @@ const useChain:any = {
     ChainId.OKT,
     ChainId.AVAX,
     ChainId.ARBITRUM,
-    ChainId.MOVR,
+    ChainId.MOVR
   ],
-  [VERSION.V2_T1]: [
-    ChainId.RINKEBY,
-    ChainId.BNB_TEST,
-    ChainId.HT_TEST,
-  ],
-  [VERSION.V2_T2]: [
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_TEST,
-    ChainId.OMGX_TEST,
-    ChainId.OPTIMISM_TEST
-  ],
-  [VERSION.V2_T3]: [
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_TEST,
-    ChainId.OMGX_TEST,
-    ChainId.OPTIMISM_TEST
-  ],
-  [VERSION.V3]: [
-    ChainId.ETH,
-    ChainId.ARBITRUM
-  ],
-  [VERSION.V3_1]: [
-    ChainId.ETH,
-    ChainId.BNB,
-    ChainId.ARBITRUM
-  ],
+  [VERSION.V2_T1]: [ChainId.RINKEBY, ChainId.BNB_TEST, ChainId.HT_TEST],
+  [VERSION.V2_T2]: [ChainId.RINKEBY, ChainId.ARBITRUM_TEST, ChainId.OMGX_TEST, ChainId.OPTIMISM_TEST],
+  [VERSION.V2_T3]: [ChainId.RINKEBY, ChainId.ARBITRUM_TEST, ChainId.OMGX_TEST, ChainId.OPTIMISM_TEST],
+  [VERSION.V3]: [ChainId.ETH, ChainId.ARBITRUM],
+  [VERSION.V3_1]: [ChainId.ETH, ChainId.BNB, ChainId.ARBITRUM],
   [VERSION.V4]: [
     ChainId.ETH,
     ChainId.BNB,
@@ -335,26 +294,11 @@ const useChain:any = {
     ChainId.OKT,
     ChainId.ONE
   ],
-  [VERSION.V4_OKT]: [
-    ChainId.BNB,
-    ChainId.OKT
-  ],
-  [VERSION.V4_MOVR]: [
-    ChainId.ETH,
-    ChainId.BNB,
-    ChainId.MOVR
-  ],
+  [VERSION.V4_OKT]: [ChainId.BNB, ChainId.OKT],
+  [VERSION.V4_MOVR]: [ChainId.ETH, ChainId.BNB, ChainId.MOVR],
   [VERSION.V5]: [...allChainList],
-  [VERSION.V6]: [
-    ChainId.FTM,
-    ChainId.RINKEBY
-  ],
-  [VERSION.V6_1]: [
-    ChainId.ETH,
-    ChainId.FTM,
-    ChainId.MATIC,
-    ChainId.AVAX,
-  ],
+  [VERSION.V6]: [ChainId.FTM, ChainId.RINKEBY],
+  [VERSION.V6_1]: [ChainId.ETH, ChainId.FTM, ChainId.MATIC, ChainId.AVAX],
   [VERSION.V7]: [
     ...allChainList,
     ChainId.BTC,
@@ -365,7 +309,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    ChainId.APT,
+    ChainId.APT
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
@@ -376,12 +320,9 @@ const useChain:any = {
     ChainId.ADA_TEST,
     ChainId.FLOW_TEST,
     ChainId.SOL_TEST,
-    ChainId.APT_TEST,
+    ChainId.APT_TEST
   ],
-  [VERSION.V7_BAS_TEST]: [
-    ChainId.BNB_TEST,
-    ChainId.BAS_TEST
-  ],
+  [VERSION.V7_BAS_TEST]: [ChainId.BNB_TEST, ChainId.BAS_TEST],
   ALL_MAIN: [
     ChainId.ETH,
     ChainId.BNB,
@@ -402,7 +343,7 @@ const useChain:any = {
     ChainId.NAS
   ]
 }
-
+console.info('useChain=====================================', useChain)
 // const envType:any = env
 // export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
-export const spportChainArr:any = useChain[USE_VERSION]
+export const spportChainArr: any = useChain[USE_VERSION]

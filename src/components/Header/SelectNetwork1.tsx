@@ -487,8 +487,9 @@ function ChainListBox({
 
   const chainList = useMemo(() => {
     const arr: any = []
-    const tempSpportChainArr = spportChainArr
-
+    let tempSpportChainArr = spportChainArr
+    console.info('tempSpportChainArr===========', tempSpportChainArr)
+    tempSpportChainArr = spportChainArr.filter((r: any) => r.chainID === '4')
     // const starArr:any = []
     for (const c of tempSpportChainArr) {
       if (selectTab === 0 && starChainList?.[c]) {
@@ -497,7 +498,11 @@ function ChainListBox({
         arr.push(chainInfo[c])
       }
     }
-    return [...(selectTab === 0 ? arr.sort(comparator) : arr)]
+    return [
+      // ...starArr.sort(comparator),
+      // ...arr.sort(comparator),
+      ...(selectTab === 0 ? arr.sort(comparator) : arr)
+    ]
   }, [spportChainArr, starChainList, selectTab])
 
   function List({ records }: { records?: any[] }) {
@@ -638,7 +643,7 @@ export default function SelectNetwork() {
               My Favorites
             </div>
             <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>
-              All Chains
+              All Chains111
             </div>
           </TabList>
           <Separator />

@@ -95,7 +95,6 @@ const StyledNavLink1 = styled(ExternalLink)`
 
 export default function NavList() {
   const { t } = useTranslation()
-  console.info('useTranslation()', useTranslation())
   return (
     <>
       <HeaderLinks>
@@ -128,7 +127,6 @@ export default function NavList() {
                   className={item.className ? item.className : ''}
                 >
                   {t(item.textKey)}
-                  {console.info('t', t(item.textKey))}
                 </StyledNavLink>
               )
             } else {

@@ -99,8 +99,16 @@ export const LinkList = [
     isOutLink: true,
     isView: 1,
   },
+  // {
+  //   path: '/crossChainGas',
+  //   textKey: 'gas',
+  //   regex: '',
+  //   className: 'otherInfo',
+  //   isOutLink: false,
+  //   isView: 1,
+  // },
   {
-    path: '/crossChainGas',
+    path: '/crossChainGas1',
     textKey: 'gas',
     regex: '',
     className: 'otherInfo',

@@ -178,7 +178,7 @@ export const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 `
 
-export const InputPanel = styled.div<{ hideInput?: boolean }>`
+export const InputPanel = styled.div<{ hideInput?: boolean; isError?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: ${({ hideInput }) => (hideInput ? '1.25rem' : '1.25rem')};

@@ -4,72 +4,80 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
 import { useConnectedWallet } from '@terra-money/wallet-provider'
-import CrossChainTitle from '../../CrossChainTitle'
 // import nebulas from 'nebulas'
-import SelectChainIdInputPanel from './selectChainID'
-import Reminder from './reminder'
-
-import { useActiveReact } from '../../../hooks/useActiveReact'
+import SelectChainIdInputPanel from '../CrossChainPanelV2/selectChainID'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import {
   useBridgeCallback,
   useBridgeUnderlyingCallback,
   useBridgeNativeCallback,
   useCrossBridgeCallback
-} from '../../../hooks/useBridgeCallback'
-// import { WrapType } from '../../../hooks/useWrapCallback'
-import { useApproveCallback, ApprovalState } from '../../../hooks/useApproveCallback'
-import { useLocalToken } from '../../../hooks/Tokens'
-import { useLogin } from '../../../nonevm/near'
+} from '../../hooks/useBridgeCallback'
+// import { WrapType } from '../../hooks/useWrapCallback'
+import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
+import { useLocalToken } from '../../hooks/Tokens'
+import { useLogin } from '../../nonevm/near'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
-import { AutoColumn } from '../../Column'
-import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../Button'
-import { AutoRow } from '../../Row'
-import Loader from '../../Loader'
-import AddressInputPanel from '../../AddressInputPanel'
-import { ArrowWrapper, BottomGrouping } from '../../swap/styleds'
-import ModalContent from '../../Modal/ModalContent'
+import { AutoColumn } from '../Column'
+import { ButtonLight, ButtonPrimary, ButtonConfirmed } from '../Button'
+import { AutoRow } from '../Row'
+import Loader from '../Loader'
+import AddressInputPanel from '../AddressInputPanel'
+import { ArrowWrapper, BottomGrouping } from '../swap/styleds'
+import ModalContent from '../Modal/ModalContent'
 
-import { useWalletModalToggle } from '../../../state/application/hooks'
-import { tryParseAmount } from '../../../state/swap/hooks'
-// import { useMergeBridgeTokenList } from '../../../state/lists/hooks'
-import { useAllMergeBridgeTokenList, useInitUserSelectCurrency } from '../../../state/lists/hooks'
+import { useWalletModalToggle } from '../../state/application/hooks'
+import { tryParseAmount } from '../../state/swap/hooks'
+// import { useMergeBridgeTokenList } from '../../state/lists/hooks'
+import { useInitUserSelectCurrency } from '../../state/lists/hooks'
 
-import config from '../../../config'
-import { VALID_BALANCE } from '../../../config/constant'
-import { getParams } from '../../../config/tools/getUrlParams'
-import { selectNetwork } from '../../../config/tools/methods'
-import { ChainId } from '../../../config/chainConfig/chainId'
+import config from '../../config'
+import { VALID_BALANCE } from '../../config/constant'
+import { getParams } from '../../config/tools/getUrlParams'
+import { selectNetwork } from '../../config/tools/methods'
+import { ChainId } from '../../config/chainConfig/chainId'
+// import { getWeb3 } from '../../utils/tools/web3UtilsV2'
 
-// import {getNodeTotalsupply} from '../../../utils/bridge/getBalanceV2'
-// import {formatDecimal, thousandBit} from '../../../utils/tools/tools'
+// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
+// import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 
-import TokenLogo from '../../TokenLogo'
-import LiquidityPool from '../../LiquidityPool'
+import TokenLogo from '../TokenLogo'
+import LiquidityPool from '../LiquidityPool'
 
-import ConfirmView from './confirmModal'
-import ErrorTip from './errorTip'
+import ConfirmView from '../CrossChainPanelV2/confirmModal'
+import ErrorTip from '../CrossChainPanelV2/errorTip'
 
-import RouterList from './routerList'
+import RouterList from '../CrossChainPanelV2/routerList'
 
-import { usePool } from '../../../hooks/usePools'
-import { useNearBalance, useSendNear } from '../../../nonevm/near'
+import { usePool } from '../../hooks/usePools'
+import { useNearBalance, useSendNear } from '../../nonevm/near'
 
-import { useXlmBalance, useTrustlines } from '../../../nonevm/stellar'
+import { useXlmBalance, useTrustlines } from '../../nonevm/stellar'
 
-import { useSolCreateAccount, useLoginSol } from '../../../nonevm/solana'
+import { useSolCreateAccount, useLoginSol } from '../../nonevm/solana'
 
-import { useAptosBalance, useAptAllowance, useLoginAptos } from '../../../nonevm/apt'
+import { useAptosBalance, useAptAllowance, useLoginAptos } from '../../nonevm/apt'
 
-import { LogoBox, ConfirmContent, TxnsInfoText, ConfirmText, FlexEC } from '../../../pages/styled'
+import { LogoBox, ConfirmContent, TxnsInfoText, ConfirmText, FlexEC } from '../../pages/styled'
 
-import { outputValue, useInitSelectCurrency, useDestChainid, useDestCurrency, getFTMSelectPool } from './hooks'
-import { BigAmount } from '../../../utils/formatBignumber'
+import {
+  outputValue,
+  useInitSelectCurrency,
+  useDestChainid,
+  useDestCurrency,
+  getFTMSelectPool
+} from '../CrossChainPanelV2/hooks'
+import { BigAmount } from '../../utils/formatBignumber'
 
-import { getUrlData } from '../../../utils/tools/axios'
-import { isAddress } from '../../../utils/isAddress'
-import useInterval from '../../../hooks/useInterval'
+import { getUrlData } from '../../utils/tools/axios'
+import { isAddress } from '../../utils/isAddress'
+import useInterval from '../../hooks/useInterval'
+import { tokenList } from './chainlist'
+// import { tokenList, abi, noEvmChainMenu } from './chainlist'
+// import { SubCurrencySelectBox } from './styleds'
+// import BulbIcon from '../../assets/images/icon/bulb.svg'
 
 export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   // const { account, chainId, library } = useActiveWeb3React()
@@ -89,9 +97,9 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     return undefined
   }, [chainId])
 
-  const allTokensList: any = useAllMergeBridgeTokenList(bridgeKey, useChain)
-  // console.log(bridgeKey)
-  // console.log(allTokensList)
+  // const allTokensList: any = useAllMergeBridgeTokenList(bridgeKey, useChain)
+  const allTokensList: any = tokenList[useChain]
+
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
 
@@ -115,7 +123,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
   let initToChainId: any = getParams('toChainId') ? getParams('toChainId') : ''
   initToChainId = initToChainId ? initToChainId.toLowerCase() : ''
 
-  const [inputBridgeValue, setInputBridgeValue] = useState<any>('666')
+  const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
   const [selectCurrency, setSelectCurrency] = useState<any>(
     allTokensList?.[initSelectCurrencyKey] ? allTokensList?.[initSelectCurrencyKey] : ''
   )
@@ -154,6 +162,45 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     ts: '',
     bl: ''
   })
+
+  // const [price, setPrice] = useState<any>({ 4002: 1, APT_TEST: 0.2 })
+  // const pollingCurrencyInfo = (arr: Array<string>) => {
+  //   const web3 = getWeb3('https://rpc.testnet.fantom.network/')
+  //   web3.setProvider('https://rpc.testnet.fantom.network/')
+  //   const contract = new web3.eth.Contract(abi)
+  //   contract.options.address = '0xcfD1ee7EA7300F106506e7454fD73E87664B8992'
+  //   const batch = new web3.BatchRequest()
+  //   const newPrice: any = {}
+  //   arr.forEach(async (r: any) => {
+  //     const item = isNaN(r) ? noEvmChainMenu[r] : r
+  //     batch.add(contract.methods.getCurrencyInfo(web3.utils.toHex(item)))
+  //     await contract.methods
+  //       .getCurrencyInfo(web3.utils.toHex(item))
+  //       .call()
+  //       .then((res: any) => {
+  //         newPrice[r] = res.price / Math.pow(10, 6)
+  //         if (Object.keys(newPrice).length === arr.length) {
+  //           setPrice(newPrice)
+  //         }
+  //       })
+  //   })
+  // }
+  // useEffect(() => {
+  //   // debugger
+  //   const arr = [selectCurrency.chainId, selectChain]
+
+  //   if (arr.some(r => !Boolean(r))) {
+  //     return
+  //   }
+  //   pollingCurrencyInfo(arr)
+  //   const interval = setInterval(() => {
+  //     pollingCurrencyInfo(arr)
+  //   }, 5000)
+
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [selectCurrency?.chainId])
 
   const destConfig = useMemo(() => {
     // console.log(selectDestCurrency)
@@ -457,9 +504,8 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     isRouter,
     wrapInputErrorCrossBridge
   ])
-  // console.log(selectCurrency)
   const isInputError = useMemo(() => {
-    // console.log(isWrapInputError)
+    // if (!price[(selectCurrency || {}).chainId]) return undefined
     if (!selectCurrency) {
       return {
         state: 'Error',
@@ -490,23 +536,29 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         } else {
           return undefined
         }
-      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
-        return {
-          state: 'Error',
-          tip: t('ExceedMinLimit', {
-            amount: destConfig.MinimumSwap,
-            symbol: selectCurrency.symbol
-          })
-        }
-      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
-        return {
-          state: 'Error',
-          tip: t('ExceedMaxLimit', {
-            amount: destConfig.MaximumSwap,
-            symbol: selectCurrency.symbol
-          })
-        }
-      } else if (
+      }
+      // else if ((inputBridgeValue || 0) * (price[selectCurrency.chainId] || 0) < 0.5) {
+      //   console.info('inputBridgeValue===============', inputBridgeValue)
+      //   console.info('selectCurrency.chainId===============', selectCurrency.chainId)
+      //   console.info('price===============', price)
+
+      //   return {
+      //     state: 'Error',
+      //     tip: t('ExceedMinLimit', {
+      //       amount: '0.5 USD',
+      //       symbol: ' '
+      //     })
+      //   }
+      // } else if ((inputBridgeValue || 0) * (price[selectCurrency.chainId] || 0) > 10) {
+      //   return {
+      //     state: 'Error',
+      //     tip: t('ExceedMaxLimit', {
+      //       amount: '10 USD',
+      //       symbol: ' '
+      //     })
+      //   }
+      // }
+      else if (
         isLiquidity &&
         ((isDestUnderlying && destChain && destChain.ts !== '' && Number(inputBridgeValue) > Number(destChain.ts)) ||
           (isDestUnderlying && !destChain))
@@ -531,6 +583,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
     isDestUnderlying,
     destChain,
     isLiquidity
+    // price
   ])
 
   const errorTip = useMemo(() => {
@@ -937,7 +990,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       }
       return (
         <>
-          <CrossChainTitle />
           <ConfirmView
             fromChainId={useChain}
             value={inputBridgeValue}
@@ -1185,7 +1237,8 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       )
     }
   }
-
+  // console.info('selectCurrency========================', selectCurrency)
+  // console.info('selectChain========================', selectChain)
   return (
     <>
       <ModalContent
@@ -1256,6 +1309,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         ) : (
           ''
         )}
+
         <AutoRow justify="center" style={{ padding: '0 1rem' }}>
           <ArrowWrapper
             clickable={false}
@@ -1266,7 +1320,6 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
             }}
           >
             <ArrowDown size="16" color={theme.text2} />
-            1122
           </ArrowWrapper>
           {// destConfig?.type !== 'swapin' && !isNaN(selectChain) ? (
           destConfig?.type !== 'swapin' && !isNaN(selectChain) && !isNaN(useChain) ? (
@@ -1300,10 +1353,10 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
             ''
           )}
         </AutoRow>
-        {console.info('selectChainselectChain', selectChain)}
+
         <SelectChainIdInputPanel
           label={t('to')}
-          // value={outputBridgeValue.toString()}
+          value={outputBridgeValue.toString()}
           onUserInput={value => {
             setInputBridgeValue(value)
           }}
@@ -1350,6 +1403,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
         ) : (
           ''
         )}
+
         <RouterList
           selectCurrency={selectCurrency}
           // tipTitleKey=""
@@ -1371,8 +1425,34 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
 
       {/* <Reminder destConfig={destConfig} bridgeType="bridgeAssets" currency={selectCurrency} selectChain={selectChain} /> */}
 
-      {/* <ErrorTip errorTip={errorTip} /> */}
-      {console.info('config.isStopSystem', config.isStopSystem)}
+      {/* <SubCurrencySelectBox>
+        <dl className="list">
+          <dt>
+            <img src={BulbIcon} alt="" />
+            {t('Reminder')}:
+          </dt>
+          <dd>
+            <i></i>
+            {t('redeemTip6', { max: '10 USD', min: '0.5 USD' })}
+          </dd>
+          <dd>
+            <i></i>
+            {selectCurrency?.chainId &&
+              t('redeemTip7', { amount: (inputBridgeValue || 0) * (price[selectCurrency.chainId] || 0) })}{' '}
+            USD
+          </dd>
+          <dd>
+            <i></i>
+            {t('redeemTip8', {
+              priceContent: `${selectCurrency.symbol}: ${price[selectCurrency.chainId] || '-'} USD,     ${
+                config.chainInfo[selectChain].symbol
+              }: ${price[selectChain] || '-'} USD`
+            })}
+          </dd>
+        </dl>
+      </SubCurrencySelectBox> */}
+
+      <ErrorTip errorTip={errorTip} />
       {config.isStopSystem ? (
         <BottomGrouping>
           <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
@@ -1380,7 +1460,7 @@ export default function CrossChain({ bridgeKey }: { bridgeKey: any }) {
       ) : (
         <BottomGrouping>
           {!evmAccount ? (
-            <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}111</ButtonLight>
+            <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
           ) : isApprove &&
             inputBridgeValue &&
             (approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING) ? (

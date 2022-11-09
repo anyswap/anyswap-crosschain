@@ -4,30 +4,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
 // import config from '../../config'
 import { isAddress } from 'ethers/lib/utils'
-import {userSelectCurrency} from './actions'
+import { userSelectCurrency } from './actions'
 
-import {getTokenlist, isSupportIndexedDB} from '../../utils/indexedDB'
+import { getTokenlist, isSupportIndexedDB } from '../../utils/indexedDB'
 import config from '../../config'
-
-
 
 export type TokenAddressMap = Readonly<{ [chainId in any]: Readonly<{ [tokenAddress: string]: any }> }>
 
-export function listsToTokenMap(list:any): TokenAddressMap {
-
+export function listsToTokenMap(list: any): TokenAddressMap {
   // console.log(list)
-  const map:any = {}
+  const map: any = {}
   for (const t in list) {
-    if(!isAddress(t) || !list[t].name || !list[t].symbol) continue
+    if (!isAddress(t) || !list[t].name || !list[t].symbol) continue
     // console.log(list[t])
     map[t] = list[t]
   }
   return map
 }
 
-
-export function useBridgeTokenList(key?: string | undefined, chainId?:any): any {
-  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
+export function useBridgeTokenList(key?: string | undefined, chainId?: any): any {
+  const lists: any = useSelector<AppState, AppState['lists']>(state => state.lists)
   // console.log(lists)
   const init = {}
   return useMemo(() => {
@@ -45,9 +41,9 @@ export function useBridgeTokenList(key?: string | undefined, chainId?:any): any 
   }, [lists, key, chainId])
 }
 
-export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:any): any {
-  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
-  const updateTokenlistTime:any = useSelector<AppState, AppState['lists']>(state => state.lists.updateTokenlistTime)
+export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?: any): any {
+  const lists: any = useSelector<AppState, AppState['lists']>(state => state.lists)
+  const updateTokenlistTime: any = useSelector<AppState, AppState['lists']>(state => state.lists.updateTokenlistTime)
   // console.log(chainId)
 
   const useChain = useMemo(() => {
@@ -63,7 +59,7 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
   const getCurTokenlist = useCallback(() => {
     // console.log(useChain)
     if (isSupportIndexedDB) {
-      getTokenlist(useChain).then((res:any) => {
+      getTokenlist(useChain).then((res: any) => {
         // console.log(res)
         if (res?.tokenList) {
           setTokenlist(res.tokenList)
@@ -88,21 +84,49 @@ export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:an
 }
 
 export function useInitUserSelectCurrency(chainId?: any) {
-  const userInit:any = useSelector<AppState, AppState['lists']['userSelectCurrency']>(state => state.lists.userSelectCurrency)
+  const userInit: any = useSelector<AppState, AppState['lists']['userSelectCurrency']>(
+    state => state.lists.userSelectCurrency
+  )
   const dispatch = useDispatch<AppDispatch>()
-  const setUserFromSelect = useCallback(({useChainId, token, toChainId, tokenKey}: {useChainId?: any, token?:any, toChainId?:any, tokenKey?:any}) => {
-    const id = useChainId
-    dispatch(userSelectCurrency({chainId: id, token, toChainId, tokenKey}))
-  }, [dispatch])
+  const setUserFromSelect = useCallback(
+    ({
+      useChainId,
+      token,
+      toChainId,
+      tokenKey
+    }: {
+      useChainId?: any
+      token?: any
+      toChainId?: any
+      tokenKey?: any
+    }) => {
+      const id = useChainId
+      dispatch(userSelectCurrency({ chainId: id, token, toChainId, tokenKey }))
+    },
+    [dispatch]
+  )
 
-  const setUserToSelect = useCallback(({useChainId, token, toChainId, tokenKey}: {useChainId?: any, token?:any, toChainId?:any, tokenKey?:any}) => {
-    const id = useChainId
-    dispatch(userSelectCurrency({chainId: id, token, toChainId, tokenKey}))
-  }, [dispatch])
+  const setUserToSelect = useCallback(
+    ({
+      useChainId,
+      token,
+      toChainId,
+      tokenKey
+    }: {
+      useChainId?: any
+      token?: any
+      toChainId?: any
+      tokenKey?: any
+    }) => {
+      const id = useChainId
+      dispatch(userSelectCurrency({ chainId: id, token, toChainId, tokenKey }))
+    },
+    [dispatch]
+  )
 
   return {
     userInit: userInit && chainId && userInit[chainId] ? userInit[chainId] : {},
     setUserFromSelect,
-    setUserToSelect,
+    setUserToSelect
   }
 }

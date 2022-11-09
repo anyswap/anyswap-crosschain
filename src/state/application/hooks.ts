@@ -2,13 +2,22 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, viewTxnsDtils, viewTxnsErrorTip } from './actions'
+import {
+  addPopup,
+  ApplicationModal,
+  PopupContent,
+  removePopup,
+  setOpenModal,
+  viewTxnsDtils,
+  viewTxnsErrorTip,
+  setAllChainIDsAction
+} from './actions'
 
-export function useBlockNumber(initChainId?:any): number | undefined {
+export function useBlockNumber(initChainId?: any): number | undefined {
   const { chainId } = useActiveWeb3React()
   const useChainId = initChainId ? initChainId : chainId
   // console.log(useChainId)
-  return useSelector((state: AppState) => { 
+  return useSelector((state: AppState) => {
     // console.log(useChainId)
     // console.log(state.application.blockNumber)
     // console.log(state.application.blockNumber[useChainId ?? -1])
@@ -65,9 +74,19 @@ export function useToggleVoteModal(): () => void {
   return useToggleModal(ApplicationModal.VOTE)
 }
 
-
 export function useToggleNetworkModal(): () => void {
   return useToggleModal(ApplicationModal.NETWORK)
+}
+
+export function useSetAllChainIDs(): (allChainIDs: Array<string | number>) => void {
+  const dispatch = useDispatch()
+
+  return useCallback(
+    (allChainIDs: Array<string | number>) => {
+      dispatch(setAllChainIDsAction({ allChainIDs }))
+    },
+    [dispatch]
+  )
 }
 // returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string) => void {
@@ -98,7 +117,6 @@ export function useActivePopups(): AppState['application']['popupList'] {
   return useMemo(() => list.filter(item => item.show), [list])
 }
 
-
 export function useTxnsDtilOpen(): any {
   const viewTxnsDtilsData = useSelector((state: AppState) => state.application.viewTxnsDtils)
   const dispatch = useDispatch<AppDispatch>()
@@ -113,10 +131,12 @@ export function useTxnsDtilOpen(): any {
   )
 
   return {
-    ...(viewTxnsDtilsData ? viewTxnsDtilsData : {
-      hash: '',
-      isOpenModal: ''
-    }),
+    ...(viewTxnsDtilsData
+      ? viewTxnsDtilsData
+      : {
+          hash: '',
+          isOpenModal: ''
+        }),
     onChangeViewDtil
   }
 }
@@ -146,10 +166,12 @@ export function useTxnsErrorTipOpen(): any {
   )
 
   return {
-    ...(viewTxnsErrorTipData ? viewTxnsErrorTipData : {
-      errorTip: '',
-      isOpenModal: ''
-    }),
+    ...(viewTxnsErrorTipData
+      ? viewTxnsErrorTipData
+      : {
+          errorTip: '',
+          isOpenModal: ''
+        }),
     onChangeViewErrorTip
   }
 }
