@@ -752,13 +752,13 @@ export default function CrossChain() {
   const addTransaction = useTransactionAdder()
   const send = async () => {
     if ([selectCurrency.chainId, selectChain].some((item: any) => isNaN(item))) {
-      alert('非EVM链暂不支持')
+      alert('Non-evm chains are not supported yet !')
       return
     }
     // const web3 = getWeb3('https://rpc.testnet.fantom.network/')
     const web3 = getWeb3()
     const recipientAccount = (Number(outputBridgeValue) * (price[selectCurrency.chainId] || 0)) / price[selectChain]
-    
+
     const transactionData = {
       from: account,
       to: chains[selectChain]['RouterContract'],
@@ -981,7 +981,7 @@ export default function CrossChain() {
           <ButtonLight disabled>{t('stopSystem')}</ButtonLight>
         </BottomGrouping>
       ) : (
-        <BottomGrouping>
+        <BottomGrouping style={{ width: '100%' }}>
           {!evmAccount ? (
             <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
           ) : isApprove &&
