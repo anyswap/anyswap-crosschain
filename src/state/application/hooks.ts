@@ -4,6 +4,9 @@ import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, viewTxnsDtils, viewTxnsErrorTip } from './actions'
 
+import {useIsSafeAppConnection} from '../../connectors/gnosis-safe/hooks'
+// import {gnosissafe} from '../../connectors'
+
 export function useBlockNumber(initChainId?:any): number | undefined {
   const { chainId } = useActiveWeb3React()
   const useChainId = initChainId ? initChainId : chainId
@@ -71,7 +74,30 @@ export function useToggleVoteModal(): () => void {
 
 
 export function useToggleNetworkModal(): () => void {
-  return useToggleModal(ApplicationModal.NETWORK)
+  const isGnosisSafe = useIsSafeAppConnection()
+  const modal = ApplicationModal.NETWORK
+  const open = useModalOpen(modal)
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(() => {
+    // console.log(isGnosisSafe)
+    // console.log(gnosissafe)
+    if (isGnosisSafe) {
+      return dispatch(setOpenModal(null))
+    } else {
+      return dispatch(setOpenModal(open ? null : modal))
+    }
+  }, [dispatch, modal, open, isGnosisSafe])
+
+
+
+
+
+  // const dispatch = useDispatch<AppDispatch>()
+  // const closeNetwork = useCallback(() => {
+  //   dispatch(setOpenModal(null))
+  // }, [dispatch, isGnosisSafe])
+  // console.log(isGnosisSafe)
+  // return isGnosisSafe ? closeNetwork : useToggleModal(ApplicationModal.NETWORK)
 }
 // returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string) => void {

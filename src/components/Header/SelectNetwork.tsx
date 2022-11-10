@@ -18,6 +18,9 @@ import {
   TabList
 } from '../CurrencySelect/styleds'
 
+// import {useSafeAppConnection} from '../../connectors/gnosis-safe/hooks'
+// import {gnosissafe} from '../../connectors'
+
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import { ApplicationModal } from '../../state/application/actions'
