@@ -1,6 +1,6 @@
 const chains: any = {
   4002: {
-    BlockChain: 'FANTOM',
+    BlockChain: 'Fantom',
     symbol: 'FTM',
     RouterContract: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
     decimal: '18'
@@ -43,7 +43,7 @@ export const tokenList: any = {
             decimals: 8,
             fromanytoken: {
               address: 'ftm',
-              name: 'FANTOM',
+              name: 'Fantom',
               symbol: 'FTM',
               decimals: 18,
               chainId: '4002'
@@ -79,7 +79,7 @@ export const tokenList: any = {
             decimals: 6,
             fromanytoken: {
               address: 'ftm',
-              name: 'FANTOM',
+              name: 'Fantom',
               symbol: 'FTM',
               decimals: 18,
               chainId: '4002'
@@ -102,7 +102,7 @@ export const tokenList: any = {
         }
       },
       logoUrl: '',
-      name: 'FANTOM',
+      name: 'Fantom',
       price: 0.2,
       symbol: 'FTM',
       tokenType: 'NATIVE'
@@ -126,7 +126,7 @@ export const tokenList: any = {
             MinimumSwapFee: '',
             SwapFeeRatePerMillion: 0.2,
             address: 'FTM',
-            anytoken: { address: 'FTM', name: 'FANTOM', symbol: 'FTM', decimals: 18 },
+            anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
             chainId: 'FTM',
             decimals: 8,
             fromanytoken: {
@@ -139,7 +139,7 @@ export const tokenList: any = {
             isApprove: false,
             isFromLiquidity: false,
             isLiquidity: false,
-            name: 'FANTOM',
+            name: 'Fantom',
             pairid: '',
             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
@@ -167,7 +167,7 @@ export const tokenList: any = {
             decimals: 6,
             fromanytoken: {
               address: 'ftm',
-              name: 'FANTOM',
+              name: 'Fantom',
               symbol: 'FTM',
               decimals: 18,
               chainId: '4002'
@@ -190,7 +190,7 @@ export const tokenList: any = {
         }
       },
       logoUrl: '',
-      name: 'FANTOM',
+      name: 'Fantom',
       price: 0.2,
       symbol: 'FTM',
       tokenType: 'NATIVE'
@@ -214,7 +214,7 @@ export const tokenList: any = {
             MinimumSwapFee: '',
             SwapFeeRatePerMillion: 0.2,
             address: 'FTM',
-            anytoken: { address: 'FTM', name: 'FANTOM', symbol: 'FTM', decimals: 18 },
+            anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
             chainId: 'FTM',
             decimals: 8,
             fromanytoken: {
@@ -227,7 +227,7 @@ export const tokenList: any = {
             isApprove: false,
             isFromLiquidity: false,
             isLiquidity: false,
-            name: 'FANTOM',
+            name: 'Fantom',
             pairid: '',
             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
@@ -255,7 +255,7 @@ export const tokenList: any = {
             decimals: 8,
             fromanytoken: {
               address: 'ftm',
-              name: 'FANTOM',
+              name: 'Fantom',
               symbol: 'FTM',
               decimals: 18,
               chainId: '4002'

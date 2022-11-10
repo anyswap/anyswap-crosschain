@@ -40,7 +40,7 @@ import { ChainId } from '../../config/chainConfig/chainId'
 import { getWeb3 } from '../../utils/tools/web3UtilsV2'
 
 // import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import {formatDecimal, thousandBit} from '../../utils/tools/tools'
+import { thousandBit } from '../../utils/tools/tools'
 
 import LiquidityPool from '../LiquidityPool'
 
@@ -790,6 +790,8 @@ export default function CrossChain() {
     if (txHash) addTransaction(txHash, { summary: `Stake ${recipientAccount} ${chains[selectChain].symbol}` })
   }
 
+  const amount: number | string = (inputBridgeValue || 0) * (price?.[selectCurrency?.chainId] || 0)
+
   return (
     <>
       <AutoColumn gap={'sm'}>
@@ -978,9 +980,7 @@ export default function CrossChain() {
           </dd>
           <dd>
             <i></i>
-            {selectCurrency?.chainId &&
-              t('redeemTip7', { amount: (inputBridgeValue || 0) * (price?.[selectCurrency?.chainId] || 0) })}{' '}
-            USD
+            {selectCurrency?.chainId && t('redeemTip7', { amount: thousandBit(amount, '3') })} USD
           </dd>
           <dd>
             <i></i>
