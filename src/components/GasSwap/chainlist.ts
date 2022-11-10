@@ -110,8 +110,8 @@ export const tokenList: any = {
   },
   APT_TEST: {
     evmapt: {
-      address: 'ftm',
-      chainId: '4002',
+      address: 'apt',
+      chainId: 'APT_TEST',
       decimals: 18,
       destChains: {
         // 1000004280406
@@ -190,9 +190,9 @@ export const tokenList: any = {
         }
       },
       logoUrl: '',
-      name: 'Fantom',
+      name: 'Aptos',
       price: 0.2,
-      symbol: 'FTM',
+      symbol: 'APT',
       tokenType: 'NATIVE'
     }
   },

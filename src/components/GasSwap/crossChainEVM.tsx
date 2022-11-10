@@ -174,7 +174,7 @@ export default function CrossChain() {
     })
   }
   useEffect(() => {
-    const arr = [selectCurrency.chainId, selectChain]
+    const arr = [selectCurrency?.chainId, selectChain]
 
     if (arr.some(r => !Boolean(r))) {
       return
@@ -791,7 +791,6 @@ export default function CrossChain() {
   }
 
   const amount: number | string = (inputBridgeValue || 0) * (price?.[selectCurrency?.chainId] || 0)
-
   return (
     <>
       <AutoColumn gap={'sm'}>
