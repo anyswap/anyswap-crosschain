@@ -208,6 +208,7 @@ export default function SelectChainIdInputPanel({
   useInterval(getDestBalance, 1000 * 10)
 
   useEffect(() => {
+    // console.log(bridgeConfig)
     setDestBalance('')
     getDestBalance()
   }, [evmAccount, chainId, bridgeConfig, selectChainId, isNativeToken, destChainInfo])
@@ -286,7 +287,7 @@ export default function SelectChainIdInputPanel({
               >
                 <Aligner>
                   <TokenLogoBox>
-                    <TokenLogo symbol={bridgeConfig?.symbol} logoUrl={bridgeConfig?.logoUrl} size={'24px'} />
+                    <TokenLogo symbol={destChainInfo?.symbol ?? bridgeConfig?.symbol} logoUrl={bridgeConfig?.logoUrl} size={'24px'} />
                   </TokenLogoBox>
                   <StyledTokenName className="token-symbol-container" active={Boolean(bridgeConfig && bridgeConfig.symbol)}>
                     <h3>
