@@ -903,7 +903,6 @@ export default function CrossChain() {
             setInputBridgeValue(value)
           }}
           onChainSelect={chainID => {
-            console.log(chainID)
             setSelectChain(chainID)
             setIsUserSelect(false)
           }}
