@@ -517,6 +517,7 @@ function ChainListBox ({
             && (
               item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
               || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+              || (item.networkName && item.networkName.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1)
               || searchQuery.toLowerCase() === item.chainID.toString().toLowerCase()
             )
           )

@@ -244,7 +244,7 @@ const allChainList = [
   ChainId.BRISE,
   ChainId.KEK,
   ChainId.MINT,
-  // ChainId.DND,
+  ChainId.DND,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -373,7 +373,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    ChainId.APT,
+    // ChainId.APT,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
