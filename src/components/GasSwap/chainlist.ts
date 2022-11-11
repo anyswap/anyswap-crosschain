@@ -1,24 +1,96 @@
-const chains: any = {
-  4002: {
+import { ChainId } from '../../config/chainConfig/chainId'
+
+const chainsData: any = {
+  [ChainId.FTM_TEST]: {
     BlockChain: 'Fantom',
     symbol: 'FTM',
     RouterContract: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-    decimal: '18'
+    decimal: '18',
+    destChains: [ChainId.APT_TEST, ChainId.BNB_TEST]
   },
-  1000004280406: {
+  [ChainId.APT_TEST]: {
     BlockChain: 'APTOS',
     symbol: 'APT',
     RouterContract: '0x1f27736e2a4e8316154a086c29605a3d9cce45a6927ab55bc8cd0980ed4135e9',
-    decimal: '8'
+    decimal: '8',
+    destChains: [ChainId.FTM_TEST, ChainId.BNB_TEST]
   },
-  97: {
+  [ChainId.BNB_TEST]: {
     BlockChain: 'BSC',
     symbol: 'BNB',
     RouterContract: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-    decimal: '18'
+    decimal: '18',
+    destChains: [ChainId.FTM_TEST, ChainId.APT_TEST]
   }
 }
-export default chains
+const getTokenList = (chainsData: any) => {
+  const obj: any = {}
+  Object.keys(chainsData).forEach((chainId: string) => {
+    const item = chainsData[chainId]
+    const { BlockChain, decimal, symbol, destChains } = item
+    const destChainsObj: any = {}
+    destChains.forEach((c: string) => {
+      destChainsObj[c] = {
+        [chainsData[c].symbol]: {
+          BaseFeePercent: '',
+          BigValueThreshold: '',
+          DepositAddress: '',
+          MaximumSwap: '10',
+          MaximumSwapFee: '',
+          MinimumSwap: '0.5',
+          MinimumSwapFee: '',
+          SwapFeeRatePerMillion: 0.2,
+          address: chainsData[c].symbol,
+          anytoken: {
+            address: chainsData[c].symbol,
+            name: chainsData[c].BlockChain,
+            symbol: chainsData[c].symbol,
+            decimals: chainsData[c].decimal
+          },
+          chainId: chainsData[c].symbol,
+          decimals: chainsData[c].decimal,
+          fromanytoken: {
+            address: symbol,
+            name: BlockChain,
+            symbol,
+            decimals: decimal,
+            chainId
+          },
+          isApprove: false,
+          isFromLiquidity: false,
+          isLiquidity: false,
+          name: chainsData[c].BlockChain,
+          pairid: '',
+          router: chainsData[c].RouterContract,
+          routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+          spender: '',
+          symbol: chainsData[c].symbol,
+          tokenType: 'NATIVE',
+          tokenid: '',
+          type: 'GAS',
+          underlying: false
+        }
+      }
+    })
+    obj[chainId] = {
+      [`evm${symbol.toLocaleLowerCase()}`]: {
+        address: symbol,
+        chainId,
+        decimals: decimal,
+        logoUrl: '',
+        name: BlockChain,
+        price: '',
+        symbol,
+        tokenType: 'NATIVE',
+        destChains: destChainsObj
+      }
+    }
+  })
+  return obj
+}
+
+const chains = getTokenList(chainsData)
+
 export const tokenList: any = {
   4002: {
     evmftm: {
@@ -45,7 +117,7 @@ export const tokenList: any = {
               address: 'ftm',
               name: 'Fantom',
               symbol: 'FTM',
-              decimals: 18,
+              decimals: 8,
               chainId: '4002'
             },
             isApprove: false,
@@ -76,7 +148,7 @@ export const tokenList: any = {
             address: 'BNB',
             anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
             chainId: '80001',
-            decimals: 6,
+            decimals: 18,
             fromanytoken: {
               address: 'ftm',
               name: 'Fantom',
@@ -103,7 +175,7 @@ export const tokenList: any = {
       },
       logoUrl: '',
       name: 'Fantom',
-      price: 0.2,
+      price: '',
       symbol: 'FTM',
       tokenType: 'NATIVE'
     }
@@ -112,7 +184,7 @@ export const tokenList: any = {
     evmapt: {
       address: 'apt',
       chainId: 'APT_TEST',
-      decimals: 18,
+      decimals: 8,
       destChains: {
         // 1000004280406
         4002: {
@@ -128,13 +200,13 @@ export const tokenList: any = {
             address: 'FTM',
             anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
             chainId: 'FTM',
-            decimals: 8,
+            decimals: 18,
             fromanytoken: {
-              address: 'ftm',
-              name: 'FTM',
-              symbol: 'FTM',
-              decimals: 6,
-              chainId: '4002'
+              address: 'apt',
+              name: 'Aptoms',
+              symbol: 'APT',
+              decimals: 8,
+              chainId: 'APT_TEST'
             },
             isApprove: false,
             isFromLiquidity: false,
@@ -164,13 +236,13 @@ export const tokenList: any = {
             address: 'BNB',
             anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
             chainId: '80001',
-            decimals: 6,
+            decimals: 18,
             fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
-              decimals: 18,
-              chainId: '4002'
+              address: 'apt',
+              name: 'Aptoms',
+              symbol: 'APT',
+              decimals: 8,
+              chainId: 'APT_TEST'
             },
             isApprove: false,
             isFromLiquidity: false,
@@ -216,13 +288,13 @@ export const tokenList: any = {
             address: 'FTM',
             anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
             chainId: 'FTM',
-            decimals: 8,
+            decimals: 18,
             fromanytoken: {
-              address: 'ftm',
-              name: 'FTM',
-              symbol: 'FTM',
-              decimals: 6,
-              chainId: '4002'
+              address: 'BNB',
+              name: 'BNB',
+              symbol: 'BNB',
+              decimals: 18,
+              chainId: '97'
             },
             isApprove: false,
             isFromLiquidity: false,
@@ -254,11 +326,11 @@ export const tokenList: any = {
             chainId: 'APT',
             decimals: 8,
             fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
+              address: 'BNB',
+              name: 'BNB',
+              symbol: 'BNB',
               decimals: 18,
-              chainId: '4002'
+              chainId: '97'
             },
             isApprove: false,
             isFromLiquidity: false,
@@ -868,3 +940,4 @@ export const abi = [
     type: 'function'
   }
 ]
+export default chains
