@@ -83,6 +83,7 @@ import apt from './apt'
 import brise from './brise'
 import mint from './mint'
 import dnd from './dnd'
+import sama from './sama'
 
 import { ChainId } from './chainId'
 
@@ -92,6 +93,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...sama,
   ...dnd,
   ...mint,
   ...apt,
@@ -245,6 +247,7 @@ const allChainList = [
   ChainId.KEK,
   ChainId.MINT,
   ChainId.DND,
+  ChainId.SAMA,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

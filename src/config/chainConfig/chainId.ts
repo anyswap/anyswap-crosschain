@@ -112,4 +112,5 @@ export enum ChainId {
   BRISE = '32520',
   MINT = '2020',
   DND = '7363',
+  SAMA = '2109',
 }
