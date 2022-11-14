@@ -1,289 +1,361 @@
+import { ChainId } from '../../config/chainConfig/chainId'
+
 const chains: any = {
-  4002: {
+  [ChainId.FTM_TEST]: {
     BlockChain: 'Fantom',
     symbol: 'FTM',
     RouterContract: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-    decimal: '18'
+    decimal: '18',
+    destChains: [ChainId.APT_TEST, ChainId.BNB_TEST]
   },
-  1000004280406: {
+  [ChainId.APT_TEST]: {
     BlockChain: 'APTOS',
     symbol: 'APT',
     RouterContract: '0x1f27736e2a4e8316154a086c29605a3d9cce45a6927ab55bc8cd0980ed4135e9',
-    decimal: '8'
+    decimal: '8',
+    destChains: [ChainId.FTM_TEST, ChainId.BNB_TEST]
   },
-  97: {
+  [ChainId.BNB_TEST]: {
     BlockChain: 'BSC',
     symbol: 'BNB',
     RouterContract: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-    decimal: '18'
+    decimal: '18',
+    destChains: [ChainId.FTM_TEST, ChainId.APT_TEST]
   }
 }
-export default chains
-export const tokenList: any = {
-  4002: {
-    evmftm: {
-      address: 'ftm',
-      chainId: '4002',
-      decimals: 18,
-      destChains: {
-        // 1000004280406
-        APT_TEST: {
-          APT: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'APT',
-            anytoken: { address: 'APT', name: 'APTOS', symbol: 'APT', decimals: 6 },
-            chainId: 'APT',
-            decimals: 8,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
-              decimals: 18,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'APTOS',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            spender: '',
-            symbol: 'APT',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
-        },
-        97: {
-          BNB: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'BNB',
-            anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
-            chainId: '80001',
-            decimals: 6,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
-              decimals: 18,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'BSC',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            sortId: 2,
-            spender: '',
-            symbol: 'BNB',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
+export const getTokenList = (chainsData: any) => {
+  const obj: any = {}
+  Object.keys(chainsData).forEach((chainId: string) => {
+    const item = chainsData[chainId]
+    const { BlockChain, decimal, symbol, destChains } = item
+    const destChainsObj: any = {}
+    destChains.forEach((c: string) => {
+      destChainsObj[c] = {
+        [chainsData[c].symbol]: {
+          BaseFeePercent: '',
+          BigValueThreshold: '',
+          DepositAddress: '',
+          MaximumSwap: '10',
+          MaximumSwapFee: '',
+          MinimumSwap: '0.5',
+          MinimumSwapFee: '',
+          SwapFeeRatePerMillion: 0.2,
+          address: chainsData[c].symbol,
+          anytoken: {
+            address: chainsData[c].symbol,
+            name: chainsData[c].BlockChain,
+            symbol: chainsData[c].symbol,
+            decimals: chainsData[c].decimal
+          },
+          chainId: chainsData[c].symbol,
+          decimals: chainsData[c].decimal,
+          fromanytoken: {
+            address: symbol,
+            name: BlockChain,
+            symbol,
+            decimals: decimal,
+            chainId
+          },
+          isApprove: false,
+          isFromLiquidity: false,
+          isLiquidity: false,
+          name: chainsData[c].BlockChain,
+          pairid: '',
+          router: chainsData[c].RouterContract,
+          routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+          spender: '',
+          symbol: chainsData[c].symbol,
+          tokenType: 'NATIVE',
+          tokenid: '',
+          type: 'GAS',
+          underlying: false
         }
-      },
-      logoUrl: '',
-      name: 'Fantom',
-      price: 0.2,
-      symbol: 'FTM',
-      tokenType: 'NATIVE'
+      }
+    })
+    obj[chainId] = {
+      [`evm${symbol.toLocaleLowerCase()}`]: {
+        address: symbol,
+        chainId,
+        decimals: decimal,
+        logoUrl: '',
+        name: BlockChain,
+        price: '',
+        symbol,
+        tokenType: 'NATIVE',
+        destChains: destChainsObj
+      }
     }
-  },
-  APT_TEST: {
-    evmapt: {
-      address: 'apt',
-      chainId: 'APT_TEST',
-      decimals: 18,
-      destChains: {
-        // 1000004280406
-        4002: {
-          FTM: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'FTM',
-            anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
-            chainId: 'FTM',
-            decimals: 8,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'FTM',
-              symbol: 'FTM',
-              decimals: 6,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'Fantom',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            spender: '',
-            symbol: 'FTM',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
-        },
-        97: {
-          BNB: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'BNB',
-            anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
-            chainId: '80001',
-            decimals: 6,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
-              decimals: 18,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'BSC',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            sortId: 2,
-            spender: '',
-            symbol: 'BNB',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
-        }
-      },
-      logoUrl: '',
-      name: 'Aptos',
-      price: 0.2,
-      symbol: 'APT',
-      tokenType: 'NATIVE'
-    }
-  },
-  97: {
-    evmbnb: {
-      address: 'BNB',
-      chainId: '97',
-      decimals: 18,
-      destChains: {
-        // 1000004280406
-        4002: {
-          FTM: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'FTM',
-            anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
-            chainId: 'FTM',
-            decimals: 8,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'FTM',
-              symbol: 'FTM',
-              decimals: 6,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'Fantom',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            spender: '',
-            symbol: 'FTM',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
-        },
-        APT_TEST: {
-          APT: {
-            BaseFeePercent: '',
-            BigValueThreshold: '',
-            DepositAddress: '',
-            MaximumSwap: '10',
-            MaximumSwapFee: '',
-            MinimumSwap: '0.5',
-            MinimumSwapFee: '',
-            SwapFeeRatePerMillion: 0.2,
-            address: 'APT',
-            anytoken: { address: 'APT', name: 'APTOS', symbol: 'APT', decimals: 6 },
-            chainId: 'APT',
-            decimals: 8,
-            fromanytoken: {
-              address: 'ftm',
-              name: 'Fantom',
-              symbol: 'FTM',
-              decimals: 18,
-              chainId: '4002'
-            },
-            isApprove: false,
-            isFromLiquidity: false,
-            isLiquidity: false,
-            name: 'APTOS',
-            pairid: '',
-            router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
-            routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
-            spender: '',
-            symbol: 'APT',
-            tokenType: 'NATIVE',
-            tokenid: '',
-            type: 'GAS',
-            underlying: false
-          }
-        }
-      },
-      logoUrl: '',
-      name: 'BSC',
-      price: 0.2,
-      symbol: 'BNB',
-      tokenType: 'NATIVE'
-    }
-  }
+  })
+  return obj
 }
+
+export const tokenList = getTokenList(chains)
+
+// export const tokenList: any = {
+//   4002: {
+//     evmftm: {
+//       address: 'ftm',
+//       chainId: '4002',
+//       decimals: 18,
+//       destChains: {
+//         // 1000004280406
+//         APT_TEST: {
+//           APT: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'APT',
+//             anytoken: { address: 'APT', name: 'APTOS', symbol: 'APT', decimals: 6 },
+//             chainId: 'APT',
+//             decimals: 8,
+//             fromanytoken: {
+//               address: 'ftm',
+//               name: 'Fantom',
+//               symbol: 'FTM',
+//               decimals: 8,
+//               chainId: '4002'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'APTOS',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             spender: '',
+//             symbol: 'APT',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         },
+//         97: {
+//           BNB: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'BNB',
+//             anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
+//             chainId: '80001',
+//             decimals: 18,
+//             fromanytoken: {
+//               address: 'ftm',
+//               name: 'Fantom',
+//               symbol: 'FTM',
+//               decimals: 18,
+//               chainId: '4002'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'BSC',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             sortId: 2,
+//             spender: '',
+//             symbol: 'BNB',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         }
+//       },
+//       logoUrl: '',
+//       name: 'Fantom',
+//       price: '',
+//       symbol: 'FTM',
+//       tokenType: 'NATIVE'
+//     }
+//   },
+//   APT_TEST: {
+//     evmapt: {
+//       address: 'apt',
+//       chainId: 'APT_TEST',
+//       decimals: 8,
+//       destChains: {
+//         // 1000004280406
+//         4002: {
+//           FTM: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'FTM',
+//             anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
+//             chainId: 'FTM',
+//             decimals: 18,
+//             fromanytoken: {
+//               address: 'apt',
+//               name: 'Aptoms',
+//               symbol: 'APT',
+//               decimals: 8,
+//               chainId: 'APT_TEST'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'Fantom',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             spender: '',
+//             symbol: 'FTM',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         },
+//         97: {
+//           BNB: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'BNB',
+//             anytoken: { address: 'BNB', name: 'BSC', symbol: 'BNB', decimals: 18 },
+//             chainId: '80001',
+//             decimals: 18,
+//             fromanytoken: {
+//               address: 'apt',
+//               name: 'Aptoms',
+//               symbol: 'APT',
+//               decimals: 8,
+//               chainId: 'APT_TEST'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'BSC',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             sortId: 2,
+//             spender: '',
+//             symbol: 'BNB',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         }
+//       },
+//       logoUrl: '',
+//       name: 'Aptos',
+//       price: 0.2,
+//       symbol: 'APT',
+//       tokenType: 'NATIVE'
+//     }
+//   },
+//   97: {
+//     evmbnb: {
+//       address: 'BNB',
+//       chainId: '97',
+//       decimals: 18,
+//       destChains: {
+//         // 1000004280406
+//         4002: {
+//           FTM: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'FTM',
+//             anytoken: { address: 'FTM', name: 'Fantom', symbol: 'FTM', decimals: 18 },
+//             chainId: 'FTM',
+//             decimals: 18,
+//             fromanytoken: {
+//               address: 'BNB',
+//               name: 'BNB',
+//               symbol: 'BNB',
+//               decimals: 18,
+//               chainId: '97'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'Fantom',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             spender: '',
+//             symbol: 'FTM',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         },
+//         APT_TEST: {
+//           APT: {
+//             BaseFeePercent: '',
+//             BigValueThreshold: '',
+//             DepositAddress: '',
+//             MaximumSwap: '10',
+//             MaximumSwapFee: '',
+//             MinimumSwap: '0.5',
+//             MinimumSwapFee: '',
+//             SwapFeeRatePerMillion: 0.2,
+//             address: 'APT',
+//             anytoken: { address: 'APT', name: 'APTOS', symbol: 'APT', decimals: 6 },
+//             chainId: 'APT',
+//             decimals: 8,
+//             fromanytoken: {
+//               address: 'BNB',
+//               name: 'BNB',
+//               symbol: 'BNB',
+//               decimals: 18,
+//               chainId: '97'
+//             },
+//             isApprove: false,
+//             isFromLiquidity: false,
+//             isLiquidity: false,
+//             name: 'APTOS',
+//             pairid: '',
+//             router: '0x1739648E7C1B23D6Da74177292B36aF7f286f643',
+//             routerABI: ' ', // routerABI: 'anySwapOutUnderlying(anytoken,toAddress,amount,toChainID)',
+//             spender: '',
+//             symbol: 'APT',
+//             tokenType: 'NATIVE',
+//             tokenid: '',
+//             type: 'GAS',
+//             underlying: false
+//           }
+//         }
+//       },
+//       logoUrl: '',
+//       name: 'BSC',
+//       price: 0.2,
+//       symbol: 'BNB',
+//       tokenType: 'NATIVE'
+//     }
+//   }
+// }
 
 export const noEvmChainMenu: any = {
   APT_TEST: '1000004280406'
@@ -868,3 +940,4 @@ export const abi = [
     type: 'function'
   }
 ]
+export default chains
