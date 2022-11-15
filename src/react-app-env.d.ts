@@ -112,6 +112,7 @@ interface Window {
   aptos: any
   bitcoin: any
   providerManager: any
+  tally: any
 }
 
 declare module '@onflow/fcl';

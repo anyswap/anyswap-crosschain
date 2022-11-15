@@ -8,6 +8,7 @@ import { NetworkConnector } from './NetworkConnector'
 import {XdefiConnector} from './xdefi'
 import {BitKeepConnector} from './bitkeep'
 import {SafeAppConnector} from './gnosis-safe'
+import {TallyConnector} from './tally'
 
 import {spportChainArr as sc} from '../config/chainConfig'
 import config from '../config'
@@ -89,6 +90,9 @@ export const bitkeep = new BitKeepConnector({
 })
 
 export const clover =  new CloverConnector({
+  supportedChainIds: [...spportChainArr],
+})
+export const tally =  new TallyConnector({
   supportedChainIds: [...spportChainArr],
 })
 export const gnosissafe =  new SafeAppConnector()

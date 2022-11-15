@@ -10,7 +10,8 @@ import {
   clover,
   xdefi,
   gnosissafe,
-  bitkeep
+  bitkeep,
+  // tally
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
 
@@ -124,6 +125,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D'
+  },
+  tally: {
+    connector: injected,
+    name: 'Tally',
+    iconName: 'tally.png',
+    description: 'Connect to Tally Wallet.',
+    href: null,
+    color: '#4196FC',
+    mobile: true
   },
   Clover: {
     connector: clover,

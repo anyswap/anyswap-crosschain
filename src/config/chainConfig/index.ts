@@ -376,7 +376,7 @@ const useChain:any = {
     ChainId.NAS,
     ChainId.XRP,
     ChainId.NEAR,
-    ChainId.APT,
+    // ChainId.APT,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
