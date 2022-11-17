@@ -1,6 +1,6 @@
-import React, { useState, useContext, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, RefObject, useContext, useCallback, useEffect, useMemo, useRef } from 'react'
 import { ThemeContext } from 'styled-components'
-import { Text } from 'rebass'
+// import { Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
@@ -9,17 +9,21 @@ import {useTokensBalance} from '../../hooks/useAllBalances'
 
 import { RowBetween } from '../Row'
 import Column from '../Column'
-import { PaddedColumn, Separator } from '../SearchModal/styleds'
+import { PaddedColumn, SearchInput, Separator } from '../SearchModal/styleds'
 import { Input as NumericalInput } from '../NumericalInput'
 import TokenLogo from '../TokenLogo'
 import Modal from '../Modal'
+// import Row from '../Row'
 import SearchModal from '../CurrencySelect/searchModal'
 import {
   OptionCardClickable,
   Option
 } from '../Header/SelectNetwork'
 
-import { TYPE, CloseIcon } from '../../theme'
+import {
+  TYPE,
+  // CloseIcon
+} from '../../theme'
 
 import {thousandBit} from '../../utils/tools/tools'
 
@@ -99,6 +103,9 @@ export default function SelectChainIdInputPanel({
   const [modalDestOpen, setModalDestOpen] = useState(false)
   // const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')
+  const [searchQuery, setSearchQuery] = useState<string>('')
+
+  const inputRef = useRef<HTMLInputElement>()
   // const chainList = useMemo(() => {
   //     return [...selectChainList]
   //   // if (selectChainList.length > 0) {
@@ -225,6 +232,12 @@ export default function SelectChainIdInputPanel({
     return destBalance
   }, [destBalance, nonEVMbl, selectChainId])
 
+  const handleInput = useCallback(event => {
+    const input = event.target.value
+    setSearchQuery(input)
+    // fixedList.current?.scrollTo(0)
+  }, [])
+
   return (
     <>
       <SearchModal
@@ -346,13 +359,21 @@ export default function SelectChainIdInputPanel({
         <Modal isOpen={modalOpen} onDismiss={handleDismissSearch} maxHeight={80}>
           <Column style={{ width: '100%', flex: '1 1' }}>
             <PaddedColumn gap="14px">
-              <RowBetween>
+              {/* <RowBetween>
                 <Text fontWeight={500} fontSize={16}>
                   {t('selectNetwork')}
-                  {/* <QuestionHelper text={t('tip6')} /> */}
                 </Text>
                 <CloseIcon onClick={handleDismissSearch} />
-              </RowBetween>
+              </RowBetween> */}
+              <SearchInput
+                type="text"
+                id="token-search-input"
+                placeholder={t('selectNetwork')}
+                value={searchQuery}
+                ref={inputRef as RefObject<HTMLInputElement>}
+                onChange={handleInput}
+                // onKeyDown={handleEnter}
+              />
             </PaddedColumn>
             <Separator />
             <div style={{ flex: '1' }}>
@@ -366,14 +387,29 @@ export default function SelectChainIdInputPanel({
                       return ''
                     }
                     // console.log(useChainList)
-                    return (
-                      <OptionCardClickable
-                        key={index}
-                        className={selectChainId && selectChainId === item.chainID ? 'active' : ''}
-                      >
-                        <Option curChainId={item.chainID} selectChainId={selectChainId} changeNetwork={(val) => (selectChainId && selectChainId === item.chainID ? null : handleCurrencySelect(val.chainID))}></Option>
-                      </OptionCardClickable>
-                    )
+                    if (
+                      (
+                        searchQuery
+                        && item
+                        && (
+                          item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+                          || item.symbol.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+                          || (item.networkName && item.networkName.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1)
+                          || searchQuery.toLowerCase() === item.chainID.toString().toLowerCase()
+                        )
+                      )
+                      || !searchQuery
+                    ) {
+                      return (
+                        <OptionCardClickable
+                          key={index}
+                          className={selectChainId && selectChainId === item.chainID ? 'active' : ''}
+                        >
+                          <Option curChainId={item.chainID} selectChainId={selectChainId} changeNetwork={(val) => (selectChainId && selectChainId === item.chainID ? null : handleCurrencySelect(val.chainID))}></Option>
+                        </OptionCardClickable>
+                      )
+                    }
+                    return ''
                   })
                 }
             </div>
