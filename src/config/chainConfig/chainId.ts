@@ -113,4 +113,5 @@ export enum ChainId {
   MINT = '2020',
   DND = '7363',
   SAMA = '2109',
+  REDLC = '2611',
 }

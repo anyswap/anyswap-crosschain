@@ -84,6 +84,7 @@ import brise from './brise'
 import mint from './mint'
 import dnd from './dnd'
 import sama from './sama'
+import redlc from './redlc'
 
 import { ChainId } from './chainId'
 
@@ -93,6 +94,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...redlc,
   ...sama,
   ...dnd,
   ...mint,
@@ -248,6 +250,7 @@ const allChainList = [
   ChainId.MINT,
   ChainId.DND,
   ChainId.SAMA,
+  ChainId.REDLC,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
