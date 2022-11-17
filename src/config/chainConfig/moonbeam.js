@@ -1,5 +1,9 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
+import {
+  VERSION,
+  USE_VERSION,
+  CHAIN_TYPE
+} from '../constant'
 import {ChainId} from './chainId'
 
 export const GLMR_MAIN_CHAINID = ChainId.GLMR
@@ -52,7 +56,7 @@ export default {
     networkName: 'Moonbeam mainnet',
     type: 'main',
     label: GLMR_MAIN_CHAINID,
-    hotType: CHAIN_TYPE.HOT
+    hotType: CHAIN_TYPE.COMMON
   },
   
   [GLMR_TEST_CHAINID]: {

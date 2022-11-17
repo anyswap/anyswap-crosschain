@@ -22,7 +22,8 @@ export enum VERSION {
 }
 
 export enum CHAIN_TYPE {
-  HOT = 'HOT'
+  HOT = 'HOT',
+  COMMON = 'COMMON'
 }
 
 
