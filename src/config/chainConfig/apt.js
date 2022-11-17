@@ -1,4 +1,4 @@
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const APT_MAINNET = 'https://fullnode.mainnet.aptoslabs.com'
@@ -37,7 +37,8 @@ export default {
     networkLogo: 'APT',
     type: 'main',
     label: APT_MAIN_CHAINID,
-    chainType: APT_MAIN_CHAINID
+    chainType: APT_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [APT_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

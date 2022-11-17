@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const FTM_MAIN_CHAINID = ChainId.FTM
@@ -85,6 +85,7 @@ export default {
     networkName: 'Fantom mainnet',
     type: 'main',
     label: FTM_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [FTM_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

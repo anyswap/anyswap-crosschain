@@ -21,6 +21,10 @@ export enum VERSION {
   V7_BAS_TEST = 'SOURCE_CHAIN_BAS_TEST',
 }
 
+export enum CHAIN_TYPE {
+  HOT = 'HOT'
+}
+
 
 // export const INIT_VERSION = VERSION.V1_1
 // export const INIT_VERSION = VERSION.V3_1

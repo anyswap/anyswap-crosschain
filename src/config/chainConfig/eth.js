@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 const navLang = navigator.language
@@ -121,6 +121,7 @@ export default {
     networkName: 'Ethereum mainnet',
     type: 'main',
     label: ETH_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [ETH_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

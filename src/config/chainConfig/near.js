@@ -1,5 +1,5 @@
 
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const NEAR_MAINNET = 'https://rpc.mainnet.near.org'
@@ -38,7 +38,8 @@ export default {
     networkLogo: 'NEAR',
     type: 'main',
     label: NEAR_MAIN_CHAINID,
-    chainType: NEAR_MAIN_CHAINID
+    chainType: NEAR_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [NEAR_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

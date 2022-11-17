@@ -128,9 +128,9 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   tally: {
     connector: injected,
-    name: 'Tally',
+    name: 'Tally Ho',
     iconName: 'tally.png',
-    description: 'Connect to Tally Wallet.',
+    description: 'Connect to Tally Ho Wallet.',
     href: null,
     color: '#4196FC',
     mobile: true

@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const MOVR_MAIN_CHAINID = ChainId.MOVR
@@ -58,5 +58,6 @@ export default {
     networkName: 'Moonriver mainnet',
     type: 'main',
     label: MOVR_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
 }

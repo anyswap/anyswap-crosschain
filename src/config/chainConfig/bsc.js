@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 // console.log(process.env)
 // alert(process.env.NODE_ENV)
@@ -120,6 +120,7 @@ export default {
     networkName: 'BNB CHAIN mainnet',
     type: 'main',
     label: BNB_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [BNB_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

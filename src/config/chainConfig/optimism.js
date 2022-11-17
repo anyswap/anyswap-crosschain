@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const OPTIMISM_MAIN_CHAINID = ChainId.OPTIMISM
@@ -66,6 +66,7 @@ export default {
     networkLogo: 'OPTIMISM',
     type: 'main',
     label: OPTIMISM_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [OPTIMISM_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

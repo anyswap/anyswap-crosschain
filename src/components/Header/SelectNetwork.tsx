@@ -37,6 +37,7 @@ import {setLocalRPC} from '../../config/chainConfig/methods'
 import {selectNetwork} from '../../config/tools/methods'
 
 import {useStarChain, useChangeStarTab} from '../../state/user/hooks'
+import { CHAIN_TYPE } from '../../config/constant'
 
 export const WalletLogoBox = styled.div`
   width:100%;
@@ -488,15 +489,22 @@ function ChainListBox ({
         arr.push(chainInfo[c])
       } else if (selectTab === 1) {
         arr.push(chainInfo[c])
+      } else if (selectTab === 2 && chainInfo[c]?.hotType === CHAIN_TYPE.HOT) {
+        arr.push(chainInfo[c])
       }
     }
     // console.log(arr)
     // console.log([...(selectTab === 0 ? arr.sort(comparator) : arr)])
-    return [
-      // ...starArr.sort(comparator),
-      // ...arr.sort(comparator),
-      ...(selectTab === 0 ? arr.sort(comparator) : arr),
-    ]
+    if (selectTab === 0) {
+      return arr.sort(comparator)
+    } else {
+      return arr
+    }
+    // return [
+    //   // ...starArr.sort(comparator),
+    //   // ...arr.sort(comparator),
+    //   ...(selectTab === 0 ? arr.sort(comparator) : arr),
+    // ]
   }, [spportChainArr, starChainList, selectTab])
 
   function List({ records }: { records?: any [] }) {
@@ -635,6 +643,7 @@ export default function SelectNetwork () {
           <TabList>
             <div className={'item ' + (starTabIndex === 0 ? 'active' : '')} onClick={() => onChangeStarTab(0)}>My Favorites</div>
             <div className={'item ' + (starTabIndex === 1 ? 'active' : '')} onClick={() => onChangeStarTab(1)}>All Chains</div>
+            <div className={'item ' + (starTabIndex === 2 ? 'active' : '')} onClick={() => onChangeStarTab(2)}>Hot</div>
           </TabList>
           <Separator />
           <div style={{ flex: '1' }}>

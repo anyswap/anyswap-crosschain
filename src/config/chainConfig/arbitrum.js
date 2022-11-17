@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const ARBITRUM_MAIN_CHAINID = ChainId.ARBITRUM
@@ -76,6 +76,7 @@ export default {
     networkLogo: 'ARBITRUM',
     type: 'main',
     label: ARBITRUM_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [ARBITRUM_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

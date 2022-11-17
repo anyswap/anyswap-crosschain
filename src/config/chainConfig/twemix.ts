@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const TWEMIX_MAIN_CHAINID = ChainId.TWEMIX
@@ -42,6 +42,7 @@ export default {
     networkLogo: 'WEMIX',
     type: 'main',
     label: TWEMIX_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [TWEMIX_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

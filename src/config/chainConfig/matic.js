@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const MATIC_MAIN_CHAINID = ChainId.MATIC
@@ -92,6 +92,7 @@ export default {
     networkName: 'Polygon mainnet',
     type: 'main',
     label: MATIC_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [MATIC_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

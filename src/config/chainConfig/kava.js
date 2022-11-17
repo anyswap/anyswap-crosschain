@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const KAVA_MAIN_CHAINID = ChainId.KAVA
@@ -48,5 +48,6 @@ export default {
     networkName: 'Kava mainnet',
     type: 'main',
     label: KAVA_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
 }

@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const AVAX_MAIN_CHAINID = ChainId.AVAX
@@ -69,6 +69,7 @@ export default {
     networkName: 'Avalanche mainnet',
     type: 'main',
     label: AVAX_MAIN_CHAINID,
+    hotType: CHAIN_TYPE.HOT
   },
   [AVAX_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
