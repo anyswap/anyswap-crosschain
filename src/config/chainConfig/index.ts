@@ -85,6 +85,7 @@ import mint from './mint'
 import dnd from './dnd'
 import sama from './sama'
 import redlc from './redlc'
+import dxt from './dxt'
 
 import { ChainId } from './chainId'
 
@@ -94,6 +95,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...dxt,
   ...redlc,
   ...sama,
   ...dnd,
@@ -273,6 +275,7 @@ const testChainList = [
   ChainId.GLMR_TEST,
   ChainId.KEK_TEST,
   ChainId.CRO_TEST,
+  ChainId.DXT_TEST,
 ]
 
 const useChain:any = {
