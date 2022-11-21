@@ -1,1 +1,0 @@
-(this.webpackJsonpcrosschain=this.webpackJsonpcrosschain||[]).push([[5],{2781:function(n,c){},2790:function(n,c){},2792:function(n,c){}}]);
