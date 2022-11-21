@@ -7,14 +7,18 @@ import { useMainConfigContract } from '../../hooks/useContract'
 import { useAppState } from '../../state/application/hooks'
 import { deployCrosschainERC20 } from '../../utils/contract'
 import { ButtonPrimary } from '../../components/Button'
+import Loader from '../../components/Loader'
+import { AutoRow } from '../../components/Row'
 
 export default function DeployCrosschainToken({
   routerAddress,
   underlying,
-  onDeploymentCallback
+  onDeploymentCallback,
+  isLoading,
 }: {
   routerAddress: string
   underlying: { [k: string]: any }
+  isLoading: boolean
   onDeploymentCallback: (contractAddress: string, chainId: number, hash: string) => void
 }) {
   const { library, account, chainId } = useActiveWeb3React()
@@ -124,7 +128,11 @@ export default function DeployCrosschainToken({
   return (
     <>
       <ButtonPrimary disabled={!canDeployCrosschainToken || pending} onClick={onTokenDeployment}>
-        {t('deployCrossChainToken')}
+        { isLoading
+          ? <AutoRow gap="6px" justify="center">
+              {t('Loading')} <Loader stroke="white" />
+            </AutoRow>
+          : t('deployCrossChainToken') }
       </ButtonPrimary>
     </>
   )
