@@ -51,6 +51,8 @@ export default function TokenSettings({
   const [crosschainTokenAddress, setCrosschainTokenAddress] = useState('')
   const [crosschainTokenChainId, setCrosschainTokenChainId] = useState(`${chainId}`)
 
+  const [isUnderlyingTokenInfoLoading, setIsUnderlyingTokenInfoLoading] = useState(false)
+
   const [underlyingTokenInfo, setUnderlyingTokenInfo] = useState<CrossChainTokenData['underlying']>({
     networkId: underlyingNetworkId,
     address: underlyingAddress,
@@ -67,9 +69,9 @@ export default function TokenSettings({
 
   useEffect(() => {
     const fetchUnderlyingInfo = async () => {
-      if (!underlyingAddress?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
-
       try {
+        if (!underlyingAddress?.match(EVM_ADDRESS_REGEXP) || !underlyingNetworkId) return
+
         const underlyingNetworkConfig = chainInfo[underlyingNetworkId]
 
         if (!underlyingNetworkConfig) return
@@ -78,6 +80,7 @@ export default function TokenSettings({
         const web3 = getWeb3Library(nodeRpc)
         //@ts-ignore
         const underlyingErc20 = new web3.eth.Contract(ERC20_ABI, underlyingAddress)
+        setIsUnderlyingTokenInfoLoading(true)
 
         const name = await underlyingErc20.methods.name().call()
         const symbol = await underlyingErc20.methods.symbol().call()
@@ -113,6 +116,8 @@ export default function TokenSettings({
         }
       } catch (error) {
         console.error(error)
+      } finally {
+        setIsUnderlyingTokenInfoLoading(false)
       }
     }
 
@@ -297,6 +302,7 @@ export default function TokenSettings({
         <DeployCrosschainToken
           routerAddress={routerAddress}
           underlying={underlyingTokenInfo}
+          isLoading={isUnderlyingTokenInfoLoading}
           onDeploymentCallback={(contractAddress, chainId) => {
             setCrosschainTokenChainId(`${chainId}`)
             setCrosschainTokenAddress(contractAddress)

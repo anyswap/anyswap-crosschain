@@ -34,6 +34,7 @@ import rose, {ROSE_MAIN_CHAINID} from './rose'
 import vlx, {VLX_MAIN_CHAINID} from './vlx'
 import nsc, {NSC_MAIN_CHAINID} from './nsc'
 import ame, {AME_MAIN_CHAINID} from './ame'
+import kek, {KEK_MAIN_CHAINID} from './kek'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -77,6 +78,7 @@ export const chainInfo:ConFig = {
   ...vlx,
   ...nsc,
   ...ame,
+  ...kek,
 }
 
 const allChainList = [
@@ -110,6 +112,7 @@ const allChainList = [
   VLX_MAIN_CHAINID,
   NSC_MAIN_CHAINID,
   AME_MAIN_CHAINID,
+  KEK_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
   BNB_TEST_CHAINID,
   MATIC_TEST_CHAINID,
@@ -258,6 +261,7 @@ const useChain:any = {
     ASTAR_MAIN_CHAINID,
     NSC_MAIN_CHAINID,
     AME_MAIN_CHAINID,
+    KEK_MAIN_CHAINID,
   ]
 }
 
