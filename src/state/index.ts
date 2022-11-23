@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 import application from './application/reducer'
 import { updateVersion } from './global/actions'
@@ -37,7 +37,7 @@ const store = configureStore({
     lists,
     pools
   },
-  middleware: (getDefaultMiddleware) => [
+  middleware: [
     ...getDefaultMiddleware({
       thunk: false,
       immutableCheck: false,
