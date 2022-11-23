@@ -253,6 +253,7 @@ const allChainList = [
   ChainId.DND,
   ChainId.SAMA,
   ChainId.REDLC,
+  ChainId.XANA,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

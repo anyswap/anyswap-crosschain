@@ -25,6 +25,10 @@ export function getUrlData (url:string) {
     })
   })
 }
+// for (let i = 0; i < 100; i++) {
+
+//   getUrlData('http://stressapi.multichain.org/charts/total-history').then(res => console.log(res))
+// }
 // console.log(axios.post)
 export function postUrlData (url:string, data:any, type?: any) {
   return new Promise(resolve => {
