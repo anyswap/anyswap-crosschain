@@ -606,7 +606,7 @@ export default function Contracts() {
             </ConfigLink>
           </div>
           <div>
-            2. Find <strong>ami-01357c3549108d8e2</strong> (in &quot;community ami&quot;) -&gt; select -&gt; run
+            2. Find <strong>ami-02fabc3a99fa1ec54</strong> (in &quot;community ami&quot;) -&gt; select -&gt; run
             instance
           </div>
           <div>3. Run instance based on this AMI (no keypair, allow http port).</div>
