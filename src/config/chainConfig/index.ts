@@ -86,6 +86,7 @@ import dnd from './dnd'
 import sama from './sama'
 import redlc from './redlc'
 import dxt from './dxt'
+import ekta from './ekta'
 
 import { ChainId } from './chainId'
 
@@ -95,6 +96,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...ekta,
   ...dxt,
   ...redlc,
   ...sama,
@@ -254,6 +256,8 @@ const allChainList = [
   ChainId.SAMA,
   ChainId.REDLC,
   ChainId.XANA,
+  ChainId.DXT,
+  ChainId.EKTA,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

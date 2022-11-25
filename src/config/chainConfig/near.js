@@ -4,11 +4,11 @@ import {ChainId} from './chainId'
 
 export const NEAR_MAINNET = 'https://rpc.mainnet.near.org'
 export const NEAR_MAIN_CHAINID = ChainId.NEAR
-export const NEAR_MAIN_EXPLORER = 'https://explorer.mainnet.near.org'
+export const NEAR_MAIN_EXPLORER = 'https://nearblocks.io'
 
 export const NEAR_TESTNET = 'https://rpc.testnet.near.org'
 export const NEAR_TEST_CHAINID = ChainId.NEAR_TEST
-export const NEAR_TEST_EXPLORER = 'https://explorer.testnet.near.org'
+export const NEAR_TEST_EXPLORER = 'https://testnet.nearblocks.io'
 
 const symbol = 'NEAR'
 
@@ -28,8 +28,8 @@ export default {
     nodeRpc: NEAR_MAINNET,
     nodeRpcList: [],
     chainID: NEAR_MAIN_CHAINID,
-    lookHash: NEAR_MAIN_EXPLORER + '/transactions/',
-    lookAddr: NEAR_MAIN_EXPLORER + '/accounts/',
+    lookHash: NEAR_MAIN_EXPLORER + '/tx/',
+    lookAddr: NEAR_MAIN_EXPLORER + '/address/',
     lookBlock: NEAR_MAIN_EXPLORER + '/blocks/',
     explorer: NEAR_MAIN_EXPLORER,
     symbol: symbol,
@@ -49,8 +49,8 @@ export default {
     nodeRpc: NEAR_TESTNET,
     nodeRpcList: [],
     chainID: NEAR_TEST_CHAINID,
-    lookHash: NEAR_TEST_EXPLORER + '/transactions/',
-    lookAddr: NEAR_TEST_EXPLORER + '/accounts/',
+    lookHash: NEAR_TEST_EXPLORER + '/tx/',
+    lookAddr: NEAR_TEST_EXPLORER + '/address/',
     lookBlock: NEAR_TEST_EXPLORER + '/blocks/',
     explorer: NEAR_TEST_EXPLORER,
     symbol: symbol,

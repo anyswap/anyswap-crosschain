@@ -114,6 +114,7 @@ export enum ChainId {
   DND = '7363',
   SAMA = '2109',
   REDLC = '2611',
-  DXT = '',
+  DXT = '877',
   DXT_TEST = '899',
+  EKTA = '1994',
 }

@@ -2,9 +2,9 @@ import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-// export const DXT_MAIN_CHAINID = ChainId.DXT
-// export const DXT_MAINNET = getLocalRPC(DXT_MAIN_CHAINID, 'https://rpc.dynochain.io/')
-// export const DXT_MAIN_EXPLORER = 'https://dynoscan.io'
+export const DXT_MAIN_CHAINID = ChainId.DXT
+export const DXT_MAINNET = getLocalRPC(DXT_MAIN_CHAINID, 'https://dxt.dexit.network')
+export const DXT_MAIN_EXPLORER = 'https://dxtscan.com'
 
 export const DXT_TEST_CHAINID = ChainId.DXT_TEST
 export const DXT_TESTNET = getLocalRPC(DXT_TEST_CHAINID, 'https://testnet.dexit.network')
@@ -21,27 +21,27 @@ const bridgeToken:any = {
 }
 
 export default {
-  // [DXT_MAIN_CHAINID]: {
-  //   ...bridgeToken[USE_VERSION],
-  //   swapRouterToken: '',
-  //   multicalToken: '',
-  //   v1FactoryToken: '',
-  //   v2FactoryToken: '',
-  //   nodeRpc: DXT_MAINNET,
-  //   nodeRpcList: [
-  //     DXT_MAINNET,
-  //   ],
-  //   chainID: DXT_MAIN_CHAINID,
-  //   lookHash: DXT_MAIN_EXPLORER + '/tx/',
-  //   lookAddr: DXT_MAIN_EXPLORER + '/address/',
-  //   lookBlock: DXT_MAIN_EXPLORER + '/block/',
-  //   explorer: DXT_MAIN_EXPLORER,
-  //   symbol: symbol,
-  //   name: 'Dexit Network',
-  //   networkName: 'Dexit Network mainnet',
-  //   type: 'main',
-  //   label: DXT_MAIN_CHAINID,
-  // },
+  [DXT_MAIN_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: DXT_MAINNET,
+    nodeRpcList: [
+      DXT_MAINNET,
+    ],
+    chainID: DXT_MAIN_CHAINID,
+    lookHash: DXT_MAIN_EXPLORER + '/tx/',
+    lookAddr: DXT_MAIN_EXPLORER + '/address/',
+    lookBlock: DXT_MAIN_EXPLORER + '/block/',
+    explorer: DXT_MAIN_EXPLORER,
+    symbol: symbol,
+    name: 'Dexit Network',
+    networkName: 'Dexit Network mainnet',
+    type: 'main',
+    label: DXT_MAIN_CHAINID,
+  },
   [DXT_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
