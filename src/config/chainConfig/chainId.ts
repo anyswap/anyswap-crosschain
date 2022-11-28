@@ -117,4 +117,5 @@ export enum ChainId {
   DXT = '877',
   DXT_TEST = '899',
   EKTA = '1994',
+  SCROLL_TEST = '534354',
 }

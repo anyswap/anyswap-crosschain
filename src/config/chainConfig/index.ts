@@ -87,6 +87,7 @@ import sama from './sama'
 import redlc from './redlc'
 import dxt from './dxt'
 import ekta from './ekta'
+import scroll from './scroll'
 
 import { ChainId } from './chainId'
 
@@ -96,6 +97,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...scroll,
   ...ekta,
   ...dxt,
   ...redlc,
@@ -281,6 +283,7 @@ const testChainList = [
   ChainId.KEK_TEST,
   ChainId.CRO_TEST,
   ChainId.DXT_TEST,
+  ChainId.SCROLL_TEST,
 ]
 
 const useChain:any = {
