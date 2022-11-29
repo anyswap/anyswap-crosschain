@@ -82,7 +82,7 @@ export default function Footer() {
   const SourceCopyright = (
     <>
       Powered by{' '}
-      <a href="#" target="_blank" rel="noopener noreferrer">
+      <a href="https://onout.org/crosschain/" target="_blank" rel="noopener noreferrer">
         OnOut - no-code tool for creating CROSS-CHAIN
       </a>
     </>
