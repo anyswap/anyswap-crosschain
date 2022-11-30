@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.js": "./static/js/main.8153cea7.chunk.js",
-    "runtime-main.js": "./static/js/runtime-main.e2612f2d.js",
+    "main.js": "./static/js/main.d9373b7e.chunk.js",
+    "runtime-main.js": "./static/js/runtime-main.6033f9c7.js",
     "static/css/2.5aa401b8.chunk.css": "./static/css/2.5aa401b8.chunk.css",
-    "static/js/2.ca7d34c0.chunk.js": "./static/js/2.ca7d34c0.chunk.js",
-    "static/js/3.4a4e1f5d.chunk.js": "./static/js/3.4a4e1f5d.chunk.js",
-    "static/js/4.86a72db2.chunk.js": "./static/js/4.86a72db2.chunk.js",
+    "static/js/2.5a8ef448.chunk.js": "./static/js/2.5a8ef448.chunk.js",
+    "static/js/3.a2e8ce7e.chunk.js": "./static/js/3.a2e8ce7e.chunk.js",
+    "static/js/4.3510f90b.chunk.js": "./static/js/4.3510f90b.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.ce27d720481ca187145dedf3daddf091.js": "./precache-manifest.ce27d720481ca187145dedf3daddf091.js",
+    "precache-manifest.afe47cb1cc2443ce36554fa9131daab1.js": "./precache-manifest.afe47cb1cc2443ce36554fa9131daab1.js",
     "service-worker.js": "./service-worker.js",
-    "static/js/2.ca7d34c0.chunk.js.LICENSE.txt": "./static/js/2.ca7d34c0.chunk.js.LICENSE.txt",
-    "static/js/2.ca7d34c0.chunk.js.gz": "./static/js/2.ca7d34c0.chunk.js.gz",
-    "static/js/3.4a4e1f5d.chunk.js.LICENSE.txt": "./static/js/3.4a4e1f5d.chunk.js.LICENSE.txt",
-    "static/js/3.4a4e1f5d.chunk.js.gz": "./static/js/3.4a4e1f5d.chunk.js.gz",
-    "static/js/4.86a72db2.chunk.js.LICENSE.txt": "./static/js/4.86a72db2.chunk.js.LICENSE.txt",
-    "static/js/4.86a72db2.chunk.js.gz": "./static/js/4.86a72db2.chunk.js.gz",
-    "static/js/main.8153cea7.chunk.js.LICENSE.txt": "./static/js/main.8153cea7.chunk.js.LICENSE.txt",
-    "static/js/main.8153cea7.chunk.js.gz": "./static/js/main.8153cea7.chunk.js.gz",
+    "static/js/2.5a8ef448.chunk.js.LICENSE.txt": "./static/js/2.5a8ef448.chunk.js.LICENSE.txt",
+    "static/js/2.5a8ef448.chunk.js.gz": "./static/js/2.5a8ef448.chunk.js.gz",
+    "static/js/3.a2e8ce7e.chunk.js.LICENSE.txt": "./static/js/3.a2e8ce7e.chunk.js.LICENSE.txt",
+    "static/js/3.a2e8ce7e.chunk.js.gz": "./static/js/3.a2e8ce7e.chunk.js.gz",
+    "static/js/4.3510f90b.chunk.js.LICENSE.txt": "./static/js/4.3510f90b.chunk.js.LICENSE.txt",
+    "static/js/4.3510f90b.chunk.js.gz": "./static/js/4.3510f90b.chunk.js.gz",
+    "static/js/main.d9373b7e.chunk.js.LICENSE.txt": "./static/js/main.d9373b7e.chunk.js.LICENSE.txt",
+    "static/js/main.d9373b7e.chunk.js.gz": "./static/js/main.d9373b7e.chunk.js.gz",
     "static/media/AME.png": "./static/media/AME.a156dbce.png",
     "static/media/ANY.svg": "./static/media/ANY.637a171c.svg",
     "static/media/ARBITRUM.png": "./static/media/ARBITRUM.5e03f2fa.png",
@@ -26,6 +26,7 @@
     "static/media/BitKeep.png": "./static/media/BitKeep.5324604f.png",
     "static/media/BitKeep.jpg": "./static/media/BitKeep.86ce41f9.jpg",
     "static/media/Coin98.png": "./static/media/Coin98.c80c0ea8.png",
+    "static/media/EDG.svg": "./static/media/EDG.3758f44c.svg",
     "static/media/ETH.svg": "./static/media/ETH.d0aadd2a.svg",
     "static/media/FSN.svg": "./static/media/FSN.cb0e4fbd.svg",
     "static/media/GNO.png": "./static/media/GNO.cd3c4b3e.png",
@@ -158,9 +159,9 @@
     "static/media/x.svg": "./static/media/x.5b8e2186.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e2612f2d.js",
+    "static/js/runtime-main.6033f9c7.js",
     "static/css/2.5aa401b8.chunk.css",
-    "static/js/2.ca7d34c0.chunk.js",
-    "static/js/main.8153cea7.chunk.js"
+    "static/js/2.5a8ef448.chunk.js",
+    "static/js/main.d9373b7e.chunk.js"
   ]
 }

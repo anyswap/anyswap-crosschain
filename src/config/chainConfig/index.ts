@@ -35,6 +35,7 @@ import vlx, {VLX_MAIN_CHAINID} from './vlx'
 import nsc, {NSC_MAIN_CHAINID} from './nsc'
 import ame, {AME_MAIN_CHAINID} from './ame'
 import kek, {KEK_MAIN_CHAINID} from './kek'
+import edg, {EDG_MAIN_CHAINID} from './edg'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -79,6 +80,7 @@ export const chainInfo:ConFig = {
   ...nsc,
   ...ame,
   ...kek,
+  ...edg,
 }
 
 const allChainList = [
@@ -113,6 +115,7 @@ const allChainList = [
   NSC_MAIN_CHAINID,
   AME_MAIN_CHAINID,
   KEK_MAIN_CHAINID,
+  EDG_MAIN_CHAINID,
   ETH_TEST1_CHAINID,
   BNB_TEST_CHAINID,
   MATIC_TEST_CHAINID,
@@ -262,6 +265,7 @@ const useChain:any = {
     NSC_MAIN_CHAINID,
     AME_MAIN_CHAINID,
     KEK_MAIN_CHAINID,
+    EDG_MAIN_CHAINID,
   ]
 }
 
