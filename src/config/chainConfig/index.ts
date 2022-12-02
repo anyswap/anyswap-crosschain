@@ -88,6 +88,8 @@ import redlc from './redlc'
 import dxt from './dxt'
 import ekta from './ekta'
 import scroll from './scroll'
+import hpb from './hpb'
+import onus from './onus'
 
 import { ChainId } from './chainId'
 
@@ -97,6 +99,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...onus,
+  ...hpb,
   ...scroll,
   ...ekta,
   ...dxt,
@@ -260,6 +264,8 @@ const allChainList = [
   ChainId.XANA,
   ChainId.DXT,
   ChainId.EKTA,
+  ChainId.HPB,
+  ChainId.ONUS,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
