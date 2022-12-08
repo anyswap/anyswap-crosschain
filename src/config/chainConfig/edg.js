@@ -31,7 +31,7 @@ const bridgeToken = {
 
 export default {
   [EDG_MAIN_CHAINID]: {
-    wrappedToken: '0x53D036C8A78ED786E3be270526D5D1c1271da2c0',
+    wrappedToken: '0x457dE4e275A6b3C0D3750519221dD1dF19d54f01',
     tokenListUrl: tokenListUrl + EDG_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
