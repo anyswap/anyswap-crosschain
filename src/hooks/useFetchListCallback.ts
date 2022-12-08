@@ -20,6 +20,7 @@ import config from '../config'
 import {
   MAIN_COIN_SORT,
   // USE_VERSION,
+  // controlConfig
   // VERSION
 } from '../config/constant'
 import {getUrlData} from '../utils/tools/axios'
@@ -31,6 +32,8 @@ import {
   setNftlist,
   getNftlist
 } from '../utils/indexedDB'
+
+// console.log(controlConfig[USE_VERSION])
 
 function getVersion () {
   return new Promise(resolve => {
@@ -71,6 +74,7 @@ function getServerPoolTokenlist (chainId:any) {
         if (tokenList.msg === 'Success' && tokenList.data) {
           const tList = tokenList.data
           for (const tokenKey in tList) {
+            // if (controlConfig[USE_VERSION].hiddenCoin.includes(tokenKey)) continue
             list[tokenKey] = {
               ...tList[tokenKey],
               key: tokenKey,

@@ -27,7 +27,12 @@ import { isAddress } from '../../utils'
 // import { useLocalToken } from '../../hooks/Tokens'
 import CurrencyList from './CurrencyList'
 
-import {MAIN_COIN_SORT} from '../../config/constant'
+import {
+  MAIN_COIN_SORT,
+  
+  USE_VERSION,
+  controlConfig
+} from '../../config/constant'
 
 import {useStarToken, useChangeStarTab} from '../../state/user/hooks'
 
@@ -109,7 +114,7 @@ export default function SearchModal ({
         ...obj,
         key: tokenKey
       }
-      if (!obj.name || !obj.symbol) continue
+      if (!obj.name || !obj.symbol || controlConfig[USE_VERSION].hiddenCoin.includes(token)) continue
       if (starTabIndex === 0 && starList[token]) {
         arr.push(data)
       } else if (starTabIndex === 1 || obj.type) {

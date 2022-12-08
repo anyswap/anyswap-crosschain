@@ -92,6 +92,7 @@ export const MAIN_COIN_SORT:any = {
   'USDC': {sort: 4},
   'USDC.e': {sort: 4},
   'USDT': {sort: 5},
+  'USDt': {sort: 5},
   'fUSDT': {sort: 5},
   'DAI': {sort: 6},
   'MIM': {sort: 7},
@@ -319,7 +320,7 @@ export const controlConfig:any = {
   },
   [VERSION.V7]: {
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin([]),
+    hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8']),
     hiddenChain: [],
     showCoin: [],
     showChain: [],

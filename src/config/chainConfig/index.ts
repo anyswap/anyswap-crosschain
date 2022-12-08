@@ -290,6 +290,7 @@ const testChainList = [
   ChainId.CRO_TEST,
   ChainId.DXT_TEST,
   ChainId.SCROLL_TEST,
+  ChainId.EKTA_TEST,
 ]
 
 const useChain:any = {

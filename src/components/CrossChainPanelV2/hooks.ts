@@ -2,6 +2,12 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import {formatDecimal, thousandBit} from '../../utils/tools/tools'
 import {getNodeBalance} from '../../utils/bridge/getBalanceV2'
 import config from '../../config'
+import {
+  // MAIN_COIN_SORT,
+  
+  USE_VERSION,
+  controlConfig
+} from '../../config/constant'
 
 import {spportChainArr} from '../../config/chainConfig'
 
@@ -100,7 +106,7 @@ export function useInitSelectCurrency (
           ...(item.tokenInfo ? item.tokenInfo : item),
           key: tokenKey,
         }
-        if(!list[tokenKey].name || !list[tokenKey].symbol) continue
+        if(!list[tokenKey].name || !list[tokenKey].symbol || controlConfig[USE_VERSION].hiddenCoin.includes(token)) continue
         if (!noMatchInitToken) noMatchInitToken = tokenKey
         if ( !useToken ) {
           if (
