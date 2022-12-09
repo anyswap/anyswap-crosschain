@@ -121,4 +121,8 @@ export enum ChainId {
   SCROLL_TEST = '534354',
   HPB = '269',
   ONUS = '1975',
+  SHM = '',
+  SHM_TEST = '8080',
+  POLYGONZKEVM = '',
+  POLYGONZKEVM_TEST = '1402',
 }

@@ -90,6 +90,8 @@ import ekta from './ekta'
 import scroll from './scroll'
 import hpb from './hpb'
 import onus from './onus'
+import shm from './shm'
+import polygonzkevm from './polygonzkevm'
 
 import { ChainId } from './chainId'
 
@@ -99,6 +101,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...polygonzkevm,
+  ...shm,
   ...onus,
   ...hpb,
   ...scroll,
@@ -291,6 +295,8 @@ const testChainList = [
   ChainId.DXT_TEST,
   ChainId.SCROLL_TEST,
   ChainId.EKTA_TEST,
+  ChainId.SHM_TEST,
+  ChainId.POLYGONZKEVM_TEST,
 ]
 
 const useChain:any = {

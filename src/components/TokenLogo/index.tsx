@@ -29,7 +29,11 @@ function getSourcePath(symbol: any) {
     try {
       path = require('../../assets/images/coin/source/' + symbol + '.png')
     } catch (error) {
-      path = initPath
+      try {
+        path = require('../../assets/images/coin/source/' + symbol + '.jpg')
+      } catch (error) {
+        path = initPath
+      }
     }
   }
   return path
@@ -42,7 +46,11 @@ function getAnyPath(symbol: any) {
     try {
       path = require('../../assets/images/coin/any/' + symbol + '.png')
     } catch (error) {
-      path = initPath
+      try {
+        path = require('../../assets/images/coin/any/' + symbol + '.jpg')
+      } catch (error) {
+        path = initPath
+      }
     }
   }
   return path
