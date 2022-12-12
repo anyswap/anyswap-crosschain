@@ -320,7 +320,9 @@ export default function CrossChain({
             [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && !['swapin', 'swapout'].includes(destConfig?.type) ? (
               <>
                 <CrossChainTip>
-                  <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p>
+                  {/* <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p> */}
+                  Please use Bitcoin wallet to transfer BTC to deposit address and input receive address on dest chain as memo(OP_RETURN).
+                  <p className='red'>If you don&apos;t input memo({shortenAddress(memo,8)}), you will not receive multiBTC on dest chain.</p>
                 </CrossChainTip>
               </>
             ) : ''

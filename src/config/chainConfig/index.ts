@@ -208,7 +208,7 @@ const allChainList = [
   ChainId.MOVR,
   ChainId.ONE,
   ChainId.OPTIMISM,
-  // ChainId.AURORA,
+  ChainId.AURORA,
   ChainId.BOBA,
   ChainId.CRO,
   ChainId.OKT,
