@@ -58,8 +58,10 @@ import { ChainId } from '../../config/chainConfig/chainId'
 const CrossChainTip = styled.div`
   width: 100%;
   color: ${({ theme }) => theme.textColorBold};
+  word-break: break-all;
   .red {
     color: ${({ theme }) => theme.red1};
+    word-break: break-all;
   }
 `
 
@@ -310,6 +312,15 @@ export default function CrossChain({
                 <CrossChainTip>
                   Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
                   <p className='red'>If you don&apos;t input memo, you will not receive XRP on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          }
+          {
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && !['swapin', 'swapout'].includes(destConfig?.type) ? (
+              <>
+                <CrossChainTip>
+                  <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p>
                 </CrossChainTip>
               </>
             ) : ''

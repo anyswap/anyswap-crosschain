@@ -320,7 +320,8 @@ export const controlConfig:any = {
   },
   [VERSION.V7]: {
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8', '0x2d1c6a7362e75d88b4cf3b66b83052775846e2b8']),
+    // hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8', '0x2d1c6a7362e75d88b4cf3b66b83052775846e2b8']),
+    hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
     showChain: [],
