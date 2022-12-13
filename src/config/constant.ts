@@ -105,7 +105,8 @@ export const multiAridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION ===
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
-export const explorer = 'https://anyswap.net'
+// export const explorer = 'https://anyswap.net'
+export const explorer = 'https://scan.multichain.org'
 
 export enum BRIDGE_KEY {
   routerTokenList = 'routerTokenList',
@@ -320,8 +321,8 @@ export const controlConfig:any = {
   },
   [VERSION.V7]: {
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8', '0x2d1c6a7362e75d88b4cf3b66b83052775846e2b8']),
-    // hiddenCoin: formatHiddenCoin([]),
+    // hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8', '0x2d1c6a7362e75d88b4cf3b66b83052775846e2b8']),
+    hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
     showChain: [],

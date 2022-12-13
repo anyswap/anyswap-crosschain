@@ -54,6 +54,14 @@ export const moreList = [
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
+    path: 'https://anycall.multichain.org/',
+    textKey: 'anyCall',
+    regex: '',
+    className: 'otherInfo',
+    isOutLink: true,
+    isView: 1,
+  },
+  {
     path: config.explorer,
     textKey: 'explorer',
     regex: '',
