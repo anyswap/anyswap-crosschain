@@ -81,7 +81,7 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
 }
 
 export function useBridgeContract(routerToken?:any, version?:any, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(routerToken ? routerToken : undefined, version ? RouterSwapActionV2 : RouterSwapAction, withSignerIfPossible)
+  return useContract(routerToken ? routerToken : undefined, version === 'v2' ? RouterSwapActionV2 : RouterSwapAction, withSignerIfPossible)
 }
 export function useVeMULTIContract(veToken?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(veToken ? veToken : undefined, veMULTI, withSignerIfPossible)

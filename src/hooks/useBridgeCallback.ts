@@ -45,6 +45,17 @@ export enum WrapType {
   NOCONNECT
 }
 
+function useVersion (chainId:any, toChainID:any) {
+  if (
+    [ChainId.AURORA].includes(chainId?.toString())
+    || (toChainID && isNaN(toChainID))
+  ) {
+    // console.log(chainId)
+    return 'v2'
+  }
+  return ''
+}
+
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
  * 跨链any token
@@ -66,7 +77,7 @@ export function useBridgeCallback(
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -106,6 +117,7 @@ export function useBridgeCallback(
                 // console.log(routerToken)
                 // console.log(inputToken)
                 // console.log(toChainID)
+                // console.log(bridgeContract)
                 // console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
@@ -189,7 +201,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -303,7 +315,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -539,7 +551,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -643,7 +655,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
