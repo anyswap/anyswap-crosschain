@@ -6,6 +6,7 @@ import FlowUpdater from './flow/updater'
 import SolUpdater from './solana/updater'
 import AptUpdater from './apt/updater'
 import BtcUpdater from './btc/updater'
+import AtomUpdater from './atom/updater'
 
 import {useActiveReact} from '../hooks/useActiveReact'
 import { ChainId } from '../config/chainConfig/chainId'
@@ -27,6 +28,8 @@ export default function Updaters() {
   } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
   // } else if ([ChainId.BTC_TEST].includes(chainId)) {
     return <BtcUpdater />
+  } else if ([ChainId.ATOM, ChainId.ATOM_TEST].includes(chainId)) {
+    return <AtomUpdater />
   }
   return <></>
 }

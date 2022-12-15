@@ -92,6 +92,7 @@ import hpb from './hpb'
 import onus from './onus'
 import shm from './shm'
 import polygonzkevm from './polygonzkevm'
+import atom from './atom'
 
 import { ChainId } from './chainId'
 
@@ -101,6 +102,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...atom,
   ...polygonzkevm,
   ...shm,
   ...onus,
@@ -417,6 +419,7 @@ const useChain:any = {
     ChainId.SOL_TEST,
     ChainId.APT_TEST,
     ChainId.BTC_TEST,
+    ChainId.ATOM_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

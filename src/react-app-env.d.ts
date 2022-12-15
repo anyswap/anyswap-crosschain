@@ -113,6 +113,8 @@ interface Window {
   bitcoin: any
   providerManager: any
   tally: any
+  keplr: any
+  getOfflineSigner: any
 }
 
 declare module '@onflow/fcl';

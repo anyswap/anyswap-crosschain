@@ -19,6 +19,7 @@ import {useAdaLogin} from '../nonevm/cardano'
 import {useLoginFlow} from '../nonevm/flow'
 import {useLoginAptos} from '../nonevm/apt'
 import {useLoginBtc} from '../nonevm/btc'
+import {useLoginAtom} from '../nonevm/atom'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -33,6 +34,7 @@ export function useConnectWallet () {
   const {loginFlow} = useLoginFlow()
   const {loginAptos} = useLoginAptos()
   const {loginBtc} = useLoginBtc()
+  const {loginAtom} = useLoginAtom()
 
   const useChainId = useMemo(() => {
     return selectNetworkInfo?.chainId
@@ -100,6 +102,12 @@ export function useConnectWallet () {
     } else if ([ChainId.APT, ChainId.APT_TEST].includes(useChainId)) {
       if (!account) {
         loginAptos(useChainId)
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.ATOM, ChainId.ATOM_TEST].includes(useChainId)) {
+      if (!account) {
+        loginAtom(useChainId)
       } else {
         toggleWalletModal()
       }

@@ -493,6 +493,7 @@ function ChainListBox ({
         arr.push(chainInfo[c])
       }
     }
+    // console.log(spportChainArr)
     // console.log(arr)
     // console.log([...(selectTab === 0 ? arr.sort(comparator) : arr)])
     if (selectTab === 0) {
