@@ -202,7 +202,7 @@ export default function CrossChain({
         setMemo(recipient + ":" + selectChain)
         setModalSpecOpen(true)
         setDelayAction(false)
-      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+      } else if ([ChainId.BTC, ChainId.BTC_TEST, ChainId.BLOCK, ChainId.COLX, ChainId.LTC].includes(chainId)) {
         if (['swapin', 'swapout'].includes(destConfig?.type)) {
           getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
             // console.log(res)
