@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Metis',
     networkName: 'Metis mainnet',
+    walletName: 'Metis Andromeda Mainnet',
     type: 'main',
     label: METIS_MAIN_CHAINID,
   },

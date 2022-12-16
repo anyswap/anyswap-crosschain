@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Oasis Network',
     networkName: 'Oasis Network mainnet',
+    walletName: 'Oasis Emerald ParaTime Mainnet',
     type: 'main',
     label: ROSE_MAIN_CHAINID,
   },

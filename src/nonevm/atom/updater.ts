@@ -12,7 +12,7 @@ export default function Updater(): null {
 
   const getAtomAddress = useCallback(() => {
     console.log(chainId)
-    if ([ChainId.ATOM, ChainId.ATOM_TEST].includes(chainId)) {
+    if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
       loginAtom(chainId)
     }
   }, [chainId])

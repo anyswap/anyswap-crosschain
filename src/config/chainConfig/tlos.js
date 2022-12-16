@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'Telos',
     networkName: 'Telos mainnet',
+    walletName: 'Telos EVM Mainnet',
     type: 'main',
     label: TLOS_MAIN_CHAINID,
   },

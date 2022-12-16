@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'Harmony',
     networkName: 'Harmony mainnet',
+    walletName: 'Harmony Mainnet Shard 0',
     type: 'main',
     label: ONE_MAIN_CHAINID,
   },

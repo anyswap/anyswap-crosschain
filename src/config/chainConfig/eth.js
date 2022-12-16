@@ -119,6 +119,7 @@ export default {
     symbol: symbol,
     name: 'Ethereum',
     networkName: 'Ethereum mainnet',
+    walletName: 'Ethereum Mainnet',
     type: 'main',
     label: ETH_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -143,6 +144,7 @@ export default {
     symbol: symbol,
     name: 'Rinkeby',
     networkName: 'ETH rinkeby',
+    walletName: 'Rinkeby',
     type: 'test',
     label: ETH_TEST_CHAINID,
   },
@@ -165,6 +167,7 @@ export default {
     symbol: symbol,
     name: 'Goerli',
     networkName: 'ETH Goerli',
+    walletName: 'Goerli',
     type: 'test',
     label: ETH_TEST1_CHAINID,
   },

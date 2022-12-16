@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Ethereum Classic',
     networkName: 'Ethereum Classic mainnet',
+    walletName: 'Ethereum Classic Mainnet',
     type: 'main',
     label: ETC_MAIN_CHAINID,
   },

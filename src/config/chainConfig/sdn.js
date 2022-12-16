@@ -50,6 +50,7 @@ export default {
     symbol: symbol,
     name: 'Shiden Network',
     networkName: 'Shiden Network mainnet',
+    walletName: 'Shiden',
     type: 'main',
     label: SDN_MAIN_CHAINID,
   },

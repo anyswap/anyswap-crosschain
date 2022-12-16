@@ -48,6 +48,7 @@ export default {
     symbol: symbol,
     name: 'ThunderCore',
     networkName: 'ThunderCore mainnet',
+    walletName: 'ThunderCore Mainnet',
     type: 'main',
     label: TT_MAIN_CHAINID,
   },

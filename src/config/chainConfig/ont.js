@@ -44,6 +44,7 @@ export default {
     symbol: symbol,
     name: 'Ontology',
     networkName: 'Ontology mainnet',
+    walletName: 'Ontology Mainnet',
     type: 'main',
     label: ONT_MAIN_CHAINID,
   },

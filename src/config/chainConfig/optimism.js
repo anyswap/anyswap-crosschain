@@ -64,6 +64,7 @@ export default {
     name: 'Optimism',
     networkName: 'Optimism mainnet',
     networkLogo: 'OPTIMISM',
+    walletName: 'Optimism',
     type: 'main',
     label: OPTIMISM_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -85,6 +86,7 @@ export default {
     name: 'OPTIMISM',
     networkName: 'OPTIMISM Rinkeby',
     networkLogo: 'OPTIMISM',
+    walletName: 'Optimism Kovan',
     type: 'main',
     label: OPTIMISM_TEST_CHAINID,
   },

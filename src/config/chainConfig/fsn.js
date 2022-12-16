@@ -56,6 +56,7 @@ export default {
     symbol: symbol,
     name: 'Fusion',
     networkName: 'Fusion mainnet',
+    walletName: 'Fusion Mainnet',
     type: 'main',
     label: FSN_MAIN_CHAINID,
   },

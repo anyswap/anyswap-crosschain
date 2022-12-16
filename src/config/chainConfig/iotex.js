@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'IoTeX',
     networkName: 'IoTeX mainnet',
+    walletName: 'IoTeX Network Mainnet',
     type: 'main',
     label: IOTEX_MAIN_CHAINID,
   },

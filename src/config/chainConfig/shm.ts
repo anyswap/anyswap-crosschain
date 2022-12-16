@@ -60,6 +60,7 @@ export default {
     symbol: symbol,
     name: 'Shardeum',
     networkName: 'Shardeum testnet',
+    walletName: 'Shardeum Liberty 1.6',
     type: 'test',
     label: SHM_TEST_CHAINID,
   },

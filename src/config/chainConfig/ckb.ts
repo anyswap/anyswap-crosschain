@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'Godwoken',
     networkName: 'Godwoken mainnet',
+    walletName: 'Godwoken Mainnet',
     type: 'main',
     label: CKB_MAIN_CHAINID,
   },

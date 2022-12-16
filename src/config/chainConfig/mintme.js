@@ -38,6 +38,7 @@ export default {
     symbol: symbol,
     name: 'MintMe.com Coin',
     networkName: 'MintMe.com Coin mainnet',
+    walletName: 'MintMe.com Coin',
     type: 'main',
     label: MINTME_MAIN_CHAINID,
   },

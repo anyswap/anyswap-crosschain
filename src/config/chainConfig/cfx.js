@@ -48,6 +48,7 @@ export default {
     symbol: symbol,
     name: 'Conflux eSpace',
     networkName: 'Conflux eSpace mainnet',
+    walletName: 'Conflux eSpace',
     type: 'main',
     label: CFX_MAIN_CHAINID,
   },

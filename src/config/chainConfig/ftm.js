@@ -83,6 +83,7 @@ export default {
     symbol: symbol,
     name: 'Fantom',
     networkName: 'Fantom mainnet',
+    walletName: 'Fantom Opera',
     type: 'main',
     label: FTM_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -105,6 +106,7 @@ export default {
     symbol: symbol,
     name: 'Fantom',
     networkName: 'Fantom testnet',
+    walletName: 'Fantom Testnet',
     type: 'test',
     label: FTM_TEST_CHAINID,
   },

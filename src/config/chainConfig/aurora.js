@@ -49,6 +49,7 @@ export default {
     name: 'Aurora',
     networkName: 'Aurora mainnet',
     networkLogo: 'AURORA',
+    walletName: 'Aurora Mainnet',
     type: 'main',
     label: AURORA_MAIN_CHAINID,
   },

@@ -67,6 +67,7 @@ export default {
     symbol: symbol,
     name: 'Avalanche',
     networkName: 'Avalanche mainnet',
+    walletName: 'Avalanche C-Chain',
     type: 'main',
     label: AVAX_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -89,6 +90,7 @@ export default {
     symbol: symbol,
     name: 'Avalanche',
     networkName: 'Avalanche testnet',
+    walletName: 'Avalanche Fuji Testnet',
     type: 'test',
     label: AVAX_TEST_CHAINID,
   },

@@ -62,6 +62,7 @@ export default {
     name: 'Scroll L2',
     networkName: 'Scroll L2 testnet',
     networkLogo: 'scroll',
+    walletName: 'Scroll Pre-Alpha Testnet',
     type: 'test',
     label: SCROLL_TEST_CHAINID,
   },

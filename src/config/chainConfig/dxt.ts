@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'Dexit Network',
     networkName: 'Dexit Network mainnet',
+    walletName: 'Dexit Network',
     type: 'main',
     label: DXT_MAIN_CHAINID,
   },

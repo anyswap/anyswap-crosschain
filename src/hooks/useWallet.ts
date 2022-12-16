@@ -20,6 +20,7 @@ import {useLoginFlow} from '../nonevm/flow'
 import {useLoginAptos} from '../nonevm/apt'
 import {useLoginBtc} from '../nonevm/btc'
 import {useLoginAtom} from '../nonevm/atom'
+import {useLoginSol} from '../nonevm/solana'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -35,6 +36,7 @@ export function useConnectWallet () {
   const {loginAptos} = useLoginAptos()
   const {loginBtc} = useLoginBtc()
   const {loginAtom} = useLoginAtom()
+  const {loginSol} = useLoginSol()
 
   const useChainId = useMemo(() => {
     return selectNetworkInfo?.chainId
@@ -105,9 +107,15 @@ export function useConnectWallet () {
       } else {
         toggleWalletModal()
       }
-    } else if ([ChainId.ATOM, ChainId.ATOM_TEST].includes(useChainId)) {
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(useChainId)) {
       if (!account) {
         loginAtom(useChainId)
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(useChainId)) {
+      if (!account) {
+        loginSol()
       } else {
         toggleWalletModal()
       }

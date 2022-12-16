@@ -40,6 +40,7 @@ export default {
     name: 'Milkomeda A1',
     networkName: 'Milkomeda (Algorand) mainnet',
     networkLogo: 'milkADA',
+    walletName: 'Milkomeda A1 Mainnet',
     type: 'main',
     label: MILKALGO_MAIN_CHAINID,
   },

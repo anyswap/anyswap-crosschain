@@ -64,7 +64,9 @@ export function useAtomBalance () {
   const getAtomBalance = useCallback(({account}: {account:string|null|undefined}) => {
     return new Promise((resolve) => {
       if (account) {
-        resolve('')
+        fetch(`https://sei-testnet-rpc.allthatnode.com:1317/cosmos/bank/v1beta1/balances/${account}`).then((res:any) => {
+          resolve(res)
+        })
       }
     })
   }, []) 

@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'ONUS',
     networkName: 'ONUS mainnet',
+    walletName: 'ONUS Chain Mainnet',
     type: 'main',
     label: ONUS_MAIN_CHAINID,
   },

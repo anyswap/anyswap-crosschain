@@ -62,6 +62,7 @@ export default {
     name: 'Polygon zkEVM',
     networkName: 'Polygon zkEVM testnet',
     networkLogo: 'PolygonzkEVM',
+    walletName: 'Polygon zkEVM Testnet',
     type: 'test',
     label: POLYGONZKEVM_TEST_CHAINID,
   },

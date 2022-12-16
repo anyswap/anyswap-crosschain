@@ -1,7 +1,8 @@
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
+// export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
+export const SOL_MAINNET = 'https://rpc.ankr.com/solana'
 export const SOL_MAIN_CHAINID = ChainId.SOL
 export const SOL_MAIN_EXPLORER = 'https://solana.fm'
 

@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'GateChain',
     networkName: 'GateChain mainnet',
+    walletName: 'GateChain Mainnet',
     type: 'main',
     label: GT_MAIN_CHAINID,
   },

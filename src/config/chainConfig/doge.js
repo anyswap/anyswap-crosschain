@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Dogechain',
     networkName: 'Dogechain mainnet',
+    walletName: 'Dogechain Mainnet',
     type: 'main',
     label: DOGE_MAIN_CHAINID,
   },

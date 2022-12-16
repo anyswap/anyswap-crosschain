@@ -74,6 +74,7 @@ export default {
     name: 'Arbitrum',
     networkName: 'Arbitrum mainnet',
     networkLogo: 'ARBITRUM',
+    walletName: 'Arbitrum One',
     type: 'main',
     label: ARBITRUM_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -97,6 +98,7 @@ export default {
     name: 'Arbitrum',
     networkName: 'Arbitrum testnet',
     networkLogo: 'ARBITRUM',
+    walletName: 'Arbitrum Rinkeby',
     type: 'test',
     label: ARBITRUM_TEST_CHAINID,
   },

@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Caduceus',
     networkName: 'Caduceus mainnet',
+    walletName: 'CMP-Mainnet',
     type: 'main',
     label: CMP_MAIN_CHAINID,
   },

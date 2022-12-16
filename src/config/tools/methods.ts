@@ -17,7 +17,7 @@ export function selectNetwork (chainID:any, type?: any) {
         params: [
           {
             chainId: '0x' + Number(chainID).toString(16), // A 0x-prefixed hexadecimal string
-            chainName: chainInfo[chainID].networkName,
+            chainName: chainInfo[chainID]?.walletName ?? chainInfo[chainID].networkName,
             nativeCurrency: {
               name: chainInfo[chainID].name,
               symbol: chainInfo[chainID].symbol, // 2-6 characters long

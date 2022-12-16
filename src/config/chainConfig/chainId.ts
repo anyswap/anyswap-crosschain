@@ -127,4 +127,6 @@ export enum ChainId {
   POLYGONZKEVM_TEST = '1402',
   ATOM = 'ATOM',
   ATOM_TEST = 'ATOM_TEST',
+  ATOM_SEI = 'ATOM_SEI',
+  ATOM_SEI_TEST = 'ATOM_SEI_TEST',
 }

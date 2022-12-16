@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Kava',
     networkName: 'Kava mainnet',
+    walletName: 'Kava EVM',
     type: 'main',
     label: KAVA_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
