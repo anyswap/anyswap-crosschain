@@ -42,6 +42,14 @@ export const navList = [
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenGasSwap,
   },
+  {
+    path: '/history',
+    textKey: 'history',
+    regex: /\/history/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: 1,
+  },
 ]
 
 export const moreList = [

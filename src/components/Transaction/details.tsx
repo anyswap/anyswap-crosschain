@@ -168,6 +168,11 @@ const MetamaskIcon = styled(Metamask)`
   margin-left: 5px;
 `
 
+const FlexC = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 100%;
+`
+
 function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
   if (fromStatus === Status.Pending) {
     return undefined
@@ -209,6 +214,7 @@ export default function HistoryDetails ({
   logoUrl,
   fromInfo,
   toInfo,
+  txData
 }: {
   symbol?: any,
   from?: any,
@@ -230,6 +236,7 @@ export default function HistoryDetails ({
   logoUrl?: any,
   fromInfo?: any,
   toInfo?: any,
+  txData?: any,
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
@@ -419,7 +426,7 @@ export default function HistoryDetails ({
         </ChainStatusBox> */}
         
         {/* <TxnsProgress fromStatus={fromStatus} toStatus={toStatus} /> */}
-        <TxnsProgress hash={txid} />
+        <FlexC><TxnsProgress hash={txid} txData={txData} /></FlexC>
         {
           avgTime ? (
             <TxnsDtilList>

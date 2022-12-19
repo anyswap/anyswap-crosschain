@@ -376,5 +376,6 @@
   "crosschain": "Crosschain",
   "SimpleMode": "Simple",
   "AdvanceMode": "Advanced",
-  "gasswap": "Gas Swap"
+  "gasswap": "Gas Swap",
+  "history": "History"
 }

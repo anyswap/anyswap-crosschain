@@ -39,7 +39,7 @@ import TestWarpper from './Test'
 // import FarmList from './Farms/FarmsList'
 
 import HistoryList from './History'
-import HistoryDetails from './History/details'
+// import HistoryDetails from './History/details'
 // import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
@@ -174,7 +174,7 @@ export default function App() {
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
               <Route exact strict path="/multi" component={() => <SwapMULTI duration={0} />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
-              <Route exact strict path="/history/details" component={() => <HistoryDetails />} />
+              {/* <Route exact strict path="/history/details" component={() => <HistoryDetails />} /> */}
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
               <Route exact strict path="/vest" component={() => <Vest duration={0} />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />

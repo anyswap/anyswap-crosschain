@@ -406,7 +406,7 @@ const useChain:any = {
     ChainId.XRP,
     ChainId.NEAR,
     ChainId.APT,
-    ChainId.SOL,
+    // ChainId.SOL,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,

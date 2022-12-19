@@ -128,7 +128,8 @@ const FailureBox = styled.div`
 `
 
 export default function TxnsProgress({
-  hash
+  hash,
+  txData
 }:any) {
   const allTransactions = useAllTransactions()
   const tx:any = allTransactions?.[hash]
@@ -137,18 +138,20 @@ export default function TxnsProgress({
 
   useEffect(() => {
     let stepNum = 1
-    if (tx) {
-      if (tx?.info) {
-        const status = tx?.info?.status ?? ''
+    console.log(tx)
+    if (tx || txData) {
+      const txInfo = tx?.info ?? txData
+      if (txInfo) {
+        const status = txInfo?.status ?? ''
         if (status === '' || [-1, 0, 5].includes(status)) {
           stepNum = 3 // Confirming
         } else if ([0, 5].includes(status)) {
           stepNum = 4 // Confirmed
         } else if ([7, 8].includes(status)) {
           stepNum = 5 // Routing
-        } else if ([9].includes(status) && (!tx?.info?.confirmations || tx?.info?.confirmations <= 1)) {
+        } else if ([9].includes(status) && (!txInfo?.confirmations || txInfo?.confirmations <= 1)) {
           stepNum = 6 // Routed
-        } else if (([9].includes(status) && tx?.info?.confirmations > 1) || [10].includes(status)) {
+        } else if (([9].includes(status) && txInfo?.confirmations > 1) || [10].includes(status)) {
           stepNum = 7 // Success
         } else if ([-3, -2, 1, 2, 4, 6, 3, 16, 11, 14, 20].includes(status)) {
           stepNum = 99
@@ -168,7 +171,7 @@ export default function TxnsProgress({
     // console.log(tx)
     // console.log(stepNum)
     setStep(stepNum)
-  }, [tx])
+  }, [tx, txData])
 
   const CheckCircleView = <CheckCircle size={12} style={{marginRight: 5, display: 'none'}} />
   const LoaderView = <Loading size={'14px'} stroke="#5f6bfb" style={{marginRight: 5}} />

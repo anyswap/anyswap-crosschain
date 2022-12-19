@@ -375,5 +375,6 @@
   "crosschain": "跨链",
   "SimpleMode": "简洁模式",
   "AdvanceMode": "高级模式",
-  "gasswap": "Gas Swap"
+  "gasswap": "Gas Swap",
+  "history": "历史"
 }

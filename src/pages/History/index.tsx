@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo, useCallback } from "react"
 import axios from "axios"
 import styled from "styled-components"
 import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router-dom'
+// import { NavLink } from 'react-router-dom'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {shortenAddress1} from '../../utils'
 import {timesFun, thousandBit} from '../../utils/tools/tools'
 
+import HistoryDetails from "../../components/Transaction/details"
+import ModalContent from '../../components/Modal/ModalContent'
+
 import config from '../../config'
-import {getStatus} from '../../config/status'
+// import {getStatus} from '../../config/status'
+import {getStatus, Status} from '../../config/status'
 
 import AppBody from "../AppBody"
 
@@ -54,11 +58,16 @@ export const DBTables = styled.table`
   }
 `
 
-const Link2 = styled(NavLink)``
+// const Link2 = styled(NavLink)``
+const Link = styled.div`
+  cursor:pointer;
+`
 
 export default function History () {
   const {account} = useActiveReact()
   const { t } = useTranslation()
+  const [tx, setTx] = useState<any>({})
+  const [openModal, setOpenModal] = useState(false)
 
   const [historyList, setHistoryList] = useState<any>([])
 
@@ -81,8 +90,64 @@ export default function History () {
       setHistoryList([])
     }
   }, [account])
+
+  const fromStatus = useMemo(() => {
+    if (tx?.status === -1) {
+      return Status.Pending
+    } else if (tx?.status === -2) {
+      return Status.Failure
+    } else if (tx?.status >= 0) {
+      return Status.Success
+    } else {
+      return Status.Pending
+    }
+  }, [tx])
+  const toStatus = useMemo(() => {
+    if (tx) {
+      const statusType = getStatus(tx?.status)
+      return statusType
+    } else {
+      return null
+    }
+  }, [tx])
+
+  const onChangeViewDtil = useCallback((txData) => {
+    if (txData) {
+      setOpenModal(true)
+      setTx(txData)
+    } else {
+      setOpenModal(false)
+      setTx('')
+    }
+  }, [])
+
   return (
     <>
+      <ModalContent
+        isOpen={openModal}
+        title={'Transaction Details'}
+        onDismiss={() => {
+          onChangeViewDtil('')
+        }}
+        padding={'0rem'}
+      >
+        <HistoryDetails
+          symbol={getSymbol(tx?.pairid)}
+          from={tx?.from}
+          to={tx?.bind}
+          fromChainID={getFromChainId(tx)}
+          toChainID={getToChainId(tx)}
+          fromStatus={fromStatus}
+          toStatus={toStatus}
+          txid={tx?.txid}
+          swaptx={tx?.swaptx}
+          swapvalue={tx?.formatswapvalue}
+          timestamp={tx?.timestamp}
+          value={tx?.formatvalue}
+          avgTime={tx?.time}
+          txData={tx}
+        />
+      </ModalContent>
       <AppBody>
         <HistoryBox>
           <DBTables>
@@ -110,11 +175,13 @@ export default function History () {
                     </td>
                     <td align="left">
                       <p className="p">{config.getCurChainInfo(getFromChainId(item)).networkName}</p>
-                      <Link2 className="p a" to={`/history/details?hash=${item.txid}`}>{shortenAddress1(item.txid)}</Link2>
+                      {/* <Link2 className="p a" to={`/history/details?hash=${item.txid}`}>{shortenAddress1(item.txid)}</Link2> */}
+                      <Link className="p a" onClick={() => onChangeViewDtil(item)}>{shortenAddress1(item.txid)}</Link>
                     </td>
                     <td align="left">
                       <p className="p">{config.getCurChainInfo(getToChainId(item)).networkName}</p>
-                      <Link2 className="p a" to={`/history/details?hash=${item.txid}`}>{shortenAddress1(item.swaptx)}</Link2>
+                      {/* <Link2 className="p a" to={`/history/details?hash=${item.txid}`}>{shortenAddress1(item.swaptx)}</Link2> */}
+                      <Link className="p a" onClick={() => onChangeViewDtil(item)}>{shortenAddress1(item.swaptx)}</Link>
                     </td>
                     <td align="left">
                       {timesFun(item.timestamp)}

@@ -82,6 +82,7 @@ export default function HistoryDetailsView () {
             timestamp={tx?.timestamp}
             value={tx?.formatvalue}
             avgTime={tx?.time}
+            txData={tx}
           />
         </HistoryBox>
       </AppBody>
