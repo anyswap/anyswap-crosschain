@@ -247,19 +247,6 @@ export default function HistoryDetails ({
   const {setUserSelectNetwork} = useUserSelectChainId()
 
   useEffect(() => {
-    // useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
-    //   console.log(res)
-    //   if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
-    //     setUnderlyingStatus(fromChainID, txid, true)
-    //   }
-    // })
-    // if (setUnderlyingStatus) {
-    //   setUnderlyingStatus(fromChainID, txid, false)
-    // }
-    // console.log(underlying && swaptx && !isReceiveAnyToken)
-    // console.log('underlying',underlying)
-    // console.log('swaptx',swaptx)
-    // console.log('isReceiveAnyToken',isReceiveAnyToken)
     if (isLiquidity && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
         console.log(res)
@@ -269,16 +256,9 @@ export default function HistoryDetails ({
       })
     }
   }, [isLiquidity, swaptx, toChainID, isReceiveAnyToken])
-  // console.log(fromStatus === Status.Success && useToStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken)
-  // console.log('fromStatus', fromStatus)
-  // console.log('useToStatus', useToStatus)
-  // console.log('version', version)
-  // console.log(token)
-  // console.log(isReceiveAnyToken)
+  
   return (
     <>
-
-
       <TxnsDtilBox>
         <TxnsDtilList>
           <div className="item">

@@ -3,6 +3,7 @@ import React, {useEffect, useState, useMemo, useContext, useCallback} from 'reac
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
+import axios from 'axios'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
@@ -25,6 +26,11 @@ import {
   // useUserSlippageTolerance
 } from '../../state/user/hooks'
 
+import {
+  useAddNoWalletTx
+} from '../../state/transactions/hooks'
+import {useTxnsErrorTipOpen} from '../../state/application/hooks'
+
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
@@ -39,7 +45,7 @@ import CopyHelper from '../AccountDetails/Copy'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-// import config from '../../config'
+import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 // import {selectNetwork} from '../../config/tools/methods'
 import ErrorTip from './errorTip'
@@ -65,6 +71,55 @@ const CrossChainTip = styled.div`
   }
 `
 
+const HashInput = styled.input<{ error?: boolean; align?: string }>`
+  color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
+  width: 100%;
+  position: relative;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  background-color: ${({ theme }) => theme.bg1};
+  font-size: 14px;
+  text-align: ${({ align }) => align && align};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px 5px;
+  -webkit-appearance: textfield;
+  height: 30px;
+  background: none;
+  border-bottom: 0.0625rem solid ${({ theme }) => theme.inputBorder};
+  // margin-right: 1.875rem;
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  [type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  ::placeholder {
+    // color: ${({ theme }) => theme.text4};
+    color:#DADADA;
+  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 100%;
+    margin-right: 0;
+    height: 30px;
+    font-size: 14px;
+  `};
+  &.error {
+    color: ${({ theme }) => theme.red1};
+  }
+`
+
 export default function CrossChain({
   bridgeKey
 }: {
@@ -74,7 +129,12 @@ export default function CrossChain({
   const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  
+  const {setAddNoWalletTx} = useAddNoWalletTx()
+
   const [userInterfaceMode] = useInterfaceModeManager()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -88,6 +148,8 @@ export default function CrossChain({
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [modalSpecOpen, setModalSpecOpen] = useState(false)
   const [memo, setMemo] = useState('')
+
+  const [hash, setHash] = useState('')
 
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
@@ -275,10 +337,49 @@ export default function CrossChain({
     return <></>
   }
 
+  const registerTxs = useCallback(() => {
+    axios.get(`${config.bridgeApi}/v2/reswaptxns?hash=${hash}&srcChainID=${chainId}&destChainID=${selectChain}`).then((res:any) => {
+      console.log(res)
+      setModalSpecOpen(false)
+      // setAddNoWalletTx(chainId, hash, destConfig?.type)
+      setAddNoWalletTx({hash}, {
+        summary: `Cross bridge ${config.getBaseCoin(selectCurrency?.symbol, chainId)}`,
+        value: '',
+        toChainId: selectChain,
+        toAddress: '',
+        symbol: selectCurrency?.symbol,
+        version: destConfig?.type,
+        token: selectCurrency?.address,
+        logoUrl: selectCurrency?.logoUrl,
+        isLiquidity: '',
+        fromInfo: {
+          symbol: selectCurrency?.symbol,
+          name: selectCurrency?.name,
+          decimals: selectCurrency?.decimals,
+          address: selectCurrency?.address,
+        },
+        toInfo: {
+          symbol: destConfig?.symbol,
+          name: destConfig?.name,
+          decimals: destConfig?.decimals,
+          address: destConfig?.address,
+        },
+      })
+    }).catch((error:any) => {
+      console.log(error)
+      onChangeViewErrorTip(error, true)
+    })
+  }, [hash, chainId, selectChain, destConfig, selectCurrency])
+
   function ViewBtn () {
     if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
       return <ButtonLight onClick={() => {
         window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${selectChain}&receiverAddress=${recipient}`)
+      }}>{t('Confirm')}</ButtonLight>
+    }
+    if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+      return <ButtonLight disabled={!(hash && hash.length === 64)} onClick={() => {
+        registerTxs()
       }}>{t('Confirm')}</ButtonLight>
     }
     return <ButtonLight onClick={() => {
@@ -344,24 +445,29 @@ export default function CrossChain({
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>
-          {/* {
-            memo ? (
-              <div className="item">
-                <p className="label">Memo:</p>
-                <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
-              </div>
-            ) : ''
-          } */}
           <MemoView />
           <div className="item">
             <QRcode uri={p2pAddress} size={160}></QRcode>
           </div>
+          {
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) ? (
+              <div className="item">
+                <p className="label">Hash:</p>
+                <p className="value">
+                  <HashInput
+                    placeholder='Hash'
+                    value={hash}
+                    onChange={event => {
+                      setHash(event.target.value.replace(/\s/g, ''))
+                    }}
+                  />
+                </p>
+              </div>
+            ) : ''
+          }
         </ListBox>
         <BottomGrouping>
           {ViewBtn()}
-          {/* <ButtonLight onClick={() => {
-            setModalSpecOpen(false)
-          }}>{t('Confirm')}</ButtonLight> */}
         </BottomGrouping>
       </ModalContent>
       <AutoColumn gap={'sm'}>

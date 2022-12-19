@@ -2,13 +2,13 @@ import { createAction } from '@reduxjs/toolkit'
 import { ChainId } from 'anyswap-sdk'
 
 export interface SerializableTransactionReceipt {
-  to: any
-  from: string
-  contractAddress: string
-  transactionIndex: any
-  blockHash: string
-  transactionHash: string
-  blockNumber: number
+  to?: any
+  from?: string
+  contractAddress?: string
+  transactionIndex?: any
+  blockHash?: string
+  transactionHash?: string
+  blockNumber?: number
   status?: number
 }
 
@@ -54,3 +54,20 @@ export const updateUnderlyingStatus = createAction<{
   hash: string
   isReceiveAnyToken: any
 }>('transactions/updateUnderlyingStatus')
+
+
+export const noWalletTxList = createAction<{
+  chainId: ChainId
+  hash: string
+  summary?: string
+  toChainId?: string
+  toAddress?: string
+  symbol?: string
+  version?: string
+  routerToken?: string
+  token?: string
+  logoUrl?: string
+  isLiquidity?: any
+  fromInfo?: any
+  toInfo?: any
+}>('transactions/noWalletTxList')

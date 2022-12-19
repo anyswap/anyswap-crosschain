@@ -18,6 +18,7 @@ import IconNight from '../../assets/images/icon/night.svg'
 import { useBaseBalances } from '../../hooks/useAllBalances'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { useDarkModeManager, useUserSelectChainId } from '../../state/user/hooks'
+import { useNoWalletModalToggle } from '../../state/application/hooks'
 
 import { ExternalLink } from '../../theme'
 
@@ -203,9 +204,12 @@ function ViewAccountInfo () {
   
   const {account, chainId} = useActiveReact()
   const baseBalance = useBaseBalances(account)
+  const toggleWalletModal = useNoWalletModalToggle()
 // console.log(baseBalance?.toSignificant(3))
   if (selectNetworkInfo?.label === 'NOWALLET') {
-    return <></>
+    return <AccountElement active={!!account} style={{ pointerEvents: 'auto' }} onClick={toggleWalletModal}>
+      <Web3Status />
+    </AccountElement>
   }
   return (
     <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
