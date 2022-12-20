@@ -98,7 +98,7 @@ export default {
   //   symbol: symbol,
   //   name: 'Cosmos',
   //   networkName: 'Cosmos mainnet',
-  //   networkLogo: 'ATOM',
+  //   networkLogo: 'SEI',
   //   type: 'main',
   //   label: ATOM_SEI_MAIN_CHAINID,
   //   chainType: ATOM_SEI_MAIN_CHAINID,
@@ -120,7 +120,7 @@ export default {
     symbol: 'SEI',
     name: 'Sei',
     networkName: 'Sei testnet',
-    networkLogo: 'ATOM',
+    networkLogo: 'SEI',
     type: 'test',
     label: ATOM_SEI_TEST_CHAINID,
     chainType: ATOM_SEI_TEST_CHAINID

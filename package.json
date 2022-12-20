@@ -119,6 +119,7 @@
     "@babel/core": "7.9.0",
     "@binance-chain/bsc-connector": "^1.0.0",
     "@clover-network/clover-connector": "^1.0.0",
+    "@cosmjs/stargate": "^0.29.5",
     "@makerdao/multicall": "^0.12.0",
     "@solana/web3.js": "^1.63.1",
     "@svgr/webpack": "4.3.3",

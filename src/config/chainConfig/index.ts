@@ -93,6 +93,7 @@ import onus from './onus'
 import shm from './shm'
 import polygonzkevm from './polygonzkevm'
 import atom from './atom'
+import omax from './omax'
 
 import { ChainId } from './chainId'
 
@@ -102,6 +103,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...omax,
   ...atom,
   ...polygonzkevm,
   ...shm,
@@ -272,6 +274,7 @@ const allChainList = [
   ChainId.EKTA,
   ChainId.HPB,
   ChainId.ONUS,
+  ChainId.OMAX,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -419,7 +422,8 @@ const useChain:any = {
     ChainId.SOL_TEST,
     ChainId.APT_TEST,
     ChainId.BTC_TEST,
-    ChainId.ATOM_TEST,
+    // ChainId.ATOM_TEST,
+    ChainId.ATOM_SEI_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

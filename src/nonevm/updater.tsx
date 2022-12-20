@@ -28,7 +28,7 @@ export default function Updaters() {
   } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
   // } else if ([ChainId.BTC_TEST].includes(chainId)) {
     return <BtcUpdater />
-  } else if ([ChainId.ATOM, ChainId.ATOM_TEST].includes(chainId)) {
+  } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
     return <AtomUpdater />
   }
   return <></>

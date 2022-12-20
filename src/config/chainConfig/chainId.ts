@@ -129,4 +129,5 @@ export enum ChainId {
   ATOM_TEST = 'ATOM_TEST',
   ATOM_SEI = 'ATOM_SEI',
   ATOM_SEI_TEST = 'ATOM_SEI_TEST',
+  OMAX = '311',
 }
