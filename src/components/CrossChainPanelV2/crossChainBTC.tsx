@@ -29,7 +29,11 @@ import {
 import {
   useAddNoWalletTx
 } from '../../state/transactions/hooks'
-import {useTxnsErrorTipOpen} from '../../state/application/hooks'
+import {
+  useTxnsErrorTipOpen,
+  // useNoWalletModalToggle
+  useTxnsDtilOpen
+} from '../../state/application/hooks'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -134,6 +138,8 @@ export default function CrossChain({
 
   const [userInterfaceMode] = useInterfaceModeManager()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  // const toggleWalletModal = useNoWalletModalToggle()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
 
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
@@ -340,31 +346,42 @@ export default function CrossChain({
   const registerTxs = useCallback(() => {
     axios.get(`${config.bridgeApi}/v2/reswaptxns?hash=${hash}&srcChainID=${chainId}&destChainID=${selectChain}`).then((res:any) => {
       console.log(res)
-      setModalSpecOpen(false)
-      // setAddNoWalletTx(chainId, hash, destConfig?.type)
-      setAddNoWalletTx({hash}, {
-        summary: `Cross bridge ${config.getBaseCoin(selectCurrency?.symbol, chainId)}`,
-        value: '',
-        toChainId: selectChain,
-        toAddress: '',
-        symbol: selectCurrency?.symbol,
-        version: destConfig?.type,
-        token: selectCurrency?.address,
-        logoUrl: selectCurrency?.logoUrl,
-        isLiquidity: '',
-        fromInfo: {
+      const {data, status} = res
+      if (status === 200 && data.msg === 'Success') {
+        setModalSpecOpen(false)
+        // setAddNoWalletTx(chainId, hash, destConfig?.type)
+        setAddNoWalletTx({hash}, {
+          summary: `Cross bridge ${config.getBaseCoin(selectCurrency?.symbol, chainId)}`,
+          value: '',
+          toChainId: selectChain,
+          toAddress: '',
           symbol: selectCurrency?.symbol,
-          name: selectCurrency?.name,
-          decimals: selectCurrency?.decimals,
-          address: selectCurrency?.address,
-        },
-        toInfo: {
-          symbol: destConfig?.symbol,
-          name: destConfig?.name,
-          decimals: destConfig?.decimals,
-          address: destConfig?.address,
-        },
-      })
+          version: destConfig?.type,
+          token: selectCurrency?.address,
+          logoUrl: selectCurrency?.logoUrl,
+          isLiquidity: '',
+          fromInfo: {
+            symbol: selectCurrency?.symbol,
+            name: selectCurrency?.name,
+            decimals: selectCurrency?.decimals,
+            address: selectCurrency?.address,
+          },
+          toInfo: {
+            symbol: destConfig?.symbol,
+            name: destConfig?.name,
+            decimals: destConfig?.decimals,
+            address: destConfig?.address,
+          },
+        })
+        // toggleWalletModal()
+        onChangeViewDtil(hash, true)
+      } else {
+        if (data.error) {
+          onChangeViewErrorTip(data.error, true)
+        } else {
+          onChangeViewErrorTip('Validation failed.', true)
+        }
+      }
     }).catch((error:any) => {
       console.log(error)
       onChangeViewErrorTip(error, true)
@@ -377,8 +394,11 @@ export default function CrossChain({
         window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${selectChain}&receiverAddress=${recipient}`)
       }}>{t('Confirm')}</ButtonLight>
     }
+    // return <ButtonLight disabled={!(hash && hash.length <= 100 && hash.length >= 40)} onClick={() => {
+    //   registerTxs()
+    // }}>{t('Confirm')}</ButtonLight>
     if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
-      return <ButtonLight disabled={!(hash && hash.length === 64)} onClick={() => {
+      return <ButtonLight disabled={!(hash && hash.length <= 100 && hash.length >= 40)} onClick={() => {
         registerTxs()
       }}>{t('Confirm')}</ButtonLight>
     }
@@ -449,20 +469,42 @@ export default function CrossChain({
           <div className="item">
             <QRcode uri={p2pAddress} size={160}></QRcode>
           </div>
+          {/* <div className="item">
+            <p className="label">Hash:</p>
+            <p className="value">
+              <HashInput
+                placeholder='Hash'
+                value={hash}
+                onChange={event => {
+                  setHash(event.target.value.replace(/\s/g, ''))
+                }}
+              />
+            </p>
+          </div>
+          
+          <CrossChainTip>
+            <p className='red'>Please enter hash here after the transaction is successfully sent.</p>
+          </CrossChainTip> */}
           {
             [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) ? (
-              <div className="item">
-                <p className="label">Hash:</p>
-                <p className="value">
-                  <HashInput
-                    placeholder='Hash'
-                    value={hash}
-                    onChange={event => {
-                      setHash(event.target.value.replace(/\s/g, ''))
-                    }}
-                  />
-                </p>
-              </div>
+              <>
+                <div className="item">
+                  <p className="label">Hash:</p>
+                  <p className="value">
+                    <HashInput
+                      placeholder='Hash'
+                      value={hash}
+                      onChange={event => {
+                        setHash(event.target.value.replace(/\s/g, ''))
+                      }}
+                    />
+                  </p>
+                </div>
+                
+                <CrossChainTip>
+                  <p className='red'>Please enter hash here after the transaction is successfully sent.</p>
+                </CrossChainTip>
+              </>
             ) : ''
           }
         </ListBox>

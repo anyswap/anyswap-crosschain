@@ -29,6 +29,7 @@ import NoWalletTxList from '../AccountDetails/NoWalletTxList'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ChainId } from '../../config/chainConfig/chainId'
+// import config from '../../config'
 
 const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -177,6 +178,7 @@ function Web3StatusInner() {
         <Text>{error instanceof UnsupportedChainIdError ? t('WrongNetwork') : t('Error')}</Text>
       </Web3StatusError>
     )
+  // } else if (config?.chainInfo?.[chainId]?.chainType === 'NOWALLET') {
   } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={connectWallet} pending={hasPendingTransactions}>
