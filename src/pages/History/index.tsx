@@ -23,7 +23,7 @@ import {getSymbol, getFromChainId, getToChainId} from './hooks'
 const HistoryBox = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.contentBg};
-  padding: 20px;
+  padding: 20px 0;
   border-radius: 20px;
   .item {
     width: 100%;
@@ -39,21 +39,25 @@ export const DBTables = styled.table`
   }
   tr {
     th {
-      padding: 8px 0px;
+      padding: 2px 0px;
       color: ${({ theme }) => theme.textColorBold};
     }
     td {
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid ${({ theme }) => theme.tableBorder};
       padding: 8px 0px;
       font-size: 14px;
+      color: ${({ theme }) => theme.textColorBold};
       .p {
         margin: 5px 0;
         font-size: 12px;
-        color: ${({ theme }) => theme.textColorBold};
       }
       .a {
         color: ${({theme}) => theme.primary4};
       }
+    }
+    th:first-child, th:last-child,td:first-child, td:last-child {
+      padding-left: 20px;
+      padding-right: 20px;
     }
   }
 `
@@ -154,10 +158,10 @@ export default function History () {
             <thead>
               <tr>
                 <th align="left">{t('Coins')}</th>
-                <th align="left">{t('Amount')}</th>
-                <th align="left">{t('send')}</th>
-                <th align="left">{t('Receive')}</th>
-                <th align="left">{t('Age')}</th>
+                <th align="left">{t('Value')}</th>
+                <th align="left">{t('From')}</th>
+                <th align="left">{t('Receives')}</th>
+                <th align="left">{t('Date')}</th>
                 <th align="right">{t('Status')}</th>
               </tr>
             </thead>
@@ -196,13 +200,6 @@ export default function History () {
               )}
             </tbody>
           </DBTables>
-          {/* {historyList.length > 0 ? historyList.map((item, index) => {
-            return (
-              <div key={index} className="item">
-
-              </div>
-            )
-          }) : ''} */}
         </HistoryBox>
       </AppBody>
     </>

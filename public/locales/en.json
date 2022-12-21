@@ -216,6 +216,7 @@
   "WrongNetwork": "Wrong Network",
   "ErrorConnecting": "Error connecting",
   "To": "To",
+  "Receives": "To",
   "ToEstimated": "To (estimated)",
   "Loading": "Loading",
   "WalletAddress": "Wallet Address",
@@ -377,5 +378,7 @@
   "SimpleMode": "Simple",
   "AdvanceMode": "Advanced",
   "gasswap": "Gas Swap",
-  "history": "History"
+  "history": "History",
+  "Value": "Value",
+  "Date": "Date"
 }

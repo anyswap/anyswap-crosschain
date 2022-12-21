@@ -22,6 +22,7 @@ import config from '../../config'
 import {
   // assertIsBroadcastTxSuccess,
   SigningStargateClient,
+  StargateClient
 } from '@cosmjs/stargate'
 
 const ChainIdList:any = {
@@ -80,11 +81,8 @@ export function useAtomBalance () {
   const getAtomSeiBalance = useCallback(({account, chainId}: {account: any, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (account) {
-        const useChainId = ChainIdList[chainId]
-        const offlineSigner = window.getOfflineSigner(useChainId);
-        const client = await SigningStargateClient.connectWithSigner(
-          config.chainInfo[chainId].nodeRpc,
-          offlineSigner
+        const client = await StargateClient.connect(
+          config.chainInfo[chainId].nodeRpc
         )
         client.getAllBalances(account).then((res:any) => {
           // console.log(res)
@@ -114,12 +112,8 @@ export function getAtomTxnsStatus (txid:string, chainId:any) {
     info: ''
   }
   return new Promise(async(resolve) => {
-    const useChainId = ChainIdList[chainId]
-    // console.log(useChainId)
-    const offlineSigner = window.getOfflineSigner(useChainId);
-    const client = await SigningStargateClient.connectWithSigner(
-      config.chainInfo[chainId].nodeRpc,
-      offlineSigner
+    const client = await StargateClient.connect(
+      config.chainInfo[chainId].nodeRpc
     )
     client.getTx(txid).then((json:any) => {
       // console.log(json)
