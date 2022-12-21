@@ -13,7 +13,10 @@ import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
-import { shortenAddress, shortenAddress1 } from '../../utils'
+import {
+  shortenAddress,
+  // shortenAddress1
+} from '../../utils'
 import { isAddress } from '../../utils/isAddress'
 import { createAddress } from '../../utils/isAddress/BTC'
 
@@ -438,7 +441,14 @@ export default function CrossChain({
             ) : ''
           }
           {
-            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && !['swapin', 'swapout'].includes(destConfig?.type) ? (
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) ? (['swapin', 'swapout'].includes(destConfig?.type) ? (
+              <>
+                <CrossChainTip>
+                  {/* <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p> */}
+                  Please use Bitcoin wallet to transfer BTC coin to deposit address.
+                </CrossChainTip>
+              </>
+            ) : (
               <>
                 <CrossChainTip>
                   {/* <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p> */}
@@ -446,8 +456,18 @@ export default function CrossChain({
                   <p className='red'>If you don&apos;t input memo({shortenAddress(memo,8)}), you will not receive multiBTC on dest chain.</p>
                 </CrossChainTip>
               </>
-            ) : ''
+            )) : ''
           }
+          {/* {
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && !['swapin', 'swapout'].includes(destConfig?.type) ? (
+              <>
+                <CrossChainTip>
+                  Please use Bitcoin wallet to transfer BTC to deposit address and input receive address on dest chain as memo(OP_RETURN).
+                  <p className='red'>If you don&apos;t input memo({shortenAddress(memo,8)}), you will not receive multiBTC on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          } */}
           {
             [ChainId.XRP].includes(chainId) ? '' : (
               <div className="item">
@@ -459,9 +479,9 @@ export default function CrossChain({
           <div className="item">
             <p className="label">Deposit Address:</p>
             <p className="value flex-bc">
-              {/* {p2pAddress} */}
+              {p2pAddress}
               {/* {shortenAddress(p2pAddress,8)} */}
-              {shortenAddress1(p2pAddress, 12)}
+              {/* {shortenAddress1(p2pAddress, 12)} */}
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>
@@ -502,7 +522,8 @@ export default function CrossChain({
                 </div>
                 
                 <CrossChainTip>
-                  <p className='red'>Please enter hash here after the transaction is successfully sent.</p>
+                  Please input the {selectCurrency?.symbol} deposit transaction hash, and click confirm to check the bridge status.
+                  {/* <p className='red'>Please enter hash here after the transaction is successfully sent.</p> */}
                 </CrossChainTip>
               </>
             ) : ''

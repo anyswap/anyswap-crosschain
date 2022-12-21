@@ -170,7 +170,7 @@ export default createReducer(initialState, builder =>
       toInfo
      } }) => {
       if (transactions[chainId]?.[hash]) {
-        throw Error('Attempted to add existing transaction.')
+        throw Error('Transaction already registered.')
       }
       const txs = transactions[chainId] ?? {}
       txs[hash] = {
