@@ -22,18 +22,21 @@ export default function Updater(): null {
   const getBalance = useCallback(() => {
     getAtomSeiBalance({chainId, account}).then((res:any) => {
       const list:any = {}
-      console.log(res)
-      if (res && res.balances) {
-        for (const obj of res.balances) {
+      // console.log(res)
+      if (res && res.length > 0) {
+        for (const obj of res) {
           // console.log(obj)
           if (obj?.denom === 'usei') {
             list['NATIVE'] = {
               balance: obj?.amount
             }
           }
+          list[obj?.denom] = {
+            balance: obj?.amount
+          }
         }
       }
-      console.log(list)
+      // console.log(list)
       dispatch(atomBalanceList({list}))
     })
   }, [account, chainId, dispatch])

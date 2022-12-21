@@ -79,14 +79,20 @@ export function useLoginAtom () {
 export function useAtomBalance () {
   const atomBalanceList:any = useSelector<AppState, AppState['atom']>(state => state.atom.atomBalanceList)
   const getAtomSeiBalance = useCallback(({account, chainId}: {account: any, chainId:any}) => {
-    return new Promise((resolve) => {
+    return new Promise(async(resolve) => {
       if (account) {
-        const rpc = config.chainInfo[chainId].nodeRpc
-        const url = `${rpc}/bank/v1beta1/balances/${account}`
-        fetch(url).then((res:any) => {
-          resolve(res.json())
+        const useChainId = ChainIdList[chainId]
+        const offlineSigner = window.getOfflineSigner(useChainId);
+        const client = await SigningStargateClient.connectWithSigner(
+          config.chainInfo[chainId].nodeRpc,
+          offlineSigner
+        )
+        client.getAllBalances(account).then((res:any) => {
+          // console.log(res)
+          resolve(res)
         }).catch((error:any) => {
           console.log(error)
+          resolve('')
         })
       }
     })
@@ -108,18 +114,21 @@ export function getAtomTxnsStatus (txid:string, chainId:any) {
     msg: 'Error',
     info: ''
   }
-  return new Promise(resolve => {
-    const rpc = config.chainInfo[chainId].nodeRpc
-    const url = `${rpc}/tx/v1beta1/txs/${txid}`
-    console.log(url)
-      // window?.tronWeb?.trx.getTransaction(txid).then((res:any) => {
-    fetch(url).then(res => res.json()).then(json => {
-      console.log(json)
+  return new Promise(async(resolve) => {
+    const useChainId = ChainIdList[chainId]
+    // console.log(useChainId)
+    const offlineSigner = window.getOfflineSigner(useChainId);
+    const client = await SigningStargateClient.connectWithSigner(
+      config.chainInfo[chainId].nodeRpc,
+      offlineSigner
+    )
+    client.getTx(txid).then((json:any) => {
+      // console.log(json)
       if (json) {
         if (json.status === 'ERROR') {
           data.msg = 'Null'
           data.error = 'Query is empty!'
-        } else if (json.tx_response) {
+        } else if (json.code === 0) {
           data.msg = 'Success'
           data.info = json
         } else {
@@ -139,6 +148,9 @@ export function getAtomTxnsStatus (txid:string, chainId:any) {
   })
 }
 
+// getAtomTxnsStatus('5215EAFB54324C2C33DF446AB40CB9A0EECC53891E9A611B12B7CAD46D5C671D', 'ATOM_SEI_TEST')
+
+
 /**
  * Cross chain 
  *
@@ -152,7 +164,7 @@ export function getAtomTxnsStatus (txid:string, chainId:any) {
  */
 export function useAtomCrossChain (
   routerToken: any,
-  inputToken: string | null | undefined,
+  inputToken: any,
   selectCurrency: any,
   selectChain: string | null | undefined,
   receiveAddress: string | null | undefined,
@@ -176,9 +188,9 @@ export function useAtomCrossChain (
   const balance:any = useMemo(() => {
     const token = selectCurrency?.address
     if (token) {
-      if (selectCurrency?.tokenType === 'NATIVE' && atomBalanceList?.[token]?.balance) {
-        return BigAmount.format(8, atomBalanceList?.[token]?.balance)
-      } else if (atomBalanceList?.[token]?.balance && atomBalanceList?.[token]?.balance) {
+      if (selectCurrency?.tokenType === 'NATIVE' && atomBalanceList?.['NATIVE']?.balance) {
+        return BigAmount.format(6, atomBalanceList?.['NATIVE']?.balance)
+      } else if (atomBalanceList?.[token]?.balance) {
         return BigAmount.format(selectCurrency?.decimals, atomBalanceList?.[token]?.balance)
       }
       return BigAmount.format(selectCurrency?.decimals, '0')
@@ -200,28 +212,31 @@ export function useAtomCrossChain (
       execute: async () => {
         try {
           const useChainId = ChainIdList[chainId]
+          // console.log(useChainId)
           const offlineSigner = window.getOfflineSigner(useChainId);
-
+          // console.log(offlineSigner)
+          // console.log(config.chainInfo[chainId].nodeRpc)
           const client = await SigningStargateClient.connectWithSigner(
             config.chainInfo[chainId].nodeRpc,
             offlineSigner
           )
-
+          // console.log(client)
           const amountFinal = {
-            denom: 'uosmo',
+            denom: selectCurrency?.address,
             amount: inputAmount,
           }
-          // const fee = {
-          //   amount: [{
-          //       denom: 'uosmo',
-          //       amount: '5000',
-          //   }, ],
-          //   gas: '200000',
-          // }
+          const fee = {
+            amount: [{
+              denom: selectCurrency?.address,
+              amount: '5000',
+            }],
+            gas: '200000',
+          }
           // const txReceipt = await client.sendTokens(account, routerToken, [amountFinal], fee, "")
-          const txResult = await client.sendTokens(account, routerToken, [amountFinal], "auto", receiveAddress + ':' + selectChain)
+          // const txResult = await client.sendTokens(account, routerToken, [amountFinal], "auto", receiveAddress + ':' + selectChain)
+          const txResult = await client.sendTokens(account, routerToken, [amountFinal], fee, receiveAddress + ':' + selectChain)
           console.log(txResult)
-          const txReceipt = {hash: ''}
+          const txReceipt = {hash: txResult?.transactionHash}
           // resolve({hash: txResult?.hash})
           if (txReceipt?.hash) {
             const data:any = {
@@ -266,6 +281,7 @@ export function useAtomCrossChain (
           }
         } catch (error) {
           // reject(error)
+          console.log(error)
           onChangeViewErrorTip('Txns failure.', true)
         }
       },

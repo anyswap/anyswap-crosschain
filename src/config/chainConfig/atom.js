@@ -14,7 +14,8 @@ import {ChainId} from './chainId'
 // export const ATOM_SEI_MAIN_CHAINID = ChainId.ATOM_SEI
 // export const ATOM_SEI_MAIN_EXPLORER = 'https://atomscan.com'
 
-export const ATOM_SEI_TESTNET = 'https://sei-testnet-rpc.allthatnode.com:1317/cosmos'
+// export const ATOM_SEI_TESTNET = 'https://sei-testnet-rpc.allthatnode.com:1317/cosmos'
+export const ATOM_SEI_TESTNET = 'https://sei-chain-incentivized.com/sei-chain-tm/'
 export const ATOM_SEI_TEST_CHAINID = ChainId.ATOM_SEI_TEST
 export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 
@@ -113,8 +114,8 @@ export default {
       ATOM_SEI_TESTNET,
     ],
     chainID: ATOM_SEI_TEST_CHAINID,
-    lookHash: ATOM_SEI_TEST_EXPLORER + '/transactions/',
-    lookAddr: ATOM_SEI_TEST_EXPLORER + '/accounts/',
+    lookHash: ATOM_SEI_TEST_EXPLORER + '/transaction/',
+    lookAddr: ATOM_SEI_TEST_EXPLORER + '/account/',
     lookBlock: ATOM_SEI_TEST_EXPLORER + '/blocks/',
     explorer: ATOM_SEI_TEST_EXPLORER,
     symbol: 'SEI',

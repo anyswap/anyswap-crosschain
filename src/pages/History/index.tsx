@@ -73,7 +73,8 @@ export default function History () {
 
   useEffect(() => {
     if (account) {
-      const url = `${config.bridgeApi}/v2/all/history/${account}/all/all/all?offset=0&limit=50&status=8,9,10`
+      // const url = `${config.bridgeApi}/v2/all/history/${account}/all/all/all?offset=0&limit=50&status=8,9,10`
+      const url = `${config.bridgeApi}/v3/account/txns/${account}?offset=0&limit=50`
       axios.get(url).then(res => {
         const {data, status} = res
         // console.log(data)

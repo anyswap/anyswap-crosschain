@@ -20,6 +20,7 @@ import {useNonevmAllowances} from '../../nonevm/allowances'
 import {useSolCrossChain} from '../../nonevm/solana'
 import {useAptCrossChain} from '../../nonevm/apt'
 import {useBtcCrossChain} from '../../nonevm/btc'
+import {useAtomCrossChain} from '../../nonevm/atom'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -309,6 +310,16 @@ export default function CrossChain({
     destConfig
   )
 
+  const {execute: onAtomWrap, inputError: wrapInputErrorAtom} = useAtomCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    recipient,
+    inputBridgeValue,
+    destConfig
+  )
+
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const useBalance = useMemo(() => {
@@ -376,10 +387,12 @@ export default function CrossChain({
       return wrapInputErrorApt
     } else if (wrapInputErrorBtc && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
       return wrapInputErrorBtc
+    } else if (wrapInputErrorAtom && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+      return wrapInputErrorAtom
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc, wrapInputErrorAtom])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -590,6 +603,11 @@ export default function CrossChain({
                   } else if (onBtcWrap && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
                     console.log('onBtcWrap')
                     onBtcWrap().then(() => {
+                      onClear()
+                    })
+                  } else if (onAtomWrap && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+                    console.log('onAtomWrap')
+                    onAtomWrap().then(() => {
                       onClear()
                     })
                   }
