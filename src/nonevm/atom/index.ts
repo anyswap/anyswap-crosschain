@@ -42,9 +42,8 @@ export function isAtomAddress (address:string, chainId:any):boolean | string {
 export function useLoginAtom () {
   const dispatch = useDispatch<AppDispatch>()
   const loginAtom = useCallback((chainId) => {
-    window.keplr.enable(chainId)
-    if (window?.keplr) {
-      window.keplr.enable(ChainIdList[chainId]).then(() => {
+    if (window?.keplr?.enable) {
+      window?.keplr?.enable(ChainIdList[chainId]).then(() => {
         // console.log(res)
         const offlineSigner = window.getOfflineSigner(ChainIdList[chainId])
         offlineSigner.getAccounts().then((res:any) => {

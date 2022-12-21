@@ -29,7 +29,7 @@ export default function HistoryDetailsView () {
 
   useEffect(() => {
     if (hash) {
-      const url = `${config.bridgeApi}/v2/history/details?params=${hash}`
+      const url = `${config.scanApi}/v2/history/details?params=${hash}`
       axios.get(url).then(res => {
         const {data, status} = res
         if (status === 200 && data.msg === 'Success') {
