@@ -76,6 +76,8 @@ declare module 'qrcode.react'
 declare module '@makerdao/multicall';
 declare module '@solana/spl-token';
 declare module '@solana/wallet-adapter-react';
+declare module '@reef-defi/extension-dapp';
+declare module '@polkadot/util';
 
 declare module 'toformat';
 

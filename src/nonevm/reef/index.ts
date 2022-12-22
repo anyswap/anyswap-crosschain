@@ -1,3 +1,4 @@
+
 import { useCallback, useMemo } from "react"
 import {
   useDispatch,
@@ -10,7 +11,9 @@ import {
 // import {reefAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
-// import {web3Enable} from "@reef-defi/extension-dapp";
+import {web3Enable} from "@reef-defi/extension-dapp";
+// const {web3Enable} = require('@reef-defi/extension-dapp')
+console.log(web3Enable)
 
 export function isReefAddress (address:string):boolean | string {
   return address //true: address; false: false
