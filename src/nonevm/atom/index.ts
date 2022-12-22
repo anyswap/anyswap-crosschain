@@ -81,16 +81,21 @@ export function useAtomBalance () {
   const getAtomSeiBalance = useCallback(({account, chainId}: {account: any, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (account) {
-        const client = await StargateClient.connect(
-          config.chainInfo[chainId].nodeRpc
-        )
-        client.getAllBalances(account).then((res:any) => {
-          // console.log(res)
-          resolve(res)
-        }).catch((error:any) => {
-          console.log(error)
+        try {
+          const client = await StargateClient.connect(
+            config.chainInfo[chainId].nodeRpc
+          )
+          client.getAllBalances(account).then((res:any) => {
+            // console.log(res)
+            resolve(res)
+          }).catch((error:any) => {
+            console.log(error)
+            resolve('')
+          })
+        } catch {
+          // console.log(err.toString())
           resolve('')
-        })
+        }
       }
     })
   }, []) 
@@ -112,32 +117,39 @@ export function getAtomTxnsStatus (txid:string, chainId:any) {
     info: ''
   }
   return new Promise(async(resolve) => {
-    const client = await StargateClient.connect(
-      config.chainInfo[chainId].nodeRpc
-    )
-    client.getTx(txid).then((json:any) => {
-      // console.log(json)
-      if (json) {
-        if (json.status === 'ERROR') {
+    try {
+      
+      const client = await StargateClient.connect(
+        config.chainInfo[chainId].nodeRpc
+      )
+      client.getTx(txid).then((json:any) => {
+        // console.log(json)
+        if (json) {
+          if (json.status === 'ERROR') {
+            data.msg = 'Null'
+            data.error = 'Query is empty!'
+          } else if (json.code === 0) {
+            data.msg = 'Success'
+            data.info = json
+          } else {
+            data.msg = 'Failure'
+            data.error = 'Txns is failure!'
+          }
+        } else {
           data.msg = 'Null'
           data.error = 'Query is empty!'
-        } else if (json.code === 0) {
-          data.msg = 'Success'
-          data.info = json
-        } else {
-          data.msg = 'Failure'
-          data.error = 'Txns is failure!'
         }
-      } else {
-        data.msg = 'Null'
+        resolve(data)
+      }).catch(err => {
+        console.log(err.toString())
         data.error = 'Query is empty!'
-      }
-      resolve(data)
-    }).catch(err => {
-      console.log(err.toString())
+        resolve(data)
+      })
+    } catch {
+      // console.log(error.toString())
       data.error = 'Query is empty!'
       resolve(data)
-    })
+    }
   })
 }
 

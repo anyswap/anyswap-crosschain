@@ -130,4 +130,6 @@ export enum ChainId {
   ATOM_SEI = 'ATOM_SEI',
   ATOM_SEI_TEST = 'ATOM_SEI_TEST',
   OMAX = '311',
+  REEF = 'REEF',
+  REEF_TEST = 'REEF_TEST',
 }

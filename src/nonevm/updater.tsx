@@ -7,6 +7,7 @@ import SolUpdater from './solana/updater'
 import AptUpdater from './apt/updater'
 import BtcUpdater from './btc/updater'
 import AtomUpdater from './atom/updater'
+import ReefUpdater from './reef/updater'
 
 import {useActiveReact} from '../hooks/useActiveReact'
 import { ChainId } from '../config/chainConfig/chainId'
@@ -30,6 +31,8 @@ export default function Updaters() {
     return <BtcUpdater />
   } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
     return <AtomUpdater />
+  } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+    return <ReefUpdater />
   }
   return <></>
 }

@@ -8,6 +8,7 @@ import sol from './solana/reducer'
 import apt from './apt/reducer'
 import btc from './btc/reducer'
 import atom from './atom/reducer'
+import reef from './reef/reducer'
 export default {
   xlm,
   trx,
@@ -19,4 +20,5 @@ export default {
   apt,
   btc,
   atom,
+  reef
 }

@@ -94,6 +94,7 @@ import shm from './shm'
 import polygonzkevm from './polygonzkevm'
 import atom from './atom'
 import omax from './omax'
+import reef from './reef'
 
 import { ChainId } from './chainId'
 
@@ -103,6 +104,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...reef,
   ...omax,
   ...atom,
   ...polygonzkevm,
@@ -424,6 +426,7 @@ const useChain:any = {
     ChainId.BTC_TEST,
     // ChainId.ATOM_TEST,
     ChainId.ATOM_SEI_TEST,
+    ChainId.REEF_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
