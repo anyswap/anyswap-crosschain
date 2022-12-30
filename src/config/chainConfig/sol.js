@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 // export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
 export const SOL_MAINNET = 'https://rpc.ankr.com/solana'
 export const SOL_MAIN_CHAINID = ChainId.SOL
-export const SOL_MAIN_EXPLORER = 'https://solana.fm'
+export const SOL_MAIN_EXPLORER = 'https://solscan.io'
 
 export const SOL_TESTNET = 'https://api.testnet.solana.com'
 export const SOL_TEST_CHAINID = ChainId.SOL_TEST
@@ -29,7 +29,7 @@ export default {
     nodeRpcList: [],
     chainID: SOL_MAIN_CHAINID,
     lookHash: SOL_MAIN_EXPLORER + '/tx/',
-    lookAddr: SOL_MAIN_EXPLORER + '/address/',
+    lookAddr: SOL_MAIN_EXPLORER + '/account/',
     lookBlock: SOL_MAIN_EXPLORER + '/block/',
     explorer: SOL_MAIN_EXPLORER,
     symbol: symbol,

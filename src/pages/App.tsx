@@ -43,7 +43,7 @@ import HistoryList from './History'
 // import NonApprove from '../components/NonApprove'
 import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 
-import GasSwap from '../components/GasSwap'
+// import GasSwap from '../components/GasSwap'
 
 import config from '../config'
 // import farmlist from '../config/farmlist'
@@ -179,7 +179,7 @@ export default function App() {
               <Route exact strict path="/vest" component={() => <Vest duration={0} />} />
               <Route exact strict path="/vest/create" component={() => <CreateLock />} />
               <Route exact strict path="/vest/manger" component={() => <MangerVest />} />
-              <Route exact strict path="/gasswap" component={() => <GasSwap />} />
+              {/* <Route exact strict path="/gasswap" component={() => <GasSwap />} /> */}
               {/* <Route exact strict path="/vest/veshare" component={() => <Vemulti />} /> */}
               {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
 
