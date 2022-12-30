@@ -174,6 +174,7 @@ export function useAdaCrossChain (
   receiveAddress:any,
   typedValue:any,
   destConfig:any,
+  useToChainId:any,
 ): {
   inputError?: string
   balance?: any,
@@ -212,7 +213,7 @@ export function useAdaCrossChain (
     console.log(error)
   }
   return useMemo(() => {
-    if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !adaWallet) return {}
+    if (!account || ![ChainId.ADA, ChainId.ADA_TEST].includes(chainId) || !routerToken || !adaWallet || !useToChainId) return {}
     return {
       balance: useBalance,
       execute: async () => {
@@ -222,7 +223,7 @@ export function useAdaCrossChain (
         try {
           const MetaDatum:any =  {
             "bind": receiveAddress,
-            "toChainId": selectChain
+            "toChainId": useToChainId
           }
           const auxDataCbor = typhonjs.utils
           .createAuxiliaryDataCbor({
@@ -315,5 +316,5 @@ export function useAdaCrossChain (
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, useBalance, adaWallet])
+  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, useBalance, adaWallet, useToChainId])
 }

@@ -190,28 +190,14 @@ export default function CrossChain({
     // return ApprovalState.NOT_APPROVED
   }, [chainId, allowance, inputBridgeValue, isApprove, loading])
 
-  // const onCreateP2pAddress = useCallback(() => {
-  //   setP2pAddress('')
-  //   if (recipient && selectCurrency && destConfig && selectChain) {
-  //     getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-  //       // console.log(res)
-  //       // console.log(selectCurrency)
-  //       if (res?.p2pAddress) {
-  //         const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
-  //         if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
-  //           // console.log(localAddress)
-  //           setP2pAddress(localAddress)
-  //           setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
-  //         }
-  //       }
-  //       setDelayAction(false)
-  //     })
-  //   } else {
-  //     setDelayAction(false)
-  //   }
-  // }, [recipient, selectCurrency, destConfig, selectChain, chainId])
-
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
+  
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
     inputCurrency: selectCurrency,
@@ -248,7 +234,8 @@ export default function CrossChain({
     recipient,
     chainId,
     selectChain,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {balance: xlmBalance,execute: onXlmWrap, inputError: wrapInputErrorXlm} = useXlmCrossChain(
@@ -258,7 +245,8 @@ export default function CrossChain({
     recipient,
     destConfig?.router,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {balance: trxBalance,execute: onTrxWrap, inputError: wrapInputErrorTrx} = useTrxCrossChain(
     destConfig?.router,
@@ -268,7 +256,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {balance: adaBalance,execute: onAdaWrap, inputError: wrapInputErrorAda} = useAdaCrossChain(
     destConfig?.router,
@@ -278,7 +267,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {execute: onSolWrap, inputError: wrapInputErrorSol} = useSolCrossChain(
     destConfig?.router,
@@ -287,7 +277,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {execute: onAptWrap, inputError: wrapInputErrorApt} = useAptCrossChain(
@@ -297,7 +288,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {execute: onBtcWrap, inputError: wrapInputErrorBtc} = useBtcCrossChain(
@@ -307,7 +299,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {execute: onAtomWrap, inputError: wrapInputErrorAtom} = useAtomCrossChain(
@@ -317,7 +310,8 @@ export default function CrossChain({
     selectChain,
     recipient,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)

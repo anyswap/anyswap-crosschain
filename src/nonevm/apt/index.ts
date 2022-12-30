@@ -222,10 +222,11 @@ export function useAptCrossChain (
   routerToken: string | null | undefined,
   inputToken: string | null | undefined,
   selectCurrency: any,
-  selectChain: string | null | undefined,
+  selectChain: any,
   receiveAddress: any,
   typedValue: any,
   destConfig: any,
+  useToChainId: any,
 ): {
   inputError?: string
   balance?: any,
@@ -266,14 +267,14 @@ export function useAptCrossChain (
     // console.log(sufficientBalance)
     // console.log(balance ? balance?.toExact() : '')
     // console.log(typedValue)
-    if (!account || !chainId || !selectCurrency || !receiveAddress) return {}
+    if (!account || !chainId || !selectCurrency || !receiveAddress || !useToChainId) return {}
     return {
       balance: balance,
       execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
       ? async () => {
 
         const transaction = {
-          arguments: [inputAmount, receiveAddress, selectChain],
+          arguments: [inputAmount, receiveAddress, useToChainId],
           function: routerToken + '::Router::swapout',
           type: 'entry_function_payload',
           'type_arguments': [selectCurrency.address],
@@ -331,7 +332,7 @@ export function useAptCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, useToChainId])
 }
 
 
@@ -357,6 +358,7 @@ export function useAptSwapPoolCallback(
   receiveAddress: string | null | undefined,
   destConfig: any,
   inputCurrency: any,
+  useToChainId: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
   const {aptBalanceList} = useAptosBalance()
@@ -398,7 +400,7 @@ export function useAptSwapPoolCallback(
         let transaction = {}
         if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
           transaction = {
-            arguments: [inputAmount, receiveAddress, selectChain],
+            arguments: [inputAmount, receiveAddress, useToChainId],
             function: routerToken + '::Router::swapout',
             type: 'entry_function_payload',
             'type_arguments': [inputToken],
@@ -478,7 +480,7 @@ export function useAptSwapPoolCallback(
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, inputCurrency])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, inputCurrency, useToChainId])
 }
 
 

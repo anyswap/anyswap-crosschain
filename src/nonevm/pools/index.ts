@@ -21,11 +21,12 @@ export function useSwapPoolCallback(
   receiveAddress: any,
   destConfig: any,
   selectCurrency: any,
+  useToChainId: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 // ): any {
   const {chainId} = useActiveReact()
-  const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig)
-  const {execute: onAptSwar, inputError: inputErrorApt} = useAptSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, selectCurrency)
+  const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, useToChainId)
+  const {execute: onAptSwar, inputError: inputErrorApt} = useAptSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, selectCurrency, useToChainId)
   
   return useMemo(() => {
     // console.log(chainId)

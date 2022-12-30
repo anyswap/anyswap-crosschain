@@ -168,10 +168,11 @@ export function useBtcCrossChain (
   routerToken: string | null | undefined,
   inputToken: string | null | undefined,
   selectCurrency: any,
-  selectChain: string | null | undefined,
+  selectChain: any,
   receiveAddress: any,
   typedValue: any,
   destConfig: any,
+  useToChainId: any,
 ): {
   inputError?: string
   balance?: any,
@@ -246,9 +247,8 @@ export function useBtcCrossChain (
       balance: balance,
       execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
       ? async () => {
-
         // const transactionParams = [{to: routerToken, value: inputAmount, memo: receiveAddress + ':' + selectChain}]
-        const transactionParams = [routerToken, inputAmount, receiveAddress + ':' + selectChain]
+        const transactionParams = [routerToken, inputAmount, receiveAddress + ':' + useToChainId]
         console.log(transactionParams)
         try {
           const txResult:any = await (window as any)?.bitcoin?.request({
@@ -314,5 +314,5 @@ export function useBtcCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, p2pAddress])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, p2pAddress, useToChainId])
 }

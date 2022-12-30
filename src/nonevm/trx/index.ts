@@ -265,6 +265,7 @@ export function useTrxCrossChain (
   receiveAddress:any,
   typedValue:any,
   destConfig:any,
+  useToChainId:any,
 ): {
   inputError?: string
   balance?: any,
@@ -295,7 +296,7 @@ export function useTrxCrossChain (
   }
 
   return useMemo(() => {
-    if (!account || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) || !routerToken) return {}
+    if (!account || ![ChainId.TRX, ChainId.TRX_TEST].includes(chainId) || !routerToken || !useToChainId) return {}
     return {
       balance: balance,
       execute: async () => {
@@ -314,13 +315,13 @@ export function useTrxCrossChain (
             const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
             try {
               if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
-                txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, selectChain], {value: inputAmount}).send()
+                txResult = await instance.anySwapOutNative(...[formatInputToken, formatReceiveAddress, useToChainId], {value: inputAmount}).send()
               } else if (destConfig.routerABI.indexOf('anySwapOutUnderlying') !== -1) { // anySwapOutUnderlying
-                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, useToChainId]
                 console.log(parameArr)
                 txResult = await instance.anySwapOutUnderlying(...parameArr).send()
               } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
-                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, selectChain]
+                const parameArr = [formatInputToken, formatReceiveAddress, inputAmount, useToChainId]
                 console.log(parameArr)
                 txResult = await instance.anySwapOut(...parameArr).send()
               }
@@ -378,7 +379,7 @@ export function useTrxCrossChain (
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance])
+  }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, balance, useToChainId])
 }
 
 
@@ -391,6 +392,7 @@ export function useTrxSwapPoolCallback(
   selectChain: any,
   receiveAddress: any,
   destConfig: any,
+  useToChainId: any,
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
@@ -414,6 +416,7 @@ export function useTrxSwapPoolCallback(
     // console.log(swapType)
     // console.log(balance)
     // console.log(inputAmount)
+    
     if (!chainId || !inputCurrency || !swapType) return NOT_APPLICABLE
     // console.log(typedValue)
 
@@ -435,7 +438,7 @@ export function useTrxSwapPoolCallback(
                 if (inputCurrency?.tokenType === 'NATIVE') {
                   if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
-                    const parameArr = [formatInputToken, receiveAddress, selectChain]
+                    const parameArr = [formatInputToken, receiveAddress, useToChainId]
                     txResult = await instance.anySwapOutNative(...parameArr, {value: inputAmount}).send()
                   } else {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
@@ -444,7 +447,7 @@ export function useTrxSwapPoolCallback(
                 } else {
                   if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatRouterToken)
-                    const parameArr = [formatInputToken, receiveAddress, inputAmount, selectChain]
+                    const parameArr = [formatInputToken, receiveAddress, inputAmount, useToChainId]
                     txResult = await instance.anySwapOut(...parameArr).send()
                   } else {
                     const instance:any = await window?.tronWeb?.contract(ABI_TO_ADDRESS, formatInputToken)
@@ -507,7 +510,7 @@ export function useTrxSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId])
 }
 
 

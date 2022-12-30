@@ -190,6 +190,13 @@ export default function SwapNative() {
     // return ApprovalState.NOT_APPROVED
   }, [chainId, allowance, inputBridgeValue, approval, isApprove, loading])
 
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
+
   // useEffect(() => {
   //   console.log('ApprovalState', ApprovalState)
   //   console.log('approveState', approveState)
@@ -219,7 +226,8 @@ export default function SwapNative() {
     selectChain,
     recipient,
     destConfig,
-    selectCurrency
+    selectCurrency,
+    useToChainId
   )
   
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(

@@ -171,10 +171,11 @@ export function useAtomCrossChain (
   routerToken: any,
   inputToken: any,
   selectCurrency: any,
-  selectChain: string | null | undefined,
+  selectChain: any,
   receiveAddress: string | null | undefined,
   typedValue: string | undefined,
   destConfig: any,
+  useToChainId: any,
 ): {
   inputError?: string
   balance?: any,
@@ -211,7 +212,7 @@ export function useAtomCrossChain (
     console.log(error)
   }
   return useMemo(() => {
-    if (!account || !chainId || !selectCurrency) return {}
+    if (!account || !chainId || !selectCurrency || !useToChainId) return {}
     return {
       balance: balance,
       execute: async () => {
@@ -239,7 +240,7 @@ export function useAtomCrossChain (
           }
           // const txReceipt = await client.sendTokens(account, routerToken, [amountFinal], fee, "")
           // const txResult = await client.sendTokens(account, routerToken, [amountFinal], "auto", receiveAddress + ':' + selectChain)
-          const txResult = await client.sendTokens(account, routerToken, [amountFinal], fee, receiveAddress + ':' + selectChain)
+          const txResult = await client.sendTokens(account, routerToken, [amountFinal], fee, receiveAddress + ':' + useToChainId)
           console.log(txResult)
           const txReceipt = {hash: txResult?.transactionHash}
           // resolve({hash: txResult?.hash})
@@ -292,5 +293,5 @@ export function useAtomCrossChain (
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, inputAmount, sufficientBalance])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, inputAmount, sufficientBalance, useToChainId])
 }

@@ -453,6 +453,7 @@ export function useNearSendTxns(
   chainId:any,
   selectChain:any,
   destConfig:any,
+  useToChainId:any,
 ): {
   inputError?: string
   balance?: any,
@@ -519,15 +520,14 @@ export function useNearSendTxns(
     // console.log(routerToken)
     // console.log(underlyingToken)
     // console.log(chainId)
-    if (!selectChain || !routerToken || !underlyingToken || !chainId) return NOT_APPLICABLE
+    if (!useToChainId || !routerToken || !underlyingToken || !chainId) return NOT_APPLICABLE
     // console.log(balance)
     return {
       // wrapType: WrapType.WRAP,
       balance,
       execute: receiverId && (sufficientBalance || !VALID_BALANCE) && inputAmount ? async () => {
         try {
-          
-          const txReceipt:any = ["NATIVE", "ANYTOKEN"].includes(inputCurrency?.tokenType) || inputCurrency?.address === 'near' ? await sendNear(routerToken, inputAmount, receiverId, selectChain, inputCurrency?.tokenType, anyContractId) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, selectChain)
+          const txReceipt:any = ["NATIVE", "ANYTOKEN"].includes(inputCurrency?.tokenType) || inputCurrency?.address === 'near' ? await sendNear(routerToken, inputAmount, receiverId, useToChainId, inputCurrency?.tokenType, anyContractId) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, useToChainId)
           console.log(txReceipt)
           if (txReceipt?.hash) {
             const data:any = {
@@ -577,7 +577,7 @@ export function useNearSendTxns(
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig, useToChainId])
 }
 
 /**

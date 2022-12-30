@@ -187,6 +187,13 @@ export default function CrossChain({
     return undefined
   }, [destConfig])
 
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
+
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -262,7 +269,7 @@ export default function CrossChain({
         // console.log(destConfig)
         // setP2pAddress(recipient)
         setP2pAddress(destConfig?.router)
-        setMemo(`swapOut ${recipient}:${selectChain}`)
+        setMemo(`swapOut ${recipient}:${useToChainId}`)
         // setMemo('')
         setModalSpecOpen(true)
         setDelayAction(false)
@@ -270,7 +277,7 @@ export default function CrossChain({
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
-        setMemo(recipient + ":" + selectChain)
+        setMemo(recipient + ":" + useToChainId)
         setModalSpecOpen(true)
         setDelayAction(false)
       } else if ([ChainId.BTC, ChainId.BTC_TEST, ChainId.BLOCK, ChainId.COLX, ChainId.LTC].includes(chainId)) {
@@ -291,7 +298,7 @@ export default function CrossChain({
           })
         } else {
           setP2pAddress(destConfig?.router)
-          setMemo(recipient + ":" + selectChain)
+          setMemo(recipient + ":" + useToChainId)
           setModalSpecOpen(true)
           setDelayAction(false)
         }
@@ -299,7 +306,7 @@ export default function CrossChain({
     } else {
       setDelayAction(false)
     }
-  }, [recipient, selectCurrency, destConfig, selectChain, chainId])
+  }, [recipient, selectCurrency, destConfig, selectChain, chainId, useToChainId])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -394,7 +401,7 @@ export default function CrossChain({
   function ViewBtn () {
     if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
       return <ButtonLight onClick={() => {
-        window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${selectChain}&receiverAddress=${recipient}`)
+        window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${useToChainId}&receiverAddress=${recipient}`)
       }}>{t('Confirm')}</ButtonLight>
     }
     // return <ButtonLight disabled={!(hash && hash.length <= 100 && hash.length >= 40)} onClick={() => {
