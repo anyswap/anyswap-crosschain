@@ -15,6 +15,8 @@ import {useSolBalance} from '../nonevm/solana'
 import {useAptosBalance} from '../nonevm/apt'
 import {useBtcBalance} from '../nonevm/btc'
 import {useAtomBalance} from '../nonevm/atom'
+import {useReefBalance} from '../nonevm/reef'
+
 
 import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
@@ -195,6 +197,7 @@ export function useBaseBalances (
   const {aptBalanceList} = useAptosBalance()
   const {btcBalanceList} = useBtcBalance()
   const {atomBalanceList} = useAtomBalance()
+  const {getReefBalance} = useReefBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -284,8 +287,22 @@ export function useBaseBalances (
         const bl = BigAmount.format(6, '0')
         setBalance(bl)
       }
+    } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
+      // console.log(selectChainId)
+      getReefBalance({account: uncheckedAddresses}).then((res:any) => {
+        // console.log(res)
+        const dec = 6
+        if (res && res.toString() !== '0') {
+          const blvalue = tryParseAmount3(res, dec)
+          const bl = res ? BigAmount.format(dec, blvalue) : undefined
+          setBalance(bl)
+        } else {
+          const bl = BigAmount.format(dec, '0')
+          setBalance(bl)
+        }
+      })
     }
-  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList, btcBalanceList, atomBalanceList])
+  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList, btcBalanceList, atomBalanceList, getReefBalance])
 
   useEffect(() => {
     fetchBalancesCallback()

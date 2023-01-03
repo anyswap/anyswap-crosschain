@@ -12,11 +12,34 @@ import {
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
 // import {web3Enable} from "@reef-defi/extension-dapp";
-// // const {web3Enable} = require('@reef-defi/extension-dapp')
+// import {REEF_EXTENSION_IDENT} from "@reef-defi/extension-inject"
+// import {resolveAddress, resolveEvmAddress} from "@reef-defi/evm-provider/utils";
+// import { ApiPromise } from '@polkadot/api'
+const { ApiPromise, WsProvider } =  require('@polkadot/api')
+// import { options } from '@reef-defi/api'
+// const { options } = require('@reef-defi/api')
+// const {
+//   resolveAddress,
+//   // resolveEvmAddress
+// } = require("@reef-defi/evm-provider/utils")
+const {REEF_EXTENSION_IDENT} = require("@reef-defi/extension-inject")
+const {web3Enable} = require('@reef-defi/extension-dapp')
 // console.log(web3Enable)
+// console.log(REEF_EXTENSION_IDENT)
+
+// let reefExtension:any
 
 export function isReefAddress (address:string):boolean | string {
   return address //true: address; false: false
+}
+
+async function init () {
+  const appName = 'Multichain Bridge App'
+  const extensionsArr:any = await web3Enable(appName);
+  if (extensionsArr) {
+    return extensionsArr.find((e:any)=>e.name===REEF_EXTENSION_IDENT)
+  }
+  return undefined
 }
 
 /**
@@ -26,22 +49,23 @@ export function useLoginReef () {
   const dispatch = useDispatch<AppDispatch>()
   const loginReef = useCallback(async(chainId) => {
     // const appName = 'Multichain Bridge App'
+    const client = await init()
     // const extensionsArr:any = await web3Enable(appName);
     // console.log(extensionsArr)
-    // if (extensionsArr) {
-    //   extensionsArr.find((e:any)=>e.name==='REEF_EXTENSION_IDENT').reefSigner.subscribeSelectedAccount(
-    //       (account:any) => {
-    //         if (account) {
-    //           dispatch(nonevmAddress({account: account?.address, chainId}));
-    //         }
-    //       }
-    //   )
-    // } else {
-    //   if (confirm('Please install Reef Wallet.') === true) {
-    //     window.open('https://app.reef.io/')
-    //   }
-    // }
-    dispatch(nonevmAddress({account: '', chainId}));
+    if (client) {
+      client.reefSigner.subscribeSelectedAccount(
+        (account:any) => {
+          if (account) {
+            dispatch(nonevmAddress({account: account?.address, chainId}));
+          }
+        }
+      )
+    } else {
+      if (confirm('Please install Reef Wallet.') === true) {
+        window.open('https://app.reef.io/')
+      }
+    }
+    // dispatch(nonevmAddress({account: '', chainId}));
   }, [])
   return {
     loginReef
@@ -56,8 +80,25 @@ export function useLoginReef () {
  */
 export function useReefBalance () {
   const getReefBalance = useCallback(({account}: {account:string|null|undefined}) => {
-    return new Promise((resolve) => {
-      if (account) {
+    return new Promise(async(resolve) => {
+      const client = await init()
+      // console.log(client)
+      if (account && client?.reefProvider) {
+        client?.reefProvider?.subscribeSelectedNetwork(async(provider:any) => {
+          // console.log(provider)
+          if (provider) {
+            const wsProvider = new WsProvider(provider)
+            const api = await ApiPromise.create({ provider: wsProvider })
+            // console.log(api)
+            // console.log(account)
+            const {data:balance} = await api.query.system.account(account);
+            // console.log(balance.free.toString())
+            resolve(balance.free.toString())
+          } else {
+            resolve('')
+          }
+        })
+      } else {
         resolve('')
       }
     })

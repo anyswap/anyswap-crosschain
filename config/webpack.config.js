@@ -355,7 +355,11 @@ module.exports = function(webpackEnv) {
       rules: [
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
-
+        // 兼容reef
+        {
+          test: /\.js$/,
+          loader: require.resolve('@open-wc/webpack-import-meta-loader'),
+        },
         // First, run the linter.
         // It's important to do this before Babel processes the JS.
         {
@@ -439,7 +443,9 @@ module.exports = function(webpackEnv) {
                     require.resolve('babel-preset-react-app/dependencies'),
                     { helpers: true },
                   ],
+                  '@babel/preset-env', '@babel/preset-react'
                 ],
+                plugins: ['@babel/plugin-proposal-class-properties'],
                 cacheDirectory: true,
                 // See #6846 for context on why cacheCompression is disabled
                 cacheCompression: false,
