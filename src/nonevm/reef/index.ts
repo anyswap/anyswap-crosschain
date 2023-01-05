@@ -14,7 +14,7 @@ import {nonevmAddress} from '../hooks/actions'
 // import {web3Enable} from "@reef-defi/extension-dapp";
 // import {REEF_EXTENSION_IDENT} from "@reef-defi/extension-inject"
 // import {resolveAddress, resolveEvmAddress} from "@reef-defi/evm-provider/utils";
-// import { ApiPromise } from '@polkadot/api'
+// import { ApiPromise, WsProvider } from '@polkadot/api'
 const { ApiPromise, WsProvider } =  require('@polkadot/api')
 // import { options } from '@reef-defi/api'
 // const { options } = require('@reef-defi/api')
@@ -22,7 +22,8 @@ const { ApiPromise, WsProvider } =  require('@polkadot/api')
 //   resolveAddress,
 //   // resolveEvmAddress
 // } = require("@reef-defi/evm-provider/utils")
-const {REEF_EXTENSION_IDENT} = require("@reef-defi/extension-inject")
+// const {REEF_EXTENSION_IDENT} = require("@reef-defi/extension-inject")
+const REEF_EXTENSION_IDENT = 'reef'
 const {web3Enable} = require('@reef-defi/extension-dapp')
 // console.log(web3Enable)
 // console.log(REEF_EXTENSION_IDENT)
@@ -91,7 +92,7 @@ export function useReefBalance () {
             const api = await ApiPromise.create({ provider: wsProvider })
             // console.log(api)
             // console.log(account)
-            const {data:balance} = await api.query.system.account(account);
+            const {data:balance}:any = await api.query.system.account(account);
             // console.log(balance.free.toString())
             resolve(balance.free.toString())
           } else {

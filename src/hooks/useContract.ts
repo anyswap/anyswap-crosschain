@@ -16,6 +16,8 @@ import { useActiveWeb3React } from './index'
 
 import RouterSwapAction from '../constants/abis/bridge/RouterSwapAction.json'
 import RouterSwapActionV2 from '../constants/abis/bridge/RouterSwapActionV2.json'
+import ClientABI from '../constants/abis/client.json'
+import AnycallABI from '../constants/abis/anycall.json'
 import RouterAction from '../constants/abis/bridge/RouterAction.json'
 import swapBTCABI from '../constants/abis/bridge/swapBTCABI.json'
 import swapETHABI from '../constants/abis/bridge/swapETHABI.json'
@@ -83,6 +85,14 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
 export function useBridgeContract(routerToken?:any, version?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(routerToken ? routerToken : undefined, version === 'v2' ? RouterSwapActionV2 : RouterSwapAction, withSignerIfPossible)
 }
+export function usePermissonlessContract(routerToken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(routerToken ? routerToken : undefined, ClientABI, withSignerIfPossible)
+}
+
+export function useAnycallContract(anytoken?:any, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(anytoken ? anytoken : undefined, AnycallABI, withSignerIfPossible)
+}
+
 export function useVeMULTIContract(veToken?:any, withSignerIfPossible?: boolean): Contract | null {
   return useContract(veToken ? veToken : undefined, veMULTI, withSignerIfPossible)
 }

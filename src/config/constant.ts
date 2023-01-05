@@ -105,6 +105,7 @@ export const scanApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSIO
 export const multiAridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
+// export const multiAridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
 // export const explorer = 'https://anyswap.net'
 export const explorer = 'https://scan.multichain.org'

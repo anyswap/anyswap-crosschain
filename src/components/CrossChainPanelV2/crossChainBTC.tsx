@@ -603,7 +603,7 @@ export default function CrossChain({
       </AutoColumn>
       {
         !userInterfaceMode ? (
-          <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+          <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency}/>
         ) : ''
       }
       <ErrorTip errorTip={errorTip} />

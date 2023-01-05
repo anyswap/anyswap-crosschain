@@ -124,7 +124,7 @@ export enum ChainId {
   SHM = '',
   SHM_TEST = '8080',
   POLYGONZKEVM = '',
-  POLYGONZKEVM_TEST = '1402',
+  POLYGONZKEVM_TEST = '1422',
   ATOM = 'ATOM',
   ATOM_TEST = 'ATOM_TEST',
   ATOM_SEI = 'ATOM_SEI',

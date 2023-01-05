@@ -79,7 +79,7 @@ export function usePools ({
     if (!isNaN(chainId)) {
       // fetchCallback = getEvmPoolsData
       getEvmPoolsData().then((res:any) => {
-        // console.log(res)
+        console.log(res)
         setPoolData(res)
       })
     } else if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST, ChainId.APT, ChainId.APT_TEST].includes(chainId)) {

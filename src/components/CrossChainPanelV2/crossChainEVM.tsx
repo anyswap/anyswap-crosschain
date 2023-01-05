@@ -10,7 +10,13 @@ import Reminder from './reminder'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 
-import {useBridgeCallback, useBridgeUnderlyingCallback, useBridgeNativeCallback, useCrossBridgeCallback} from '../../hooks/useBridgeCallback'
+import {
+  useBridgeCallback,
+  useBridgeUnderlyingCallback,
+  useBridgeNativeCallback,
+  useCrossBridgeCallback,
+  usePermissonlessCallback
+} from '../../hooks/useBridgeCallback'
 // import { WrapType } from '../../hooks/useWrapCallback'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { useLocalToken } from '../../hooks/Tokens'
@@ -372,6 +378,19 @@ export default function CrossChain({
     destConfig
   )
 
+  const { wrapType: wrapTypePermissonless, execute: onWrapPermissonless, inputError: wrapInputErrorPermissonless, fee: nativeFee } = usePermissonlessCallback(
+    routerToken,
+    formatCurrency ? formatCurrency : undefined,
+    anyToken?.address,
+    useReceiveAddress,
+    inputBridgeValue,
+    selectChain,
+    destConfig?.type,
+    selectCurrency,
+    isLiquidity,
+    destConfig
+  )
+
   const { wrapType: wrapTypeNative, execute: onWrapNative, inputError: wrapInputErrorNative } = useBridgeNativeCallback(
     routerToken,
     formatCurrency ? formatCurrency : undefined,
@@ -435,6 +454,12 @@ export default function CrossChain({
           } else {
             return false
           }
+        } else if (useSwapMethods.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+          if (wrapInputErrorPermissonless) {
+            return wrapInputErrorPermissonless
+          } else {
+            return false
+          }
         }
       }
       return false
@@ -445,7 +470,7 @@ export default function CrossChain({
         return false
       }
     }
-  }, [useSwapMethods, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, isRouter, wrapInputErrorCrossBridge])
+  }, [useSwapMethods, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, isRouter, wrapInputErrorCrossBridge, wrapInputErrorPermissonless])
   // console.log(selectCurrency)
   const isInputError = useMemo(() => {
     // console.log(isWrapInputError)
@@ -479,7 +504,7 @@ export default function CrossChain({
         } else {
           return undefined
         }
-      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMinLimit', {
@@ -487,7 +512,7 @@ export default function CrossChain({
             symbol: selectCurrency.symbol
           })
         }
-      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMaxLimit', {
@@ -553,7 +578,7 @@ export default function CrossChain({
 
   const btnTxt = useMemo(() => {
     return t('swap')
-  }, [errorTip, wrapType, wrapTypeNative, wrapTypeUnderlying, wrapTypeCrossBridge])
+  }, [errorTip, wrapType, wrapTypeNative, wrapTypeUnderlying, wrapTypeCrossBridge, wrapTypePermissonless])
 
   const {initCurrency} = useInitSelectCurrency(allTokensList, useChain, initBridgeToken)
 
@@ -672,9 +697,13 @@ export default function CrossChain({
         if (onWrap) onWrap().then(() => {
           onClear()
         })
+      } else if (useSwapMethods.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+        if (onWrapPermissonless) onWrapPermissonless().then(() => {
+          onClear()
+        })
       }
     }
-  }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap])
+  }, [useSwapMethods, onWrapCrossBridge, onWrapNative, onWrapUnderlying, onWrap, onWrapPermissonless])
 
   const [xlmlimit, setXlmlimit] = useState<any>('NONE')
   useEffect(() => {
@@ -926,6 +955,7 @@ export default function CrossChain({
           destConfig={destConfig}
           selectCurrency={selectCurrency}
           fee={fee}
+          nativeFee={nativeFee}
         />
         {
           isDestUnderlying ? (
@@ -1282,7 +1312,7 @@ export default function CrossChain({
       </AutoColumn>
       {
          !userInterfaceMode ? (
-           <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+           <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} version={destConfig?.type} fee={nativeFee}/>
          ) : ''
       }
 
