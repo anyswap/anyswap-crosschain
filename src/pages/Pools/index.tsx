@@ -9,7 +9,12 @@ import styled, { ThemeContext } from 'styled-components'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { useActiveReact } from '../../hooks/useActiveReact'
-import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} from '../../hooks/useBridgeCallback'
+import {
+  useSwapUnderlyingCallback,
+  useBridgeCallback,
+  useSwapNativeCallback,
+  usePermissonlessCallback
+} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -197,11 +202,29 @@ export default function SwapNative() {
     return selectChain
   }, [destConfig, selectChain])
 
+  const useSwapMethods = useMemo(() => {
+    return destConfig.routerABI
+  }, [destConfig])
+
   // useEffect(() => {
   //   console.log('ApprovalState', ApprovalState)
   //   console.log('approveState', approveState)
   //   console.log('selectAnyToken', selectAnyToken)
   // }, [approveState, selectAnyToken])
+
+  const { wrapType: wrapTypePermissonless, execute: onWrapPermissonless, inputError: wrapInputErrorPermissonless, fee: nativeFee } = usePermissonlessCallback(
+    useRouterToken,
+    underlyingCurrency ?? undefined,
+    selectAnyToken?.address,
+    account ?? undefined,
+    inputBridgeValue,
+    selectChain,
+    destConfig?.type,
+    selectCurrency,
+    destConfig?.isLiquidity,
+    destConfig,
+    swapType
+  )
 
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
     useRouterToken,
@@ -307,8 +330,10 @@ export default function SwapNative() {
       }
     }  else {
       if (openAdvance) {
-        if (wrapInputError) {
+        if (wrapInputError && useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') === -1) {
           return wrapInputError
+        } else if (wrapInputErrorPermissonless && useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+          return wrapInputErrorPermissonless
         } else {
           return false
         }
@@ -336,7 +361,7 @@ export default function SwapNative() {
         }
       }
     }
-  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType, chainId, wrapInputErrorNonevm])
+  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType, chainId, wrapInputErrorNonevm, useSwapMethods, wrapInputErrorPermissonless])
 
   const isInputError = useMemo(() => {
     if (!selectCurrency) {
@@ -375,7 +400,7 @@ export default function SwapNative() {
         // console.log('destLiquidity', destLiquidity)
         if (chainId?.toString() !== selectChain?.toString()) {
           // console.log(destChain)
-          if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+          if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
             return {
               state: 'Error',
               tip: t('ExceedMinLimit', {
@@ -383,7 +408,7 @@ export default function SwapNative() {
                 symbol: selectCurrency.symbol
               })
             }
-          } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+          } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
             return {
               state: 'Error',
               tip: t('ExceedMaxLimit', {
@@ -462,11 +487,16 @@ export default function SwapNative() {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
     if (errorTip) {
       return errorTip?.tip
-    } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP) {
+    } else if (
+      wrapTypeUnderlying === WrapType.WRAP
+      || wrapType === WrapType.WRAP
+      || wrapTypeNative === WrapType.WRAP
+      || wrapTypePermissonless === WrapType.WRAP
+    ) {
       return bt
     }
     return bt
-  }, [errorTip, t, wrapType, wrapTypeUnderlying, swapType, wrapTypeNative])
+  }, [errorTip, t, wrapType, wrapTypeUnderlying, swapType, wrapTypeNative, wrapTypePermissonless])
 
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -727,7 +757,8 @@ export default function SwapNative() {
           openAdvance && chainId?.toString() !== selectChain?.toString() ? (
             <>
             {/* <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/> */}
-            <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+            {/* <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/> */}
+            <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} version={destConfig?.type} fee={nativeFee}/>
             </>
           ) : ''
         }
@@ -783,9 +814,15 @@ export default function SwapNative() {
                           })
                         } else {
                           console.log('onWrap')
-                          if (onWrap) onWrap().then(() => {
-                            onClear()
-                          })
+                          if (useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+                            if (onWrapPermissonless) onWrapPermissonless().then(() => {
+                              onClear()
+                            })
+                          } else {
+                            if (onWrap) onWrap().then(() => {
+                              onClear()
+                            })
+                          }
                         }
                       } else {
                         if (isNaN(chainId)) {

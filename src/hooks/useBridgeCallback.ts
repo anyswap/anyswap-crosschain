@@ -76,6 +76,7 @@ export function usePermissonlessCallback(
   selectCurrency: any,
   isLiquidity: any,
   destConfig: any,
+  usePoolType?: any,
 ): { fee?: any; wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
   const bridgeContract = usePermissonlessContract(isAddress(routerToken, evmChainId))
@@ -88,7 +89,10 @@ export function usePermissonlessCallback(
   const useAccount:any = isAddress(account, evmChainId)
   const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
   const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
-  const balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  let balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  if (usePoolType && usePoolType === 'withdraw') {
+    balance = anybalance
+  }
   // console.log(balance?.raw.toString(16))
   // 我们总是可以解析输入货币的金额，因为包装是1:1
 
@@ -115,7 +119,7 @@ export function usePermissonlessCallback(
   }, [anycallContract, routerToken])
 
   const getFee = useCallback(() => {
-    if (anycallContract) {
+    if (anycallContract && destConfig?.type === 'PERMISSONLESS') {
       anycallContract.calcSrcFees(appid ? appid : '', destConfig?.chainId, 196).then((res:any) => {
         console.log(res.toString())
         if (res) {
