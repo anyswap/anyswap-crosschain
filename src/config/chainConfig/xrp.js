@@ -30,7 +30,7 @@ export default {
     nodeRpcList: [],
     chainID: XRP_MAIN_CHAINID,
     lookHash: XRP_MAIN_EXPLORER + '/tx/',
-    lookAddr: XRP_MAIN_EXPLORER + '/address/',
+    lookAddr: XRP_MAIN_EXPLORER + '/account/',
     lookBlock: XRP_MAIN_EXPLORER + '/block/',
     explorer: XRP_MAIN_EXPLORER,
     symbol: symbol,
