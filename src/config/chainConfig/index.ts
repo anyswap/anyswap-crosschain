@@ -415,7 +415,7 @@ const useChain:any = {
     ChainId.NEAR,
     ChainId.APT,
     ChainId.SOL,
-    ChainId.ADA,
+    // ChainId.ADA,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
