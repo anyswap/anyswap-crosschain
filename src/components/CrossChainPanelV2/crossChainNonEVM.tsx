@@ -53,7 +53,7 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
 import { isAddress } from '../../utils/isAddress'
-import ConfirmView from './confirmModal'
+// import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
 import CrossChainTip from  './CrossChainTip'
 import CrossChainButton from  './CrossChainButton'
@@ -534,7 +534,7 @@ export default function CrossChain({
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
         </LogoBox> */}
         <ConfirmContent>
-          <ConfirmView
+          {/* <ConfirmView
             fromChainId={chainId}
             value={inputBridgeValue}
             toChainId={selectChain}
@@ -543,7 +543,7 @@ export default function CrossChain({
             destConfig={destConfig}
             selectCurrency={selectCurrency}
             fee={fee}
-          />
+          /> */}
           <CrossChainTip
             isApprove={isApprove}
             inputBridgeValue={inputBridgeValue}

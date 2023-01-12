@@ -48,7 +48,7 @@ async function init () {
  */
 export function useLoginReef () {
   const dispatch = useDispatch<AppDispatch>()
-  const loginReef = useCallback(async(chainId) => {
+  const loginReef = useCallback(async(chainId, type?:any) => {
     // const appName = 'Multichain Bridge App'
     const client = await init()
     // const extensionsArr:any = await web3Enable(appName);
@@ -61,7 +61,7 @@ export function useLoginReef () {
           }
         }
       )
-    } else {
+    } else if (!type) {
       if (confirm('Please install Reef Wallet.') === true) {
         window.open('https://app.reef.io/')
       }

@@ -12,7 +12,7 @@ export default function Updater(): null {
 
   const getReefAddress = useCallback(() => {
     if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
-      loginReef(chainId)
+      loginReef(chainId, 1)
     }
   }, [chainId])
 
