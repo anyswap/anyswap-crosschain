@@ -5,7 +5,10 @@ import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { NetworkContextName } from '../constants'
 import getLibrary from '../utils/getLibrary'
 
-import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider'
+import {
+  WalletProvider,
+  // NetworkInfo
+} from '@terra-money/wallet-provider'
 
 // import { ConnectionProvider, WalletProvider as SolWalletProvider } from '@solana/wallet-adapter-react';
 // import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -41,7 +44,7 @@ const testnet = {
   lcd: 'https://tequila-lcd.terra.dev',
 };
 
-const walletConnectChainIds: Record<number, NetworkInfo> = {
+const walletConnectChainIds: Record<number, any> = {
   0: testnet,
   1: mainnet,
 }

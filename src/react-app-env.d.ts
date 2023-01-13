@@ -78,6 +78,7 @@ declare module '@solana/spl-token';
 declare module '@solana/wallet-adapter-react';
 declare module '@reef-defi/extension-dapp';
 declare module '@polkadot/util';
+declare module '@terra-money/wallet-provider';
 
 declare module 'toformat';
 

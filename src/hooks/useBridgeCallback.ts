@@ -22,6 +22,7 @@ import {
 // import {signSwapoutData, signSwapinData} from './useBuildData'
 import { isAddress } from '../utils/isAddress'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
+// const { useConnectedWallet, useWallet, ConnectType } = require('@terra-money/wallet-provider')
 // import { MsgSend } from '@terra-money/terra.js';
 import {
   MsgSend,
@@ -1152,11 +1153,8 @@ export function useBridgeNativeCallback(
         }
         const txFee =
           tax?.amount.greaterThan(0) && fee
-            ? new Fee(fee.gas, fee.amount.add(tax))
+            ? new Fee(fee.gas_limit, fee.amount.add(tax))
             : fee
-        // console.log(fee)
-        // console.log(txFee)
-        // setFee(fee.gas * 100)
         setFee(txFee)
       })
     }
@@ -1198,7 +1196,9 @@ export function useBridgeNativeCallback(
       || !terraRecipient
       || !terraToken
       || !fee
-    ) return
+    ) {
+      return
+    }
     const send:any = terraToken.indexOf('terra') === 0 ? 
       new MsgExecuteContract(
         connectedWallet?.walletAddress,
@@ -1214,7 +1214,6 @@ export function useBridgeNativeCallback(
       )
     
     const gasFee:any = fee
-    
     return post({
       msgs: [send],
       fee: gasFee,

@@ -108,6 +108,7 @@ export function useTerraSend () {
     if (terraExt && inputAmount && address && toAddress && Unit) {
       let gas = 200000
       const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: Unit})
+      // const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: AssetNativeDenomEnum.uluna})
       try {
         const feeDenoms = [AssetNativeDenomEnum.uluna]
 
@@ -123,11 +124,17 @@ export function useTerraSend () {
           gasPrices: gasPricesFromServer,
         })
         // fee + tax
+        // console.log(address)
+        // console.log(msgs)
+        // console.log(feeDenoms)
+        // debugger
         const unsignedTx:any = await lcd.tx.create(address, {
           msgs: [msgs],
           feeDenoms,
         })
         gas = unsignedTx?.fee.gas
+        console.log(unsignedTx)
+        // debugger
       } catch (err) {
         // gas is just default value
         console.log('error')
