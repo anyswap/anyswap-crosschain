@@ -86,6 +86,8 @@ export function useTerraSend () {
         gasPrices: { [_feeDenom]: gasPricesFromServer[_feeDenom] },
       })
       // tax
+      // console.log(denom)
+      // console.log(isNativeTerra(denom))
       return isNativeTerra(denom)
         ? lcd.utils.calculateTax(new Coin(denom, amount))
         : new Coin(_feeDenom, 0)
@@ -108,7 +110,7 @@ export function useTerraSend () {
     if (terraExt && inputAmount && address && toAddress && Unit) {
       let gas = 200000
       const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: Unit})
-      // const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: AssetNativeDenomEnum.uluna})
+      // const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: AssetNativeDenomEnum.uusd})
       try {
         const feeDenoms = [AssetNativeDenomEnum.uluna]
 

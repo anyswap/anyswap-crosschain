@@ -1152,6 +1152,8 @@ export function useBridgeNativeCallback(
         if (!fee) {
           fee = lunaFee
         }
+        // console.log(fee.amount.toData())
+        // console.log(tax.amount.toString())
         const txFee =
           tax?.amount.greaterThan(0) && fee
             ? new Fee(fee.gas_limit, fee.amount.add(tax))
@@ -1216,6 +1218,8 @@ export function useBridgeNativeCallback(
       )
     
     const gasFee:any = fee
+    // console.log(fee.amount.toData())
+    // console.log(gasFee)
     return post({
       msgs: [send],
       fee: gasFee,
