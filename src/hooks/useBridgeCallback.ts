@@ -1127,6 +1127,7 @@ export function useBridgeNativeCallback(
       && toAddress
       && useNnit
       && inputAmount
+      && [ChainId.TERRA].includes(chainId)
     ) {
       // console.log(connectedWallet)
       getTerraFeeList(
@@ -1158,10 +1159,11 @@ export function useBridgeNativeCallback(
         setFee(txFee)
       })
     }
-  }, [connectedWallet, toAddress, useNnit, inputAmount])
+  }, [connectedWallet, toAddress, useNnit, inputAmount, chainId])
 
   const fetchBalance = useCallback(() => {
-    if (terraToken && connectedWallet) {
+    if (terraToken && connectedWallet
+      && [ChainId.TERRA].includes(chainId)) {
       // console.log(terraToken)
       getTerraBalances({terraWhiteList: [{
         token: terraToken
@@ -1181,7 +1183,7 @@ export function useBridgeNativeCallback(
     } else {
       setBalance('')
     }
-  }, [terraToken, connectedWallet])
+  }, [terraToken, connectedWallet, chainId])
   useEffect(() => {
     fetchBalance()
   }, [useNnit, fetchBalance])

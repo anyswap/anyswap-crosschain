@@ -1,6 +1,15 @@
 // import { useEffect, useMemo, useState, useCallback } from 'react'
 import {  useMemo, useState, useCallback } from 'react'
 import nebulas from 'nebulas'
+import {
+  useDispatch,
+  // useSelector
+} from 'react-redux'
+import {
+  // AppState,
+  AppDispatch
+} from '../../state'
+import {nonevmAddress} from '../hooks/actions'
 // import { tryParseAmount3 } from '../../state/swap/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {useTxnsDtilOpen} from '../../state/application/hooks'
@@ -37,6 +46,31 @@ export const isExtWalletInstall = () => {
   return 'NasExtWallet' in window
 }
 
+export function useNasLogin () {
+  const dispatch = useDispatch<AppDispatch>()
+  const loginNas = useCallback(async(chainId:any, type?:any) => {
+    // console.log(window?.NasExtWallet)
+    if (window?.NasExtWallet) {
+      window?.NasExtWallet.getUserAddress((res:any) => {
+        console.log(res)
+        if (res) {
+          dispatch(nonevmAddress({chainId, account: res}))
+        } else {
+          dispatch(nonevmAddress({chainId, account: ''}))
+        }
+      })
+    } else if (!type) {
+      if (confirm('Please install NasExtWallet Wallet.') === true) {
+        window.open('https://chrome.google.com/webstore/detail/nasextwallet/gehjkhmhclgnkkhpfamakecfgakkfkco?hl=en')
+      }
+    }
+  }, [])
+
+  return {
+    loginNas
+  }
+}
+
 export const useCurrentAddress = () => {
   // const { chainId } = useActiveReact()
   const [address, setAddress] = useState<string>('')
@@ -63,7 +97,7 @@ export function useNasTokenBalance () {
   const { chainId } = useActiveReact()
   const neb:any = new nebulas.Neb()
   const getNasTokenBalance = useCallback(async ({account, token}: any) => {
-    if (![ChainId.NAS].includes(chainId)) return
+    if (![ChainId.NAS].includes(chainId) || !account || !token) return
     return new Promise(async(resolve, reject) => {
       const useAccount = account ? account : address
       try {

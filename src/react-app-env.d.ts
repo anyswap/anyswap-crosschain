@@ -118,6 +118,7 @@ interface Window {
   tally: any
   keplr: any
   getOfflineSigner: any
+  NasExtWallet: any
 }
 
 declare module '@onflow/fcl';

@@ -8,6 +8,7 @@ import AptUpdater from './apt/updater'
 import BtcUpdater from './btc/updater'
 import AtomUpdater from './atom/updater'
 import ReefUpdater from './reef/updater'
+import NasUpdater from './nas/updater'
 
 import {useActiveReact} from '../hooks/useActiveReact'
 import { ChainId } from '../config/chainConfig/chainId'
@@ -33,6 +34,8 @@ export default function Updaters() {
     return <AtomUpdater />
   } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
     return <ReefUpdater />
+  } else if ([ChainId.NAS].includes(chainId)) {
+    return <NasUpdater />
   }
   return <></>
 }

@@ -22,6 +22,7 @@ import {useLoginBtc} from '../nonevm/btc'
 import {useLoginAtom} from '../nonevm/atom'
 import {useLoginSol} from '../nonevm/solana'
 import {useLoginReef} from '../nonevm/reef'
+import {useNasLogin} from '../nonevm/nas'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -39,6 +40,7 @@ export function useConnectWallet () {
   const {loginAtom} = useLoginAtom()
   const {loginSol} = useLoginSol()
   const {loginReef} = useLoginReef()
+  const {loginNas} = useNasLogin()
 
   const useChainId = useMemo(() => {
     return selectNetworkInfo?.chainId
@@ -70,7 +72,12 @@ export function useConnectWallet () {
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
     } else if (useChainId === ChainId.NAS) {
-      
+      if (!account) {
+        loginNas(useChainId)
+      } else {
+        toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
+      }
     } else if ( [ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId) ) {
       if (!account) {
         login()
