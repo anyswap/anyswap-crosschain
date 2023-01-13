@@ -429,7 +429,7 @@ export default function CrossChain({
           state: 'Error',
           tip: isWrapInputError
         }
-      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMinLimit', {
@@ -437,7 +437,7 @@ export default function CrossChain({
             symbol: selectCurrency.symbol
           })
         }
-      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMaxLimit', {
