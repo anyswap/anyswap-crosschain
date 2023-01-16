@@ -337,17 +337,19 @@ export default function CrossChain({
         return <>
           <div className="item">
             <p className="label">Index:</p>
-            <p className="value flex-bc">{indexStr}<CopyHelper toCopy={indexStr} /></p>
+            <p className="value flex-sc">{indexStr}<CopyHelper toCopy={indexStr} /></p>
           </div>
           <div className="item">
             <p className="label">Data:</p>
-            <p className="value flex-bc">{shortenAddress(dataStr,8)}<CopyHelper toCopy={dataStr} /></p>
+            {/* <p className="value flex-bc">{shortenAddress(dataStr,8)}<CopyHelper toCopy={dataStr} /></p> */}
+            <p className="value flex-sc">{dataStr}<CopyHelper toCopy={dataStr} /></p>
           </div>
         </>
       }
       return <div className="item">
         <p className="label">Memo:</p>
-        <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
+        {/* <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p> */}
+        <p className="value flex-sc">{memo}<CopyHelper toCopy={memo} /></p>
       </div>
     }
     return <></>

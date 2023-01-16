@@ -188,3 +188,5 @@ export function updateTerraHash (hash:any): Promise<any> {
     })
   })
 }
+
+// updateTerraHash('6018823AAB7EE83F3DE6E16BDE747B8B41B549BA1F5C1B00558EB05DBE3E501C')
