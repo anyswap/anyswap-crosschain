@@ -296,7 +296,7 @@ export function useNebBridgeCallback({
                   summary: `Cross bridge ${typedValue} ${config.getBaseCoin(inputCurrency?.symbol, chainId)}`,
                   value: typedValue,
                   toChainId: selectChain,
-                  toAddress: recipient?.toLowerCase(),
+                  toAddress: recipient,
                   symbol: inputCurrency?.symbol,
                   version: 'swapin',
                   routerToken: '',
