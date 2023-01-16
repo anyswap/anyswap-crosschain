@@ -3,8 +3,8 @@ import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const FSN_MAIN_CHAINID = ChainId.FSN
-export const FSN_MAINNET = getLocalRPC(FSN_MAIN_CHAINID, 'https://mainnet.anyswap.exchange')
-export const FSN_MAINNET1 = 'https://mainnet.anyswap.exchange'
+export const FSN_MAINNET = getLocalRPC(FSN_MAIN_CHAINID, 'https://mainnet.fusionnetwork.io')
+export const FSN_MAINNET1 = 'https://mainnet.fusionnetwork.io'
 export const FSN_MAIN_EXPLORER = 'https://fsnex.com'
 
 // export const FSN_TESTNET = 'https://testnet.anyswap.exchange'

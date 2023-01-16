@@ -172,6 +172,7 @@ export function updateTerraHash (hash:any): Promise<any> {
   return new Promise(resolve => {
     const url = `${terraExt.queryTx}${hash}`
     fetch(url).then(res => res.json()).then(json => {
+      console.log(json)
       if (json) {
         if (json.error || json.code) {
           data.msg = 'Failure'
@@ -189,4 +190,6 @@ export function updateTerraHash (hash:any): Promise<any> {
   })
 }
 
-// updateTerraHash('6018823AAB7EE83F3DE6E16BDE747B8B41B549BA1F5C1B00558EB05DBE3E501C')
+// updateTerraHash('0D27A684885992D3F13BFB52B9DCF1D612C130001E5CD659A4E79A2BBC428A07').then(res => {
+//   console.log(res)
+// })

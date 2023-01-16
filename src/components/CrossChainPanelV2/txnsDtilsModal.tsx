@@ -67,7 +67,7 @@ export default function TxnsDtilsModal () {
       >
         <HistoryDetails
           symbol={tx?.symbol}
-          from={txInfo?.from ?? tx?.from}
+          from={tx?.from ?? txInfo?.from}
           to={txInfo?.bind ?? tx?.toAddress}
           fromChainID={txInfo?.fromChainID ?? chainId}
           toChainID={txInfo?.toChainID ?? tx?.toChainId}
