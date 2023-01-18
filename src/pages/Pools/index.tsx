@@ -53,6 +53,7 @@ import {useSwapPoolCallback} from '../../nonevm/pools'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 
 import { isAddress } from '../../utils/isAddress'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 const BackBox = styled.div`
   cursor:pointer;
@@ -230,7 +231,7 @@ export default function SwapNative() {
     useRouterToken,
     underlyingCurrency ?? undefined,
     selectAnyToken?.address,
-    account ?? undefined,
+    recipient ?? undefined,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -584,7 +585,13 @@ export default function SwapNative() {
   }, [initChainId])
 
   useEffect(() => {
-    setSelectChainList([chainId, ...initChainList])
+    const arr  = [chainId]
+    for (const c of initChainList) {
+      if ([ChainId.SOL, ChainId.SOL_TEST].includes(c)) continue
+      arr.push(c)
+    }
+    // setSelectChainList([chainId, ...initChainList])
+    setSelectChainList(arr)
   }, [initChainList, chainId])
   
   const handleMaxInput = useCallback((value) => {
