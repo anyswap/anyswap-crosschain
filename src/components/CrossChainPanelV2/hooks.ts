@@ -18,6 +18,9 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
   if (inputBridgeValue && destConfig) {
     const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
     const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
+
+    const baseFeeSrc = destConfig?.BaseFee ?? 0
+
     let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
     let value:any = Number(inputBridgeValue) - fee
     // console.log(minFee)
@@ -29,13 +32,13 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
     } else {
       fee = fee
     }
-    value = Number(inputBridgeValue) - fee - baseFee
+    value = Number(inputBridgeValue) - fee - baseFee - baseFeeSrc
     // console.log(value)
     if (value && Number(value) && Number(value) > 0) {
       const dec = Math.min(6, decimals)
       value = value.toFixed(Math.min(7, decimals))
       return {
-        fee: fee,
+        fee: fee + baseFeeSrc,
         outputBridgeValue: thousandBit(formatDecimal(value, dec), 'no')
       }
     }
