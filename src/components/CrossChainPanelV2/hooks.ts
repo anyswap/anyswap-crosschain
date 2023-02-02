@@ -302,13 +302,14 @@ export function getFTMSelectPool (
       const dec = selectCurrency?.decimals
       
       const CC:any = await getNodeBalance(
-        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig?.address,
-        chainId?.toString() === '1' ? selectCurrency?.address : destConfig?.address,
+        chainId?.toString() === '1' ? destConfig.fromanytoken?.address : destConfig.anytoken?.address,
+        chainId?.toString() === '1' ? selectCurrency?.address : destConfig.address,
         curChain,
         dec,
       )
       let DC:any = ''
-      // console.log(!isNaN(selectChain))
+      // console.log(CC)
+      // console.log(CC)
       DC = await getNodeBalance(
         destConfig?.DepositAddress,
         selectCurrency.symbol,
