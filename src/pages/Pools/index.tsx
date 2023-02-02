@@ -48,12 +48,18 @@ import Reminder from '../../components/CrossChainPanelV2/reminder'
 // import Reminder from '../CrossChain/reminder'
 import {useDestChainid, useDestCurrency, useInitSelectCurrency, outputValue} from '../../components/CrossChainPanelV2/hooks'
 import { BigAmount } from '../../utils/formatBignumber'
+import useInterval from '../../hooks/useInterval'
 
 import {useSwapPoolCallback} from '../../nonevm/pools'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 
 import { isAddress } from '../../utils/isAddress'
 import { ChainId } from '../../config/chainConfig/chainId'
+
+import {
+  useSolCreateAccount,
+  // useLoginSol
+} from '../../nonevm/solana'
 
 const BackBox = styled.div`
   cursor:pointer;
@@ -70,6 +76,8 @@ export default function SwapNative() {
   const history = createBrowserHistory()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+
+  const {validAccount} = useSolCreateAccount()
   
   const toggleWalletModal = useWalletModalToggle()
   const allTokensList:any = usePoolListState(chainId)
@@ -100,6 +108,8 @@ export default function SwapNative() {
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
 
+  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+
   useEffect(() => {
     // console.log(evmAccount)
     if (evmAccount && !isNaN(selectChain)) {
@@ -122,6 +132,38 @@ export default function SwapNative() {
     }
     return false
   }, [selectDestCurrency])
+
+  const useReceiveAddress = useMemo(() => {
+    if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)) {
+      if (destConfig.tokenType === 'NATIVE' && solTokenAddress) {
+        return recipient
+      } else if (destConfig.tokenType !== 'NATIVE' && solTokenAddress) {
+        return solTokenAddress?.toString()
+      }
+      return undefined
+    } else {
+      return recipient
+    }
+  }, [selectChain, recipient, solTokenAddress, destConfig])
+
+  const getNonevmInfo = useCallback(() => {
+    if (
+      [ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)
+      && destConfig?.address
+      && isAddress(recipient, selectChain)
+    ) {
+      validAccount({chainId: selectChain, account: recipient, token: destConfig?.address}).then((res:any) => {
+        console.log(res)
+        setSolTokenAddress(res)
+      })
+    }
+  }, [selectChain, recipient, destConfig])
+
+  useEffect(() => {
+    getNonevmInfo()
+  }, [selectChain, recipient, destConfig])
+
+  useInterval(getNonevmInfo, 1000 * 10)
 
   const isApprove = useMemo(() => {
     // return destConfig.isApprove
@@ -231,7 +273,7 @@ export default function SwapNative() {
     useRouterToken,
     underlyingCurrency ?? undefined,
     selectAnyToken?.address,
-    recipient ?? undefined,
+    useReceiveAddress ?? undefined,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -248,7 +290,7 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType,
     selectChain,
-    recipient,
+    useReceiveAddress,
     destConfig,
     selectCurrency,
     useToChainId
@@ -445,7 +487,7 @@ export default function SwapNative() {
 
   const errorTip = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
-    const isAddr = isAddress( recipient, selectChain)
+    const isAddr = isAddress( useReceiveAddress, selectChain)
     if (isInputError) {
       return isInputError
     } else if (!inputBridgeValue) {
@@ -464,7 +506,7 @@ export default function SwapNative() {
       }
     }
     return undefined
-  }, [isInputError, inputBridgeValue, swapType, recipient, selectChain, chainId])
+  }, [isInputError, inputBridgeValue, swapType, useReceiveAddress, selectChain, chainId])
 
   const isCrossBridge = useMemo(() => {
     if (errorTip) {
@@ -587,7 +629,7 @@ export default function SwapNative() {
   useEffect(() => {
     const arr  = [chainId]
     for (const c of initChainList) {
-      if ([ChainId.SOL, ChainId.SOL_TEST].includes(c)) continue
+      // if ([ChainId.SOL, ChainId.SOL_TEST].includes(c)) continue
       arr.push(c)
     }
     // setSelectChainList([chainId, ...initChainList])
@@ -739,7 +781,7 @@ export default function SwapNative() {
           }
           {
             swapType !== 'deposit' && (isNaN(chainId) || isNaN(selectChain)) && chainId?.toString() !== selectChain?.toString() ? (
-              <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
+              <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( useReceiveAddress, selectChain))} />
             ) : ''
           }
         </AutoColumn>
