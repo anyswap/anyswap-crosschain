@@ -19,7 +19,8 @@ export function calcReceiveValueAndFee (inputBridgeValue: any, destConfig:any, d
     const minFee = destConfig.BaseFeePercent ? (destConfig.MinimumSwapFee / (100 + destConfig.BaseFeePercent)) * 100 : destConfig.MinimumSwapFee
     const baseFee = destConfig.BaseFeePercent ? minFee * destConfig.BaseFeePercent / 100 : 0
 
-    const baseFeeSrc = destConfig?.BaseFee ?? 0
+    // const baseFeeSrc = destConfig?.BaseFee ?? 0
+    const baseFeeSrc = 0
 
     let fee = Number(inputBridgeValue) * Number(destConfig.SwapFeeRatePerMillion) / 100
     let value:any = Number(inputBridgeValue) - fee
