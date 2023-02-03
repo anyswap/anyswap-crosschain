@@ -95,6 +95,7 @@ import polygonzkevm from './polygonzkevm'
 import atom from './atom'
 import omax from './omax'
 import reef from './reef'
+import bit from './bit'
 
 import { ChainId } from './chainId'
 
@@ -104,6 +105,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...bit,
   ...reef,
   ...omax,
   ...atom,
@@ -307,6 +309,7 @@ const testChainList = [
   ChainId.EKTA_TEST,
   ChainId.SHM_TEST,
   ChainId.POLYGONZKEVM_TEST,
+  ChainId.BIT_TEST,
 ]
 
 const useChain:any = {

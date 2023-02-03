@@ -217,7 +217,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     font-weight: 800;
     font-stretch: normal;
     font-style: normal;
-    line-height: 1;
+    // line-height: 1;
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
     margin:0 0 2px;

@@ -132,4 +132,5 @@ export enum ChainId {
   OMAX = '311',
   REEF = 'REEF',
   REEF_TEST = 'REEF_TEST',
+  BIT_TEST = '5001',
 }
