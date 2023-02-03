@@ -239,7 +239,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
     line-height: 1;
     letter-spacing: normal;
     color: ${({ theme }) => theme.selectTextColor};
-    margin:8px 0 0;
+    margin:3px 0 0;
     ${({ theme }) => theme.mediaWidth.upToLarge`
       display:none;
     `}
