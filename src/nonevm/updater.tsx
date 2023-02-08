@@ -30,7 +30,7 @@ export default function Updaters() {
   } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
   // } else if ([ChainId.BTC_TEST].includes(chainId)) {
     return <BtcUpdater />
-  } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+  } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
     return <AtomUpdater />
   } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
     return <ReefUpdater />

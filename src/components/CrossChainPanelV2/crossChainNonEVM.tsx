@@ -394,7 +394,7 @@ export default function CrossChain({
       return wrapInputErrorApt
     } else if (wrapInputErrorBtc && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
       return wrapInputErrorBtc
-    } else if (wrapInputErrorAtom && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+    } else if (wrapInputErrorAtom && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
       return wrapInputErrorAtom
     } else {
       return false
@@ -484,12 +484,12 @@ export default function CrossChain({
   
   useEffect(() => {
     // console.log(evmAccount)
-    if (evmAccount) {
+    if (evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
     } else {
       setRecipient('')
     }
-  }, [evmAccount])
+  }, [evmAccount, selectChain])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -641,7 +641,7 @@ export default function CrossChain({
                   onBtcWrap().then(() => {
                     onClear()
                   })
-                } else if (onAtomWrap && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+                } else if (onAtomWrap && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
                   console.log('onAtomWrap')
                   onAtomWrap().then(() => {
                     onClear()

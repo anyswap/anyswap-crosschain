@@ -81,7 +81,7 @@ export function isAddress(address: any, chainId?: any) {
       return isSolAddress(address)
     } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
       return isAptosAddress(address)
-    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
       return isAtomAddress(address, chainId)
     } else {
       return isEvmAddress(address)

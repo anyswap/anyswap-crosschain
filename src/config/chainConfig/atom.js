@@ -19,6 +19,10 @@ export const ATOM_SEI_TESTNET = 'https://sei-chain-incentivized.com/sei-chain-tm
 export const ATOM_SEI_TEST_CHAINID = ChainId.ATOM_SEI_TEST
 export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 
+export const ATOM_DCORE_TESTNET = 'https://s-0.devnet-1.coreum.dev:443'
+export const ATOM_DCORE_TEST_CHAINID = ChainId.ATOM_DCORE_TEST
+export const ATOM_DCORE_TEST_EXPLORER = 'https://explorer.devnet-1.coreum.dev'
+
 // const symbol = 'ATOM'
 
 const bridgeToken = {
@@ -125,5 +129,27 @@ export default {
     type: 'test',
     label: ATOM_SEI_TEST_CHAINID,
     chainType: ATOM_SEI_TEST_CHAINID
+  },
+  [ATOM_DCORE_TEST_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: ATOM_DCORE_TESTNET,
+    nodeRpcList: [
+      ATOM_DCORE_TESTNET,
+    ],
+    chainID: ATOM_DCORE_TEST_CHAINID,
+    lookHash: ATOM_DCORE_TEST_EXPLORER + '/transactions/',
+    lookAddr: ATOM_DCORE_TEST_EXPLORER + '/accounts/',
+    lookBlock: ATOM_DCORE_TEST_EXPLORER + '/blocks/',
+    explorer: ATOM_DCORE_TEST_EXPLORER,
+    symbol: 'DCORE',
+    name: 'Coreum',
+    networkName: 'Coreum testnet',
+    networkLogo: 'DCORE',
+    type: 'test',
+    label: ATOM_DCORE_TEST_CHAINID,
+    chainType: ATOM_DCORE_TEST_CHAINID
   },
 }

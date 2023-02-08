@@ -146,7 +146,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
-      } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(selectChainId)) {
+      } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(selectChainId)) {
         // console.log(account)
         if (atomBalanceList?.[token]) {
           const bl = BigAmount.format(dec, atomBalanceList?.[token]?.balance)
@@ -278,7 +278,7 @@ export function useBaseBalances (
         const bl = BigAmount.format(8, '0')
         setBalance(bl)
       }
-    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(selectChainId)) {
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(selectChainId)) {
       // console.log(btcBalanceList)
       if (atomBalanceList?.NATIVE?.balance) {
         const bl = BigAmount.format(6, atomBalanceList?.NATIVE?.balance)

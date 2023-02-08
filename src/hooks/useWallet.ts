@@ -116,7 +116,7 @@ export function useConnectWallet () {
       } else {
         toggleWalletModal()
       }
-    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(useChainId)) {
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(useChainId)) {
       if (!account) {
         loginAtom(useChainId)
       } else {

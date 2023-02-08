@@ -54,7 +54,7 @@ export function getHashInfo(hash: any, chainId: any) {
       getBtcHash(hash, chainId).then(res => {
         resolve(res)
       })
-    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
       getAtomTxnsStatus(hash, chainId).then(res => {
         resolve(res)
       })

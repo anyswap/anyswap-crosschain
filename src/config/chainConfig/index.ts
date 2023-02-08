@@ -433,7 +433,9 @@ const useChain:any = {
     ChainId.BTC_TEST,
     // ChainId.ATOM_TEST,
     ChainId.ATOM_SEI_TEST,
+    ChainId.ATOM_DCORE_TEST,
     ChainId.REEF_TEST,
+    ChainId.XRP_TEST,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

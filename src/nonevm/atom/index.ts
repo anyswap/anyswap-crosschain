@@ -19,6 +19,8 @@ import {recordsTxns} from '../../utils/bridge/register'
 
 import config from '../../config'
 
+import {atomChainConfig} from './walletConfig'
+
 import {
   // assertIsBroadcastTxSuccess,
   SigningStargateClient,
@@ -28,11 +30,19 @@ import {
 const ChainIdList:any = {
   [ChainId.ATOM]: '',
   [ChainId.ATOM_SEI_TEST]: 'atlantic-1',
+  [ChainId.ATOM_DCORE]: '',
+  [ChainId.ATOM_DCORE_TEST]: 'coreum-devnet-1',
 }
 const seiAddressReg = /^sei[0-9A-Za-z]{39}$/
+const devdcoreAddressReg = /^devcore[0-9A-Za-z]{39}$/
+const dcoreAddressReg = /^ducore[0-9A-Za-z]{39}$/
 export function isAtomAddress (address:string, chainId:any):boolean | string {
   if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
     return seiAddressReg.test(address) ? address : false //true: address; false: false
+  } else if ([ChainId.ATOM_DCORE].includes(chainId)) {
+    return dcoreAddressReg.test(address) ? address : false //true: address; false: false
+  } else if ([ChainId.ATOM_DCORE_TEST].includes(chainId)) {
+    return devdcoreAddressReg.test(address) ? address : false //true: address; false: false
   }
   return false
 }
@@ -57,7 +67,17 @@ export function useLoginAtom () {
         })
       }).catch((error:any) => {
         console.log(error)
-        dispatch(nonevmAddress({chainId, account: ''}))
+        if (atomChainConfig[chainId]) {
+          window.keplr.experimentalSuggestChain(atomChainConfig[chainId]).then((res:any) => {
+            console.log(res)
+            loginAtom(chainId)
+          }).catch((error:any) => {
+            console.log(error)
+            dispatch(nonevmAddress({chainId, account: ''}))
+          })
+        } else {
+          dispatch(nonevmAddress({chainId, account: ''}))
+        }
       })
     } else {
       if (confirm('Please install Petra Wallet.') === true) {
