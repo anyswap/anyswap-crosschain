@@ -273,7 +273,7 @@ export default function CrossChain({
         // setMemo('')
         setModalSpecOpen(true)
         setDelayAction(false)
-      } else if ([ChainId.XRP].includes(chainId)) {
+      } else if ([ChainId.XRP, ChainId.XRP_TEST].includes(chainId)) {
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
@@ -327,6 +327,15 @@ export default function CrossChain({
   useEffect(() => {
     setSelectDestCurrencyList(initDestCurrencyList)
   }, [initDestCurrencyList])
+
+  useEffect(() => {
+    // console.log(evmAccount)
+    if (evmAccount && !isNaN(selectChain)) {
+      setRecipient(evmAccount)
+    } else {
+      setRecipient('')
+    }
+  }, [evmAccount, selectChain])
 
   function MemoView () {
     if (memo) {
@@ -440,7 +449,7 @@ export default function CrossChain({
             ) : ''
           }
           {
-            [ChainId.XRP].includes(chainId) ? (
+            [ChainId.XRP, ChainId.XRP_TEST].includes(chainId) ? (
               <>
                 <CrossChainTip>
                   Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
@@ -478,7 +487,7 @@ export default function CrossChain({
             ) : ''
           } */}
           {
-            [ChainId.XRP].includes(chainId) ? '' : (
+            [ChainId.XRP, ChainId.XRP_TEST].includes(chainId) ? '' : (
               <div className="item">
                 <p className="label">Value:</p>
                 <p className="value">{inputBridgeValue}</p>
@@ -601,7 +610,7 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
+        <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
       </AutoColumn>
       {
         !userInterfaceMode ? (

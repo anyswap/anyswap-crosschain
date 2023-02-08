@@ -63,6 +63,6 @@ export default {
     networkLogo: 'XRP',
     type: 'test',
     label: XRP_TEST_CHAINID,
-    chainType: XRP_TEST_CHAINID
+    chainType: 'NOWALLET'
   },
 }
