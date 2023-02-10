@@ -53,10 +53,13 @@ export enum WrapType {
   NOCONNECT
 }
 
-function useVersion (chainId:any, toChainID:any) {
+function useVersion (chainId:any, toChainID:any, version:any) {
   if (
     [ChainId.AURORA].includes(chainId?.toString())
     || (toChainID && isNaN(toChainID))
+    || version?.indexOf('STABLE') !== 0
+    || version?.indexOf('UNDERLYING') !== 0
+    || version?.indexOf('NATIVE') !== 0
   ) {
     // console.log(chainId)
     return 'v2'
@@ -250,7 +253,7 @@ export function useBridgeCallback(
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -374,7 +377,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -488,7 +491,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -724,7 +727,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -828,7 +831,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID))
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
