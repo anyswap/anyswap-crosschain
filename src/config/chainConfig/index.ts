@@ -96,6 +96,7 @@ import atom from './atom'
 import omax from './omax'
 import reef from './reef'
 import bit from './bit'
+import neon from './neon'
 
 import { ChainId } from './chainId'
 
@@ -105,6 +106,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...neon,
   ...bit,
   ...reef,
   ...omax,
@@ -310,6 +312,7 @@ const testChainList = [
   ChainId.SHM_TEST,
   ChainId.POLYGONZKEVM_TEST,
   ChainId.BIT_TEST,
+  ChainId.NEON_TEST,
 ]
 
 const useChain:any = {

@@ -136,4 +136,5 @@ export enum ChainId {
   REEF = 'REEF',
   REEF_TEST = 'REEF_TEST',
   BIT_TEST = '5001',
+  NEON_TEST = '245022926',
 }
