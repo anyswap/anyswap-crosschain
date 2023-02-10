@@ -54,17 +54,22 @@ export enum WrapType {
 }
 
 function useVersion (chainId:any, toChainID:any, version:any) {
+  // console.log(version)
   if (
-    [ChainId.AURORA].includes(chainId?.toString())
-    || (toChainID && isNaN(toChainID))
-    || version?.indexOf('STABLE') !== 0
-    || version?.indexOf('UNDERLYING') !== 0
-    || version?.indexOf('NATIVE') !== 0
+    version?.indexOf('STABLE') === 0
+    || version?.indexOf('UNDERLYING') === 0
+    || version?.indexOf('NATIVE') === 0
   ) {
-    // console.log(chainId)
-    return 'v2'
+    return ''
   }
-  return ''
+  // if (
+  //   [ChainId.AURORA].includes(chainId?.toString())
+  //   || (toChainID && isNaN(toChainID))
+  // ) {
+  //   console.log(version)
+  //   return 'v2'
+  // }
+  return 'v2'
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
