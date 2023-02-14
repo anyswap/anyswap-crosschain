@@ -31,10 +31,12 @@ const ChainIdList:any = {
   [ChainId.ATOM]: '',
   [ChainId.ATOM_SEI_TEST]: 'atlantic-1',
   [ChainId.ATOM_DCORE]: '',
-  [ChainId.ATOM_DCORE_TEST]: 'coreum-devnet-1',
+  // [ChainId.ATOM_DCORE_TEST]: 'coreum-devnet-1',
+  [ChainId.ATOM_DCORE_TEST]: 'coreum-testnet-1',
 }
 const seiAddressReg = /^sei[0-9A-Za-z]{39}$/
-const devdcoreAddressReg = /^devcore[0-9A-Za-z]{39}$/
+// const devdcoreAddressReg = /^devcore[0-9A-Za-z]{39}$/
+const devdcoreAddressReg = /^testcore[0-9A-Za-z]{39}$/
 const dcoreAddressReg = /^ducore[0-9A-Za-z]{39}$/
 export function isAtomAddress (address:string, chainId:any):boolean | string {
   if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
