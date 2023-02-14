@@ -12,25 +12,11 @@ export function selectNetwork (chainID:any, type?: any) {
     if (ethereumFN && ethereumFN.request) {
       // console.log(ethereumFN)
       // console.log(ethereumFN.chainId)
-      const data = {
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: '0x' + Number(chainID).toString(16), // A 0x-prefixed hexadecimal string
-            chainName: chainInfo[chainID]?.walletName ?? chainInfo[chainID].networkName,
-            nativeCurrency: {
-              name: chainInfo[chainID].name,
-              symbol: chainInfo[chainID].symbol, // 2-6 characters long
-              decimals: 18,
-            },
-            rpcUrls: [chainInfo[chainID].nodeRpc],
-            blockExplorerUrls: chainInfo[chainID].explorer && chainInfo[chainID].explorer.indexOf('https') === 0 ? [chainInfo[chainID].explorer] : null,
-            iconUrls: null // Currently ignored.
-          }
-        ],
-      }
-      console.log(data)
-      ethereumFN.request(data).then((res: any) => {
+      const useChainId = '0x' + Number(chainID).toString(16)
+      ethereumFN.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: useChainId }],
+      }).then((res: any) => {
         // console.log(chainID)
         console.log(res)
         if (!type) {
@@ -39,12 +25,50 @@ export function selectNetwork (chainID:any, type?: any) {
         resolve({
           msg: 'Success'
         })
-      }).catch((err: any) => {
-        console.log(err)
-        resolve({
-          msg: 'Error'
-        })
+      }).catch((switchError: any) => {
+        console.log(switchError)
+        if (switchError.code === 4902) {
+          const data = {
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: useChainId, // A 0x-prefixed hexadecimal string
+                chainName: chainInfo[chainID]?.walletName ?? chainInfo[chainID].networkName,
+                nativeCurrency: {
+                  name: chainInfo[chainID].name,
+                  symbol: chainInfo[chainID].symbol, // 2-6 characters long
+                  decimals: 18,
+                },
+                rpcUrls: [chainInfo[chainID].nodeRpc],
+                blockExplorerUrls: chainInfo[chainID].explorer && chainInfo[chainID].explorer.indexOf('https') === 0 ? [chainInfo[chainID].explorer] : null,
+                iconUrls: null // Currently ignored.
+              }
+            ],
+          }
+          console.log(data)
+          ethereumFN.request(data).then((res: any) => {
+            // console.log(chainID)
+            console.log(res)
+            if (!type) {
+              history.go(0)
+            }
+            resolve({
+              msg: 'Success'
+            })
+          }).catch((err: any) => {
+            console.log(err)
+            resolve({
+              msg: 'Error'
+            })
+          })
+        } else {
+          resolve({
+            msg: 'Error'
+          })
+        }
       })
+
+
     } else {
       resolve({
         msg: 'Error'

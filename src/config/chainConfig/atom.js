@@ -19,9 +19,9 @@ export const ATOM_SEI_TESTNET = 'https://sei-chain-incentivized.com/sei-chain-tm
 export const ATOM_SEI_TEST_CHAINID = ChainId.ATOM_SEI_TEST
 export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 
-export const ATOM_DCORE_TESTNET = 'https://s-0.devnet-1.coreum.dev:443'
+export const ATOM_DCORE_TESTNET = 'https://full-node-pluto.testnet-1.coreum.dev:26657'
 export const ATOM_DCORE_TEST_CHAINID = ChainId.ATOM_DCORE_TEST
-export const ATOM_DCORE_TEST_EXPLORER = 'https://explorer.devnet-1.coreum.dev'
+export const ATOM_DCORE_TEST_EXPLORER = 'https://explorer.testnet-1.coreum.dev'
 
 // const symbol = 'ATOM'
 
