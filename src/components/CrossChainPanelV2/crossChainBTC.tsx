@@ -452,8 +452,8 @@ export default function CrossChain({
             [ChainId.XRP, ChainId.XRP_TEST].includes(chainId) ? (
               <>
                 <CrossChainTip>
-                  Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
-                  <p className='red'>If you don&apos;t input memo, you will not receive XRP on dest chain.</p>
+                  Please use XRP wallet to transfer {selectCurrency?.symbol} token to deposit address and input receive address on dest chain as memo.
+                  <p className='red'>If you don&apos;t input memo, you will not receive {selectCurrency?.symbol} on dest chain.</p>
                 </CrossChainTip>
               </>
             ) : ''
