@@ -60,6 +60,12 @@ function useVersion (chainId:any, toChainID:any, version:any) {
     || version?.indexOf('UNDERLYING') === 0
     || version?.indexOf('NATIVE') === 0
   ) {
+    if (
+      [ChainId.AURORA].includes(chainId?.toString())
+      && (toChainID && isNaN(toChainID))
+    ) {
+      return 'v2'
+    }
     return ''
   }
   // if (
