@@ -62,7 +62,7 @@ function useVersion (chainId:any, toChainID:any, version:any) {
   ) {
     if (
       [ChainId.AURORA].includes(chainId?.toString())
-      && (toChainID && isNaN(toChainID))
+      || (toChainID && isNaN(toChainID))
     ) {
       return 'v2'
     }
