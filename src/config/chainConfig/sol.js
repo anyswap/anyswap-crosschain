@@ -1,8 +1,8 @@
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-// export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
-export const SOL_MAINNET = 'https://rpc.ankr.com/solana'
+export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
+// export const SOL_MAINNET = 'https://rpc.ankr.com/solana'
 // export const SOL_MAINNET = 'https://delicate-chaotic-dust.solana-mainnet.discover.quiknode.pro/3a539ea8473757ef14934012e91be6ea432b6799/'
 export const SOL_MAIN_CHAINID = ChainId.SOL
 export const SOL_MAIN_EXPLORER = 'https://solscan.io'
@@ -27,7 +27,10 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: SOL_MAINNET,
-    nodeRpcList: [],
+    nodeRpcList: [
+      'https://api.mainnet-beta.solana.com',
+      'https://rpc.ankr.com/solana'
+    ],
     chainID: SOL_MAIN_CHAINID,
     lookHash: SOL_MAIN_EXPLORER + '/tx/',
     lookAddr: SOL_MAIN_EXPLORER + '/account/',

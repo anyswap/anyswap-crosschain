@@ -223,7 +223,7 @@ export function useAdaCrossChain (
         try {
           const MetaDatum:any =  {
             "bind": receiveAddress,
-            "toChainId": useToChainId
+            "toChainId": useToChainId + ''
           }
           const auxDataCbor = typhonjs.utils
           .createAuxiliaryDataCbor({

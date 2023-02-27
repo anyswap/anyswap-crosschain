@@ -440,6 +440,7 @@ const useChain:any = {
     ChainId.ATOM_DCORE_TEST,
     ChainId.REEF_TEST,
     ChainId.XRP_TEST,
+    ChainId.ADA,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,
