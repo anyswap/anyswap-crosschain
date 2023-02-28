@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, WETH } from 'anyswap-sdk'
+import { WETH } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -31,6 +31,7 @@ import NFT721 from '../constants/abis/bridge/erc721.json'
 import NFT1155 from '../constants/abis/bridge/erc1155.json'
 
 import config from '../config/index'
+import { ChainId } from '../config/chainConfig/chainId'
 import { ERC_TYPE } from '../state/nft/hooks'
 
 const Web3 = require('web3')
@@ -132,18 +133,21 @@ export function useSwapETHContract(tokenAddress?: string, withSignerIfPossible?:
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId }:any = useActiveWeb3React()
   let address: string | undefined
   if (chainId) {
-    switch (chainId) {
-      case ChainId.MAINNET:
-      case ChainId.GÖRLI:
-      case ChainId.ROPSTEN:
-      case ChainId.RINKEBY:
+    switch (chainId?.toString()) {
+      case ChainId.ETH:
+      case ChainId.GOERLI:
+      // case ChainId.ROPSTEN:
+      // case ChainId.RINKEBY:
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break
-      case ChainId.BNBMAIN:
+      case ChainId.BNB:
         address = '0x08ced32a7f3eec915ba84415e9c07a7286977956'
+        break
+      case ChainId.ARBITRUM:
+        address = '0x4a067EE58e73ac5E4a43722E008DFdf65B2bF348'
         break
     }
   }
@@ -152,7 +156,23 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
 }
 
 export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(address, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
+  const { chainId }:any = useActiveWeb3React()
+  let useAddress: string | undefined
+  if (chainId) {
+    switch (chainId?.toString()) {
+      case ChainId.ETH:
+      case ChainId.GOERLI:
+        useAddress = '0xA2C122BE93b0074270ebeE7f6b7292C7deB45047'
+        break
+      case ChainId.BNB:
+        useAddress = '0x1DdA6feF836c0c1dE986aC15597922dEe95Ff98A'
+        break
+      case ChainId.ARBITRUM:
+        useAddress = '0xfc81140Cd374Fe235c8398A0Ae57101Eac79Ae35'
+        break
+    }
+  }
+  return useContract(address ? address : useAddress, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
 }
 
 export function useSwapMultiContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
