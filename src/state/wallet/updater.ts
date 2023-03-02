@@ -20,6 +20,7 @@ import {useRpcState} from '../rpc/hooks'
 import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
 import { isAddress } from '../../utils/isAddress/index'
+import { ChainId } from '../../config/chainConfig/chainId'
 
 // import config from '../../config'
 // import { fromWei } from '../../utils/tools/tools'
@@ -34,6 +35,19 @@ const limit = 80
 
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
+}
+
+const NON_ERC20:any = {
+  [ChainId.ETH]: [
+    '0x5cbe98480a790554403694b98bff71a525907f5d',
+    '0x80fd8e18cc59177b4dbd2fae9c0efb8bf87edc1f'
+  ],
+  [ChainId.OPTIMISM]: [
+    '0xf5ed69abb9b31ec7bec5a089290724035e3edb2c'
+  ],
+  [ChainId.CELO]: [
+    '0x5566b6e4962ba83e05a426ad89031ec18e9cadd3'
+  ],
 }
 
 export default function Updater(): null {
@@ -67,11 +81,17 @@ export default function Updater(): null {
         const token:any = obj.address
         if (isAddress(obj.address)) {
           if (norepeat.includes(token)) continue
+          if (
+            NON_ERC20?.[chainId]?.includes(token.toLowerCase())
+          ) continue
           const destList = obj.destChains
           for (const destChainid in destList) {
             const destChainList = destList[destChainid]
             for (const destTokenKey in destChainList) {
               const destTokenItem = destChainList[destTokenKey]
+              if (
+                NON_ERC20?.[chainId]?.includes(destTokenItem.fromanytoken.address.toLowerCase())
+              ) continue
               if (!norepeat.includes(destTokenItem.fromanytoken.address) && isAddress(destTokenItem.fromanytoken.address) && destTokenItem.isFromLiquidity) {
                 arr.push({
                   dec: destTokenItem.fromanytoken.decimals,

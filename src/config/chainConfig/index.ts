@@ -97,6 +97,7 @@ import omax from './omax'
 import reef from './reef'
 import bit from './bit'
 import neon from './neon'
+import canto from './canto'
 
 import { ChainId } from './chainId'
 
@@ -106,6 +107,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...canto,
   ...neon,
   ...bit,
   ...reef,
@@ -281,6 +283,7 @@ const allChainList = [
   ChainId.HPB,
   ChainId.ONUS,
   ChainId.OMAX,
+  ChainId.CANTO,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
