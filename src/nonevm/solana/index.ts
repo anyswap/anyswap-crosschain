@@ -84,7 +84,7 @@ export function useSolAddress () {
 
 export function useLoginSol () {
   const dispatch = useDispatch<AppDispatch>()
-  const loginSol = useCallback(() => {
+  const loginSol = useCallback((type?:any) => {
     if (window?.solana?.connect) {
       window?.solana?.connect().then((res:any) => {
         if (res?.publicKey) {
@@ -94,8 +94,10 @@ export function useLoginSol () {
         console.log(err)
       })
     } else {
-      if (confirm('Please open or install Solana wallet.') === true) {
-        window.open('https://phantom.app/download')
+      if (!type) {
+        if (confirm('Please open or install Solana wallet.') === true) {
+          window.open('https://phantom.app/download')
+        }
       }
     }
   }, [])

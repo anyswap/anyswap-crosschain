@@ -209,8 +209,8 @@ export function tryParseAmount6(value?: string): CurrencyAmount | undefined {
 }
 
 const BAD_RECIPIENT_ADDRESSES: string[] = [
-  config.v2FactoryToken, // v2 factory
-  config.swapRouterToken, // v2 router 01
+  config?.v2FactoryToken, // v2 factory
+  config?.swapRouterToken, // v2 router 01
   // '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D' // v2 router 02
 ]
 

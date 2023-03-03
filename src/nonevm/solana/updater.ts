@@ -51,7 +51,7 @@ export default function Updater(): null {
   useEffect(() => {
     // getSolanaInfo('SOL_TEST', 'requestAirdrop', ['H7SFqpjjSsWxVsBuVbWspHq1yjymQmR9t6xmi1u34yfH']).then((res:any) => console.log(res))
     if ([ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
-      loginSol()
+      loginSol(1)
       // Promise.all([
       //   getSolAccountInfo({account, chainId}),
       //   getSolAccountInfo({account: 'DCLzsK2u5CNaeEgFv2f4SYsH85gR86C4N753wfD6V5Yy', chainId}),
