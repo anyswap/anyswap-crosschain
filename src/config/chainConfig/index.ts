@@ -317,6 +317,7 @@ const testChainList = [
   ChainId.BIT_TEST,
   ChainId.NEON_TEST,
   ChainId.SHM1X_TEST,
+  ChainId.BASEGOERLI,
 ]
 
 const useChain:any = {

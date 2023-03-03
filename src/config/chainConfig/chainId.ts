@@ -20,6 +20,7 @@ export enum ChainId {
   ETH = '1',
   RINKEBY = '4',
   GOERLI = '5',
+  BASEGOERLI = '84531',
   FSN = '32659',
   FSN_TEST = '46688',
   FTM = '250',

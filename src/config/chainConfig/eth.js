@@ -19,6 +19,10 @@ export const ETH_TEST1_CHAINID = ChainId.GOERLI
 export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
 export const ETH_TEST1_EXPLORER = 'https://goerli.etherscan.io'
 
+export const BASEGOERLI_TEST1_CHAINID = ChainId.BASEGOERLI
+export const BASEGOERLI_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.base.org')
+export const BASEGOERLI_TEST1_EXPLORER = 'https://goerli.basescan.org'
+
 const symbol = 'ETH'
 
 const bridgeToken = {
@@ -170,5 +174,29 @@ export default {
     walletName: 'Goerli',
     type: 'test',
     label: ETH_TEST1_CHAINID,
+  },
+  [BASEGOERLI_TEST1_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    crossBridgeInitToken: '',
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: BASEGOERLI_TEST1NET,
+    nodeRpcList: [
+      BASEGOERLI_TEST1NET
+    ],
+    chainID: BASEGOERLI_TEST1_CHAINID,
+    lookHash: BASEGOERLI_TEST1_EXPLORER + '/tx/',
+    lookAddr: BASEGOERLI_TEST1_EXPLORER + '/address/',
+    lookBlock: BASEGOERLI_TEST1_EXPLORER + '/block/',
+    explorer: BASEGOERLI_TEST1_EXPLORER,
+    symbol: symbol,
+    name: 'Base Goerli',
+    networkName: 'Base Goerli',
+    networkLogo: 'BASEGOERLI',
+    walletName: 'Base Goerli',
+    type: 'test',
+    label: BASEGOERLI_TEST1_CHAINID,
   },
 }
