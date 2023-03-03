@@ -187,12 +187,12 @@ export async function useBatchData ({chainId, calls, provider}) {
 ]
 */
 // useBatchData({
-//   chainId: '1',
+//   chainId: '56',
 //   calls: [
 //     {
 //       "type": "TOKEN",
 //       "callData": "0x70a08231000000000000000000000000c03033d8b833ff7ca08bf2a58c9bc9d711257249",
-//       "target": "0x5cbe98480a790554403694b98bff71a525907f5d"
+//       "target": "0x43BA383B9934D8D45ea6348D00DBc1bAe97D6e74"
 //     },
 //   ]
 // }).then(res => {

@@ -48,6 +48,9 @@ const NON_ERC20:any = {
   [ChainId.CELO]: [
     '0x5566b6e4962ba83e05a426ad89031ec18e9cadd3'
   ],
+  [ChainId.BNB]: [
+    '0x43ba383b9934d8d45ea6348d00dbc1bae97d6e74'
+  ],
 }
 
 export default function Updater(): null {

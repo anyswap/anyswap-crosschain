@@ -152,6 +152,7 @@ export function useSolCreateAccount () {
             signer?.publicKey
           )
         )
+        console.log(tx)
         const result = await connection.getLatestBlockhash()
         // const result = await connection.getConfirmedBlock(blockNumber)
         console.log(tx)
