@@ -14,11 +14,15 @@ import {nonevmAddress} from '../hooks/actions'
 import axios from "axios"
 import config from "../../config"
 import { ChainId } from "../../config/chainConfig/chainId"
+
+import { Contract } from '@ethersproject/contracts'
+
+import REEF_ABI from './abi.json'
 // import {web3Enable} from "@reef-defi/extension-dapp";
 // import {REEF_EXTENSION_IDENT} from "@reef-defi/extension-inject"
 // import {resolveAddress, resolveEvmAddress} from "@reef-defi/evm-provider/utils";
 // import { ApiPromise, WsProvider } from '@polkadot/api'
-// const { ApiPromise, WsProvider } =  require('@polkadot/api')
+const { WsProvider, Provider } =  require('@polkadot/api')
 // import { options } from '@reef-defi/api'
 // const { options } = require('@reef-defi/api')
 // const {
@@ -88,7 +92,6 @@ export function useReefBalance () {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
         resolve('')
       } else {
-
         axios.post(config.chainInfo[chainId].nodeRpc,{
           extensions: {},
           operationName: "account",
@@ -271,15 +274,21 @@ export function useReefCrossChain (
   execute?: undefined | (() => Promise<void>)
 } {
   const { account, chainId } = useActiveReact()
+  const provider = new Provider({
+    provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+})
+// const api = await ApiPromise.create({ provider: wsProvider })
   return useMemo(() => {
+    if (!routerToken) return {}
     return {
       balance: '',
       execute: async () => {
-        console.log()
+        const contract = new Contract(routerToken, REEF_ABI, provider as any)
+        console.log(contract)
       },
       inputError: ''
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, provider])
 }
 
 enum SwapType {
