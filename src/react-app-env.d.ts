@@ -108,8 +108,8 @@ interface Window {
   freighterApi: any
   xfi: any
   cardano: any
-  typhon: any
-  typhoncip30: any
+  eternl: any
+  // typhoncip30: any
   solana: any
   bitkeep: any
   aptos: any

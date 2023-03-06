@@ -37,21 +37,21 @@ export function useAdaLogin() {
   const {chainId} = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => {
-    const adaWallet = window?.cardano?.typhon
-    // console.log(adaWallet)
-    if (adaWallet?.enable) {
-      adaWallet.enable().then((res:any) => {
-        // console.log(res)
-        if (res) {
-          adaWallet.getNetworkId().then((res:any) => {
-            // console.log(res)
+    const adaWallet = window?.cardano?.eternl
+    console.log(2,adaWallet)
+    if (adaWallet && adaWallet?.enable) {
+      adaWallet.enable().then((eternl:any) => {
+        console.log(eternl)
+        if (eternl) {
+          eternl.getNetworkId().then((res:any) => {
+            console.log(res)
             if (
-              (res.data === 0 && ChainId.ADA_TEST === chainId)
-              || (res.data === 1 && ChainId.ADA === chainId)
+              (res === 0 && ChainId.ADA_TEST === chainId)
+              || (res === 1 && ChainId.ADA === chainId)
             ) {
-              adaWallet.getAddress().then((res:any) => {
-                // console.log(res)
-                if (res) {
+              eternl.getChangeAddress().then((res:any) => {
+                console.log(res)
+                if (res && res.length > 0) {
                   dispatch(adaAddress({address: res.data}))
                 }
               })
@@ -62,9 +62,9 @@ export function useAdaLogin() {
         }
       })
     } else {
-      if (confirm('Please connect Typhon or install Typhon.') === true) {
+      if (confirm('Please connect Eternl or install Eternl.') === true) {
         // window.open('https://namiwallet.io/')
-        window.open('https://typhonwallet.io/#/download')
+        window.open('https://ccvault.io/')
       }
     }
   }, [])
@@ -74,12 +74,16 @@ export function useAdaBalance () {
   const adaBalanceList:any = useSelector<AppState, AppState['ada']>(state => state.ada.adaBalanceList)
   const getAdaBalance = useCallback(() => {
     return new Promise(resolve => {
-      const adaWallet = window?.cardano?.typhon
+      const adaWallet = window?.cardano?.eternl
+      console.log(1,adaWallet)
       if (adaWallet) {
-        adaWallet.getBalance().then((res:any) => {
-          // console.log(res)
-          resolve(res)
-        })
+        adaWallet.enable().then((eternl:any) => {
+          eternl.getBalance().then((res:any) => {
+            // console.log(res)
+            resolve(res)
+          })
+        });
+        
       } else {
         resolve('')
       }
@@ -187,7 +191,7 @@ export function useAdaCrossChain (
 
   const {adaBalanceList} = useAdaBalance()
 
-  const adaWallet = window?.cardano?.typhon
+  const adaWallet = window?.cardano?.eternl
   const addTransaction = useTransactionAdder()
 
   const inputValue = selectCurrency?.tokenType === 'NATIVE' ? Number(typedValue) + baseValue : typedValue

@@ -13,7 +13,7 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {
   adaAddress,
-  adaBalanceList
+  // adaBalanceList
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
@@ -33,59 +33,65 @@ export default function Updater(): null {
   }, [dispatch])
 
 
-  const typhonRef = useRef<any>()
+  const eternlRef = useRef<any>()
 
   window.onload = () => {
-    typhonRef.current = window.cardano.typhon
+    eternlRef.current = window.cardano.eternl
   };
 
   const getBalance = useCallback(() => {
-    const adaWallet = typhonRef.current
+    if(!account) return;
+    const adaWallet = window.cardano.eternl
 
     // getAdaBalance()
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
-      adaWallet.getBalance().then((res:any) => {
-        console.log(res)
-        const blList:any = {}
-        if (res.status) {
-          const result = res.data
-          blList['NATIVE'] = result.ada
-          if (result.tokens && result.tokens.length > 0) {
-            for (const obj of result.tokens) {
-              const key = obj.policyId + '.' + obj.assetName
-              blList[key] = obj.amount
-            }
-          }
-          dispatch(adaBalanceList({list: blList}))
-        }
-      })
+      console.log(1,adaWallet)
+      adaWallet.enable().then((eternl:any) => {
+        eternl.getBalance().then((res:any) => {
+          console.log(res)
+          // const blList:any = {}
+          // if (res.status) {
+          //   const result = res.data
+          //   blList['NATIVE'] = result.ada
+          //   if (result.tokens && result.tokens.length > 0) {
+          //     for (const obj of result.tokens) {
+          //       const key = obj.policyId + '.' + obj.assetName
+          //       blList[key] = obj.amount
+          //     }
+          //   }
+          //   dispatch(adaBalanceList({list: blList}))
+          // }
+        })
+      });
+      
     }
-  }, [chainId, typhonRef.current, account])
+  }, [chainId, eternlRef.current, account])
 
   useEffect(() => {
     getBalance()
-  }, [chainId, typhonRef.current, account])
+  }, [chainId, eternlRef.current, account])
 
   useInterval(getBalance, 1000 * 10)
 
   useEffect(() => {
-    const adaWallet = typhonRef.current
-    console.log(adaWallet)
+    const adaWallet = window?.cardano?.eternl
+    console.log(3, adaWallet)
+    
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
-
-      adaWallet.enable().then((res:any) => {
-        // console.log(res)
-        if (res) {
-          adaWallet.getNetworkId().then((res:any) => {
-            // console.log(res)
+      console.log(adaWallet)
+      adaWallet.enable().then((eternl:any) => {
+        console.log(eternl)
+        if (eternl) {
+          eternl.getNetworkId().then((res:any) => {
+            console.log(res)
             if (
-              (res.data === 0 && ChainId.ADA_TEST === chainId)
-              || (res.data === 1 && ChainId.ADA === chainId)
+              (res === 0 && ChainId.ADA_TEST === chainId)
+              || (res === 1 && ChainId.ADA === chainId)
             ) {
-              adaWallet.getAddress().then((res:any) => {
-                // console.log(res)
-                if (res) {
-                  setAdaAddress(res.data)
+              eternl.getChangeAddress().then((res:any) => {
+                console.log(res)
+                if (res && res.length > 0) {
+                  setAdaAddress(res)
                 }
               })
             } else {
@@ -93,7 +99,7 @@ export default function Updater(): null {
             }
           })
         }
-      })
+      }).catch((err:any) => {console.log(err)})
       
       const handleChainChanged = (chainID:any) => {
         console.log(chainID)
@@ -104,13 +110,13 @@ export default function Updater(): null {
         adaWallet.getNetworkId().then((res:any) => {
           // console.log(res)
           if (
-            (res.data === 0 && ChainId.ADA_TEST === chainId)
-            || (res.data === 1 && ChainId.ADA === chainId)
+            (res === 0 && ChainId.ADA_TEST === chainId)
+            || (res === 1 && ChainId.ADA === chainId)
           ) {
-            adaWallet.getAddress().then((res:any) => {
+            adaWallet.getChangeAddress().then((res:any) => {
               // console.log(res)
-              if (res) {
-                setAdaAddress(res.data)
+              if (res && res.length > 0) {
+                setAdaAddress(res)
               }
             })
           } else {
@@ -133,7 +139,7 @@ export default function Updater(): null {
       }
     }
     return undefined
-  }, [chainId, typhonRef.current])
+  }, [chainId, eternlRef.current])
 
   return null
 }
