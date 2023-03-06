@@ -2,9 +2,10 @@
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const REEF_MAINNET = 'wss://rpc.reefscan.info/ws'
+export const REEF_MAINNET_WS = 'wss://rpc.reefscan.info/ws'
+export const REEF_MAINNET = 'https://reefscan.com/graphql'
 export const REEF_MAIN_CHAINID = ChainId.REEF
-export const REEF_MAIN_EXPLORER = 'https://reefscan.com'
+export const REEF_MAIN_EXPLORER = process.env.NODE_ENV === 'development' ? 'https://reefscan.com' : 'https://squid.subsquid.io/reef-bridge/v/v1/graphql'
 
 export const REEF_TESTNET = 'https://rpc.reefscan.com'
 export const REEF_TEST_CHAINID = ChainId.REEF_TEST
@@ -26,6 +27,7 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: REEF_MAINNET,
+    nodeRpcWs: REEF_MAINNET_WS,
     nodeRpcList: [
       REEF_MAINNET,
     ],

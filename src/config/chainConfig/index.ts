@@ -426,6 +426,7 @@ const useChain:any = {
     ChainId.NEAR,
     ChainId.APT,
     ChainId.SOL,
+    ChainId.REEF,
     // ChainId.ADA,
   ],
   [VERSION.V7_TEST]: [

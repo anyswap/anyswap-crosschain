@@ -289,12 +289,13 @@ export function useBaseBalances (
       }
     } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
       // console.log(selectChainId)
-      getReefBalance({account: uncheckedAddresses}).then((res:any) => {
+      getReefBalance({account: uncheckedAddresses,chainId: selectChainId}).then((res:any) => {
         // console.log(res)
-        const dec = 6
+        const dec = 18
         if (res && res.toString() !== '0') {
-          const blvalue = tryParseAmount3(res, dec)
-          const bl = res ? BigAmount.format(dec, blvalue) : undefined
+          // const blvalue = tryParseAmount3(res, dec)
+          const bl = res ? BigAmount.format(dec, res) : undefined
+          // console.log(bl?.toExact())
           setBalance(bl)
         } else {
           const bl = BigAmount.format(dec, '0')

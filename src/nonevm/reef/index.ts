@@ -11,11 +11,14 @@ import {
 // import {reefAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
+import axios from "axios"
+import config from "../../config"
+import { ChainId } from "../../config/chainConfig/chainId"
 // import {web3Enable} from "@reef-defi/extension-dapp";
 // import {REEF_EXTENSION_IDENT} from "@reef-defi/extension-inject"
 // import {resolveAddress, resolveEvmAddress} from "@reef-defi/evm-provider/utils";
 // import { ApiPromise, WsProvider } from '@polkadot/api'
-const { ApiPromise, WsProvider } =  require('@polkadot/api')
+// const { ApiPromise, WsProvider } =  require('@polkadot/api')
 // import { options } from '@reef-defi/api'
 // const { options } = require('@reef-defi/api')
 // const {
@@ -80,27 +83,55 @@ export function useLoginReef () {
  * @param token token address
  */
 export function useReefBalance () {
-  const getReefBalance = useCallback(({account}: {account:string|null|undefined}) => {
+  const getReefBalance = useCallback(({account, chainId}: {account:string|null|undefined, chainId:any}) => {
     return new Promise(async(resolve) => {
-      const client = await init()
-      // console.log(client)
-      if (account && client?.reefProvider) {
-        client?.reefProvider?.subscribeSelectedNetwork(async(provider:any) => {
-          // console.log(provider)
-          if (provider) {
-            const wsProvider = new WsProvider(provider)
-            const api = await ApiPromise.create({ provider: wsProvider })
-            // console.log(api)
-            // console.log(account)
-            const {data:balance}:any = await api.query.system.account(account);
-            // console.log(balance.free.toString())
-            resolve(balance.free.toString())
+      if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+        resolve('')
+      } else {
+
+        axios.post(config.chainInfo[chainId].nodeRpc,{
+          extensions: {},
+          operationName: "account",
+          query: `query account($address: String!) {
+            account(
+              where: {_or: [{address: {_ilike: $address}}, {evm_address: {_ilike: $address}}]}
+            ) {
+              address
+              evm_address
+              available_balance
+              free_balance
+              locked_balance
+              block_id
+              timestamp
+              nonce
+              identity
+              evm_nonce
+              free_balance
+              available_balance
+              locked_balance
+              reserved_balance
+              vested_balance
+              voting_balance
+              __typename
+            }
+          }`,
+          variables: {address: account}
+        },
+        // {headers: {
+        //   Authorization: process.env.REACT_APP_REEF_NETWORK_KEY
+        // }}
+        ).then((result:any) => {
+          // console.log(result)
+          const {data: res} = result
+          if (res?.data?.account?.[0]) {
+            resolve(res?.data?.account?.[0].available_balance)
           } else {
             resolve('')
           }
+        }).catch((error:any) => {
+          console.log(error)
+          resolve('')
         })
-      } else {
-        resolve('')
       }
     })
   }, []) 
@@ -154,34 +185,66 @@ export function useReefAllowance(
   }
 }
 
-enum State {
-  Success = 'Success',
-  Failure = 'Failure',
-  Null = 'Null',
-}
-
-interface TxDataResult {
-  msg: State,
-  info: any,
-  error: any
-}
 /**
  * Get transaction info
  *
  * @param txid transaction hash
  */
-export function getReefTxnsStatus (txid:string) {
+export function getReefTxnsStatus (txid:string, chainId:any) {
   return new Promise(resolve => {
-    const data:TxDataResult = {
-      msg: State.Null,
-      info: '',
-      error: ''
-    }
+    const data:any = {}
     if (txid) {
+      axios.post(config.chainInfo[chainId].nodeRpc,{
+      // axios.post('https://squid.subsquid.io/reef-bridge/v/v1/graphql',{
+        extensions: {},
+        operationName: "extrinsic",
+        query: `query extrinsic($hash: String!)
+          {
+            extrinsic(where: {hash: {_eq: $hash}}) {
+              id
+              block_id
+              index
+              signer
+              section
+              method
+              args
+              hash
+              docs
+              type
+              timestamp
+              error_message
+              signed_data
+              __typename
+            }
+          }
+        `,
+        variables: {hash: txid},
+      },
+      // {headers: {
+      //   Authorization: process.env.REACT_APP_REEF_NETWORK_KEY
+      // }}
+      ).then((result:any) => {
+        const {data: res} = result
+        console.log(res)
+        if (res?.data?.extrinsic) {
+          if (res?.data?.extrinsic.length > 0) {
+            data.msg = 'Success'
+            data.info = res?.data
+          } else {
+            data.msg = 'Null'
+            data.error = 'Query is empty!'
+          }
+        } else {
+          data.msg = 'Null'
+          data.error = 'Query is empty!'
+        }
+      })
       resolve(data)
     }
   })
 }
+
+// getReefTxnsStatus('0x6cbb6fa45504921b8f44822fe5e56ea9408ddf9b35845f3495a6aea0410bd9b6', 'REEF')
 
 /**
  * Cross chain 
