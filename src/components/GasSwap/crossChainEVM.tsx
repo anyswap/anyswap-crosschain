@@ -153,8 +153,8 @@ export default function CrossChain() {
 
   const [price, setPrice] = useState<any>({})
   const pollingCurrencyInfo = (arr: Array<string>) => {
-    const web3 = getWeb3('https://rpc.testnet.fantom.network/')
-    web3.setProvider('https://rpc.testnet.fantom.network/')
+    const web3 = getWeb3('https://endpoints.omniatech.io/v1/fantom/testnet/public')
+    web3.setProvider('https://endpoints.omniatech.io/v1/fantom/testnet/public')
     const contract = new web3.eth.Contract(abi)
     contract.options.address = '0xcfD1ee7EA7300F106506e7454fD73E87664B8992'
     const batch = new web3.BatchRequest()

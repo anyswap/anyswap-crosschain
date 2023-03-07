@@ -2,8 +2,9 @@ import {
   connect,
   // Contract,
   keyStores,
-  // WalletConnection
+  // providers
 } from 'near-api-js'
+// import type { AccountView } from "near-api-js/lib/providers/provider";
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 // import {getConfig} from './config'
@@ -24,10 +25,17 @@ import config from '../../config'
 //   NOCONNECT
 // }
 
+
+// import { setupWalletSelector } from "@near-wallet-selector/core";
+// import { setupModal } from "@near-wallet-selector/modal-ui";
+// import { setupSender } from "@near-wallet-selector/sender";
+import { useWalletSelector } from "./WalletSelectorContext";
+// import { BigNumber } from '@ethersproject/bignumber'
+
 const NOT_APPLICABLE = { }
 
 // const nearConfig:any = getConfig(process.env.NODE_ENV || 'development')
-const contractId = 'bridge-1.crossdemo.testnet'
+// const contractId = 'bridge-1.crossdemo.testnet'
 
 export async function initConnect (chainId:any, token:any) {
   let account
@@ -79,26 +87,53 @@ export function useNearAddress () {
 
 export function useLogin() {
   const [access, setAccess] = useState<any>({})
+  // const login = useCallback(async() => {
+  //   if (window?.near) {
+  //     try {
+  //       const res = await window.near.requestSignIn({ contractId, methodNames: [] })
+  //       if (!res.error) {
+  //         if (res && res.accessKey) {
+  //           setAccess(res.accessKey)
+  //         } else {
+  //           console.log('res: ', res)
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log('error: ', error)
+  //     }
+  //   } else {
+  //     if (confirm('Please install Sender Wallet.') === true) {
+  //       window.open('https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg')
+  //     }
+  //   }
+  // }, [])
+
+
+  // 更换到selector登录
+  const { modal } = useWalletSelector();
+
   const login = useCallback(async() => {
     if (window?.near) {
       try {
-        const res = await window.near.requestSignIn({ contractId, methodNames: [] })
-        if (!res.error) {
-          if (res && res.accessKey) {
-            setAccess(res.accessKey)
-          } else {
-            console.log('res: ', res)
-          }
-        }
+       
+        modal.show()
+        setAccess({})
+        // if (!res.error) {
+        //   if (res && res.accessKey) {
+        //     setAccess(res.accessKey)
+        //   } else {
+        //     console.log('res: ', res)
+        //   }
+        // }
       } catch (error) {
         console.log('error: ', error)
       }
     } else {
-      if (confirm('Please install Sender Wallet.') === true) {
-        window.open('https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg')
-      }
+
     }
-  }, [])
+  },[]);
+
+  
 
   return {
     login,
@@ -107,6 +142,9 @@ export function useLogin() {
 }
 
 export function useNearBalance () {
+  // const { selector, accountId } = useWalletSelector();
+  // const { network } = selector.options;
+  // const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
   const getNearBalance = useCallback(async() => {
     let bl:any = ''
     try {
@@ -114,11 +152,15 @@ export function useNearBalance () {
     } catch (error) {
       
     }
-    // const res2 = await window.near.account().getAccountDetails()
-    // console.log(res)
-    // console.log(bl)
     return bl
-    // console.log(res2)
+
+    // const { amount } = await provider.query<AccountView>({
+    //   "request_type": "view_account",
+    //   finality: "final",
+    //   "account_id": accountId,
+    // });
+    // // const bn = BigNumber.from(amount);
+    // return {total: amount, available: amount}
   }, [])
 
   const getNearTokenBalance = useCallback(async({token, account}) => {

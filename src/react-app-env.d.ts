@@ -157,3 +157,5 @@ declare module 'nebulas' {
 declare const NasExtWallet
 
 declare module 'nebpay.js'
+
+declare module 'rxjs';

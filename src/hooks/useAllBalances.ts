@@ -217,7 +217,6 @@ export function useBaseBalances (
       })
     } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChainId)) {
       getNearBalance().then(res => {
-        // console.log(res)
         const bl = res?.total ? BigAmount.format(24, res?.total) : undefined
         setBalance(bl)
       })
