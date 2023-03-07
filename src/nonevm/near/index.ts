@@ -82,7 +82,14 @@ export function useLogout() {
 }
 
 export function useNearAddress () {
-  return window?.near?.accountId
+  // return window?.near?.accountId
+  let accountId = undefined
+  if(window.selector){
+    if(window.selector.store.getState().accounts.length > 0) {
+      accountId = window.selector.store.getState().accounts[0].accountId;
+    }
+  }
+  return accountId;
 }
 
 export function useLogin() {
