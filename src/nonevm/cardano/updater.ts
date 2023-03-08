@@ -17,6 +17,7 @@ import {
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
+import { CML, cmlToCore } from "@cardano-sdk/core";
 // import {
 //   useAdaBalance
 // } from './index'
@@ -48,7 +49,13 @@ export default function Updater(): null {
       console.log(1,adaWallet)
       adaWallet.enable().then((eternl:any) => {
         eternl.getBalance().then((res:any) => {
-          console.log(res)
+          console.log(res);
+          /**
+           * Convert CIP-30 responses to human readable values
+           */
+          // example CIP-30 api.getBalance(); response
+          const balance:any = cmlToCore.value(CML.Value.from_bytes(Buffer.from(res, "hex")));
+          console.log(balance);
           // const blList:any = {}
           // if (res.status) {
           //   const result = res.data
