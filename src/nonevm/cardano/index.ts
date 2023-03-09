@@ -13,7 +13,7 @@ import { ChainId } from "../../config/chainConfig/chainId"
 
 import {adaAddress} from './actions'
 
-import * as typhonjs from '@stricahq/typhonjs'
+// import * as typhonjs from '@stricahq/typhonjs'
 // export const CardanoWasm = () => { // 路由懒加载
 //   return () => Promise.resolve(require(`@emurgo/cardano-serialization-lib-nodejs`).default)
 // }
@@ -79,7 +79,7 @@ export function useAdaBalance () {
       if (adaWallet) {
         adaWallet.enable().then((eternl:any) => {
           eternl.getBalance().then((res:any) => {
-            // console.log(res)
+            console.log(1,res)
             resolve(res)
           })
         });
@@ -225,20 +225,20 @@ export function useAdaCrossChain (
         console.log(adaWallet)
         
         try {
-          const MetaDatum:any =  {
-            "bind": receiveAddress,
-            "toChainId": useToChainId + ''
-          }
-          const auxDataCbor = typhonjs.utils
-          .createAuxiliaryDataCbor({
-            metadata: [
-              {
-                label: 123,
-                data: MetaDatum,
-              },
-            ],
-          })
-          .toString("hex");
+          // const MetaDatum:any =  {
+          //   "bind": receiveAddress,
+          //   "toChainId": useToChainId + ''
+          // }
+          // const auxDataCbor = typhonjs.utils
+          // .createAuxiliaryDataCbor({
+          //   metadata: [
+          //     {
+          //       label: 123,
+          //       data: MetaDatum,
+          //     },
+          //   ],
+          // })
+          // .toString("hex");
           const outputs = []
           if (selectCurrency?.tokenType === 'NATIVE') {
             outputs.push({
@@ -260,10 +260,22 @@ export function useAdaCrossChain (
               ],
             })
           }
-          const txResult = await adaWallet.paymentTransaction({
-            auxiliaryDataCbor: auxDataCbor,
-            outputs: [...outputs],
-          });
+          const Datum = () => window.lucid.data.void();
+          console.log(routerToken, inputAmount)
+          const tx = await window.lucid.newTx().payToContract(routerToken, { inline: Datum() }, { lovelace: inputAmount })
+            .complete();
+          const signedTx = await tx.sign().complete();
+          const txHash = await signedTx.submit();
+          const txResult = {
+            data: {
+              transactionId:txHash
+            },
+            status: true,
+          }
+          // const txResult = await adaWallet.paymentTransaction({
+          //   auxiliaryDataCbor: auxDataCbor,
+          //   outputs: [...outputs],
+          // });
           console.log(txResult)
           if (txResult?.status) {
             const txReceipt:any = {hash: txResult?.data?.transactionId}

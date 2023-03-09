@@ -13,11 +13,11 @@ import {useActiveReact} from '../../hooks/useActiveReact'
 
 import {
   adaAddress,
-  // adaBalanceList
+  adaBalanceList
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
-import { CML, cmlToCore } from "@cardano-sdk/core";
+// import { CML, cmlToCore } from "@cardano-sdk/core";
 // import {
 //   useAdaBalance
 // } from './index'
@@ -40,22 +40,33 @@ export default function Updater(): null {
     eternlRef.current = window.cardano.eternl
   };
 
+  const getFetchBalance = async () => {
+    if(window.lucid){
+      const blList:any = {}
+      const utxos = await window.lucid.wallet.getUtxos()
+      console.log(utxos)
+      blList['NATIVE'] = utxos[0].assets.lovelace.toString();
+      dispatch(adaBalanceList({list: blList}))
+    }
+    
+  }
+
   const getBalance = useCallback(() => {
     if(!account) return;
     const adaWallet = window.cardano.eternl
 
     // getAdaBalance()
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
-      console.log(1,adaWallet)
-      adaWallet.enable().then((eternl:any) => {
-        eternl.getBalance().then((res:any) => {
-          console.log(res);
+      getFetchBalance()
+      // adaWallet.enable().then((eternl:any) => {
+      //   eternl.getBalance().then((res:any) => {
+      //     console.log(res);
           /**
            * Convert CIP-30 responses to human readable values
            */
           // example CIP-30 api.getBalance(); response
-          const balance:any = cmlToCore.value(CML.Value.from_bytes(Buffer.from(res, "hex")));
-          console.log(balance);
+          // const balance:any = cmlToCore.value(CML.Value.from_bytes(Buffer.from(res, "hex")));
+          // console.log(balance);
           // const blList:any = {}
           // if (res.status) {
           //   const result = res.data
@@ -68,8 +79,8 @@ export default function Updater(): null {
           //   }
           //   dispatch(adaBalanceList({list: blList}))
           // }
-        })
-      });
+        // })
+      // });
       
     }
   }, [chainId, eternlRef.current, account])
