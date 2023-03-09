@@ -426,7 +426,7 @@ const useChain:any = {
     ChainId.NEAR,
     ChainId.APT,
     ChainId.SOL,
-    ChainId.REEF,
+    // ChainId.REEF,
     // ChainId.ADA,
   ],
   [VERSION.V7_TEST]: [
@@ -443,7 +443,8 @@ const useChain:any = {
     // ChainId.ATOM_TEST,
     ChainId.ATOM_SEI_TEST,
     ChainId.ATOM_DCORE_TEST,
-    ChainId.REEF_TEST,
+    ChainId.REEF,
+    // ChainId.REEF_TEST,
     ChainId.XRP_TEST,
     ChainId.ADA,
   ],

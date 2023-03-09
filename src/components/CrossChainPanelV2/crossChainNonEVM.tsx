@@ -21,6 +21,7 @@ import {useSolCrossChain} from '../../nonevm/solana'
 import {useAptCrossChain} from '../../nonevm/apt'
 import {useBtcCrossChain} from '../../nonevm/btc'
 import {useAtomCrossChain} from '../../nonevm/atom'
+import {useReefCrossChain} from '../../nonevm/reef'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -326,6 +327,16 @@ export default function CrossChain({
     destConfig,
     useToChainId
   )
+  const {execute: onReefWrap, inputError: wrapInputErrorReef} = useReefCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    useReceiveAddress,
+    inputBridgeValue,
+    destConfig,
+    useToChainId
+  )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -396,10 +407,12 @@ export default function CrossChain({
       return wrapInputErrorBtc
     } else if (wrapInputErrorAtom && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
       return wrapInputErrorAtom
+    } else if (wrapInputErrorReef && [ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      return wrapInputErrorReef
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc, wrapInputErrorAtom])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc, wrapInputErrorAtom, wrapInputErrorReef])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -646,7 +659,13 @@ export default function CrossChain({
                   onAtomWrap().then(() => {
                     onClear()
                   })
+                } else if (onReefWrap && [ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+                  console.log('onReefWrap')
+                  onReefWrap().then(() => {
+                    onClear()
+                  })
                 }
+                
               }}
               // approvalSubmitted={approvalSubmitted}
               // onApprovel={() => {

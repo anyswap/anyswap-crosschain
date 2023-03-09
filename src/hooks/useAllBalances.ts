@@ -46,6 +46,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {aptBalanceList} = useAptosBalance()
   const {btcBalanceList} = useBtcBalance()
   const {atomBalanceList} = useAtomBalance()
+  const {getReefTokenBalance} = useReefBalance()
 
   const savedBalance = useRef<any>()
 
@@ -155,6 +156,11 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
+      } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
+        getReefTokenBalance({chainId: selectChainId, account, token}).then((res:any) => {
+          const bl = BigAmount.format(dec, res)
+          savedBalance.current = bl
+        })
       } else {
         // console.log('evmBalance', evmBalance ? evmBalance.toExact() : '')
         savedBalance.current = evmBalance
