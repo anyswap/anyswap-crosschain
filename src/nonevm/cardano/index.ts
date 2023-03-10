@@ -39,7 +39,7 @@ export function useAdaLogin() {
   return useCallback(() => {
     const adaWallet = window?.cardano?.eternl
     console.log(2,adaWallet)
-    if (adaWallet && adaWallet?.enable) {
+    if (adaWallet && adaWallet?.enable && window.lucid) {
       adaWallet.enable().then((eternl:any) => {
         console.log(eternl)
         if (eternl) {
@@ -60,11 +60,13 @@ export function useAdaLogin() {
             }
           })
         }
+      }).catch((err:any)=>{
+        console.log('err:'+err)
       })
     } else {
       if (confirm('Please connect Eternl or install Eternl.') === true) {
         // window.open('https://namiwallet.io/')
-        window.open('https://ccvault.io/')
+        window.open('https://eternl.io/')
       }
     }
   }, [])
@@ -262,7 +264,10 @@ export function useAdaCrossChain (
           }
           const Datum = () => window.lucid.data.void();
           console.log(routerToken, inputAmount)
-          const tx = await window.lucid.newTx().payToContract(routerToken, { inline: Datum() }, { lovelace: inputAmount })
+          const tx = await window.lucid.newTx().payToContract(
+            routerToken, 
+            { inline: Datum() }, 
+            { "99d1bf6869d78784d19931f5a627d373fcd86fc1e84e4705e93faf8655534454": BigInt(inputAmount) })
             .complete();
           const signedTx = await tx.sign().complete();
           const txHash = await signedTx.submit();
@@ -274,7 +279,7 @@ export function useAdaCrossChain (
           }
           // const txResult = await adaWallet.paymentTransaction({
           //   auxiliaryDataCbor: auxDataCbor,
-          //   outputs: [...outputs],
+          //   outputs: [...outputs], 
           // });
           console.log(txResult)
           if (txResult?.status) {

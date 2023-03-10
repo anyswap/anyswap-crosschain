@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef } from "react";
-import { 
+import {
   useDispatch,
   // useSelector
 } from 'react-redux'
-import { 
+import {
   // AppState,
   AppDispatch
 } from '../../state'
 import { ChainId } from "../../config/chainConfig/chainId";
 
-import {useActiveReact} from '../../hooks/useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import {
   adaAddress,
@@ -23,14 +23,14 @@ import useInterval from "../../hooks/useInterval";
 // } from './index'
 
 export default function Updater(): null {
-  const {chainId, account} = useActiveReact()
+  const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 
   // const {getAdaBalance} = useAdaBalance()
 
-  const setAdaAddress = useCallback((address:any) => {
+  const setAdaAddress = useCallback((address: any) => {
     console.log(address)
-    dispatch(adaAddress({address}))
+    dispatch(adaAddress({ address }))
   }, [dispatch])
 
 
@@ -41,19 +41,29 @@ export default function Updater(): null {
   };
 
   const getFetchBalance = async () => {
-    if(window.lucid){
-      const blList:any = {}
+    if (window.lucid) {
+      const blList: any = {}
       const utxos = await window.lucid.wallet.getUtxos()
       console.log(utxos)
-      blList['NATIVE'] = utxos[0].assets.lovelace.toString();
-      dispatch(adaBalanceList({list: blList}))
+      let total = BigInt(0);
+      utxos.map((e: any) => {
+        total += e.assets.lovelace;
+        for (const tokenAddress in e.assets) {
+          const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
+          if(tokenAddress !== "lovelace") {
+            blList[_tokenAddress] = BigInt(10000000).toString(); //e.assets[tokenAddress].toString()
+          }
+        }
+      });
+      blList['NATIVE'] = total.toString();
+      dispatch(adaBalanceList({ list: blList }))
     }
-    
+
   }
 
   const getBalance = useCallback(() => {
-    if(!account) return;
-    const adaWallet = window.cardano.eternl
+    if (!account) return;
+    const adaWallet = window?.cardano?.eternl
 
     // getAdaBalance()
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
@@ -61,27 +71,27 @@ export default function Updater(): null {
       // adaWallet.enable().then((eternl:any) => {
       //   eternl.getBalance().then((res:any) => {
       //     console.log(res);
-          /**
-           * Convert CIP-30 responses to human readable values
-           */
-          // example CIP-30 api.getBalance(); response
-          // const balance:any = cmlToCore.value(CML.Value.from_bytes(Buffer.from(res, "hex")));
-          // console.log(balance);
-          // const blList:any = {}
-          // if (res.status) {
-          //   const result = res.data
-          //   blList['NATIVE'] = result.ada
-          //   if (result.tokens && result.tokens.length > 0) {
-          //     for (const obj of result.tokens) {
-          //       const key = obj.policyId + '.' + obj.assetName
-          //       blList[key] = obj.amount
-          //     }
-          //   }
-          //   dispatch(adaBalanceList({list: blList}))
-          // }
-        // })
+      /**
+       * Convert CIP-30 responses to human readable values
+       */
+      // example CIP-30 api.getBalance(); response
+      // const balance:any = cmlToCore.value(CML.Value.from_bytes(Buffer.from(res, "hex")));
+      // console.log(balance);
+      // const blList:any = {}
+      // if (res.status) {
+      //   const result = res.data
+      //   blList['NATIVE'] = result.ada
+      //   if (result.tokens && result.tokens.length > 0) {
+      //     for (const obj of result.tokens) {
+      //       const key = obj.policyId + '.' + obj.assetName
+      //       blList[key] = obj.amount
+      //     }
+      //   }
+      //   dispatch(adaBalanceList({list: blList}))
+      // }
+      // })
       // });
-      
+
     }
   }, [chainId, eternlRef.current, account])
 
@@ -94,19 +104,19 @@ export default function Updater(): null {
   useEffect(() => {
     const adaWallet = window?.cardano?.eternl
     console.log(3, adaWallet)
-    
+
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
       console.log(adaWallet)
-      adaWallet.enable().then((eternl:any) => {
+      adaWallet.enable().then((eternl: any) => {
         console.log(eternl)
         if (eternl) {
-          eternl.getNetworkId().then((res:any) => {
+          eternl.getNetworkId().then((res: any) => {
             console.log(res)
             if (
               (res === 0 && ChainId.ADA_TEST === chainId)
               || (res === 1 && ChainId.ADA === chainId)
             ) {
-              eternl.getChangeAddress().then((res:any) => {
+              eternl.getChangeAddress().then((res: any) => {
                 console.log(res)
                 if (res && res.length > 0) {
                   setAdaAddress(res)
@@ -117,21 +127,21 @@ export default function Updater(): null {
             }
           })
         }
-      }).catch((err:any) => {console.log(err)})
-      
-      const handleChainChanged = (chainID:any) => {
+      }).catch((err: any) => { console.log(err) })
+
+      const handleChainChanged = (chainID: any) => {
         console.log(chainID)
       }
 
       const handleAccountsChanged = (accounts: string[]) => {
         console.log(accounts)
-        adaWallet.getNetworkId().then((res:any) => {
+        adaWallet.getNetworkId().then((res: any) => {
           // console.log(res)
           if (
             (res === 0 && ChainId.ADA_TEST === chainId)
             || (res === 1 && ChainId.ADA === chainId)
           ) {
-            adaWallet.getChangeAddress().then((res:any) => {
+            adaWallet.getChangeAddress().then((res: any) => {
               // console.log(res)
               if (res && res.length > 0) {
                 setAdaAddress(res)
