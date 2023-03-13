@@ -241,34 +241,26 @@ export function useAdaCrossChain (
           //   ],
           // })
           // .toString("hex");
-          const outputs = []
-          if (selectCurrency?.tokenType === 'NATIVE') {
-            outputs.push({
-              address: routerToken,
-              amount: inputAmount,
-            })
-          } else {
-            const tokenArr = selectCurrency?.address.split('.')
-            const tokenArrLen = tokenArr.length
-            outputs.push({
-              address: routerToken,
-              amount: tryParseAmount3(baseValue + '', 6),
-              tokens: [
-                {
-                  assetName: tokenArrLen === 2 ? tokenArr[1] : '',
-                  policyId: tokenArr[0],
-                  amount: inputAmount,
-                },
-              ],
-            })
-          }
           const Datum = () => window.lucid.data.void();
-          console.log(routerToken, inputAmount)
-          const tx = await window.lucid.newTx().payToContract(
-            routerToken, 
-            { inline: Datum() }, 
-            { "99d1bf6869d78784d19931f5a627d373fcd86fc1e84e4705e93faf8655534454": BigInt(inputAmount) })
-            .complete();
+          let tx = undefined;
+          if (selectCurrency?.tokenType === 'NATIVE') {
+            tx = await window.lucid.newTx().payToContract(
+              routerToken, 
+              { inline: Datum() }, 
+              { lovelace: BigInt(inputAmount) })
+              .complete();
+          } else {
+            const tokenArr = selectCurrency?.address.split('.');
+            const tokenObj:any = {};
+            const decimals = selectCurrency.decimals;
+            tokenObj[tokenArr[0] + tokenArr[1]] = BigInt(inputAmount / eval(`1e${decimals}`));
+            tx = await window.lucid.newTx().payToContract(
+              routerToken, 
+              { inline: Datum() }, 
+              tokenObj)
+              .complete();
+          }
+          
           const signedTx = await tx.sign().complete();
           const txHash = await signedTx.submit();
           const txResult = {
