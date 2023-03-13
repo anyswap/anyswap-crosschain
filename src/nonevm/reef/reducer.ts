@@ -19,6 +19,7 @@ export default createReducer<BurnState>(initialState, builder =>
       state.reefBalanceList = list
     })
     .addCase(reefEvmAddress, (state, { payload: { address } }) => {
+      console.log('reefEvmAddress', address)
       state.reefEvmAddress = address
     })
     .addCase(reefApproveList, (state, { payload: { token, result } }) => {

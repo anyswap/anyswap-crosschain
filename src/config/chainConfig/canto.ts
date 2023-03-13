@@ -32,7 +32,9 @@ export default {
       CANTO_MAINNET,
       'https://canto.neobase.one',
       'https://mainnode.plexnode.org:8545',
-      'https://canto.slingshot.finance'
+      'https://canto.slingshot.finance',
+      'https://canto.evm.chandrastation.com',
+      'https://jsonrpc.canto.nodestake.top',
     ],
     chainID: CANTO_MAIN_CHAINID,
     lookHash: CANTO_MAIN_EXPLORER + '/tx/',

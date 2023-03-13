@@ -4,15 +4,16 @@ import { useTranslation } from 'react-i18next'
 import useInterval from '../../hooks/useInterval'
 import {
   useDispatch,
-  // useSelector
+  useSelector
 } from 'react-redux'
 import {
-  // AppState,
+  AppState,
   AppDispatch
 } from '../../state'
 // import {reefAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
+// import {reefEvmAddress} from './actions'
 import axios from "axios"
 import config from "../../config"
 import { ChainId } from "../../config/chainConfig/chainId"
@@ -23,6 +24,7 @@ import {BigAmount} from '../../utils/formatBignumber'
 import {recordsTxns} from '../../utils/bridge/register'
 
 import { Contract } from '@ethersproject/contracts'
+// import ERC20_ABI from '../../constants/abis/erc20.json'
 
 import REEF_ABI from './abi.json'
 // import {web3Enable} from "@reef-defi/extension-dapp";
@@ -49,12 +51,23 @@ const {web3Enable} = require('@reef-defi/extension-dapp')
 
 // let reefExtension:any
 
+// const ERC20_ABI = [{
+//   "constant": true,
+//   "inputs": [{ "name": "_owner", "type": "address" }],
+//   "name": "balanceOf",
+//   "outputs": [{ "name": "balance", "type": "uint256" }],
+//   "payable": false,
+//   "stateMutability": "view",
+//   "type": "function"
+// }]
+
+const reefAddress = /(^[0-9a-zA-Z]{48})$|(^0x[0-9a-zA-Z]{40})$/
 export function isReefAddress (address:string):boolean | string {
-  return address //true: address; false: false
+  return reefAddress.test(address) //true: address; false: false
 }
 
 async function init () {
-  const appName = 'Multichain Bridge App'
+  const appName = 'Multichain App'
   const extensionsArr:any = await web3Enable(appName);
   if (extensionsArr) {
     return extensionsArr.find((e:any)=>e.name===REEF_EXTENSION_IDENT)
@@ -72,9 +85,9 @@ function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
     // const wallet = new Signer(provider, accountId, accountSigner)
     if (client && account && tokenAddress && ABI) {
       client?.reefSigner.subscribeSelectedSigner(async(signer:any) => {
-        console.log(signer)
+        // console.log(signer)
         const wallet:any = new Signer(provider, account, signer)
-        console.log(wallet)
+        // console.log(wallet)
         const contract = new Contract(tokenAddress, ABI, wallet)
         resolve(contract)
       })
@@ -94,11 +107,12 @@ export function useLoginReef () {
     // const appName = 'Multichain Bridge App'
     const client = await init()
     // const extensionsArr:any = await web3Enable(appName);
-    console.log(client)
+    // console.log(client)
     if (client) {
       client.reefSigner.subscribeSelectedAccount(
         (account:any) => {
           if (account) {
+            // console.log(account)
             dispatch(nonevmAddress({account: account?.address, chainId}));
           }
         }
@@ -122,6 +136,9 @@ export function useLoginReef () {
  * @param token token address
  */
 export function useReefBalance () {
+  const dispatch = useDispatch<AppDispatch>()
+  const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
+  // console.log(evmAccount)
   const getReefBalance = useCallback(({account, chainId}: {account:string|null|undefined, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -159,9 +176,11 @@ export function useReefBalance () {
         //   Authorization: process.env.REACT_APP_REEF_NETWORK_KEY
         // }}
         ).then((result:any) => {
-          // console.log(result)
+          console.log(result)
           const {data: res} = result
           if (res?.data?.account?.[0]) {
+            // console.log(res?.data?.account?.[0].evm_address)
+            // dispatch(reefEvmAddress({address: res?.data?.account?.[0].evm_address}));
             resolve(res?.data?.account?.[0].available_balance)
           } else {
             resolve('')
@@ -172,15 +191,21 @@ export function useReefBalance () {
         })
       }
     })
-  }, []) 
+  }, [dispatch]) 
 
   const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
-    return new Promise((resolve) => {
-      if (account && token && chainId) {
+    return new Promise(async(resolve) => {
+      console.log('evmAccount',evmAccount, token, account)
+      if (account && token && chainId ) {
+        // const contract:any = await getContract (account, chainId, token, ERC20_ABI)
+        // console.log(contract)
+        // contract.balanceOf('0xeB33ef5Cd460F79C335bbcdcFC5f1a2EaDd6C6c5').then((res:any) => {
+        //   console.log(res)
+        // })
         resolve('1000000000000')
       }
     })
-  }, [])
+  }, [evmAccount])
 
   return {
     getReefBalance,

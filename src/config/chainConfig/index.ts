@@ -98,6 +98,8 @@ import reef from './reef'
 import bit from './bit'
 import neon from './neon'
 import canto from './canto'
+import nahmii3 from './nahmii3'
+import tst from './tst'
 
 import { ChainId } from './chainId'
 
@@ -107,6 +109,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...tst,
+  ...nahmii3,
   ...canto,
   ...neon,
   ...bit,
@@ -318,6 +322,8 @@ const testChainList = [
   ChainId.NEON_TEST,
   ChainId.SHM1X_TEST,
   ChainId.BASEGOERLI,
+  ChainId.NAHMII3_TEST,
+  ChainId.TST_TEST,
 ]
 
 const useChain:any = {
