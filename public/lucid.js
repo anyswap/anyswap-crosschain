@@ -17,7 +17,6 @@ async function lucid() {
         window.lucid = lucid;
         window.lucid.data = Data;
     } catch (error) {
-        console.log(3)
         console.log(error)
     }
     

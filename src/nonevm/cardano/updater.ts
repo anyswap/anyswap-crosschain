@@ -51,7 +51,7 @@ export default function Updater(): null {
         for (const tokenAddress in e.assets) {
           const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
           if(tokenAddress !== "lovelace") {
-            blList[_tokenAddress] = BigInt(10000000).toString(); //e.assets[tokenAddress].toString()
+            blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
           }
         }
       });
@@ -103,21 +103,16 @@ export default function Updater(): null {
 
   useEffect(() => {
     const adaWallet = window?.cardano?.eternl
-    console.log(3, adaWallet)
 
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
-      console.log(adaWallet)
       adaWallet.enable().then((eternl: any) => {
-        console.log(eternl)
         if (eternl) {
           eternl.getNetworkId().then((res: any) => {
-            console.log(res)
             if (
               (res === 0 && ChainId.ADA_TEST === chainId)
               || (res === 1 && ChainId.ADA === chainId)
             ) {
               eternl.getChangeAddress().then((res: any) => {
-                console.log(res)
                 if (res && res.length > 0) {
                   setAdaAddress(res)
                 }
@@ -134,7 +129,6 @@ export default function Updater(): null {
       }
 
       const handleAccountsChanged = (accounts: string[]) => {
-        console.log(accounts)
         adaWallet.getNetworkId().then((res: any) => {
           // console.log(res)
           if (
@@ -154,7 +148,6 @@ export default function Updater(): null {
       }
 
       if (adaWallet?.on) {
-        console.log(1.1)
         adaWallet?.on('networkChanged', handleChainChanged)
         adaWallet?.on('accountChanged', handleAccountsChanged)
       }
