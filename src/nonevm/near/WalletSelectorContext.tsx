@@ -5,25 +5,25 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+// import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+// import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+// import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+// import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
-import { setupNarwallets } from "@near-wallet-selector/narwallets";
-import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupNearSnap } from "@near-wallet-selector/near-snap";
-import { setupLedger } from "@near-wallet-selector/ledger";
+// import { setupNarwallets } from "@near-wallet-selector/narwallets";
+// import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
+// import { setupNearSnap } from "@near-wallet-selector/near-snap";
+// import { setupLedger } from "@near-wallet-selector/ledger";
 // import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { setupNearFi } from "@near-wallet-selector/nearfi";
-import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
-import { setupNeth } from "@near-wallet-selector/neth";
-import { setupXDEFI } from "@near-wallet-selector/xdefi";
+// import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+// import { setupNearFi } from "@near-wallet-selector/nearfi";
+// import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+// import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+// import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
+// import { setupNeth } from "@near-wallet-selector/neth";
+// import { setupXDEFI } from "@near-wallet-selector/xdefi";
 
 import type { ReactNode } from "react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -59,23 +59,23 @@ export const WalletSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
-        setupNearWallet(),
-        setupMyNearWallet(),
+        // setupNearWallet(),
+        // setupMyNearWallet(),
         setupSender(),
-        setupHereWallet(),
-        setupMathWallet(),
+        // setupHereWallet(),
+        // setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
-        setupNearSnap(),
-        setupNarwallets(),
-        setupWelldoneWallet(),
-        setupLedger(),
-        setupNearFi(),
-        setupCoin98Wallet(),
-        setupOptoWallet(),
-        setupFinerWallet(),
-        setupNeth(),
-        setupXDEFI(),
+        // setupNearSnap(),
+        // setupNarwallets(),
+        // setupWelldoneWallet(),
+        // setupLedger(),
+        // setupNearFi(),
+        // setupCoin98Wallet(),
+        // setupOptoWallet(),
+        // setupFinerWallet(),
+        // setupNeth(),
+        // setupXDEFI(),
         // setupWalletConnect({
         //   projectId: "c4f79cc...",
         //   metadata: {
@@ -85,15 +85,15 @@ export const WalletSelectorContextProvider: React.FC<{
         //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
         //   },
         // }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-          },
-        }),
+        // setupNightlyConnect({
+        //   url: "wss://relay.nightly.app/app",
+        //   appMetadata: {
+        //     additionalInfo: "",
+        //     application: "NEAR Wallet Selector",
+        //     description: "Example dApp used by NEAR Wallet Selector",
+        //     icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+        //   },
+        // }),
       ],
     });
     const _modal = setupModal(_selector, {
@@ -149,6 +149,17 @@ export const WalletSelectorContextProvider: React.FC<{
   const accountId =
     accounts.find((account) => account.active)?.accountId || null;
 
+  // const handleSignOut = async () => {
+  //   const wallet = await selector.wallet();
+
+  //   wallet.signOut().catch((err) => {
+  //     console.log("Failed to sign out");
+  //     console.error(err);
+  //   });
+  // };
+  // const handleSwitchWallet = () => {
+  //   modal.show();
+  // };
   return (
     <WalletSelectorContext.Provider
       value={{
@@ -158,6 +169,8 @@ export const WalletSelectorContextProvider: React.FC<{
         accountId,
       }}
     >
+      {/* <div onClick={()=> handleSignOut()}>Out</div>
+      <div onClick={()=> handleSwitchWallet()}>Switch Wallet</div> */}
       {children}
     </WalletSelectorContext.Provider>
   );
