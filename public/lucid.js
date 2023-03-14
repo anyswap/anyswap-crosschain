@@ -3,7 +3,7 @@ import { Lucid, Blockfrost, Data } from "https://unpkg.com/lucid-cardano@0.9.4/w
 async function lucid() {
     // testnet
     // const lucid = await Lucid.new(
-    //     new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "previewernfU9eH3ThnjBHP4TMeFmlb4tuM4BIZ"),
+    //     new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "preview9uMuq0VQk9n6lJkqGUWPo2t5PsRvqFfu"),
     //     "Preview",
     // );
 

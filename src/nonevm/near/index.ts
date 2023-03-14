@@ -153,7 +153,7 @@ export function useLogin() {
 }
 
 export function useNearBalance() {
-  const { selector, accountId } = useWalletSelector();
+  const { selector  } = useWalletSelector();
   const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
   const getNearBalance = useCallback(async () => {
@@ -165,6 +165,7 @@ export function useNearBalance() {
     // }
     // console.log(bl)
     // return bl
+    const accountId = useNearAddress()
     try {
       const { amount } = await provider.query<AccountView>({
         "request_type": "view_account",
@@ -180,7 +181,8 @@ export function useNearBalance() {
   }, [])
 
   const getNearTokenBalance = useCallback(async ({ token }) => {
-    let bl: any
+    let bl: any = BigInt(0);
+    const accountId = useNearAddress()
     // const useAccount = account ? account : window.near?.accountId
     // try {
 
@@ -194,21 +196,24 @@ export function useNearBalance() {
     // }
     // console.log(bl)
     // return bl
-    try {
-      bl = await provider.query<CodeResult>({
-        "request_type": "call_function",
-        "account_id": token,
-        "method_name": "ft_balance_of",
-        "args_base64": Buffer.from(JSON.stringify({
-          "account_id": accountId
-        })).toString('base64'),
-        finality: "optimistic",
-      });
-      bl = JSON.parse(Buffer.from(bl.result).toString())
-    } catch (error) {
-      console.log(error)
+    if (token && token !== 'mpc.testnet') {
+      try {
+        bl = await provider.query<CodeResult>({
+          "request_type": "call_function",
+          "account_id": token,
+          "method_name": "ft_balance_of",
+          "args_base64": Buffer.from(JSON.stringify({
+            "account_id": accountId
+          })).toString('base64'),
+          finality: "optimistic",
+        });
+        bl = JSON.parse(Buffer.from(bl.result).toString())
+      } catch (error) {
+        console.log(error)
+      }
     }
-    
+
+
     return bl
   }, [])
 
@@ -382,13 +387,13 @@ export function useSendNear() {
         // window.nightly.near.signAllTransactions(actions)
         .then((res: any) => {
           console.log(res)
-          if(res && res.length > 0){
+          if (res && res.length > 0) {
             tx = res[0].transaction;
             resolve(tx)
           } else {
             reject("sendTransaction ERROR")
           }
-          
+
           // if (res?.response && !res?.response.error && res?.response.length > 0) {
           //   tx = res?.response[0]?.transaction
           //   resolve(tx)
@@ -425,13 +430,13 @@ export function useSendNear() {
         // window.nightly.near.signAllTransactions(actions)
         .then((res: any) => {
           console.log(res)
-          if(res && res.length > 0){
+          if (res && res.length > 0) {
             tx = res[0].transaction;
             resolve(tx)
           } else {
             reject("sendTransaction ERROR")
           }
-          
+
           // if (res?.response && !res?.response.error && res?.response.length > 0) {
           //   tx = res?.response[0]?.transaction
           //   resolve(tx)
@@ -470,13 +475,13 @@ export function useSendNear() {
         // window.nightly.near.signAllTransactions(actions)
         .then((res: any) => {
           console.log(res)
-          if(res && res.length > 0){
+          if (res && res.length > 0) {
             tx = res[0].transaction;
             resolve(tx)
           } else {
             reject("sendTransaction ERROR")
           }
-          
+
           // if (res?.response && !res?.response.error && res?.response.length > 0) {
           //   tx = res?.response[0]?.transaction
           //   resolve(tx)
@@ -513,13 +518,13 @@ export function useSendNear() {
         // window.nightly.near.signAllTransactions(actions)
         .then((res: any) => {
           console.log(res)
-          if(res && res.length > 0){
+          if (res && res.length > 0) {
             tx = res[0].transaction;
             resolve(tx)
           } else {
             reject("sendTransaction ERROR")
           }
-          
+
           // if (res?.response && !res?.response.error && res?.response.length > 0) {
           //   tx = res?.response[0]?.transaction
           //   resolve(tx)
@@ -556,13 +561,13 @@ export function useSendNear() {
         // window.nightly.near.signAllTransactions(actions)
         .then((res: any) => {
           console.log(res)
-          if(res && res.length > 0){
+          if (res && res.length > 0) {
             tx = res[0].transaction;
             resolve(tx)
           } else {
             reject("sendTransaction ERROR")
           }
-          
+
           // if (res?.response && !res?.response.error && res?.response.length > 0) {
           //   tx = res?.response[0]?.transaction
           //   resolve(tx)
@@ -628,7 +633,7 @@ export function useNearSendTxns(
           }
         })
       } else {
-        getNearTokenBalance({ token: contractId }).then((res:any) => {
+        getNearTokenBalance({ token: contractId }).then((res: any) => {
           // console.log(contractId)
           // console.log(res)
           if (res) {

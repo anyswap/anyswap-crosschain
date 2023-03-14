@@ -33,7 +33,6 @@ export default function Updater(): null {
   // const {transferFn} = useSendFlowTxns()
 
   const getBalance = useCallback(async() => {
-    // getAdaBalance()
     // console.log(account)
     if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(chainId) && account) {
       // getFLOWTxnsStatus('a133c54d778fbb59bd4fb06ba4e41d8aa0d0e97c54dda283ac77c9d281cae150', chainId)
