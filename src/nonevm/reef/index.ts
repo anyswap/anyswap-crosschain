@@ -1,5 +1,5 @@
 
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useTranslation } from 'react-i18next'
 import useInterval from '../../hooks/useInterval'
 import {
@@ -13,7 +13,11 @@ import {
 // import {reefAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
-// import {reefEvmAddress} from './actions'
+import {
+  reefEvmAddress,
+  reefClient,
+  reefSigner
+} from './actions'
 import axios from "axios"
 import config from "../../config"
 import { ChainId } from "../../config/chainConfig/chainId"
@@ -51,15 +55,15 @@ const {web3Enable} = require('@reef-defi/extension-dapp')
 
 // let reefExtension:any
 
-// const ERC20_ABI = [{
-//   "constant": true,
-//   "inputs": [{ "name": "_owner", "type": "address" }],
-//   "name": "balanceOf",
-//   "outputs": [{ "name": "balance", "type": "uint256" }],
-//   "payable": false,
-//   "stateMutability": "view",
-//   "type": "function"
-// }]
+const ERC20_ABI = [{
+  "constant": true,
+  "inputs": [{ "name": "_owner", "type": "address" }],
+  "name": "balanceOf",
+  "outputs": [{ "name": "balance", "type": "uint256" }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}]
 
 const reefAddress = /(^[0-9a-zA-Z]{48})$|(^0x[0-9a-zA-Z]{40})$/
 export function isReefAddress (address:string):boolean | string {
@@ -97,6 +101,58 @@ function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
   })
 }
 
+export function useReefClient () {
+  const dispatch = useDispatch<AppDispatch>()
+  const clientCount = useRef(0)
+  return useCallback(async() => {
+    init().then(client => {
+      // console.log('clientCount',clientCount, client)
+      if (client) {
+        dispatch(reefClient({client}))
+      } else {
+        clientCount.current +=1
+      }
+    })
+  }, [clientCount.current])
+}
+
+export function useReefSigner () {
+  const dispatch = useDispatch<AppDispatch>()
+  // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
+  // const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
+  return useCallback((client:any) => {
+    // console.log(client)
+    if (client) {
+      client?.reefSigner.subscribeSelectedSigner(async(signer:any) => {
+        // console.log(signer)
+        dispatch(reefSigner({signer}))
+      })
+    }
+  }, [])
+}
+
+export function useReefContract() {
+  const reefSigner:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefSigner)
+  return useCallback((chainId:any, account:any, tokenAddress:any, ABI:any) => {
+    // console.log('reefSigner',reefSigner, chainId + '-chainId', account + '-account', tokenAddress + '-tokenAddress')
+    if (
+      chainId
+      && account
+      && tokenAddress
+      && ABI
+      && reefSigner
+    ) {
+      const provider = new Provider({
+        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+      })
+      const wallet:any = new Signer(provider, account, reefSigner)
+            // console.log(wallet)
+      const contract = new Contract(tokenAddress, ABI, wallet)
+      return contract
+    }
+    return undefined
+  }, [reefSigner])
+}
 
 /**
  * Connect wallet and get account address
@@ -139,6 +195,7 @@ export function useReefBalance () {
   const dispatch = useDispatch<AppDispatch>()
   const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   // console.log(evmAccount)
+  // const getContract  = useReefContract()
   const getReefBalance = useCallback(({account, chainId}: {account:string|null|undefined, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -176,11 +233,11 @@ export function useReefBalance () {
         //   Authorization: process.env.REACT_APP_REEF_NETWORK_KEY
         // }}
         ).then((result:any) => {
-          console.log(result)
+          // console.log(result)
           const {data: res} = result
           if (res?.data?.account?.[0]) {
             // console.log(res?.data?.account?.[0].evm_address)
-            // dispatch(reefEvmAddress({address: res?.data?.account?.[0].evm_address}));
+            dispatch(reefEvmAddress({address: res?.data?.account?.[0].evm_address}));
             resolve(res?.data?.account?.[0].available_balance)
           } else {
             resolve('')
@@ -193,19 +250,74 @@ export function useReefBalance () {
     })
   }, [dispatch]) 
 
+  // const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
+  //   return new Promise(async(resolve) => {
+  //     // console.log('evmAccount',evmAccount, token, account)
+  //     if (account && token && chainId ) {
+  //       const contract:any = getContract (chainId, account, token, ERC20_ABI)
+  //       console.log('evmAccount',evmAccount)
+  //       console.log(contract)
+  //       if (contract){
+  //         contract.balanceOf('0xeB33ef5Cd460F79C335bbcdcFC5f1a2EaDd6C6c5').then((res:any) => {
+  //           console.log(res.toString())
+  //           resolve(res.toString())
+  //         }).catch((error:any) => {
+  //           console.log(error.toString())
+  //           resolve('')
+  //         })
+  //       } else {
+  //         resolve('')
+  //       }
+  //     }
+  //   })
+  // }, [evmAccount, getContract])
   const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
     return new Promise(async(resolve) => {
-      console.log('evmAccount',evmAccount, token, account)
-      if (account && token && chainId ) {
-        // const contract:any = await getContract (account, chainId, token, ERC20_ABI)
+      // console.log('evmAccount',evmAccount, token, account)
+      
+      // axios.post(config.chainInfo[chainId].nodeRpc,{
+      //   id: 15,
+      //   jsonrpc: "2.0",
+      //   method: "evm_call",
+      //   params: [{
+      //     data: "0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
+      //     from: "0xeb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
+      //     gasLimit: null,
+      //     storageLimit: 0,
+      //     to: "0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd",
+      //     value: null
+      //   }
+      //   ]
+      // }).then((res:any) => {
+      // // axios.post(config.chainInfo[chainId].nodeRpc,{
+      // //   data: "0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
+      // //   from: "0xeb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
+      // //   gasLimit: null,
+      // //   storageLimit: 0,
+      // //   to: "0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd",
+      // //   value: null
+      // // }).then((res:any) => {
+      //   console.log(res)
+      // })
+      if (account && token && chainId && evmAccount) {
+        const contract:any = await getContract (account, chainId, token, ERC20_ABI)
+        // console.log('evmAccount',evmAccount)
         // console.log(contract)
-        // contract.balanceOf('0xeB33ef5Cd460F79C335bbcdcFC5f1a2EaDd6C6c5').then((res:any) => {
-        //   console.log(res)
-        // })
-        resolve('1000000000000')
+        if (contract){
+          // console.log(contract.balanceOf(evmAccount))
+          contract.balanceOf(evmAccount).then((res:any) => {
+            console.log(res.toString())
+            resolve(res.toString())
+          }).catch((error:any) => {
+            console.log(error.toString())
+            resolve('')
+          })
+        } else {
+          resolve('')
+        }
       }
     })
-  }, [evmAccount])
+  }, [evmAccount, getContract])
 
   return {
     getReefBalance,

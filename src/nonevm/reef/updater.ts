@@ -1,14 +1,29 @@
 
 import { useCallback, useEffect } from 'react'
 import { useActiveReact } from '../../hooks/useActiveReact'
-
+// import {
+//   // useDispatch,
+//   useSelector
+// } from 'react-redux'
+// import {
+//   AppState,
+//   // AppDispatch
+// } from '../../state'
 import { ChainId } from '../../config/chainConfig/chainId'
-import {useLoginReef} from './index'
+import {
+  useLoginReef,
+  // useReefClient,
+  // useReefSigner
+} from './index'
 
 export default function Updater(): null {
   const { chainId } = useActiveReact()
   
   const {loginReef} = useLoginReef()
+  // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
+
+  // const getClient = useReefClient()
+  // const getReefSigner = useReefSigner()
 
   const getReefAddress = useCallback(() => {
     if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -16,8 +31,23 @@ export default function Updater(): null {
     }
   }, [chainId])
 
+  // useEffect(() => {
+  //   if (reefClient) {
+  //     getReefSigner(reefClient)
+  //   }
+  // }, [reefClient])
+
+  // useEffect(() => {
+  //   if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+  //     getClient()
+  //   }
+  // }, [getClient])
+
   useEffect(() => {
-    getReefAddress()
+    if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      getReefAddress()
+      
+    }
   }, [chainId])
 
   return null
