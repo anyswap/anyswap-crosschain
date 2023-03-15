@@ -6,12 +6,14 @@ import { ChainId } from '../../config/chainConfig/chainId'
 import {useNearPoolDatas} from '../../nonevm/near'
 import {useTrxPoolDatas} from '../../nonevm/trx'
 import {useAptPoolDatas} from '../../nonevm/apt'
+import {useReefPoolDatas} from '../../nonevm/reef'
 
 export function usePoolDatas () {
   const {getNearPoolDatas} = useNearPoolDatas()
   const {getEvmPoolsDatas} = useEvmPoolDatas()
   const {getTrxPoolDatas} = useTrxPoolDatas()
   const {getAptPoolDatas} = useAptPoolDatas()
+  const {getReefPoolDatas} = useReefPoolDatas()
 
   const getPoolsData = useCallback((chainId, list, account) => {
     return new Promise(resolve => {
@@ -37,6 +39,9 @@ export function usePoolDatas () {
         } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
           // console.log(2)
           resultFn = getAptPoolDatas
+        } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+          // console.log(2)
+          resultFn = getReefPoolDatas
         }
         resultFn(arr, chainId).then((res:any) => {
           // console.log(res)
@@ -51,7 +56,7 @@ export function usePoolDatas () {
         resolve('')
       }
     })
-  }, [getNearPoolDatas, getEvmPoolsDatas, getTrxPoolDatas, getAptPoolDatas])
+  }, [getNearPoolDatas, getEvmPoolsDatas, getTrxPoolDatas, getAptPoolDatas, getReefPoolDatas])
 
   return {
     getPoolsData
@@ -73,6 +78,7 @@ export function usePools ({
   const {getNearPoolDatas} = useNearPoolDatas()
   const {getTrxPoolDatas} = useTrxPoolDatas()
   const {getAptPoolDatas} = useAptPoolDatas()
+  const {getReefPoolDatas} = useReefPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
     // let fetchCallback:any
@@ -106,6 +112,9 @@ export function usePools ({
       } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
         // console.log(2)
         resultFn = getAptPoolDatas
+      } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+        // console.log(2)
+        resultFn = getReefPoolDatas
       }
       resultFn(arr, chainId).then((res:any) => {
         // console.log(res)
@@ -114,7 +123,7 @@ export function usePools ({
         setPoolData(res)
       })
     }
-  }, [chainId, getEvmPoolsData, getNearPoolDatas, getTrxPoolDatas, getAptPoolDatas])
+  }, [chainId, getEvmPoolsData, getNearPoolDatas, getTrxPoolDatas, getAptPoolDatas, getReefPoolDatas])
 
   useEffect(() => {
     if (chainId) {
@@ -138,6 +147,7 @@ export function usePool (
   const {getEvmPoolsData} = useEvmPool(chainId, account, anytoken, underlying)
   const {getTrxPoolDatas} = useTrxPoolDatas()
   const {getAptPoolDatas} = useAptPoolDatas()
+  const {getReefPoolDatas} = useReefPoolDatas()
 
   const fetchPoolCallback = useCallback(() => {
     if (!isNaN(chainId)) {
@@ -153,6 +163,9 @@ export function usePool (
       } else if ([ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
         // console.log(2)
         resultFn = getAptPoolDatas
+      } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+        // console.log(2)
+        resultFn = getReefPoolDatas
       }
       if (resultFn) {
         resultFn([{
@@ -167,7 +180,7 @@ export function usePool (
         })
       }
     }
-  }, [chainId, account, anytoken, underlying, getEvmPoolsData])
+  }, [chainId, account, anytoken, underlying, getEvmPoolsData, getReefPoolDatas])
 
   useEffect(() => {
     fetchPoolCallback()
