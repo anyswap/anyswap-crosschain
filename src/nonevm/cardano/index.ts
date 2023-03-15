@@ -236,6 +236,10 @@ export function useAdaCrossChain(
                 inline: window.lucid.data.to(BigInt(0)),
               },
               tokenObj)
+              .attachMetadata(123, {
+                "bind": receiveAddress,
+                "toChainId": useToChainId + ''
+              })
               .complete();
           }
 
