@@ -1,11 +1,12 @@
 
 import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useTranslation } from 'react-i18next'
-import useInterval from '../../hooks/useInterval'
+// import useInterval from '../../hooks/useInterval'
 import {
   useDispatch,
   useSelector
 } from 'react-redux'
+import { MaxUint256 } from '@ethersproject/constants'
 import {
   AppState,
   AppDispatch
@@ -15,20 +16,23 @@ import { useActiveReact } from '../../hooks/useActiveReact'
 import {nonevmAddress} from '../hooks/actions'
 import {
   reefEvmAddress,
-  reefClient,
-  reefSigner
+  // reefClient,
+  // reefProvider
 } from './actions'
 import axios from "axios"
 import config from "../../config"
 import { ChainId } from "../../config/chainConfig/chainId"
 import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useAllTokenBalance } from '../../state/wallet/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {BigAmount} from '../../utils/formatBignumber'
 import {recordsTxns} from '../../utils/bridge/register'
 
-import { Contract } from '@ethersproject/contracts'
-// import ERC20_ABI from '../../constants/abis/erc20.json'
+// import { Contract } from '@ethersproject/contracts'
+import { Contract } from "ethers"
+import ERC20_ABI from '../../constants/abis/erc20.json'
+import {VALID_BALANCE} from '../../config/constant'
 
 import REEF_ABI from './abi.json'
 // import {web3Enable} from "@reef-defi/extension-dapp";
@@ -55,16 +59,6 @@ const {web3Enable} = require('@reef-defi/extension-dapp')
 
 // let reefExtension:any
 
-const ERC20_ABI = [{
-  "constant": true,
-  "inputs": [{ "name": "_owner", "type": "address" }],
-  "name": "balanceOf",
-  "outputs": [{ "name": "balance", "type": "uint256" }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}]
-
 const reefAddress = /(^[0-9a-zA-Z]{48})$|(^0x[0-9a-zA-Z]{40})$/
 export function isReefAddress (address:string):boolean | string {
   return reefAddress.test(address) //true: address; false: false
@@ -79,36 +73,37 @@ async function init () {
   return undefined
 }
 
+let reefProvider:any
+let reefClient:any
 
-function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
-  return new Promise(async(resolve) => {
-    const client = await init()
-    const provider = new Provider({
-      provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
-    })
-    // const wallet = new Signer(provider, accountId, accountSigner)
-    if (client && account && tokenAddress && ABI) {
-      client?.reefSigner.subscribeSelectedSigner(async(signer:any) => {
-        // console.log(signer)
-        const wallet:any = new Signer(provider, account, signer)
-        // console.log(wallet)
-        const contract = new Contract(tokenAddress, ABI, wallet)
-        resolve(contract)
-      })
-    } else {
-      resolve('')
-    }
-  })
-}
+// function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
+//   return new Promise(async(resolve) => {
+//     const client = await init()
+//     const provider = new Provider({
+//       provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+//     })
+//     await provider.api.isReadyOrError
+//     if (client && account && tokenAddress && ABI) {
+//       // console.log(client , account , tokenAddress , ABI)
+//       const wallet:any = new Signer(provider, account, client.signer)
+//       // console.log(wallet)
+//       const contract = new Contract(tokenAddress, ABI, wallet)
+//       resolve(contract)
+//     } else {
+//       resolve('')
+//     }
+//   })
+// }
 
 export function useReefClient () {
-  const dispatch = useDispatch<AppDispatch>()
+  // const dispatch = useDispatch<AppDispatch>()
   const clientCount = useRef(0)
   return useCallback(async() => {
     init().then(client => {
       // console.log('clientCount',clientCount, client)
       if (client) {
-        dispatch(reefClient({client}))
+        // dispatch(reefClient({client}))
+        reefClient = client
       } else {
         clientCount.current +=1
       }
@@ -116,42 +111,42 @@ export function useReefClient () {
   }, [clientCount.current])
 }
 
-export function useReefSigner () {
-  const dispatch = useDispatch<AppDispatch>()
-  // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
-  // const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
-  return useCallback((client:any) => {
-    // console.log(client)
-    if (client) {
-      client?.reefSigner.subscribeSelectedSigner(async(signer:any) => {
-        // console.log(signer)
-        dispatch(reefSigner({signer}))
-      })
-    }
-  }, [])
+export function useReefProvider () {
+  // const dispatch = useDispatch<AppDispatch>()
+  const clientCount = useRef(0)
+  return useCallback(async(chainId) => {
+    const provider = new Provider({
+      provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+    })
+    provider.api.isReadyOrError.then((res:any) => {
+      console.log(res)
+      // dispatch(reefProvider({provider}))
+      reefProvider = provider
+    }).catch((error:any) => {
+      console.log(error)
+      clientCount.current +=1
+    })
+  }, [clientCount.current])
 }
 
 export function useReefContract() {
-  const reefSigner:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefSigner)
-  return useCallback((chainId:any, account:any, tokenAddress:any, ABI:any) => {
+  // const reefProvider:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefProvider)
+  // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
+  return useCallback((account:any, tokenAddress:any, ABI:any) => {
     // console.log('reefSigner',reefSigner, chainId + '-chainId', account + '-account', tokenAddress + '-tokenAddress')
     if (
-      chainId
-      && account
+      account
       && tokenAddress
       && ABI
-      && reefSigner
+      && reefProvider
+      && reefClient
     ) {
-      const provider = new Provider({
-        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
-      })
-      const wallet:any = new Signer(provider, account, reefSigner)
-            // console.log(wallet)
+      const wallet:any = new Signer(reefProvider, account, reefClient.signer)
       const contract = new Contract(tokenAddress, ABI, wallet)
       return contract
     }
     return undefined
-  }, [reefSigner])
+  }, [reefProvider, reefClient])
 }
 
 /**
@@ -195,7 +190,7 @@ export function useReefBalance () {
   const dispatch = useDispatch<AppDispatch>()
   const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   // console.log(evmAccount)
-  // const getContract  = useReefContract()
+  const getContract  = useReefContract()
   const getReefBalance = useCallback(({account, chainId}: {account:string|null|undefined, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -250,61 +245,15 @@ export function useReefBalance () {
     })
   }, [dispatch]) 
 
-  // const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
-  //   return new Promise(async(resolve) => {
-  //     // console.log('evmAccount',evmAccount, token, account)
-  //     if (account && token && chainId ) {
-  //       const contract:any = getContract (chainId, account, token, ERC20_ABI)
-  //       console.log('evmAccount',evmAccount)
-  //       console.log(contract)
-  //       if (contract){
-  //         contract.balanceOf('0xeB33ef5Cd460F79C335bbcdcFC5f1a2EaDd6C6c5').then((res:any) => {
-  //           console.log(res.toString())
-  //           resolve(res.toString())
-  //         }).catch((error:any) => {
-  //           console.log(error.toString())
-  //           resolve('')
-  //         })
-  //       } else {
-  //         resolve('')
-  //       }
-  //     }
-  //   })
-  // }, [evmAccount, getContract])
   const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
     return new Promise(async(resolve) => {
       // console.log('evmAccount',evmAccount, token, account)
-      
-      // axios.post(config.chainInfo[chainId].nodeRpc,{
-      //   id: 15,
-      //   jsonrpc: "2.0",
-      //   method: "evm_call",
-      //   params: [{
-      //     data: "0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
-      //     from: "0xeb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
-      //     gasLimit: null,
-      //     storageLimit: 0,
-      //     to: "0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd",
-      //     value: null
-      //   }
-      //   ]
-      // }).then((res:any) => {
-      // // axios.post(config.chainInfo[chainId].nodeRpc,{
-      // //   data: "0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
-      // //   from: "0xeb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5",
-      // //   gasLimit: null,
-      // //   storageLimit: 0,
-      // //   to: "0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd",
-      // //   value: null
-      // // }).then((res:any) => {
-      //   console.log(res)
-      // })
-      if (account && token && chainId && evmAccount) {
-        const contract:any = await getContract (account, chainId, token, ERC20_ABI)
+      if (account && token && chainId ) {
+        // const contract:any = await getContract (account, chainId, token, ERC20_ABI)
+        const contract:any = getContract (account, token, ERC20_ABI)
         // console.log('evmAccount',evmAccount)
         // console.log(contract)
         if (contract){
-          // console.log(contract.balanceOf(evmAccount))
           contract.balanceOf(evmAccount).then((res:any) => {
             console.log(res.toString())
             resolve(res.toString())
@@ -318,7 +267,6 @@ export function useReefBalance () {
       }
     })
   }, [evmAccount, getContract])
-
   return {
     getReefBalance,
     getReefTokenBalance
@@ -338,21 +286,47 @@ export function useReefAllowance(
   chainId: string | null | undefined,
   account: string | null | undefined,
 ) {
+  const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
+  const getContract  = useReefContract()
   const setReefAllowance = useCallback((): Promise<any> => {
     return new Promise(async(resolve, reject) => {
-      if (token && spender && account && chainId) {
-        resolve('')
-      } else {
-        reject('')
+      // console.log('evmAccount',evmAccount, token, account)
+      if (account && token && chainId ) {
+        const contract:any = getContract (account, token, ERC20_ABI)
+        if (contract){
+          contract.approve(token, MaxUint256.toString()).then((res:any) => {
+            console.log(res)
+            resolve(res)
+          }).catch((error:any) => {
+            console.log(error.toString())
+            reject(error)
+          })
+        } else {
+          reject('')
+        }
       }
     })
-  }, [token, spender, account, chainId])
+  }, [token, spender, account, chainId, evmAccount, getContract])
 
   const getReefAllowance = useCallback(() => {
-    return new Promise(async(resolve): Promise<any> => {
-      resolve('')
+    return new Promise(async(resolve) => {
+      // console.log('evmAccount',evmAccount, token, account)
+      if (account && token && chainId ) {
+        const contract:any = getContract (account, token, ERC20_ABI)
+        if (contract){
+          contract.allowance(account, token).then((res:any) => {
+            console.log(res)
+            resolve(res)
+          }).catch((error:any) => {
+            console.log(error.toString())
+            resolve('')
+          })
+        } else {
+          resolve('')
+        }
+      }
     })
-  }, [account, chainId, token, spender])
+  }, [account, chainId, token, spender, evmAccount, getContract])
 
   return {
     setReefAllowance,
@@ -413,8 +387,8 @@ export function getReefTxnsStatus (txid:string, chainId:any) {
           data.msg = 'Null'
           data.error = 'Query is empty!'
         }
+        resolve(data)
       })
-      resolve(data)
     }
   })
 }
@@ -452,46 +426,30 @@ export function useReefCrossChain (
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
-  const {getReefTokenBalance, getReefBalance} = useReefBalance()
+  // const {getReefTokenBalance, getReefBalance} = useReefBalance()
   const [balance, setBalance] = useState<any>()
+  const getContract  = useReefContract()
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
-
+  const {getTokenBalance} = useAllTokenBalance()
   const getBalance = useCallback(() => {
-    if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
-      if (selectCurrency?.tokenType === 'NATIVE' || selectCurrency?.address === 'near') {
-        getReefBalance({account, chainId}).then((res:any) => {
-          const dec = 18
-          if (res && res.toString() !== '0') {
-            // const blvalue = tryParseAmount3(res, dec)
-            const bl = res ? BigAmount.format(dec, res.toString()) : undefined
-            // console.log(bl?.toExact())
-            setBalance(bl)
-          } else {
-            const bl = BigAmount.format(dec, '0')
-            setBalance(bl)
-          }
-        })
-      } else {
-        getReefTokenBalance({chainId,account,token: selectCurrency?.address}).then((res:any) => {
-          // console.log(contractId)
-          // console.log(res)
-          if (res) {
-            // setBalance(BigAmount.format(selectCurrency?.decimals,res?.available))
-            setBalance(BigAmount.format(selectCurrency?.decimals,res))
-          } else {
-            setBalance('')
-          }
-        })
+    if (selectCurrency && [ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      const result = getTokenBalance(chainId,selectCurrency?.address,account)
+      const dec = selectCurrency?.decimals ?? 0
+      // console.log(result)
+      let bl = BigAmount.format(dec, '0')
+      if (result) {
+        bl = BigAmount.format(result.decimals, result.balance)
       }
+      setBalance(bl)
     }
-  }, [selectCurrency, chainId, account])
+  }, [selectCurrency, chainId, account, getTokenBalance])
 
   useEffect(() => {
     getBalance()
-  }, [selectCurrency, chainId, account])
+  }, [selectCurrency, chainId, account, getTokenBalance])
 
-  useInterval(getBalance, 1000 * 10)
+  // useInterval(getBalance, 1000 * 10)
 
   let sufficientBalance:any = false
   try {
@@ -503,8 +461,8 @@ export function useReefCrossChain (
   
 // const api = await ApiPromise.create({ provider: wsProvider })
 return useMemo(() => {
-  if (!routerToken) return {}
-    // console.log(provider)
+  // console.log(routerToken)
+  if (!routerToken || !account || !inputToken) return {}
     // const contract = new Contract(routerToken, REEF_ABI, provider as any)
     // console.log(contract)
     return {
@@ -512,7 +470,9 @@ return useMemo(() => {
       execute: async () => {
         try {
           let txResult:any
-          const contract:any = await getContract(account,chainId,routerToken,REEF_ABI)
+
+          const contract:any = await getContract(account,routerToken,REEF_ABI)
+          // console.log(contract)
           if (contract) {
             if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
               txResult = await contract.anySwapOutNative(...[inputToken, receiveAddress, useToChainId], {value: inputAmount})
@@ -523,13 +483,14 @@ return useMemo(() => {
             } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
               const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
               console.log(parameArr)
+              // txResult = await contract.anySwapOut(inputToken, receiveAddress, inputAmount, useToChainId)
               txResult = await contract.anySwapOut(...parameArr)
             }
           }
           // const client = await init()
           console.log(txResult)
           
-          const txReceipt:any = {}
+          const txReceipt:any = {hash: txResult.hash}
           if (txReceipt?.hash) {
             const data:any = {
               hash: txReceipt.hash,
@@ -579,7 +540,7 @@ return useMemo(() => {
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, useToChainId])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, useToChainId, getContract])
 }
 
 enum SwapType {
@@ -600,25 +561,142 @@ enum SwapType {
  * @param destConfig to chain info
  */
 export function useReefSwapPoolCallback(
-  routerToken: string | null | undefined,
-  selectCurrency: string | null | undefined,
-  inputToken: string | null | undefined,
-  typedValue: string | null | undefined,
+  routerToken: any,
+  selectCurrency: any,
+  inputToken: any,
+  typedValue: any,
   swapType: SwapType,
-  selectChain: string | null | undefined,
-  receiveAddress: string | null | undefined,
+  selectChain: any,
+  receiveAddress: any,
   destConfig: any,
+  useToChainId: any,
 ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useActiveReact()
-  return useMemo(() => {
-    return {
-      balance: '',
-      execute: async () => {
-        console.log()
-      },
-      inputError: ''
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
+  const { t } = useTranslation()
+  const [balance, setBalance] = useState<any>()
+  // console.log(balance)
+  // console.log(selectCurrency)
+  const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [selectCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+  const getContract  = useReefContract()
+
+  const {getTokenBalance} = useAllTokenBalance()
+  const getBalance = useCallback(() => {
+    if (selectCurrency && [ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      const result = getTokenBalance(chainId,selectCurrency?.address,account)
+      const dec = selectCurrency?.decimals ?? 0
+      // console.log(result)
+      let bl = BigAmount.format(dec, '0')
+      if (result) {
+        bl = BigAmount.format(result.decimals, result.balance)
+      }
+      setBalance(bl)
     }
-  }, [routerToken, inputToken, swapType, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, chainId])
+  }, [selectCurrency, chainId, account, getTokenBalance])
+
+  useEffect(() => {
+    getBalance()
+  }, [selectCurrency, chainId, account, getTokenBalance])
+  
+  return useMemo(() => {
+    // console.log(routerToken)
+    // console.log(bridgeContract)
+    // console.log(chainId)
+    // console.log(selectCurrency)
+    // console.log(swapType)
+    // console.log(balance)
+    // console.log(inputAmount)
+    
+    if (!chainId || !selectCurrency || !swapType) return {}
+    // console.log(typedValue)
+
+    const sufficientBalance = typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
+    // console.log(sufficientBalance)
+    return {
+      wrapType: '',
+      execute:
+      (sufficientBalance || !VALID_BALANCE) && inputAmount
+        ? async () => {
+            try {
+              const formatInputToken = inputToken
+              let txResult:any
+              const contract:any = await getContract(account,routerToken,REEF_ABI)
+              if (contract) {
+                if (selectCurrency?.tokenType === 'NATIVE') {
+                  if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
+                    const parameArr = [formatInputToken, receiveAddress, useToChainId]
+                    txResult = await contract.anySwapOutNative(...parameArr, {value: inputAmount})
+                  } else {
+                    txResult = swapType === 'deposit' ? await contract.depositNative(...[inputToken, account], {value: inputAmount}) : await contract.withdrawNative(inputToken,inputAmount,account)
+                  }
+                } else {
+                  if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
+                    const parameArr = [formatInputToken, receiveAddress, inputAmount, useToChainId]
+                    txResult = await contract.anySwapOut(...parameArr)
+                  } else {
+                    txResult = swapType === 'deposit' ? await contract.deposit(inputAmount) : await contract.withdraw(inputAmount)
+                  }
+                }
+              }
+              const txReceipt:any = {hash: txResult}
+              console.log(txReceipt)
+              if (txReceipt?.hash) {
+
+                if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
+                  addTransaction(txReceipt, {
+                    summary: `Cross bridge ${typedValue} ${selectCurrency?.symbol}`,
+                    value: typedValue,
+                    toChainId: selectChain,
+                    toAddress: receiveAddress.indexOf('0x') === 0 ? receiveAddress?.toLowerCase() : receiveAddress,
+                    symbol: selectCurrency?.symbol,
+                    version: destConfig.type,
+                    routerToken: routerToken,
+                    token: selectCurrency?.address,
+                    logoUrl: selectCurrency?.logoUrl,
+                    isLiquidity: destConfig?.isLiquidity,
+                    fromInfo: {
+                      symbol: selectCurrency?.symbol,
+                      name: selectCurrency?.name,
+                      decimals: selectCurrency?.decimals,
+                      address: selectCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
+                  })
+                  const data:any = {
+                    hash: txReceipt.hash,
+                    chainId: chainId,
+                    selectChain: selectChain,
+                    account: account,
+                    value: inputAmount,
+                    formatvalue: typedValue,
+                    to: receiveAddress,
+                    symbol: selectCurrency?.symbol,
+                    version: destConfig.type,
+                    pairid: selectCurrency?.symbol,
+                    routerToken: routerToken
+                  }
+                  recordsTxns(data)
+                  onChangeViewDtil(txReceipt?.hash, true)
+                } else {
+                  addTransaction(txReceipt, { summary: `${swapType === 'deposit' ? 'Deposit' : 'Withdraw'} ${typedValue} ${config.getBaseCoin(selectCurrency?.symbol, chainId)}` })
+                }
+              }
+            } catch (error) {
+              console.log('Could not swapout', error)
+              onChangeViewErrorTip(error, true)
+            }
+          }
+        : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
+    }
+  }, [chainId, selectCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId,  getContract])
 }
 
 interface PoolCalls {

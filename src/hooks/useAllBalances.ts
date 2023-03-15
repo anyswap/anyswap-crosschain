@@ -18,7 +18,7 @@ import {useAtomBalance} from '../nonevm/atom'
 import {useReefBalance} from '../nonevm/reef'
 
 
-import {useCurrencyBalance1} from '../state/wallet/hooks'
+import {useCurrencyBalance1, useAllTokenBalance} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -51,6 +51,8 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const savedBalance = useRef<any>()
 
   const evmBalance = useCurrencyBalance1(account, token, dec, selectChainId)
+
+  const {setTokenBalance} = useAllTokenBalance()
 
   const fetchBalance = useCallback(() => {
     // console.log([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId))
@@ -159,6 +161,8 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
         getReefTokenBalance({chainId: selectChainId, account, token}).then((res:any) => {
           const bl = BigAmount.format(dec, res)
+          // console.log(res, '11111111111111')
+          setTokenBalance(selectChainId,token,account,res,dec)
           savedBalance.current = bl
         })
       } else {
@@ -207,6 +211,8 @@ export function useBaseBalances (
   
 
   const selectChainId = selectNetworkInfo?.label
+
+  const {setTokenBalance} = useAllTokenBalance()
   
   const [balance, setBalance] = useState<any>()
   const fetchBalancesCallback = useCallback(() => {
@@ -302,6 +308,7 @@ export function useBaseBalances (
           // const blvalue = tryParseAmount3(res, dec)
           const bl = res ? BigAmount.format(dec, res) : undefined
           // console.log(bl?.toExact())
+          setTokenBalance(selectChainId,'NATIVE',uncheckedAddresses,res,dec)
           setBalance(bl)
         } else {
           const bl = BigAmount.format(dec, '0')

@@ -3,6 +3,7 @@ import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
 export const REEF_MAINNET_WS = 'wss://rpc.reefscan.info/ws'
+// export const REEF_MAINNET_WS = 'wss://rpc.reefscan.com/ws'
 export const REEF_MAINNET = 'https://reefscan.com/graphql'
 // export const REEF_MAINNET = process.env.NODE_ENV === 'development' ? 'https://reefscan.com/graphql' : 'https://squid.subsquid.io/reef-bridge/v/v1/graphql'
 export const REEF_MAIN_CHAINID = ChainId.REEF

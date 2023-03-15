@@ -9,3 +9,4 @@ export const WALLET_VIEWS = {
 
 export const tokenBalanceList = createAction<{chainId: any, tokenList:any, account:any}>('wallet/tokenBalanceList')
 export const walletViews = createAction<{type: any}>('wallet/walletViews')
+export const updateTokenBalance = createAction<{chainId: any, token:any, account:any, balance:string, decimals:number}>('wallet/updateTokenBalance')
