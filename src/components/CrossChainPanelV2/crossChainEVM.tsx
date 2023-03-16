@@ -315,8 +315,8 @@ export default function CrossChain({
   useEffect(() => {
     setDestChain('')
   }, [selectChain, selectCurrency])
+  
   const {curChain: curFTMChain, destChain: destFTMChain} = getFTMSelectPool(selectCurrency, useChain, selectChain, destConfig)
-
   const {poolData} = usePool(useChain, evmAccount, destConfig?.isFromLiquidity && !isBridgeFTM && destConfig?.isLiquidity ? anyToken?.address : undefined, selectCurrency?.address)
   useEffect(() => {
     // console.log('poolData', poolData)

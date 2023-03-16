@@ -140,7 +140,7 @@ export default function ConfirmContent (
       return (<>
         <li className="item">
           <div className="label">Crosschain Fee:</div>
-          <div className="value">{useDfee} %</div>
+          <div className="value">{useDfee ? Number(useDfee?.toFixed(16)) : ''} %</div>
         </li>
         <li className="item">
           <div className="label">
@@ -149,7 +149,7 @@ export default function ConfirmContent (
               'for your cross-chain transaction on destination chain'
             } />
           </div>
-          <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
+          <div className="value">{(fee ? Number(fee?.toFixed(16)) : '') + ' ' + selectCurrency?.symbol}</div>
         </li>
       </>)
     } else {
@@ -167,7 +167,7 @@ export default function ConfirmContent (
                 })
               } />
             </div>
-            <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
+            <div className="value">{(fee ? Number(fee?.toFixed(16)) : '') + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
           </li>
         </>
       )

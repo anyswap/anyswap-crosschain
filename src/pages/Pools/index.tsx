@@ -313,7 +313,7 @@ export default function SwapNative() {
   )
   // console.log('wrapInputErrorNative',wrapInputErrorNative)
   const poolTokenList = useMemo(() => {
-    // console.log(anyTokenList)
+    console.log(anyTokenList)
     const arr:any = []
     if (anyTokenList) {
       for (const item of anyTokenList) {

@@ -9,6 +9,7 @@ import {isTRXAddress} from '../../nonevm/trx'
 import {isSolAddress} from '../../nonevm/solana'
 import {isAptosAddress} from '../../nonevm/apt'
 import {isAtomAddress} from '../../nonevm/atom'
+import {isReefAddress} from '../../nonevm/reef'
 
 export function isEvmAddress(value: any): string | false {
   try {
@@ -83,6 +84,8 @@ export function isAddress(address: any, chainId?: any) {
       return isAptosAddress(address)
     } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
       return isAtomAddress(address, chainId)
+    } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      return isReefAddress(address)
     } else {
       return isEvmAddress(address)
     }

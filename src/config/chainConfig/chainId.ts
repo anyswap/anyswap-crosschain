@@ -140,4 +140,6 @@ export enum ChainId {
   BIT_TEST = '5001',
   NEON_TEST = '245022926',
   CANTO = '7700',
+  NAHMII3_TEST = '4062',
+  TST_TEST = '18',
 }

@@ -51,6 +51,9 @@ const NON_ERC20:any = {
   [ChainId.BNB]: [
     '0x43ba383b9934d8d45ea6348d00dbc1bae97d6e74'
   ],
+  [ChainId.TT]: [
+    '0x332730a4f6e03d9c55829435f10360e13cfa41ff'
+  ],
 }
 
 export default function Updater(): null {
