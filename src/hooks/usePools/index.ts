@@ -8,6 +8,8 @@ import {useTrxPoolDatas} from '../../nonevm/trx'
 import {useAptPoolDatas} from '../../nonevm/apt'
 import {useReefPoolDatas} from '../../nonevm/reef'
 
+const POOL_CHAIN = [ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST,ChainId.APT, ChainId.APT_TEST, ChainId.REEF, ChainId.REEF_TEST]
+
 export function usePoolDatas () {
   const {getNearPoolDatas} = useNearPoolDatas()
   const {getEvmPoolsDatas} = useEvmPoolDatas()
@@ -19,7 +21,7 @@ export function usePoolDatas () {
     return new Promise(resolve => {
       // console.log(chainId)
       // console.log(list)
-      if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST,ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+      if (POOL_CHAIN.includes(chainId)) {
         const arr:any = []
         for (const item of list) {
           arr.push({
@@ -88,7 +90,7 @@ export function usePools ({
         // console.log(res)
         setPoolData(res)
       })
-    } else if ([ChainId.NEAR, ChainId.NEAR_TEST, ChainId.TRX, ChainId.TRX_TEST, ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+    } else if (POOL_CHAIN.includes(chainId)) {
       const arr = []
       for (const item of tokenList) {
         arr.push({

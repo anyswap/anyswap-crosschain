@@ -31,6 +31,7 @@ import {recordsTxns} from '../../utils/bridge/register'
 
 // import { Contract } from '@ethersproject/contracts'
 import { Contract } from "ethers"
+import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC20_ABI from '../../constants/abis/erc20.json'
 import {VALID_BALANCE} from '../../config/constant'
 
@@ -59,7 +60,8 @@ const {web3Enable} = require('@reef-defi/extension-dapp')
 
 // let reefExtension:any
 
-const reefAddress = /(^[0-9a-zA-Z]{48})$|(^0x[0-9a-zA-Z]{40})$/
+// const reefAddress = /(^[0-9a-zA-Z]{48})$|(^0x[0-9a-zA-Z]{40})$/
+const reefAddress = /(^0x[0-9a-zA-Z]{40})$/
 export function isReefAddress (address:string):boolean | string {
   return reefAddress.test(address) //true: address; false: false
 }
@@ -75,6 +77,37 @@ async function init () {
 
 let reefProvider:any
 let reefClient:any
+// const request = require("request")
+export function getReefData (chainId:any, token:any, data:any) {
+  return new Promise((resolve, reject) => {
+    const rpc = config.chainInfo[chainId].nodeRpc
+    const options = { 
+      id: 100,
+      jsonrpc: "2.0",
+      method: "evm_call",
+      params: [
+        {
+          data: data,
+          to: token,
+          gasLimit: null,
+          storageLimit: 0,
+          value: null
+        },
+      ]
+    }
+    axios.post(rpc, options).then((res) => {
+    // fetch(rpc, options).then((res) => {
+      const {data} = res
+      // console.log(res)
+      resolve(data)
+    }).catch((error:any) => {
+      console.log(error)
+      reject(error)
+    })
+  })
+}
+
+// getReefData('REEF', '0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd', '0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5')
 
 // function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
 //   return new Promise(async(resolve) => {
@@ -118,8 +151,8 @@ export function useReefProvider () {
     const provider = new Provider({
       provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
     })
-    provider.api.isReadyOrError.then((res:any) => {
-      console.log(res)
+    provider.api.isReadyOrError.then(() => {
+      // console.log(res)
       // dispatch(reefProvider({provider}))
       reefProvider = provider
     }).catch((error:any) => {
@@ -197,7 +230,7 @@ export function useReefBalance () {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
         resolve('')
       } else {
-        axios.post(config.chainInfo[chainId].nodeRpc,{
+        axios.post(config.chainInfo[chainId].graphql,{
           extensions: {},
           operationName: "account",
           query: `query account($address: String!) {
@@ -249,21 +282,16 @@ export function useReefBalance () {
   const getReefTokenBalance = useCallback(({chainId, account, token}: {chainId:any, account:any, token:any}) => {
     return new Promise(async(resolve) => {
       // console.log('evmAccount',evmAccount, token, account)
-      if (account && token && chainId ) {
-        const contract:any = getContract (token, ERC20_ABI, account)
-        // console.log('evmAccount',evmAccount)
-        // console.log(contract)
-        if (contract){
-          contract.balanceOf(evmAccount).then((res:any) => {
-            console.log(res.toString())
-            resolve(res.toString())
-          }).catch((error:any) => {
-            console.log(error.toString())
-            resolve('')
-          })
-        } else {
+      if (account && token && chainId && evmAccount) {
+
+        getReefData(chainId, token, ERC20_INTERFACE.encodeFunctionData('balanceOf', [evmAccount])).then((res:any) => {
+          // console.log(res)
+          const b = ERC20_INTERFACE.decodeFunctionResult('balanceOf', res.result)[0]
+          resolve(b.toString())
+        }).catch((error:any) => {
+          console.log(error)
           resolve('')
-        }
+        })
       }
     })
   }, [evmAccount, getContract])
@@ -294,7 +322,7 @@ export function useReefAllowance(
       if (account && token && chainId ) {
         const contract:any = getContract (token, ERC20_ABI, account)
         if (contract){
-          contract.approve(token, MaxUint256.toString()).then((res:any) => {
+          contract.approve(spender, MaxUint256.toString()).then((res:any) => {
             console.log(res)
             resolve(res)
           }).catch((error:any) => {
@@ -311,22 +339,18 @@ export function useReefAllowance(
   const getReefAllowance = useCallback(() => {
     return new Promise(async(resolve) => {
       // console.log('evmAccount',evmAccount, token, account)
-      if (account && token && chainId ) {
-        const contract:any = getContract (token, ERC20_ABI, account)
-        if (contract){
-          contract.allowance(account, token).then((res:any) => {
-            console.log(res)
-            resolve(res)
-          }).catch((error:any) => {
-            console.log(error.toString())
-            resolve('')
-          })
-        } else {
+      if (account && token && chainId && evmAccount) {
+        getReefData(chainId, token, ERC20_INTERFACE.encodeFunctionData('allowance', [evmAccount, spender])).then((res:any) => {
+          console.log(res)
+          const b = ERC20_INTERFACE.decodeFunctionResult('allowance', res.result)[0]
+          resolve(b.toString())
+        }).catch((error:any) => {
+          console.log(error)
           resolve('')
-        }
+        })
       }
     })
-  }, [account, chainId, token, spender, evmAccount, getContract])
+  }, [account, chainId, token, spender, evmAccount])
 
   return {
     setReefAllowance,
@@ -343,8 +367,7 @@ export function getReefTxnsStatus (txid:string, chainId:any) {
   return new Promise(resolve => {
     const data:any = {}
     if (txid) {
-      axios.post(config.chainInfo[chainId].nodeRpc,{
-      // axios.post('https://squid.subsquid.io/reef-bridge/v/v1/graphql',{
+      axios.post(config.chainInfo[chainId].graphql,{
         extensions: {},
         operationName: "extrinsic",
         query: `query extrinsic($hash: String!)
@@ -571,6 +594,7 @@ export function useReefSwapPoolCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const [balance, setBalance] = useState<any>()
+  const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   // console.log(balance)
   // console.log(selectCurrency)
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [selectCurrency, typedValue])
@@ -691,7 +715,7 @@ export function useReefSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [chainId, selectCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId,  getContract])
+  }, [chainId, selectCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId,  getContract, evmAccount])
 }
 
 
@@ -711,7 +735,8 @@ interface PoolResult {
  * @return {'anytoken': {'balanceOf': '', 'totalSupply': '', 'balance': ''}}
  */
 export function useReefPoolDatas () {
-  const getContract  = useReefContract()
+  // const getContract  = useReefContract()
+  const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   const getReefPoolDatas = useCallback(async(calls: Array<[any]>, chainId: any): Promise<PoolResult> => {
     
     return new Promise(resolve => {
@@ -725,52 +750,55 @@ export function useReefPoolDatas () {
           const item:any = obj
           const anytoken = item.anytoken
           const underlyingToken = item.token
-          const account = item.account
+          const account = evmAccount ? evmAccount : item.account
           if (underlyingToken && anytoken) {
-            const contract:any = getContract(underlyingToken,REEF_ABI, account)
-            arr.push(contract.balanceOf(anytoken))
+            arr.push(getReefData(chainId, underlyingToken, ERC20_INTERFACE.encodeFunctionData('balanceOf', [anytoken])))
             labelArr.push({
               key: anytoken,
               label: 'balanceOf',
+              labelKey: 'balanceOf',
               dec: item.dec
             })
-            arr.push(contract.totalSupply())
+            arr.push(getReefData(chainId, underlyingToken, ERC20_INTERFACE.encodeFunctionData('totalSupply', [])))
             labelArr.push({
               key: anytoken,
               label: 'totalSupply',
+              labelKey: 'totalSupply',
               dec: item.dec
             })
           }
-          // console.log(item)
-          // console.log(chainId)
           if (anytoken && isReefAddress(account)) {
-            const contract:any = getContract(anytoken,REEF_ABI, account)
-            arr.push(contract.balanceOf(account).call())
+            // const contract:any = getContract(anytoken,REEF_ABI, account)
+            // arr.push(contract.balanceOf(account).call())
+            arr.push(getReefData(chainId, anytoken, ERC20_INTERFACE.encodeFunctionData('balanceOf', [account])))
             labelArr.push({
               key: anytoken,
               label: 'balance',
+              labelKey: 'balanceOf',
               dec: item.dec
             })
           }
         }
       }
       // console.log(arr)
-      Promise.all(arr).then(res => {
+      Promise.all(arr).then((res:any) => {
         // console.log(res)
+        // console.log(labelArr)
         const list:any = {}
         for (let i = 0, len = arr.length; i < len; i++) {
           const k = labelArr[i].key
           const l = labelArr[i].label
+          const labelKey = labelArr[i].labelKey
           // const dec = labelArr[i].dec
           if (!list[k]) list[k] = {}
           // list[k][l] = res[i] ? BigAmount.format(dec, res[i].toString()).toExact() : ''
-          list[k][l] = res[i].toString()
+          list[k][l] = ERC20_INTERFACE.decodeFunctionResult(labelKey, res[i].result)[0].toString()
         }
         // console.log(list)
         resolve(list)
       })
     })
-  }, [])
+  }, [evmAccount])
   return {
     getReefPoolDatas
   }
