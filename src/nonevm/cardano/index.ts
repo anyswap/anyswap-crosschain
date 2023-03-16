@@ -33,13 +33,27 @@ export function useAdaAddress() {
   }
 }
 
+export async function eternlLogin() {
+  const api = await window.cardano.eternl.enable();
+  window.lucid.selectWallet(api);
+  localStorage.setItem("lucid", "true");
+}
+
 export function useAdaLogin() {
+  // const api = await window.cardano.eternl.enable();
+  // window.lucid.selectWallet(api);
   const { chainId } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => {
-    const adaWallet = window?.cardano?.eternl
-    console.log(2, adaWallet)
-    if (adaWallet && adaWallet?.enable && window.lucid) {
+    const adaWallet =  window?.cardano && window?.cardano?.eternl
+
+    if(window?.lucid && window?.lucid?.wallet === undefined) {
+      eternlLogin();
+      return;
+    }
+
+    if (adaWallet && adaWallet?.enable && window?.lucid && window?.lucid?.wallet) {
+      
       if (
         (ChainId.ADA_TEST === chainId) || (ChainId.ADA === chainId)
       ) {
@@ -164,7 +178,7 @@ export function useAdaCrossChain(
 
   const { adaBalanceList } = useAdaBalance()
 
-  const adaWallet = window?.cardano?.eternl
+  const adaWallet = window?.cardano && window?.cardano?.eternl
   const addTransaction = useTransactionAdder()
 
   const inputValue = selectCurrency?.tokenType === 'NATIVE' ? Number(typedValue) + baseValue : typedValue

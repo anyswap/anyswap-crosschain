@@ -73,7 +73,7 @@ export async function initConnect(chainId: any, token: any) {
 }
 
 export async function useLogout() {
-  if (window.selector) {
+  if (window?.selector) {
     const wallet = await window.selector.wallet();
     const logout = useCallback(() => {
       wallet.signOut().catch((err) => {
@@ -90,7 +90,7 @@ export async function useLogout() {
 
 export function useNearAddress() {
   let accountId = ""
-  if (window.selector) {
+  if (window?.selector) {
     if (window.selector.store.getState().accounts.length > 0) {
       accountId = window.selector.store.getState().accounts[0].accountId;
     }
@@ -126,7 +126,7 @@ export function useLogin() {
   const { modal } = useWalletSelector();
 
   const login = useCallback(async () => {
-    if (window?.near) {
+    if (window?.selector) {
       try {
 
         modal.show()
@@ -266,7 +266,7 @@ export function useNearPoolDatas() {
       const arr = []
       const labelArr: any = []
       // console.log(chainId)
-      if (window?.near?.account && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
+      if (window?.selector && window?.near?.account && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
 
         for (const item of calls) {
           if (item.token === 'near' || item.anytoken === 'near') continue

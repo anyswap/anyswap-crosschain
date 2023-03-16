@@ -117,6 +117,7 @@ export const WalletSelectorContextProvider: React.FC<{
   }, [init]);
 
   useEffect(() => {
+    console.log(selector)
     if (!selector) {
       return;
     }
