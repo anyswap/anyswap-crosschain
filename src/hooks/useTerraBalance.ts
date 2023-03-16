@@ -90,6 +90,7 @@ const useMantle = (): {
     })
       .then((res) => res.json())
       .then((res) => res.data)
+      .catch((error) => error)
 
   return {
     fetchQuery,
@@ -100,24 +101,28 @@ export function useTerraBaseBalance () {
   const connectedWallet = useConnectedWallet()
   const { fetchQuery } = useMantle()
   const getTerraBaseBalances = useCallback(async (): Promise<BalanceListType> => {
-    const fetchResult = await fetchQuery({
-      query: bankBalanceQuery,
-      variables: JSON.stringify({ address: connectedWallet?.walletAddress }),
-    })
-    const resultList: {
-      Amount: string
-      Denom: string
-    }[] = fetchResult?.BankBalancesAddress?.Result || []
-
-    if (_.some(resultList)) {
-      const list: BalanceListType = {}
-      _.forEach(resultList, (x) => {
-        list[x.Denom] = x.Amount
+    try {
+      const fetchResult = await fetchQuery({
+        query: bankBalanceQuery,
+        variables: JSON.stringify({ address: connectedWallet?.walletAddress }),
       })
-      return list
-    } else {
+      const resultList: {
+        Amount: string
+        Denom: string
+      }[] = fetchResult?.BankBalancesAddress?.Result || []
+      if (_.some(resultList)) {
+        const list: BalanceListType = {}
+        _.forEach(resultList, (x) => {
+          list[x.Denom] = x.Amount
+        })
+        return list
+      } else {
+        return {}
+      }
+    } catch (error) {
       return {}
     }
+
   }, [bankBalanceQuery, connectedWallet])
   return { getTerraBaseBalances }
 }
@@ -137,24 +142,28 @@ export function useTerraTokenBalances () {
         msg: { balance: { address: connectedWallet?.walletAddress } },
       }))
     )
-
-    const fetchResult: Record<
-      string,
-      { Height: string; Result: string }
-    > = await fetchQuery({
-      query: aliasResult,
-    })
-
-    if (_.some(fetchResult)) {
-      const list: BalanceListType = {}
-      _.forEach(fetchResult, (x, key) => {
-        if (x) {
-          const res = jsonTryParse<{ balance: string }>(x.Result)
-          if (res) list[key] = res.balance
-        }
+    try {
+      
+      const fetchResult: Record<
+        string,
+        { Height: string; Result: string }
+      > = await fetchQuery({
+        query: aliasResult,
       })
-      return list
-    } else {
+  
+      if (_.some(fetchResult)) {
+        const list: BalanceListType = {}
+        _.forEach(fetchResult, (x, key) => {
+          if (x) {
+            const res = jsonTryParse<{ balance: string }>(x.Result)
+            if (res) list[key] = res.balance
+          }
+        })
+        return list
+      } else {
+        return {}
+      }
+    } catch (error) {
       return {}
     }
   }, [connectedWallet, getTokenBalanceQuery])
@@ -193,24 +202,28 @@ const useTerraBalance = (): {
         msg: { balance: { address: useAccount } },
       }))
     )
-
-    const fetchResult: Record<
-      string,
-      { Height: string; Result: string }
-    > = await fetchQuery({
-      query: aliasResult,
-    })
-
-    if (_.some(fetchResult)) {
-      const list: BalanceListType = {}
-      _.forEach(fetchResult, (x, key) => {
-        if (x) {
-          const res = jsonTryParse<{ balance: string }>(x.Result)
-          if (res) list[key] = res.balance
-        }
+    try {
+      
+      const fetchResult: Record<
+        string,
+        { Height: string; Result: string }
+      > = await fetchQuery({
+        query: aliasResult,
       })
-      return list
-    } else {
+  
+      if (_.some(fetchResult)) {
+        const list: BalanceListType = {}
+        _.forEach(fetchResult, (x, key) => {
+          if (x) {
+            const res = jsonTryParse<{ balance: string }>(x.Result)
+            if (res) list[key] = res.balance
+          }
+        })
+        return list
+      } else {
+        return {}
+      }
+    } catch (error) {
       return {}
     }
   }, [connectedWallet, getTokenBalanceQuery])
@@ -219,22 +232,27 @@ const useTerraBalance = (): {
   const getTerraBankBalances = useCallback(async (account?:any): Promise<BalanceListType> => {
     const useAccount = account ? account : connectedWallet?.walletAddress
     if (!useAccount) return {}
-    const fetchResult = await fetchQuery({
-      query: bankBalanceQuery,
-      variables: JSON.stringify({ address: useAccount }),
-    })
-    const resultList: {
-      Amount: string
-      Denom: string
-    }[] = fetchResult?.BankBalancesAddress?.Result || []
-
-    if (_.some(resultList)) {
-      const list: BalanceListType = {}
-      _.forEach(resultList, (x) => {
-        list[x.Denom] = x.Amount
+    try {
+      
+      const fetchResult = await fetchQuery({
+        query: bankBalanceQuery,
+        variables: JSON.stringify({ address: useAccount }),
       })
-      return list
-    } else {
+      const resultList: {
+        Amount: string
+        Denom: string
+      }[] = fetchResult?.BankBalancesAddress?.Result || []
+  
+      if (_.some(resultList)) {
+        const list: BalanceListType = {}
+        _.forEach(resultList, (x) => {
+          list[x.Denom] = x.Amount
+        })
+        return list
+      } else {
+        return {}
+      }
+    } catch (error) {
       return {}
     }
   }, [bankBalanceQuery, connectedWallet])

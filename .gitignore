@@ -58,5 +58,3 @@ src/components/NonApprove/nonApproveList.json
 yarn.lock
 .yarn/install-state.gz
 .yarnrc.yml
-yarn.lock
-yarn.lock

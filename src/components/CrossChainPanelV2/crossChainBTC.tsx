@@ -3,6 +3,7 @@ import React, {useEffect, useState, useMemo, useContext, useCallback} from 'reac
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
+import axios from 'axios'
 
 import {useActiveReact} from '../../hooks/useActiveReact'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
@@ -12,7 +13,10 @@ import {getP2PInfo} from '../../utils/bridge/register'
 import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
 // import {formatDecimal, setLocalConfig, thousandBit} from '../../utils/tools/tools'
 import {setLocalConfig} from '../../utils/tools/tools'
-import { shortenAddress, shortenAddress1 } from '../../utils'
+import {
+  shortenAddress,
+  // shortenAddress1
+} from '../../utils'
 import { isAddress } from '../../utils/isAddress'
 import { createAddress } from '../../utils/isAddress/BTC'
 
@@ -24,6 +28,15 @@ import {
   // useUserTransactionTTL,
   // useUserSlippageTolerance
 } from '../../state/user/hooks'
+
+import {
+  useAddNoWalletTx
+} from '../../state/transactions/hooks'
+import {
+  useTxnsErrorTipOpen,
+  // useNoWalletModalToggle
+  useTxnsDtilOpen
+} from '../../state/application/hooks'
 
 import SelectCurrencyInputPanel from '../CurrencySelect/selectCurrency'
 import { AutoColumn } from '../Column'
@@ -39,7 +52,7 @@ import CopyHelper from '../AccountDetails/Copy'
 import SelectChainIdInputPanel from './selectChainID'
 import Reminder from './reminder'
 
-// import config from '../../config'
+import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 // import {selectNetwork} from '../../config/tools/methods'
 import ErrorTip from './errorTip'
@@ -58,7 +71,58 @@ import { ChainId } from '../../config/chainConfig/chainId'
 const CrossChainTip = styled.div`
   width: 100%;
   color: ${({ theme }) => theme.textColorBold};
+  word-break: break-all;
   .red {
+    color: ${({ theme }) => theme.red1};
+    word-break: break-all;
+  }
+`
+
+const HashInput = styled.input<{ error?: boolean; align?: string }>`
+  color: ${({ error, theme }) => (error ? 'rgb(255, 104, 113)' : theme.textColorBold)};
+  width: 100%;
+  position: relative;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  flex: 1 1 auto;
+  background-color: ${({ theme }) => theme.bg1};
+  font-size: 14px;
+  text-align: ${({ align }) => align && align};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0px 5px;
+  -webkit-appearance: textfield;
+  height: 30px;
+  background: none;
+  border-bottom: 0.0625rem solid ${({ theme }) => theme.inputBorder};
+  // margin-right: 1.875rem;
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  [type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  ::placeholder {
+    // color: ${({ theme }) => theme.text4};
+    color:#DADADA;
+  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 100%;
+    margin-right: 0;
+    height: 30px;
+    font-size: 14px;
+  `};
+  &.error {
     color: ${({ theme }) => theme.red1};
   }
 `
@@ -72,7 +136,14 @@ export default function CrossChain({
   const { chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  
+  const {setAddNoWalletTx} = useAddNoWalletTx()
+
   const [userInterfaceMode] = useInterfaceModeManager()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  // const toggleWalletModal = useNoWalletModalToggle()
+  const {onChangeViewDtil} = useTxnsDtilOpen()
+
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
   const [inputBridgeValue, setInputBridgeValue] = useState<any>('')
@@ -86,6 +157,8 @@ export default function CrossChain({
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [modalSpecOpen, setModalSpecOpen] = useState(false)
   const [memo, setMemo] = useState('')
+
+  const [hash, setHash] = useState('')
 
 
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
@@ -114,6 +187,13 @@ export default function CrossChain({
     return undefined
   }, [destConfig])
 
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
+
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -139,7 +219,7 @@ export default function CrossChain({
           state: 'Error',
           tip: t('noZero')
         }
-      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMinLimit', {
@@ -147,7 +227,7 @@ export default function CrossChain({
             symbol: selectCurrency.symbol
           })
         }
-      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMaxLimit', {
@@ -189,18 +269,18 @@ export default function CrossChain({
         // console.log(destConfig)
         // setP2pAddress(recipient)
         setP2pAddress(destConfig?.router)
-        setMemo(`swapOut ${recipient}:${selectChain}`)
+        setMemo(`swapOut ${recipient}:${useToChainId}`)
         // setMemo('')
         setModalSpecOpen(true)
         setDelayAction(false)
-      } else if ([ChainId.XRP].includes(chainId)) {
+      } else if ([ChainId.XRP, ChainId.XRP_TEST].includes(chainId)) {
         // console.log(destConfig)
         setP2pAddress(destConfig?.router)
         // setMemo(`{data: ${recipient}}`)
-        setMemo(recipient + ":" + selectChain)
+        setMemo(recipient + ":" + useToChainId)
         setModalSpecOpen(true)
         setDelayAction(false)
-      } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+      } else if ([ChainId.BTC, ChainId.BTC_TEST, ChainId.BLOCK, ChainId.COLX, ChainId.LTC].includes(chainId)) {
         if (['swapin', 'swapout'].includes(destConfig?.type)) {
           getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
             // console.log(res)
@@ -218,7 +298,7 @@ export default function CrossChain({
           })
         } else {
           setP2pAddress(destConfig?.router)
-          setMemo(recipient + ":" + selectChain)
+          setMemo(recipient + ":" + useToChainId)
           setModalSpecOpen(true)
           setDelayAction(false)
         }
@@ -226,7 +306,7 @@ export default function CrossChain({
     } else {
       setDelayAction(false)
     }
-  }, [recipient, selectCurrency, destConfig, selectChain, chainId])
+  }, [recipient, selectCurrency, destConfig, selectChain, chainId, useToChainId])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -248,6 +328,15 @@ export default function CrossChain({
     setSelectDestCurrencyList(initDestCurrencyList)
   }, [initDestCurrencyList])
 
+  useEffect(() => {
+    // console.log(evmAccount)
+    if (evmAccount && !isNaN(selectChain)) {
+      setRecipient(evmAccount)
+    } else {
+      setRecipient('')
+    }
+  }, [evmAccount, selectChain])
+
   function MemoView () {
     if (memo) {
       if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
@@ -257,26 +346,81 @@ export default function CrossChain({
         return <>
           <div className="item">
             <p className="label">Index:</p>
-            <p className="value flex-bc">{indexStr}<CopyHelper toCopy={indexStr} /></p>
+            <p className="value flex-sc">{indexStr}<CopyHelper toCopy={indexStr} /></p>
           </div>
           <div className="item">
             <p className="label">Data:</p>
-            <p className="value flex-bc">{shortenAddress(dataStr,8)}<CopyHelper toCopy={dataStr} /></p>
+            {/* <p className="value flex-bc">{shortenAddress(dataStr,8)}<CopyHelper toCopy={dataStr} /></p> */}
+            <p className="value flex-sc">{dataStr}<CopyHelper toCopy={dataStr} /></p>
           </div>
         </>
       }
       return <div className="item">
         <p className="label">Memo:</p>
-        <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
+        {/* <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p> */}
+        <p className="value flex-sc">{memo}<CopyHelper toCopy={memo} /></p>
       </div>
     }
     return <></>
   }
 
+  const registerTxs = useCallback(() => {
+    axios.get(`${config.bridgeApi}/v2/reswaptxns?hash=${hash}&srcChainID=${chainId}&destChainID=${selectChain}`).then((res:any) => {
+      console.log(res)
+      const {data, status} = res
+      if (status === 200 && data.msg === 'Success') {
+        setModalSpecOpen(false)
+        // setAddNoWalletTx(chainId, hash, destConfig?.type)
+        setAddNoWalletTx({hash}, {
+          summary: `Cross bridge ${config.getBaseCoin(selectCurrency?.symbol, chainId)}`,
+          value: '',
+          toChainId: selectChain,
+          toAddress: '',
+          symbol: selectCurrency?.symbol,
+          version: destConfig?.type,
+          token: selectCurrency?.address,
+          logoUrl: selectCurrency?.logoUrl,
+          isLiquidity: '',
+          fromInfo: {
+            symbol: selectCurrency?.symbol,
+            name: selectCurrency?.name,
+            decimals: selectCurrency?.decimals,
+            address: selectCurrency?.address,
+          },
+          toInfo: {
+            symbol: destConfig?.symbol,
+            name: destConfig?.name,
+            decimals: destConfig?.decimals,
+            address: destConfig?.address,
+          },
+        })
+        // toggleWalletModal()
+        onChangeViewDtil(hash, true)
+      } else {
+        if (data.error) {
+          onChangeViewErrorTip(data.error, true)
+        } else {
+          onChangeViewErrorTip('Validation failed.', true)
+        }
+      }
+    }).catch((error:any) => {
+      console.log(error)
+      onChangeViewErrorTip(error, true)
+    })
+  }, [hash, chainId, selectChain, destConfig, selectCurrency])
+
   function ViewBtn () {
     if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {
       return <ButtonLight onClick={() => {
-        window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${selectChain}&receiverAddress=${recipient}`)
+        window.open(`iota://wallet/swapOut/${routerToken}/?amount=${inputBridgeValue}&unit=Mi&chainId=${useToChainId}&receiverAddress=${recipient}`)
+      }}>{t('Confirm')}</ButtonLight>
+    }
+    // return <ButtonLight disabled={!(hash && hash.length <= 100 && hash.length >= 40)} onClick={() => {
+    //   registerTxs()
+    // }}>{t('Confirm')}</ButtonLight>
+    if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+      return <ButtonLight disabled={!(hash && hash.length <= 100 && hash.length >= 40)} onClick={() => {
+        registerTxs()
       }}>{t('Confirm')}</ButtonLight>
     }
     return <ButtonLight onClick={() => {
@@ -305,17 +449,45 @@ export default function CrossChain({
             ) : ''
           }
           {
-            [ChainId.XRP].includes(chainId) ? (
+            [ChainId.XRP, ChainId.XRP_TEST].includes(chainId) ? (
               <>
                 <CrossChainTip>
-                  Please use XRP wallet to transfer XRP token to deposit address and input receive address on dest chain as memo.
-                  <p className='red'>If you don&apos;t input memo, you will not receive XRP on dest chain.</p>
+                  Please use XRP wallet to transfer {selectCurrency?.symbol} token to deposit address and input receive address on dest chain as memo.
+                  <p className='red'>If you don&apos;t input memo, you will not receive {selectCurrency?.symbol} on dest chain.</p>
                 </CrossChainTip>
               </>
             ) : ''
           }
           {
-            [ChainId.XRP].includes(chainId) ? '' : (
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) ? (['swapin', 'swapout'].includes(destConfig?.type) ? (
+              <>
+                <CrossChainTip>
+                  {/* <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p> */}
+                  Please use Bitcoin wallet to transfer BTC coin to deposit address.
+                </CrossChainTip>
+              </>
+            ) : (
+              <>
+                <CrossChainTip>
+                  {/* <p className='red'>Please add below memo({shortenAddress(memo,8)}) information to your deposit transaction.</p> */}
+                  Please use Bitcoin wallet to transfer BTC to deposit address and input receive address on dest chain as memo(OP_RETURN).
+                  <p className='red'>If you don&apos;t input memo({shortenAddress(memo,8)}), you will not receive multiBTC on dest chain.</p>
+                </CrossChainTip>
+              </>
+            )) : ''
+          }
+          {/* {
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && !['swapin', 'swapout'].includes(destConfig?.type) ? (
+              <>
+                <CrossChainTip>
+                  Please use Bitcoin wallet to transfer BTC to deposit address and input receive address on dest chain as memo(OP_RETURN).
+                  <p className='red'>If you don&apos;t input memo({shortenAddress(memo,8)}), you will not receive multiBTC on dest chain.</p>
+                </CrossChainTip>
+              </>
+            ) : ''
+          } */}
+          {
+            [ChainId.XRP, ChainId.XRP_TEST].includes(chainId) ? '' : (
               <div className="item">
                 <p className="label">Value:</p>
                 <p className="value">{inputBridgeValue}</p>
@@ -325,30 +497,58 @@ export default function CrossChain({
           <div className="item">
             <p className="label">Deposit Address:</p>
             <p className="value flex-bc">
-              {/* {p2pAddress} */}
+              {p2pAddress}
               {/* {shortenAddress(p2pAddress,8)} */}
-              {shortenAddress1(p2pAddress, 12)}
+              {/* {shortenAddress1(p2pAddress, 12)} */}
               <CopyHelper toCopy={p2pAddress} />
             </p>
           </div>
-          {/* {
-            memo ? (
-              <div className="item">
-                <p className="label">Memo:</p>
-                <p className="value flex-bc">{shortenAddress(memo,8)}<CopyHelper toCopy={memo} /></p>
-              </div>
-            ) : ''
-          } */}
           <MemoView />
           <div className="item">
             <QRcode uri={p2pAddress} size={160}></QRcode>
           </div>
+          {/* <div className="item">
+            <p className="label">Hash:</p>
+            <p className="value">
+              <HashInput
+                placeholder='Hash'
+                value={hash}
+                onChange={event => {
+                  setHash(event.target.value.replace(/\s/g, ''))
+                }}
+              />
+            </p>
+          </div>
+          
+          <CrossChainTip>
+            <p className='red'>Please enter hash here after the transaction is successfully sent.</p>
+          </CrossChainTip> */}
+          {
+            [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) ? (
+              <>
+                <div className="item">
+                  <p className="label">Hash:</p>
+                  <p className="value">
+                    <HashInput
+                      placeholder='Hash'
+                      value={hash}
+                      onChange={event => {
+                        setHash(event.target.value.replace(/\s/g, ''))
+                      }}
+                    />
+                  </p>
+                </div>
+                
+                <CrossChainTip>
+                  Please input the {selectCurrency?.symbol} deposit transaction hash, and click confirm to check the bridge status.
+                  {/* <p className='red'>Please enter hash here after the transaction is successfully sent.</p> */}
+                </CrossChainTip>
+              </>
+            ) : ''
+          }
         </ListBox>
         <BottomGrouping>
           {ViewBtn()}
-          {/* <ButtonLight onClick={() => {
-            setModalSpecOpen(false)
-          }}>{t('Confirm')}</ButtonLight> */}
         </BottomGrouping>
       </ModalContent>
       <AutoColumn gap={'sm'}>
@@ -410,11 +610,11 @@ export default function CrossChain({
           selectDestCurrencyList={selectDestCurrencyList}
           bridgeKey={bridgeKey}
         />
-        <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} />
+        <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
       </AutoColumn>
       {
         !userInterfaceMode ? (
-          <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency} selectChain={selectChain}/>
+          <Reminder destConfig={destConfig} bridgeType={destConfig?.type} currency={selectCurrency}/>
         ) : ''
       }
       <ErrorTip errorTip={errorTip} />

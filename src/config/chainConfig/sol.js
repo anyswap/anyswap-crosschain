@@ -1,9 +1,11 @@
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
+// export const SOL_MAINNET = 'https://api.mainnet-beta.solana.com'
+export const SOL_MAINNET = 'https://rpc.ankr.com/solana'
+// export const SOL_MAINNET = 'https://delicate-chaotic-dust.solana-mainnet.discover.quiknode.pro/3a539ea8473757ef14934012e91be6ea432b6799/'
 export const SOL_MAIN_CHAINID = ChainId.SOL
-export const SOL_MAIN_EXPLORER = 'https://solana.fm'
+export const SOL_MAIN_EXPLORER = 'https://solscan.io'
 
 export const SOL_TESTNET = 'https://api.testnet.solana.com'
 export const SOL_TEST_CHAINID = ChainId.SOL_TEST
@@ -25,10 +27,13 @@ export default {
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: SOL_MAINNET,
-    nodeRpcList: [],
+    nodeRpcList: [
+      'https://api.mainnet-beta.solana.com',
+      'https://rpc.ankr.com/solana'
+    ],
     chainID: SOL_MAIN_CHAINID,
-    lookHash: SOL_MAIN_EXPLORER + '/transaction/',
-    lookAddr: SOL_MAIN_EXPLORER + '/address/',
+    lookHash: SOL_MAIN_EXPLORER + '/tx/',
+    lookAddr: SOL_MAIN_EXPLORER + '/account/',
     lookBlock: SOL_MAIN_EXPLORER + '/block/',
     explorer: SOL_MAIN_EXPLORER,
     symbol: symbol,
@@ -47,7 +52,7 @@ export default {
     nodeRpc: SOL_TESTNET,
     chainID: SOL_TEST_CHAINID,
     nodeRpcList: [],
-    lookHash: SOL_TEST_EXPLORER + '/transaction/',
+    lookHash: SOL_TEST_EXPLORER + '/tx/',
     lookAddr: SOL_TEST_EXPLORER + '/address/',
     lookBlock: SOL_TEST_EXPLORER + '/block/',
     explorer: SOL_TEST_EXPLORER,

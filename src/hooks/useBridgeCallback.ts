@@ -9,12 +9,20 @@ import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../state/application/hooks'
 // import { useAddPopup } from '../state/application/hooks'
 import { useActiveWeb3React } from './index'
 import {useActiveReact} from './useActiveReact'
-import { useBridgeContract, useSwapUnderlyingContract, useSwapBTCContract, useSwapETHContract } from './useContract'
+import {
+  useBridgeContract,
+  useSwapUnderlyingContract,
+  useSwapBTCContract,
+  useSwapETHContract,
+  usePermissonlessContract,
+  useAnycallContract
+} from './useContract'
 // import {useSwapBTCABI, useSwapETHABI} from './useContract'
 // import {signSwapoutData, signSwapinData} from 'multichain-bridge'
 // import {signSwapoutData, signSwapinData} from './useBuildData'
 import { isAddress } from '../utils/isAddress'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
+// const { useConnectedWallet, useWallet, ConnectType } = require('@terra-money/wallet-provider')
 // import { MsgSend } from '@terra-money/terra.js';
 import {
   MsgSend,
@@ -45,7 +53,197 @@ export enum WrapType {
   NOCONNECT
 }
 
+function useVersion (chainId:any, toChainID:any, version:any) {
+  // console.log(version)
+  if (
+    version?.indexOf('STABLE') === 0
+    || version?.indexOf('UNDERLYING') === 0
+    || version?.indexOf('NATIVE') === 0
+  ) {
+    if (
+      [ChainId.AURORA].includes(chainId?.toString())
+      || (toChainID && isNaN(toChainID))
+    ) {
+      return 'v2'
+    }
+    return ''
+  }
+  // if (
+  //   [ChainId.AURORA].includes(chainId?.toString())
+  //   || (toChainID && isNaN(toChainID))
+  // ) {
+  //   console.log(version)
+  //   return 'v2'
+  // }
+  return 'v2'
+}
+
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
+
+export function usePermissonlessCallback(
+  routerToken: string | undefined,
+  inputCurrency: Currency | undefined,
+  inputToken: string | undefined,
+  toAddress:  string | undefined,
+  typedValue: string | undefined,
+  toChainID: any,
+  version: string | undefined,
+  selectCurrency: any,
+  isLiquidity: any,
+  destConfig: any,
+  usePoolType?: any,
+): { fee?: any; wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
+  const { account, evmChainId } = useActiveReact()
+  const bridgeContract = usePermissonlessContract(isAddress(routerToken, evmChainId))
+  const anycallContract = useAnycallContract(destConfig?.anycall)
+  const {onChangeViewDtil} = useTxnsDtilOpen()
+  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const { t } = useTranslation()
+  // console.log(inputCurrency)
+  const useAccount:any = isAddress(account, evmChainId)
+  const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
+  const anybalance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
+  let balance = selectCurrency?.tokenType === "NATIVE" ? ethbalance : anybalance
+  if (usePoolType && usePoolType === 'withdraw') {
+    balance = anybalance
+  }
+  // console.log(balance?.raw.toString(16))
+  // 我们总是可以解析输入货币的金额，因为包装是1:1
+
+  const [fee, setFee] = useState<any>()
+  const [appid, setAppid] = useState<any>()
+
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
+  const addTransaction = useTransactionAdder()
+
+  const getAppId = useCallback(() => {
+    if (routerToken && anycallContract) {
+      anycallContract.appIdentifier(routerToken).then((res:any) => {
+        console.log(res)
+        setAppid(res)
+      }).catch((error:any) => {
+        console.log(error)
+        setAppid('')
+      })
+    }
+  }, [anycallContract, routerToken])
+
+  useEffect(() => {
+    getAppId()
+  }, [anycallContract, routerToken])
+
+  const getFee = useCallback(() => {
+    if (anycallContract && destConfig?.type === 'PERMISSONLESS') {
+      anycallContract.calcSrcFees(appid ? appid : '', destConfig?.chainId, 196).then((res:any) => {
+        console.log(res.toString())
+        if (res) {
+          setFee(res.toString())
+        }
+      }).catch((error:any) => {
+        console.log(error)
+        setFee('')
+      })
+    }
+  }, [anycallContract, destConfig, appid])
+
+  useEffect(() => {
+    getFee()
+  }, [anycallContract, destConfig, appid])
+
+  
+
+  return useMemo(() => {
+    // console.log(routerToken)
+    // console.log(inputToken)
+    // console.log(selectCurrency)
+    // console.log(bridgeContract)
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
+    // console.log(typedValue)
+
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+    // console.log(sufficientBalance)
+    // console.log(inputAmount?.toExact())
+    // console.log(balance?.toExact())
+    return {
+      fee,
+      wrapType: WrapType.WRAP,
+      execute:
+        (sufficientBalance || !VALID_BALANCE) && inputAmount
+          ? async () => {
+              const results:any = {}
+              try {
+                // console.log(toAddress)
+                // console.log(routerToken)
+                // console.log(inputToken)
+                // console.log(toChainID)
+                // console.log(bridgeContract)
+                // console.log(destConfig?.chainId)
+                // console.log(inputAmount.raw.toString(16))
+                const txReceipt = await bridgeContract.swapout(
+                  ...[inputToken,
+                  `0x${inputAmount.raw.toString(16)}`,
+                  toAddress,
+                  destConfig?.chainId,
+                  2],
+                  {value: fee}
+                )
+                addTransaction(txReceipt, {
+                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
+                  value: inputAmount.toSignificant(6),
+                  toChainId: toChainID,
+                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
+                  symbol: inputCurrency?.symbol,
+                  version: version,
+                  routerToken: routerToken,
+                  token: inputCurrency?.address,
+                  logoUrl: inputCurrency?.logoUrl,
+                  isLiquidity: isLiquidity,
+                  fromInfo: {
+                    symbol: inputCurrency?.symbol,
+                    name: inputCurrency?.name,
+                    decimals: inputCurrency?.decimals,
+                    address: inputCurrency?.address,
+                  },
+                  toInfo: {
+                    symbol: destConfig?.symbol,
+                    name: destConfig?.name,
+                    decimals: destConfig?.decimals,
+                    address: destConfig?.address,
+                  },
+                })
+                // registerSwap(txReceipt.hash, chainId)
+                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
+                  const data = {
+                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
+                    chainId: evmChainId,
+                    selectChain: toChainID,
+                    account: account?.toLowerCase(),
+                    value: inputAmount.raw.toString(),
+                    formatvalue: inputAmount?.toSignificant(6),
+                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
+                    symbol: inputCurrency?.symbol,
+                    routerToken: routerToken,
+                    version: version
+                  }
+                  recordsTxns(data)
+                  results.hash = txReceipt?.hash
+                  onChangeViewDtil(txReceipt?.hash, true)
+                }
+              } catch (error) {
+                console.error('Could not swapout', error)
+                onChangeViewErrorTip(error, true)
+              }
+              return results
+            }
+          : undefined,
+      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
+    }
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, fee])
+}
+
+
+
 /**
  * 跨链any token
  * 给定选定的输入和输出货币，返回一个wrap回调
@@ -66,7 +264,7 @@ export function useBridgeCallback(
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -106,6 +304,7 @@ export function useBridgeCallback(
                 // console.log(routerToken)
                 // console.log(inputToken)
                 // console.log(toChainID)
+                // console.log(bridgeContract)
                 // console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
                 const txReceipt = await bridgeContract.anySwapOut(
@@ -189,7 +388,7 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -303,7 +502,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -539,7 +738,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -643,7 +842,7 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), toChainID && isNaN(toChainID) ? 'V2' : '')
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -942,6 +1141,7 @@ export function useBridgeNativeCallback(
       && toAddress
       && useNnit
       && inputAmount
+      && [ChainId.TERRA].includes(chainId)
     ) {
       // console.log(connectedWallet)
       getTerraFeeList(
@@ -966,20 +1166,20 @@ export function useBridgeNativeCallback(
         if (!fee) {
           fee = lunaFee
         }
+        // console.log(fee.amount.toData())
+        // console.log(tax.amount.toString())
         const txFee =
           tax?.amount.greaterThan(0) && fee
-            ? new Fee(fee.gas, fee.amount.add(tax))
+            ? new Fee(fee.gas_limit, fee.amount.add(tax))
             : fee
-        // console.log(fee)
-        // console.log(txFee)
-        // setFee(fee.gas * 100)
         setFee(txFee)
       })
     }
-  }, [connectedWallet, toAddress, useNnit, inputAmount])
+  }, [connectedWallet, toAddress, useNnit, inputAmount, chainId])
 
   const fetchBalance = useCallback(() => {
-    if (terraToken && connectedWallet) {
+    if (terraToken && connectedWallet
+      && [ChainId.TERRA].includes(chainId)) {
       // console.log(terraToken)
       getTerraBalances({terraWhiteList: [{
         token: terraToken
@@ -999,7 +1199,7 @@ export function useBridgeNativeCallback(
     } else {
       setBalance('')
     }
-  }, [terraToken, connectedWallet])
+  }, [terraToken, connectedWallet, chainId])
   useEffect(() => {
     fetchBalance()
   }, [useNnit, fetchBalance])
@@ -1014,7 +1214,9 @@ export function useBridgeNativeCallback(
       || !terraRecipient
       || !terraToken
       || !fee
-    ) return
+    ) {
+      return
+    }
     const send:any = terraToken.indexOf('terra') === 0 ? 
       new MsgExecuteContract(
         connectedWallet?.walletAddress,
@@ -1030,7 +1232,8 @@ export function useBridgeNativeCallback(
       )
     
     const gasFee:any = fee
-    
+    // console.log(fee.amount.toData())
+    // console.log(gasFee)
     return post({
       msgs: [send],
       fee: gasFee,

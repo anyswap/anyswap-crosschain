@@ -20,6 +20,7 @@ import {useNonevmAllowances} from '../../nonevm/allowances'
 import {useSolCrossChain} from '../../nonevm/solana'
 import {useAptCrossChain} from '../../nonevm/apt'
 import {useBtcCrossChain} from '../../nonevm/btc'
+import {useAtomCrossChain} from '../../nonevm/atom'
 
 import {useConnectWallet} from '../../hooks/useWallet'
 import { ApprovalState } from '../../hooks/useApproveCallback'
@@ -35,7 +36,7 @@ import AddressInputPanel from '../AddressInputPanel'
 import { ArrowWrapper, BottomGrouping } from '../swap/styleds'
 import ModalContent from '../Modal/ModalContent'
 
-import { useWalletModalToggle } from '../../state/application/hooks'
+// import { useWalletModalToggle } from '../../state/application/hooks'
 // import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
@@ -52,23 +53,16 @@ import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
 import { isAddress } from '../../utils/isAddress'
-// import {getP2PInfo} from '../../utils/bridge/register'
-// import { createAddress } from '../../utils/isAddress/BTC'
-// import {setLocalConfig} from '../../utils/tools/tools'
-// import {CROSSCHAINBRIDGE} from '../../utils/bridge/type'
-
-// import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import {formatDecimal, thousandBit} from '../../utils/tools/tools'
-
-// import TokenLogo from '../TokenLogo'
-// import LiquidityPool from '../LiquidityPool'
-import ConfirmView from './confirmModal'
+// import ConfirmView from './confirmModal'
 import ErrorTip from './errorTip'
+import CrossChainTip from  './CrossChainTip'
+import CrossChainButton from  './CrossChainButton'
+
 import {
   // LogoBox,
   ConfirmContent,
   // TxnsInfoText,
-  ConfirmText,
+  // ConfirmText,
   FlexEC,
 } from '../../pages/styled'
 
@@ -96,7 +90,7 @@ export default function CrossChain({
   
   const allTokensList:any = useAllMergeBridgeTokenList(bridgeKey, chainId)
   const theme = useContext(ThemeContext)
-  const toggleWalletModal = useWalletModalToggle()
+  // const toggleWalletModal = useWalletModalToggle()
   const [userInterfaceMode] = useInterfaceModeManager()
   
 
@@ -117,6 +111,13 @@ export default function CrossChain({
 
   const [delayAction, setDelayAction] = useState<boolean>(false)
 
+  const [xlmlimit, setXlmlimit] = useState<any>('NONE')
+  const [xrplimit, setXrplimit] = useState<any>('INIT')
+  const [nearStorageBalance, setNearStorageBalance] = useState<any>()
+  const [nearStorageBalanceBounds, setNearStorageBalanceBounds] = useState<any>()
+  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+  const [aptRegisterList, setAptRegisterList] = useState<any>({})
+
   let initBridgeToken:any = getParams('bridgetoken') ? getParams('bridgetoken') : ''
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
@@ -127,6 +128,19 @@ export default function CrossChain({
     }
     return false
   }, [selectDestCurrency])
+
+  const useReceiveAddress = useMemo(() => {
+    if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)) {
+      if (destConfig.tokenType === 'NATIVE' && solTokenAddress) {
+        return recipient
+      } else if (destConfig.tokenType !== 'NATIVE' && solTokenAddress) {
+        return solTokenAddress?.toString()
+      }
+      return undefined
+    } else {
+      return recipient
+    }
+  }, [selectChain, recipient, solTokenAddress, destConfig])
 
   const isApprove = useMemo(() => {
     return destConfig.isApprove
@@ -189,28 +203,14 @@ export default function CrossChain({
     // return ApprovalState.NOT_APPROVED
   }, [chainId, allowance, inputBridgeValue, isApprove, loading])
 
-  // const onCreateP2pAddress = useCallback(() => {
-  //   setP2pAddress('')
-  //   if (recipient && selectCurrency && destConfig && selectChain) {
-  //     getP2PInfo(recipient, selectChain, selectCurrency?.symbol, selectCurrency?.address).then((res:any) => {
-  //       // console.log(res)
-  //       // console.log(selectCurrency)
-  //       if (res?.p2pAddress) {
-  //         const localAddress = createAddress(recipient, selectCurrency?.symbol, destConfig?.DepositAddress)
-  //         if (res?.p2pAddress === localAddress && isAddress(localAddress, chainId)) {
-  //           // console.log(localAddress)
-  //           setP2pAddress(localAddress)
-  //           setLocalConfig(recipient, selectCurrency?.address, selectChain, CROSSCHAINBRIDGE, {p2pAddress: localAddress})
-  //         }
-  //       }
-  //       setDelayAction(false)
-  //     })
-  //   } else {
-  //     setDelayAction(false)
-  //   }
-  // }, [recipient, selectCurrency, destConfig, selectChain, chainId])
-
   const { balanceBig: nasBalance } = useCurrentWNASBalance(selectCurrency?.address)
+  
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
 
   const { inputError: wrapInputErrorNeb, wrapType: wrapNebType, execute: onNebWrap } = useNebBridgeCallback({
     inputCurrency: selectCurrency,
@@ -218,7 +218,7 @@ export default function CrossChain({
     typedValue: inputBridgeValue,
     chainId,
     selectChain,
-    recipient,
+    recipient: useReceiveAddress,
     pairid: destConfig?.pairid,
     isLiquidity,
     destConfig
@@ -231,7 +231,7 @@ export default function CrossChain({
     selectChain,
     selectCurrency?.address,
     destConfig?.pairid,
-    recipient,
+    useReceiveAddress,
     selectCurrency?.unit,
     chainId,
     isLiquidity,
@@ -244,20 +244,22 @@ export default function CrossChain({
     anyToken?.address,
     selectCurrency?.address,
     inputBridgeValue,
-    recipient,
+    useReceiveAddress,
     chainId,
     selectChain,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {balance: xlmBalance,execute: onXlmWrap, inputError: wrapInputErrorXlm} = useXlmCrossChain(
     chainId,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     destConfig?.router,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {balance: trxBalance,execute: onTrxWrap, inputError: wrapInputErrorTrx} = useTrxCrossChain(
     destConfig?.router,
@@ -265,9 +267,10 @@ export default function CrossChain({
     chainId,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {balance: adaBalance,execute: onAdaWrap, inputError: wrapInputErrorAda} = useAdaCrossChain(
     destConfig?.router,
@@ -275,18 +278,20 @@ export default function CrossChain({
     chainId,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
   const {execute: onSolWrap, inputError: wrapInputErrorSol} = useSolCrossChain(
     destConfig?.router,
     anyToken?.address,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {execute: onAptWrap, inputError: wrapInputErrorApt} = useAptCrossChain(
@@ -294,9 +299,10 @@ export default function CrossChain({
     anyToken?.address,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
   )
 
   const {execute: onBtcWrap, inputError: wrapInputErrorBtc} = useBtcCrossChain(
@@ -304,9 +310,21 @@ export default function CrossChain({
     anyToken?.address,
     selectCurrency,
     selectChain,
-    recipient,
+    useReceiveAddress,
     inputBridgeValue,
-    destConfig
+    destConfig,
+    useToChainId
+  )
+
+  const {execute: onAtomWrap, inputError: wrapInputErrorAtom} = useAtomCrossChain(
+    destConfig?.router,
+    anyToken?.address,
+    selectCurrency,
+    selectChain,
+    useReceiveAddress,
+    inputBridgeValue,
+    destConfig,
+    useToChainId
   )
 
   const {outputBridgeValue, fee} = outputValue(inputBridgeValue, destConfig, selectCurrency)
@@ -376,10 +394,12 @@ export default function CrossChain({
       return wrapInputErrorApt
     } else if (wrapInputErrorBtc && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
       return wrapInputErrorBtc
+    } else if (wrapInputErrorAtom && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
+      return wrapInputErrorAtom
     } else {
       return false
     }
-  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc])
+  }, [wrapInputErrorTerra, chainId, wrapInputErrorNeb, wrapInputErrorNear, wrapInputErrorXlm, wrapInputErrorTrx, wrapInputErrorAda, wrapInputErrorSol, wrapInputErrorApt, wrapInputErrorBtc, wrapInputErrorAtom])
   // console.log(selectCurrency)
 
   const isInputError = useMemo(() => {
@@ -409,7 +429,7 @@ export default function CrossChain({
           state: 'Error',
           tip: isWrapInputError
         }
-      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+      } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMinLimit', {
@@ -417,7 +437,7 @@ export default function CrossChain({
             symbol: selectCurrency.symbol
           })
         }
-      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+      } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
         return {
           state: 'Error',
           tip: t('ExceedMaxLimit', {
@@ -464,12 +484,12 @@ export default function CrossChain({
   
   useEffect(() => {
     // console.log(evmAccount)
-    if (evmAccount) {
+    if (evmAccount && !isNaN(selectChain)) {
       setRecipient(evmAccount)
     } else {
       setRecipient('')
     }
-  }, [evmAccount])
+  }, [evmAccount, selectChain])
 
   const {initChainId, initChainList} = useDestChainid(selectCurrency, selectChain, chainId)
 
@@ -514,7 +534,7 @@ export default function CrossChain({
           <TokenLogo symbol={selectCurrency?.symbol ?? selectCurrency?.symbol} size={'1rem'}></TokenLogo>
         </LogoBox> */}
         <ConfirmContent>
-          <ConfirmView
+          {/* <ConfirmView
             fromChainId={chainId}
             value={inputBridgeValue}
             toChainId={selectChain}
@@ -523,83 +543,119 @@ export default function CrossChain({
             destConfig={destConfig}
             selectCurrency={selectCurrency}
             fee={fee}
+          /> */}
+          <CrossChainTip
+            isApprove={isApprove}
+            inputBridgeValue={inputBridgeValue}
+            approval={''}
+            selectCurrency={selectCurrency}
+            useChain={chainId}
+            selectChain={selectChain}
+            recipient={recipient}
+            destConfig={destConfig}
+            outputBridgeValue={outputBridgeValue}
+            fee={fee}
+            nativeFee={''}
+            isDestUnderlying={isDestUnderlying}
+            anyToken={anyToken}
+            onSetNearStorageBalanceBounds={(val:any) => {
+              setNearStorageBalanceBounds(val)
+            }}
+            onSetNearStorageBalance={(val:any) => {
+              setNearStorageBalance(val)
+            }}
+            onSetSolTokenAddress={(val:any) => {
+              setSolTokenAddress(val)
+            }}
+            onSetAptRegisterList={(val:any) => {
+              setAptRegisterList(val)
+            }}
+            onSetXlmlimit={(val:any) => {
+              setXlmlimit(val)
+            }}
+            OnSetXrplimit={(val:any) => {
+              setXrplimit(val)
+            }}
           />
-          {
-            isDestUnderlying ? (
-              <>
-                <ConfirmText>
-                  {
-                    t('swapTip', {
-                      symbol: anyToken?.symbol,
-                      symbol1: selectCurrency?.symbol,
-                      chainName: config.getCurChainInfo(selectChain).name
-                    })
-                  }
-                </ConfirmText>
-              </>
-            ) : (
-              <></>
-            )
-          }
           <BottomGrouping>
-            {!account ? (
-                <ButtonLight onClick={toggleWalletModal}>{t('ConnectWallet')}</ButtonLight>
-              ) : (
-                <ButtonPrimary disabled={isCrossBridge || delayAction} onClick={() => {
-                // <ButtonPrimary disabled={delayAction} onClick={() => {
-                  onDelay()
-                  if (onTerraWrap && chainId === ChainId.TERRA) {
-                    onTerraWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onNebWrap && chainId === ChainId.NAS) {
-                    console.log('onNebWrap')
-                    onNebWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onNearWrap && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
-                    console.log('onNebWrap')
-                    onNearWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onXlmWrap && [ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
-                    console.log('onXlmWrap')
-                    onXlmWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onTrxWrap && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
-                    console.log('onTrxWrap')
-                    onTrxWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onAdaWrap && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
-                    console.log('onAdaWrap')
-                    onAdaWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onSolWrap && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
-                    console.log('onSolWrap')
-                    onSolWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onAptWrap && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
-                    console.log('onAptWrap')
-                    onAptWrap().then(() => {
-                      onClear()
-                    })
-                  } else if (onBtcWrap && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
-                    console.log('onBtcWrap')
-                    onBtcWrap().then(() => {
-                      onClear()
-                    })
-                  }
-                  
-                  
-                }}>
-                  {t('Confirm')}
-                </ButtonPrimary>
-              )
-            }
+            <CrossChainButton
+              isApprove={isApprove}
+              inputBridgeValue={inputBridgeValue}
+              approval={''}
+              selectCurrency={selectCurrency}
+              useChain={chainId}
+              selectChain={selectChain}
+              recipient={recipient}
+              destConfig={destConfig}
+              delayAction={delayAction}
+              isCrossBridge={isCrossBridge}
+              xlmlimit={xlmlimit}
+              xrplimit={xrplimit}
+              nearStorageBalance={nearStorageBalance}
+              nearStorageBalanceBounds={nearStorageBalanceBounds}
+              solTokenAddress={solTokenAddress}
+              aptRegisterList={aptRegisterList}
+              onHandleSwap={() => {
+                onDelay()
+                if (onTerraWrap && chainId === ChainId.TERRA) {
+                  onTerraWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onNebWrap && chainId === ChainId.NAS) {
+                  console.log('onNebWrap')
+                  onNebWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onNearWrap && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
+                  console.log('onNebWrap')
+                  onNearWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onXlmWrap && [ChainId.XLM, ChainId.XLM_TEST].includes(chainId)) {
+                  console.log('onXlmWrap')
+                  onXlmWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onTrxWrap && [ChainId.TRX, ChainId.TRX_TEST].includes(chainId)) {
+                  console.log('onTrxWrap')
+                  onTrxWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onAdaWrap && [ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
+                  console.log('onAdaWrap')
+                  onAdaWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onSolWrap && [ChainId.SOL, ChainId.SOL_TEST].includes(chainId)) {
+                  console.log('onSolWrap')
+                  onSolWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onAptWrap && [ChainId.APT, ChainId.APT_TEST].includes(chainId)) {
+                  console.log('onAptWrap')
+                  onAptWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onBtcWrap && [ChainId.BTC, ChainId.BTC_TEST].includes(chainId) && config?.chainInfo?.[chainId]?.chainType !== 'NOWALLET') {
+                  console.log('onBtcWrap')
+                  onBtcWrap().then(() => {
+                    onClear()
+                  })
+                } else if (onAtomWrap && [ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
+                  console.log('onAtomWrap')
+                  onAtomWrap().then(() => {
+                    onClear()
+                  })
+                }
+              }}
+              // approvalSubmitted={approvalSubmitted}
+              // onApprovel={() => {
+              //   onDelay()
+              //   approveCallback().then(() => {
+              //     onClear(1)
+              //   })
+              // }}
+            />
           </BottomGrouping>
         </ConfirmContent>
       </ModalContent>

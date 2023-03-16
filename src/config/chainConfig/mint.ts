@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'Public Mint',
     networkName: 'Public Mint mainnet',
+    walletName: 'PublicMint Mainnet',
     type: 'main',
     label: MINT_MAIN_CHAINID,
   },

@@ -23,9 +23,13 @@ import Loader from '../Loader'
 import { RowBetween } from '../Row'
 import WalletModal from '../WalletModal'
 
+import NoWalletTxList from '../AccountDetails/NoWalletTxList'
+
 // import { ChainId } from '../../config/chainConfig/chainId'
 
 import {useConnectWallet} from '../../hooks/useWallet'
+import { ChainId } from '../../config/chainConfig/chainId'
+// import config from '../../config'
 
 const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -174,6 +178,14 @@ function Web3StatusInner() {
         <Text>{error instanceof UnsupportedChainIdError ? t('WrongNetwork') : t('Error')}</Text>
       </Web3StatusError>
     )
+  // } else if (config?.chainInfo?.[chainId]?.chainType === 'NOWALLET') {
+  } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+    return (
+      <Web3StatusConnected id="web3-status-connected" onClick={connectWallet} pending={hasPendingTransactions}>
+        <Text>{chainId}</Text>
+        {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}
+      </Web3StatusConnected>
+    )
   } else {
     return (
       <Web3StatusConnect id="connect-wallet" onClick={connectWallet} faded={!account}>
@@ -188,6 +200,7 @@ export default function Web3Status() {
   // const contextNetwork = useWeb3React(NetworkContextName)
 
   // const {account} = useActiveReact()
+  const {chainId} = useActiveReact()
 
   const allTransactions = useAllTransactions()
   // console.log(allTransactions)
@@ -203,7 +216,14 @@ export default function Web3Status() {
   // if (!contextNetwork.active && !active) {
   //   return null
   // }
-
+  if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
+    return (
+      <>
+        <Web3StatusInner />
+        <NoWalletTxList pendingTransactions={pending} confirmedTransactions={confirmed} />
+      </>
+    )
+  }
   return (
     <>
       <Web3StatusInner />

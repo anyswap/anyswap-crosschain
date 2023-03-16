@@ -6,7 +6,8 @@ import {
   finalizeTransaction,
   SerializableTransactionReceipt,
   updateTransaction,
-  updateUnderlyingStatus
+  updateUnderlyingStatus,
+  noWalletTxList
 } from './actions'
 
 const now = () => new Date().getTime()
@@ -20,7 +21,7 @@ export interface TransactionDetails {
   lastCheckedBlockNumber?: number
   addedTime: number
   confirmedTime?: number
-  from: string
+  from?: string
   value?: string
   toChainId?: string
   toAddress?: string
@@ -120,29 +121,30 @@ export default createReducer(initialState, builder =>
         return
       }
       tx.info = {
-        bind: info?.bind,
-        confirmations: info?.confirmations,
-        destChainID: info?.destChainID,
-        from: info?.from,
-        historyType: info?.historyType,
-        memo: info?.memo,
-        pairid: info?.pairid,
-        srcChainID: info?.srcChainID,
-        status: info?.status,
-        statusmsg: info?.statusmsg,
-        swapheight: info?.swapheight,
-        swapnonce: info?.swapnonce,
-        swaptx: info?.swaptx,
-        swaptype: info?.swaptype,
-        swapvalue: info?.swapvalue,
-        formatswapvalue: info?.formatswapvalue,
-        timestamp: info?.timestamp,
-        to: info?.to,
-        txheight: info?.txheight,
-        txid: info?.txid,
-        txto: info?.txto,
-        value: info?.value,
-        time: info?.time,
+        ...info
+        // bind: info?.bind,
+        // confirmations: info?.confirmations,
+        // destChainID: info?.destChainID,
+        // from: info?.from,
+        // historyType: info?.historyType,
+        // memo: info?.memo,
+        // pairid: info?.pairid,
+        // srcChainID: info?.srcChainID,
+        // status: info?.status,
+        // statusmsg: info?.statusmsg,
+        // swapheight: info?.swapheight,
+        // swapnonce: info?.swapnonce,
+        // swaptx: info?.swaptx,
+        // swaptype: info?.swaptype,
+        // swapvalue: info?.swapvalue,
+        // formatswapvalue: info?.formatswapvalue,
+        // timestamp: info?.timestamp,
+        // to: info?.to,
+        // txheight: info?.txheight,
+        // txid: info?.txid,
+        // txto: info?.txto,
+        // value: info?.value,
+        // time: info?.time,
       }
     })
     .addCase(updateUnderlyingStatus, (transactions, { payload: { hash, chainId, isReceiveAnyToken } }) => {
@@ -151,5 +153,42 @@ export default createReducer(initialState, builder =>
         return
       }
       tx.isReceiveAnyToken = isReceiveAnyToken
+    })
+    .addCase(noWalletTxList, (transactions, { payload: { 
+      hash,
+      chainId,
+      summary,
+      toChainId,
+      toAddress,
+      symbol,
+      version,
+      routerToken,
+      token,
+      logoUrl,
+      isLiquidity,
+      fromInfo,
+      toInfo
+     } }) => {
+      if (transactions[chainId]?.[hash]) {
+        throw Error('Transaction already registered.')
+      }
+      const txs = transactions[chainId] ?? {}
+      txs[hash] = {
+        hash: hash,
+        addedTime: Date.now(),
+        summary,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+        token,
+        logoUrl,
+        isLiquidity,
+        fromInfo,
+        toInfo
+      }
+      // console.log(txs)
+      transactions[chainId] = txs
     })
 )

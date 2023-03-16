@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'Fuse',
     networkName: 'Fuse mainnet',
+    walletName: 'Fuse Mainnet',
     type: 'main',
     label: FUSE_MAIN_CHAINID,
   },

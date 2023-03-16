@@ -40,6 +40,7 @@ export default {
     name: 'WEMIX3.0',
     networkName: 'WEMIX3.0 mainnet',
     networkLogo: 'WEMIX',
+    walletName: 'WEMIX3.0 Mainnet',
     type: 'main',
     label: TWEMIX_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -63,6 +64,7 @@ export default {
     name: 'WEMIX3.0',
     networkName: 'WEMIX3.0 testnet',
     networkLogo: 'WEMIX',
+    walletName: 'WEMIX3.0 Testnet',
     type: 'test',
     label: TWEMIX_TEST_CHAINID,
   },

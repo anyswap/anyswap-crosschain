@@ -37,6 +37,8 @@ export interface Colors {
   tipBg: Color
   tipBorder: Color
   tipColor: Color
+
+  tableBorder: Color
   
   lightPuroleBg: Color
   viewMoreBtn: Color

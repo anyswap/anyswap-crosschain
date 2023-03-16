@@ -317,10 +317,16 @@ export function useTokenBalanceList(): any {
         for (const token in lists[account][chainId]) {
           const obj = lists[account][chainId][token]
           // const amount = obj.balancestr ? JSBI.BigInt(obj.balancestr.toString()) : undefined
-          list[token] = {
-            ...obj,
-            balances: BigAmount.format(obj.dec, obj.balancestr)
-            // balances: amount
+          try {
+            list[token] = {
+              ...obj,
+              balances: BigAmount.format(obj.dec ? obj.dec : 0, obj.balancestr)
+              // balances: amount
+            }
+          } catch (error) {
+            console.log(error)
+            console.log(obj)
+            console.log(account, chainId, token)
           }
         }
         return list

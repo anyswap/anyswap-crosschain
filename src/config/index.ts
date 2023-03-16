@@ -4,6 +4,7 @@ import {
   INIT_NODE,
   USE_VERSION,
   bridgeApi,
+  scanApi,
   multiAridgeApi,
   explorer,
   env,
@@ -31,6 +32,7 @@ const config: ConFig = {
   ENV_NODE_CONFIG,
   chainInfo,
   bridgeApi,
+  scanApi,
   multiAridgeApi,
   explorer,
   oldAppName: 'Anyswap V1',
@@ -38,7 +40,7 @@ const config: ConFig = {
   baseCurrency: 'ANY',
   localDataDeadline: 1624700942896,
   farmUrl: '#/',
-  explorerUrl: 'https://anyswap.net/explorer',
+  explorerUrl: explorer,
   isStopSystem: 0,
   getBaseCoin (value:any, chainId:any, type?: number, name?: string) {
     // console.log(value)

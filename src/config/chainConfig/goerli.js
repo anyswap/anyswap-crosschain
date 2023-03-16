@@ -2,9 +2,9 @@ import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const GOERLI_MAIN_CHAINID = ChainId.GOERLI1
-export const GOERLI_MAINNET = getLocalRPC(GOERLI_MAIN_CHAINID, '')
-export const GOERLI_MAIN_EXPLORER = ''
+// export const GOERLI_MAIN_CHAINID = ChainId.GOERLI1
+// export const GOERLI_MAINNET = getLocalRPC(GOERLI_MAIN_CHAINID, '')
+// export const GOERLI_MAIN_EXPLORER = ''
 
 export const GOERLI_TEST_CHAINID = ChainId.GOERLI1_TEST
 export const GOERLI_TESTNET = getLocalRPC(GOERLI_TEST_CHAINID, 'https://goerli.optimism.io/')
@@ -22,28 +22,28 @@ const bridgeToken = {
 }
 
 export default {
-  [GOERLI_MAIN_CHAINID]: {
-    ...bridgeToken[USE_VERSION],
-    swapRouterToken: '',
-    multicalToken: '',
-    v1FactoryToken: '',
-    v2FactoryToken: '',
-    nodeRpc: GOERLI_MAINNET,
-    nodeRpcList: [
-      GOERLI_MAINNET,
-    ],
-    chainID: GOERLI_MAIN_CHAINID,
-    lookHash: GOERLI_MAIN_EXPLORER + '/extrinsic/',
-    lookAddr: GOERLI_MAIN_EXPLORER + '/account/',
-    lookBlock: GOERLI_MAIN_EXPLORER + '/block/',
-    explorer: GOERLI_MAIN_EXPLORER,
-    symbol: symbol,
-    name: 'GOERLI Network',
-    networkName: 'GOERLI mainnet',
-    networkLogo: 'GOERLI',
-    type: 'main',
-    label: GOERLI_MAIN_CHAINID,
-  },
+  // [GOERLI_MAIN_CHAINID]: {
+  //   ...bridgeToken[USE_VERSION],
+  //   swapRouterToken: '',
+  //   multicalToken: '',
+  //   v1FactoryToken: '',
+  //   v2FactoryToken: '',
+  //   nodeRpc: GOERLI_MAINNET,
+  //   nodeRpcList: [
+  //     GOERLI_MAINNET,
+  //   ],
+  //   chainID: GOERLI_MAIN_CHAINID,
+  //   lookHash: GOERLI_MAIN_EXPLORER + '/extrinsic/',
+  //   lookAddr: GOERLI_MAIN_EXPLORER + '/account/',
+  //   lookBlock: GOERLI_MAIN_EXPLORER + '/block/',
+  //   explorer: GOERLI_MAIN_EXPLORER,
+  //   symbol: symbol,
+  //   name: 'GOERLI Network',
+  //   networkName: 'GOERLI mainnet',
+  //   networkLogo: 'GOERLI',
+  //   type: 'main',
+  //   label: GOERLI_MAIN_CHAINID,
+  // },
   [GOERLI_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
@@ -65,6 +65,7 @@ export default {
     name: 'GOERLI Network',
     networkName: 'GOERLI testnet',
     networkLogo: 'GOERLI',
+    walletName: 'Optimism Goerli Testnet',
     type: 'test',
     label: GOERLI_TEST_CHAINID,
   },

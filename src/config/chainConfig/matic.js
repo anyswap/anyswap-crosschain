@@ -90,6 +90,7 @@ export default {
     symbol: symbol,
     name: 'Polygon',
     networkName: 'Polygon mainnet',
+    walletName: 'Polygon Mainnet',
     type: 'main',
     label: MATIC_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -112,6 +113,7 @@ export default {
     symbol: symbol,
     name: 'Mumbai',
     networkName: 'Mumbai testnet',
+    walletName: 'Mumbai',
     type: 'test',
     label: MATIC_TEST_CHAINID,
   },

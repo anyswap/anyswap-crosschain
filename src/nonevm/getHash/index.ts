@@ -8,6 +8,7 @@ import {getFLOWTxnsStatus} from '../flow'
 import {getSolTxnsStatus} from '../solana'
 import {getAptTxnsStatus} from '../apt'
 import {getBtcHash} from '../btc'
+import {getAtomTxnsStatus} from '../atom'
 
 import { ChainId } from '../../config/chainConfig/chainId'
 
@@ -51,6 +52,10 @@ export function getHashInfo(hash: any, chainId: any) {
       })
     } else if ([ChainId.BTC, ChainId.BTC_TEST].includes(chainId)) {
       getBtcHash(hash, chainId).then(res => {
+        resolve(res)
+      })
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(chainId)) {
+      getAtomTxnsStatus(hash, chainId).then(res => {
         resolve(res)
       })
     }

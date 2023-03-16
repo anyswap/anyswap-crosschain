@@ -253,7 +253,12 @@ export default function RouterList ({
       // )
       && !isUserSelect
     ) {
-      onCurrencySelect(viewList[0])
+      for (const obj of viewList) {
+        if (obj.type.indexOf('FAST_ROUTER') !== 0) {
+          onCurrencySelect(obj)
+          break
+        }
+      }
     }
   // }, [viewList, selectChain, selectDestKey, routerlist, isUserSelect])
   }, [viewList, isUserSelect])

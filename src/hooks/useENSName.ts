@@ -21,14 +21,16 @@ export default function useENSName(address?: string): { ENSName: string | null; 
     }
   }, [debouncedAddress])
   const registrarContract = useENSRegistrarContract(false)
+  // console.log('ensNodeArgument', ensNodeArgument)
   const resolverAddress = useSingleCallResult(registrarContract, 'resolver', ensNodeArgument)
   const resolverAddressResult = resolverAddress.result?.[0]
+  // console.log('resolverAddressResult',resolverAddressResult)
   const resolverContract = useENSResolverContract(
     resolverAddressResult && !isZero(resolverAddressResult) ? resolverAddressResult : undefined,
     false
   )
   const name = useSingleCallResult(resolverContract, 'name', ensNodeArgument)
-
+    // console.log('name',name)
   const changed = debouncedAddress !== address
   return {
     ENSName: changed ? null : name.result?.[0] ?? null,

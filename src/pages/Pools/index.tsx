@@ -9,7 +9,12 @@ import styled, { ThemeContext } from 'styled-components'
 import SelectCurrencyInputPanel from '../../components/CurrencySelect/selectCurrency'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { useActiveReact } from '../../hooks/useActiveReact'
-import {useSwapUnderlyingCallback, useBridgeCallback, useSwapNativeCallback} from '../../hooks/useBridgeCallback'
+import {
+  useSwapUnderlyingCallback,
+  useBridgeCallback,
+  useSwapNativeCallback,
+  usePermissonlessCallback
+} from '../../hooks/useBridgeCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
 import { useLocalToken } from '../../hooks/Tokens'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -43,11 +48,18 @@ import Reminder from '../../components/CrossChainPanelV2/reminder'
 // import Reminder from '../CrossChain/reminder'
 import {useDestChainid, useDestCurrency, useInitSelectCurrency, outputValue} from '../../components/CrossChainPanelV2/hooks'
 import { BigAmount } from '../../utils/formatBignumber'
+import useInterval from '../../hooks/useInterval'
 
 import {useSwapPoolCallback} from '../../nonevm/pools'
 import {useNonevmAllowances} from '../../nonevm/allowances'
 
 import { isAddress } from '../../utils/isAddress'
+import { ChainId } from '../../config/chainConfig/chainId'
+
+import {
+  useSolCreateAccount,
+  // useLoginSol
+} from '../../nonevm/solana'
 
 const BackBox = styled.div`
   cursor:pointer;
@@ -64,6 +76,8 @@ export default function SwapNative() {
   const history = createBrowserHistory()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+
+  const {validAccount} = useSolCreateAccount()
   
   const toggleWalletModal = useWalletModalToggle()
   const allTokensList:any = usePoolListState(chainId)
@@ -94,6 +108,8 @@ export default function SwapNative() {
   const [delayAction, setDelayAction] = useState<boolean>(false)
   const [recipient, setRecipient] = useState<any>(evmAccount ?? '')
 
+  const [solTokenAddress, setSolTokenAddress] = useState<any>(false)
+
   useEffect(() => {
     // console.log(evmAccount)
     if (evmAccount && !isNaN(selectChain)) {
@@ -116,6 +132,38 @@ export default function SwapNative() {
     }
     return false
   }, [selectDestCurrency])
+
+  const useReceiveAddress = useMemo(() => {
+    if ([ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)) {
+      if (destConfig.tokenType === 'NATIVE' && solTokenAddress) {
+        return recipient
+      } else if (destConfig.tokenType !== 'NATIVE' && solTokenAddress) {
+        return solTokenAddress?.toString()
+      }
+      return undefined
+    } else {
+      return recipient
+    }
+  }, [selectChain, recipient, solTokenAddress, destConfig])
+
+  const getNonevmInfo = useCallback(() => {
+    if (
+      [ChainId.SOL, ChainId.SOL_TEST].includes(selectChain)
+      && destConfig?.address
+      && isAddress(recipient, selectChain)
+    ) {
+      validAccount({chainId: selectChain, account: recipient, token: destConfig?.address}).then((res:any) => {
+        console.log(res)
+        setSolTokenAddress(res)
+      })
+    }
+  }, [selectChain, recipient, destConfig])
+
+  useEffect(() => {
+    getNonevmInfo()
+  }, [selectChain, recipient, destConfig])
+
+  useInterval(getNonevmInfo, 1000 * 10)
 
   const isApprove = useMemo(() => {
     // return destConfig.isApprove
@@ -190,17 +238,42 @@ export default function SwapNative() {
     // return ApprovalState.NOT_APPROVED
   }, [chainId, allowance, inputBridgeValue, approval, isApprove, loading])
 
+  const useToChainId = useMemo(() => {
+    if (isNaN(selectChain)) {
+      return destConfig?.chainId
+    }
+    return selectChain
+  }, [destConfig, selectChain])
+
+  const useSwapMethods = useMemo(() => {
+    return destConfig.routerABI
+  }, [destConfig])
+
   // useEffect(() => {
   //   console.log('ApprovalState', ApprovalState)
   //   console.log('approveState', approveState)
   //   console.log('selectAnyToken', selectAnyToken)
   // }, [approveState, selectAnyToken])
 
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
+  const { wrapType: wrapTypePermissonless, execute: onWrapPermissonless, inputError: wrapInputErrorPermissonless, fee: nativeFee } = usePermissonlessCallback(
     useRouterToken,
     underlyingCurrency ?? undefined,
     selectAnyToken?.address,
     account ?? undefined,
+    inputBridgeValue,
+    selectChain,
+    destConfig?.type,
+    selectCurrency,
+    destConfig?.isLiquidity,
+    destConfig,
+    swapType
+  )
+
+  const { wrapType, execute: onWrap, inputError: wrapInputError } = useBridgeCallback(
+    useRouterToken,
+    underlyingCurrency ?? undefined,
+    selectAnyToken?.address,
+    useReceiveAddress ?? undefined,
     inputBridgeValue,
     selectChain,
     destConfig?.type,
@@ -217,9 +290,10 @@ export default function SwapNative() {
     inputBridgeValue,
     swapType,
     selectChain,
-    recipient,
+    useReceiveAddress,
     destConfig,
-    selectCurrency
+    selectCurrency,
+    useToChainId
   )
   
   const { wrapType: wrapTypeUnderlying, execute: onWrapUnderlying, inputError: wrapInputErrorUnderlying } = useSwapUnderlyingCallback(
@@ -299,8 +373,10 @@ export default function SwapNative() {
       }
     }  else {
       if (openAdvance) {
-        if (wrapInputError) {
+        if (wrapInputError && useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') === -1) {
           return wrapInputError
+        } else if (wrapInputErrorPermissonless && useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+          return wrapInputErrorPermissonless
         } else {
           return false
         }
@@ -328,7 +404,7 @@ export default function SwapNative() {
         }
       }
     }
-  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType, chainId, wrapInputErrorNonevm])
+  }, [isNativeToken, openAdvance, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, swapType, chainId, wrapInputErrorNonevm, useSwapMethods, wrapInputErrorPermissonless])
 
   const isInputError = useMemo(() => {
     if (!selectCurrency) {
@@ -367,7 +443,7 @@ export default function SwapNative() {
         // console.log('destLiquidity', destLiquidity)
         if (chainId?.toString() !== selectChain?.toString()) {
           // console.log(destChain)
-          if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap)) {
+          if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
             return {
               state: 'Error',
               tip: t('ExceedMinLimit', {
@@ -375,7 +451,7 @@ export default function SwapNative() {
                 symbol: selectCurrency.symbol
               })
             }
-          } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap)) {
+          } else if (Number(inputBridgeValue) > Number(destConfig.MaximumSwap) && Number(destConfig.MaximumSwap) !== 0) {
             return {
               state: 'Error',
               tip: t('ExceedMaxLimit', {
@@ -411,7 +487,7 @@ export default function SwapNative() {
 
   const errorTip = useMemo(() => {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
-    const isAddr = isAddress( recipient, selectChain)
+    const isAddr = isAddress( useReceiveAddress, selectChain)
     if (isInputError) {
       return isInputError
     } else if (!inputBridgeValue) {
@@ -430,7 +506,7 @@ export default function SwapNative() {
       }
     }
     return undefined
-  }, [isInputError, inputBridgeValue, swapType, recipient, selectChain, chainId])
+  }, [isInputError, inputBridgeValue, swapType, useReceiveAddress, selectChain, chainId])
 
   const isCrossBridge = useMemo(() => {
     if (errorTip) {
@@ -454,11 +530,16 @@ export default function SwapNative() {
     const bt = swapType !== 'deposit' ? t('RemoveLiquidity') : t('AddLiquidity')
     if (errorTip) {
       return errorTip?.tip
-    } else if (wrapTypeUnderlying === WrapType.WRAP || wrapType === WrapType.WRAP || wrapTypeNative === WrapType.WRAP) {
+    } else if (
+      wrapTypeUnderlying === WrapType.WRAP
+      || wrapType === WrapType.WRAP
+      || wrapTypeNative === WrapType.WRAP
+      || wrapTypePermissonless === WrapType.WRAP
+    ) {
       return bt
     }
     return bt
-  }, [errorTip, t, wrapType, wrapTypeUnderlying, swapType, wrapTypeNative])
+  }, [errorTip, t, wrapType, wrapTypeUnderlying, swapType, wrapTypeNative, wrapTypePermissonless])
 
   const {outputBridgeValue} = outputValue(inputBridgeValue, destConfig, selectCurrency)
 
@@ -546,7 +627,13 @@ export default function SwapNative() {
   }, [initChainId])
 
   useEffect(() => {
-    setSelectChainList([chainId, ...initChainList])
+    const arr  = [chainId]
+    for (const c of initChainList) {
+      // if ([ChainId.SOL, ChainId.SOL_TEST].includes(c)) continue
+      arr.push(c)
+    }
+    // setSelectChainList([chainId, ...initChainList])
+    setSelectChainList(arr)
   }, [initChainList, chainId])
   
   const handleMaxInput = useCallback((value) => {
@@ -694,7 +781,7 @@ export default function SwapNative() {
           }
           {
             swapType !== 'deposit' && (isNaN(chainId) || isNaN(selectChain)) && chainId?.toString() !== selectChain?.toString() ? (
-              <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( recipient, selectChain))} />
+              <AddressInputPanel id="recipient" value={recipient} label={t('Recipient')} labelTip={'( ' + t('receiveTip') + ' )'} onChange={setRecipient} isValid={false} selectChainId={selectChain} isError={!Boolean(isAddress( useReceiveAddress, selectChain))} />
             ) : ''
           }
         </AutoColumn>
@@ -719,7 +806,8 @@ export default function SwapNative() {
           openAdvance && chainId?.toString() !== selectChain?.toString() ? (
             <>
             {/* <Reminder bridgeConfig={selectCurrency} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/> */}
-            <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/>
+            {/* <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} selectChain={selectChain}/> */}
+            <Reminder destConfig={destConfig} bridgeType='bridgeAssets' currency={selectCurrency} version={destConfig?.type} fee={nativeFee}/>
             </>
           ) : ''
         }
@@ -775,9 +863,15 @@ export default function SwapNative() {
                           })
                         } else {
                           console.log('onWrap')
-                          if (onWrap) onWrap().then(() => {
-                            onClear()
-                          })
+                          if (useSwapMethods?.indexOf('swapout(swapout,token,amount,receiver,toChainId,flags)') !== -1) {
+                            if (onWrapPermissonless) onWrapPermissonless().then(() => {
+                              onClear()
+                            })
+                          } else {
+                            if (onWrap) onWrap().then(() => {
+                              onClear()
+                            })
+                          }
                         }
                       } else {
                         if (isNaN(chainId)) {

@@ -42,6 +42,7 @@ export default {
     symbol: symbol,
     name: 'Bitgert',
     networkName: 'Bitgert mainnet',
+    walletName: 'Bitgert Mainnet',
     type: 'main',
     label: BRISE_MAIN_CHAINID,
   },

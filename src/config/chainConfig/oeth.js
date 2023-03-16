@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Boba',
     networkName: 'Boba mainnet',
+    walletName: 'Boba Network',
     type: 'main',
     label: OETH_MAIN_CHAINID,
   },

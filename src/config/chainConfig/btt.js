@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'BitTorrent',
     networkName: 'BitTorrent mainnet',
+    walletName: 'BitTorrent Chain Mainnet',
     type: 'main',
     label: BTT_MAIN_CHAINID,
   },

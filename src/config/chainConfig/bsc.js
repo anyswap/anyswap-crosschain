@@ -118,6 +118,7 @@ export default {
     symbolName: 'Binance',
     name: 'BNB CHAIN',
     networkName: 'BNB CHAIN mainnet',
+    walletName: 'Binance Smart Chain Mainnet',
     type: 'main',
     label: BNB_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -140,6 +141,7 @@ export default {
     symbol: symbol,
     name: 'BNB CHAIN',
     networkName: 'BNB CHAIN testnet',
+    walletName: 'Binance Smart Chain Testnet',
     type: 'test',
     label: BNB_TEST_CHAINID,
   }

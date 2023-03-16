@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Evmos',
     networkName: 'Evmos mainnet',
+    walletName: 'Evmos',
     type: 'main',
     label: EVMOS_MAIN_CHAINID,
   },

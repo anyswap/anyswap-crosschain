@@ -13,6 +13,7 @@ import {HT_MAIN_CHAINID} from '../chainConfig/ht'
 
 import {selectNetwork} from './methods'
 
+
 export function getParams(param: any) {
   const str = window.location.href.indexOf('?') ? window.location.href.split('?')[1] : ''
   if (str) {
@@ -79,12 +80,14 @@ function getParamNode(type: any, INIT_NODE: any) {
       paramList.push(k)
     }
     history.replace(pathKey + '?' + paramList.join('&'))
-    selectNetwork(labelStr).then((res:any) => {
-      console.log(res)
-      if (res.msg === 'Error') {
-        alert(`Please switch metamask network to：${chainInfo[labelStr].networkName}`)
-      }
-    })
+    if (!isNaN(labelStr)) {
+      selectNetwork(labelStr, 1).then((res:any) => {
+        console.log(res)
+        if (res.msg === 'Error') {
+          alert(`Please switch metamask network to：${chainInfo[labelStr].networkName}`)
+        }
+      })
+    }
   }
   return labelStr
 }

@@ -37,6 +37,7 @@ export default {
     name: 'Arbitrum Nova',
     networkName: 'Arbitrum Nova mainnet',
     networkLogo: 'NOVA',
+    walletName: 'Arbitrum Nova',
     type: 'main',
     label: NOVA_MAIN_CHAINID,
   },

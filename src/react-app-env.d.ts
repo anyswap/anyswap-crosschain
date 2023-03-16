@@ -76,6 +76,9 @@ declare module 'qrcode.react'
 declare module '@makerdao/multicall';
 declare module '@solana/spl-token';
 declare module '@solana/wallet-adapter-react';
+declare module '@reef-defi/extension-dapp';
+declare module '@polkadot/util';
+declare module '@terra-money/wallet-provider';
 
 declare module 'toformat';
 
@@ -105,14 +108,18 @@ interface Window {
   freighterApi: any
   xfi: any
   cardano: any
-  typhon: any
-  typhoncip30: any
+  eternl: any
+  // typhoncip30: any
   solana: any
   bitkeep: any
   aptos: any
   bitcoin: any
   providerManager: any
   tally: any
+  keplr: any
+  getOfflineSigner: any
+  NasExtWallet: any,
+  lucid: any
 }
 
 declare module '@onflow/fcl';
@@ -151,3 +158,5 @@ declare module 'nebulas' {
 declare const NasExtWallet
 
 declare module 'nebpay.js'
+
+declare module 'rxjs';

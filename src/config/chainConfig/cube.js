@@ -50,6 +50,7 @@ export default {
     symbol: symbol,
     name: 'Cube Chain',
     networkName: 'Cube Chain mainnet',
+    walletName: 'Cube Chain Mainnet',
     type: 'main',
     label: CUBE_MAIN_CHAINID,
   },

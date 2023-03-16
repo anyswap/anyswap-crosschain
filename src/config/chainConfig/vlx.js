@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Velas',
     networkName: 'Velas mainnet',
+    walletName: 'Velas EVM Mainnet',
     type: 'main',
     label: VLX_MAIN_CHAINID,
   },

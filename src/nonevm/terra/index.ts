@@ -86,6 +86,8 @@ export function useTerraSend () {
         gasPrices: { [_feeDenom]: gasPricesFromServer[_feeDenom] },
       })
       // tax
+      // console.log(denom)
+      // console.log(isNativeTerra(denom))
       return isNativeTerra(denom)
         ? lcd.utils.calculateTax(new Coin(denom, amount))
         : new Coin(_feeDenom, 0)
@@ -108,6 +110,7 @@ export function useTerraSend () {
     if (terraExt && inputAmount && address && toAddress && Unit) {
       let gas = 200000
       const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: Unit})
+      // const tax = await getTerraSendTax({denom: Unit, amount: inputAmount, feeDenom: AssetNativeDenomEnum.uusd})
       try {
         const feeDenoms = [AssetNativeDenomEnum.uluna]
 
@@ -123,11 +126,17 @@ export function useTerraSend () {
           gasPrices: gasPricesFromServer,
         })
         // fee + tax
+        // console.log(address)
+        // console.log(msgs)
+        // console.log(feeDenoms)
+        // debugger
         const unsignedTx:any = await lcd.tx.create(address, {
           msgs: [msgs],
           feeDenoms,
         })
         gas = unsignedTx?.fee.gas
+        console.log(unsignedTx)
+        // debugger
       } catch (err) {
         // gas is just default value
         console.log('error')
@@ -163,6 +172,7 @@ export function updateTerraHash (hash:any): Promise<any> {
   return new Promise(resolve => {
     const url = `${terraExt.queryTx}${hash}`
     fetch(url).then(res => res.json()).then(json => {
+      console.log(json)
       if (json) {
         if (json.error || json.code) {
           data.msg = 'Failure'
@@ -179,3 +189,7 @@ export function updateTerraHash (hash:any): Promise<any> {
     })
   })
 }
+
+// updateTerraHash('0D27A684885992D3F13BFB52B9DCF1D612C130001E5CD659A4E79A2BBC428A07').then(res => {
+//   console.log(res)
+// })

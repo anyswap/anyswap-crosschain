@@ -11,6 +11,7 @@ import config from '../../config'
 
 import {thousandBit} from '../../utils/tools/tools'
 import { shortenAddress1 } from "../../utils"
+import {BigAmount} from '../../utils/formatBignumber'
 
 const ConfirmBox = styled.div`
   width: 100%;
@@ -103,7 +104,8 @@ export default function ConfirmContent (
     recipient,
     destConfig,
     selectCurrency,
-    fee
+    fee,
+    nativeFee
   }: {
     fromChainId:any,
     value:any,
@@ -113,6 +115,7 @@ export default function ConfirmContent (
     destConfig:any,
     selectCurrency:any,
     fee:any,
+    nativeFee?:any,
   }
 ) {
   const { t } = useTranslation()
@@ -120,6 +123,58 @@ export default function ConfirmContent (
   // console.log(destConfig)
   const dFee = Number(destConfig?.SwapFeeRatePerMillion)
   const useDfee = destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? 0 : dFee
+
+  function FeeView() {
+    if (nativeFee) {
+      return (
+        <>
+          <li className="item">
+            <div className="label">
+              Crosschain Native Fee:
+            </div>
+            <div className="value">{t('fee')}: {BigAmount.format(18, nativeFee).toExact()} {config.getCurChainInfo(fromChainId).symbol}</div>
+          </li>
+        </>
+      )
+    } else if (destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee) {
+      return (<>
+        <li className="item">
+          <div className="label">Crosschain Fee:</div>
+          <div className="value">{useDfee} %</div>
+        </li>
+        <li className="item">
+          <div className="label">
+            Gas Fee:
+            <QuestionHelper text={
+              'for your cross-chain transaction on destination chain'
+            } />
+          </div>
+          <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
+        </li>
+      </>)
+    } else {
+      return (
+        <>
+          <li className="item">
+            <div className="label">
+              Crosschain Fee:
+              <QuestionHelper text={
+                t('redeemTip1' , {
+                  dMinFee: thousandBit(destConfig?.MinimumSwapFee, 'no'),
+                  coin: destConfig?.symbol,
+                  dMaxFee: thousandBit(destConfig?.MaximumSwapFee, 'no'),
+                  dFee: thousandBit(useDfee, 'no')
+                })
+              } />
+            </div>
+            <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
+          </li>
+        </>
+      )
+    }
+    
+  }
+
   return (
     <>
       <ConfirmBox>
@@ -175,42 +230,7 @@ export default function ConfirmContent (
           </li>
         </ConfirmList>
         <FeeBox>
-          {
-            destConfig?.MaximumSwapFee === destConfig?.MinimumSwapFee ? (
-              <>
-                <li className="item">
-                  <div className="label">Crosschain Fee:</div>
-                  <div className="value">{useDfee} %</div>
-                </li>
-                <li className="item">
-                  <div className="label">
-                    Gas Fee:
-                    <QuestionHelper text={
-                      'for your cross-chain transaction on destination chain'
-                    } />
-                  </div>
-                  <div className="value">{fee + ' ' + selectCurrency?.symbol}</div>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="item">
-                  <div className="label">
-                    Crosschain Fee:
-                    <QuestionHelper text={
-                      t('redeemTip1' , {
-                        dMinFee: thousandBit(destConfig?.MinimumSwapFee, 'no'),
-                        coin: destConfig?.symbol,
-                        dMaxFee: thousandBit(destConfig?.MaximumSwapFee, 'no'),
-                        dFee: thousandBit(useDfee, 'no')
-                      })
-                    } />
-                  </div>
-                  <div className="value">{fee + ' ' + selectCurrency?.symbol}({useDfee} %)</div>
-                </li>
-              </>
-            )
-          }
+          {FeeView()}
           <li className="item">
             <div className="label">Estimated time of arrival:</div>
             <div className="value">3-30 min</div>

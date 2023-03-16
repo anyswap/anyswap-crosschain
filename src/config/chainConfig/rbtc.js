@@ -47,6 +47,7 @@ export default {
     symbol: symbol,
     name: 'Rootstock RSK',
     networkName: 'Rootstock RSK mainnet',
+    walletName: 'RSK Mainnet',
     type: 'main',
     label: RBTC_MAIN_CHAINID,
   },

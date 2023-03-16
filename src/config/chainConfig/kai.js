@@ -36,6 +36,7 @@ export default {
     symbol: symbol,
     name: 'KardiaChain',
     networkName: 'KardiaChain mainnet',
+    walletName: 'KardiaChain Mainnet',
     type: 'main',
     label: KAI_MAIN_CHAINID,
   },

@@ -48,6 +48,7 @@ export default {
     name: 'Syscoin NEVM',
     networkName: 'Syscoin mainnet',
     networkLogo: 'SYS',
+    walletName: 'Syscoin Mainnet',
     type: 'main',
     label: SYS_MAIN_CHAINID,
   },

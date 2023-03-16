@@ -48,6 +48,7 @@ export default {
     symbol: symbol,
     name: 'Celo',
     networkName: 'Celo mainnet',
+    walletName: 'Celo Mainnet',
     type: 'main',
     label: CELO_MAIN_CHAINID,
   },

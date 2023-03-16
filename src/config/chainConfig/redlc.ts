@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'Redlight',
     networkName: 'Redlight mainnet',
+    walletName: 'Redlight Chain Mainnet',
     type: 'main',
     label: REDLC_MAIN_CHAINID,
   },

@@ -3,7 +3,7 @@ import { useConnectedWallet } from '@terra-money/wallet-provider'
 import { useUserSelectChainId } from '../state/user/hooks'
 import { useMemo } from 'react'
 
-import { useCurrentAddress } from '../nonevm/nas'
+// import { useCurrentAddress } from '../nonevm/nas'
 import {useNearAddress} from '../nonevm/near'
 import {connectXlmWallet} from '../nonevm/stellar'
 import {useTrxAddress} from '../nonevm/trx'
@@ -20,7 +20,7 @@ export function useActiveReact () {
   const { account, chainId } = useActiveWeb3React()
   const connectedWallet = useConnectedWallet()
   const {selectNetworkInfo} = useUserSelectChainId()
-  const nebAddress = useCurrentAddress()
+  // const nebAddress = useCurrentAddress()
   const nearAddress = useNearAddress()
   const {trxAddress} = useTrxAddress()
   const {xlmAddress} = connectXlmWallet()
@@ -47,9 +47,11 @@ export function useActiveReact () {
       useAccount = connectedWallet?.walletAddress
     } else if (selectNetworkInfo?.label === ChainId.BTC) {
       useAccount = ''
-    } else if (selectNetworkInfo?.label === ChainId.NAS) {
-      useAccount = nebAddress
-    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId)) {
+    }
+    // else if (selectNetworkInfo?.label === ChainId.NAS) {
+    //   useAccount = nebAddress
+    // }
+    else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId)) {
       useAccount = nearAddress
     } else if ([ChainId.XLM, ChainId.XLM_TEST].includes(useChainId)) {
       useAccount = xlmAddress
@@ -75,5 +77,5 @@ export function useActiveReact () {
       evmAccount: account,
       evmChainId: useChainId === chainId ? chainId : '',
     }
-  }, [account, connectedWallet, selectNetworkInfo?.label, chainId, nebAddress, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress, solAddress, nonevmAccount])
+  }, [account, connectedWallet, selectNetworkInfo, chainId, nearAddress, xlmAddress, trxAddress, adaAddress, flowAddress, solAddress, nonevmAccount])
 }

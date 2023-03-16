@@ -37,6 +37,7 @@ export default {
     name: 'Boba Beam',
     networkName: 'Boba Beam mainnet',
     networkLogo: 'BOBABEAM',
+    walletName: 'Bobabeam',
     type: 'main',
     label: BOBABEAM_MAIN_CHAINID,
   },

@@ -38,6 +38,7 @@ export default {
     symbol: symbol,
     name: 'Step Network',
     networkName: 'Step Network mainnet',
+    walletName: 'Step Network',
     type: 'main',
     label: FITFI_MAIN_CHAINID,
   },

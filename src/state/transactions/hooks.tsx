@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { AppDispatch, AppState } from '../index'
-import { addTransaction, updateUnderlyingStatus } from './actions'
+import { addTransaction, updateUnderlyingStatus, noWalletTxList } from './actions'
 import { TransactionDetails } from './reducer'
 
 import config from '../../config'
@@ -207,5 +207,71 @@ export function useUpdateUnderlyingStatus(): {setUnderlyingStatus?: (chainId: an
 
   return {
     setUnderlyingStatus
+  }
+}
+
+export function useAddNoWalletTx(): any {
+  const dispatch = useDispatch<AppDispatch>()
+  const { chainId } = useActiveReact()
+  // const state = useSelector<AppState, AppState['transactions']>(state => state.transactions)
+
+  const setAddNoWalletTx = useCallback(
+    (
+      response: TransactionResponse,
+      {
+        summary,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+        token,
+        logoUrl,
+        isLiquidity,
+        fromInfo,
+        toInfo
+      }: {
+        summary?: string;
+        toChainId?: any,
+        toAddress?: any,
+        symbol?: any,
+        version?: any,
+        routerToken?: any,
+        token?: any,
+        logoUrl?: any,
+        isLiquidity?: any,
+        fromInfo?: any,
+        toInfo?: any,
+      } = {}
+    ) => {
+      // console.log(chainId, hash, isReceiveAnyToken)
+      // dispatch(noWalletTxList({chainId, hash, version}))
+      const { hash } = response
+      
+      // console.log(hash)
+      if (!hash) {
+        throw Error('No transaction hash found.')
+      }
+      dispatch(noWalletTxList({
+        hash,
+        chainId,
+        summary,
+        toChainId,
+        toAddress,
+        symbol,
+        version,
+        routerToken,
+        token,
+        logoUrl,
+        isLiquidity,
+        fromInfo,
+        toInfo
+      }))
+    },
+    [dispatch]
+  )
+
+  return {
+    setAddNoWalletTx
   }
 }

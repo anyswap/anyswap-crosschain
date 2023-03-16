@@ -38,6 +38,7 @@ export default {
     symbol: symbol,
     name: 'Rangers',
     networkName: 'Rangers mainnet',
+    walletName: 'Rangers Protocol Mainnet',
     type: 'main',
     label: RPG_MAIN_CHAINID,
   },

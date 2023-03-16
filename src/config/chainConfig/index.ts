@@ -92,6 +92,12 @@ import hpb from './hpb'
 import onus from './onus'
 import shm from './shm'
 import polygonzkevm from './polygonzkevm'
+import atom from './atom'
+import omax from './omax'
+import reef from './reef'
+import bit from './bit'
+import neon from './neon'
+import canto from './canto'
 
 import { ChainId } from './chainId'
 
@@ -101,6 +107,12 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...canto,
+  ...neon,
+  ...bit,
+  ...reef,
+  ...omax,
+  ...atom,
   ...polygonzkevm,
   ...shm,
   ...onus,
@@ -208,7 +220,7 @@ const allChainList = [
   ChainId.MOVR,
   ChainId.ONE,
   ChainId.OPTIMISM,
-  // ChainId.AURORA,
+  ChainId.AURORA,
   ChainId.BOBA,
   ChainId.CRO,
   ChainId.OKT,
@@ -270,11 +282,16 @@ const allChainList = [
   ChainId.EKTA,
   ChainId.HPB,
   ChainId.ONUS,
+  ChainId.OMAX,
+  ChainId.CANTO,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
 
 const testChainList = [
+  ChainId.ETH,
+  ChainId.BNB,
+  ChainId.ARBITRUM,
   ChainId.RINKEBY,
   ChainId.GOERLI,
   ChainId.FTM_TEST,
@@ -297,6 +314,10 @@ const testChainList = [
   ChainId.EKTA_TEST,
   ChainId.SHM_TEST,
   ChainId.POLYGONZKEVM_TEST,
+  ChainId.BIT_TEST,
+  ChainId.NEON_TEST,
+  ChainId.SHM1X_TEST,
+  ChainId.BASEGOERLI,
 ]
 
 const useChain:any = {
@@ -404,6 +425,9 @@ const useChain:any = {
     ChainId.XRP,
     ChainId.NEAR,
     ChainId.APT,
+    ChainId.SOL,
+    ChainId.REEF,
+    // ChainId.ADA,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
@@ -416,6 +440,12 @@ const useChain:any = {
     ChainId.SOL_TEST,
     ChainId.APT_TEST,
     ChainId.BTC_TEST,
+    // ChainId.ATOM_TEST,
+    ChainId.ATOM_SEI_TEST,
+    ChainId.ATOM_DCORE_TEST,
+    ChainId.REEF_TEST,
+    ChainId.XRP_TEST,
+    ChainId.ADA,
   ],
   [VERSION.V7_BAS_TEST]: [
     ChainId.BNB_TEST,

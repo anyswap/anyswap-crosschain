@@ -51,6 +51,10 @@ export default function TxnsDtilsModal () {
       return null
     }
   }, [tx, fromStatus])
+
+  const txInfo = useMemo(() => {
+    return tx?.info
+  }, [tx])
   return (
     <>
       <ModalContent
@@ -63,18 +67,18 @@ export default function TxnsDtilsModal () {
       >
         <HistoryDetails
           symbol={tx?.symbol}
-          from={tx?.from}
-          to={tx?.toAddress}
-          fromChainID={chainId}
-          toChainID={tx?.toChainId}
+          from={tx?.from ?? txInfo?.from}
+          to={txInfo?.bind ?? tx?.toAddress}
+          fromChainID={txInfo?.fromChainID ?? chainId}
+          toChainID={txInfo?.toChainID ?? tx?.toChainId}
           fromStatus={fromStatus}
           toStatus={toStatus}
-          txid={tx?.hash}
+          txid={txInfo?.txid ?? tx?.hash}
           swaptx={fromStatus === Status.Failure || toStatus === Status.Failure ? 'Null' : tx?.info?.swaptx}
           swapvalue={fromStatus === Status.Failure || toStatus === Status.Failure ? 'Null' : tx?.info?.formatswapvalue}
           timestamp={tx?.addedTime}
-          value={tx?.value}
-          version={tx?.version}
+          value={txInfo?.formatvalue ?? tx?.value}
+          version={txInfo?.historyType ?? tx?.version}
           token={tx?.token}
           isLiquidity={tx?.isLiquidity}
           isReceiveAnyToken={tx?.isReceiveAnyToken}

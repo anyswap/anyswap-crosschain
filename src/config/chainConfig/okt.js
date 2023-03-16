@@ -51,6 +51,7 @@ export default {
     symbol: symbol,
     name: 'OKC',
     networkName: 'OKC mainnet',
+    walletName: 'OKXChain Mainnet',
     type: 'main',
     label: OKT_MAIN_CHAINID,
   },

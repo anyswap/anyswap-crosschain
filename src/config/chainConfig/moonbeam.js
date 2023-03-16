@@ -54,6 +54,7 @@ export default {
     symbol: symbol,
     name: 'Moonbeam',
     networkName: 'Moonbeam mainnet',
+    walletName: 'Moonbeam',
     type: 'main',
     label: GLMR_MAIN_CHAINID,
     hotType: CHAIN_TYPE.COMMON
@@ -78,6 +79,7 @@ export default {
     name: 'Moonbase Alpha',
     networkName: 'Moonbase testnet',
     networkLogo: symbol,
+    walletName: 'Moonbase Alpha',
     type: 'test',
     label: GLMR_TEST_CHAINID,
   },

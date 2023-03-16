@@ -157,6 +157,7 @@ const currencies = [
   'YER',
   'ZAR',
   'ZMW',
+  'LUNA',
 ]
 
 export default {

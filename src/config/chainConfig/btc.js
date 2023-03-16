@@ -1,5 +1,5 @@
 import {getLocalRPC} from './methods'
-import {VERSION, USE_VERSION} from '../constant'
+import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const BTC_MAIN_CHAINID = ChainId.BTC
@@ -38,7 +38,8 @@ export default {
     type: 'main',
     label: BTC_MAIN_CHAINID,
     // chainType: BTC_MAIN_CHAINID
-    chainType: 'NOWALLET'
+    chainType: 'NOWALLET',
+    hotType: CHAIN_TYPE.HOT
   },
   [BTC_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

@@ -56,6 +56,7 @@ export default {
     symbol: symbol,
     name: 'Moonriver',
     networkName: 'Moonriver mainnet',
+    walletName: 'Moonriver',
     type: 'main',
     label: MOVR_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT

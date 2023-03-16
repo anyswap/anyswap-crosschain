@@ -19,6 +19,10 @@ import {useAdaLogin} from '../nonevm/cardano'
 import {useLoginFlow} from '../nonevm/flow'
 import {useLoginAptos} from '../nonevm/apt'
 import {useLoginBtc} from '../nonevm/btc'
+import {useLoginAtom} from '../nonevm/atom'
+import {useLoginSol} from '../nonevm/solana'
+import {useLoginReef} from '../nonevm/reef'
+import {useNasLogin} from '../nonevm/nas'
 
 export function useConnectWallet () {
   const {account} = useActiveReact()
@@ -33,6 +37,10 @@ export function useConnectWallet () {
   const {loginFlow} = useLoginFlow()
   const {loginAptos} = useLoginAptos()
   const {loginBtc} = useLoginBtc()
+  const {loginAtom} = useLoginAtom()
+  const {loginSol} = useLoginSol()
+  const {loginReef} = useLoginReef()
+  const {loginNas} = useNasLogin()
 
   const useChainId = useMemo(() => {
     return selectNetworkInfo?.chainId
@@ -64,7 +72,12 @@ export function useConnectWallet () {
         // dispatch(setOpenModal(ApplicationModal.WALLET))
       }
     } else if (useChainId === ChainId.NAS) {
-      
+      if (!account) {
+        loginNas(useChainId)
+      } else {
+        toggleWalletModal()
+        // dispatch(setOpenModal(ApplicationModal.WALLET))
+      }
     } else if ( [ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId) ) {
       if (!account) {
         login()
@@ -100,6 +113,24 @@ export function useConnectWallet () {
     } else if ([ChainId.APT, ChainId.APT_TEST].includes(useChainId)) {
       if (!account) {
         loginAptos(useChainId)
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(useChainId)) {
+      if (!account) {
+        loginAtom(useChainId)
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.SOL, ChainId.SOL_TEST].includes(useChainId)) {
+      if (!account) {
+        loginSol()
+      } else {
+        toggleWalletModal()
+      }
+    } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(useChainId)) {
+      if (!account) {
+        loginReef(useChainId)
       } else {
         toggleWalletModal()
       }

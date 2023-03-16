@@ -41,6 +41,7 @@ export default {
     symbol: symbol,
     name: 'sBCH',
     networkName: 'sBCH mainnet',
+    walletName: 'Smart Bitcoin Cash',
     type: 'main',
     label: BCH_MAIN_CHAINID,
   },

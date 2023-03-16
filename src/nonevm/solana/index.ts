@@ -84,7 +84,7 @@ export function useSolAddress () {
 
 export function useLoginSol () {
   const dispatch = useDispatch<AppDispatch>()
-  const loginSol = useCallback(() => {
+  const loginSol = useCallback((type?:any) => {
     if (window?.solana?.connect) {
       window?.solana?.connect().then((res:any) => {
         if (res?.publicKey) {
@@ -94,8 +94,10 @@ export function useLoginSol () {
         console.log(err)
       })
     } else {
-      if (confirm('Please open or install Solana wallet.') === true) {
-        window.open('https://phantom.app/download')
+      if (!type) {
+        if (confirm('Please open or install Solana wallet.') === true) {
+          window.open('https://phantom.app/download')
+        }
       }
     }
   }, [])
@@ -152,6 +154,7 @@ export function useSolCreateAccount () {
             signer?.publicKey
           )
         )
+        console.log(tx)
         const result = await connection.getLatestBlockhash()
         // const result = await connection.getConfirmedBlock(blockNumber)
         console.log(tx)
@@ -371,6 +374,7 @@ export function useSolCrossChain (
   receiveAddress: string | null | undefined,
   typedValue: string | undefined,
   destConfig: any,
+  useToChainId: any,
 ): {
   inputError?: string
   balance?: any,
@@ -388,7 +392,7 @@ export function useSolCrossChain (
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
   return useMemo(() => {
-    if (!chainId || !selectCurrency || !receiveAddress) return {}
+    if (!chainId || !selectCurrency || !receiveAddress || !useToChainId) return {}
 
     const sufficientBalance = typedValue && balance && (Number(balance?.toExact()) >= Number(typedValue))
 
@@ -407,7 +411,7 @@ export function useSolCrossChain (
             instruction = await contract.instruction.swapoutNative(
               receiveAddress,
               new anchor.BN(inputAmount),
-              new anchor.BN(selectChain),
+              new anchor.BN(useToChainId),
               {
                 accounts: {
                   signer: account,
@@ -421,7 +425,7 @@ export function useSolCrossChain (
             instruction = await contract.instruction.swapoutBurn(
               receiveAddress,
               new anchor.BN(inputAmount),
-              new anchor.BN(selectChain),
+              new anchor.BN(useToChainId),
               {
                 accounts: {
                   signer: account,
@@ -438,7 +442,7 @@ export function useSolCrossChain (
             instruction = await contract.instruction.swapoutTransfer(
               receiveAddress,
               new anchor.BN(inputAmount),
-              new anchor.BN(selectChain),
+              new anchor.BN(useToChainId),
               {
                 accounts: {
                   signer: account,
@@ -513,7 +517,7 @@ export function useSolCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, inputAmount, balance])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, inputAmount, balance, useToChainId])
 }
 
 // enum SwapType {

@@ -42,6 +42,14 @@ export const navList = [
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenGasSwap,
   },
+  {
+    path: '/history',
+    textKey: 'history',
+    regex: /\/history/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: 1,
+  },
 ]
 
 export const moreList = [
@@ -52,6 +60,14 @@ export const moreList = [
     className: 'otherInfo',
     isOutLink: false,
     isView: config.getCurConfigInfo().isOpenMerge,
+  },
+  {
+    path: 'https://anycall.multichain.org/',
+    textKey: 'anyCall',
+    regex: '',
+    className: 'otherInfo',
+    isOutLink: true,
+    isView: 1,
   },
   {
     path: config.explorer,

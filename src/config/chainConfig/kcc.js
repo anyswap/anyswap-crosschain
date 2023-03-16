@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'KCC',
     networkName: 'KCC mainnet',
+    walletName: 'KCC Mainnet',
     type: 'main',
     label: KCC_MAIN_CHAINID,
   },

@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'DeFi Kingdoms',
     networkName: 'DeFi Kingdoms mainnet',
+    walletName: 'DFK Chain',
     type: 'main',
     label: JEWEL_MAIN_CHAINID,
   },

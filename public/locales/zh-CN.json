@@ -213,6 +213,7 @@
   "WrongNetwork": "错误的网络",
   "ErrorConnecting": "连接时出错",
   "To": "至",
+  "Receives": "接收",
   "ToEstimated": "至 (估计)",
   "Loading": "加载中",
   "WalletAddress": "钱包地址",
@@ -375,5 +376,8 @@
   "crosschain": "跨链",
   "SimpleMode": "简洁模式",
   "AdvanceMode": "高级模式",
-  "gasswap": "Gas Swap"
+  "gasswap": "Gas Swap",
+  "history": "历史",
+  "Value": "数量",
+  "Date": "日期"
 }

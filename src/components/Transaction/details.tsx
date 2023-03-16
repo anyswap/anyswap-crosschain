@@ -168,6 +168,11 @@ const MetamaskIcon = styled(Metamask)`
   margin-left: 5px;
 `
 
+const FlexC = styled.div`
+  ${({ theme }) => theme.flexC};
+  width: 100%;
+`
+
 function DestChainStatus ({fromStatus, toStatus}: {fromStatus:any, toStatus:any}) {
   if (fromStatus === Status.Pending) {
     return undefined
@@ -209,6 +214,7 @@ export default function HistoryDetails ({
   logoUrl,
   fromInfo,
   toInfo,
+  txData
 }: {
   symbol?: any,
   from?: any,
@@ -230,6 +236,7 @@ export default function HistoryDetails ({
   logoUrl?: any,
   fromInfo?: any,
   toInfo?: any,
+  txData?: any,
 }) {
   const { t } = useTranslation()
   const {setUnderlyingStatus} = useUpdateUnderlyingStatus()
@@ -240,19 +247,6 @@ export default function HistoryDetails ({
   const {setUserSelectNetwork} = useUserSelectChainId()
 
   useEffect(() => {
-    // useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
-    //   console.log(res)
-    //   if (res && res.logs && res.logs.length <= 2 && setUnderlyingStatus) {
-    //     setUnderlyingStatus(fromChainID, txid, true)
-    //   }
-    // })
-    // if (setUnderlyingStatus) {
-    //   setUnderlyingStatus(fromChainID, txid, false)
-    // }
-    // console.log(underlying && swaptx && !isReceiveAnyToken)
-    // console.log('underlying',underlying)
-    // console.log('swaptx',swaptx)
-    // console.log('isReceiveAnyToken',isReceiveAnyToken)
     if (isLiquidity && swaptx && !isReceiveAnyToken) {
       useWeb3(toChainID, 'eth', 'getTransactionReceipt', [swaptx]).then((res:any) => {
         console.log(res)
@@ -262,16 +256,9 @@ export default function HistoryDetails ({
       })
     }
   }, [isLiquidity, swaptx, toChainID, isReceiveAnyToken])
-  // console.log(fromStatus === Status.Success && useToStatus === Status.Success && !['swapin', 'swapout'].includes(version) && token && isReceiveAnyToken)
-  // console.log('fromStatus', fromStatus)
-  // console.log('useToStatus', useToStatus)
-  // console.log('version', version)
-  // console.log(token)
-  // console.log(isReceiveAnyToken)
+  
   return (
     <>
-
-
       <TxnsDtilBox>
         <TxnsDtilList>
           <div className="item">
@@ -419,7 +406,7 @@ export default function HistoryDetails ({
         </ChainStatusBox> */}
         
         {/* <TxnsProgress fromStatus={fromStatus} toStatus={toStatus} /> */}
-        <TxnsProgress hash={txid} />
+        <FlexC><TxnsProgress hash={txid} txData={txData} /></FlexC>
         {
           avgTime ? (
             <TxnsDtilList>

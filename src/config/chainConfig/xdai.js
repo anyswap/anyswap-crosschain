@@ -52,6 +52,7 @@ export default {
     symbol: symbol,
     name: 'Gnosis',
     networkName: 'Gnosis mainnet',
+    walletName: 'Gnosis',
     type: 'main',
     label: XDAI_MAIN_CHAINID,
   },

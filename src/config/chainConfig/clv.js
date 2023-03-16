@@ -48,6 +48,7 @@ export default {
     symbol: symbol,
     name: 'CLV Parachain',
     networkName: 'CLV Parachain mainnet',
+    walletName: 'CLV Parachain',
     type: 'main',
     label: CLV_MAIN_CHAINID,
   },

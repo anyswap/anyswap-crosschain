@@ -12,7 +12,7 @@ export const FTM_MAINNET = process.env.NODE_ENV === 'development' ? getLocalRPC(
 export const FTM_MAIN_EXPLORER = 'https://ftmscan.com'
 
 export const FTM_TEST_CHAINID = ChainId.FTM_TEST
-export const FTM_TESTNET = getLocalRPC(FTM_TEST_CHAINID, 'https://rpc.testnet.fantom.network')
+export const FTM_TESTNET = getLocalRPC(FTM_TEST_CHAINID, 'https://endpoints.omniatech.io/v1/fantom/testnet/public')
 export const FTM_TEST_EXPLORER = 'https://testnet.ftmscan.com/'
 
 const symbol = 'FTM'
@@ -83,6 +83,7 @@ export default {
     symbol: symbol,
     name: 'Fantom',
     networkName: 'Fantom mainnet',
+    walletName: 'Fantom Opera',
     type: 'main',
     label: FTM_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -105,6 +106,7 @@ export default {
     symbol: symbol,
     name: 'Fantom',
     networkName: 'Fantom testnet',
+    walletName: 'Fantom Testnet',
     type: 'test',
     label: FTM_TEST_CHAINID,
   },

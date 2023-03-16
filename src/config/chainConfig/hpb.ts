@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'HPB',
     networkName: 'High Performance Blockchain mainnet',
+    walletName: 'High Performance Blockchain',
     type: 'main',
     label: HPB_MAIN_CHAINID,
   },

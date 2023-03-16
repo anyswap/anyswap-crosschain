@@ -51,6 +51,7 @@ export default {
     name: 'Astar Network',
     networkName: 'Astar mainnet',
     networkLogo: 'ASTR',
+    walletName: 'Astar',
     type: 'main',
     label: ASTAR_MAIN_CHAINID,
   },

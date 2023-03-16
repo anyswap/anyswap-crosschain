@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Milkomeda C1',
     networkName: 'Milkomeda (Cardano) mainnet',
+    walletName: 'Milkomeda C1 Mainnet',
     type: 'main',
     label: MIKO_MAIN_CHAINID,
   },

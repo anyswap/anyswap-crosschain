@@ -5,7 +5,10 @@ import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { NetworkContextName } from '../constants'
 import getLibrary from '../utils/getLibrary'
 
-import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider'
+import {
+  WalletProvider,
+  // NetworkInfo
+} from '@terra-money/wallet-provider'
 
 // import { ConnectionProvider, WalletProvider as SolWalletProvider } from '@solana/wallet-adapter-react';
 // import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -17,10 +20,13 @@ import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider'
 //     WalletMultiButton
 // } from '@solana/wallet-adapter-react-ui';
 // import { clusterApiUrl } from '@solana/web3.js';
+import { WalletSelectorContextProvider } from "../nonevm/near/WalletSelectorContext"
 
 import { Updaters } from '../state/updaters'
 import App from './App';
 
+import "@near-wallet-selector/modal-ui/styles.css"
+import "@near-wallet-selector/account-export/styles.css"
 // require('@solana/wallet-adapter-react-ui/styles.css')
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
@@ -41,7 +47,7 @@ const testnet = {
   lcd: 'https://tequila-lcd.terra.dev',
 };
 
-const walletConnectChainIds: Record<number, NetworkInfo> = {
+const walletConnectChainIds: Record<number, any> = {
   0: testnet,
   1: mainnet,
 }
@@ -74,7 +80,8 @@ export default function AppContainer() {
   >
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        {/* <ConnectionProvider endpoint={endpoint}>
+        <WalletSelectorContextProvider>
+          {/* <ConnectionProvider endpoint={endpoint}>
           <SolWalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
               <WalletMultiButton />
@@ -86,6 +93,8 @@ export default function AppContainer() {
             {/* </WalletModalProvider>
           </SolWalletProvider>
         </ConnectionProvider> */}
+        </WalletSelectorContextProvider>
+        
         
       </Web3ProviderNetwork>
     </Web3ReactProvider>

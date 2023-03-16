@@ -146,7 +146,8 @@ export async function useBatchData ({chainId, calls, provider}) {
     console.log('error')
     console.log(error.toString())
     if ( error.toString().indexOf('Error: Returned error: execution reverted: Multicall aggregate: call failed') !== -1) {
-      // logger.error(error.toString(), 11111)
+      // console.log(JSON.stringify(calls))
+      // console.log(calls.length)
       results = ''
     } else if (
       error.toString().indexOf('Invalid JSON RPC response') !== -1
@@ -185,22 +186,16 @@ export async function useBatchData ({chainId, calls, provider}) {
   }
 ]
 */
-// useBatchWeb3('56', [
-//   {
-//     data: '',
-//     to: '',
-//     property: 'eth',
-//     methods: 'getTransactionReceipt',
-//     inputFormatter: ['0x17405c1d0284d7a44b42a255b66ec35c6e1fe47f1e9bbd7f6ce31fe126b85792']
-//   },
-//   {
-//     data: '',
-//     to: '',
-//     property: 'eth',
-//     methods: 'getTransaction',
-//     inputFormatter: ['0x17405c1d0284d7a44b42a255b66ec35c6e1fe47f1e9bbd7f6ce31fe126b85792']
-//   }
-// ]).then(res => {
+// useBatchData({
+//   chainId: '56',
+//   calls: [
+//     {
+//       "type": "TOKEN",
+//       "callData": "0x70a08231000000000000000000000000c03033d8b833ff7ca08bf2a58c9bc9d711257249",
+//       "target": "0x43BA383B9934D8D45ea6348D00DBc1bAe97D6e74"
+//     },
+//   ]
+// }).then(res => {
 //   console.log('res1')
 //   console.log(res)
 // })

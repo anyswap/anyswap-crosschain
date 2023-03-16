@@ -39,6 +39,7 @@ export default {
     symbol: symbol,
     name: 'Exosama',
     networkName: 'Exosama mainnet',
+    walletName: 'Exosama Network',
     type: 'main',
     label: SAMA_MAIN_CHAINID,
   },

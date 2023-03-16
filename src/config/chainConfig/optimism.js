@@ -54,6 +54,11 @@ export default {
     nodeRpc: OPTIMISM_MAINNET,
     nodeRpcList: [
       OPTIMISM_MAINNET,
+      'https://1rpc.io/op',
+      'https://optimism.blockpi.network/v1/rpc/public',
+      'https://optimism-mainnet.public.blastapi.io',
+      'https://rpc.ankr.com/optimism',
+      'https://mainnet.optimism.io'
     ],
     chainID: OPTIMISM_MAIN_CHAINID,
     lookHash: OPTIMISM_MAIN_EXPLORER + '/tx/',
@@ -64,6 +69,7 @@ export default {
     name: 'Optimism',
     networkName: 'Optimism mainnet',
     networkLogo: 'OPTIMISM',
+    walletName: 'Optimism',
     type: 'main',
     label: OPTIMISM_MAIN_CHAINID,
     hotType: CHAIN_TYPE.HOT
@@ -85,6 +91,7 @@ export default {
     name: 'OPTIMISM',
     networkName: 'OPTIMISM Rinkeby',
     networkLogo: 'OPTIMISM',
+    walletName: 'Optimism Kovan',
     type: 'main',
     label: OPTIMISM_TEST_CHAINID,
   },

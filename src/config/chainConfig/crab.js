@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'Darwinia Crab smart',
     networkName: 'Darwinia Crab smart mainnet',
+    walletName: 'Darwinia Crab Network',
     type: 'main',
     label: CRAB_MAIN_CHAINID,
   },

@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'TomoChain',
     networkName: 'TomoChain mainnet',
+    walletName: 'TomoChain',
     type: 'main',
     label: TOMO_MAIN_CHAINID,
   },

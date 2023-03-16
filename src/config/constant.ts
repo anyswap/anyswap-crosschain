@@ -35,8 +35,8 @@ export enum CHAIN_TYPE {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-export const INIT_VERSION = VERSION.V7
-// export const INIT_VERSION = VERSION.V7_TEST
+// export const INIT_VERSION = VERSION.V7
+export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -101,11 +101,14 @@ export const MAIN_COIN_SORT:any = {
 }
 
 export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.anyswap.exchange'
+export const scanApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://scanapi.multichain.org'
 export const multiAridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://l2api.anyswap.exchange' : 'https://bridgeapi.multichain.org'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'
 // export const bridgeApi = 'http://localhost:8107'
+// export const multiAridgeApi = 'http://localhost:8107'
 // export const bridgeApi = 'http://192.168.19.68:8107'
-export const explorer = 'https://anyswap.net'
+// export const explorer = 'https://anyswap.net'
+export const explorer = 'https://scan.multichain.org'
 
 export enum BRIDGE_KEY {
   routerTokenList = 'routerTokenList',
@@ -320,7 +323,8 @@ export const controlConfig:any = {
   },
   [VERSION.V7]: {
     bridgeInitDataChain: '56',
-    hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8']),
+    // hiddenCoin: formatHiddenCoin(['0x05ec81610ab47a094502bac0d7ec256f06a1c6f8', '0x2d1c6a7362e75d88b4cf3b66b83052775846e2b8']),
+    hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],
     showChain: [],

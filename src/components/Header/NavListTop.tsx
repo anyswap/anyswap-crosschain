@@ -216,6 +216,7 @@ export default function NavList({position}:{position:string}) {
                       || pathname.startsWith('/router')
                       || pathname.startsWith('/v1/router')
                       || pathname.startsWith('/swap')
+                      // console.log('match',match)
                       if (Boolean(match)) {
                         return true
                       } else if (item.isActive) {

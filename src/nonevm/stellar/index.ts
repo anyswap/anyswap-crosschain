@@ -287,6 +287,7 @@ export function useXlmCrossChain (
   receiveXlmAddress:any,
   typedValue:any,
   destConfig:any,
+  useToChainId:any,
 ): {
   inputError?: string
   balance?: any,
@@ -331,8 +332,7 @@ export function useXlmCrossChain (
   // const receiveAddress = '0xC03033d8b833fF7ca08BF2A58C9BC9d711257249'
   // const receiveXlmAddress = 'GC2YB64P5VXJQATUZN7UJOEINHROOIRJLYW3F6Q3AARZJ55UVGHUZRSL'
   return useMemo(() => {
-    
-    if (!xlmAddress || !chainId || !selectCurrency || !receiveXlmAddress || !server) return NOT_APPLICABLE
+    if (!xlmAddress || !chainId || !selectCurrency || !receiveXlmAddress || !server || !useToChainId) return NOT_APPLICABLE
     return {
       balance,
       execute: async () => {
@@ -350,7 +350,7 @@ export function useXlmCrossChain (
             asset = new StellarSdk.Asset(tokenArr[0], tokenArr[1])
           }
           console.log(asset)
-          const memo = formatXlmMemo(receiveAddress, selectChain)
+          const memo = formatXlmMemo(receiveAddress, useToChainId)
           console.log(memo)
           const transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: chainId === ChainId.XLM ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET })
           .addOperation(
@@ -428,5 +428,5 @@ export function useXlmCrossChain (
       },
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [xlmAddress, chainId, selectCurrency, selectChain, balance, receiveAddress, receiveXlmAddress, typedValue, destConfig, server])
+  }, [xlmAddress, chainId, selectCurrency, selectChain, balance, receiveAddress, receiveXlmAddress, typedValue, destConfig, server, useToChainId])
 }

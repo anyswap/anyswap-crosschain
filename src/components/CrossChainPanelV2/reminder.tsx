@@ -5,6 +5,7 @@ import {thousandBit} from '../../utils/tools/tools'
 import { useActiveWeb3React } from '../../hooks'
 import BulbIcon from '../../assets/images/icon/bulb.svg'
 import config from '../../config'
+import {BigAmount} from '../../utils/formatBignumber'
 
 const SubCurrencySelectBox = styled.div`
   width: 100%;
@@ -79,14 +80,31 @@ const SubCurrencySelectBox = styled.div`
   `};
 `
 
+
+const FeeBox = styled.div`
+  width: 100%;
+  object-fit: contain;
+  border-radius: 0.5625rem;
+  border: solid 0.5px ${({ theme }) => theme.tipBorder};
+  background-color: ${({ theme }) => theme.tipBg};
+  padding: 0.8rem 1rem;
+  margin: 5px 0;
+  
+  margin-top: 0.625rem;
+  font-size: 12px;
+  color: ${({ theme }) => theme.tipColor};
+`
+
 interface ReminderType {
   destConfig: any,
   bridgeType: string | undefined,
   currency: any,
-  selectChain: any
+  selectChain?: any
+  version?: any
+  fee?: any
 }
 
-function CrossBridge (destConfig:any, currency:any, selectChain:any, bridgeType?:string) {
+function CrossBridge ({destConfig, currency, bridgeType}:any) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   
@@ -139,11 +157,33 @@ export default function Reminder ({
   destConfig,
   bridgeType,
   currency,
-  selectChain
+  // selectChain,
+  version,
+  fee,
 }: ReminderType) {
-  
-  if (bridgeType) {
-    return CrossBridge(destConfig, currency, selectChain, bridgeType)
+  const { t } = useTranslation()
+  const { chainId } = useActiveWeb3React()
+  // const useFee = useMemo(() => {
+    
+  //   console.log(fee)
+  //   return ''
+  // }, [fee])
+  // console.log(useFee)
+  if (version === 'PERMISSONLESS') {
+    if (!fee) return <></>
+    // return (
+    //   <FeeBox>
+    //     {t('fee')}: {fee ? BigAmount.format(18, fee).toExact() : 'Loading'} {config.getCurChainInfo(chainId).symbol}
+    //   </FeeBox>
+    // )
+    return <FeeBox>
+        {t('fee')}: {fee ? BigAmount.format(18, fee).toExact() : 'Loading'} {config.getCurChainInfo(chainId).symbol}
+        {/* {t('fee')}: {useFee ? useFee : ''} {config.getCurChainInfo(chainId).symbol} */}
+      </FeeBox>
+  }
+  if (bridgeType && version !== 'PERMISSONLESS') {
+    // return CrossBridge(destConfig, currency, bridgeType)
+    return <CrossBridge destConfig={destConfig} currency={currency} bridgeType={bridgeType} />
   }
   return (
     <></>

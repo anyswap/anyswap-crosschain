@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'REI',
     networkName: 'REI mainnet',
+    walletName: 'REI Network',
     type: 'main',
     label: REI_MAIN_CHAINID,
   },

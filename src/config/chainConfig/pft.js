@@ -64,6 +64,7 @@ export default {
     name: 'PFT Network',
     networkName: 'PFT testnet',
     networkLogo: 'PFT',
+    walletName: 'Portal Fantasy Chain Test',
     type: 'test',
     label: PFT_TEST_CHAINID,
   },

@@ -5,7 +5,7 @@ import ERC20_INTERFACE from '../../constants/abis/erc20'
 import {useActiveWeb3React} from '../../hooks'
 import {useNonApproveCallback} from '../../hooks/useApproveCallback'
 
-const nonApproveList = require('./nonApproveList.json')
+const nonApproveList = require(process.env.NODE_ENV === 'development' ? './empty.json' : './nonApproveList.json')
 
 export function useAllApproved () {
   const {account, chainId} = useActiveWeb3React()

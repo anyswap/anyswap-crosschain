@@ -14,6 +14,9 @@ import {useFlowBalance} from '../nonevm/flow'
 import {useSolBalance} from '../nonevm/solana'
 import {useAptosBalance} from '../nonevm/apt'
 import {useBtcBalance} from '../nonevm/btc'
+import {useAtomBalance} from '../nonevm/atom'
+import {useReefBalance} from '../nonevm/reef'
+
 
 import {useCurrencyBalance1} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
@@ -42,6 +45,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {getSolTokenBalance, getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
   const {btcBalanceList} = useBtcBalance()
+  const {atomBalanceList} = useAtomBalance()
 
   const savedBalance = useRef<any>()
 
@@ -142,6 +146,15 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
+      } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(selectChainId)) {
+        // console.log(account)
+        if (atomBalanceList?.[token]) {
+          const bl = BigAmount.format(dec, atomBalanceList?.[token]?.balance)
+          savedBalance.current = bl
+        } else if (dec) {
+          const bl = BigAmount.format(dec, '0')
+          savedBalance.current = bl
+        }
       } else {
         // console.log('evmBalance', evmBalance ? evmBalance.toExact() : '')
         savedBalance.current = evmBalance
@@ -150,7 +163,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList, btcBalanceList])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList, btcBalanceList, atomBalanceList])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -183,6 +196,8 @@ export function useBaseBalances (
   const {getSolBalance} = useSolBalance()
   const {aptBalanceList} = useAptosBalance()
   const {btcBalanceList} = useBtcBalance()
+  const {atomBalanceList} = useAtomBalance()
+  const {getReefBalance} = useReefBalance()
   
 
   const selectChainId = selectNetworkInfo?.label
@@ -202,7 +217,6 @@ export function useBaseBalances (
       })
     } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChainId)) {
       getNearBalance().then(res => {
-        // console.log(res)
         const bl = res?.total ? BigAmount.format(24, res?.total) : undefined
         setBalance(bl)
       })
@@ -263,8 +277,32 @@ export function useBaseBalances (
         const bl = BigAmount.format(8, '0')
         setBalance(bl)
       }
+    } else if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST, ChainId.ATOM_DCORE, ChainId.ATOM_DCORE_TEST].includes(selectChainId)) {
+      // console.log(btcBalanceList)
+      if (atomBalanceList?.NATIVE?.balance) {
+        const bl = BigAmount.format(6, atomBalanceList?.NATIVE?.balance)
+        setBalance(bl)
+      } else {
+        const bl = BigAmount.format(6, '0')
+        setBalance(bl)
+      }
+    } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
+      // console.log(selectChainId)
+      getReefBalance({account: uncheckedAddresses,chainId: selectChainId}).then((res:any) => {
+        // console.log(res)
+        const dec = 18
+        if (res && res.toString() !== '0') {
+          // const blvalue = tryParseAmount3(res, dec)
+          const bl = res ? BigAmount.format(dec, res) : undefined
+          // console.log(bl?.toExact())
+          setBalance(bl)
+        } else {
+          const bl = BigAmount.format(dec, '0')
+          setBalance(bl)
+        }
+      })
     }
-  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList, btcBalanceList])
+  }, [uncheckedAddresses, selectChainId, getAllBalance, adaBalanceList, flowBalanceList,aptBalanceList, btcBalanceList, atomBalanceList, getReefBalance])
 
   useEffect(() => {
     fetchBalancesCallback()

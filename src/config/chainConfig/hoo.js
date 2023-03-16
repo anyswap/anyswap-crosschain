@@ -46,6 +46,7 @@ export default {
     symbol: symbol,
     name: 'HSC',
     networkName: 'HSC mainnet',
+    walletName: 'Hoo Smart Chain',
     type: 'main',
     label: HOO_MAIN_CHAINID,
   },
