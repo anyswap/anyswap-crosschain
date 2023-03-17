@@ -100,6 +100,7 @@ import neon from './neon'
 import canto from './canto'
 import nahmii3 from './nahmii3'
 import tst from './tst'
+import zksync from './zksync'
 
 import { ChainId } from './chainId'
 
@@ -109,6 +110,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...zksync,
   ...tst,
   ...nahmii3,
   ...canto,
@@ -324,6 +326,7 @@ const testChainList = [
   ChainId.BASEGOERLI,
   ChainId.NAHMII3_TEST,
   ChainId.TST_TEST,
+  ChainId.ZKSYNV_TEST,
 ]
 
 const useChain:any = {

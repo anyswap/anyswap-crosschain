@@ -142,4 +142,6 @@ export enum ChainId {
   CANTO = '7700',
   NAHMII3_TEST = '4062',
   TST_TEST = '18',
+  ZKSYNV = '324',
+  ZKSYNV_TEST = '280',
 }

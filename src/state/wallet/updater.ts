@@ -230,7 +230,6 @@ export default function Updater(): null {
       && chainId
       && !isNaN(chainId)
       && account
-      && calls.length > 0
       && !tokenListRef.current
     ) {
       tokenListRef.current = 1

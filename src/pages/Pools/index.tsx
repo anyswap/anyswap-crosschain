@@ -313,7 +313,7 @@ export default function SwapNative() {
   )
   // console.log('wrapInputErrorNative',wrapInputErrorNative)
   const poolTokenList = useMemo(() => {
-    console.log(anyTokenList)
+    // console.log(anyTokenList)
     const arr:any = []
     if (anyTokenList) {
       for (const item of anyTokenList) {
@@ -325,7 +325,7 @@ export default function SwapNative() {
         }
       }
     }
-    console.log(arr)
+    // console.log(arr)
     return arr
   }, [selectCurrency, anyTokenList])
   const {poolData} = usePools({chainId, account, tokenList: poolTokenList})
