@@ -326,7 +326,8 @@ const testChainList = [
   ChainId.BASEGOERLI,
   ChainId.NAHMII3_TEST,
   ChainId.TST_TEST,
-  ChainId.ZKSYNV_TEST,
+  // ChainId.ZKSYNV_TEST,
+  ChainId.ZKSYNV,
 ]
 
 const useChain:any = {
