@@ -19,6 +19,10 @@ export const ATOM_SEI_TESTNET = 'https://sei-chain-incentivized.com/sei-chain-tm
 export const ATOM_SEI_TEST_CHAINID = ChainId.ATOM_SEI_TEST
 export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 
+export const ATOM_DCORE_MAINNET = 'https://full-node.mainnet-1.coreum.dev:26657'
+export const ATOM_DCORE_MAIN_CHAINID = ChainId.ATOM_DCORE
+export const ATOM_DCORE_MAIN_EXPLORER = ''
+
 export const ATOM_DCORE_TESTNET = 'https://full-node-pluto.testnet-1.coreum.dev:26657'
 export const ATOM_DCORE_TEST_CHAINID = ChainId.ATOM_DCORE_TEST
 export const ATOM_DCORE_TEST_EXPLORER = 'https://explorer.testnet-1.coreum.dev'
@@ -129,6 +133,28 @@ export default {
     type: 'test',
     label: ATOM_SEI_TEST_CHAINID,
     chainType: ATOM_SEI_TEST_CHAINID
+  },
+  [ATOM_DCORE_MAIN_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: ATOM_DCORE_MAINNET,
+    nodeRpcList: [
+      ATOM_DCORE_MAINNET,
+    ],
+    chainID: ATOM_DCORE_MAIN_CHAINID,
+    lookHash: ATOM_DCORE_MAIN_EXPLORER + '/transactions/',
+    lookAddr: ATOM_DCORE_MAIN_EXPLORER + '/accounts/',
+    lookBlock: ATOM_DCORE_MAIN_EXPLORER + '/blocks/',
+    explorer: ATOM_DCORE_MAIN_EXPLORER,
+    symbol: 'DCORE',
+    name: 'Coreum',
+    networkName: 'Coreum mainnet',
+    networkLogo: 'DCORE',
+    type: 'main',
+    label: ATOM_DCORE_MAIN_CHAINID,
+    chainType: ATOM_DCORE_MAIN_CHAINID
   },
   [ATOM_DCORE_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],

@@ -444,6 +444,7 @@ const useChain:any = {
     ChainId.SOL,
     // ChainId.REEF,
     ChainId.ADA,
+    ChainId.ATOM_DCORE,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
