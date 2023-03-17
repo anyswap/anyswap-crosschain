@@ -143,5 +143,6 @@ export enum ChainId {
   NAHMII3_TEST = '4062',
   TST_TEST = '18',
   ZKSYNV = '324',
-  ZKSYNV_TEST = '280',
+  FRA = '2152',
+  PLQ = '7070',
 }

@@ -101,6 +101,8 @@ import canto from './canto'
 import nahmii3 from './nahmii3'
 import tst from './tst'
 import zksync from './zksync'
+import fra from './fra'
+import plq from './plq'
 
 import { ChainId } from './chainId'
 
@@ -110,6 +112,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...plq,
+  ...fra,
   ...zksync,
   ...tst,
   ...nahmii3,
@@ -290,6 +294,8 @@ const allChainList = [
   ChainId.ONUS,
   ChainId.OMAX,
   ChainId.CANTO,
+  ChainId.FRA,
+  ChainId.PLQ,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -437,7 +443,7 @@ const useChain:any = {
     ChainId.APT,
     ChainId.SOL,
     // ChainId.REEF,
-    // ChainId.ADA,
+    ChainId.ADA,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
