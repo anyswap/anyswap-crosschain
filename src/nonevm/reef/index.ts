@@ -165,16 +165,21 @@ export function useReefProvider () {
 export function useReefContract() {
   // const reefProvider:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefProvider)
   // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
-  return useCallback((tokenAddress:any, ABI:any,account?:any) => {
+  return useCallback(async(tokenAddress:any, ABI:any,chainId: any,account?:any) => {
     // console.log('reefSigner',reefSigner, chainId + '-chainId', account + '-account', tokenAddress + '-tokenAddress')
     if (
       account
       && tokenAddress
       && ABI
-      && reefProvider
+      // && reefProvider
       && reefClient
     ) {
-      const wallet:any = new Signer(reefProvider, account, reefClient.signer)
+      const provider = new Provider({
+        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+      })
+      await provider.api.isReadyOrError
+      // const wallet:any = new Signer(reefProvider, account, reefClient.signer)
+      const wallet:any = new Signer(provider, account, reefClient.signer)
       const contract = new Contract(tokenAddress, ABI, wallet)
       return contract
     }
@@ -318,7 +323,7 @@ export function useReefAllowance(
     return new Promise(async(resolve, reject) => {
       // console.log('evmAccount',evmAccount, token, account)
       if (account && token && chainId ) {
-        const contract:any = getContract (token, ERC20_ABI, account)
+        const contract:any = await getContract (token, ERC20_ABI, chainId, account)
         if (contract){
           contract.approve(spender, MaxUint256.toString()).then((res:any) => {
             console.log(res)
@@ -492,8 +497,8 @@ return useMemo(() => {
         try {
           let txResult:any
 
-          const contract:any = await getContract(routerToken,REEF_ABI, account)
-          // console.log(contract)
+          const contract:any = await getContract(routerToken,REEF_ABI, chainId, account)
+          console.log(contract)
           if (contract) {
             if (destConfig.routerABI.indexOf('anySwapOutNative') !== -1) { // anySwapOutNative
               txResult = await contract.anySwapOutNative(...[inputToken, receiveAddress, useToChainId], {value: inputAmount})
@@ -644,26 +649,26 @@ export function useReefSwapPoolCallback(
               // }
               if (selectCurrency?.tokenType === 'NATIVE') {
                 if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
-                  const contract:any = getContract(routerToken,REEF_ABI, account)
+                  const contract:any = await getContract(routerToken,REEF_ABI, chainId, account)
                   if (contract) {
                     const parameArr = [formatInputToken, receiveAddress, useToChainId]
                     txResult = await contract.anySwapOutNative(...parameArr, {value: inputAmount})
                   }
                 } else {
-                  const contract:any = getContract(inputToken,REEF_ABI, account)
+                  const contract:any = await getContract(inputToken,REEF_ABI, chainId, account)
                   if (contract) {
                     txResult = swapType === 'deposit' ? await contract.depositNative(...[inputToken, account], {value: inputAmount}) : await contract.withdrawNative(inputToken,inputAmount,account)
                   }
                 }
               } else {
                 if (chainId.toString() !== selectChain.toString() && swapType !== 'deposit') {
-                  const contract:any = getContract(routerToken,REEF_ABI, account)
+                  const contract:any = await getContract(routerToken,REEF_ABI, chainId, account)
                   if (routerToken) {
                     const parameArr = [formatInputToken, receiveAddress, inputAmount, useToChainId]
                     txResult = await contract.anySwapOut(...parameArr)
                   }
                 } else {
-                  const contract:any = getContract(inputToken,REEF_ABI, account)
+                  const contract:any = await getContract(inputToken,REEF_ABI, chainId, account)
                   if (contract) {
                     txResult = swapType === 'deposit' ? await contract.deposit(inputAmount) : await contract.withdraw(inputAmount)
                   }

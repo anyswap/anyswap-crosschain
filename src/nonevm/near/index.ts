@@ -149,8 +149,8 @@ export function useLogin() {
 export function useNearBalance() {
   const { selector  } = useWalletSelector();
   const { network } = selector.options;
-  console.log(selector)
-  console.log(network)
+  // console.log(selector)
+  // console.log(network)
   const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
   const getNearBalance = useCallback(async () => {
     // let bl:any = ''
