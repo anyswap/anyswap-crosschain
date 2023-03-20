@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef } from "react";
-import { 
+import {
   useDispatch,
   // useSelector
 } from 'react-redux'
-import { 
+import {
   // AppState,
   AppDispatch
 } from '../../state'
 import { ChainId } from "../../config/chainConfig/chainId";
 
-import {useActiveReact} from '../../hooks/useActiveReact'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import {
   adaAddress,
@@ -17,110 +17,80 @@ import {
 } from './actions'
 import useInterval from "../../hooks/useInterval";
 
+// import { CML, cmlToCore } from "@cardano-sdk/core";
 // import {
 //   useAdaBalance
 // } from './index'
 
 export default function Updater(): null {
-  const {chainId, account} = useActiveReact()
+  const { chainId, account } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
 
-  // const {getAdaBalance} = useAdaBalance()
 
-  const setAdaAddress = useCallback((address:any) => {
-    console.log(address)
-    dispatch(adaAddress({address}))
+  const setAdaAddress = useCallback((address: any) => {
+    dispatch(adaAddress({ address }))
   }, [dispatch])
 
 
-  const typhonRef = useRef<any>()
+  const eternlRef = useRef<any>()
 
   window.onload = () => {
-    typhonRef.current = window.cardano.typhon
+    eternlRef.current = window?.cardano?.eternl
   };
 
-  const getBalance = useCallback(() => {
-    const adaWallet = typhonRef.current
-
-    // getAdaBalance()
-    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
-      adaWallet.getBalance().then((res:any) => {
-        console.log(res)
-        const blList:any = {}
-        if (res.status) {
-          const result = res.data
-          blList['NATIVE'] = result.ada
-          if (result.tokens && result.tokens.length > 0) {
-            for (const obj of result.tokens) {
-              const key = obj.policyId + '.' + obj.assetName
-              blList[key] = obj.amount
-            }
+  const getFetchBalance = async () => {
+    if (window.lucid && window?.lucid?.wallet) {
+      const blList: any = {}
+      const utxos = await window.lucid.wallet.getUtxos()
+      console.log(utxos)
+      let total = BigInt(0);
+      utxos.map((e: any) => {
+        setAdaAddress(e.address)
+        total += e.assets.lovelace;
+        for (const tokenAddress in e.assets) {
+          const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
+          if(tokenAddress !== "lovelace") {
+            blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
           }
-          dispatch(adaBalanceList({list: blList}))
         }
-      })
+      });
+      blList['NATIVE'] = total.toString();
+      dispatch(adaBalanceList({ list: blList }))
     }
-  }, [chainId, typhonRef.current, account])
+
+  }
+
+  const getBalance = useCallback(() => {
+    // if (!account) return;
+    const adaWallet = window?.cardano && window?.cardano?.eternl
+
+    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
+      getFetchBalance()
+
+    }
+  }, [chainId, eternlRef.current, account])
 
   useEffect(() => {
     getBalance()
-  }, [chainId, typhonRef.current, account])
+  }, [chainId, eternlRef.current, account])
 
   useInterval(getBalance, 1000 * 10)
 
   useEffect(() => {
-    const adaWallet = typhonRef.current
-    console.log(adaWallet)
-    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
+    const adaWallet = window?.cardano && window?.cardano?.eternl
 
-      adaWallet.enable().then((res:any) => {
-        // console.log(res)
-        if (res) {
-          adaWallet.getNetworkId().then((res:any) => {
-            // console.log(res)
-            if (
-              (res.data === 0 && ChainId.ADA_TEST === chainId)
-              || (res.data === 1 && ChainId.ADA === chainId)
-            ) {
-              adaWallet.getAddress().then((res:any) => {
-                // console.log(res)
-                if (res) {
-                  setAdaAddress(res.data)
-                }
-              })
-            } else {
-              alert('Network Error.')
-            }
-          })
-        }
-      })
-      
-      const handleChainChanged = (chainID:any) => {
+    if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
+      getBalance()
+
+      const handleChainChanged = (chainID: any) => {
         console.log(chainID)
       }
 
-      const handleAccountsChanged = (accounts: string[]) => {
-        console.log(accounts)
-        adaWallet.getNetworkId().then((res:any) => {
-          // console.log(res)
-          if (
-            (res.data === 0 && ChainId.ADA_TEST === chainId)
-            || (res.data === 1 && ChainId.ADA === chainId)
-          ) {
-            adaWallet.getAddress().then((res:any) => {
-              // console.log(res)
-              if (res) {
-                setAdaAddress(res.data)
-              }
-            })
-          } else {
-            alert('Network Error.')
-          }
-        })
+      const handleAccountsChanged = () => {
+        getBalance()
       }
 
       if (adaWallet?.on) {
-        console.log(1.1)
         adaWallet?.on('networkChanged', handleChainChanged)
         adaWallet?.on('accountChanged', handleAccountsChanged)
       }
@@ -133,7 +103,7 @@ export default function Updater(): null {
       }
     }
     return undefined
-  }, [chainId, typhonRef.current])
+  }, [chainId, eternlRef.current])
 
   return null
 }

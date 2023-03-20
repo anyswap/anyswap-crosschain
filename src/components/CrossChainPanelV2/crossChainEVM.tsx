@@ -195,6 +195,9 @@ export default function CrossChain({
         return solTokenAddress?.toString()
       }
       return undefined
+    } else if ([ChainId.NEAR, ChainId.NEAR_TEST].includes(selectChain)) {
+      console.log(destConfig )
+      return recipient
     } else {
       return recipient
     }

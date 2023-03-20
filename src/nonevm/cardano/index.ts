@@ -1,19 +1,19 @@
 
 import { useCallback, useMemo } from 'react'
-import {  useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { AppState, AppDispatch } from '../../state'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { tryParseAmount3 } from '../../state/swap/hooks'
-import {recordsTxns} from '../../utils/bridge/register'
-import {useTxnsDtilOpen, useTxnsErrorTipOpen} from '../../state/application/hooks'
+import { recordsTxns } from '../../utils/bridge/register'
+import { useTxnsDtilOpen, useTxnsErrorTipOpen } from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigAmount } from "../../utils/formatBignumber"
 import { ChainId } from "../../config/chainConfig/chainId"
 
-import {adaAddress} from './actions'
+import { adaAddress } from './actions'
 
-import * as typhonjs from '@stricahq/typhonjs'
+// import * as typhonjs from '@stricahq/typhonjs'
 // export const CardanoWasm = () => { // 路由懒加载
 //   return () => Promise.resolve(require(`@emurgo/cardano-serialization-lib-nodejs`).default)
 // }
@@ -26,75 +26,66 @@ import * as typhonjs from '@stricahq/typhonjs'
 // console.log(typhonjs)
 // console.log(CardanoWasm)
 
-export function useAdaAddress () {
-  const account:any = useSelector<AppState, AppState['ada']>(state => state.ada.adaAddress)
+export function useAdaAddress() {
+  const account: any = useSelector<AppState, AppState['ada']>(state => state.ada.adaAddress)
   return {
     adaAddress: account
   }
 }
 
+export async function eternlLogin() {
+  const api = await window.cardano.eternl.enable();
+  window.lucid.selectWallet(api);
+  localStorage.setItem("lucid", "true");
+}
+
 export function useAdaLogin() {
-  const {chainId} = useActiveReact()
+  // const api = await window.cardano.eternl.enable();
+  // window.lucid.selectWallet(api);
+  const { chainId } = useActiveReact()
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => {
-    const adaWallet = window?.cardano?.typhon
-    // console.log(adaWallet)
-    if (adaWallet?.enable) {
-      adaWallet.enable().then((res:any) => {
-        // console.log(res)
-        if (res) {
-          adaWallet.getNetworkId().then((res:any) => {
-            // console.log(res)
-            if (
-              (res.data === 0 && ChainId.ADA_TEST === chainId)
-              || (res.data === 1 && ChainId.ADA === chainId)
-            ) {
-              adaWallet.getAddress().then((res:any) => {
-                // console.log(res)
-                if (res) {
-                  dispatch(adaAddress({address: res.data}))
-                }
-              })
-            } else {
-              alert('Network Error.')
-            }
-          })
-        }
-      })
+    const adaWallet =  window?.cardano && window?.cardano?.eternl
+
+    if(window?.lucid && window?.lucid?.wallet === undefined) {
+      eternlLogin();
+      return;
+    }
+
+    if (adaWallet && adaWallet?.enable && window?.lucid && window?.lucid?.wallet) {
+      
+      if (
+        (ChainId.ADA_TEST === chainId) || (ChainId.ADA === chainId)
+      ) {
+        window.lucid.wallet.getUtxos().then((e: any) => {
+          if (e && e.length > 0) {
+            dispatch(adaAddress({ address: e[0].address }))
+          }
+        })
+      } else {
+        alert('Network Error.')
+      }
+
     } else {
-      if (confirm('Please connect Typhon or install Typhon.') === true) {
+      if (confirm('Please connect Eternl or install Eternl.') === true) {
         // window.open('https://namiwallet.io/')
-        window.open('https://typhonwallet.io/#/download')
+        window.open('https://eternl.io/')
       }
     }
   }, [])
 }
 
-export function useAdaBalance () {
-  const adaBalanceList:any = useSelector<AppState, AppState['ada']>(state => state.ada.adaBalanceList)
-  const getAdaBalance = useCallback(() => {
-    return new Promise(resolve => {
-      const adaWallet = window?.cardano?.typhon
-      if (adaWallet) {
-        adaWallet.getBalance().then((res:any) => {
-          // console.log(res)
-          resolve(res)
-        })
-      } else {
-        resolve('')
-      }
-    })
-  }, [])
+export function useAdaBalance() {
+  const adaBalanceList: any = useSelector<AppState, AppState['ada']>(state => state.ada.adaBalanceList)
 
   return {
-    getAdaBalance,
     adaBalanceList
     // getAdaTokenBalance
   }
 }
 
-export function getADATxnsStatus (txid:string, chainId:any) {
-  const data:any = {
+export function getADATxnsStatus(txid: string, chainId: any) {
+  const data: any = {
     msg: 'Error',
     info: ''
   }
@@ -165,29 +156,29 @@ export function getADATxnsStatus (txid:string, chainId:any) {
 
 const baseValue = 2
 
-export function useAdaCrossChain (
+export function useAdaCrossChain(
   routerToken: any,
   inputToken: any,
-  chainId:any,
-  selectCurrency:any,
-  selectChain:any,
-  receiveAddress:any,
-  typedValue:any,
-  destConfig:any,
-  useToChainId:any,
+  chainId: any,
+  selectCurrency: any,
+  selectChain: any,
+  receiveAddress: any,
+  typedValue: any,
+  destConfig: any,
+  useToChainId: any,
 ): {
   inputError?: string
   balance?: any,
   execute?: undefined | (() => Promise<void>)
 } {
-  const {account} = useActiveReact()
+  const { account } = useActiveReact()
   const { t } = useTranslation()
-  const {onChangeViewDtil} = useTxnsDtilOpen()
-  const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const { onChangeViewDtil } = useTxnsDtilOpen()
+  const { onChangeViewErrorTip } = useTxnsErrorTipOpen()
 
-  const {adaBalanceList} = useAdaBalance()
+  const { adaBalanceList } = useAdaBalance()
 
-  const adaWallet = window?.cardano?.typhon
+  const adaWallet = window?.cardano && window?.cardano?.eternl
   const addTransaction = useTransactionAdder()
 
   const inputValue = selectCurrency?.tokenType === 'NATIVE' ? Number(typedValue) + baseValue : typedValue
@@ -205,7 +196,7 @@ export function useAdaCrossChain (
     }
     return ''
   }, [adaBalanceList, selectCurrency])
-  let sufficientBalance:any = false
+  let sufficientBalance: any = false
   try {
     // sufficientBalance = true
     sufficientBalance = selectCurrency && typedValue && useBalance && (Number(useBalance?.toExact()) >= Number(inputValue))
@@ -219,53 +210,71 @@ export function useAdaCrossChain (
       execute: async () => {
         // let txResult:any = ''
         console.log(adaWallet)
-        
+
         try {
-          const MetaDatum:any =  {
-            "bind": receiveAddress,
-            "toChainId": useToChainId + ''
-          }
-          const auxDataCbor = typhonjs.utils
-          .createAuxiliaryDataCbor({
-            metadata: [
-              {
-                label: 123,
-                data: MetaDatum,
-              },
-            ],
-          })
-          .toString("hex");
-          const outputs = []
+          // const MetaDatum: any = {
+          //   "bind": receiveAddress,
+          //   "toChainId": useToChainId + ''
+          // }
+          // const auxDataCbor = typhonjs.utils
+          // .createAuxiliaryDataCbor({
+          //   metadata: [
+          //     {
+          //       label: 123,
+          //       data: MetaDatum,
+          //     },
+          //   ],
+          // })
+          // .toString("hex");
+          let tx = undefined;
           if (selectCurrency?.tokenType === 'NATIVE') {
-            outputs.push({
-              address: routerToken,
-              amount: inputAmount,
-            })
+            tx = await window.lucid.newTx().payToContract(
+              routerToken,
+              {
+                inline: window.lucid.data.to(BigInt(0)),
+              },
+              { lovelace: BigInt(inputAmount) })
+              .attachMetadata(123, {
+                "bind": receiveAddress,
+                "toChainId": useToChainId + ''
+              })
+              .complete();
           } else {
-            const tokenArr = selectCurrency?.address.split('.')
-            const tokenArrLen = tokenArr.length
-            outputs.push({
-              address: routerToken,
-              amount: tryParseAmount3(baseValue + '', 6),
-              tokens: [
-                {
-                  assetName: tokenArrLen === 2 ? tokenArr[1] : '',
-                  policyId: tokenArr[0],
-                  amount: inputAmount,
-                },
-              ],
-            })
+            const tokenArr = selectCurrency?.address.split('.');
+            const tokenObj: any = {};
+            const decimals = selectCurrency.decimals;
+            tokenObj[tokenArr[0] + tokenArr[1]] = BigInt(inputAmount / eval(`1e${decimals}`));
+            tx = await window.lucid.newTx().payToContract(
+              routerToken,
+              {
+                inline: window.lucid.data.to(BigInt(0)),
+              },
+              tokenObj)
+              .attachMetadata(123, {
+                "bind": receiveAddress,
+                "toChainId": useToChainId + ''
+              })
+              .complete();
           }
-          const txResult = await adaWallet.paymentTransaction({
-            auxiliaryDataCbor: auxDataCbor,
-            outputs: [...outputs],
-          });
+
+          const signedTx = await tx.sign().complete();
+          const txHash = await signedTx.submit();
+          const txResult = {
+            data: {
+              transactionId: txHash
+            },
+            status: true,
+          }
+          // const txResult = await adaWallet.paymentTransaction({
+          //   auxiliaryDataCbor: auxDataCbor,
+          //   outputs: [...outputs], 
+          // });
           console.log(txResult)
           if (txResult?.status) {
-            const txReceipt:any = {hash: txResult?.data?.transactionId}
+            const txReceipt: any = { hash: txResult?.data?.transactionId }
             console.log(txReceipt)
             if (txReceipt?.hash) {
-              const data:any = {
+              const data: any = {
                 hash: txReceipt.hash,
                 chainId: chainId,
                 selectChain: selectChain,
@@ -314,7 +323,7 @@ export function useAdaCrossChain (
           onChangeViewErrorTip('Txns failure.', true)
         }
       },
-      inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
+      inputError: sufficientBalance ? undefined : t('Insufficient', { symbol: selectCurrency?.symbol })
     }
   }, [receiveAddress, account, selectCurrency, inputAmount, chainId, routerToken, selectChain, destConfig, inputToken, useBalance, adaWallet, useToChainId])
 }

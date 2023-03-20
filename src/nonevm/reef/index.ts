@@ -167,7 +167,6 @@ export function useReefContract() {
   // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
   return useCallback((tokenAddress:any, ABI:any,account?:any) => {
     // console.log('reefSigner',reefSigner, chainId + '-chainId', account + '-account', tokenAddress + '-tokenAddress')
-    account = account ? account : '5E1eMGGH6ug3GmLRDdgkfV22LjnX8ss2kP1cJr4iQsTRkzyW'
     if (
       account
       && tokenAddress
@@ -224,7 +223,6 @@ export function useReefBalance () {
   const dispatch = useDispatch<AppDispatch>()
   const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   // console.log(evmAccount)
-  const getContract  = useReefContract()
   const getReefBalance = useCallback(({account, chainId}: {account:string|null|undefined, chainId:any}) => {
     return new Promise(async(resolve) => {
       if (!account || ![ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -294,7 +292,7 @@ export function useReefBalance () {
         })
       }
     })
-  }, [evmAccount, getContract])
+  }, [evmAccount])
   return {
     getReefBalance,
     getReefTokenBalance
@@ -747,7 +745,6 @@ interface PoolResult {
  * @return {'anytoken': {'balanceOf': '', 'totalSupply': '', 'balance': ''}}
  */
 export function useReefPoolDatas () {
-  // const getContract  = useReefContract()
   const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   const getReefPoolDatas = useCallback(async(calls: Array<[any]>, chainId: any): Promise<PoolResult> => {
     

@@ -108,8 +108,8 @@ interface Window {
   freighterApi: any
   xfi: any
   cardano: any
-  typhon: any
-  typhoncip30: any
+  eternl: any
+  // typhoncip30: any
   solana: any
   bitkeep: any
   aptos: any
@@ -118,7 +118,8 @@ interface Window {
   tally: any
   keplr: any
   getOfflineSigner: any
-  NasExtWallet: any
+  NasExtWallet: any,
+  lucid: any
 }
 
 declare module '@onflow/fcl';
@@ -157,3 +158,5 @@ declare module 'nebulas' {
 declare const NasExtWallet
 
 declare module 'nebpay.js'
+
+declare module 'rxjs';
