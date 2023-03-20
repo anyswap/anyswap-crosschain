@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const CANTO_MAIN_CHAINID = ChainId.CANTO
 export const CANTO_MAINNET = getLocalRPC(CANTO_MAIN_CHAINID, 'https://canto.neobase.one')
-export const CANTO_MAIN_EXPLORER = 'https://evm.explorer.canto.io'
+export const CANTO_MAIN_EXPLORER = 'https://tuber.build'
 
 // export const CANTO_TEST_CHAINID = ChainId.CANTO_TEST
 // export const CANTO_TESTNET = getLocalRPC(CANTO_TEST_CHAINID, 'https://testnet.dexit.network')
@@ -32,7 +32,9 @@ export default {
       CANTO_MAINNET,
       'https://canto.neobase.one',
       'https://mainnode.plexnode.org:8545',
-      'https://canto.slingshot.finance'
+      'https://canto.slingshot.finance',
+      'https://canto.evm.chandrastation.com',
+      'https://jsonrpc.canto.nodestake.top',
     ],
     chainID: CANTO_MAIN_CHAINID,
     lookHash: CANTO_MAIN_EXPLORER + '/tx/',

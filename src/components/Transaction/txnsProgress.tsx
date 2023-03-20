@@ -138,7 +138,7 @@ export default function TxnsProgress({
 
   useEffect(() => {
     let stepNum = 1
-    console.log(tx)
+    // console.log(tx)
     if (tx || txData) {
       const txInfo = tx?.info ?? txData
       if (txInfo) {

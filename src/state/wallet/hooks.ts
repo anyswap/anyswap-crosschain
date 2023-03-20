@@ -14,7 +14,7 @@ import { useSingleContractMultipleData, useMultipleContractSingleData } from '..
 import { AppState, AppDispatch } from '../index'
 
 import {gnosissafe} from '../../connectors'
-import { walletViews } from './actions'
+import { walletViews, updateTokenBalance } from './actions'
 
 export function useIsGnosisSafeWallet () {
   const { connector, account } = useActiveWeb3React()
@@ -490,5 +490,26 @@ export function useWalletViews () {
   return {
     walletView: walletViewsResult,
     setWalletView
+  }
+}
+
+export function useAllTokenBalance() {
+  const dispatch = useDispatch<AppDispatch>()
+  const tokenBalance:any = useSelector<AppState, AppState['wallet']>(state => state.wallet.tokenBalance)
+
+  const setTokenBalance = useCallback((chainId: any, token:any, account:any, balance:string, decimals:number) => {
+    dispatch(updateTokenBalance({chainId, token, account, balance, decimals}))
+  }, [dispatch])
+
+  const getTokenBalance = useCallback((chainId: any, token:any, account:any) => {
+    // console.log(tokenBalance)
+    if (tokenBalance?.[chainId]?.[account]?.[token]) {
+      return tokenBalance?.[chainId]?.[account]?.[token]
+    }
+    return
+  }, [tokenBalance])
+  return {
+    setTokenBalance,
+    getTokenBalance
   }
 }

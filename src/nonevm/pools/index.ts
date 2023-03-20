@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import {useTrxSwapPoolCallback} from '../trx'
 import {useAptSwapPoolCallback} from '../apt'
+import {useReefSwapPoolCallback} from '../reef'
 import {useActiveReact} from '../../hooks/useActiveReact'
 import { ChainId } from '../../config/chainConfig/chainId';
 
@@ -27,6 +28,7 @@ export function useSwapPoolCallback(
   const {chainId} = useActiveReact()
   const {wrapType: wrapTypeTrx, execute: onTrxSwar, inputError: inputErrorTrx} = useTrxSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, useToChainId)
   const {execute: onAptSwar, inputError: inputErrorApt} = useAptSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, selectCurrency, useToChainId)
+  const {execute: onReefSwar, inputError: inputErrorReef} = useReefSwapPoolCallback(routerToken, inputCurrency, inputToken, typedValue, swapType, selectChain, receiveAddress, destConfig, useToChainId)
   
   return useMemo(() => {
     // console.log(chainId)
@@ -45,11 +47,18 @@ export function useSwapPoolCallback(
         execute: onAptSwar,
         inputError: inputErrorApt
       }
+    } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
+      return {
+        wrapType: WrapType.WRAP,
+        execute: onReefSwar,
+        inputError: inputErrorReef
+      }
     }
     return { wrapType: WrapType.NOT_APPLICABLE }
   }, [
     wrapTypeTrx, onTrxSwar, inputErrorTrx,
     onAptSwar, inputErrorApt,
+    onReefSwar, inputErrorReef,
     inputCurrency, inputToken, typedValue, swapType,
     chainId
   ])

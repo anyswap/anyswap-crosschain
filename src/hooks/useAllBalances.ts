@@ -18,7 +18,7 @@ import {useAtomBalance} from '../nonevm/atom'
 import {useReefBalance} from '../nonevm/reef'
 
 
-import {useCurrencyBalance1} from '../state/wallet/hooks'
+import {useCurrencyBalance1, useAllTokenBalance} from '../state/wallet/hooks'
 import {useActiveReact} from './useActiveReact'
 
 import { ChainId } from '../config/chainConfig/chainId'
@@ -46,10 +46,13 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
   const {aptBalanceList} = useAptosBalance()
   const {btcBalanceList} = useBtcBalance()
   const {atomBalanceList} = useAtomBalance()
+  const {getReefTokenBalance} = useReefBalance()
 
   const savedBalance = useRef<any>()
 
   const evmBalance = useCurrencyBalance1(account, token, dec, selectChainId)
+
+  const {setTokenBalance} = useAllTokenBalance()
 
   const fetchBalance = useCallback(() => {
     // console.log([ChainId.TRX, ChainId.TRX_TEST].includes(selectChainId))
@@ -155,6 +158,13 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
           const bl = BigAmount.format(dec, '0')
           savedBalance.current = bl
         }
+      } else if ([ChainId.REEF, ChainId.REEF_TEST].includes(selectChainId)) {
+        getReefTokenBalance({chainId: selectChainId, account, token}).then((res:any) => {
+          const bl = BigAmount.format(dec, res)
+          // console.log(res, '11111111111111')
+          setTokenBalance(selectChainId,token,account,res,dec)
+          savedBalance.current = bl
+        })
       } else {
         // console.log('evmBalance', evmBalance ? evmBalance.toExact() : '')
         savedBalance.current = evmBalance
@@ -163,7 +173,7 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
       savedBalance.current = ''
       // setBalance('')
     }
-  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList, btcBalanceList, atomBalanceList])
+  }, [token, connectedWallet, selectChainId, adaBalanceList, flowBalanceList, evmBalance, account, aptBalanceList, btcBalanceList, atomBalanceList, getReefTokenBalance])
 
   useInterval(fetchBalance, 1000 * 10, false)
 
@@ -201,6 +211,8 @@ export function useBaseBalances (
   
 
   const selectChainId = selectNetworkInfo?.label
+
+  const {setTokenBalance} = useAllTokenBalance()
   
   const [balance, setBalance] = useState<any>()
   const fetchBalancesCallback = useCallback(() => {
@@ -295,6 +307,7 @@ export function useBaseBalances (
           // const blvalue = tryParseAmount3(res, dec)
           const bl = res ? BigAmount.format(dec, res) : undefined
           // console.log(bl?.toExact())
+          setTokenBalance(selectChainId,'NATIVE',uncheckedAddresses,res,dec)
           setBalance(bl)
         } else {
           const bl = BigAmount.format(dec, '0')

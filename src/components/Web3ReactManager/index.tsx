@@ -37,8 +37,10 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   useEffect(() => {
     if (!networkActive && !networkError && !active) {
       if (triedToConnectToSafe) {
+        console.log(1)
         activateNetwork(gnosissafe)
       } else if (triedEager) {
+        console.log(2)
         activateNetwork(network)
       }
     }

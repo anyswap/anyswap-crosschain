@@ -37,7 +37,7 @@ const ChainIdList:any = {
 const seiAddressReg = /^sei[0-9A-Za-z]{39}$/
 // const devdcoreAddressReg = /^devcore[0-9A-Za-z]{39}$/
 const devdcoreAddressReg = /^testcore[0-9A-Za-z]{39}$/
-const dcoreAddressReg = /^ducore[0-9A-Za-z]{39}$/
+const dcoreAddressReg = /^core[0-9A-Za-z]{39}$/
 export function isAtomAddress (address:string, chainId:any):boolean | string {
   if ([ChainId.ATOM_SEI, ChainId.ATOM_SEI_TEST].includes(chainId)) {
     return seiAddressReg.test(address) ? address : false //true: address; false: false

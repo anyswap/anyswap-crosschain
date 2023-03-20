@@ -98,6 +98,11 @@ import reef from './reef'
 import bit from './bit'
 import neon from './neon'
 import canto from './canto'
+import nahmii3 from './nahmii3'
+import tst from './tst'
+import zksync from './zksync'
+import fra from './fra'
+import plq from './plq'
 
 import { ChainId } from './chainId'
 
@@ -107,6 +112,11 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...plq,
+  ...fra,
+  ...zksync,
+  ...tst,
+  ...nahmii3,
   ...canto,
   ...neon,
   ...bit,
@@ -284,6 +294,8 @@ const allChainList = [
   ChainId.ONUS,
   ChainId.OMAX,
   ChainId.CANTO,
+  ChainId.FRA,
+  ChainId.PLQ,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -318,6 +330,10 @@ const testChainList = [
   ChainId.NEON_TEST,
   ChainId.SHM1X_TEST,
   ChainId.BASEGOERLI,
+  ChainId.NAHMII3_TEST,
+  ChainId.TST_TEST,
+  // ChainId.ZKSYNV_TEST,
+  ChainId.ZKSYNV,
 ]
 
 const useChain:any = {
@@ -426,8 +442,9 @@ const useChain:any = {
     ChainId.NEAR,
     ChainId.APT,
     ChainId.SOL,
-    ChainId.REEF,
-    // ChainId.ADA,
+    // ChainId.REEF,
+    ChainId.ADA,
+    ChainId.ATOM_DCORE,
   ],
   [VERSION.V7_TEST]: [
     ...testChainList,
@@ -443,7 +460,8 @@ const useChain:any = {
     // ChainId.ATOM_TEST,
     ChainId.ATOM_SEI_TEST,
     ChainId.ATOM_DCORE_TEST,
-    ChainId.REEF_TEST,
+    ChainId.REEF,
+    // ChainId.REEF_TEST,
     ChainId.XRP_TEST,
     ChainId.ADA,
   ],
