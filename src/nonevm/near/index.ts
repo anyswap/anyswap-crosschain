@@ -72,22 +72,6 @@ export async function initConnect(chainId: any, token: any) {
   return account;
 }
 
-export async function useLogout() {
-  if (window?.selector) {
-    const wallet = await window.selector.wallet();
-    const logout = useCallback(() => {
-      wallet.signOut().catch((err) => {
-        console.log("Failed to sign out");
-        console.error(err);
-      });
-    }, [])
-    return {
-      logout
-    }
-  }
-  return {}
-}
-
 export function useNearAddress() {
   let accountId = ""
   if (window?.selector) {
@@ -145,16 +129,28 @@ export function useLogin() {
     }
   }, []);
 
-
+  const logoutNear = useCallback(async() => {
+    if (window?.selector) {
+      const wallet = await window.selector.wallet();
+      wallet.signOut().catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
+    }
+    return {}
+  }, [])
 
   return {
-    login
+    login,
+    logoutNear
   }
 }
 
 export function useNearBalance() {
   const { selector  } = useWalletSelector();
   const { network } = selector.options;
+  console.log(selector)
+  console.log(network)
   const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
   const getNearBalance = useCallback(async () => {
     // let bl:any = ''
@@ -221,7 +217,7 @@ export function useNearBalance() {
     let bl: any
     const useAccount = account ? account : window?.near?.accountId
     const accountFn = await initConnect(chainId, token);
-    // console.log(window?.near)
+    // console.log(accountFn)
     try {
       if (accountFn && useAccount && isAddress(useAccount, chainId)) {
         bl = await accountFn.viewFunction(

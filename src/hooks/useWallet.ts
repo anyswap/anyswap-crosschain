@@ -143,17 +143,20 @@ export function useConnectWallet () {
 export function useLogoutWallet () {
   const {selectNetworkInfo} = useUserSelectChainId()
   const {logoutFlow} = useLoginFlow()
+  const {logoutNear} = useLogin()
   const useChainId = useMemo(() => {
     return selectNetworkInfo?.chainId
   }, [selectNetworkInfo])
   const logoutWallet = useCallback(() => {
     if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
       logoutFlow()
+    } else if (ChainId.NEAR, ChainId.NEAR_TEST) {
+      logoutNear()
     }
   }, [useChainId])
 
   const isSupportLogout = useMemo(() => {
-    if ([ChainId.FLOW, ChainId.FLOW_TEST].includes(useChainId)) {
+    if ([ChainId.FLOW, ChainId.FLOW_TEST, ChainId.NEAR, ChainId.NEAR_TEST].includes(useChainId)) {
       return true
     }
     return false
