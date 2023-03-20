@@ -33,7 +33,15 @@ import {recordsTxns} from '../../utils/bridge/register'
 import { Contract } from "ethers"
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC20_ABI from '../../constants/abis/erc20.json'
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 
 import REEF_ABI from './abi.json'
 // import {web3Enable} from "@reef-defi/extension-dapp";
@@ -178,6 +186,7 @@ export function useReefContract() {
         provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
       })
       await provider.api.isReadyOrError
+      await provider.api.isReady
       // const wallet:any = new Signer(reefProvider, account, reefClient.signer)
       const wallet:any = new Signer(provider, account, reefClient.signer)
       const contract = new Contract(tokenAddress, ABI, wallet)
@@ -597,6 +606,7 @@ export function useReefSwapPoolCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
   const [balance, setBalance] = useState<any>()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const evmAccount:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefEvmAddress)
   // console.log(balance)
   // console.log(selectCurrency)
@@ -639,7 +649,7 @@ export function useReefSwapPoolCallback(
     return {
       wrapType: '',
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
         ? async () => {
             try {
               const formatInputToken = inputToken
@@ -730,7 +740,7 @@ export function useReefSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [chainId, selectCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId,  getContract, evmAccount])
+  }, [chainId, selectCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId,  getContract, evmAccount, userInterfaceBalanceValid])
 }
 
 

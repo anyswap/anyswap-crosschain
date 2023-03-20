@@ -45,6 +45,7 @@ import {
   // useDarkModeManager,
   // useExpertModeManager,
   useInterfaceModeManager,
+  useInterfaceBalanceValidManager
   // useUserTransactionTTL,
   // useUserSlippageTolerance
 } from '../../state/user/hooks'
@@ -88,6 +89,7 @@ export default function CrossChain({
   
   const { account, chainId, evmAccount } = useActiveReact()
   const { t } = useTranslation()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const useChain = useMemo(() => {
     // console.log(chainId)
     // console.log(config.getCurChainInfo(chainId).chainID)
@@ -510,9 +512,13 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
-        return {
-          state: 'Error',
-          tip: isWrapInputError
+        if (userInterfaceBalanceValid) {
+          return {
+            state: 'Error',
+            tip: isWrapInputError
+          }
+        } else {
+          return undefined
         }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
@@ -533,7 +539,7 @@ export default function CrossChain({
       }
     }
     return undefined
-  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig])
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, userInterfaceBalanceValid])
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)

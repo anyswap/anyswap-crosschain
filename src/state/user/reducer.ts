@@ -21,7 +21,8 @@ import {
   addTokenToWallet,
   removeTokenToWallet,
   changeStarTab,
-  updateInterfaceMode
+  updateInterfaceMode,
+  updateInterfaceBalanceValid
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -36,6 +37,7 @@ export interface UserState {
   userExpertMode: boolean
   showBetaMessage: boolean
   userInterfaceMode: boolean
+  userInterfaceBalanceValid: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -78,6 +80,7 @@ export const initialState: UserState = {
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   showBetaMessage: true,
   userInterfaceMode: false,
+  userInterfaceBalanceValid: true,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   pairAddress: undefined,
   tokens: {},
@@ -183,6 +186,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateInterfaceMode, (state, action) => {
       state.userInterfaceMode = action.payload.userInterfaceMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateInterfaceBalanceValid, (state, action) => {
+      state.userInterfaceBalanceValid = action.payload.userInterfaceBalanceValid
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserExpertMode, (state, action) => {

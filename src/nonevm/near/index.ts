@@ -17,7 +17,15 @@ import { useTxnsDtilOpen, useTxnsErrorTipOpen } from '../../state/application/ho
 import useInterval from '../../hooks/useInterval'
 import { isAddress } from '../../utils/isAddress'
 import { ChainId } from '../../config/chainConfig/chainId'
-import { VALID_BALANCE } from '../../config/constant'
+// import { VALID_BALANCE } from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 import config from '../../config'
 // export enum WrapType {
 //   NOT_APPLICABLE,
@@ -607,6 +615,7 @@ export function useNearSendTxns(
   const { t } = useTranslation()
   const address = useNearAddress()
   const addTransaction = useTransactionAdder()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { onChangeViewDtil } = useTxnsDtilOpen()
   const { onChangeViewErrorTip } = useTxnsErrorTipOpen()
   const [balance, setBalance] = useState<any>()
@@ -669,7 +678,7 @@ export function useNearSendTxns(
     return {
       // wrapType: WrapType.WRAP,
       balance,
-      execute: receiverId && (sufficientBalance || !VALID_BALANCE) && inputAmount ? async () => {
+      execute: receiverId && (sufficientBalance || !userInterfaceBalanceValid) && inputAmount ? async () => {
         try {
           const txReceipt: any = ["NATIVE", "ANYTOKEN"].includes(inputCurrency?.tokenType) || inputCurrency?.address === 'near' ? await sendNear(routerToken, inputAmount, receiverId, useToChainId, inputCurrency?.tokenType, anyContractId) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, useToChainId)
           console.log(txReceipt)
@@ -721,7 +730,7 @@ export function useNearSendTxns(
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
     }
-  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig, useToChainId])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig, useToChainId, userInterfaceBalanceValid])
 }
 
 /**

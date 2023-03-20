@@ -17,6 +17,7 @@ export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>(
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
 export const updateInterfaceMode = createAction<{ userInterfaceMode: boolean }>('user/updateInterfaceMode')
+export const updateInterfaceBalanceValid = createAction<{ userInterfaceBalanceValid: boolean }>('user/updateInterfaceBalanceValid')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'
 )

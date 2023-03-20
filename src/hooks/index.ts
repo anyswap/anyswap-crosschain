@@ -74,7 +74,7 @@ export function useInactiveListener(suppress = false) {
 
   useEffect(() => {
     const { ethereum } = window
-    console.log(ethereum)
+    // console.log(ethereum)
     // if (ethereum && ethereum.on && !active && !error && !suppress) {
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleChainChanged = (chainID:any) => {

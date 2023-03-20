@@ -10,7 +10,15 @@ import {
 } from '../../state'
 import {nonevmAddress} from '../hooks/actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 
 import {BigAmount} from '../../utils/formatBignumber'
 
@@ -185,6 +193,7 @@ export function useBtcCrossChain (
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
 
   const [p2pAddress, setP2pAddress] = useState<any>('')
 
@@ -245,7 +254,7 @@ export function useBtcCrossChain (
     ) return {}
     return {
       balance: balance,
-      execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
+      execute: (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
       ? async () => {
         // const transactionParams = [{to: routerToken, value: inputAmount, memo: receiveAddress + ':' + selectChain}]
         const transactionParams = [routerToken, inputAmount, receiveAddress + ':' + useToChainId]
@@ -314,5 +323,5 @@ export function useBtcCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, p2pAddress, useToChainId])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, p2pAddress, useToChainId, userInterfaceBalanceValid])
 }

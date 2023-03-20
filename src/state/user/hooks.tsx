@@ -25,7 +25,8 @@ import {
   addTokenToWallet,
   removeTokenToWallet,
   changeStarTab,
-  updateInterfaceMode
+  updateInterfaceMode,
+  updateInterfaceBalanceValid
 } from './actions'
 
 import config from '../../config'
@@ -101,6 +102,17 @@ export function useInterfaceModeManager(): [boolean, () => void] {
   }, [userInterfaceMode, dispatch])
 
   return [userInterfaceMode, toggleSetInterfaceMode]
+}
+
+export function useInterfaceBalanceValidManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userInterfaceBalanceValid = useSelector<AppState, AppState['user']['userInterfaceBalanceValid']>(state => state.user.userInterfaceBalanceValid)
+
+  const toggleSetInterfaceBalanceValid = useCallback(() => {
+    dispatch(updateInterfaceBalanceValid({ userInterfaceBalanceValid: !userInterfaceBalanceValid }))
+  }, [userInterfaceBalanceValid, dispatch])
+
+  return [userInterfaceBalanceValid, toggleSetInterfaceBalanceValid]
 }
 
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
