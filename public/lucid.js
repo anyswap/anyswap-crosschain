@@ -11,11 +11,12 @@ async function lucid() {
         new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0/", "mainnet14x6BHJn5rIuSOwGZL8m70MzqPyA5XUV")
     );
     try {
-        const api = await window.cardano.eternl.enable();
-        
-        lucid.selectWallet(api);
         window.lucid = lucid;
         window.lucid.data = Data;
+        if(localStorage.getItem("lucid") === "true") {
+            const api = await window.cardano.eternl.enable();
+            window.lucid.selectWallet(api);
+        }
     } catch (error) {
         console.log(error)
     }

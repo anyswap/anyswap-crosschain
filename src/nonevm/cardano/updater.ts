@@ -35,11 +35,11 @@ export default function Updater(): null {
   const eternlRef = useRef<any>()
 
   window.onload = () => {
-    eternlRef.current = window.cardano.eternl
+    eternlRef.current = window?.cardano?.eternl
   };
 
   const getFetchBalance = async () => {
-    if (window.lucid) {
+    if (window.lucid && window?.lucid?.wallet) {
       const blList: any = {}
       const utxos = await window.lucid.wallet.getUtxos()
       console.log(utxos)
@@ -62,7 +62,7 @@ export default function Updater(): null {
 
   const getBalance = useCallback(() => {
     // if (!account) return;
-    const adaWallet = window?.cardano?.eternl
+    const adaWallet = window?.cardano && window?.cardano?.eternl
 
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
       getFetchBalance()
@@ -77,7 +77,7 @@ export default function Updater(): null {
   useInterval(getBalance, 1000 * 10)
 
   useEffect(() => {
-    const adaWallet = window?.cardano?.eternl
+    const adaWallet = window?.cardano && window?.cardano?.eternl
 
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
       getBalance()
