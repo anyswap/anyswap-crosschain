@@ -28,6 +28,7 @@ import { useAllTokenBalance } from '../../state/wallet/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {BigAmount} from '../../utils/formatBignumber'
 import {recordsTxns} from '../../utils/bridge/register'
+// import {getContract as getEvmContract} from '../../utils/tools/web3UtilsV2'
 
 // import { Contract } from '@ethersproject/contracts'
 import { Contract } from "ethers"
@@ -53,16 +54,19 @@ import {
   Provider,
   Signer,
 } from "@reef-defi/evm-provider"
-const { WsProvider } =  require('@polkadot/api')
+const { WsProvider, ApiPromise } =  require('@polkadot/api')
 // import { options } from '@reef-defi/api'
-// const { options } = require('@reef-defi/api')
+const { options } = require('@reef-defi/api')
 // const {
 //   resolveAddress,
 //   // resolveEvmAddress
 // } = require("@reef-defi/evm-provider/utils")
 // const {REEF_EXTENSION_IDENT} = require("@reef-defi/extension-inject")
 const REEF_EXTENSION_IDENT = 'reef'
-const {web3Enable} = require('@reef-defi/extension-dapp')
+const {
+  web3Enable,
+  
+} = require('@reef-defi/extension-dapp')
 // console.log(web3Enable)
 // console.log(REEF_EXTENSION_IDENT)
 
@@ -115,27 +119,6 @@ export function getReefData (chainId:any, token:any, data:any) {
   })
 }
 
-// getReefData('REEF', '0x9a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd', '0x70a08231000000000000000000000000eb33ef5cd460f79c335bbcdcfc5f1a2eadd6c6c5')
-
-// function getContract (account:any, chainId:any, tokenAddress:any, ABI:any) {
-//   return new Promise(async(resolve) => {
-//     const client = await init()
-//     const provider = new Provider({
-//       provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
-//     })
-//     await provider.api.isReadyOrError
-//     if (client && account && tokenAddress && ABI) {
-//       // console.log(client , account , tokenAddress , ABI)
-//       const wallet:any = new Signer(provider, account, client.signer)
-//       // console.log(wallet)
-//       const contract = new Contract(tokenAddress, ABI, wallet)
-//       resolve(contract)
-//     } else {
-//       resolve('')
-//     }
-//   })
-// }
-
 export function useReefClient () {
   // const dispatch = useDispatch<AppDispatch>()
   const clientCount = useRef(0)
@@ -183,13 +166,26 @@ export function useReefContract() {
       && reefClient
     ) {
       const provider = new Provider({
-        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
+        types: {
+          Balance: 'u128'
+        }
       })
       await provider.api.isReadyOrError
       await provider.api.isReady
       // const wallet:any = new Signer(reefProvider, account, reefClient.signer)
       const wallet:any = new Signer(provider, account, reefClient.signer)
       const contract = new Contract(tokenAddress, ABI, wallet)
+      
+      console.log(ApiPromise)
+      console.log(options)
+      // const provider = new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+      // const api = await ApiPromise(options({provider}))
+      // // const api = await ApiPromise.create({provider:new WsProvider(config.chainInfo[chainId].nodeRpcWs)})
+      // await api.isReady
+      // console.log(api)
+      // const wallet:any = new Signer(api, account, reefClient.signer)
+      // const contract = new Contract(tokenAddress, ABI, wallet)
       return contract
     }
     return undefined
@@ -506,6 +502,47 @@ return useMemo(() => {
         try {
           let txResult:any
 
+          // const extensionsArr = await web3Enable('Test Transfer');
+          // const reefExtension = extensionsArr.find((e:any) => e.name === REEF_EXTENSION_IDENT);
+
+          // // const provider = await initProvider('wss://rpc.reefscan.info/ws');
+          // const provider = new Provider({
+          //     provider: new WsProvider('wss://rpc.reefscan.info/ws')
+          // });
+          // await provider.api.isReadyOrError;
+
+          // const accs = await reefExtension.accounts.get();
+          // const fromAddr = accs[0].address;
+          // console.log('took first account in wallet')
+          // const signer:any = new Signer(provider, fromAddr, reefExtension.signer);
+          // console.log(signer)
+
+          // const tokenContract = new Contract('0x8Eb24026196108108E71E45F37591164BDefcB76', ERC20_ABI, signer);
+          // console.log(tokenContract)
+          // window.injectedWeb3.reef.enable().then((res:any) => {
+          //   console.log(res)
+          //   console.log(res.accounts)
+          //   const c = getEvmContract(REEF_ABI)
+          //   c.address = routerToken
+          //   const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
+          //   console.log(c)
+          //   console.log(c.methods.anySwapOut(...parameArr))
+          //   // res.signer.signRaw({
+          //   // res.signer.signPayload({
+          //   res.reefSigner.injectedProvider.sendRequest({
+          //     address: '5E1eMGGH6ug3GmLRDdgkfV22LjnX8ss2kP1cJr4iQsTRkzyW',
+          //     data: c.methods.anySwapOut(...parameArr).encodeABI(),
+          //     type: 'bytes'
+          //   }).then((res:any) => {
+          //     console.log(res)
+          //   })
+          //   // const wallet:any = new Signer(res.reefProvider, account, res.reefSigner)
+          //   // const c = new Contract(routerToken, REEF_ABI, wallet)
+          //   // const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
+          //   // console.log(c.anySwapOut(...parameArr))
+
+          // })
+          // return
           const contract:any = await getContract(routerToken,REEF_ABI, chainId, account)
           console.log(contract)
           if (contract) {
@@ -518,6 +555,7 @@ return useMemo(() => {
             } else if (destConfig.routerABI.indexOf('anySwapOut') !== -1) { // anySwapOut
               const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
               console.log(parameArr)
+              // console.log(c.anySwapOut(...parameArr))
               // txResult = await contract.anySwapOut(inputToken, receiveAddress, inputAmount, useToChainId)
               txResult = await contract.anySwapOut(...parameArr)
             }
