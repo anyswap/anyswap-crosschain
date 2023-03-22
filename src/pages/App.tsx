@@ -33,10 +33,10 @@ import MangerVest from './Vest/manger'
 // import Vemulti from './Vemulti'
 import TestWarpper from './Test'
 
-// import ANYFarming from './Farms/ANYFarming'
-// import NoanyFarming from './Farms/NoanyFarming'
+import ANYFarming from './Farms/ANYFarming'
+import NoanyFarming from './Farms/NoanyFarming'
 // import ETHtestfarming from './Farms/ETH_test_farming'
-// import FarmList from './Farms/FarmsList'
+import FarmList from './Farms/FarmsList'
 
 import HistoryList from './History'
 // import HistoryDetails from './History/details'
@@ -46,7 +46,7 @@ import QueryNonApprove from '../components/NonApprove/queryIsNeedNonApprove'
 // import GasSwap from '../components/GasSwap'
 
 import config from '../config'
-// import farmlist from '../config/farmlist'
+import farmlist from '../config/farmlist'
 
 // import '../hooks/xrp'
 
@@ -167,7 +167,7 @@ export default function App() {
               {/* <Route exact strict path="/dashboard" component={() => <Dashboard />} /> */}
               <Route exact strict path="/pool" component={() => <PoolList duration={0} />} />
               <Route exact strict path="/pool/add" component={() => <Pools />} />
-              {/* <Route exact strict path="/farm" component={() => <FarmList />} /> */}
+              <Route exact strict path="/farm" component={() => <FarmList />} />
               <Route exact strict path="/nft" component={() => <CrossNFT />} />
               <Route exact strict path="/test" component={() => <TestWarpper />} />
               {/* <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} /> */}
@@ -184,6 +184,18 @@ export default function App() {
               {/* <Route exact strict path={config.getCurConfigInfo().isOpenBridge ? "/v1/router" : "/swap"} component={() => <CrossChain />} /> */}
 
               <Route path={['/router']} component={() => <MergeCrossChainV2 />} />
+              {
+                Object.keys(farmlist).map((key, index) => {
+                  if (farmlist[key].farmtype === 'noany') {
+                    return (
+                      <Route exact strict path={'/' + farmlist[key].url} component={() => <NoanyFarming farmkey={key} />} key={index} />
+                    )
+                  }
+                  return (
+                    <Route exact strict path={'/' + farmlist[key].url} component={() => <ANYFarming farmkey={key} />} key={index} />
+                  )
+                })
+              }
               <Redirect to={{ pathname: initUrl }} />
             </Switch>
           </Web3ReactManager>

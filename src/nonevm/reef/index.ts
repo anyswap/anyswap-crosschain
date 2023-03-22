@@ -31,7 +31,10 @@ import {recordsTxns} from '../../utils/bridge/register'
 // import {getContract as getEvmContract} from '../../utils/tools/web3UtilsV2'
 
 // import { Contract } from '@ethersproject/contracts'
-import { Contract } from "ethers"
+import {
+  Contract,
+  // utils
+} from "ethers"
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC20_ABI from '../../constants/abis/erc20.json'
 // import {VALID_BALANCE} from '../../config/constant'
@@ -53,7 +56,10 @@ import {
   // TestAccountSigningKey,
   Provider,
   Signer,
+  // sendTransaction
 } from "@reef-defi/evm-provider"
+// import { ApiOptions } from '@polkadot/api/types'
+// import { Option } from '@polkadot/types'
 const { WsProvider, ApiPromise } =  require('@polkadot/api')
 // import { options } from '@reef-defi/api'
 const { options } = require('@reef-defi/api')
@@ -90,22 +96,32 @@ async function init () {
 let reefProvider:any
 let reefClient:any
 // const request = require("request")
-export function getReefData (chainId:any, token:any, data:any) {
+export function getReefData (chainId:any, token:any, data:any, methods?:any, gasLimit?:any, value?:any) {
   return new Promise((resolve, reject) => {
     const rpc = config.chainInfo[chainId].nodeRpc
     const options = { 
       id: 100,
       jsonrpc: "2.0",
-      method: "evm_call",
+      method: methods ? methods : "evm_call",
       params: [
         {
           data: data,
           to: token,
-          gasLimit: null,
+          gasLimit: gasLimit ? gasLimit : null,
           storageLimit: 0,
-          value: null
+          value: value ? value : null
         },
       ]
+      // method: methods ? methods : "evm_call",
+      // params: methods ? [data] : [
+      //   {
+      //     data: data,
+      //     to: token,
+      //     gasLimit: null,
+      //     storageLimit: 0,
+      //     value: null
+      //   },
+      // ]
     }
     axios.post(rpc, options).then((res) => {
     // fetch(rpc, options).then((res) => {
@@ -140,7 +156,12 @@ export function useReefProvider () {
   const clientCount = useRef(0)
   return useCallback(async(chainId) => {
     const provider = new Provider({
-      provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+      provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
+      // types: apiOptions.types,
+      // typesAlias: apiOptions.typesAlias,
+      // typesSpec: apiOptions.typesSpec,
+      // typesChain: apiOptions.typesChain,
+      // typesBundle: apiOptions.typesBundle
     })
     provider.api.isReadyOrError.then(() => {
       // console.log(res)
@@ -165,20 +186,51 @@ export function useReefContract() {
       // && reefProvider
       && reefClient
     ) {
-      const provider = new Provider({
-        provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
-        types: {
-          Balance: 'u128'
-        }
-      })
-      await provider.api.isReadyOrError
-      await provider.api.isReady
+      let provider:any
+      // const provider = new Provider({
+      //   provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
+      //   types: {
+      //     Balance: 'u128'
+      //   }
+      // })
+      // await provider.api.isReadyOrError
+      alert(0)
+      console.log(provider)
+      new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+      alert(1)
+      try {
+        provider = new Provider({
+          provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
+          // types: {
+          //   TransactionInput: {
+          //     parentOutput: 'Hash',
+          //     signature: 'Signature'
+          //   },
+          //   TransactionOutput: {
+          //     value: 'u128',
+          //     pubkey: 'Hash',
+          //     sale: 'u32'
+          //   },
+          //   Transaction: {
+          //     inputs: 'Vec<TransactionInput>',
+          //     outputs: 'Vec<TransactionOutput>'
+          //   }
+          // }
+        })
+        alert(-1)
+        await provider.api.isReady
+      } catch (error) {
+        alert(0)
+      }
+      alert(2)
       // const wallet:any = new Signer(reefProvider, account, reefClient.signer)
       const wallet:any = new Signer(provider, account, reefClient.signer)
+      alert(3)
       const contract = new Contract(tokenAddress, ABI, wallet)
-      
+      alert(4)
       console.log(ApiPromise)
       console.log(options)
+      console.log(wallet)
       // const provider = new WsProvider(config.chainInfo[chainId].nodeRpcWs)
       // const api = await ApiPromise(options({provider}))
       // // const api = await ApiPromise.create({provider:new WsProvider(config.chainInfo[chainId].nodeRpcWs)})
@@ -527,20 +579,38 @@ return useMemo(() => {
           //   const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
           //   console.log(c)
           //   console.log(c.methods.anySwapOut(...parameArr))
-          //   // res.signer.signRaw({
+          //   res.signer.signRaw({
           //   // res.signer.signPayload({
-          //   res.reefSigner.injectedProvider.sendRequest({
+          //   // res.reefSigner.injectedProvider.sendRequest({
           //     address: '5E1eMGGH6ug3GmLRDdgkfV22LjnX8ss2kP1cJr4iQsTRkzyW',
           //     data: c.methods.anySwapOut(...parameArr).encodeABI(),
           //     type: 'bytes'
           //   }).then((res:any) => {
           //     console.log(res)
-          //   })
-          //   // const wallet:any = new Signer(res.reefProvider, account, res.reefSigner)
-          //   // const c = new Contract(routerToken, REEF_ABI, wallet)
-          //   // const parameArr = [inputToken, receiveAddress, inputAmount, useToChainId]
-          //   // console.log(c.anySwapOut(...parameArr))
+          //     const tx = utils.serializeTransaction({
+          //       to: routerToken,
+          //       nonce: 1,
 
+          //       gasLimit: '0x37152',
+          //       gasPrice: '0x1e8480',
+
+          //       data: c.methods.anySwapOut(...parameArr).encodeABI(),
+          //       value: '0x0',
+          //       chainId: 13939,
+
+          //       // Typed-Transaction features
+          //       // type?: number | null;
+
+          //       // EIP-2930; Type 1 & EIP-1559; Type 2
+          //       // accessList?: AccessListish;
+
+          //       // EIP-1559; Type 2
+          //       // maxPriorityFeePerGas?: BigNumberish;
+          //       // maxFeePerGas?: BigNumberish;
+          //     }, res.signature)
+          //     console.log(tx)
+          //     getReefData(chainId, routerToken, tx, 'author_submitExtrinsic','225618', '0x0')
+          //   })
           // })
           // return
           const contract:any = await getContract(routerToken,REEF_ABI, chainId, account)

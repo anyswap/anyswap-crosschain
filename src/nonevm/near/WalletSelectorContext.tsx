@@ -9,7 +9,7 @@ import { setupModal } from "@near-wallet-selector/modal-ui";
 // import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 // import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+// import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 // import { setupNarwallets } from "@near-wallet-selector/narwallets";
@@ -19,11 +19,11 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 // import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 // import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 // import { setupNearFi } from "@near-wallet-selector/nearfi";
-import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+// import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 // import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 // import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 // import { setupNeth } from "@near-wallet-selector/neth";
-import { setupXDEFI } from "@near-wallet-selector/xdefi";
+// import { setupXDEFI } from "@near-wallet-selector/xdefi";
 
 import type { ReactNode } from "react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -71,7 +71,7 @@ export function WalletSelectorContextProvider({
         // setupMyNearWallet(),
         setupSender(),
         // setupHereWallet(),
-        setupMathWallet(),
+        // setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
         // setupNearSnap(),
@@ -79,11 +79,11 @@ export function WalletSelectorContextProvider({
         // setupWelldoneWallet(),
         // setupLedger(),
         // setupNearFi(),
-        setupCoin98Wallet(),
+        // setupCoin98Wallet(),
         // setupOptoWallet(),
         // setupFinerWallet(),
         // setupNeth(),
-        setupXDEFI(),
+        // setupXDEFI(),
         // setupWalletConnect({
         //   projectId: "c4f79cc...",
         //   metadata: {

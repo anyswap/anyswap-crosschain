@@ -60,3 +60,4 @@ yarn.lock
 .yarn/install-state.gz
 .yarnrc.yml
 yarn.lock
+npminstall-debug.log
