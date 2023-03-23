@@ -41,21 +41,26 @@ export default function Updater(): null {
   const getFetchBalance = async () => {
     if (window.lucid && window?.lucid?.wallet) {
       const blList: any = {}
-      const utxos = await window.lucid.wallet.getUtxos()
-      console.log(utxos)
-      let total = BigInt(0);
-      utxos.map((e: any) => {
-        setAdaAddress(e.address)
-        total += e.assets.lovelace;
-        for (const tokenAddress in e.assets) {
-          const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
-          if(tokenAddress !== "lovelace") {
-            blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
+      try {
+        const utxos = await window.lucid.wallet.getUtxos()
+        console.log(utxos)
+        let total = BigInt(0);
+        utxos.map((e: any) => {
+          setAdaAddress(e.address)
+          total += e.assets.lovelace;
+          for (const tokenAddress in e.assets) {
+            const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
+            if(tokenAddress !== "lovelace") {
+              blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
+            }
           }
-        }
-      });
-      blList['NATIVE'] = total.toString();
-      dispatch(adaBalanceList({ list: blList }))
+        });
+        blList['NATIVE'] = total.toString();
+        dispatch(adaBalanceList({ list: blList }))
+      } catch (error) {
+        
+      } 
+      
     }
 
   }
