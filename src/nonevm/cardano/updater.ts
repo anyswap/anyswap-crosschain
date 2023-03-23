@@ -38,6 +38,13 @@ export default function Updater(): null {
     eternlRef.current = window?.cardano?.eternl
   };
 
+  const bigIntToString = (obj: any): any => {
+    return Object.keys(obj).reduce((acc:any, key:any) => {
+      acc[key] = obj[key].toString();
+      return acc;
+    }, {});
+  }
+  
   const getFetchBalance = async () => {
     if (window.lucid && window?.lucid?.wallet) {
       let blList: any = {}
@@ -70,12 +77,7 @@ export default function Updater(): null {
 
   }
 
-  function bigIntToString(obj: any): any {
-    return Object.keys(obj).reduce((acc:any, key:any) => {
-      acc[key] = obj[key].toString();
-      return acc;
-    }, {});
-  }
+  
   const getBalance = useCallback(() => {
     // if (!account) return;
     const adaWallet = window?.cardano && window?.cardano?.eternl
