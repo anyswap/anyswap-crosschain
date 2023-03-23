@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import {GetTokenListByChainID} from 'multichain-bridge'
+// import {GetTokenListByChainID} from 'multichain-bridge'
 
 import { useActiveWeb3React } from '../../hooks'
 
@@ -148,11 +148,11 @@ export default function DashboardDtil() {
     // } else {
     //   arr.push('')
     // }
-    if (config.getCurConfigInfo().isOpenBridge) {
-      arr.push(GetTokenListByChainID({srcChainID: chainId}))
-    } else {
-      arr.push('')
-    }
+    // if (config.getCurConfigInfo().isOpenBridge) {
+    //   arr.push(GetTokenListByChainID({srcChainID: chainId}))
+    // } else {
+    //   arr.push('')
+    // }
     Promise.all(arr).then((res:any) => {
       // console.log(res)
       // console.log(allTokensList)

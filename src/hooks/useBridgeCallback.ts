@@ -16,9 +16,6 @@ import {
   usePermissonlessContract,
   useAnycallContract
 } from './useContract'
-// import {useSwapBTCABI, useSwapETHABI} from './useContract'
-// import {signSwapoutData, signSwapinData} from 'multichain-bridge'
-// import {signSwapoutData, signSwapinData} from './useBuildData'
 import { isAddress } from '../utils/isAddress'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 // const { useConnectedWallet, useWallet, ConnectType } = require('@terra-money/wallet-provider')

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 
-// import {isAddress} from 'multichain-bridge'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { ArrowDown, Plus, Minus } from 'react-feather'
