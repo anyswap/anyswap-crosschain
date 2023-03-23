@@ -699,10 +699,10 @@ export default function Farming ({
                       <div className="logo left">
                         <TokenLogo1 symbol={item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} size='100%'/>
                       </div>
-                      <div className="addIcon">+</div>
+                      {/* <div className="addIcon">+</div>
                       <div className="logo right">
                         <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                      </div>
+                      </div> */}
                       
                     </DoubleLogo>
                     <FarmInfo>

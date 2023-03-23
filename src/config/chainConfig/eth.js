@@ -16,7 +16,8 @@ export const ETH_TESTNET = getLocalRPC(ETH_TEST_CHAINID, 'https://rinkeby.infura
 export const ETH_TEST_EXPLORER = 'https://rinkeby.etherscan.io'
 
 export const ETH_TEST1_CHAINID = ChainId.GOERLI
-export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
+// export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://goerli.infura.io/v3/613a4ccfe37f4870a2c3d922e58fa2bd')
+export const ETH_TEST1NET = getLocalRPC(ETH_TEST1_CHAINID, 'https://rpc.ankr.com/eth_goerli')
 export const ETH_TEST1_EXPLORER = 'https://goerli.etherscan.io'
 
 export const BASEGOERLI_TEST1_CHAINID = ChainId.BASEGOERLI
