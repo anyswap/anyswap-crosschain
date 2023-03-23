@@ -40,7 +40,7 @@ export default function Updater(): null {
 
   const getFetchBalance = async () => {
     if (window.lucid && window?.lucid?.wallet) {
-      const blList: any = {}
+      let blList: any = {}
       try {
         const utxos = await window.lucid.wallet.getUtxos()
         console.log(utxos)
@@ -51,11 +51,16 @@ export default function Updater(): null {
           for (const tokenAddress in e.assets) {
             const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
             if(tokenAddress !== "lovelace") {
-              blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
+              if(blList[_tokenAddress]) {
+                blList[_tokenAddress] = blList[_tokenAddress] + e.assets[tokenAddress]
+              } else {
+                blList[_tokenAddress] = e.assets[tokenAddress] // BigInt(10000000).toString();
+              }
             }
           }
         });
         blList['NATIVE'] = total.toString();
+        blList = bigIntToString(blList);
         dispatch(adaBalanceList({ list: blList }))
       } catch (error) {
         
@@ -65,6 +70,12 @@ export default function Updater(): null {
 
   }
 
+  function bigIntToString(obj: any): any {
+    return Object.keys(obj).reduce((acc:any, key:any) => {
+      acc[key] = obj[key].toString();
+      return acc;
+    }, {});
+  }
   const getBalance = useCallback(() => {
     // if (!account) return;
     const adaWallet = window?.cardano && window?.cardano?.eternl
