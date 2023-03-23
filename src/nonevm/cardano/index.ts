@@ -34,9 +34,14 @@ export function useAdaAddress() {
 }
 
 export async function eternlLogin() {
-  const api = await window.cardano.eternl.enable();
-  window.lucid.selectWallet(api);
-  localStorage.setItem("lucid", "true");
+  try {
+    const api = await window.cardano.eternl.enable();
+    window.lucid.selectWallet(api);
+    localStorage.setItem("lucid", "true");
+  } catch (error) {
+    console.log(error)
+  }
+  
 }
 
 export function useAdaLogin() {
@@ -191,6 +196,7 @@ export function useAdaCrossChain(
       if (selectCurrency?.tokenType === 'NATIVE' && adaBalanceList['NATIVE']) {
         return BigAmount.format(dec, adaBalanceList['NATIVE'])
       } else if (selectCurrency?.tokenType === 'TOKEN' && adaBalanceList[selectCurrency?.address]) {
+        console.log(adaBalanceList)
         return BigAmount.format(dec, adaBalanceList[selectCurrency?.address])
       }
     }
@@ -242,8 +248,8 @@ export function useAdaCrossChain(
           } else {
             const tokenArr = selectCurrency?.address.split('.');
             const tokenObj: any = {};
-            const decimals = selectCurrency.decimals;
-            tokenObj[tokenArr[0] + tokenArr[1]] = BigInt(inputAmount / eval(`1e${decimals}`));
+            // const decimals = selectCurrency.decimals;
+            tokenObj[tokenArr[0] + tokenArr[1]] = BigInt(inputAmount);
             tx = await window.lucid.newTx().payToContract(
               routerToken,
               {
