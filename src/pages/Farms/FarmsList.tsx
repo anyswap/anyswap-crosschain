@@ -463,7 +463,7 @@ export default function FarmsList () {
         url: 'farm/arb',
         title: 'ARB Staking',
         info: (t('StakingTip', {symbol: 'ARB'}) + "<span class='pecent'>" + (ARBStakingAPY ? (Number(ARBStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
-        coin1: 'MULTI',
+        coin1: 'ARB',
         coin2: 'ARBITRUM',
         coin3: '',
         status: typeof ARBStakingAPY !== 'undefined' && Number(ARBStakingAPY) === 0  ? 'finished' : 'live'

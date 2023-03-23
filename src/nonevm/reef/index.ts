@@ -58,11 +58,18 @@ import {
   Signer,
   // sendTransaction
 } from "@reef-defi/evm-provider"
-// import { ApiOptions } from '@polkadot/api/types'
+// import {
+//   // TestAccountSigningKey,
+//   Provider,
+//   Signer,
+//   // sendTransaction
+// } from "../../nodeModule"
+// import { WsProvider } from '../../nodeModule/api-10.1.4/packages/api/src'
 // import { Option } from '@polkadot/types'
-const { WsProvider, ApiPromise } =  require('@polkadot/api')
+const { WsProvider } =  require('@polkadot/api')
+// const { WsProvider } =  require('../../node_module/api-10.1.4')
 // import { options } from '@reef-defi/api'
-const { options } = require('@reef-defi/api')
+// const { options } = require('@reef-defi/api')
 // const {
 //   resolveAddress,
 //   // resolveEvmAddress
@@ -228,9 +235,9 @@ export function useReefContract() {
       alert(3)
       const contract = new Contract(tokenAddress, ABI, wallet)
       alert(4)
-      console.log(ApiPromise)
-      console.log(options)
-      console.log(wallet)
+      // console.log(ApiPromise)
+      // console.log(options)
+      // console.log(wallet)
       // const provider = new WsProvider(config.chainInfo[chainId].nodeRpcWs)
       // const api = await ApiPromise(options({provider}))
       // // const api = await ApiPromise.create({provider:new WsProvider(config.chainInfo[chainId].nodeRpcWs)})

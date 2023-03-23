@@ -646,10 +646,10 @@ export default function Farming ({
                     <div className="logo left">
                       <TokenLogo1 symbol={item} size='100%'/>
                     </div>
-                    <div className="addIcon">+</div>
+                    {/* <div className="addIcon">+</div>
                     <div className="logo right">
-                      <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                    </div>
+                      <TokenLogo1 symbol={config.getCurChainInfo(CHAINID)?.networkLogo ?? config.getCurChainInfo(CHAINID).symbol} size='100%'/>
+                    </div> */}
                     
                   </DoubleLogo>
                   <FarmInfo>
@@ -856,7 +856,10 @@ export default function Farming ({
         <StakingBox>
           <StakingList>
             <li className='item'>
-              <div className='pic'><img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /></div>
+              <div className='pic'>
+                {/* <img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /> */}
+                <TokenLogo1 symbol={poolCoin} size='100%'/>
+              </div>
               <div className='info'>
                 <h3>{prd}</h3>
                 <p>
@@ -873,10 +876,10 @@ export default function Farming ({
                 <div className="logo left">
                   <TokenLogo1 symbol={curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} size='100%'/>
                 </div>
-                <div className="addIcon">+</div>
+                {/* <div className="addIcon">+</div>
                 <div className="logo right">
                   <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                </div>
+                </div> */}
                 
               </DoubleLogo>
               <div className='info'>

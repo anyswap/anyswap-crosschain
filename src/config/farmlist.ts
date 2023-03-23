@@ -15,45 +15,45 @@ interface FarmConfig {
 // }
 
 const config: FarmConfig = {
-  // 'ARB': {
-  //   chainId: ChainId.ARBITRUM,
-  //   farmToken: '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49',
-  //   lpToken: '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3',
-  //   blockNumber: 41143,
-  //   lpTokenIno: {
-  //     '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3': {
-  //       list: {
-  //         symbol: "MULTI",
-  //         name: "Multichain",
-  //         decimals: 18
-  //       }
-  //     }
-  //   },
-  //   url: 'farm/arb',
-  //   logoUrl: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
-  //   key: 'MULTI',
-  //   farmtype: 'noany'
-  // },
   'ARB': {
-    chainId: ChainId.GOERLI,
-    farmToken: '0x3fB256CFefedb6A54De7465c0EE86dC574AE464D',
-    lpToken: '0x7f8d31a49212c62a11b6718aa0b612e129256553',
-    blockNumber: 8702220,
+    chainId: ChainId.ARBITRUM,
+    farmToken: '0x1e1085eFaA63EDFE74aaD7C05a28EAE4ef917C3F',
+    lpToken: '0x1263fea931b86f3e8ce8afbf29f66631b7be9347',
+    blockNumber: 2800000,
     lpTokenIno: {
-      '0x7f8d31a49212c62a11b6718aa0b612e129256553': {
+      '0x1263fea931b86f3e8ce8afbf29f66631b7be9347': {
         list: {
           symbol: "ARB",
-          name: "Multichain",
-          decimals: 6,
-          rewardDdecimals: 6,
+          name: "Arbitrum",
+          decimals: 18
         }
       }
     },
     url: 'farm/arb',
-    logoUrl: require('../assets/images/coin/source/MULTI.png'),
-    key: 'MULTI',
+    logoUrl: require('../assets/images/coin/source/ARB.png'),
+    key: 'ARB',
     farmtype: 'noany'
   },
+  // 'ARB': {
+  //   chainId: ChainId.GOERLI,
+  //   farmToken: '0x3fB256CFefedb6A54De7465c0EE86dC574AE464D',
+  //   lpToken: '0x7f8d31a49212c62a11b6718aa0b612e129256553',
+  //   blockNumber: 8702220,
+  //   lpTokenIno: {
+  //     '0x7f8d31a49212c62a11b6718aa0b612e129256553': {
+  //       list: {
+  //         symbol: "ARB",
+  //         name: "Multichain",
+  //         decimals: 6,
+  //         rewardDdecimals: 6,
+  //       }
+  //     }
+  //   },
+  //   url: 'farm/arb',
+  //   logoUrl: require('../assets/images/coin/source/MULTI.png'),
+  //   key: 'MULTI',
+  //   farmtype: 'noany'
+  // },
   // 'MATIC': {
   //   chainId: MATIC_MAIN_CHAINID,
   //   farmToken: '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49',
