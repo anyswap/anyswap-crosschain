@@ -1,4 +1,4 @@
-import { Currency } from 'anyswap-sdk'
+
 import React, { useState, useContext, useCallback, useEffect, useMemo} from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
@@ -57,13 +57,13 @@ interface SelectCurrencyInputPanelProps {
   onMax?: (value: any) => void // input max token amount
   label?: string 
   onCurrencySelect?: (currency: any) => void // user select token
-  // currency?: Currency | null
+
   currency?: any // select token
   disableCurrencySelect?: boolean // disabled select
   disableInput?: boolean // disabled input
   hideBalance?: boolean // hide balance
   hideInput?: boolean // hide input
-  otherCurrency?: Currency | null //
+  otherCurrency?: any | null //
   id: string
   showCommonBases?: boolean
   customBalanceText?: string 

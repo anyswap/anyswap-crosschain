@@ -1,6 +1,7 @@
-// import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from 'anyswap-sdk'
-import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from 'anyswap-sdk'
+
+import { Token, TokenAmount } from 'anyswap-sdk'
 import { useCallback, useMemo } from 'react'
+import JSBI from 'jsbi'
 import { useDispatch, useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 // import { useAllTokens } from '../../hooks/Tokens'
@@ -37,7 +38,7 @@ export function useIsGnosisSafeWallet () {
 export function useETHWalletBalances(
   uncheckedAddresses?: (string | undefined)[],
   chainId?: any
-): { [address: string]: CurrencyAmount | undefined } {
+): { [address: string]: any | undefined } {
   const multicallContract = useMulticallContract()
   const addresses: string[] = useMemo(
     () =>
@@ -60,9 +61,9 @@ export function useETHWalletBalances(
   // console.log(results)
   return useMemo(
     () =>
-      addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
+      addresses.reduce<{ [address: string]: any }>((memo, address, i) => {
         const value = results?.[i]?.result?.[0]
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()))
+        if (value) memo[address] = BigAmount.format(18, value.toString())
         return memo
       }, {}),
     [addresses, results]
@@ -74,11 +75,11 @@ export function useETHWalletBalances(
  */
 export function useTokenBalancesWithLoadingIndicator(
   address?: string,
-  tokens?: (Token | undefined)[],
+  tokens?: (any | undefined)[],
   chainId?:any
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
-  const validatedTokens: Token[] = useMemo(
-    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
+  const validatedTokens: any[] = useMemo(
+    () => tokens?.filter((t?: any) => isAddress(t?.address) !== false) ?? [],
     [tokens]
   )
 
@@ -204,7 +205,7 @@ export function useOneTokenBalance(token:any): any {
   }, [lists, chainId, account, token])
 }
 
-export function useCurrencyBalance1(account?: string | null, token?: string, decimals?: any, chainId?:any): CurrencyAmount | undefined {
+export function useCurrencyBalance1(account?: string | null, token?: string, decimals?: any, chainId?:any): any | undefined {
   // const balances = useTokenBalanceList()
   // console.log(currency)
   const balanceWallet  = useTokenBalancesWithLoadingIndicator1(account, token, decimals, chainId)
@@ -228,11 +229,11 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
 
 
 export function useTokenTotalSupplyWithLoadingIndicator(
-  tokens?: (Token | undefined)[],
+  tokens?: (Toanyken | undefined)[],
   chainId?:any
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
-  const validatedTokens: Token[] = useMemo(
-    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
+  const validatedTokens: any[] = useMemo(
+    () => tokens?.filter((t?: any) => isAddress(t?.address) !== false) ?? [],
     [tokens]
   )
 
@@ -341,7 +342,7 @@ export function useTokenBalanceList(): any {
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[],
   chainId?: any
-): { [address: string]: CurrencyAmount | undefined } {
+): { [address: string]: any | undefined } {
   const ethBalance = useETHWalletBalances(uncheckedAddresses, chainId)
   const blItem = useOneTokenBalance('NATIVE')
   const addresses: string[] = useMemo(
@@ -366,8 +367,6 @@ export function useETHBalances(
         // console.log(blItem.balances)
         // console.log(ethBalance)
         return addresses.reduce<{ [address: string]: any }>((memo, address) => {
-          // const value = results?.[i]?.result?.[0]
-          // if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()))
           if (ethBalance[address]) return ethBalance
           if (blItem?.balances) return {[address]: blItem?.balances}
           return memo
@@ -418,14 +417,14 @@ export function useTokenTotalSupply(
 
 export function useTokenBalances(
   address?: string,
-  tokens?: (Token | undefined)[],
+  tokens?: (any | undefined)[],
   chainId?:any
 ): { [tokenAddress: string]: TokenAmount | undefined } {
   return useTokenBalancesWithLoadingIndicator(address ? address?.toLowerCase() : undefined, tokens, chainId)[0]
 }
 
 // get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: Token, chainId?:any): TokenAmount | undefined {
+export function useTokenBalance(account?: string, token?: any, chainId?:any): TokenAmount | undefined {
   const tokenBalances = useTokenBalances(account, [token], chainId)
   if (!token?.address) return undefined
   return tokenBalances[token.address.toLowerCase()]
@@ -433,11 +432,11 @@ export function useTokenBalance(account?: string, token?: Token, chainId?:any): 
 
 export function useCurrencyBalances(
   account?: string,
-  currencies?: (Currency | undefined)[],
+  currencies?: (any | undefined)[],
   chainId?:any,
   isETH?:any
-): (CurrencyAmount | undefined)[] {
-  const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
+): (any | undefined)[] {
+  const tokens = useMemo(() => currencies?.filter((currency) => currency?.address) ?? [], [
     currencies
   ])
   // console.log(tokens)
@@ -450,7 +449,7 @@ export function useCurrencyBalances(
       currencies?.map(currency => {
         if (!account || !currency) return undefined
         if (isETH) return ethBalance[account]
-        if (currency instanceof Token) return tokenBalances[currency.address?.toLowerCase()]
+        if (currency?.address) return tokenBalances[currency.address?.toLowerCase()]
         // if (currency === ETHER) return ethBalance[account]
         return undefined
       }) ?? [],
@@ -458,7 +457,7 @@ export function useCurrencyBalances(
   )
 }
 
-export function useCurrencyBalance(account?: string, currency?: Currency, chainId?:any, isETH?:any): CurrencyAmount | undefined {
+export function useCurrencyBalance(account?: string, currency?: any, chainId?:any, isETH?:any): any | undefined {
   // const balances = useTokenBalanceList()
   // console.log(currency)
   const balanceWallet  = useCurrencyBalances(account, currency ? [currency] : [], chainId, isETH)[0]

@@ -1,5 +1,4 @@
 
-import { Currency } from 'anyswap-sdk'
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
@@ -91,7 +90,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 export function usePermissonlessCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -262,7 +261,7 @@ export function usePermissonlessCallback(
  */
 export function useBridgeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -387,7 +386,7 @@ export function useBridgeCallback(
  */
  export function useBridgeUnderlyingCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -503,7 +502,7 @@ export function useBridgeCallback(
  */
 export function useBridgeNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -607,7 +606,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useSwapUnderlyingCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
@@ -668,7 +667,7 @@ export function useBridgeNativeCallback(
  */
  export function useSwapNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
@@ -740,7 +739,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -845,7 +844,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapUnderlyingCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -949,7 +948,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useCrossBridgeCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -1103,7 +1102,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useTerraCrossBridgeCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string,
   typedValue: string | undefined,
   toChainID: any,

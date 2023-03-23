@@ -413,7 +413,7 @@ export default function Farming ({
 
   const MMErcContract = useTokenContract(exchangeAddress)
 
-  const dec = LpList && exchangeAddress && LpList[exchangeAddress] ? LpList[exchangeAddress]?.tokenObj?.decimals : ''
+  const dec = LpList && exchangeAddress && LpList[exchangeAddress]?.tokenObj?.decimals ? LpList[exchangeAddress]?.tokenObj?.decimals : ''
 
   useEffect(() => {
     let pr = LpList && LpList[exchangeAddress] && LpList[exchangeAddress].pendingReward ? LpList[exchangeAddress].pendingReward : ''
@@ -480,8 +480,8 @@ export default function Farming ({
     if (account && curLpToken && LpList && LpList[curLpToken] && Number(CHAINID) === Number(chainId)) {
       if (MMErcContract) {
         MMErcContract.balanceOf(account).then((res:any) => {
-          // console.log('balanceOf')
-          // console.log(res?.toString())
+          console.log('balanceOf')
+          console.log(res?.toString())
           setBalance(res?.toString())
         })
         MMErcContract.allowance(account, FARMTOKEN).then((res:any) => {
@@ -813,7 +813,8 @@ export default function Farming ({
     
     let prd = curLpObj.pendingReward && Number(curLpObj.pendingReward.toString()) > 0 ? curLpObj.pendingReward : ''
     // console.log(prd)
-    prd = prd ? fromWei(prd, 18, 6) : '0.00'
+    const rDec = curLpObj?.tokenObj?.rewardDdecimals ? curLpObj.tokenObj.rewardDdecimals : ''
+    prd = prd && rDec ? fromWei(prd, rDec, 6) : '0.00'
 
     let pbaObj:any = curLpObj && curLpObj.lpBalance ? getPoolBaseBalance(curLpObj.lpBalance) : ''
 
@@ -895,10 +896,12 @@ export default function Farming ({
   
 
   let amountView = ''
-  if (stakingType === 'deposit') {
-    amountView = balance ? fromWei(balance, dec, 6) : '0.00'
-  } else {
-    amountView = userInfo ? fromWei(userInfo, dec, 6) : '0.00'
+  if (dec) {
+    if (stakingType === 'deposit') {
+      amountView = balance ? fromWei(balance, dec, 6) : '0.00'
+    } else {
+      amountView = userInfo ? fromWei(userInfo, dec, 6) : '0.00'
+    }
   }
 
   return (

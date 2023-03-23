@@ -1,7 +1,6 @@
 // import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import { createBrowserHistory } from 'history'
-// import { TokenAmount } from 'anyswap-sdk'
 import { ArrowDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'

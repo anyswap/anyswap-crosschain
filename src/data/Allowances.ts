@@ -1,4 +1,4 @@
-import { Token, TokenAmount } from 'anyswap-sdk'
+import { TokenAmount } from 'anyswap-sdk'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useTokenContract } from '../hooks/useContract'
@@ -7,7 +7,7 @@ import { useActiveWeb3React } from '../hooks'
 
 import {getErcContract} from '../utils/tools/web3UtilsV2'
 
-export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
+export function useTokenAllowance(token?: any, owner?: string, spender?: string): any | undefined {
   const { library } = useActiveWeb3React()
   const tokenAddress = token?.address
   const contract = useTokenContract(tokenAddress, false)

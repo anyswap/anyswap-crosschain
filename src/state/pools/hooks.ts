@@ -6,25 +6,6 @@ import { AppState } from '../index'
 // import { poolLiquidity } from './actions'
 import {getPoollist, isSupportIndexedDB} from '../../utils/indexedDB'
 
-// import { JSBI } from 'anyswap-sdk'
-// import axios from 'axios'
-
-// export function usePoolsState(): any {
-//   const poolLiquidity:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolLiquidity)
-//   // console.log(poolLiquidity)
-//   if (!poolLiquidity) return {}
-
-//   return poolLiquidity
-// }
-
-// export function usePoolListState(): any {
-//   const poolList:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)
-//   // console.log(poolLiquidity)
-//   if (!poolList) return {}
-
-//   return poolList
-// }
-
 
 export function usePoolListState(chainId?:any): any {
   const lists:any = useSelector<AppState, AppState['pools']>(state => state.pools.poolList)

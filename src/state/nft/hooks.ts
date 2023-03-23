@@ -6,7 +6,7 @@ import {
   nftlistinfo
 } from './actions'
 
-import { JSBI } from 'anyswap-sdk'
+import JSBI from 'jsbi'
 // import axios from 'axios'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'

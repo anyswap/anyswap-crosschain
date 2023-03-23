@@ -125,7 +125,7 @@ export function WalletSelectorContextProvider({
   }, [init]);
 
   useEffect(() => {
-    console.log(selector)
+    // console.log(selector)
     if (!selector) {
       return;
     }

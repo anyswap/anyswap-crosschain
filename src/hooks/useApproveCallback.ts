@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, useCallback } from "react"
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { TokenAmount, CurrencyAmount, ETHER } from 'anyswap-sdk'
 import { useTokenAllowance } from '../data/Allowances'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
@@ -21,11 +20,11 @@ export enum ApprovalState {
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
-  amountToApprove?: CurrencyAmount,
+  amountToApprove?: any,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
-  const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
+  const token = amountToApprove?.token ? amountToApprove.token : undefined
   // console.log(amountToApprove)
   // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -38,7 +37,6 @@ export function useApproveCallback(
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency === ETHER) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 

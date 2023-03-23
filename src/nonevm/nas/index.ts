@@ -14,7 +14,6 @@ import {nonevmAddress} from '../hooks/actions'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {useTxnsDtilOpen} from '../../state/application/hooks'
 import {useActiveReact} from '../../hooks/useActiveReact'
-import { Currency } from 'anyswap-sdk'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 // import qs from 'qs'
@@ -195,7 +194,7 @@ export const useCurrentNasBalance = () => {
 }
 
 interface UseBridgeCallbackInterface {
-  inputCurrency: Currency | undefined
+  inputCurrency: any | undefined
   typedValue: string | undefined
   DepositAddress: string | undefined
   chainId: string

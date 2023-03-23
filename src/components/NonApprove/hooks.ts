@@ -1,5 +1,5 @@
 import { useEffect, useCallback,useState, useMemo } from "react"
-import { JSBI } from 'anyswap-sdk'
+import JSBI from 'jsbi'
 import {useBatchData} from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import {useActiveWeb3React} from '../../hooks'

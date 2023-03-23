@@ -15,22 +15,42 @@ interface FarmConfig {
 // }
 
 const config: FarmConfig = {
+  // 'ARB': {
+  //   chainId: ChainId.ARBITRUM,
+  //   farmToken: '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49',
+  //   lpToken: '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3',
+  //   blockNumber: 41143,
+  //   lpTokenIno: {
+  //     '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3': {
+  //       list: {
+  //         symbol: "MULTI",
+  //         name: "Multichain",
+  //         decimals: 18
+  //       }
+  //     }
+  //   },
+  //   url: 'farm/arb',
+  //   logoUrl: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+  //   key: 'MULTI',
+  //   farmtype: 'noany'
+  // },
   'ARB': {
-    chainId: ChainId.ARBITRUM,
-    farmToken: '0xB0A3dA261BAD3Df3f3cc3a4A337e7e81f6407c49',
-    lpToken: '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3',
-    blockNumber: 41143,
+    chainId: ChainId.GOERLI,
+    farmToken: '0x3fB256CFefedb6A54De7465c0EE86dC574AE464D',
+    lpToken: '0x7f8d31a49212c62a11b6718aa0b612e129256553',
+    blockNumber: 8702220,
     lpTokenIno: {
-      '0x9fb9a33956351cf4fa040f65a13b835a3c8764e3': {
+      '0x7f8d31a49212c62a11b6718aa0b612e129256553': {
         list: {
-          symbol: "MULTI",
+          symbol: "ARB",
           name: "Multichain",
-          decimals: 18
+          decimals: 6,
+          rewardDdecimals: 6,
         }
       }
     },
     url: 'farm/arb',
-    logoUrl: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+    logoUrl: require('../assets/images/coin/source/MULTI.png'),
     key: 'MULTI',
     farmtype: 'noany'
   },

@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'anyswap-sdk'
+// import { CurrencyAmount, ETHER, Token } from 'anyswap-sdk'
 import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -26,7 +26,7 @@ import {addToken} from '../../config/tools/methods'
 
 import { ReactComponent as Metamask } from '../../assets/images/metamask.svg'
 
-function currencyKey(currency: Currency): string {
+function currencyKey(currency: any): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
 }
 
@@ -42,11 +42,9 @@ const ListBox = styled.div`
 `
 
 
-// function Balance({ balance }: { balance: CurrencyAmount }) {
-//   return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(6)}</StyledBalanceText>
-// }
 function Balance({ balance }: { balance: any }) {
-  const isBl = balance instanceof CurrencyAmount ? true : false
+  // const isBl = balance instanceof CurrencyAmount ? true : false
+  const isBl = balance?.toExact ? true : false
   // console.log(balance)
   return <StyledBalanceText title={isBl ? balance.toExact() : balance.balance}>{isBl ? (balance ? balance?.toSignificant(6) : '') : (balance?.balances ? balance?.balances?.toSignificant(6) : '')}</StyledBalanceText>
 }
@@ -210,8 +208,6 @@ export default function BridgeCurrencyList({
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
-  // fixedListRef,
-  showETH,
   allBalances,
   bridgeKey,
   selectDestChainId,
@@ -222,8 +218,6 @@ export default function BridgeCurrencyList({
   selectedCurrency?: any | null
   onCurrencySelect: (currency: any) => void
   otherCurrency?: any | null
-  // fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  showETH: boolean
   allBalances?: any
   bridgeKey?: any
   selectDestChainId?: any
@@ -231,7 +225,7 @@ export default function BridgeCurrencyList({
 }) {
   const { evmAccount, chainId } = useActiveReact()
   const {starTokenList} = useStarToken()
-  const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
+  const itemData = useMemo(() => (currencies), [currencies])
   const ETHBalance = useETHBalances(evmAccount ? [evmAccount] : [])?.[evmAccount ?? '']
   const pageSize = size || 20
   const boxRef = createRef<any>()
@@ -274,8 +268,7 @@ export default function BridgeCurrencyList({
     return (<>{
       records?.map((item:any, index:any) =>{
         const currency: any = item
-        // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-        const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
+        const otherSelected = Boolean(otherCurrency && otherCurrency?.key?.toLowerCase() === currency?.key?.toLowerCase())
         const isSelected = Boolean(selectedCurrency?.key?.toLowerCase() === currency?.key?.toLowerCase())
         const handleSelect = () => onCurrencySelect(currency)
         return (

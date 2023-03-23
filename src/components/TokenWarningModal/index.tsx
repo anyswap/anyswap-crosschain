@@ -1,4 +1,4 @@
-import { Token } from 'anyswap-sdk'
+
 import { transparentize } from 'polished'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -36,11 +36,8 @@ const StyledWarningIcon = styled(AlertTriangle)`
   stroke: ${({ theme }) => theme.red2};
 `
 
-interface TokenWarningCardProps {
-  token?: Token
-}
 
-function TokenWarningCard({ token }: TokenWarningCardProps) {
+function TokenWarningCard({ token }: any) {
   const { chainId } = useActiveWeb3React()
 
   const tokenSymbol = token?.symbol?.toLowerCase() ?? ''
@@ -92,7 +89,7 @@ export default function TokenWarningModal({
   onConfirm
 }: {
   isOpen: boolean
-  tokens: Token[]
+  tokens: any[]
   onConfirm: () => void
 }) {
   const [understandChecked, setUnderstandChecked] = useState(false)
