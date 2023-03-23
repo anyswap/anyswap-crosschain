@@ -1,7 +1,7 @@
 
 import { parseUnits } from '@ethersproject/units'
-import { CurrencyAmount, JSBI, Token, TokenAmount, Fraction } from 'anyswap-sdk'
 import { ParsedQs } from 'qs'
+// import JSBI from 'jsbi'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
@@ -10,6 +10,7 @@ import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
+import {BigAmount} from '../../utils/formatBignumber'
 
 import config from '../../config'
 
@@ -80,9 +81,7 @@ export function tryParseAmount(value?: string, currency?: any): any | undefined 
   try {
     const typedValueParsed = parseUnits(value, currency.decimals).toString()
     if (typedValueParsed !== '0') {
-      return currency instanceof Token
-        ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+      return BigAmount.format(currency.decimals, typedValueParsed)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -93,7 +92,7 @@ export function tryParseAmount(value?: string, currency?: any): any | undefined 
 }
 
 // try to parse a user entered amount for a given token
-export function tryParseAmount1(value?: string, decimals?: number): CurrencyAmount | undefined {
+export function tryParseAmount1(value?: string, decimals?: number): any {
   if (!value || !decimals) {
     return undefined
   }
@@ -101,8 +100,7 @@ export function tryParseAmount1(value?: string, decimals?: number): CurrencyAmou
     const typedValueParsed = parseUnits(value, decimals).toString()
     // console.log(typedValueParsed)
     if (typedValueParsed !== '0') {
-      // console.log(CurrencyAmount.ether(JSBI.BigInt(typedValueParsed)))
-      return CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+      return BigAmount.format(decimals, typedValueParsed)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -113,14 +111,14 @@ export function tryParseAmount1(value?: string, decimals?: number): CurrencyAmou
 }
 
 // try to parse a user entered amount for a given token
-export function tryParseAmount2(value?: string, decimals?: number): CurrencyAmount | undefined {
+export function tryParseAmount2(value?: string, decimals?: any): any {
   if (!value) {
     return undefined
   }
   try {
     const typedValueParsed = parseUnits(value, decimals).toString()
     if (typedValueParsed !== '0') {
-      return CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+      return BigAmount.format(decimals, typedValueParsed)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -147,14 +145,14 @@ export function tryParseAmount3(value?: string, decimals?: number): any | undefi
   return undefined
 }
 
-export function tryParseAmount4(value?: string, decimals?: number): any | undefined {
+export function tryParseAmount4(value?: string, decimals?: number): any {
   if (!value || !decimals) {
     return undefined
   }
   try {
     const typedValueParsed = parseUnits(value, decimals).toString()
     if (typedValueParsed !== '0') {
-      return new Fraction(JSBI.BigInt(typedValueParsed), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)))
+      return BigAmount.format(decimals, typedValueParsed)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -170,7 +168,7 @@ export function tryParseAmount5(value?: string, decimals?: number): any | undefi
   try {
     // const typedValueParsed = parseUnits(value, decimals).toString()
     if (value !== '0') {
-      return new Fraction(JSBI.BigInt(value), JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)))
+      return BigAmount.format(decimals, value)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -180,15 +178,15 @@ export function tryParseAmount5(value?: string, decimals?: number): any | undefi
   return undefined
 }
 
-export function tryParseAmount6(value?: string): CurrencyAmount | undefined {
+export function tryParseAmount6(value?: string): any {
   if (!value) {
     return undefined
   }
   try {
     if (value !== '0') {
-      return CurrencyAmount.ether(JSBI.BigInt(value))
+      return BigAmount.format(18, value)
     } else if (value === '0') {
-      return CurrencyAmount.ether(JSBI.BigInt(0))
+      return BigAmount.format(18, '0')
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)

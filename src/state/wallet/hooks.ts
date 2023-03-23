@@ -1,10 +1,8 @@
 
-import { Token, TokenAmount } from 'anyswap-sdk'
 import { useCallback, useMemo } from 'react'
 import JSBI from 'jsbi'
 import { useDispatch, useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-// import { useAllTokens } from '../../hooks/Tokens'
 import {useActiveWeb3React} from '../../hooks'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import { tryParseAmount5,tryParseAmount6 } from '../swap/hooks'
@@ -77,7 +75,7 @@ export function useTokenBalancesWithLoadingIndicator(
   address?: string,
   tokens?: (any | undefined)[],
   chainId?:any
-): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
+): [{ [tokenAddress: string]: any }, boolean] {
   const validatedTokens: any[] = useMemo(
     () => tokens?.filter((t?: any) => isAddress(t?.address) !== false) ?? [],
     [tokens]
@@ -97,11 +95,11 @@ export function useTokenBalancesWithLoadingIndicator(
     useMemo(
       () => {
         if (address && validatedTokens.length > 0) {
-          const results = validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+          const results = validatedTokens.reduce<{ [tokenAddress: string]: any }>((memo, token, i) => {
             const value = balances?.[i]?.result?.[0]
             const amount = value ? JSBI.BigInt(value.toString()) : undefined
             if (amount) {
-              memo[token.address.toLowerCase()] = new TokenAmount(token, amount)
+              memo[token.address.toLowerCase()] = BigAmount.format(token.decimals, amount)
             }
             // console.log(memo)
             return memo
@@ -190,13 +188,13 @@ export function useOneTokenBalance(token:any): any {
           }
         }
         
-        const tokens = new Token(chainId,token,blItem.dec)
+        const tokens = {chainId,address: token, decimals: blItem.dec}
         const amount = blItem.balancestr ? JSBI.BigInt(blItem.balancestr.toString()) : undefined
         return {
           ...blItem,
           balances1: tryParseAmount6(blItem.balancestr),
           balances2: tryParseAmount5(blItem.balancestr, blItem.dec),
-          balances: tokens && amount ? new TokenAmount(tokens, amount) : ''
+          balances: tokens && amount ? BigAmount.format(tokens.decimals, amount) : ''
         }
       }
       return {}
@@ -229,9 +227,9 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
 
 
 export function useTokenTotalSupplyWithLoadingIndicator(
-  tokens?: (Toanyken | undefined)[],
+  tokens?: (any)[],
   chainId?:any
-): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
+): [{ [tokenAddress: string]: any }, boolean] {
   const validatedTokens: any[] = useMemo(
     () => tokens?.filter((t?: any) => isAddress(t?.address) !== false) ?? [],
     [tokens]
@@ -251,11 +249,12 @@ export function useTokenTotalSupplyWithLoadingIndicator(
     useMemo(
       () =>
         validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+          ? validatedTokens.reduce<{ [tokenAddress: string]: any }>((memo, token, i) => {
               const value = balances?.[i]?.result?.[0]
               const amount = value ? JSBI.BigInt(value.toString()) : undefined
               if (amount) {
-                memo[token.address.toLowerCase()] = new TokenAmount(token, amount)
+                // memo[token.address.toLowerCase()] = new TokenAmount(token, amount)
+                memo[token.address.toLowerCase()] = BigAmount.format(token.decimals, amount)
               }
               // console.log(memo)
               return memo
@@ -419,12 +418,12 @@ export function useTokenBalances(
   address?: string,
   tokens?: (any | undefined)[],
   chainId?:any
-): { [tokenAddress: string]: TokenAmount | undefined } {
+): { [tokenAddress: string]: any } {
   return useTokenBalancesWithLoadingIndicator(address ? address?.toLowerCase() : undefined, tokens, chainId)[0]
 }
 
 // get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: any, chainId?:any): TokenAmount | undefined {
+export function useTokenBalance(account?: string, token?: any, chainId?:any): any {
   const tokenBalances = useTokenBalances(account, [token], chainId)
   if (!token?.address) return undefined
   return tokenBalances[token.address.toLowerCase()]

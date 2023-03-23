@@ -1,4 +1,4 @@
-// import { CurrencyAmount, ETHER, Token } from 'anyswap-sdk'
+
 import React, { CSSProperties, useMemo, createRef } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -27,7 +27,7 @@ import {addToken} from '../../config/tools/methods'
 import { ReactComponent as Metamask } from '../../assets/images/metamask.svg'
 
 function currencyKey(currency: any): string {
-  return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
+  return currency.address
 }
 
 const StyledBalanceText = styled(Text)`

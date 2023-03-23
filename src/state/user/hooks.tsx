@@ -1,4 +1,4 @@
-import { Token } from 'anyswap-sdk'
+
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 // import { useDispatch, useSelector } from 'react-redux'
@@ -41,13 +41,13 @@ function serializeToken(token: any): SerializedToken {
 }
 
 function deserializeToken(serializedToken: SerializedToken): any {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
+  return {
+    chainId: serializedToken.chainId,
+    address: serializedToken.address,
+    decimals: serializedToken.decimals,
+    symbol: serializedToken.symbol,
+    name: serializedToken.name
+  }
 }
 
 export function useIsDarkMode(): boolean {

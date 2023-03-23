@@ -914,7 +914,7 @@ export function useReefPoolDatas () {
       }
       // console.log(arr)
       Promise.all(arr).then((res:any) => {
-        // console.log(res)
+        console.log(res)
         // console.log(labelArr)
         const list:any = {}
         for (let i = 0, len = arr.length; i < len; i++) {
