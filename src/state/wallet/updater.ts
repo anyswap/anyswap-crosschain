@@ -26,6 +26,7 @@ import { ChainId } from '../../config/chainConfig/chainId'
 // import { fromWei } from '../../utils/tools/tools'
 // const startTime = Date.now()
 const limit = 80
+// const limit = 3
 
 // function getAllBalance () {
 //   return new Promise(resolve => {
@@ -204,9 +205,15 @@ export default function Updater(): null {
 
   const getAllBalance = useCallback(() => {
     const results = []
-    if (calls.length > limit) {
-      for (let i = 0, len = calls.length; i < len; i += limit) {
-        results.push(calls.slice(i, i + limit))
+    let useLimit = limit
+    // console.log(chainId)
+    if ([ChainId.ARBITRUM].includes(chainId.toString())) {
+      // useLimit = 3
+      useLimit = limit
+    }
+    if (calls.length > useLimit) {
+      for (let i = 0, len = calls.length; i < len; i += useLimit) {
+        results.push(calls.slice(i, i + useLimit))
       }
     } else {
       results.push(calls)
@@ -222,7 +229,7 @@ export default function Updater(): null {
       console.log(Date.now() - st)
       console.log(res)
     })
-  }, [calls])
+  }, [calls, chainId])
 
   useEffect(() => {
     if (
@@ -236,7 +243,7 @@ export default function Updater(): null {
       console.log(chainId)
       getAllBalance()
     }
-  }, [library, calls, chainId, account, rpcItem])
+  }, [library, calls, chainId, account, rpcItem, getAllBalance])
 
   useEffect(() => {
     if (account) tokenListRef.current = 0
@@ -254,7 +261,7 @@ export default function Updater(): null {
     ) {
       getAllBalance()
     }
-  }, [pendingLength])
+  }, [pendingLength, getAllBalance])
 
   useInterval(getAllBalance, 1000 * 60 * 10, false)
 
