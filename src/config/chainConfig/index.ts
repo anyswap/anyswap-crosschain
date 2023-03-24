@@ -296,6 +296,7 @@ const allChainList = [
   ChainId.CANTO,
   ChainId.FRA,
   ChainId.PLQ,
+  ChainId.ZKSYNC,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -332,8 +333,10 @@ const testChainList = [
   ChainId.BASEGOERLI,
   ChainId.NAHMII3_TEST,
   ChainId.TST_TEST,
-  // ChainId.ZKSYNV_TEST,
-  ChainId.ZKSYNV,
+  // ChainId.ZKSYNC_TEST,
+  ChainId.ZKSYNC,
+  ChainId.ZBC_TEST,
+  ChainId.SMR_TEST,
 ]
 
 const useChain:any = {

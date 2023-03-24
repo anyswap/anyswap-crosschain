@@ -120,6 +120,7 @@ interface Window {
   getOfflineSigner: any
   NasExtWallet: any,
   lucid: any
+  injectedWeb3: any
 }
 
 declare module '@onflow/fcl';

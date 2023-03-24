@@ -290,7 +290,8 @@ export default function CrossChain() {
 
   const [approval] = useApproveCallback(
     formatInputBridgeValue && isApprove ? formatInputBridgeValue : undefined,
-    approveSpender
+    approveSpender,
+    formatCurrency
   )
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {

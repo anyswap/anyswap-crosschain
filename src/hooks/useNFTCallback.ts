@@ -11,8 +11,6 @@ import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
 import { ERC_TYPE } from '../state/nft/hooks'
 import { BigAmount } from '../utils/formatBignumber'
-// import { JSBI } from 'anyswap-sdk'
-
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,

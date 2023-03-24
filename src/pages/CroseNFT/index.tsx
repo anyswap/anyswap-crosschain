@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import {ArrowRight} from 'react-feather'
-import { JSBI } from 'anyswap-sdk'
+import JSBI from 'jsbi'
 import { transparentize } from 'polished'
 
 import {useNFT721Callback, useNFT1155Callback, useAnycallNFT721Callback} from '../../hooks/useNFTCallback'

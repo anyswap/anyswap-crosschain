@@ -35,34 +35,52 @@ export default function Updater(): null {
   const eternlRef = useRef<any>()
 
   window.onload = () => {
-    eternlRef.current = window.cardano.eternl
+    eternlRef.current = window?.cardano?.eternl
   };
 
+  const bigIntToString = (obj: any): any => {
+    return Object.keys(obj).reduce((acc:any, key:any) => {
+      acc[key] = obj[key].toString();
+      return acc;
+    }, {});
+  }
+  
   const getFetchBalance = async () => {
-    if (window.lucid) {
-      const blList: any = {}
-      const utxos = await window.lucid.wallet.getUtxos()
-      console.log(utxos)
-      let total = BigInt(0);
-      utxos.map((e: any) => {
-        setAdaAddress(e.address)
-        total += e.assets.lovelace;
-        for (const tokenAddress in e.assets) {
-          const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
-          if(tokenAddress !== "lovelace") {
-            blList[_tokenAddress] = e.assets[tokenAddress].toString() // BigInt(10000000).toString();
+    if (window.lucid && window?.lucid?.wallet) {
+      let blList: any = {}
+      try {
+        const utxos = await window.lucid.wallet.getUtxos()
+        console.log(utxos)
+        let total = BigInt(0);
+        utxos.map((e: any) => {
+          setAdaAddress(e.address)
+          total += e.assets.lovelace;
+          for (const tokenAddress in e.assets) {
+            const _tokenAddress = tokenAddress.slice(0,56) + '.' + tokenAddress.slice(56, tokenAddress.length);
+            if(tokenAddress !== "lovelace") {
+              if(blList[_tokenAddress]) {
+                blList[_tokenAddress] = blList[_tokenAddress] + e.assets[tokenAddress]
+              } else {
+                blList[_tokenAddress] = e.assets[tokenAddress] // BigInt(10000000).toString();
+              }
+            }
           }
-        }
-      });
-      blList['NATIVE'] = total.toString();
-      dispatch(adaBalanceList({ list: blList }))
+        });
+        blList['NATIVE'] = total.toString();
+        blList = bigIntToString(blList);
+        dispatch(adaBalanceList({ list: blList }))
+      } catch (error) {
+        
+      } 
+      
     }
 
   }
 
+  
   const getBalance = useCallback(() => {
     // if (!account) return;
-    const adaWallet = window?.cardano?.eternl
+    const adaWallet = window?.cardano && window?.cardano?.eternl
 
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
       getFetchBalance()
@@ -77,7 +95,7 @@ export default function Updater(): null {
   useInterval(getBalance, 1000 * 10)
 
   useEffect(() => {
-    const adaWallet = window?.cardano?.eternl
+    const adaWallet = window?.cardano && window?.cardano?.eternl
 
     if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId) && adaWallet) {
       getBalance()

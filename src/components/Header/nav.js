@@ -19,6 +19,14 @@ export const navList = [
     isActive: ['/add', '/remove']
   },
   {
+    path: '/farm',
+    textKey: 'farms',
+    regex: /\/farm/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: 1,
+  },
+  {
     path: '/vest',
     textKey: 'veMULTI',
     regex: /\/vest/,

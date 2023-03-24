@@ -1,5 +1,4 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, Token, ETHER } from 'anyswap-sdk'
 import { useMemo } from 'react'
 // import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -8,8 +7,8 @@ import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
 import { useBytes32TokenContract, useTokenContract } from './useContract'
-import config from '../config'
-export function useAllTokens(): { [address: string]: Token } {
+// import config from '../config'
+export function useAllTokens(): { [address: string]: any } {
   const { chainId } = useActiveWeb3React()
   const userAddedTokens = useUserAddedTokens()
   // const allTokens = useSelectedTokenList()
@@ -18,7 +17,7 @@ export function useAllTokens(): { [address: string]: Token } {
     return (
       userAddedTokens
         // reduce into all ALL_TOKENS filtered by the current chain
-        .reduce<{ [address: string]: Token }>(
+        .reduce<{ [address: string]: any }>(
           (tokenMap, token) => {
             tokenMap[token.address] = token
             return tokenMap
@@ -45,7 +44,7 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
 // undefined if invalid or does not exist
 // null if loading
 // otherwise returns the token
-export function useToken(tokenAddress?: string): Token | undefined | null {
+export function useToken(tokenAddress?: string): any | undefined | null {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
 
@@ -53,7 +52,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 
   const tokenContract = useTokenContract(address ? address : undefined, false)
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
-  const token: Token | undefined = address ? tokens[address] : undefined
+  const token: any | undefined = address ? tokens[address] : undefined
 
   // console.log(token)
   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
@@ -72,13 +71,13 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
     if (!chainId || !address) return undefined
     if (decimals.loading || symbol.loading || tokenName.loading) return null
     if (decimals.result) {
-      return new Token(
+      return {
         chainId,
         address,
-        decimals.result[0],
-        parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
-        parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
-      )
+        decimals: decimals.result[0],
+        symbol: parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
+        name: parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
+      }
     }
     return undefined
   }, [
@@ -96,7 +95,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   ])
 }
 
-export function useLocalToken(currency?: any): Token | undefined | null {
+export function useLocalToken(currency?: any): any | undefined | null {
   const { chainId } = useActiveWeb3React()
 
   // const address = isAddress(currency?.address)
@@ -121,7 +120,7 @@ export function useLocalToken(currency?: any): Token | undefined | null {
     // if (!chainId || !address) return undefined
     if (!chainId || !address) return undefined
     // if (token) return token
-    return new Token(
+    return {
       chainId,
       address,
       decimals,
@@ -132,7 +131,7 @@ export function useLocalToken(currency?: any): Token | undefined | null {
       destChains,
       logoUrl,
       price,
-    )
+    }
   }, [
     address,
     chainId,
@@ -154,7 +153,7 @@ export function useFormatToken(
   name?: any,
   symbol?: any,
   underlying?: any,
-): Token | undefined | null {
+): any | undefined | null {
 
   return useMemo(() => {
     if (
@@ -164,14 +163,14 @@ export function useFormatToken(
       || !name
       || !symbol
     ) return undefined
-    return new Token(
-      Number(chainId),
+    return {
+      chainId: Number(chainId),
       address,
       decimals,
       symbol,
       name,
       underlying
-    )
+    }
   }, [
     address,
     chainId,
@@ -182,13 +181,6 @@ export function useFormatToken(
   ])
 }
 
-export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const isETH = currencyId?.toUpperCase() === config.symbol
-
-  const token = useToken(isETH ? undefined : currencyId)
-  return isETH ? ETHER : token
-}
-
 export function useFormatCurrency(
   chainId?: any,
   address?: any,
@@ -196,7 +188,7 @@ export function useFormatCurrency(
   name?: any,
   symbol?: any,
   underlying?: any
-): Currency | null | undefined {
+): any {
 
   const token = useFormatToken(
     chainId,

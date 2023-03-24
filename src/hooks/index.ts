@@ -1,5 +1,4 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId } from 'anyswap-sdk'
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
 import { useEffect, useState } from 'react'
@@ -7,6 +6,7 @@ import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
 import { chainInfo } from '../config/chainConfig'
+import { ChainId } from '../config/chainConfig/chainId'
 import {
   ENV_NODE_CONFIG
 } from '../config/constant'
@@ -15,7 +15,7 @@ import {
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
-  const EVM_CONTEXT = context.active ? context : contextNetwork
+  const EVM_CONTEXT:any = context.active ? context : contextNetwork
   // const connectedWallet = useConnectedWallet()
   // const { connect } = useWallet()
   // console.log(context)
@@ -74,7 +74,7 @@ export function useInactiveListener(suppress = false) {
 
   useEffect(() => {
     const { ethereum } = window
-    console.log(ethereum)
+    // console.log(ethereum)
     // if (ethereum && ethereum.on && !active && !error && !suppress) {
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleChainChanged = (chainID:any) => {

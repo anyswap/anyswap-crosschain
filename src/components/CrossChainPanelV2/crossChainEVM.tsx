@@ -39,12 +39,13 @@ import {
   // useDarkModeManager,
   // useExpertModeManager,
   useInterfaceModeManager,
+  useInterfaceBalanceValidManager
   // useUserTransactionTTL,
   // useUserSlippageTolerance
 } from '../../state/user/hooks'
 
 import config from '../../config'
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
 import { ChainId } from '../../config/chainConfig/chainId'
@@ -113,6 +114,7 @@ export default function CrossChain({
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useWalletModalToggle()
   const [userInterfaceMode] = useInterfaceModeManager()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
 
   // const {getNearStorageBalance, getNearStorageBalanceBounds} = useNearBalance()
 
@@ -285,7 +287,7 @@ export default function CrossChain({
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
   // console.log((formatCurrency && isApprove) ? formatCurrency : undefined)
 
-  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
+  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender, formatCurrency)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -485,7 +487,7 @@ export default function CrossChain({
           tip: t('noZero')
         }
       } else if (isWrapInputError) {
-        if (VALID_BALANCE) {
+        if (userInterfaceBalanceValid) {
           return {
             state: 'Error',
             tip: isWrapInputError
@@ -527,7 +529,7 @@ export default function CrossChain({
       }
     }
     return undefined
-  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity])
+  }, [selectCurrency, selectChain, isWrapInputError, inputBridgeValue, destConfig, isDestUnderlying, destChain, isLiquidity, userInterfaceBalanceValid])
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
@@ -924,6 +926,14 @@ export default function CrossChain({
       }
 
       <ErrorTip errorTip={errorTip} />
+      {
+        selectChain === ChainId.ARBITRUM ? (
+          <ErrorTip errorTip={{
+            state: 'Error',
+            tip: 'Bridge to Arbitrum will take more than 60 minutes due to network congestion.'
+          }} />
+        ) : ''
+      }
       {
         config.isStopSystem ? (
           <BottomGrouping>

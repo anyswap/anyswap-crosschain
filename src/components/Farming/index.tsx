@@ -28,11 +28,12 @@ import { CloseIcon } from '../../theme'
 import config from '../../config'
 // import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
 import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
+import {BigAmount} from '../../utils/formatBignumber'
 
 import TokenLogo from '../TokenLogo'
 
 import {getBaseInfo} from './common'
-
+import {selectNetwork} from '../../config/tools/methods'
 
 const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -355,6 +356,7 @@ interface FarmProps {
   initLpList?:any,
   stakeType?:any,
   LPprice?:any,
+  isEnd?:any,
 }
 
 export default function Farming ({
@@ -370,7 +372,8 @@ export default function Farming ({
   // version,
   initLpList,
   stakeType,
-  LPprice
+  LPprice,
+  isEnd
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -413,7 +416,7 @@ export default function Farming ({
 
   const MMErcContract = useTokenContract(exchangeAddress)
 
-  const dec = LpList && exchangeAddress && LpList[exchangeAddress] ? LpList[exchangeAddress]?.tokenObj?.decimals : ''
+  const dec = LpList && exchangeAddress && LpList[exchangeAddress]?.tokenObj?.decimals ? LpList[exchangeAddress]?.tokenObj?.decimals : ''
 
   useEffect(() => {
     let pr = LpList && LpList[exchangeAddress] && LpList[exchangeAddress].pendingReward ? LpList[exchangeAddress].pendingReward : ''
@@ -480,8 +483,8 @@ export default function Farming ({
     if (account && curLpToken && LpList && LpList[curLpToken] && Number(CHAINID) === Number(chainId)) {
       if (MMErcContract) {
         MMErcContract.balanceOf(account).then((res:any) => {
-          // console.log('balanceOf')
-          // console.log(res?.toString())
+          console.log('balanceOf')
+          console.log(res?.toString())
           setBalance(res?.toString())
         })
         MMErcContract.allowance(account, FARMTOKEN).then((res:any) => {
@@ -646,10 +649,10 @@ export default function Farming ({
                     <div className="logo left">
                       <TokenLogo1 symbol={item} size='100%'/>
                     </div>
-                    <div className="addIcon">+</div>
+                    {/* <div className="addIcon">+</div>
                     <div className="logo right">
-                      <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                    </div>
+                      <TokenLogo1 symbol={config.getCurChainInfo(CHAINID)?.networkLogo ?? config.getCurChainInfo(CHAINID).symbol} size='100%'/>
+                    </div> */}
                     
                   </DoubleLogo>
                   <FarmInfo>
@@ -699,10 +702,10 @@ export default function Farming ({
                       <div className="logo left">
                         <TokenLogo1 symbol={item && item.tokenObj && item.tokenObj.symbol ? item.tokenObj.symbol : ''} size='100%'/>
                       </div>
-                      <div className="addIcon">+</div>
+                      {/* <div className="addIcon">+</div>
                       <div className="logo right">
                         <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                      </div>
+                      </div> */}
                       
                     </DoubleLogo>
                     <FarmInfo>
@@ -771,13 +774,22 @@ export default function Farming ({
     }
     // userInfo
   }
+  function changeNetwork (chainID:any) {
+    selectNetwork(chainID).then((res: any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      }
+    })
+  }
 
   function stakingView () {
     let btnView:any = ''
     if (Number(CHAINID) !== Number(chainId)) {
       btnView = <Button1 onClick={() => {
-        window.localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(CHAINID).label)
-        history.go(0)
+        // window.localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(CHAINID).label)
+        // history.go(0)
+        changeNetwork(CHAINID)
       }}  style={{height: '45px', maxWidth: '200px'}}>
         {t('SwitchTo')} {config.getCurChainInfo(CHAINID).name} {t('mainnet')}
       </Button1>
@@ -791,7 +803,7 @@ export default function Farming ({
           setStakingType('Unstake')
           setStakingModal(true)
         }}>{t('Unstake')}</Button1>
-        <AddBox disabled={DepositDisabled} onClick={() => {
+        <AddBox disabled={DepositDisabled || Boolean(isEnd)} onClick={() => {
           setStakingType('deposit')
           setStakingModal(true)
         }}>
@@ -812,8 +824,12 @@ export default function Farming ({
     let curLpObj = LpList && LpList[exchangeAddress] ? LpList[exchangeAddress] : {}
     
     let prd = curLpObj.pendingReward && Number(curLpObj.pendingReward.toString()) > 0 ? curLpObj.pendingReward : ''
+    const rDec = curLpObj?.tokenObj?.rewardDdecimals ? curLpObj.tokenObj.rewardDdecimals : 18
+    // prd = prd && rDec ? fromWei(prd, rDec, 6) : '0.00'
+    prd = prd && rDec ? BigAmount.format(rDec, prd).toSignificant(6) : '0.00'
     // console.log(prd)
-    prd = prd ? fromWei(prd, 18, 6) : '0.00'
+    // prd = prd && rDec ? BigAmount.format(rDec, prd).toExact() : '0.00'
+    // console.log(prd)
 
     let pbaObj:any = curLpObj && curLpObj.lpBalance ? getPoolBaseBalance(curLpObj.lpBalance) : ''
 
@@ -855,7 +871,10 @@ export default function Farming ({
         <StakingBox>
           <StakingList>
             <li className='item'>
-              <div className='pic'><img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /></div>
+              <div className='pic'>
+                {/* <img src={poolCoinLogoUrl ? poolCoinLogoUrl : require('../../assets/images/coin/source/'+ poolCoin + '.svg')} /> */}
+                <TokenLogo1 symbol={poolCoin} size='100%'/>
+              </div>
               <div className='info'>
                 <h3>{prd}</h3>
                 <p>
@@ -872,10 +891,10 @@ export default function Farming ({
                 <div className="logo left">
                   <TokenLogo1 symbol={curLpObj && curLpObj.tokenObj && curLpObj.tokenObj.symbol ? curLpObj.tokenObj.symbol : ''} size='100%'/>
                 </div>
-                <div className="addIcon">+</div>
+                {/* <div className="addIcon">+</div>
                 <div className="logo right">
                   <TokenLogo1 symbol={config.getCurChainInfo(CHAINID).symbol} size='100%'/>
-                </div>
+                </div> */}
                 
               </DoubleLogo>
               <div className='info'>
@@ -895,10 +914,12 @@ export default function Farming ({
   
 
   let amountView = ''
-  if (stakingType === 'deposit') {
-    amountView = balance ? fromWei(balance, dec, 6) : '0.00'
-  } else {
-    amountView = userInfo ? fromWei(userInfo, dec, 6) : '0.00'
+  if (dec) {
+    if (stakingType === 'deposit') {
+      amountView = balance ? fromWei(balance, dec, 6) : '0.00'
+    } else {
+      amountView = userInfo ? fromWei(userInfo, dec, 6) : '0.00'
+    }
   }
 
   return (

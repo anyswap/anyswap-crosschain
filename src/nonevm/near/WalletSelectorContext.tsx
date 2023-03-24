@@ -29,6 +29,9 @@ import type { ReactNode } from "react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
+import {useActiveReact} from '../../hooks/useActiveReact'
+import { ChainId } from "../../config/chainConfig/chainId";
+
 
 declare global {
   interface Window {
@@ -47,16 +50,21 @@ interface WalletSelectorContextValue {
 const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
-export const WalletSelectorContextProvider: React.FC<{
-  children: ReactNode;
-}> = ({ children }) => {
+// export const WalletSelectorContextProvider: React.FC<{
+//   children: ReactNode;
+// }> = ({ children }) => {
+export function WalletSelectorContextProvider({
+  children
+}: {children: ReactNode}) {
+  const {chainId} = useActiveReact()
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
-      network: "testnet",
+      // network: "testnet",
+      network: chainId === ChainId.NEAR ? "mainnet" : 'testnet',
       debug: true,
       modules: [
         // setupNearWallet(),
@@ -117,6 +125,7 @@ export const WalletSelectorContextProvider: React.FC<{
   }, [init]);
 
   useEffect(() => {
+    // console.log(selector)
     if (!selector) {
       return;
     }

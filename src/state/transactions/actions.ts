@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from 'anyswap-sdk'
+import {ChainId} from '../../config/chainConfig/chainId'
 
 export interface SerializableTransactionReceipt {
   to?: any

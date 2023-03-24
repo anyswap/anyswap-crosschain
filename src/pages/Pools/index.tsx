@@ -1,7 +1,6 @@
 // import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import React, { useEffect, useState, useContext, useMemo, useCallback } from 'react'
 import { createBrowserHistory } from 'history'
-// import { TokenAmount } from 'anyswap-sdk'
 import { ArrowDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
@@ -214,7 +213,7 @@ export default function SwapNative() {
 
 
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectAnyToken?.address)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectAnyToken?.address, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
   const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, selectAnyToken?.address, chainId, account, inputBridgeValue, selectAnyToken)
 
   const approveState = useMemo(() => {

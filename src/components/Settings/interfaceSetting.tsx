@@ -13,6 +13,7 @@ import {
   // useDarkModeManager,
   // useExpertModeManager,
   useInterfaceModeManager,
+  useInterfaceBalanceValidManager
   // useUserTransactionTTL,
   // useUserSlippageTolerance
 } from '../../state/user/hooks'
@@ -144,7 +145,8 @@ export default function SettingsTab() {
 
   // const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [userInterfaceMode, toggleSetInterfaceMode] = useInterfaceModeManager()
-
+  const [userInterfaceBalanceValid, toggleSetInterfaceBalanceValid] = useInterfaceBalanceValidManager()
+  console.log(userInterfaceBalanceValid)
   // show confirmation view before turning on
   // const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -153,64 +155,12 @@ export default function SettingsTab() {
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any}>
-      {/* <Modal isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxHeight={100}>
-        <ModalContentWrapper>
-          <AutoColumn gap="lg">
-            <RowBetween style={{ padding: '0 2rem' }}>
-              <div />
-              <Text fontWeight={500} fontSize={20}>
-                {t('AreYouSure')}
-              </Text>
-              <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
-            </RowBetween>
-            <Break />
-            <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
-              <Text fontWeight={500} fontSize={20}>
-                {t('tip7')}
-              </Text>
-              <Text fontWeight={600} fontSize={20}>
-                {t('tip8')}
-              </Text>
-              <ButtonError
-                error={true}
-                padding={'12px'}
-                onClick={() => {
-                  if (window.prompt(t('tip9')) === 'confirm') {
-                    toggleExpertMode()
-                    setShowConfirmation(false)
-                  }
-                }}
-              >
-                <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                  {t('TurnOnExpertMode')}
-                </Text>
-              </ButtonError>
-            </AutoColumn>
-          </AutoColumn>
-        </ModalContentWrapper>
-      </Modal> */}
       <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
         <StyledMenuIcon />
-        {/* {expertMode ? (
-          <EmojiWrapper>
-            <span role="img" aria-label="wizard-icon">
-              🧙
-            </span>
-          </EmojiWrapper>
-        ) : null} */}
       </StyledMenuButton>
       {open && (
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
-            {/* <Text fontWeight={600} fontSize={14}>
-              {t('TransactionSettings')}
-            </Text>
-            <TransactionSettings
-              rawSlippage={userSlippageTolerance}
-              setRawSlippage={setUserslippageTolerance}
-              deadline={ttl}
-              setDeadline={setTtl}
-            /> */}
             <Text fontWeight={600} fontSize={14}>
               {t('InterfaceSettings')}
             </Text>
@@ -221,6 +171,14 @@ export default function SettingsTab() {
                 </TYPE.black>
               </RowFixed>
               <Toggle isActive={userInterfaceMode} toggle={toggleSetInterfaceMode} />
+            </RowBetween>
+            <RowBetween>
+              <RowFixed>
+                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                  {t('BalanceValidated')}
+                </TYPE.black>
+              </RowFixed>
+              <Toggle isActive={userInterfaceBalanceValid} toggle={toggleSetInterfaceBalanceValid} />
             </RowBetween>
           </AutoColumn>
         </MenuFlyout>

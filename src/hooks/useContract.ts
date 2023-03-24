@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts'
-import { WETH } from 'anyswap-sdk'
 import { useMemo } from 'react'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -8,7 +7,7 @@ import ERC20_ABI from '../constants/abis/erc20.json'
 import swapMULTIABI from '../constants/abis/swapMULTIABI.json'
 import MasterChef from '../constants/abis/farm/MasterChef.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
-import WETH_ABI from '../constants/abis/weth.json'
+
 import { MULTICALL_ABI } from '../constants/multicall'
 import { V1_FACTORY_ABI } from '../constants/v1'
 import { getContract } from '../utils'
@@ -76,11 +75,6 @@ export function useV2MigratorContract(): Contract | null {
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
-}
-
-export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
 }
 
 export function useBridgeContract(routerToken?:any, version?:any, withSignerIfPossible?: boolean): Contract | null {

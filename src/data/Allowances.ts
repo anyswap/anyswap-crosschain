@@ -1,4 +1,4 @@
-import { Token, TokenAmount } from 'anyswap-sdk'
+
 import { useEffect, useMemo, useState } from 'react'
 
 import { useTokenContract } from '../hooks/useContract'
@@ -7,7 +7,9 @@ import { useActiveWeb3React } from '../hooks'
 
 import {getErcContract} from '../utils/tools/web3UtilsV2'
 
-export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
+import {BigAmount} from  '../utils/formatBignumber'
+
+export function useTokenAllowance(token?: any, owner?: string, spender?: string): any | undefined {
   const { library } = useActiveWeb3React()
   const tokenAddress = token?.address
   const contract = useTokenContract(tokenAddress, false)
@@ -20,6 +22,8 @@ export function useTokenAllowance(token?: Token, owner?: string, spender?: strin
   
 
   useEffect(() => {
+    // console.log(token)
+    // console.log(ercContract, tokenAddress, owner, spender)
     if (
       ercContract
       && tokenAddress
@@ -48,7 +52,8 @@ export function useTokenAllowance(token?: Token, owner?: string, spender?: strin
       // console.log(allowance)
       // console.log(ercAllowance)
       if (a || a === 0) {
-        return new TokenAmount(token, a.toString())
+        // return new TokenAmount(token, a.toString())
+        return BigAmount.format(token.decimals, a.toString())
       }
       return undefined
     } else {

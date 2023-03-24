@@ -2,11 +2,11 @@ import {getLocalRPC} from './methods'
 import {VERSION, USE_VERSION} from '../constant'
 import {ChainId} from './chainId'
 
-export const ZKSYNV_MAIN_CHAINID = ChainId.ZKSYNV
+export const ZKSYNV_MAIN_CHAINID = ChainId.ZKSYNC
 export const ZKSYNV_MAINNET = getLocalRPC(ZKSYNV_MAIN_CHAINID, 'https://zksync2-mainnet.zksync.io')
 export const ZKSYNV_MAIN_EXPLORER = 'https://explorer.zksync.io'
 
-export const ZKSYNV_TEST_CHAINID = ChainId.ZKSYNV_TEST
+export const ZKSYNV_TEST_CHAINID = ChainId.ZKSYNC_TEST
 export const ZKSYNV_TESTNET = getLocalRPC(ZKSYNV_TEST_CHAINID, 'https://zksync2-testnet.zksync.dev')
 export const ZKSYNV_TEST_EXPLORER = 'https://goerli.explorer.zksync.io'
 

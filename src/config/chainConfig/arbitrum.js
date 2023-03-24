@@ -4,6 +4,7 @@ import {ChainId} from './chainId'
 
 export const ARBITRUM_MAIN_CHAINID = ChainId.ARBITRUM
 export const ARBITRUM_MAINNET = getLocalRPC(ARBITRUM_MAIN_CHAINID, 'https://arb1.arbitrum.io/rpc')
+// export const ARBITRUM_MAINNET = getLocalRPC(ARBITRUM_MAIN_CHAINID, 'https://rpc.ankr.com/arbitrum')
 export const ARBITRUM_MAIN_EXPLORER = 'https://arbiscan.io/'
 
 export const ARBITRUM_TEST_CHAINID = ChainId.ARBITRUM_TEST

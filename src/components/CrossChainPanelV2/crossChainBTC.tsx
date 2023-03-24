@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo, useContext, useCallback} from 'react'
-// import {createAddress, isAddress} from 'multichain-bridge'
+
 import { useTranslation } from 'react-i18next'
 import styled, { ThemeContext } from 'styled-components'
 import { ArrowDown } from 'react-feather'
@@ -365,7 +365,7 @@ export default function CrossChain({
   }
 
   const registerTxs = useCallback(() => {
-    axios.get(`${config.bridgeApi}/v2/reswaptxns?hash=${hash}&srcChainID=${chainId}&destChainID=${selectChain}`).then((res:any) => {
+    axios.get(`${config.bridgeApi}/v2/reswaptxns?hash=${hash}&srcChainID=${chainId}&destChainID=${selectChain}&recipient=${recipient}`).then((res:any) => {
       console.log(res)
       const {data, status} = res
       if (status === 200 && data.msg === 'Success') {
@@ -375,7 +375,7 @@ export default function CrossChain({
           summary: `Cross bridge ${config.getBaseCoin(selectCurrency?.symbol, chainId)}`,
           value: '',
           toChainId: selectChain,
-          toAddress: '',
+          toAddress: recipient,
           symbol: selectCurrency?.symbol,
           version: destConfig?.type,
           token: selectCurrency?.address,
@@ -407,7 +407,7 @@ export default function CrossChain({
       console.log(error)
       onChangeViewErrorTip(error, true)
     })
-  }, [hash, chainId, selectChain, destConfig, selectCurrency])
+  }, [hash, chainId, selectChain, destConfig, selectCurrency, recipient])
 
   function ViewBtn () {
     if ([ChainId.IOTA, ChainId.IOTA_TEST].includes(chainId)) {

@@ -1,4 +1,4 @@
-import { ChainId, Pair, Token } from 'anyswap-sdk'
+
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 // import { useDispatch, useSelector } from 'react-redux'
@@ -7,10 +7,8 @@ import { useActiveReact } from '../../hooks/useActiveReact'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import {
-  addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
-  SerializedPair,
   SerializedToken,
   updateUserDarkMode,
   updateUserDeadline,
@@ -25,12 +23,14 @@ import {
   addTokenToWallet,
   removeTokenToWallet,
   changeStarTab,
-  updateInterfaceMode
+  updateInterfaceMode,
+  updateInterfaceBalanceValid
 } from './actions'
 
-import config from '../../config'
+// import config from '../../config'
+// import {ChainId} from '../../config/chainConfig/chainId'
 
-function serializeToken(token: Token): SerializedToken {
+function serializeToken(token: any): SerializedToken {
   return {
     chainId: token.chainId,
     address: token.address,
@@ -40,14 +40,14 @@ function serializeToken(token: Token): SerializedToken {
   }
 }
 
-function deserializeToken(serializedToken: SerializedToken): Token {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
+function deserializeToken(serializedToken: SerializedToken): any {
+  return {
+    chainId: serializedToken.chainId,
+    address: serializedToken.address,
+    decimals: serializedToken.decimals,
+    symbol: serializedToken.symbol,
+    name: serializedToken.name
+  }
 }
 
 export function useIsDarkMode(): boolean {
@@ -103,6 +103,17 @@ export function useInterfaceModeManager(): [boolean, () => void] {
   return [userInterfaceMode, toggleSetInterfaceMode]
 }
 
+export function useInterfaceBalanceValidManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userInterfaceBalanceValid = useSelector<AppState, AppState['user']['userInterfaceBalanceValid']>(state => state.user.userInterfaceBalanceValid)
+
+  const toggleSetInterfaceBalanceValid = useCallback(() => {
+    dispatch(updateInterfaceBalanceValid({ userInterfaceBalanceValid: !userInterfaceBalanceValid }))
+  }, [userInterfaceBalanceValid, dispatch])
+
+  return [userInterfaceBalanceValid, toggleSetInterfaceBalanceValid]
+}
+
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const userSlippageTolerance = useSelector<AppState, AppState['user']['userSlippageTolerance']>(state => {
@@ -151,10 +162,10 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   return [userDeadline, setUserDeadline]
 }
 
-export function useAddUserToken(): (token: Token) => void {
+export function useAddUserToken(): (token: any) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
-    (token: Token) => {
+    (token: any) => {
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
     },
     [dispatch]
@@ -171,32 +182,14 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
   )
 }
 
-export function useUserAddedTokens(): Token[] {
+export function useUserAddedTokens(): any[] {
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens']>(({ user: { tokens } }) => tokens)
 
   return useMemo(() => {
     if (!chainId) return []
-    return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
+    return Object.values(serializedTokensMap[chainId] ?? {}).map(deserializeToken)
   }, [serializedTokensMap, chainId])
-}
-
-function serializePair(pair: Pair): SerializedPair {
-  return {
-    token0: serializeToken(pair.token0),
-    token1: serializeToken(pair.token1)
-  }
-}
-
-export function usePairAdder(): (pair: Pair) => void {
-  const dispatch = useDispatch<AppDispatch>()
-
-  return useCallback(
-    (pair: Pair) => {
-      dispatch(addSerializedPair({ serializedPair: serializePair(pair) }))
-    },
-    [dispatch]
-  )
 }
 
 export function useURLWarningVisible(): boolean {
@@ -206,15 +199,6 @@ export function useURLWarningVisible(): boolean {
 export function useURLWarningToggle(): () => void {
   const dispatch = useDispatch()
   return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
-}
-
-/**
- * Given two tokens return the liquidity token that represents its liquidity shares
- * @param tokenA one of the two tokens
- * @param tokenB the other token
- */
-export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
-  return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB), 18, config.baseCurrency + '-V2', config.appName)
 }
 
 

@@ -12,7 +12,7 @@ import { useActiveReact } from '../../hooks/useActiveReact'
 import { ChainId } from '../../config/chainConfig/chainId'
 import {
   useLoginReef,
-  useReefProvider,
+  // useReefProvider,
   useReefClient,
   // useReefSigner
 } from './index'
@@ -25,7 +25,7 @@ export default function Updater(): null {
 
   const getClient = useReefClient()
   // const getReefSigner = useReefSigner()
-  const getReefProvider = useReefProvider()
+  // const getReefProvider = useReefProvider()
 
   const getReefAddress = useCallback(() => {
     if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
@@ -41,10 +41,11 @@ export default function Updater(): null {
 
   useEffect(() => {
     if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {
-      getReefProvider(chainId)
+      // getReefProvider(chainId)
       getClient()
     }
-  }, [chainId, getReefProvider])
+  // }, [chainId, getReefProvider])
+  }, [chainId])
 
   useEffect(() => {
     if ([ChainId.REEF, ChainId.REEF_TEST].includes(chainId)) {

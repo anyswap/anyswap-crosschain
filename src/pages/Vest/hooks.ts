@@ -1,4 +1,4 @@
-import { Currency } from 'anyswap-sdk'
+
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment';
@@ -27,7 +27,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 export function useCreateLockCallback(
   veMULTI: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   typedValue: string | undefined,
   lockDuration: number | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
@@ -88,7 +88,7 @@ export function useCreateLockCallback(
 
 export function useInCreaseAmountCallback(
   veMULTI: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   typedValue: string | undefined,
   tokenid: number | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
@@ -145,7 +145,7 @@ export function useInCreaseAmountCallback(
 
 export function useInCreaseUnlockTimeCallback(
   veMULTI: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   lockDuration: number | undefined,
   tokenid: number | undefined,
   lockEnds: number | undefined,

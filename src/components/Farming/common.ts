@@ -160,7 +160,7 @@ function getTokenList(num:number, tokenlist:any, CHAINID:any, FARMTOKEN:string, 
           const results:any = formatWeb3Str(pl)
           // console.log(results)
           const exAddr = results[0].replace('0x000000000000000000000000', '0x')
-          // console.log(exAddr)
+          console.log(exAddr)
           const curPoint = formatNum(results[1])
           const obj = {
             type: 'UPDATE_LP',

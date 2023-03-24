@@ -1,8 +1,6 @@
 // import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-// import { TokenAmount, CurrencyAmount, ETHER } from 'anyswap-sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-// import { useTokenAllowance } from '../data/Allowances'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { useNFT721Contract, useNFT1155Contract } from './useContract'

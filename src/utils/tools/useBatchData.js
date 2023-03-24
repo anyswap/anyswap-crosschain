@@ -95,7 +95,7 @@ export function getMulticallData ({chainId, rpc, calls, provider}) {
       // console.log(res)
       if (err) {
         // console.log(err)
-        // console.log(calls)
+        // console.log(JSON.stringify(calls))
         reject(err)
       } else {
         resolve(res.returnData)
@@ -186,19 +186,35 @@ export async function useBatchData ({chainId, calls, provider}) {
   }
 ]
 */
-// useBatchData({
-//   chainId: '56',
-//   calls: [
+
+// export async function init () {
+//   const arr = []
+//   const calls = [
 //     {
 //       "type": "TOKEN",
 //       "callData": "0x70a08231000000000000000000000000c03033d8b833ff7ca08bf2a58c9bc9d711257249",
-//       "target": "0x43BA383B9934D8D45ea6348D00DBc1bAe97D6e74"
+//       "target": "0xe0eb31082bbf8252f7425c6dd72a8c6b3bfbe99f"
 //     },
 //   ]
-// }).then(res => {
-//   console.log('res1')
-//   console.log(res)
-// })
+//   const r = await useBatchData({
+//     chainId: '42161',
+//     calls
+//   })
+//   console.log(r)
+//   // for (const obj of calls) {
+
+//   //   const r = await useBatchData({
+//   //     chainId: '42161',
+//   //     calls: [obj]
+//   //   })
+//   //   console.log(r)
+//   //   if (!r) {
+//   //     arr.push(obj)
+//   //   }
+//   // }
+//   console.log(arr)
+// }
+// init()
 
 // export {
 //   getWeb3,

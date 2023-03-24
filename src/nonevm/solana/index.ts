@@ -6,7 +6,15 @@ import { AppState, AppDispatch } from '../../state'
 import {solAddress} from './actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import config from "../../config"
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 
 import {recordsTxns} from '../../utils/bridge/register'
@@ -384,6 +392,7 @@ export function useSolCrossChain (
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const addTransaction = useTransactionAdder()
   const {getAccount} = useSolCreateAccount()
 
@@ -398,7 +407,7 @@ export function useSolCrossChain (
 
     return {
       balance: '',
-      execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
+      execute: (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
       ?async () => {
         try {
           const contract = new Program(solRouter, routerToken, config.chainInfo[chainId].nodeRpc)
@@ -517,7 +526,7 @@ export function useSolCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, inputAmount, balance, useToChainId])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, inputAmount, balance, useToChainId, userInterfaceBalanceValid])
 }
 
 // enum SwapType {

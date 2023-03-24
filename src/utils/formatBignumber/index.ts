@@ -1,10 +1,29 @@
 import invariant from 'tiny-invariant'
 import _Big from 'big.js'
 import toFormat from 'toformat'
+import JSBI from 'jsbi'
+import {
+  Fraction,
+  BigintIsh,
+  Rounding,
+  parseBigintIsh
+} from './fraction'
 
-// import { TEN, SolidityType } from '../../constants'
-// import { parseBigintIsh, validateSolidityTypeInstance } from '../../utils'
-import { JSBI, Fraction, BigintIsh, Rounding, SolidityType, parseBigintIsh, validateSolidityTypeInstance } from 'anyswap-sdk'
+
+export enum SolidityType {
+  uint8 = 'uint8',
+  uint256 = 'uint256'
+}
+export const ZERO = JSBI.BigInt(0)
+
+export const SOLIDITY_TYPE_MAXIMA = {
+  [SolidityType.uint8]: JSBI.BigInt('0xff'),
+  [SolidityType.uint256]: JSBI.BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+}
+export function validateSolidityTypeInstance(value: JSBI, solidityType: SolidityType): void {
+  invariant(JSBI.greaterThanOrEqual(value, ZERO), `${value} is not a ${solidityType}.`)
+  invariant(JSBI.lessThanOrEqual(value, SOLIDITY_TYPE_MAXIMA[solidityType]), `${value} is not a ${solidityType}.`)
+}
 
 const Big = toFormat(_Big)
 
@@ -12,6 +31,7 @@ const TEN = JSBI.BigInt(10)
 
 export class BigAmount extends Fraction {
   public readonly decimals: number
+  public readonly amount: BigintIsh
 
   public static format(decimals: number, amount:BigintIsh): BigAmount {
     return new BigAmount(decimals, amount)
@@ -24,11 +44,15 @@ export class BigAmount extends Fraction {
 
     super(parsedAmount, JSBI.exponentiate(TEN, JSBI.BigInt(decimals)))
     this.decimals = decimals
+    this.amount = amount
   }
 
 
   public get raw(): JSBI {
     return this.numerator
+  }
+  public getAmount(): BigintIsh {
+    return this.amount
   }
 
   public toSignificant(

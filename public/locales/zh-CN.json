@@ -379,5 +379,6 @@
   "gasswap": "Gas Swap",
   "history": "历史",
   "Value": "数量",
-  "Date": "日期"
+  "Date": "日期",
+  "BalanceValidated": "余额校验"
 }

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-// import { Token } from 'anyswap-sdk'
-// import { NavLink } from 'react-router-dom'
+
 import styled from "styled-components"
 import { useTranslation } from 'react-i18next'
 import moment from 'moment';

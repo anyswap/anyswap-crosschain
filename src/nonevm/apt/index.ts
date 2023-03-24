@@ -11,7 +11,15 @@ import {
 import {nonevmAddress} from '../hooks/actions'
 import { useActiveReact } from '../../hooks/useActiveReact'
 import config from '../../config'
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 
 import {BigAmount} from '../../utils/formatBignumber'
 
@@ -239,6 +247,7 @@ export function useAptCrossChain (
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const addTransaction = useTransactionAdder()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
 
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, selectCurrency?.decimals), [typedValue, selectCurrency])
 
@@ -270,7 +279,7 @@ export function useAptCrossChain (
     if (!account || !chainId || !selectCurrency || !receiveAddress || !useToChainId) return {}
     return {
       balance: balance,
-      execute: (sufficientBalance || !VALID_BALANCE) && inputAmount
+      execute: (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
       ? async () => {
 
         const transaction = {
@@ -332,7 +341,7 @@ export function useAptCrossChain (
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: selectCurrency?.symbol})
     }
-  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, useToChainId])
+  }, [routerToken, inputToken, chainId, selectCurrency, selectChain, receiveAddress, typedValue, destConfig, account, balance, useToChainId, userInterfaceBalanceValid])
 }
 
 

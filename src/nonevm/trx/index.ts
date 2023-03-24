@@ -25,7 +25,15 @@ import {
   // ABI_TO_ADDRESS,
   // ABI_TO_ADDRESS
 } from './crosschainABI'
-import {VALID_BALANCE} from '../../config/constant'
+// import {VALID_BALANCE} from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 import config from '../../config'
 // import useInterval from "../useInterval"
 // const tronweb = window.tronWeb
@@ -399,6 +407,7 @@ export function useTrxSwapPoolCallback(
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const { t } = useTranslation()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   // console.log(balance)
   // console.log(inputCurrency)
   const inputAmount = useMemo(() => tryParseAmount3(typedValue, inputCurrency?.decimals), [inputCurrency, typedValue])
@@ -425,7 +434,7 @@ export function useTrxSwapPoolCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
         ? async () => {
             try {
               if (window.tronWeb && window.tronWeb.defaultAddress.base58 && inputToken) {
@@ -510,7 +519,7 @@ export function useTrxSwapPoolCallback(
         : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, routerToken, selectChain, destConfig, useToChainId, userInterfaceBalanceValid])
 }
 
 

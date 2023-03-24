@@ -1,6 +1,6 @@
 
 import React, { KeyboardEvent, useState, RefObject, useCallback, useEffect, useRef, useMemo } from 'react'
-import { Currency, ETHER } from 'anyswap-sdk'
+
 import { Text } from 'rebass'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useTranslation } from 'react-i18next'
@@ -55,9 +55,9 @@ import {useStarToken, useChangeStarTab} from '../../state/user/hooks'
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
-  otherSelectedCurrency?: Currency | null
+  selectedCurrency?: any | null
+  onCurrencySelect: (currency: any) => void
+  otherSelectedCurrency?: any | null
   // onlyUnderlying?: boolean
   allTokens?: any
   chainId?: any
@@ -190,7 +190,7 @@ export default function SearchModal ({
   }, [])
 
   const handleCurrencySelect = useCallback(
-    (currency: Currency) => {
+    (currency: any) => {
       if (onCurrencySelect) {
         onCurrencySelect(currency)
         onDismiss()
@@ -202,10 +202,7 @@ export default function SearchModal ({
   const handleEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        const s = searchQuery.toLowerCase().trim()
-        if (s === 'eth') {
-          handleCurrencySelect(ETHER)
-        } else if (filteredSortedTokens.length > 0) {
+        if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
             filteredSortedTokens.length === 1

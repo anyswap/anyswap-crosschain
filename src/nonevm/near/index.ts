@@ -17,7 +17,15 @@ import { useTxnsDtilOpen, useTxnsErrorTipOpen } from '../../state/application/ho
 import useInterval from '../../hooks/useInterval'
 import { isAddress } from '../../utils/isAddress'
 import { ChainId } from '../../config/chainConfig/chainId'
-import { VALID_BALANCE } from '../../config/constant'
+// import { VALID_BALANCE } from '../../config/constant'
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../../state/user/hooks'
 import config from '../../config'
 // export enum WrapType {
 //   NOT_APPLICABLE,
@@ -72,25 +80,9 @@ export async function initConnect(chainId: any, token: any) {
   return account;
 }
 
-export async function useLogout() {
-  if (window.selector) {
-    const wallet = await window.selector.wallet();
-    const logout = useCallback(() => {
-      wallet.signOut().catch((err) => {
-        console.log("Failed to sign out");
-        console.error(err);
-      });
-    }, [])
-    return {
-      logout
-    }
-  }
-  return {}
-}
-
 export function useNearAddress() {
   let accountId = ""
-  if (window.selector) {
+  if (window?.selector) {
     if (window.selector.store.getState().accounts.length > 0) {
       accountId = window.selector.store.getState().accounts[0].accountId;
     }
@@ -126,7 +118,7 @@ export function useLogin() {
   const { modal } = useWalletSelector();
 
   const login = useCallback(async () => {
-    if (window?.near) {
+    if (window?.selector) {
       try {
 
         modal.show()
@@ -145,16 +137,28 @@ export function useLogin() {
     }
   }, []);
 
-
+  const logoutNear = useCallback(async() => {
+    if (window?.selector) {
+      const wallet = await window.selector.wallet();
+      wallet.signOut().catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
+    }
+    return {}
+  }, [])
 
   return {
-    login
+    login,
+    logoutNear
   }
 }
 
 export function useNearBalance() {
   const { selector  } = useWalletSelector();
   const { network } = selector.options;
+  // console.log(selector)
+  // console.log(network)
   const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
   const getNearBalance = useCallback(async () => {
     // let bl:any = ''
@@ -221,7 +225,7 @@ export function useNearBalance() {
     let bl: any
     const useAccount = account ? account : window?.near?.accountId
     const accountFn = await initConnect(chainId, token);
-    // console.log(window?.near)
+    // console.log(accountFn)
     try {
       if (accountFn && useAccount && isAddress(useAccount, chainId)) {
         bl = await accountFn.viewFunction(
@@ -266,7 +270,7 @@ export function useNearPoolDatas() {
       const arr = []
       const labelArr: any = []
       // console.log(chainId)
-      if (window?.near?.account && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
+      if (window?.selector && window?.near?.account && [ChainId.NEAR, ChainId.NEAR_TEST].includes(chainId)) {
 
         for (const item of calls) {
           if (item.token === 'near' || item.anytoken === 'near') continue
@@ -611,6 +615,7 @@ export function useNearSendTxns(
   const { t } = useTranslation()
   const address = useNearAddress()
   const addTransaction = useTransactionAdder()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { onChangeViewDtil } = useTxnsDtilOpen()
   const { onChangeViewErrorTip } = useTxnsErrorTipOpen()
   const [balance, setBalance] = useState<any>()
@@ -673,7 +678,7 @@ export function useNearSendTxns(
     return {
       // wrapType: WrapType.WRAP,
       balance,
-      execute: receiverId && (sufficientBalance || !VALID_BALANCE) && inputAmount ? async () => {
+      execute: receiverId && (sufficientBalance || !userInterfaceBalanceValid) && inputAmount ? async () => {
         try {
           const txReceipt: any = ["NATIVE", "ANYTOKEN"].includes(inputCurrency?.tokenType) || inputCurrency?.address === 'near' ? await sendNear(routerToken, inputAmount, receiverId, useToChainId, inputCurrency?.tokenType, anyContractId) : await sendNearToken(contractId, anyContractId, routerToken, inputAmount, receiverId, useToChainId)
           console.log(txReceipt)
@@ -725,7 +730,7 @@ export function useNearSendTxns(
       } : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', { symbol: inputCurrency?.symbol })
     }
-  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig, useToChainId])
+  }, [inputAmount, receiverId, selectChain, routerToken, anyContractId, contractId, chainId, inputCurrency, balance, underlyingToken, destConfig, useToChainId, userInterfaceBalanceValid])
 }
 
 /**

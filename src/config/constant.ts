@@ -35,8 +35,8 @@ export enum CHAIN_TYPE {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
-export const INIT_VERSION = VERSION.V7_TEST
+export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -122,7 +122,7 @@ export const CROSS_BRIDGE_LIST = [BRIDGE_KEY.bridgeTokenList]
 export const env:any = 'pro'
 // export const env:any = 'dev'
 
-export const version = '0.4.15'
+export const version = '0.4.2'
 export const timeout = 1000 * 60 * 30
 
 export const VALID_BALANCE = true

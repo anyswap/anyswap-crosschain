@@ -1,5 +1,4 @@
 
-import { Currency } from 'anyswap-sdk'
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { tryParseAmount, tryParseAmount1, tryParseAmount3 } from '../state/swap/hooks'
@@ -17,9 +16,6 @@ import {
   usePermissonlessContract,
   useAnycallContract
 } from './useContract'
-// import {useSwapBTCABI, useSwapETHABI} from './useContract'
-// import {signSwapoutData, signSwapinData} from 'multichain-bridge'
-// import {signSwapoutData, signSwapinData} from './useBuildData'
 import { isAddress } from '../utils/isAddress'
 import { useConnectedWallet, useWallet, ConnectType } from '@terra-money/wallet-provider'
 // const { useConnectedWallet, useWallet, ConnectType } = require('@terra-money/wallet-provider')
@@ -40,11 +36,20 @@ import {useTerraSend} from '../nonevm/terra'
 
 import {recordsTxns} from '../utils/bridge/register'
 import config from '../config'
-import {VALID_BALANCE} from '../config/constant'
+// import {VALID_BALANCE} from '../config/constant'
 import { ChainId } from '../config/chainConfig/chainId'
 
 import useTerraBalance from './useTerraBalance'
 import { BigAmount } from '../utils/formatBignumber'
+
+import {
+  // useDarkModeManager,
+  // useExpertModeManager,
+  // useInterfaceModeManager,
+  useInterfaceBalanceValidManager
+  // useUserTransactionTTL,
+  // useUserSlippageTolerance
+} from '../state/user/hooks'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -82,7 +87,7 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 export function usePermissonlessCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -99,6 +104,7 @@ export function usePermissonlessCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   // console.log(inputCurrency)
   const useAccount:any = isAddress(account, evmChainId)
@@ -169,7 +175,7 @@ export function usePermissonlessCallback(
       fee,
       wrapType: WrapType.WRAP,
       execute:
-        (sufficientBalance || !VALID_BALANCE) && inputAmount
+        (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               const results:any = {}
               try {
@@ -239,7 +245,7 @@ export function usePermissonlessCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, fee])
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, fee, userInterfaceBalanceValid])
 }
 
 
@@ -252,7 +258,7 @@ export function usePermissonlessCallback(
  */
 export function useBridgeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -268,6 +274,7 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   // console.log(inputCurrency)
   const useAccount:any = isAddress(account, evmChainId)
@@ -296,7 +303,7 @@ export function useBridgeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-        (sufficientBalance || !VALID_BALANCE) && inputAmount
+        (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               const results:any = {}
               try {
@@ -364,7 +371,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet])
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid])
 }
 
 
@@ -376,7 +383,7 @@ export function useBridgeCallback(
  */
  export function useBridgeUnderlyingCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -392,6 +399,7 @@ export function useBridgeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -412,7 +420,7 @@ export function useBridgeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               const results:any = {}
               try {
@@ -478,7 +486,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet,userInterfaceBalanceValid])
 }
 
 
@@ -491,7 +499,7 @@ export function useBridgeCallback(
  */
 export function useBridgeNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
@@ -506,6 +514,7 @@ export function useBridgeNativeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -524,7 +533,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 // console.log(bridgeContract.anySwapOutNative)
@@ -584,7 +593,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig, isGnosisSafeWallet])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid])
 }
 
 /**
@@ -594,7 +603,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useSwapUnderlyingCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
@@ -604,6 +613,7 @@ export function useBridgeNativeCallback(
   const { account, evmChainId } = useActiveReact()
   const bridgeContract = useSwapUnderlyingContract(isAddress(inputToken, evmChainId))
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -624,7 +634,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 // console.log(inputAmount.raw.toString(16))
@@ -642,7 +652,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, swapType, inputToken, userInterfaceBalanceValid])
 }
 
 
@@ -654,7 +664,7 @@ export function useBridgeNativeCallback(
  */
  export function useSwapNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   inputToken: string | undefined,
   typedValue: string | undefined,
   swapType: string | undefined,
@@ -663,6 +673,7 @@ export function useBridgeNativeCallback(
   const { account, evmChainId } = useActiveReact()
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId))
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const ethbalance = useETHBalances(useAccount ? [useAccount] : [])?.[account ?? '']
@@ -689,7 +700,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 // console.log(`0x${inputAmount.raw.toString(16)}`)
@@ -713,7 +724,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, account, userInterfaceBalanceValid])
 }
 
 
@@ -725,7 +736,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapNativeCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -742,6 +753,7 @@ export function useBridgeNativeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
@@ -760,7 +772,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 // console.log(`0x${inputAmount.raw.toString(16)}`)
@@ -818,7 +830,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet, userInterfaceBalanceValid])
 }
 
 /**
@@ -829,7 +841,7 @@ export function useBridgeNativeCallback(
  */
  export function useBridgeSwapUnderlyingCallback(
   routerToken: string | undefined,
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | null | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -846,6 +858,7 @@ export function useBridgeNativeCallback(
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   const { t } = useTranslation()
   const useAccount:any = isAddress(account, evmChainId)
   const balance = useCurrencyBalance(useAccount ?? undefined, inputCurrency)
@@ -865,7 +878,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 console.log(`${inputAmount.raw.toString()}`)
@@ -921,7 +934,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, outputAmount, routerPath, toAddress, deadline, toChainID, isGnosisSafeWallet, userInterfaceBalanceValid])
 }
 
 
@@ -932,7 +945,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useCrossBridgeCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string | undefined,
   typedValue: string | undefined,
   toChainID: any,
@@ -949,6 +962,7 @@ export function useBridgeNativeCallback(
   const { chainId, account, library } = useActiveWeb3React()
   const { t } = useTranslation()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
+  const [userInterfaceBalanceValid] = useInterfaceBalanceValidManager()
   // const balance = inputCurrency ? useCurrencyBalance(account ?? undefined, inputCurrency) : useETHBalances(account ? [account] : [])?.[account ?? '']
   const tokenBalance = useCurrencyBalance(account ?? undefined, inputCurrency)
   const ethBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
@@ -979,7 +993,7 @@ export function useBridgeNativeCallback(
     return {
       wrapType: WrapType.WRAP,
       execute:
-      (sufficientBalance || !VALID_BALANCE) && inputAmount
+      (sufficientBalance || !userInterfaceBalanceValid) && inputAmount
           ? async () => {
               try {
                 console.log(txnsType)
@@ -1075,7 +1089,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: symbol})
     }
-  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity, destConfig, isGnosisSafeWallet])
+  }, [chainId, inputCurrency, inputAmount, balance, addTransaction, t, txnsType, toAddress, inputToken, toChainID, pairid, library, receiveAddress, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid])
 }
 
 /**
@@ -1085,7 +1099,7 @@ export function useBridgeNativeCallback(
  * @param typedValue 用户输入值
  */
  export function useTerraCrossBridgeCallback(
-  inputCurrency: Currency | undefined,
+  inputCurrency: any | undefined,
   toAddress:  string,
   typedValue: string | undefined,
   toChainID: any,

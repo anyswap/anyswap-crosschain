@@ -380,5 +380,6 @@
   "gasswap": "Gas Swap",
   "history": "History",
   "Value": "Value",
-  "Date": "Date"
+  "Date": "Date",
+  "BalanceValidated": "Balance Validated"
 }
