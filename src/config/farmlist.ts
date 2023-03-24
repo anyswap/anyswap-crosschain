@@ -19,7 +19,8 @@ const config: FarmConfig = {
     chainId: ChainId.ARBITRUM,
     farmToken: '0x4ecf513a7d0E1548e14b621e21d2584bc7570918',
     lpToken: '0x1263fea931b86f3e8ce8afbf29f66631b7be9347',
-    blockNumber: 2800000,
+    // blockNumber: 2800000,
+    blockNumber:6912,
     lpTokenIno: {
       '0x1263fea931b86f3e8ce8afbf29f66631b7be9347': {
         list: {

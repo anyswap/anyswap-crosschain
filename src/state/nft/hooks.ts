@@ -8,6 +8,7 @@ import {
 
 import JSBI from 'jsbi'
 // import axios from 'axios'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 // import { useNFTContract, useNFT721Contract } from './useContract'
@@ -56,14 +57,14 @@ export function useNftListState(chainId?:any): any {
 }
 
 export function useNftState(): any {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useActiveReact()
   const list:any = useSelector<AppState, AppState['nft']>(state => state.nft.nftlist)
   if (!chainId || !account || !list[chainId] || !list[chainId][account]) return {}
 
   return list[chainId][account]
 }
 export function useNftInfo(): any {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const list:any = useSelector<AppState, AppState['nft']>(state => state.nft.nftlistinfo)
   if (!chainId || !list[chainId] || !list[chainId] || !list[chainId].tokenList) return {}
 
@@ -73,7 +74,7 @@ export function useNftInfo(): any {
 export function useNFT721GetAllTokenidListCallback(
   tokenList: any
 ) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useActiveReact()
   // const { chainId, library } = useActiveWeb3React()
   // const account = '0xcFA97Fb420fF5A0F8F5b5400a0fC5a94F3eaEc87'
   const multicallContract = useMulticallContract()

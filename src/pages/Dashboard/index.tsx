@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 // import {GetTokenListByChainID} from 'multichain-bridge'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import { useETHBalances } from '../../state/wallet/hooks'
 import { useBridgeTokenList } from '../../state/lists/hooks'
@@ -88,7 +88,7 @@ const pagesize = 18
 const ROUTER_BRIDGE_TYPE = 'routerTokenList'
 
 export default function DashboardDtil() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   const { t } = useTranslation()
 
   const allTokensList:any = useBridgeTokenList(ROUTER_BRIDGE_TYPE, chainId)

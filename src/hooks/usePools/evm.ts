@@ -79,16 +79,17 @@ export function useEvmPools ({
 }:any) {
   const { library, chainId: curChainId } = useActiveWeb3React()
   const {getEvmPoolsDatas} = useEvmPoolDatas()
+  const c:any = curChainId
   const getEvmPoolsData = useCallback(() => {
     return new Promise(resolve => {
       if (chainId) {
-        const provider = curChainId?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
+        const provider = c?.toString() === chainId.toString() && library?.provider ? library?.provider : ''
         getEvmPoolsDatas(chainId, tokenList, account, provider).then(res => {
           resolve(res)
         })
       }
     })
-  }, [account, curChainId, chainId, tokenList, getEvmPoolsDatas])
+  }, [account, c, chainId, tokenList, getEvmPoolsDatas])
   return {getEvmPoolsData}
 }
 

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useTranslation } from 'react-i18next'
 import moment from 'moment';
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { 
   useVeMULTIContract,
   useVeMULTIRewardContract,
@@ -263,7 +263,7 @@ const TokenTableLogoWrapper = styled(TokenTableLogo)`
 
 export default function Vest () {
   const { t } = useTranslation()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   const {setUserSelectNetwork} = useUserSelectChainId()
 
   const {getVeshareNFTs, useVeshareRewardToken} = useVeshare()

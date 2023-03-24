@@ -4,7 +4,7 @@ import { Text } from 'rebass'
 // import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 
 import { RowBetween } from '../Row'
 import Column from '../Column'
@@ -81,7 +81,7 @@ export default function SelectChainIdInputPanel({
   customBalance
 }: SelectChainIdInputPanel) {
   const { t } = useTranslation()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useActiveReact()
   const [modalOpen, setModalOpen] = useState(false)
   const [chainList, setChainList] = useState<Array<any>>([])
   const [destBalance, setDestBalance] = useState<any>('')

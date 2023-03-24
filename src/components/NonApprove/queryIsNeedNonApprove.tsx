@@ -7,7 +7,7 @@ import Loader from '../Loader'
 // import ModalContent from '../Modal/ModalContent'
 // import { BottomGrouping } from '../swap/styleds'
 
-import {useActiveWeb3React} from '../../hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import styled, { ThemeContext } from "styled-components"
 
 
@@ -126,7 +126,7 @@ function ApproveBtn ({
   disabled:any,
   curChainId: any
 }) {
-  const {chainId} = useActiveWeb3React()
+  const {chainId} = useActiveReact()
   const { t } = useTranslation()
   const {approve} = useNonApproveCallback(chainId?.toString() === curChainId?.toString() && token ? token : undefined, spender ?? undefined, symbol)
   
@@ -165,7 +165,7 @@ function ApproveBtn ({
 
 export default function NonApproveQuery () {
   const {approvedList, loading} = useAllApproved()
-  const { account } = useActiveWeb3React()
+  const { account } = useActiveReact()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
 

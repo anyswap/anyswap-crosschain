@@ -125,6 +125,7 @@ interface Window {
 
 declare module '@onflow/fcl';
 declare module 'aptos';
+declare module '@polkadot';
 
 declare const __DEV__: boolean;
 

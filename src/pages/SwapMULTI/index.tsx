@@ -5,7 +5,7 @@ import { ArrowDown } from 'react-feather'
 import { transparentize } from 'polished'
 
 import {useLocalToken} from '../../hooks/Tokens'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import {useSwapMultiContract} from '../../hooks/useContract'
 
@@ -183,7 +183,7 @@ const swapList:any = {
 }
 
 export default function SwapMULTI () {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
   const theme = useContext(ThemeContext)

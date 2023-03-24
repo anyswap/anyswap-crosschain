@@ -78,7 +78,7 @@ export default function SearchModal ({
   chainId,
   bridgeKey,
   // allBalances,
-  showETH,
+  // showETH,
   selectDestChainId
 }: CurrencySearchModalProps) {
   const { t } = useTranslation()
@@ -264,7 +264,6 @@ export default function SearchModal ({
               <>
                 <CurrencyList
                   height={height}
-                  showETH={showETH}
                   currencies={filteredSortedTokens}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}

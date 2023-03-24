@@ -4,7 +4,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 // import { useDispatch, useSelector } from 'react-redux'
 import { useActiveReact } from '../../hooks/useActiveReact'
 
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import {
   addSerializedToken,
@@ -183,7 +182,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useUserAddedTokens(): any[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens']>(({ user: { tokens } }) => tokens)
 
   return useMemo(() => {

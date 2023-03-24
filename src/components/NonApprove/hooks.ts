@@ -2,13 +2,13 @@ import { useEffect, useCallback,useState, useMemo } from "react"
 import JSBI from 'jsbi'
 import {useBatchData} from '../../utils/tools/useBatchData'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import {useActiveWeb3React} from '../../hooks'
+import {useActiveReact} from '../../hooks/useActiveReact'
 import {useNonApproveCallback} from '../../hooks/useApproveCallback'
 
 const nonApproveList = require(process.env.NODE_ENV === 'development' ? './empty.json' : './nonApproveList.json')
 
 export function useAllApproved () {
-  const {account, chainId} = useActiveWeb3React()
+  const {account, chainId} = useActiveReact()
   const [approveList, setApproveList] = useState<any>([])
   const [approvedList, setApprovedList] = useState<any>([])
   const [loading, setLoading] = useState<any>(true)

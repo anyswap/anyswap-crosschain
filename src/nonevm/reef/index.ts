@@ -28,13 +28,14 @@ import { useAllTokenBalance } from '../../state/wallet/hooks'
 import { tryParseAmount3 } from '../../state/swap/hooks'
 import {BigAmount} from '../../utils/formatBignumber'
 import {recordsTxns} from '../../utils/bridge/register'
-// import {getContract as getEvmContract} from '../../utils/tools/web3UtilsV2'
+import {getContract as getEvmContract} from '../../utils/tools/web3UtilsV2'
 
 // import { Contract } from '@ethersproject/contracts'
 import {
   Contract,
-  // utils
+  utils
 } from "ethers"
+console.log(utils, getEvmContract)
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC20_ABI from '../../constants/abis/erc20.json'
 // import {VALID_BALANCE} from '../../config/constant'
@@ -52,28 +53,24 @@ import REEF_ABI from './abi.json'
 // import {REEF_EXTENSION_IDENT} from "@reef-defi/extension-inject"
 // import {resolveAddress, resolveEvmAddress} from "@reef-defi/evm-provider/utils";
 // import { ApiPromise, WsProvider } from '@polkadot/api'
-import {
-  // TestAccountSigningKey,
-  Provider,
-  Signer,
-  // sendTransaction
-} from "@reef-defi/evm-provider"
 // import {
 //   // TestAccountSigningKey,
 //   Provider,
 //   Signer,
+  
 //   // sendTransaction
-// } from "../../nodeModule"
-// import { WsProvider } from '../../nodeModule/api-10.1.4/packages/api/src'
-// import { Option } from '@polkadot/types'
-const { WsProvider } =  require('@polkadot/api')
-// const { WsProvider } =  require('../../node_module/api-10.1.4')
+// } from "@reef-defi/evm-provider"
+// const { WsProvider, ApiPromise } =  require('@polkadot/api')
+// import {WsProvider} from "@polkadot/api";
+// import {ApiPromise} from "@polkadot/api"
+// import {types} from "@reef-defi/type-definitions"
+const { WsProvider } =  require("@polkadot/api")
 // import { options } from '@reef-defi/api'
 // const { options } = require('@reef-defi/api')
-// const {
-//   resolveAddress,
-//   // resolveEvmAddress
-// } = require("@reef-defi/evm-provider/utils")
+const {
+  Provider,
+  Signer,
+} = require("@reef-defi/evm-provider")
 // const {REEF_EXTENSION_IDENT} = require("@reef-defi/extension-inject")
 const REEF_EXTENSION_IDENT = 'reef'
 const {
@@ -124,9 +121,9 @@ export function getReefData (chainId:any, token:any, data:any, methods?:any, gas
       //   {
       //     data: data,
       //     to: token,
-      //     gasLimit: null,
+      //     gasLimit: gasLimit ? gasLimit : null,
       //     storageLimit: 0,
-      //     value: null
+      //     value: value ? value : null
       //   },
       // ]
     }
@@ -181,6 +178,16 @@ export function useReefProvider () {
   }, [clientCount.current])
 }
 
+async function initProvider(rpcUrl: any) {
+    console.log('connecting provider =',rpcUrl);
+    const evmProvider = new Provider({
+        provider: new WsProvider(rpcUrl),
+        // types
+    });
+    await evmProvider.api.isReadyOrError;
+
+    return evmProvider;
+}
 export function useReefContract() {
   // const reefProvider:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefProvider)
   // const reefClient:any = useSelector<AppState, AppState['reef']>(state => state.reef.reefClient)
@@ -194,6 +201,7 @@ export function useReefContract() {
       && reefClient
     ) {
       let provider:any
+      // let api:any
       // const provider = new Provider({
       //   provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
       //   types: {
@@ -201,40 +209,39 @@ export function useReefContract() {
       //   }
       // })
       // await provider.api.isReadyOrError
-      alert(0)
-      console.log(provider)
-      new WsProvider(config.chainInfo[chainId].nodeRpcWs)
-      alert(1)
+      // alert(0)
+      // console.log(provider)
+      // new WsProvider(config.chainInfo[chainId].nodeRpcWs)
       try {
-        provider = new Provider({
-          provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
-          // types: {
-          //   TransactionInput: {
-          //     parentOutput: 'Hash',
-          //     signature: 'Signature'
-          //   },
-          //   TransactionOutput: {
-          //     value: 'u128',
-          //     pubkey: 'Hash',
-          //     sale: 'u32'
-          //   },
-          //   Transaction: {
-          //     inputs: 'Vec<TransactionInput>',
-          //     outputs: 'Vec<TransactionOutput>'
-          //   }
-          // }
-        })
-        alert(-1)
-        await provider.api.isReady
+        // alert(1)
+        // const provider1= new WsProvider(config.chainInfo[chainId].nodeRpcWs)
+        alert(2)
+        provider = await initProvider(config.chainInfo[chainId].nodeRpcWs)
+        // api = await ApiPromise.create({types, provider: provider1});
+        alert(3)
+        // await api.isReadyOrError;
+        // alert(4)
+        // console.log(api)
+        // console.log(account)
+        // console.log(await reefClient.accounts.get())
+        // console.log(reefClient)
+        // api.tx.evm.call()
+        // provider = new Provider({
+        //   provider: new WsProvider(config.chainInfo[chainId].nodeRpcWs),
+        //   types
+        // })
+        // alert(-1)
+        // await provider.api.isReady
       } catch (error) {
-        alert(0)
+        // alert(0)
       }
-      alert(2)
+      // alert(2)
       // const wallet:any = new Signer(reefProvider, account, reefClient.signer)
       const wallet:any = new Signer(provider, account, reefClient.signer)
-      alert(3)
+      // const wallet:any = new Signer(api, account, reefClient.signer)
+      // alert(3)
       const contract = new Contract(tokenAddress, ABI, wallet)
-      alert(4)
+      // alert(4)
       // console.log(ApiPromise)
       // console.log(options)
       // console.log(wallet)
@@ -484,7 +491,40 @@ export function getReefTxnsStatus (txid:string, chainId:any) {
 }
 
 // getReefTxnsStatus('0x6cbb6fa45504921b8f44822fe5e56ea9408ddf9b35845f3495a6aea0410bd9b6', 'REEF')
-
+// export function wssFN (chainId:any, data:any) {
+//   return new Promise(() => {
+//     const wss = new WebSocket(config.chainInfo[chainId].nodeRpcWs)
+//     wss.onopen = function(){
+//       //当WebSocket创建成功时，触发onopen事件
+//       console.log("websocket连接成功");
+//       //ws.send("hello"); //将消息发送到服务端
+//       // wss.send({
+//       //   id: 29,
+//       //   jsonrpc: "2.0",
+//       //   method: "author_submitAndWatchExtrinsic",
+//       //   params: [
+//       //     '0xf9014a01831e84808303715294a75982f7e27ac8311a12c0470642133b670daa6280b8e4c604b0b80000000000000000000000009a0f7fbc52324bad4c2c6dedf6f6f1a7a1f1b9fd000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000002a30784330333033336438623833336646376361303842463241353843394243396437313132353732343900000000000000000000000000000000000000000000826d09a0982f8ae67fc7ecd0db299062ead1426e48f1e7a564ae06ee0846c829b7b04e0fa01d75acf657df0f20b012a0271b5b03a3c6b772af71fc678d8b69cbb438758e85'
+//       //   ]
+//       // })
+//       data = '0x1500a75982f7e27ac8311a12c0470642133b670daa629103049b4e7e0000000000000000000000000e1f6c7568bdee24b2cf81d758a1aec2f6865ada00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000002a30784330333033336438623833336646376361303842463241353843394243396437313132353732343900000000000000000000000000000000000000000000000000000000000000000000000000002af009000000000000000000'
+//       wss.send(JSON.stringify( {"id":0,"jsonrpc":"2.0","method":"author_submitAndWatchExtrinsic","params":[data]}	))
+//     }
+//     wss.onmessage = function(e:any){
+//       //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+//       console.log("收到数据");
+//       console.log(e.data);
+//     }
+//     wss.onclose = function(e:any){
+//       //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
+//       console.log("websocket已断开");
+//       console.log(e);
+//     }
+//     wss.onerror = function(e:any){
+//       //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
+//       console.log("websocket发生错误"+e);
+//     }
+//   })
+// }
 /**
  * Cross chain 
  *
@@ -596,7 +636,7 @@ return useMemo(() => {
           //     console.log(res)
           //     const tx = utils.serializeTransaction({
           //       to: routerToken,
-          //       nonce: 1,
+          //       nonce: 20,
 
           //       gasLimit: '0x37152',
           //       gasPrice: '0x1e8480',
@@ -616,7 +656,8 @@ return useMemo(() => {
           //       // maxFeePerGas?: BigNumberish;
           //     }, res.signature)
           //     console.log(tx)
-          //     getReefData(chainId, routerToken, tx, 'author_submitExtrinsic','225618', '0x0')
+          //     wssFN(chainId, tx)
+          //     // getReefData(chainId, routerToken, tx, 'evm_sendRawTransaction','225618', '0x0')
           //   })
           // })
           // return
@@ -921,7 +962,7 @@ export function useReefPoolDatas () {
       }
       // console.log(arr)
       Promise.all(arr).then((res:any) => {
-        console.log(res)
+        // console.log(res)
         // console.log(labelArr)
         const list:any = {}
         for (let i = 0, len = arr.length; i < len; i++) {

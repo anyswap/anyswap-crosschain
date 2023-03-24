@@ -11,7 +11,7 @@ import {
   useVeMULTIContract,
   useVeShareContract
 } from '../../hooks/useContract'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import {useTxnsErrorTipOpen} from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import {BigAmount} from '../../utils/formatBignumber'
@@ -85,7 +85,7 @@ export const VESHARE:any = useChain({
 })
 
 export function useVeshare () {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveReact()
   // const useLockToken:any = useMemo(() => {
   //   // console.log(MULTI_TOKEN)
   //   // console.log(chainId)
@@ -188,7 +188,7 @@ export function useVeshare () {
 export function useClaimVeshareRewardCallback(
   claimReward: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   const rewardToken = useMemo(() => {
     if (chainId && VESHARE[chainId]) return VESHARE[chainId].address
     return undefined

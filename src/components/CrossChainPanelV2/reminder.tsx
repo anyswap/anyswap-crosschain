@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import {thousandBit} from '../../utils/tools/tools'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveReact } from '../../hooks/useActiveReact'
 import BulbIcon from '../../assets/images/icon/bulb.svg'
 import config from '../../config'
 import {BigAmount} from '../../utils/formatBignumber'
@@ -106,7 +106,7 @@ interface ReminderType {
 
 function CrossBridge ({destConfig, currency, bridgeType}:any) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   
   if (!destConfig || !currency) {
     return (
@@ -162,7 +162,7 @@ export default function Reminder ({
   fee,
 }: ReminderType) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveReact()
   // const useFee = useMemo(() => {
     
   //   console.log(fee)
