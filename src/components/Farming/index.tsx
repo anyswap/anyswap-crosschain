@@ -32,7 +32,7 @@ import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
 import TokenLogo from '../TokenLogo'
 
 import {getBaseInfo} from './common'
-
+import {selectNetwork} from '../../config/tools/methods'
 
 const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -771,13 +771,22 @@ export default function Farming ({
     }
     // userInfo
   }
+  function changeNetwork (chainID:any) {
+    selectNetwork(chainID).then((res: any) => {
+      console.log(res)
+      if (res.msg === 'Error') {
+        alert(t('changeMetamaskNetwork', {label: config.getCurChainInfo(chainID).networkName}))
+      }
+    })
+  }
 
   function stakingView () {
     let btnView:any = ''
     if (Number(CHAINID) !== Number(chainId)) {
       btnView = <Button1 onClick={() => {
-        window.localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(CHAINID).label)
-        history.go(0)
+        // window.localStorage.setItem(config.ENV_NODE_CONFIG, config.getCurChainInfo(CHAINID).label)
+        // history.go(0)
+        changeNetwork(CHAINID)
       }}  style={{height: '45px', maxWidth: '200px'}}>
         {t('SwitchTo')} {config.getCurChainInfo(CHAINID).name} {t('mainnet')}
       </Button1>

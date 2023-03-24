@@ -19,7 +19,7 @@ export default function FarmingComponent({
 }: FarmProp) {
   const [price, setPrice] = useState()
   useEffect(() => {
-    getPrice('ANY').then((res:any) => {
+    getPrice(farmlist[farmkey].key).then((res:any) => {
       // console.log(res)
       setPrice(res)
     })

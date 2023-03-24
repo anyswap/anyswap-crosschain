@@ -213,7 +213,7 @@ export default function SwapNative() {
 
 
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectAnyToken?.address)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, selectAnyToken?.address, underlyingCurrency && !isNativeToken && swapType === 'deposit' ? underlyingCurrency : undefined)
   const {allowance, loading, setNonevmAllowance} = useNonevmAllowances(isApprove, selectCurrency, selectAnyToken?.address, chainId, account, inputBridgeValue, selectAnyToken)
 
   const approveState = useMemo(() => {

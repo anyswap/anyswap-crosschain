@@ -287,7 +287,7 @@ export default function CrossChain({
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, (formatCurrency && isApprove) ? formatCurrency : undefined)
   // console.log((formatCurrency && isApprove) ? formatCurrency : undefined)
 
-  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender)
+  const [approval, approveCallback] = useApproveCallback((formatInputBridgeValue && isApprove) ? formatInputBridgeValue : undefined, approveSpender, formatCurrency)
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
@@ -926,6 +926,14 @@ export default function CrossChain({
       }
 
       <ErrorTip errorTip={errorTip} />
+      {
+        selectChain === ChainId.ARBITRUM ? (
+          <ErrorTip errorTip={{
+            state: 'Error',
+            tip: 'Bridge to Arbitrum will take more than 60 minutes due to network congestion.'
+          }} />
+        ) : ''
+      }
       {
         config.isStopSystem ? (
           <BottomGrouping>

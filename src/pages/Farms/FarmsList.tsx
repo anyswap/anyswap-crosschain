@@ -284,7 +284,7 @@ export default function FarmsList () {
   }
 
   useEffect(() => {
-    getPrice('MULTI').then((res:any) => {
+    getPrice('ARB').then((res:any) => {
       getFarmAPY('ARB', res).then((res:any) => {
         setARBStakingAPY(res)
       })
@@ -458,7 +458,7 @@ export default function FarmsList () {
       //   status: typeof MATICStakingAPY !== 'undefined' && Number(MATICStakingAPY) === 0  ? 'finished' : 'live'
       // },
       {
-        isDoubleLogo: 1,
+        isDoubleLogo: 0,
         isOutLink: 0,
         url: 'farm/arb',
         title: 'ARB Staking',
@@ -466,7 +466,7 @@ export default function FarmsList () {
         coin1: 'ARB',
         coin2: 'ARBITRUM',
         coin3: '',
-        status: typeof ARBStakingAPY !== 'undefined' && Number(ARBStakingAPY) === 0  ? 'finished' : 'live'
+        status: typeof ARBStakingAPY !== 'undefined' && Number(ARBStakingAPY) === 0 && Date.now() > 1679661322000  ? 'finished' : 'live'
       },
     ]
   }, [
@@ -500,7 +500,8 @@ export default function FarmsList () {
       <div className='img'><img src={coin1} alt={title}/></div>
     )
     if (isDoubleLogo === 0) {
-      coinLogo = <div className='img'><img src={coin1} alt={title}/></div>
+      // coinLogo = <div className='img'><img src={coin1} alt={title}/></div>
+      coinLogo = <div className='img'><TokenLogo1 symbol={coin1} logoUrl={coin1.indexOf('http') === 0 ? coin1 : ''} size='100%'/></div>
     } else if (isDoubleLogo === 1) {
       coinLogo = <DoubleLogo>
         <div className="logo left"><TokenLogo1 symbol={coin1} logoUrl={coin1.indexOf('http') === 0 ? coin1 : ''} size='100%'/></div>

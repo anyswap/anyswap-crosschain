@@ -22,6 +22,8 @@ export function useTokenAllowance(token?: any, owner?: string, spender?: string)
   
 
   useEffect(() => {
+    // console.log(token)
+    // console.log(ercContract, tokenAddress, owner, spender)
     if (
       ercContract
       && tokenAddress
@@ -31,8 +33,8 @@ export function useTokenAllowance(token?: any, owner?: string, spender?: string)
       // setErcAllowance('')
       ercContract.options.address = tokenAddress
       ercContract.methods.allowance(owner, spender).call((err:any, res:any) => {
-        // console.log(err)
-        // console.log(res)
+        console.log(err)
+        console.log(res)
         if (!err) {
           setErcAllowance(res)
         } else {

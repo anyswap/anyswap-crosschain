@@ -21,10 +21,11 @@ export enum ApprovalState {
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   amountToApprove?: any,
-  spender?: string
+  spender?: string,
+  token?: any
 ): [ApprovalState, () => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
-  const token = amountToApprove?.token ? amountToApprove.token : undefined
+  // const token = amountToApprove?.token ? amountToApprove.token : undefined
   // console.log(amountToApprove)
   // console.log(amountToApprove ? amountToApprove.raw.toString() : '')
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -94,14 +95,14 @@ export function useApproveCallback(
           spender: spender,
           account: account,
           amount: useExact ? amountToApprove.raw.toString() : MaxUint256,
-          symbol: amountToApprove.currency.symbol,
-          decimals: amountToApprove.currency.decimals,
+          symbol: token.symbol,
+          decimals: token.decimals,
           hash: response?.hash,
           chainId: chainId,
           type: "Approve",
         })
         addTransaction(response, {
-          summary: config.getBaseCoin(amountToApprove.currency.symbol, chainId) + ' approved, you can continue the cross chain transaction',
+          summary: config.getBaseCoin(token.symbol, chainId) + ' approved, you can continue the cross chain transaction',
           // summary: t('approvedTip', {
           //   symbol: config.getBaseCoin(amountToApprove.currency.symbol, chainId)
           // }),

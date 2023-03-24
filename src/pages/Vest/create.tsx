@@ -112,7 +112,7 @@ export default function CreateLock () {
   // console.log(lockDuration)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [formatCurrency ?? undefined])
   const formatInputBridgeValue = tryParseAmount(inputValue, formatCurrency ?? undefined)
-  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken?.address)
+  const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, useVeMultiToken?.address, formatCurrency)
 
   const { execute: onWrap, inputError: wrapInputError } = useCreateLockCallback(
     useVeMultiToken?.address,
