@@ -28,6 +28,7 @@ import { CloseIcon } from '../../theme'
 import config from '../../config'
 // import {fromWei, formatWeb3Str, toWei} from '../../utils/tools/tools'
 import {fromWei, toWei, formatDecimal} from '../../utils/tools/tools'
+import {BigAmount} from '../../utils/formatBignumber'
 
 import TokenLogo from '../TokenLogo'
 
@@ -355,6 +356,7 @@ interface FarmProps {
   initLpList?:any,
   stakeType?:any,
   LPprice?:any,
+  isEnd?:any,
 }
 
 export default function Farming ({
@@ -370,7 +372,8 @@ export default function Farming ({
   // version,
   initLpList,
   stakeType,
-  LPprice
+  LPprice,
+  isEnd
 }: FarmProps) {
   
   const { account, chainId } = useActiveWeb3React()
@@ -800,7 +803,7 @@ export default function Farming ({
           setStakingType('Unstake')
           setStakingModal(true)
         }}>{t('Unstake')}</Button1>
-        <AddBox disabled={DepositDisabled} onClick={() => {
+        <AddBox disabled={DepositDisabled || Boolean(isEnd)} onClick={() => {
           setStakingType('deposit')
           setStakingModal(true)
         }}>
@@ -821,9 +824,12 @@ export default function Farming ({
     let curLpObj = LpList && LpList[exchangeAddress] ? LpList[exchangeAddress] : {}
     
     let prd = curLpObj.pendingReward && Number(curLpObj.pendingReward.toString()) > 0 ? curLpObj.pendingReward : ''
+    const rDec = curLpObj?.tokenObj?.rewardDdecimals ? curLpObj.tokenObj.rewardDdecimals : 18
+    // prd = prd && rDec ? fromWei(prd, rDec, 6) : '0.00'
+    prd = prd && rDec ? BigAmount.format(rDec, prd).toSignificant(6) : '0.00'
     // console.log(prd)
-    const rDec = curLpObj?.tokenObj?.rewardDdecimals ? curLpObj.tokenObj.rewardDdecimals : ''
-    prd = prd && rDec ? fromWei(prd, rDec, 6) : '0.00'
+    // prd = prd && rDec ? BigAmount.format(rDec, prd).toExact() : '0.00'
+    // console.log(prd)
 
     let pbaObj:any = curLpObj && curLpObj.lpBalance ? getPoolBaseBalance(curLpObj.lpBalance) : ''
 

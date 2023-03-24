@@ -38,6 +38,7 @@ export default function FarmingComponent({
           price={price}
           initLpList={farmlist[farmkey].lpTokenIno}
           stakeType={'LP'}
+          isEnd={farmlist[farmkey].isEnd}
         />
       </AppBody>
     </>

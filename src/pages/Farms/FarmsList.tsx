@@ -253,6 +253,7 @@ export default function FarmsList () {
   const { t } = useTranslation()
 
   const [ARBStakingAPY, setARBStakingAPY] = useState()
+  const [ARBStakingAPYV2, setARBStakingAPYV2] = useState()
   // const [MATICStakingAPY, setMATICStakingAPY] = useState()
   // const [FTMStakingAPY, setFTMStakingAPY] = useState()
   // const [BSCStakingAPY, setBSCStakingAPY] = useState()
@@ -285,9 +286,16 @@ export default function FarmsList () {
 
   useEffect(() => {
     getPrice('ARB').then((res:any) => {
-      getFarmAPY('ARB', res).then((res:any) => {
-        setARBStakingAPY(res)
-      })
+      if (farmlist['ARB'].isEnd) {
+        getFarmAPY('ARB', res).then((res:any) => {
+          setARBStakingAPY(res)
+        })
+      }
+      if (farmlist['ARB2'].isEnd) {
+        getFarmAPY('ARB2', res).then((res:any) => {
+          setARBStakingAPYV2(res)
+        })
+      }
       // getFarmAPY('MATIC', res).then((res:any) => {
       //   setMATICStakingAPY(res)
       // })
@@ -460,17 +468,29 @@ export default function FarmsList () {
       {
         isDoubleLogo: 0,
         isOutLink: 0,
-        url: 'farm/arb',
+        url: farmlist['ARB2'].url,
+        title: 'ARB Staking',
+        info: (t('StakingTip', {symbol: 'ARB'}) + "<span class='pecent'>" + (ARBStakingAPYV2 ? (Number(ARBStakingAPYV2)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'ARB',
+        coin2: 'ARBITRUM',
+        coin3: '',
+        status: typeof ARBStakingAPYV2 !== 'undefined' && Number(ARBStakingAPYV2) === 0 && Date.now() > 1679661322000  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 0,
+        isOutLink: 0,
+        url: farmlist['ARB'].url,
         title: 'ARB Staking',
         info: (t('StakingTip', {symbol: 'ARB'}) + "<span class='pecent'>" + (ARBStakingAPY ? (Number(ARBStakingAPY)).toFixed(2) : '0.00') + "%</span>"),
         coin1: 'ARB',
         coin2: 'ARBITRUM',
         coin3: '',
-        status: typeof ARBStakingAPY !== 'undefined' && Number(ARBStakingAPY) === 0 && Date.now() > 1679661322000  ? 'finished' : 'live'
+        status: 'finished'
       },
     ]
   }, [
     ARBStakingAPY,
+    ARBStakingAPYV2,
     // MATICStakingAPY,
     // FTMStakingAPY,
     // BSCStakingAPY,

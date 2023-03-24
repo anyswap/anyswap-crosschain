@@ -15,6 +15,27 @@ interface FarmConfig {
 // }
 
 const config: FarmConfig = {
+  'ARB2': {
+    chainId: ChainId.ARBITRUM,
+    farmToken: '0x4ecf513a7d0E1548e14b621e21d2584bc7570918',
+    lpToken: '0x1263fea931b86f3e8ce8afbf29f66631b7be9347',
+    blockNumber: 2800000,
+    lpTokenIno: {
+      '0x1263fea931b86f3e8ce8afbf29f66631b7be9347': {
+        list: {
+          symbol: "ARB",
+          name: "Arbitrum",
+          decimals: 18,
+          rewardDdecimals: 18,
+        }
+      }
+    },
+    url: 'farm/arb2',
+    logoUrl: require('../assets/images/coin/source/ARB.png'),
+    key: 'ARB',
+    farmtype: 'noany',
+    isEnd: 0
+  },
   'ARB': {
     chainId: ChainId.ARBITRUM,
     farmToken: '0x1e1085eFaA63EDFE74aaD7C05a28EAE4ef917C3F',
@@ -25,14 +46,16 @@ const config: FarmConfig = {
         list: {
           symbol: "ARB",
           name: "Arbitrum",
-          decimals: 18
+          decimals: 18,
+          rewardDdecimals: 18,
         }
       }
     },
     url: 'farm/arb',
     logoUrl: require('../assets/images/coin/source/ARB.png'),
     key: 'ARB',
-    farmtype: 'noany'
+    farmtype: 'noany',
+    isEnd: 1
   },
   // 'ARB': {
   //   chainId: ChainId.GOERLI,
