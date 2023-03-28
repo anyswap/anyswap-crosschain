@@ -356,10 +356,10 @@ module.exports = function (webpackEnv) {
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
         // 兼容reef
-        // {
-        //   test: /\.js$/,
-        //   loader: require.resolve('@open-wc/webpack-import-meta-loader'),
-        // },
+        {
+          test: /\.js$/,
+          loader: require.resolve('@open-wc/webpack-import-meta-loader'),
+        },
         {
           test: /\.js$/,
           exclude: /node_modules/,
