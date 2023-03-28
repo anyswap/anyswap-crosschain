@@ -297,6 +297,7 @@ const allChainList = [
   ChainId.FRA,
   ChainId.PLQ,
   ChainId.ZKSYNC,
+  ChainId.POLYGONZKEVM,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
