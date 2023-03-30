@@ -50,6 +50,11 @@ import AppBody from '../AppBody'
 import config from '../../config'
 import {selectNetwork} from '../../config/tools/methods'
 
+import {
+  SWAP_TYPE,
+  swapTokenList,
+  initConfig
+} from './data'
 // import {
 //   useLogin
 // } from '../../hooks/near'
@@ -131,58 +136,7 @@ const ArrowBox = styled(AutoRow)`
   height:50px;
 `
 
-// const swapToken = '0x4ecf513a7d0E1548e14b621e21d2584bc7570918'
-// const supportChain = '4'
-
-const swapList:any = {
-  '1': {
-    swapToken: '0xaed0472b498548B1354925d222B832b99Bb2EC60',
-    anyToken: {
-      address: "0xf99d58e463A2E07e5692127302C20A191861b4D6",
-      symbol: 'ANY',
-      name: 'Anyswap',
-      decimals: 18
-    },
-    multiToken: {
-      address: "0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4",
-      symbol: "MULTI",
-      name: "Multichain",
-      decimals: 18
-    }
-  },
-  '56': {
-    swapToken: '0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4',
-    anyToken: {
-      address: "0xf68c9df95a18b2a5a5fa1124d79eeeffbad0b6fa",
-      symbol: 'ANY',
-      name: 'Anyswap',
-      decimals: 18
-    },
-    multiToken: {
-      address: "0x9fb9a33956351cf4fa040f65a13b835a3c8764e3",
-      symbol: "MULTI",
-      name: "Multichain",
-      decimals: 18
-    }
-  },
-  '250': {
-    swapToken: '0x65Ef703f5594D2573eb71Aaf55BC0CB548492df4',
-    anyToken: {
-      address: "0xddcb3ffd12750b45d32e084887fdf1aabab34239",
-      symbol: 'ANY',
-      name: 'Anyswap',
-      decimals: 18
-    },
-    multiToken: {
-      address: "0x9fb9a33956351cf4fa040f65a13b835a3c8764e3",
-      symbol: "MULTI",
-      name: "Multichain",
-      decimals: 18
-    }
-  }
-}
-
-export default function SwapMULTI () {
+export default function SwapToken ({swapType}: {swapType: SWAP_TYPE}) {
   const { account, chainId } = useActiveReact()
   const { t } = useTranslation()
   const toggleWalletModal = useWalletModalToggle()
@@ -190,13 +144,15 @@ export default function SwapMULTI () {
   const addTransaction = useTransactionAdder()
   // const multicallContract = useMulticallContract()
   // const {login}  = useLogin()
-  
+  const initChainId = initConfig?.[swapType]?.chainId
   const useSwapInfo = useMemo(() => {
-    if (chainId && swapList[chainId]) {
-      return swapList[chainId]
+    if (chainId && swapTokenList?.[swapType]?.[chainId]) {
+      // if (type === SWAP_TYPE.MULTI) {
+      // }
+      return swapTokenList?.[swapType]?.[chainId]
     }
     return undefined
-  }, [chainId])
+  }, [chainId, swapType])
 
   const isSupport = useMemo(() => {
     // console.log(chainId)
@@ -214,8 +170,15 @@ export default function SwapMULTI () {
   
   const contract = useSwapMultiContract(useSwapInfo?.swapToken)
   const anyCurrency = useLocalToken(useSwapInfo?.anyToken)
+
+  const initAnyCurrency = useMemo(() => {
+    return swapTokenList?.[swapType]?.[initChainId]?.anyToken
+  }, [initChainId, swapType])
   // console.log(anyCurrency)
   const multiCurrency = useLocalToken(useSwapInfo?.multiToken)
+  const initMultiCurrency = useMemo(() => {
+    return swapTokenList?.[swapType]?.[initChainId]?.multiToken
+  }, [initChainId, swapType])
   const rate = 1
   // console.log(multiCurrency)
   const balance = useCurrencyBalances((isSupport && account) ? account : undefined, [anyCurrency ?? undefined, multiCurrency ?? undefined])
@@ -326,7 +289,7 @@ export default function SwapMULTI () {
             <>
               <BottomGrouping>
                 {
-                  Object.keys(swapList).map((item, index) => {
+                  swapTokenList?.[swapType] && Object.keys(swapTokenList?.[swapType]).map((item, index) => {
                     return <ButtonLight key={index} style={{margin: '0 5px'}} onClick={() => {
                       selectNetwork(item).then((res: any) => {
                         console.log(res)
@@ -399,7 +362,7 @@ export default function SwapMULTI () {
         }}>test</ButtonLight> */}
         <ContentBody>
           <ContentTitle>
-            Swap ANY to MULTI
+            Swap {anyCurrency?.symbol ?? initAnyCurrency?.symbol} to {multiCurrency?.symbol ?? initMultiCurrency?.symbol}
           </ContentTitle>
 
           <SwapContentBox>
@@ -426,7 +389,7 @@ export default function SwapMULTI () {
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
                     <TokenLogoBox1>
-                      <TokenLogo symbol={anyCurrency?.symbol ?? 'ANY'} size={'100%'} />
+                      <TokenLogo symbol={anyCurrency?.symbol ?? initAnyCurrency?.symbol} size={'100%'} isAny={false} />
                     </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
@@ -441,8 +404,8 @@ export default function SwapMULTI () {
                               <Loader stroke="#ddd" />
                               <span className="txt">Loading</span>
                             </LoaderBox> */}
-                            <h3>ANY</h3>
-                            <p>Anyswap</p>
+                            <h3>{initAnyCurrency?.symbol}</h3>
+                            <p>{initAnyCurrency?.name}</p>
                           </>
                         )
                       }
@@ -479,7 +442,7 @@ export default function SwapMULTI () {
                 <CurrencySelect1 selected={true} className="open-currency-select-button">
                   <Aligner>
                     <TokenLogoBox1>
-                      <TokenLogo symbol={multiCurrency?.symbol ?? 'MULTI'} size={'100%'} />
+                      <TokenLogo symbol={multiCurrency?.symbol ?? initMultiCurrency?.symbol} size={'100%'} />
                     </TokenLogoBox1>
                     <StyledTokenName className="token-symbol-container">
                       {
@@ -490,12 +453,8 @@ export default function SwapMULTI () {
                           </>
                         ) : (
                           <>
-                            {/* <LoaderBox>
-                              <Loader stroke="#ddd" />
-                              <span className="txt">Loading</span>
-                            </LoaderBox> */}
-                            <h3>MULTI</h3>
-                            <p>Multichain</p>
+                            <h3>{initMultiCurrency?.symbol}</h3>
+                            <p>{initMultiCurrency?.name}</p>
                           </>
                         )
                       }

@@ -99,7 +99,6 @@ export default function TokenLogo({
         path = getSourcePath(symbol)
       }
     } else {
-      symbol = symbol.replace('any', '').replace('a', '')
       path = getSourcePath(symbol)
     }
   } else {

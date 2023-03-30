@@ -70,6 +70,14 @@ export const moreList = [
     isView: config.getCurConfigInfo().isOpenMerge,
   },
   {
+    path: '/btc',
+    textKey: 'BTC',
+    regex: /\/btc/,
+    className: 'otherInfo',
+    isOutLink: false,
+    isView: config.getCurConfigInfo().isOpenMerge,
+  },
+  {
     path: 'https://anycall.multichain.org/',
     textKey: 'anyCall',
     regex: '',

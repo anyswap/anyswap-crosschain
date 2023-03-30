@@ -24,7 +24,8 @@ const PoolList = Lazyload(() => import('./Pools/poolList'))
 // import PoolList from './Pools/poolList'
 // import CrossChainTxns from './CrossChainTxns'
 import CrossNFT from './CroseNFT'
-const SwapMULTI = Lazyload(() => import('./SwapMULTI'))
+const SwapMULTI = Lazyload(() => import('./SwapMULTI/multi'))
+const SwapBTC = Lazyload(() => import('./SwapMULTI/btc'))
 // import SwapMULTI from './SwapMULTI'
 const Vest = Lazyload(() => import('./Vest'))
 // import Vest from './Vest'
@@ -173,6 +174,7 @@ export default function App() {
               {/* <Route exact strict path="/cross-chain-txns" component={() => <CrossChainTxns />} /> */}
               {/* <Route exact strict path="/bridge" component={() => <Bridge />} /> */}
               <Route exact strict path="/multi" component={() => <SwapMULTI duration={0} />} />
+              <Route exact strict path="/btc" component={() => <SwapBTC duration={0} />} />
               <Route exact strict path="/history" component={() => <HistoryList />} />
               {/* <Route exact strict path="/history/details" component={() => <HistoryDetails />} /> */}
               <Route exact strict path="/approvals" component={() => <QueryNonApprove />} />
