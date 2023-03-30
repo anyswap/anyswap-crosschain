@@ -103,6 +103,8 @@ import tst from './tst'
 import zksync from './zksync'
 import fra from './fra'
 import plq from './plq'
+import smr from './smr'
+import zbc from './zbc'
 
 import { ChainId } from './chainId'
 
@@ -112,6 +114,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...zbc,
+  ...smr,
   ...plq,
   ...fra,
   ...zksync,

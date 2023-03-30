@@ -21,7 +21,7 @@ export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 
 export const ATOM_DCORE_MAINNET = 'https://full-node.mainnet-1.coreum.dev:26657'
 export const ATOM_DCORE_MAIN_CHAINID = ChainId.ATOM_DCORE
-export const ATOM_DCORE_MAIN_EXPLORER = ''
+export const ATOM_DCORE_MAIN_EXPLORER = 'https://explorer.coreum.com/coreum'
 
 export const ATOM_DCORE_TESTNET = 'https://full-node-pluto.testnet-1.coreum.dev:26657'
 export const ATOM_DCORE_TEST_CHAINID = ChainId.ATOM_DCORE_TEST
@@ -148,7 +148,7 @@ export default {
     lookAddr: ATOM_DCORE_MAIN_EXPLORER + '/accounts/',
     lookBlock: ATOM_DCORE_MAIN_EXPLORER + '/blocks/',
     explorer: ATOM_DCORE_MAIN_EXPLORER,
-    symbol: 'DCORE',
+    symbol: 'CORE',
     name: 'Coreum',
     networkName: 'Coreum mainnet',
     networkLogo: 'DCORE',

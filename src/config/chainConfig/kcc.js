@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const KCC_MAIN_CHAINID = ChainId.KCC
 export const KCC_MAINNET = getLocalRPC(KCC_MAIN_CHAINID, 'https://rpc-mainnet.kcc.network')
-export const KCC_MAIN_EXPLORER = 'https://explorer.kcc.io/cn'
+export const KCC_MAIN_EXPLORER = 'https://explorer.kcc.io/en'
 
 const symbol = 'KCS'
 
