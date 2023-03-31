@@ -148,4 +148,6 @@ export enum ChainId {
   PLQ = '7070',
   ZBC_TEST = '91002',
   SMR_TEST = '1071',
+  EOS_TEST = '15557',
+  LINEA_TEST = '59140',
 }
