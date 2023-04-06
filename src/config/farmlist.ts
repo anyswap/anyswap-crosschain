@@ -15,6 +15,36 @@ interface FarmConfig {
 // }
 
 const config: FarmConfig = {
+  'ARB3': {
+    chainId: ChainId.ARBITRUM,
+    farmToken: '0x123706cDD8e60324e610E9A2CC7012D0F45A5b8E',
+    lpToken: '0x1263fea931b86f3e8ce8afbf29f66631b7be9347',
+    // blockNumber: 2800000,
+    blockNumber:6912,
+    lpTokenIno: {
+      '0x1263fea931b86f3e8ce8afbf29f66631b7be9347': {
+        list: {
+          symbol: "ARB",
+          name: "Arbitrum",
+          decimals: 18,
+          rewardDdecimals: 18,
+        }
+      },
+      '0x44293e446d4fe519f177ee221055cb9e5dc4ac5b': {
+        list: {
+          symbol: "ETH",
+          name: "Wrapped Ether",
+          decimals: 18,
+          rewardDdecimals: 18,
+        }
+      }
+    },
+    url: 'farm/arb3',
+    logoUrl: require('../assets/images/coin/source/ARB.png'),
+    key: 'ARB',
+    farmtype: 'noany',
+    isEnd: 0
+  },
   'ARB2': {
     chainId: ChainId.ARBITRUM,
     farmToken: '0x4ecf513a7d0E1548e14b621e21d2584bc7570918',

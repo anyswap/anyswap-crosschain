@@ -254,6 +254,7 @@ export default function FarmsList () {
 
   const [ARBStakingAPY, setARBStakingAPY] = useState()
   const [ARBStakingAPYV2, setARBStakingAPYV2] = useState()
+  const [ARBStakingAPYV3, setARBStakingAPYV3] = useState()
   // const [MATICStakingAPY, setMATICStakingAPY] = useState()
   // const [FTMStakingAPY, setFTMStakingAPY] = useState()
   // const [BSCStakingAPY, setBSCStakingAPY] = useState()
@@ -294,6 +295,11 @@ export default function FarmsList () {
       if (farmlist['ARB2'].isEnd) {
         getFarmAPY('ARB2', res).then((res:any) => {
           setARBStakingAPYV2(res)
+        })
+      }
+      if (farmlist['ARB3'].isEnd) {
+        getFarmAPY('ARB3', res).then((res:any) => {
+          setARBStakingAPYV3(res)
         })
       }
       // getFarmAPY('MATIC', res).then((res:any) => {
@@ -468,6 +474,17 @@ export default function FarmsList () {
       {
         isDoubleLogo: 0,
         isOutLink: 0,
+        url: farmlist['ARB3'].url,
+        title: 'ETH Staking',
+        info: (t('StakingTip', {symbol: 'ETH'}) + "<span class='pecent'>" + (ARBStakingAPYV3 ? (Number(ARBStakingAPYV3)).toFixed(2) : '0.00') + "%</span>"),
+        coin1: 'ETH',
+        coin2: 'ARBITRUM',
+        coin3: '',
+        status: typeof ARBStakingAPYV3 !== 'undefined' && Number(ARBStakingAPYV3) === 0 && Date.now() > 1680847201000  ? 'finished' : 'live'
+      },
+      {
+        isDoubleLogo: 0,
+        isOutLink: 0,
         url: farmlist['ARB2'].url,
         title: 'ARB Staking',
         info: (t('StakingTip', {symbol: 'ARB'}) + "<span class='pecent'>" + (ARBStakingAPYV2 ? (Number(ARBStakingAPYV2)).toFixed(2) : '0.00') + "%</span>"),
@@ -491,6 +508,7 @@ export default function FarmsList () {
   }, [
     ARBStakingAPY,
     ARBStakingAPYV2,
+    ARBStakingAPYV3,
     // MATICStakingAPY,
     // FTMStakingAPY,
     // BSCStakingAPY,
