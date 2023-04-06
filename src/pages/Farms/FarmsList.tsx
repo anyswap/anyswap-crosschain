@@ -16,7 +16,10 @@ import {USE_VERSION} from '../../config/constant'
 import { ButtonConfirmed } from '../../components/Button'
 
 
-import {getPrice} from '../../utils/tools/getPrice'
+import {
+  // getPrice,
+  getAllLabelPrice
+} from '../../utils/tools/getPrice'
 
 import AppBody from '../AppBody'
 
@@ -272,11 +275,11 @@ export default function FarmsList () {
     type: ''
   })
   
-  function getFarmAPY (key:string, price:any) {
+  function getFarmAPY (key:string, price:any, lpPrice:any) {
     return new Promise(resolve => {
       if (farmlist[key].lpTokenIno) {
         if (price) {
-          getBaseInfo(farmlist[key].lpTokenIno, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price).then((res:any) => {
+          getBaseInfo(farmlist[key].lpTokenIno, farmlist[key].chainId, farmlist[key].farmToken, '', farmlist[key].blockNumber, price, lpPrice).then((res:any) => {
             // console.log(res)
             resolve(res?.lpArr[farmlist[key]?.lpToken]?.apy)
           })
@@ -286,22 +289,18 @@ export default function FarmsList () {
   }
 
   useEffect(() => {
-    getPrice('ARB').then((res:any) => {
+    getAllLabelPrice([farmlist['ARB'].keyLable]).then((res:any) => {
       if (farmlist['ARB'].isEnd) {
-        getFarmAPY('ARB', res).then((res:any) => {
+        getFarmAPY('ARB', res?.[farmlist['ARB'].keyLable]?.usd, res?.[farmlist['ARB'].keyLable]?.usd).then((res:any) => {
           setARBStakingAPY(res)
         })
       }
       if (farmlist['ARB2'].isEnd) {
-        getFarmAPY('ARB2', res).then((res:any) => {
+        getFarmAPY('ARB2', res?.[farmlist['ARB'].keyLable]?.usd, res?.[farmlist['ARB'].keyLable]?.usd).then((res:any) => {
           setARBStakingAPYV2(res)
         })
       }
-      if (farmlist['ARB3'].isEnd) {
-        getFarmAPY('ARB3', res).then((res:any) => {
-          setARBStakingAPYV3(res)
-        })
-      }
+      
       // getFarmAPY('MATIC', res).then((res:any) => {
       //   setMATICStakingAPY(res)
       // })
@@ -310,11 +309,13 @@ export default function FarmsList () {
       //   setFTMStakingAPY(res)
       // })
     })
-    // getPrice('DEP').then((res:any) => {
-    //   getFarmAPY('BSC', res).then((res:any) => {
-    //     setBSCStakingAPY(res)
-    //   })
-    // })
+    getAllLabelPrice([farmlist['ARB3'].keyLable, farmlist['ARB3'].lpKeyLabel]).then((res:any) => {
+      if (farmlist['ARB3'].isEnd) {
+        getFarmAPY('ARB3', res?.[farmlist['ARB3'].keyLable]?.usd, res?.[farmlist['ARB3'].lpKeyLabel]?.usd).then((res:any) => {
+          setARBStakingAPYV3(res)
+        })
+      }
+    })
     // getPrice('HERO').then((res:any) => {
     //   getFarmAPY('BSC_HERO', res).then((res:any) => {
     //     setBSCHEROStakingAPY(res)

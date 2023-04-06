@@ -80,7 +80,7 @@ function dispatchInfoState (key: string, action: any) {
   }
 }
 
-function getAPY (item:any, allocPoint:any, lpBalance:any, blockNumber:number, TotalPoint:number, BlockReward: any, price:number) {
+function getAPY (item:any, allocPoint:any, lpBalance:any, blockNumber:number, TotalPoint:number, BlockReward: any, price:number, lpPrice:number) {
   // console.log(price)
   if (
     BlockReward
@@ -88,12 +88,13 @@ function getAPY (item:any, allocPoint:any, lpBalance:any, blockNumber:number, To
     && TotalPoint
     && allocPoint
     && price
+    && lpPrice
   ) {
     const curdec = item?.tokenObj?.decimals
     const br = fromWei(BlockReward, 18)
     const lb = fromWei(lpBalance, curdec)
     // console.log(br)
-    const baseYear =  br ? (Number(br) * blockNumber * 365 * Number(allocPoint) * price * 100) / (Number(TotalPoint)) / lb : 0
+    const baseYear =  br ? (Number(br) * blockNumber * 365 * Number(allocPoint) * price * 100) / (Number(TotalPoint)) / lb / lpPrice : 0
     // console.log(baseYear)
     return baseYear.toFixed(2)
   }
@@ -223,7 +224,8 @@ export function getBaseInfo (
   FARMTOKEN: string,
   account: any,
   blockNumber: number,
-  price: number
+  price: number,
+  lpPrice: number
 ) {
   return new Promise(resolve => {
     if (farmlist[FARMTOKEN] && (Date.now() - farmlist[FARMTOKEN].timestamp < 1000 * 3)) {
@@ -241,7 +243,7 @@ export function getBaseInfo (
           getTokenList(formatNum(pl), tokenlist, CHAINID, FARMTOKEN, account).then(() => {
             const list:any = {}
             for (const obj of stateList[FARMTOKEN]) {
-              const apy = getAPY(obj, obj.allocPoint, obj.lpBalance, blockNumber, stateInfo[FARMTOKEN]?.TotalPoint, stateInfo[FARMTOKEN]?.BlockReward, price)
+              const apy = getAPY(obj, obj.allocPoint, obj.lpBalance, blockNumber, stateInfo[FARMTOKEN]?.TotalPoint, stateInfo[FARMTOKEN]?.BlockReward, price, lpPrice)
               list[obj.lpToken] = {
                 ...obj,
                 apy: apy

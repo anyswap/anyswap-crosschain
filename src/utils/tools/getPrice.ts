@@ -94,6 +94,8 @@ export const getPrice = (coin:string) => {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=multichain'
     } else if (coin === 'ARB') {
       url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=arbitrum'
+    } else if (coin === 'ETH') {
+      url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum'
     }
     // console.log(url)
     getApiData(url, coin + '_PRICE', 1000 * 60 * 60).then((res:any) => {
@@ -123,3 +125,69 @@ export const getLabelPrice = (label:string) => {
     })
   })
 }
+
+const LABRL_PRICE_LIST = 'LABRL_PRICE_LIST'
+
+function getAllLabelPriceLink (labelKey:string) {
+  return new Promise(resolve => {
+    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${labelKey}&vs_currencies=usd`
+    axios.get(url).then((res:any) => {
+      if (res && res.data && res.status === 200) {
+        resolve({
+          msg: 'Success',
+          data: res.data
+        })
+      } else {
+        resolve({
+          msg: 'Error',
+          data: ''
+        })
+      }
+    }).catch((err:any) => {
+      console.log(err)
+      resolve({
+        msg: 'Error',
+        data: ''
+      })
+    })
+  })
+}
+export function getAllLabelPrice (labelArr:Array<string>) {
+  return new Promise(resolve => {
+    const key = labelArr.join(',')
+    const useKey = LABRL_PRICE_LIST + '_' + key
+    const localPriceList = sessionStorage.getItem(useKey)
+    if (localPriceList) {
+      const lpl = JSON.parse(localPriceList)
+      if (Date.now() - lpl.timestamp > (1000 * 60 * 10)) {
+        getAllLabelPriceLink(key).then((res:any) => {
+          if (res.msg === 'Success') {
+            sessionStorage.setItem(useKey, JSON.stringify(res.data))
+            resolve(res.data)
+          } else {
+            resolve(lpl)
+          }
+        }).catch(() => {
+          resolve(lpl)
+        })
+      } else {
+        resolve(lpl)
+      }
+    } else {
+      getAllLabelPriceLink(key).then((res:any) => {
+        if (res.msg === 'Success') {
+          sessionStorage.setItem(useKey, JSON.stringify(res.data))
+          resolve(res.data)
+        } else {
+          resolve('')
+        }
+      }).catch(() => {
+        resolve('')
+      })
+    }
+  })
+}
+
+// getAllLabelPrice(['ethereum', 'arbitrum']).then((res) => {
+//   console.log(res)
+// })

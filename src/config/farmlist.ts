@@ -42,8 +42,11 @@ const config: FarmConfig = {
     url: 'farm/arb3',
     logoUrl: require('../assets/images/coin/source/ARB.png'),
     key: 'ARB',
+    keyLable: 'arbitrum',
+    lpKey: 'ETH',
+    lpKeyLabel: 'ethereum',
     farmtype: 'noany',
-    isEnd: 0
+    isEnd: 0,
   },
   'ARB2': {
     chainId: ChainId.ARBITRUM,
@@ -64,6 +67,7 @@ const config: FarmConfig = {
     url: 'farm/arb2',
     logoUrl: require('../assets/images/coin/source/ARB.png'),
     key: 'ARB',
+    keyLable: 'arbitrum',
     farmtype: 'noany',
     isEnd: 0
   },
@@ -85,6 +89,7 @@ const config: FarmConfig = {
     url: 'farm/arb',
     logoUrl: require('../assets/images/coin/source/ARB.png'),
     key: 'ARB',
+    keyLable: 'arbitrum',
     farmtype: 'noany',
     isEnd: 1
   },

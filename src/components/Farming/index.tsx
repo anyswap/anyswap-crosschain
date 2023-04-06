@@ -352,6 +352,7 @@ interface FarmProps {
   blockNumber?:any,
   BASEMARKET?:any,
   price?:any,
+  lpPrice?:any,
   // version?:any,
   initLpList?:any,
   stakeType?:any,
@@ -369,6 +370,7 @@ export default function Farming ({
   blockNumber = 28800,
   BASEMARKET = 100,
   price,
+  lpPrice,
   // version,
   initLpList,
   stakeType,
@@ -513,7 +515,7 @@ export default function Farming ({
 
   useEffect(() => {
     if (initLpList) {
-      getBaseInfo(initLpList, CHAINID, FARMTOKEN, account, blockNumber, price).then((res:any) => {
+      getBaseInfo(initLpList, CHAINID, FARMTOKEN, account, blockNumber, price, lpPrice).then((res:any) => {
         console.log(res)
         setLpList(res.lpArr)
         // getStakingInfo()
@@ -666,7 +668,8 @@ export default function Farming ({
                     </div>
                     <div className="item">
                       <span className="left">Total Liquidity</span>
-                      <span className="right">$ --</span>
+                      {/* <span className="right">$ --</span> */}
+                      <span className="right">--</span>
                     </div>
                   </FarmInfo>
                   <Flex>
@@ -719,9 +722,16 @@ export default function Farming ({
                       </div>
                       <div className="item">
                         <span className="left">Total Liquidity</span>
-                        <span className="right">$ {
+                        <span className="right">{
                         item.lpBalance ? 
-                        (LPprice ? Number(fromWei(item.lpBalance,item.tokenObj.decimals)) * LPprice : Number(fromWei(item.lpBalance,item.tokenObj.decimals))).toFixed(2) : '0.00'}</span>
+                        Number(fromWei(item.lpBalance,item.tokenObj.decimals)).toFixed(2) : '0.00'
+                        }
+                        </span>
+                        {/* <span className="right">$ {
+                        item.lpBalance ? 
+                        (LPprice ? Number(fromWei(item.lpBalance,item.tokenObj.decimals)) * LPprice : Number(fromWei(item.lpBalance,item.tokenObj.decimals))).toFixed(2) : '0.00'
+                        }
+                        </span> */}
                       </div>
                     </FarmInfo>
                     <Flex>
