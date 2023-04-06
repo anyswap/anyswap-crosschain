@@ -510,15 +510,6 @@ export default function CrossChain({
           state: 'Error',
           tip: t('noZero')
         }
-      } else if (isWrapInputError) {
-        if (userInterfaceBalanceValid) {
-          return {
-            state: 'Error',
-            tip: isWrapInputError
-          }
-        } else {
-          return undefined
-        }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
           state: 'Error',
@@ -534,6 +525,15 @@ export default function CrossChain({
             amount: destConfig.MaximumSwap,
             symbol: selectCurrency.symbol
           })
+        }
+      } else if (isWrapInputError) {
+        if (userInterfaceBalanceValid) {
+          return {
+            state: 'Error',
+            tip: isWrapInputError
+          }
+        } else {
+          return undefined
         }
       }
     }

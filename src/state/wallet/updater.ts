@@ -207,7 +207,7 @@ export default function Updater(): null {
     const results = []
     let useLimit = limit
     // console.log(chainId)
-    if ([ChainId.ARBITRUM].includes(chainId.toString())) {
+    if (chainId && [ChainId.ARBITRUM].includes(chainId.toString())) {
       // useLimit = 3
       useLimit = limit
     }

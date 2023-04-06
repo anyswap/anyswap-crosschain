@@ -7,6 +7,7 @@ import {ChainId} from './chainId'
 // export const EOS_MAIN_EXPLORER = 'https://evm.findorascan.io'
 
 export const EOS_TEST_CHAINID = ChainId.EOS_TEST
+// export const EOS_TESTNET = getLocalRPC(EOS_TEST_CHAINID, 'https://api.testnet.evm.eosnetwork.com')
 export const EOS_TESTNET = getLocalRPC(EOS_TEST_CHAINID, 'https://api-testnet2.trust.one')
 export const EOS_TEST_EXPLORER = 'https://explorer-testnet2.trust.one'
 
@@ -51,6 +52,8 @@ export default {
     nodeRpc: EOS_TESTNET,
     nodeRpcList: [
       EOS_TESTNET,
+      'https://api.testnet.evm.eosnetwork.com',
+      'https://api-testnet2.trust.one'
     ],
     chainID: EOS_TEST_CHAINID,
     lookHash: EOS_TEST_EXPLORER + '/tx/',

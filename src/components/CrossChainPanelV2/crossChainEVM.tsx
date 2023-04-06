@@ -464,7 +464,7 @@ export default function CrossChain({
   }, [useSwapMethods, wrapInputError, wrapInputErrorUnderlying, wrapInputErrorNative, isRouter, wrapInputErrorCrossBridge, wrapInputErrorPermissonless])
   // console.log(selectCurrency)
   const isInputError = useMemo(() => {
-    // console.log(isWrapInputError)
+    // console.log(Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0)
     if (!selectCurrency) {
       return {
         state: 'Error',
@@ -485,15 +485,6 @@ export default function CrossChain({
         return {
           state: 'Error',
           tip: t('noZero')
-        }
-      } else if (isWrapInputError) {
-        if (userInterfaceBalanceValid) {
-          return {
-            state: 'Error',
-            tip: isWrapInputError
-          }
-        } else {
-          return undefined
         }
       } else if (Number(inputBridgeValue) < Number(destConfig.MinimumSwap) && Number(destConfig.MinimumSwap) !== 0) {
         return {
@@ -526,6 +517,15 @@ export default function CrossChain({
           state: 'Warning',
           tip: t('insufficientLiquidity')
         }
+      } else if (isWrapInputError) {
+        if (userInterfaceBalanceValid) {
+          return {
+            state: 'Error',
+            tip: isWrapInputError
+          }
+        } else {
+          return undefined
+        }
       }
     }
     return undefined
@@ -533,7 +533,7 @@ export default function CrossChain({
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
-    // console.log(isAddr)
+    console.log(isInputError)
     if (!evmAccount || !useChain) {
       return undefined
     } else if (isInputError) {
