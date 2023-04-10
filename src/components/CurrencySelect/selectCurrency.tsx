@@ -173,17 +173,21 @@ export default function SelectCurrencyInputPanel({
   }, [selectTokenBalance])
 
   useEffect(() => {
+    // console.log('tokenBalance', tokenBalance)
+    // console.log('customBalance', customBalance, isNativeToken)
+    // console.log('customBalance', (tokenBalance || tokenBalance === 0 || tokenBalance === '0') && !isNativeToken)
     if (customBalance) {
       // console.log(1)
       setUseBalance(customBalance)
-    } else if (tokenBalance && !isNativeToken) {
+    } else if ((tokenBalance || tokenBalance === 0 || tokenBalance === '0') && !isNativeToken) {
       // console.log(2)
       setUseBalance(tokenBalance)
     } else if (isNativeToken) {
       // console.log(3)
-      if (inputType && inputType.swapType === 'withdraw' && tokenBalance) {
+      // console.log(nativeBalance)
+      if (inputType && inputType.swapType === 'withdraw' && (tokenBalance || tokenBalance === 0)) {
         setUseBalance(tokenBalance)
-      } else if ((inputType && inputType.swapType === 'deposit') || nativeBalance) {
+      } else if ((inputType && inputType.swapType === 'deposit') || nativeBalance || nativeBalance === 0) {
         setUseBalance(nativeBalance)
       } else {
         setUseBalance(undefined)
@@ -194,28 +198,9 @@ export default function SelectCurrencyInputPanel({
     }
   }, [tokenBalance, isNativeToken, nativeBalance, customBalance, inputType])
 
-  // const useBalance = useMemo(() => {
-  //   // console.log(hideBalance)
-  //   // console.log(customBalance)
-  //   // console.log(isNativeToken)
-  //   if (customBalance) {
-  //     return customBalance
-  //   } else if (selectTokenBalance && !isNativeToken) {
-  //     return selectTokenBalance
-  //   } else if (isNativeToken) {
-  //     if (inputType && inputType.swapType === 'withdraw' && selectTokenBalance) {
-  //       return selectTokenBalance
-  //     } else if ((inputType && inputType.swapType === 'deposit') || selectedNativeBalance) {
-  //       return selectedNativeBalance
-  //     }
-  //     return undefined
-  //   } else {
-  //     return undefined
-  //   }
-  // }, [selectTokenBalance, isNativeToken, selectedNativeBalance, customBalance, inputType])
-  // console.log(useBalance)
+  // console.log('useBalance', useBalance)
   const viewBalance = useMemo(() => {
-    if (useBalance) {
+    if (useBalance || useBalance === 0) {
       // console.log(useBalance)
       if (typeof useBalance === 'string' || typeof useBalance === 'number') {
         return useBalance
@@ -225,7 +210,7 @@ export default function SelectCurrencyInputPanel({
     }
     return undefined
   }, [useBalance])
-  // console.log(viewBalance)
+  // console.log('viewBalance', viewBalance)
   const handleMax = useCallback(() => {
     if (onMax) {
       if (useBalance) {
@@ -272,7 +257,7 @@ export default function SelectCurrencyInputPanel({
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
-                      {!hideBalance && !!currency && viewBalance
+                      {!hideBalance && !!currency && (viewBalance || viewBalance === 0)
                         ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(viewBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
@@ -285,7 +270,7 @@ export default function SelectCurrencyInputPanel({
                       fontSize={14}
                       style={{ display: 'inline', cursor: 'pointer' }}
                     >
-                      {!hideBalance && !!currency && viewBalance
+                      {!hideBalance && !!currency && (viewBalance || viewBalance === 0)
                         ? (customBalanceText ?? (t('balanceTxt') + ': ')) + thousandBit(viewBalance, 2)
                         : t('balanceTxt') + ': ' + '-'}
                     </TYPE.body>
@@ -375,7 +360,7 @@ export default function SelectCurrencyInputPanel({
                         <ExtraText>
                           <h5>{t('balance')}</h5>
                           <p>
-                            {!hideBalance && !!currency && viewBalance
+                            {!hideBalance && !!currency && (viewBalance || viewBalance === 0)
                               ? (customBalanceText ?? '') + thousandBit(viewBalance, 2)
                               : '-'}{' '}
                           </p>

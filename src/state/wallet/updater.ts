@@ -17,7 +17,7 @@ import ERC20_INTERFACE from '../../constants/abis/erc20'
 
 import {useRpcState} from '../rpc/hooks'
 
-import {getWeb3} from '../../utils/tools/multicall'
+// import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
 import { isAddress } from '../../utils/isAddress/index'
 import { ChainId } from '../../config/chainConfig/chainId'
@@ -179,26 +179,59 @@ export default function Updater(): null {
           resolve('')
           return
         }
+
         // const provider = library ? library?.provider : ''
         const provider = ''
-        const web3 = getWeb3('', provider)
-        web3.eth.getBalance(account).then((res:any) => {
+        useBatchData({
+          chainId, 
+          calls: [
+            {
+              property: 'eth',
+              methods: 'getBalance',
+              input: [account]
+            }
+          ], 
+          provider
+        }).then((res) => {
           // console.log(res)
-          const blList:any = {}
-          const dec = 18
-          blList['NATIVE'] = {
-            balance: formatUnits(res, dec),
-            balancestr: res,
-            dec: dec,
-            blocknumber: ''
+          if (res) {
+            const blList:any = {}
+            const dec = 18
+            blList['NATIVE'] = {
+              balance: formatUnits(res[0], dec),
+              balancestr: res[0],
+              dec: dec,
+              blocknumber: ''
+            }
+            dispatch(tokenBalanceList({
+              chainId,
+              account,
+              tokenList: blList
+            }))
+            resolve(res[0])
+          } else {
+            resolve('')
           }
-          dispatch(tokenBalanceList({
-            chainId,
-            account,
-            tokenList: blList
-          }))
-          resolve(res)
         })
+        // const web3 = getWeb3('', provider)
+        // web3.eth.getBalance(account).then((res:any) => {
+        //   console.log('getBalance')
+        //   console.log(res)
+        //   const blList:any = {}
+        //   const dec = 18
+        //   blList['NATIVE'] = {
+        //     balance: formatUnits(res, dec),
+        //     balancestr: res,
+        //     dec: dec,
+        //     blocknumber: ''
+        //   }
+        //   dispatch(tokenBalanceList({
+        //     chainId,
+        //     account,
+        //     tokenList: blList
+        //   }))
+        //   resolve(res)
+        // })
       } else {
         resolve('')
       }

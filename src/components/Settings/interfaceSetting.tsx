@@ -146,7 +146,7 @@ export default function SettingsTab() {
   // const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [userInterfaceMode, toggleSetInterfaceMode] = useInterfaceModeManager()
   const [userInterfaceBalanceValid, toggleSetInterfaceBalanceValid] = useInterfaceBalanceValidManager()
-  console.log(userInterfaceBalanceValid)
+  // console.log(userInterfaceBalanceValid)
   // show confirmation view before turning on
   // const [showConfirmation, setShowConfirmation] = useState(false)
 
