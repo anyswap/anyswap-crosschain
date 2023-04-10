@@ -129,7 +129,8 @@ export default function Updater(): null {
         resolve('')
         return
       }
-      const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
+      // const provider = rpcItem && rpcItem.origin === 'wallet' && library ? library?.provider : ''
+      const provider = ''
       useBatchData({
         chainId, 
         calls: arr.map(({callData, target}: {callData:string, target:string}) => ({type: 'TOKEN', callData, target})), 
@@ -178,7 +179,8 @@ export default function Updater(): null {
           resolve('')
           return
         }
-        const provider = library ? library?.provider : ''
+        // const provider = library ? library?.provider : ''
+        const provider = ''
         const web3 = getWeb3('', provider)
         web3.eth.getBalance(account).then((res:any) => {
           // console.log(res)

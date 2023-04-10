@@ -3,7 +3,8 @@ import {VERSION, USE_VERSION, CHAIN_TYPE} from '../constant'
 import {ChainId} from './chainId'
 
 export const OPTIMISM_MAIN_CHAINID = ChainId.OPTIMISM
-export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, 'https://mainnet.optimism.io')
+// export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, 'https://mainnet.optimism.io')
+export const OPTIMISM_MAINNET = getLocalRPC(OPTIMISM_MAIN_CHAINID, 'https://rpc.ankr.com/optimism')
 export const OPTIMISM_MAIN_EXPLORER = 'https://optimistic.etherscan.io'
 
 export const OPTIMISM_TEST_CHAINID = ChainId.OPTIMISM_TEST

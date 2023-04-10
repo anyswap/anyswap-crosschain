@@ -90,11 +90,7 @@ declare module 'big.js';
 declare module 'tronweb';
 
 interface Window {
-  ethereum?: {
-    isMetaMask?: true
-    on?: (...args: any[]) => void
-    removeListener?: (...args: any[]) => void
-  }
+  ethereum?: any
   okexchain:any
   tronWeb:any
   tronLink:any

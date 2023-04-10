@@ -11,6 +11,7 @@ import {
   xdefi,
   gnosissafe,
   bitkeep,
+  // metamask
   // tally
 } from '../connectors'
 // import { injected, walletconnect } from '../connectors'
@@ -41,6 +42,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   METAMASK: {
     connector: injected,
+    // connector: metamask,
     name: 'MetaMask',
     iconName: 'metamask.svg',
     description: 'Easy-to-use browser extension.',

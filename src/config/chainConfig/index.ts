@@ -348,6 +348,7 @@ const testChainList = [
   ChainId.SMR_TEST,
   ChainId.EOS_TEST,
   ChainId.LINEA_TEST,
+  ChainId.RBTC_TEST,
 ]
 
 const useChain:any = {

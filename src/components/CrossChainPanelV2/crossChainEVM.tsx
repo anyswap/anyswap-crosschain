@@ -533,7 +533,7 @@ export default function CrossChain({
 
   const errorTip = useMemo(() => {
     const isAddr = isAddress( recipient, selectChain)
-    console.log(isInputError)
+    // console.log(isInputError)
     if (!evmAccount || !useChain) {
       return undefined
     } else if (isInputError) {

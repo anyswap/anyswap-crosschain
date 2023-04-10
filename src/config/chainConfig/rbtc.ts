@@ -6,24 +6,16 @@ export const RBTC_MAIN_CHAINID = ChainId.RBTC
 export const RBTC_MAINNET = getLocalRPC(RBTC_MAIN_CHAINID, 'https://public-node.rsk.co')
 export const RBTC_MAIN_EXPLORER = 'https://explorer.rsk.co'
 
+export const RBTC_TEST_CHAINID = ChainId.RBTC_TEST
+export const RBTC_TESTNET = getLocalRPC(RBTC_TEST_CHAINID, 'https://public-node.testnet.rsk.co')
+export const RBTC_TEST_EXPLORER = 'https://explorer.testnet.rsk.co'
 
 const symbol = 'RBTC'
 
-const bridgeToken = {
-  [VERSION.V1]: {
-    bridgeInitToken: '',
-    bridgeInitChain: '',
-  },
-  [VERSION.V5]: {
-    bridgeInitToken: '',
-    bridgeInitChain: '56',
-    nativeToken: '',
-    crossBridgeInitToken: ''
-  },
+const bridgeToken:any = {
   [VERSION.V7]: {
     bridgeInitToken: '',
-    bridgeInitChain: '56',
-    nativeToken: '',
+    bridgeInitChain: '',
     crossBridgeInitToken: ''
   },
 }
@@ -50,5 +42,26 @@ export default {
     walletName: 'RSK Mainnet',
     type: 'main',
     label: RBTC_MAIN_CHAINID,
+  },
+  [RBTC_TEST_CHAINID]: {
+    ...bridgeToken[USE_VERSION],
+    swapRouterToken: '',
+    multicalToken: '',
+    v1FactoryToken: '',
+    v2FactoryToken: '',
+    nodeRpc: RBTC_TESTNET,
+    nodeRpcList: [
+      RBTC_TESTNET,
+    ],
+    chainID: RBTC_TEST_CHAINID,
+    lookHash: RBTC_TEST_EXPLORER + '/tx/',
+    lookAddr: RBTC_TEST_EXPLORER + '/address/',
+    lookBlock: RBTC_TEST_EXPLORER + '/block/',
+    explorer: RBTC_TEST_EXPLORER,
+    symbol: symbol,
+    name: 'Rootstock RSK',
+    networkName: 'Rootstock RSK testnet',
+    type: 'test',
+    label: RBTC_TEST_CHAINID,
   },
 }
