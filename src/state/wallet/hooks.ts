@@ -1,5 +1,5 @@
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import JSBI from 'jsbi'
 import { useDispatch, useSelector } from 'react-redux'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
@@ -209,7 +209,7 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
   const balanceWallet  = useTokenBalancesWithLoadingIndicator1(account, token, decimals, chainId)
   const blItem = useOneTokenBalance(token ? token?.toLowerCase() : undefined)
   // console.log('balanceWallet', token, balanceWallet)
-  return useMemo(() => {
+  const balance = useMemo(() => {
     // console.log('blItem', blItem)
     // console.log('balanceWallet', token, balanceWallet)
     if (balanceWallet) {
@@ -222,6 +222,11 @@ export function useCurrencyBalance1(account?: string | null, token?: string, dec
       return undefined
     }
   }, [balanceWallet, blItem?.balances, decimals])
+
+  useEffect(() => {
+    // console.log('balance', balance)
+  }, [balance])
+  return balance
   // }, [account, token, chainId, balanceWallet, blItem?.balances, decimals])
 }
 

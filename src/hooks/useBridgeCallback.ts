@@ -314,53 +314,65 @@ export function useBridgeCallback(
                 // console.log(bridgeContract)
                 // console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
-                const txReceipt = await bridgeContract.anySwapOut(
-                  inputToken,
-                  toAddress,
-                  `0x${inputAmount.raw.toString(16)}`,
-                  destConfig?.chainId
-                )
-                addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
-                  value: inputAmount.toSignificant(6),
-                  toChainId: toChainID,
-                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                  symbol: inputCurrency?.symbol,
-                  version: version,
-                  routerToken: routerToken,
-                  token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity,
-                  fromInfo: {
+                let isVaild = false
+                try {
+                  const rcID = await bridgeContract.cID()
+                  console.log(rcID.toString())
+                  console.log(evmChainId.toString() === rcID.toString())
+                  isVaild = evmChainId.toString() === rcID.toString()
+                } catch (error) {
+                  console.log(error)
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                }
+                if (isVaild) {
+                  const txReceipt = await bridgeContract.anySwapOut(
+                    inputToken,
+                    toAddress,
+                    `0x${inputAmount.raw.toString(16)}`,
+                    destConfig?.chainId
+                  )
+                  addTransaction(txReceipt, {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
+                    value: inputAmount.toSignificant(6),
+                    toChainId: toChainID,
+                    toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
-                    name: inputCurrency?.name,
-                    decimals: inputCurrency?.decimals,
-                    address: inputCurrency?.address,
-                  },
-                  toInfo: {
-                    symbol: destConfig?.symbol,
-                    name: destConfig?.name,
-                    decimals: destConfig?.decimals,
-                    address: destConfig?.address,
-                  },
-                })
-                // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
-                  const data = {
-                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: evmChainId,
-                    selectChain: toChainID,
-                    account: account?.toLowerCase(),
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                    symbol: inputCurrency?.symbol,
+                    version: version,
                     routerToken: routerToken,
-                    version: version
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl,
+                    isLiquidity: isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
+                  })
+                  // registerSwap(txReceipt.hash, chainId)
+                  if (txReceipt?.hash && account && !isGnosisSafeWallet) {
+                    const data = {
+                      hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
+                      chainId: evmChainId,
+                      selectChain: toChainID,
+                      account: account?.toLowerCase(),
+                      value: inputAmount.raw.toString(),
+                      formatvalue: inputAmount?.toSignificant(6),
+                      to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
+                      symbol: inputCurrency?.symbol,
+                      routerToken: routerToken,
+                      version: version
+                    }
+                    recordsTxns(data)
+                    results.hash = txReceipt?.hash
+                    onChangeViewDtil(txReceipt?.hash, true)
                   }
-                  recordsTxns(data)
-                  results.hash = txReceipt?.hash
-                  onChangeViewDtil(txReceipt?.hash, true)
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
@@ -427,55 +439,66 @@ export function useBridgeCallback(
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
-                
-                const txReceipt = await bridgeContract.anySwapOutUnderlying(
-                  inputToken,
-                  toAddress,
-                  `0x${inputAmount.raw.toString(16)}`,
-                  destConfig?.chainId
-                )
-                console.log(txReceipt)
-                addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
-                  value: inputAmount.toSignificant(6),
-                  toChainId: toChainID,
-                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                  symbol: inputCurrency?.symbol,
-                  version: version,
-                  routerToken: routerToken,
-                  token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity,
-                  fromInfo: {
+                let isVaild = false
+                try {
+                  const rcID = await bridgeContract.cID()
+                  console.log(rcID.toString())
+                  console.log(evmChainId.toString() === rcID.toString())
+                  isVaild = evmChainId.toString() === rcID.toString()
+                } catch (error) {
+                  console.log(error)
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                }
+                if (isVaild) {
+                  const txReceipt = await bridgeContract.anySwapOutUnderlying(
+                    inputToken,
+                    toAddress,
+                    `0x${inputAmount.raw.toString(16)}`,
+                    destConfig?.chainId
+                  )
+                  console.log(txReceipt)
+                  addTransaction(txReceipt, {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
+                    value: inputAmount.toSignificant(6),
+                    toChainId: toChainID,
+                    toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
-                    name: inputCurrency?.name,
-                    decimals: inputCurrency?.decimals,
-                    address: inputCurrency?.address,
-                  },
-                  toInfo: {
-                    symbol: destConfig?.symbol,
-                    name: destConfig?.name,
-                    decimals: destConfig?.decimals,
-                    address: destConfig?.address,
-                  },
-                })
-                // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
-                  const data = {
-                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: evmChainId,
-                    selectChain: toChainID,
-                    account: account?.toLowerCase(),
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                    symbol: inputCurrency?.symbol,
+                    version: version,
                     routerToken: routerToken,
-                    version: version
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl,
+                    isLiquidity: isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
+                  })
+                  // registerSwap(txReceipt.hash, chainId)
+                  if (txReceipt?.hash && account && !isGnosisSafeWallet) {
+                    const data = {
+                      hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
+                      chainId: evmChainId,
+                      selectChain: toChainID,
+                      account: account?.toLowerCase(),
+                      value: inputAmount.raw.toString(),
+                      formatvalue: inputAmount?.toSignificant(6),
+                      to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
+                      symbol: inputCurrency?.symbol,
+                      routerToken: routerToken,
+                      version: version
+                    }
+                    recordsTxns(data)
+                    results.hash = txReceipt?.hash
+                    onChangeViewDtil(txReceipt?.hash, true)
                   }
-                  recordsTxns(data)
-                  results.hash = txReceipt?.hash
-                  onChangeViewDtil(txReceipt?.hash, true)
                 }
               } catch (error) {
                 console.log('Could not swapout', error)
@@ -511,6 +534,7 @@ export function useBridgeNativeCallback(
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
   const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
+  // const bridgeContract = useBridgeContract('0x7782046601e7b9b05ca55a3899780ce6ee6b8b2b', useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -524,10 +548,20 @@ export function useBridgeNativeCallback(
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
-    // console.log(inputCurrency)
     // console.log(balance?.toSignificant(6))
-    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID) return NOT_APPLICABLE
-    // console.log(typedValue)
+    if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID || !inputAmount) return NOT_APPLICABLE
+    // bridgeContract.estimateGas.anySwapOutNative(
+    //   ...[inputToken,
+    //     toAddress,
+    //     destConfig.chainId],
+    //     {value: `0x${inputAmount.raw.toString(16)}`}
+    // ).then((res:any) => {
+    //   console.log(res.toString())
+    // })
+    // bridgeContract.cID().then((res:any) => {
+    //   console.log(res.toString())
+    // })
+    // console.log(bridgeContract)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     return {
@@ -538,52 +572,64 @@ export function useBridgeNativeCallback(
               try {
                 // console.log(bridgeContract.anySwapOutNative)
                 // console.log(inputAmount.raw.toString(16))
-                const txReceipt = await bridgeContract.anySwapOutNative(
-                  ...[inputToken,
-                  toAddress,
-                  destConfig.chainId],
-                  {value: `0x${inputAmount.raw.toString(16)}`}
-                )
-                addTransaction(txReceipt, {
-                  summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
-                  value: inputAmount.toSignificant(6),
-                  toChainId: toChainID,
-                  toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                  symbol: inputCurrency?.symbol,
-                  version: version,
-                  routerToken: routerToken,
-                  token: inputCurrency?.address,
-                  logoUrl: inputCurrency?.logoUrl,
-                  isLiquidity: isLiquidity,
-                  fromInfo: {
+                let isVaild = false
+                try {
+                  const rcID = await bridgeContract.cID()
+                  console.log(rcID.toString())
+                  console.log(evmChainId.toString() === rcID.toString())
+                  isVaild = evmChainId.toString() === rcID.toString()
+                } catch (error) {
+                  console.log(error)
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                }
+                if (isVaild) {
+                  const txReceipt = await bridgeContract.anySwapOutNative(
+                    ...[inputToken,
+                    toAddress,
+                    destConfig.chainId],
+                    {value: `0x${inputAmount.raw.toString(16)}`}
+                  )
+                  addTransaction(txReceipt, {
+                    summary: `Cross bridge ${inputAmount.toSignificant(6)} ${config.getBaseCoin(inputCurrency?.symbol, evmChainId)}`,
+                    value: inputAmount.toSignificant(6),
+                    toChainId: toChainID,
+                    toAddress: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
                     symbol: inputCurrency?.symbol,
-                    name: inputCurrency?.name,
-                    decimals: inputCurrency?.decimals,
-                    address: inputCurrency?.address,
-                  },
-                  toInfo: {
-                    symbol: destConfig?.symbol,
-                    name: destConfig?.name,
-                    decimals: destConfig?.decimals,
-                    address: destConfig?.address,
-                  },
-                })
-                // registerSwap(txReceipt.hash, chainId)
-                if (txReceipt?.hash && account && !isGnosisSafeWallet) {
-                  const data = {
-                    hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
-                    chainId: evmChainId,
-                    selectChain: toChainID,
-                    account: account?.toLowerCase(),
-                    value: inputAmount.raw.toString(),
-                    formatvalue: inputAmount?.toSignificant(6),
-                    to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
-                    symbol: inputCurrency?.symbol,
+                    version: version,
                     routerToken: routerToken,
-                    version: version
+                    token: inputCurrency?.address,
+                    logoUrl: inputCurrency?.logoUrl,
+                    isLiquidity: isLiquidity,
+                    fromInfo: {
+                      symbol: inputCurrency?.symbol,
+                      name: inputCurrency?.name,
+                      decimals: inputCurrency?.decimals,
+                      address: inputCurrency?.address,
+                    },
+                    toInfo: {
+                      symbol: destConfig?.symbol,
+                      name: destConfig?.name,
+                      decimals: destConfig?.decimals,
+                      address: destConfig?.address,
+                    },
+                  })
+                  // registerSwap(txReceipt.hash, chainId)
+                  if (txReceipt?.hash && account && !isGnosisSafeWallet) {
+                    const data = {
+                      hash: txReceipt.hash.indexOf('0x') === 0 ? txReceipt.hash?.toLowerCase() : txReceipt.hash,
+                      chainId: evmChainId,
+                      selectChain: toChainID,
+                      account: account?.toLowerCase(),
+                      value: inputAmount.raw.toString(),
+                      formatvalue: inputAmount?.toSignificant(6),
+                      to: toAddress.indexOf('0x') === 0 ? toAddress?.toLowerCase() : toAddress,
+                      symbol: inputCurrency?.symbol,
+                      routerToken: routerToken,
+                      version: version
+                    }
+                    recordsTxns(data)
+                    onChangeViewDtil(txReceipt?.hash, true)
                   }
-                  recordsTxns(data)
-                  onChangeViewDtil(txReceipt?.hash, true)
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
@@ -1058,7 +1104,7 @@ export function useBridgeNativeCallback(
                       address: destConfig?.address,
                     },
                   })
-                  let srcChainID = chainId
+                  let srcChainID:any = chainId
                   let destChainID = toChainID
                   if (toChainID === ChainId.TERRA || txnsType === 'swapout') {
                     srcChainID = toChainID

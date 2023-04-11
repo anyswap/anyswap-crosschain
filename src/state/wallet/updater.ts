@@ -15,7 +15,7 @@ import { TransactionDetails } from '../transactions/reducer'
 
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 
-import {useRpcState} from '../rpc/hooks'
+// import {useRpcState} from '../rpc/hooks'
 
 // import {getWeb3} from '../../utils/tools/multicall'
 import {useBatchData} from '../../utils/tools/useBatchData'
@@ -63,7 +63,7 @@ export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>()
   // const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
   const allTokens = useAllMergeBridgeTokenList('mergeTokenList', chainId)
-  const rpcItem = useRpcState()
+  // const rpcItem = useRpcState()
   const tokenListRef = useRef<any>(0)
 
   const allTransactions = useAllTransactions()
@@ -75,12 +75,38 @@ export default function Updater(): null {
 
   const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
   const pendingLength = pending.length
+
+  const changeHistory = useRef({
+    old: 0,
+    new: 0,
+  })
+  const changeCount = useRef(0)
+
+  const updateCount = useMemo(() => {
+    const allTokensLen = Object.keys(allTokens).length
+    // console.log('changeCount.current.count old', changeHistory.current, allTokensLen, changeCount)
+    if (changeHistory.current.old === allTokensLen) {
+      changeHistory.current = {
+        old: allTokensLen,
+        new: allTokensLen,
+      }
+    } else {
+      changeHistory.current = {
+        old: allTokensLen,
+        new: allTokensLen,
+      }
+      changeCount.current ++
+    }
+    // console.log('changeCount.current.count old', changeHistory.current, allTokensLen, changeCount)
+    return changeCount.current
+  }, [allTokens, account, chainId])
   
   const calls = useMemo(() => {
     const arr = []
     const norepeat:any = []
     const list = allTokens ? Object.values(allTokens ?? {}) : []
-    // console.log(list)
+    // console.log(allTokens)
+    // console.log(account && !isNaN(chainId))
     if (account && !isNaN(chainId)) {
       // for (const obj of list) {
       for (let i = 0, len = list.length; i < len; i++) {
@@ -118,7 +144,8 @@ export default function Updater(): null {
     }
     // console.log(arr)
     return arr
-  }, [allTokens, account, chainId])
+  }, [updateCount, account, chainId])
+
   const getBalance = useCallback((arr) => {
     return new Promise(resolve => {
       if (
@@ -166,7 +193,7 @@ export default function Updater(): null {
         resolve(res)
       })
     })
-  }, [rpcItem, chainId])
+  }, [chainId])
 
   const getETHBalance = useCallback(() => {
     return new Promise(resolve => {
@@ -213,30 +240,11 @@ export default function Updater(): null {
             resolve('')
           }
         })
-        // const web3 = getWeb3('', provider)
-        // web3.eth.getBalance(account).then((res:any) => {
-        //   console.log('getBalance')
-        //   console.log(res)
-        //   const blList:any = {}
-        //   const dec = 18
-        //   blList['NATIVE'] = {
-        //     balance: formatUnits(res, dec),
-        //     balancestr: res,
-        //     dec: dec,
-        //     blocknumber: ''
-        //   }
-        //   dispatch(tokenBalanceList({
-        //     chainId,
-        //     account,
-        //     tokenList: blList
-        //   }))
-        //   resolve(res)
-        // })
       } else {
         resolve('')
       }
     })
-  }, [rpcItem, chainId, account])
+  }, [chainId, account])
 
   const getAllBalance = useCallback(() => {
     const results = []
@@ -278,7 +286,7 @@ export default function Updater(): null {
       console.log(chainId)
       getAllBalance()
     }
-  }, [library, calls, chainId, account, rpcItem, getAllBalance])
+  }, [library, calls, chainId, account, getAllBalance])
 
   useEffect(() => {
     if (account) tokenListRef.current = 0

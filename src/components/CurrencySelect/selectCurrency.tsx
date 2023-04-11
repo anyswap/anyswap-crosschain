@@ -146,10 +146,10 @@ export default function SelectCurrencyInputPanel({
   // console.log(selectTokenBalance)
   const [useBalance, setUseBalance] = useState<any>()
 
-  useEffect(() => {
-    // console.log(inputType)
-    setUseBalance('')
-  }, [inputType, currency])
+  // useEffect(() => {
+  //   // console.log(inputType)
+  //   setUseBalance('')
+  // }, [inputType, currency])
 
   // useEffect(() => {
   //   console.log('currency',currency)
@@ -166,6 +166,7 @@ export default function SelectCurrencyInputPanel({
     return undefined
   }, [selectedNativeBalance])
   const tokenBalance = useMemo(() => {
+    // console.log('selectTokenBalance', selectTokenBalance)
     if (selectTokenBalance) {
       return selectTokenBalance.toSignificant(6)
     }
@@ -180,7 +181,7 @@ export default function SelectCurrencyInputPanel({
       // console.log(1)
       setUseBalance(customBalance)
     } else if ((tokenBalance || tokenBalance === 0 || tokenBalance === '0') && !isNativeToken) {
-      // console.log(2)
+      // console.log(2, tokenBalance)
       setUseBalance(tokenBalance)
     } else if (isNativeToken) {
       // console.log(3)
@@ -198,8 +199,8 @@ export default function SelectCurrencyInputPanel({
     }
   }, [tokenBalance, isNativeToken, nativeBalance, customBalance, inputType])
 
-  // console.log('useBalance', useBalance)
   const viewBalance = useMemo(() => {
+    // console.log('useBalance', useBalance)
     if (useBalance || useBalance === 0) {
       // console.log(useBalance)
       if (typeof useBalance === 'string' || typeof useBalance === 'number') {

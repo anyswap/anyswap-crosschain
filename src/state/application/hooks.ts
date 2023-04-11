@@ -164,7 +164,7 @@ export function useTxnsErrorTipOpen(): any {
       // console.log(typeInput({ field, typedValue }))
       let errorContent = ''
       if (errorTip?.data?.data) {
-        if (errorTip?.data?.data.indexOf('burn amount exceeds minter total') !== -1) {
+        if (errorTip?.data?.data?.toString().indexOf('burn amount exceeds minter total') !== -1) {
           errorContent = 'No bridging quota on conflux chain.'
         } else if (errorTip?.data?.message) {
           errorContent = errorTip?.data?.message
