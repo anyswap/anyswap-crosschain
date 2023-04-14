@@ -30,11 +30,11 @@ export default {
     nodeRpc: CANTO_MAINNET,
     nodeRpcList: [
       CANTO_MAINNET,
-      'https://canto.neobase.one',
-      'https://mainnode.plexnode.org:8545',
       'https://canto.slingshot.finance',
+      'https://mainnode.plexnode.org:8545',
       'https://canto.evm.chandrastation.com',
       'https://jsonrpc.canto.nodestake.top',
+      'https://canto.neobase.one',
     ],
     chainID: CANTO_MAIN_CHAINID,
     lookHash: CANTO_MAIN_EXPLORER + '/tx/',

@@ -83,6 +83,28 @@ function useVersion (chainId:any, toChainID:any, version:any) {
   return 'v2'
 }
 
+async function validToken (chainId:any, routerContract:any, abiVersion:any) {
+  let isValid:any
+  console.log(abiVersion)
+  try {
+    if (abiVersion === 'v2') {
+      const rMpc = await routerContract.mpc()
+      console.log(rMpc)
+      console.log(isAddress(rMpc))
+      isValid = isAddress(rMpc)
+    } else {
+      const rcID = await routerContract.cID()
+      console.log(rcID.toString())
+      console.log(chainId.toString() === rcID.toString())
+      isValid = chainId.toString() === rcID.toString()
+    }
+  } catch (error) {
+    console.log(error)
+    isValid = false
+  }
+  return isValid
+}
+
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 
 export function usePermissonlessCallback(
@@ -270,7 +292,8 @@ export function useBridgeCallback(
   usePoolType?: any,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
+  const abiVersion = useVersion(evmChainId, toChainID, destConfig?.type)
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), abiVersion)
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -314,16 +337,20 @@ export function useBridgeCallback(
                 // console.log(bridgeContract)
                 // console.log(destConfig?.chainId)
                 // console.log(inputAmount.raw.toString(16))
-                let isVaild = false
-                try {
-                  const rcID = await bridgeContract.cID()
-                  console.log(rcID.toString())
-                  console.log(evmChainId.toString() === rcID.toString())
-                  isVaild = evmChainId.toString() === rcID.toString()
-                } catch (error) {
-                  console.log(error)
-                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
-                }
+                const isVaild = await validToken(evmChainId, bridgeContract, abiVersion)
+                // try {
+                //   if (abiVersion === 'v2') {
+                //     const rMpc = await bridgeContract.mpc()
+                //   } else {
+                //     const rcID = await bridgeContract.cID()
+                //     console.log(rcID.toString())
+                //     console.log(evmChainId.toString() === rcID.toString())
+                //     isVaild = evmChainId.toString() === rcID.toString()
+                //   }
+                // } catch (error) {
+                //   console.log(error)
+                //   onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                // }
                 if (isVaild) {
                   const txReceipt = await bridgeContract.anySwapOut(
                     inputToken,
@@ -373,6 +400,8 @@ export function useBridgeCallback(
                     results.hash = txReceipt?.hash
                     onChangeViewDtil(txReceipt?.hash, true)
                   }
+                } else {
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
@@ -383,7 +412,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid])
+  }, [bridgeContract, evmChainId, inputAmount, addTransaction, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid, abiVersion])
 }
 
 
@@ -407,7 +436,8 @@ export function useBridgeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<any>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
+  const abiVersion = useVersion(evmChainId, toChainID, destConfig?.type)
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), abiVersion)
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
   const {isGnosisSafeWallet} = useIsGnosisSafeWallet()
@@ -439,16 +469,16 @@ export function useBridgeCallback(
                 // console.log(inputAmount.raw.toString(16))
                 // console.log(inputAmount.raw.toString())
                 // console.log(inputAmount?.toSignificant(6))
-                let isVaild = false
-                try {
-                  const rcID = await bridgeContract.cID()
-                  console.log(rcID.toString())
-                  console.log(evmChainId.toString() === rcID.toString())
-                  isVaild = evmChainId.toString() === rcID.toString()
-                } catch (error) {
-                  console.log(error)
-                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
-                }
+                const isVaild = await validToken(evmChainId, bridgeContract, abiVersion)
+                // try {
+                //   const rcID = await bridgeContract.cID()
+                //   console.log(rcID.toString())
+                //   console.log(evmChainId.toString() === rcID.toString())
+                //   isVaild = evmChainId.toString() === rcID.toString()
+                // } catch (error) {
+                //   console.log(error)
+                //   onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                // }
                 if (isVaild) {
                   const txReceipt = await bridgeContract.anySwapOutUnderlying(
                     inputToken,
@@ -499,6 +529,8 @@ export function useBridgeCallback(
                     results.hash = txReceipt?.hash
                     onChangeViewDtil(txReceipt?.hash, true)
                   }
+                } else {
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
                 }
               } catch (error) {
                 console.log('Could not swapout', error)
@@ -509,7 +541,7 @@ export function useBridgeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet,userInterfaceBalanceValid])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, isLiquidity, destConfig, isGnosisSafeWallet,userInterfaceBalanceValid, abiVersion])
 }
 
 
@@ -533,7 +565,8 @@ export function useBridgeNativeCallback(
 // ): { execute?: undefined | (() => Promise<void>); inputError?: string } {
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, evmChainId } = useActiveReact()
-  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), useVersion(evmChainId, toChainID, destConfig?.type))
+  const abiVersion = useVersion(evmChainId, toChainID, destConfig?.type)
+  const bridgeContract = useBridgeContract(isAddress(routerToken, evmChainId), abiVersion)
   // const bridgeContract = useBridgeContract('0x7782046601e7b9b05ca55a3899780ce6ee6b8b2b', useVersion(evmChainId, toChainID, destConfig?.type))
   const {onChangeViewDtil} = useTxnsDtilOpen()
   const {onChangeViewErrorTip} = useTxnsErrorTipOpen()
@@ -550,18 +583,6 @@ export function useBridgeNativeCallback(
   return useMemo(() => {
     // console.log(balance?.toSignificant(6))
     if (!bridgeContract || !evmChainId || !inputCurrency || !toAddress || !toChainID || !inputAmount) return NOT_APPLICABLE
-    // bridgeContract.estimateGas.anySwapOutNative(
-    //   ...[inputToken,
-    //     toAddress,
-    //     destConfig.chainId],
-    //     {value: `0x${inputAmount.raw.toString(16)}`}
-    // ).then((res:any) => {
-    //   console.log(res.toString())
-    // })
-    // bridgeContract.cID().then((res:any) => {
-    //   console.log(res.toString())
-    // })
-    // console.log(bridgeContract)
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     return {
@@ -572,16 +593,16 @@ export function useBridgeNativeCallback(
               try {
                 // console.log(bridgeContract.anySwapOutNative)
                 // console.log(inputAmount.raw.toString(16))
-                let isVaild = false
-                try {
-                  const rcID = await bridgeContract.cID()
-                  console.log(rcID.toString())
-                  console.log(evmChainId.toString() === rcID.toString())
-                  isVaild = evmChainId.toString() === rcID.toString()
-                } catch (error) {
-                  console.log(error)
-                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
-                }
+                const isVaild = await validToken(evmChainId, bridgeContract, abiVersion)
+                // try {
+                //   const rcID = await bridgeContract.cID()
+                //   console.log(rcID.toString())
+                //   console.log(evmChainId.toString() === rcID.toString())
+                //   isVaild = evmChainId.toString() === rcID.toString()
+                // } catch (error) {
+                //   console.log(error)
+                //   onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
+                // }
                 if (isVaild) {
                   const txReceipt = await bridgeContract.anySwapOutNative(
                     ...[inputToken,
@@ -630,6 +651,8 @@ export function useBridgeNativeCallback(
                     recordsTxns(data)
                     onChangeViewDtil(txReceipt?.hash, true)
                   }
+                } else {
+                  onChangeViewErrorTip('Transaction verification failed. Please refresh and try again.', true)
                 }
               } catch (error) {
                 console.error('Could not swapout', error)
@@ -639,7 +662,7 @@ export function useBridgeNativeCallback(
           : undefined,
       inputError: sufficientBalance ? undefined : t('Insufficient', {symbol: inputCurrency?.symbol})
     }
-  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid])
+  }, [bridgeContract, evmChainId, inputCurrency, inputAmount, balance, addTransaction, t, inputToken, toAddress, toChainID, version, routerToken, isLiquidity, destConfig, isGnosisSafeWallet, userInterfaceBalanceValid, abiVersion])
 }
 
 /**

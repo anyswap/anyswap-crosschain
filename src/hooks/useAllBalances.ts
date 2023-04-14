@@ -120,6 +120,9 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
             if (res?.result?.value) {
               const bl = BigAmount.format(dec, res?.result?.value)
               savedBalance.current = bl
+            } else if (dec) {
+              const bl = BigAmount.format(dec, '0')
+              savedBalance.current = bl
             }
           })
         } else {
@@ -127,6 +130,9 @@ export function useTokensBalance (token:any, dec:any, selectChainId:any) {
             // console.log(res)
             if (res?.result?.value?.amount) {
               const bl = BigAmount.format(dec, res?.result?.value?.amount)
+              savedBalance.current = bl
+            } else if (dec) {
+              const bl = BigAmount.format(dec, '0')
               savedBalance.current = bl
             }
           })
@@ -266,7 +272,8 @@ export function useBaseBalances (
           const bl = BigAmount.format(9, res?.result?.value)
           setBalance(bl)
         } else {
-          setBalance('')
+          const bl = BigAmount.format(9, '0')
+          setBalance(bl)
         }
         // console.log(res)
       })
