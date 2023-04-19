@@ -297,29 +297,6 @@ export default function BridgeCurrencyList({
           boxRef={ boxRef } watchRef={ watchRef } list={ List }>
           <Loading ref={ watchRef }>{ t('Loading') }...</Loading>
         </LazyList>
-        {/* {
-          htmlNodes.map((item, index) => {
-            const currency: any = item
-            // const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-            const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-            const isSelected = Boolean(selectedCurrency?.key?.toLowerCase() === currency?.key?.toLowerCase())
-            const handleSelect = () => onCurrencySelect(currency)
-            return (
-              <CurrencyRow
-                style={{margin:'auto'}}
-                currency={currency}
-                isSelected={isSelected}
-                onSelect={handleSelect}
-                otherSelected={otherSelected}
-                key={index}
-                allBalances={allBalances}
-                ETHBalance={ETHBalance}
-                bridgeKey={bridgeKey}
-                selectDestChainId={selectDestChainId}
-              />
-            )
-          })
-        } */}
       </ListBox>
     </>
   )

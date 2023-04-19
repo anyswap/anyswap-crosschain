@@ -25,7 +25,7 @@ export default {
   [EOS_MAIN_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '',
+    multicalToken: '0x2C78f1b70Ccf63CDEe49F9233e9fAa99D43AA07e',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: EOS_MAINNET,
