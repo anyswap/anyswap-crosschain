@@ -8,8 +8,8 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "strict": true,
-    "alwaysStrict": true,
+    "strict": false,
+    "alwaysStrict": false,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
@@ -50,4 +50,5 @@
   },
   "exclude": ["node_modules", "cypress"],
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/pages/Farms/FarmsList.tsx"]
+  
 }

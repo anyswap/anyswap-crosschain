@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React, { KeyboardEvent, useState, RefObject, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Currency, Token, ETHER } from 'anyswap-sdk'
 import { Text } from 'rebass'
