@@ -36,6 +36,8 @@ import nsc, {NSC_MAIN_CHAINID} from './nsc'
 import ame, {AME_MAIN_CHAINID} from './ame'
 import kek, {KEK_MAIN_CHAINID} from './kek'
 import edg, {EDG_MAIN_CHAINID} from './edg'
+import hbit, {HBIT_MAIN_CHAINID} from './hashbit'
+
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -81,6 +83,7 @@ export const chainInfo:ConFig = {
   ...ame,
   ...kek,
   ...edg,
+  ...hbit,
 }
 
 const allChainList = [
@@ -119,6 +122,7 @@ const allChainList = [
   ETH_TEST1_CHAINID,
   BNB_TEST_CHAINID,
   MATIC_TEST_CHAINID,
+  HBIT_MAIN_CHAINID,
 ]
 
 const useChain:any = {
@@ -266,6 +270,7 @@ const useChain:any = {
     AME_MAIN_CHAINID,
     KEK_MAIN_CHAINID,
     EDG_MAIN_CHAINID,
+    HBIT_MAIN_CHAINID,
   ]
 }
 
