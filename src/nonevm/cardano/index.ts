@@ -40,6 +40,7 @@ export async function eternlLogin() {
     localStorage.setItem("lucid", "true");
   } catch (error) {
     console.log(error)
+    alert(error)
   }
   
 }
@@ -54,6 +55,7 @@ export function useAdaLogin() {
     dispatch(adaAddress({ address: 'loading' }))
     if(window?.lucid && window?.lucid?.wallet === undefined) {
       eternlLogin();
+      dispatch(adaAddress({ address: '' }))
       return;
     }
 
@@ -69,6 +71,7 @@ export function useAdaLogin() {
         })
       } else {
         alert('Network Error.')
+        dispatch(adaAddress({ address: '' }))
       }
 
     } else {
@@ -76,6 +79,7 @@ export function useAdaLogin() {
         // window.open('https://namiwallet.io/')
         window.open('https://eternl.io/')
       }
+      dispatch(adaAddress({ address: '' }))
     }
   }, [])
 }
