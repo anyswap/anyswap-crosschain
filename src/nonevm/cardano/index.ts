@@ -51,7 +51,7 @@ export function useAdaLogin() {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => {
     const adaWallet =  window?.cardano && window?.cardano?.eternl
-    dispatch(adaAddress({ address: '0' }))
+    dispatch(adaAddress({ address: 'loading' }))
     if(window?.lucid && window?.lucid?.wallet === undefined) {
       eternlLogin();
       return;

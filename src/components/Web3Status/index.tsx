@@ -151,7 +151,7 @@ function Web3StatusInner() {
   const hasPendingTransactions = !!pending.length
   // const toggleWalletModal = useWalletModalToggle()
 
-  if (account && account != '0') {
+  if (account && account != 'loading') {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={connectWallet} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
@@ -187,7 +187,7 @@ function Web3StatusInner() {
       </Web3StatusConnected>
     )
   } else if ([ChainId.ADA, ChainId.ADA_TEST].includes(chainId)) {
-    if(account == '0') {
+    if(account == 'loading') {
       return (
         <Web3StatusConnect id="connect-wallet">
           <Loader stroke="white" style={{width: `110px`}}/>
