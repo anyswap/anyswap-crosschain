@@ -152,4 +152,5 @@ export enum ChainId {
   EOS = '17777',
   EOS_TEST = '15557',
   LINEA_TEST = '59140',
+  FLR = '14',
 }

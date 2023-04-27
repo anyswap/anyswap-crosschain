@@ -107,6 +107,7 @@ import smr from './smr'
 import zbc from './zbc'
 import eos from './eos'
 import linea from './linea'
+import flr from './flr'
 
 import { ChainId } from './chainId'
 
@@ -116,6 +117,7 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...flr,
   ...eos,
   ...linea,
   ...zbc,
@@ -307,6 +309,7 @@ const allChainList = [
   ChainId.ZKSYNC,
   ChainId.POLYGONZKEVM,
   ChainId.EOS,
+  ChainId.FLR,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
