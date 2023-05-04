@@ -108,6 +108,8 @@ import zbc from './zbc'
 import eos from './eos'
 import linea from './linea'
 import flr from './flr'
+import gmeld from './gmeld'
+import tenet from './tenet'
 
 import { ChainId } from './chainId'
 
@@ -117,6 +119,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...tenet,
+  ...gmeld,
   ...flr,
   ...eos,
   ...linea,
@@ -310,6 +314,8 @@ const allChainList = [
   ChainId.POLYGONZKEVM,
   ChainId.EOS,
   ChainId.FLR,
+  ChainId.GMELD,
+  ChainId.TENET,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]

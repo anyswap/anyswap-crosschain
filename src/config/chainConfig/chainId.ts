@@ -153,4 +153,6 @@ export enum ChainId {
   EOS_TEST = '15557',
   LINEA_TEST = '59140',
   FLR = '14',
+  GMELD = '333000333',
+  TENET = '1559',
 }
