@@ -313,7 +313,7 @@ const allChainList = [
   ChainId.ZKSYNC,
   ChainId.POLYGONZKEVM,
   ChainId.EOS,
-  ChainId.FLR,
+  // ChainId.FLR,
   ChainId.GMELD,
   ChainId.TENET,
   // ChainId.BNB_TEST,
