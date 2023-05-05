@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const CKB_MAIN_CHAINID = ChainId.CKB
 export const CKB_MAINNET = getLocalRPC(CKB_MAIN_CHAINID, 'https://v1.mainnet.godwoken.io/rpc')
-export const CKB_MAIN_EXPLORER = 'https://gw-mainnet-explorer.nervosdao.community'
+export const CKB_MAIN_EXPLORER = 'https://gwscan.com/'
 
 // export const CKB_TEST_CHAINID = ChainId.CKB_TEST
 // export const CKB_TESTNET = getLocalRPC(CKB_TEST_CHAINID, 'CKBtps://CKBtp-testnet.hecochain.com')

@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 // export const SHM_MAIN_CHAINID = ChainId.SHM
 // export const SHM_MAINNET = getLocalRPC(SHM_MAIN_CHAINID, 'https://v1.mainnet.godwoken.io/rpc')
-// export const SHM_MAIN_EXPLORER = 'https://gw-mainnet-explorer.nervosdao.community'
+// export const SHM_MAIN_EXPLORER = 'https://gwscan.com/'
 
 export const SHM_TEST_CHAINID = ChainId.SHM_TEST
 export const SHM_TESTNET = getLocalRPC(SHM_TEST_CHAINID, 'https://liberty10.shardeum.org/')
