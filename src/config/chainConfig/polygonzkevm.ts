@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 // export const POLYGONZKEVM_MAIN_CHAINID = ChainId.POLYGONZKEVM
 // export const POLYGONZKEVM_MAINNET = getLocalRPC(POLYGONZKEVM_MAIN_CHAINID, 'https://v1.mainnet.godwoken.io/rpc')
-// export const POLYGONZKEVM_MAIN_EXPLORER = 'https://gw-mainnet-explorer.nervosdao.community'
+// export const POLYGONZKEVM_MAIN_EXPLORER = 'https://gwscan.com/'
 
 export const POLYGONZKEVM_TEST_CHAINID = ChainId.POLYGONZKEVM_TEST
 export const POLYGONZKEVM_TESTNET = getLocalRPC(POLYGONZKEVM_TEST_CHAINID, 'https://rpc.public.zkevm-test.net/')
