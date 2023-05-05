@@ -88,10 +88,6 @@ export default function Updater(): null {
     }
   }, [chainId, eternlRef.current, account])
 
-  useEffect(() => {
-    getBalance()
-  }, [chainId, eternlRef.current, account])
-
   useInterval(getBalance, 1000 * 10)
 
   useEffect(() => {
