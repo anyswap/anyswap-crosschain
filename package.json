@@ -85,7 +85,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "start-https": "HTTPS=true SSL_CRT_FILE=./.cert/cert.pem SSL_KEY_FILE=./.cert/key.pem node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build": "node --max-old-space-size=4096 scripts/build.js",
     "minify-app-contracts-build": "npx minify-json ./src/constants/abis/app",
     "test": "node scripts/test.js --env=jsdom",
     "integration-test": "start-server-and-test 'serve build -l 3006' http://localhost:3006 'cypress run'"
