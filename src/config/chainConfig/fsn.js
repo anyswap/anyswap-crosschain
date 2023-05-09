@@ -5,12 +5,12 @@ import {ChainId} from './chainId'
 export const FSN_MAIN_CHAINID = ChainId.FSN
 export const FSN_MAINNET = getLocalRPC(FSN_MAIN_CHAINID, 'https://mainnet.fusionnetwork.io')
 export const FSN_MAINNET1 = 'https://mainnet.fusionnetwork.io'
-export const FSN_MAIN_EXPLORER = 'https://fsnex.com'
+export const FSN_MAIN_EXPLORER = 'https://fsnscan.com'
 
 // export const FSN_TESTNET = 'https://testnet.anyswap.exchange'
 export const FSN_TEST_CHAINID = ChainId.FSN_TEST
 export const FSN_TESTNET = getLocalRPC(FSN_TEST_CHAINID, 'https://testnet.fsn.dev/api')
-export const FSN_TEST_EXPLORER = 'https://fsnex.com'
+export const FSN_TEST_EXPLORER = 'https://testnet.fsnscan.com'
 
 
 const symbol = 'FSN'
@@ -49,7 +49,7 @@ export default {
     ],
     rpc1: FSN_MAINNET1,
     chainID: FSN_MAIN_CHAINID,
-    lookHash: FSN_MAIN_EXPLORER + '/transaction/',
+    lookHash: FSN_MAIN_EXPLORER + '/tx/',
     lookAddr: FSN_MAIN_EXPLORER + '/address/',
     lookBlock: FSN_MAIN_EXPLORER + '/block/',
     explorer: FSN_MAIN_EXPLORER,
@@ -72,7 +72,7 @@ export default {
       FSN_TESTNET,
     ],
     chainID: FSN_TEST_CHAINID,
-    lookHash: FSN_TEST_EXPLORER + '/transaction/',
+    lookHash: FSN_TEST_EXPLORER + '/tx/',
     lookAddr: FSN_TEST_EXPLORER + '/address/',
     lookBlock: FSN_TEST_EXPLORER + '/block/',
     explorer: FSN_TEST_EXPLORER,
