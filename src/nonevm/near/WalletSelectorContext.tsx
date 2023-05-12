@@ -147,7 +147,7 @@ export function WalletSelectorContextProvider({
 
     return () => {
       subscription.unsubscribe();
-      onHideSubscription.remove();
+      onHideSubscription?.remove();
     };
   }, [selector]);
 
