@@ -321,10 +321,10 @@ const allChainList = [
 ]
 
 const testChainList = [
-  ChainId.ETH,
-  ChainId.BNB,
-  ChainId.ARBITRUM,
-  ChainId.RINKEBY,
+  // ChainId.ETH,
+  // ChainId.BNB,
+  // ChainId.ARBITRUM,
+  // ChainId.RINKEBY,
   ChainId.GOERLI,
   ChainId.FTM_TEST,
   ChainId.BNB_TEST,
