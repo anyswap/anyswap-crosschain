@@ -35,8 +35,8 @@ export enum CHAIN_TYPE {
 // export const INIT_VERSION = VERSION.V5
 // export const INIT_VERSION = VERSION.V6
 // export const INIT_VERSION = VERSION.V6_1
-// export const INIT_VERSION = VERSION.V7
-export const INIT_VERSION = VERSION.V7_TEST
+export const INIT_VERSION = VERSION.V7
+// export const INIT_VERSION = VERSION.V7_TEST
 // export const INIT_VERSION = VERSION.V7_BAS_TEST
 
 function getUrlVersion (init:any) {
@@ -101,6 +101,7 @@ export const MAIN_COIN_SORT:any = {
 }
 
 export const bridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://scantestapi.multichain.org' : 'https://bridgeapi.anyswap.exchange'
+export const bridgeApi2 = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://scantestapi.multichain.org' : 'https://scanapi.multichain.org'
 export const scanApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://scantestapi.multichain.org' : 'https://scanapi.multichain.org'
 export const multiAridgeApi = USE_VERSION === VERSION.V7_TEST || USE_VERSION === VERSION.V7_BAS_TEST ? 'https://scantestapi.multichain.org' : 'https://bridgeapi.multichain.org'
 // export const bridgeApi = 'https://l2api.anyswap.exchange'

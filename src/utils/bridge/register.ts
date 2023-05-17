@@ -51,6 +51,7 @@ export function recordsTxns ({
   return new Promise(async(resolve) => {
     // console.log(hash)
     const url = `${config.bridgeApi}/v3/records`
+    const url2 = `${config.bridgeApi2}/v3/records`
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)
@@ -87,7 +88,14 @@ export function recordsTxns ({
         timestamp: Date.now()
       }
     }
-    postUrlData(url, data).then((res:any) => {
+    const arr = [postUrlData(url, data)]
+    if (url !== url2) {
+      arr.push(postUrlData(url2, data))
+    }
+    Promise.all(arr).then((result:any) => {
+      const res = result[0]
+    // })
+    // postUrlData(url, data).then((res:any) => {
       console.log(res)
       if (res.msg === 'Success' || res.data === 'Error') {
         registerList[hash].isRegister = 1
