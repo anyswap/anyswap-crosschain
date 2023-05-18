@@ -29,7 +29,7 @@ import {
 
 const ChainIdList:any = {
   [ChainId.ATOM]: '',
-  [ChainId.ATOM_SEI_TEST]: 'atlantic-1',
+  [ChainId.ATOM_SEI_TEST]: 'atlantic-2',
   [ChainId.ATOM_DCORE]: '',
   // [ChainId.ATOM_DCORE_TEST]: 'coreum-devnet-1',
   [ChainId.ATOM_DCORE_TEST]: 'coreum-testnet-1',
@@ -240,7 +240,7 @@ export function useAtomCrossChain (
       execute: async () => {
         try {
           const useChainId = ChainIdList[chainId]
-          // console.log(useChainId)
+          // console.log('useChainId', useChainId)
           const offlineSigner = window.getOfflineSigner(useChainId);
           // console.log(offlineSigner)
           // console.log(config.chainInfo[chainId].nodeRpc)
@@ -262,6 +262,7 @@ export function useAtomCrossChain (
           }
           // const txReceipt = await client.sendTokens(account, routerToken, [amountFinal], fee, "")
           // const txResult = await client.sendTokens(account, routerToken, [amountFinal], "auto", receiveAddress + ':' + selectChain)
+          // console.log(account, routerToken, [amountFinal], fee, receiveAddress + ':' + useToChainId)
           const txResult = await client.sendTokens(account, routerToken, [amountFinal], fee, receiveAddress + ':' + useToChainId)
           console.log(txResult)
           const txReceipt = {hash: txResult?.transactionHash}

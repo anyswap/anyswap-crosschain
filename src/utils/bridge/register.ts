@@ -4,6 +4,9 @@ import {getLocalConfig} from '../tools/tools'
 import {CROSSCHAINBRIDGE} from './type'
 
 import config from '../../config'
+import {
+  getCookie
+} from '../cookie'
 
 export function registerSwap (hash:string, chainId:any) {
   return new Promise(resolve => {
@@ -50,8 +53,14 @@ export function recordsTxns ({
 }: RecordsTxnsProp) {
   return new Promise(async(resolve) => {
     // console.log(hash)
-    const url = `${config.bridgeApi}/v3/records`
-    const url2 = `${config.bridgeApi2}/v3/records`
+    const parter = getCookie('parter')
+    // console.log(parter)
+    let url = `${config.bridgeApi}/v3/records`
+    let url2 = `${config.bridgeApi2}/v3/records`
+    if (parter) {
+      url += `?parter=${parter}`
+      url2 += `?parter=${parter}`
+    }
     const useVersion = version ? version : USE_VERSION
     // console.log(version)
     // console.log(USE_VERSION)

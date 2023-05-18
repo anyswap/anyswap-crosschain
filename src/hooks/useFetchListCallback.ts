@@ -32,12 +32,19 @@ import {
   setNftlist,
   getNftlist
 } from '../utils/indexedDB'
+// import {
+//   getCookie
+// } from '../utils/cookie'
 
 // console.log(controlConfig[USE_VERSION])
 
 function getVersion () {
   return new Promise(resolve => {
     const url = `${config.multiAridgeApi}/token/version`
+    // const parter = getCookie('parter')
+    // console.log(parter)
+    // const url = `http://localhost:8107/token/version?parter=${parter}`
+    
     getUrlData(url).then((version:any) => {
       resolve(version)
     })
