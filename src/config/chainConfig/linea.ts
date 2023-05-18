@@ -7,7 +7,8 @@ import {ChainId} from './chainId'
 // export const LINEA_MAIN_EXPLORER = 'https://evm.findorascan.io'
 
 export const LINEA_TEST_CHAINID = ChainId.LINEA_TEST
-export const LINEA_TESTNET = getLocalRPC(LINEA_TEST_CHAINID, 'https://consensys-zkevm-goerli-prealpha.infura.io/v3/a21bf4e97bc54c7ea50bea3e10bfecab')
+// export const LINEA_TESTNET = getLocalRPC(LINEA_TEST_CHAINID, 'https://consensys-zkevm-goerli-prealpha.infura.io/v3/a21bf4e97bc54c7ea50bea3e10bfecab')
+export const LINEA_TESTNET = getLocalRPC(LINEA_TEST_CHAINID, 'https://rpc.goerli.linea.build')
 export const LINEA_TEST_EXPLORER = 'https://explorer.goerli.linea.build'
 
 const symbol = 'ETH'
@@ -46,12 +47,14 @@ export default {
   [LINEA_TEST_CHAINID]: {
     ...bridgeToken[USE_VERSION],
     swapRouterToken: '',
-    multicalToken: '',
+    multicalToken: '0x461d52769884ca6235B685EF2040F47d30C94EB5',
     v1FactoryToken: '',
     v2FactoryToken: '',
     nodeRpc: LINEA_TESTNET,
     nodeRpcList: [
       LINEA_TESTNET,
+      'https://rpc.goerli.linea.build',
+      'https://consensys-zkevm-goerli-prealpha.infura.io/v3/a21bf4e97bc54c7ea50bea3e10bfecab'
     ],
     chainID: LINEA_TEST_CHAINID,
     lookHash: LINEA_TEST_EXPLORER + '/tx/',

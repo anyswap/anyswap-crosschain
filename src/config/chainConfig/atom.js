@@ -15,7 +15,9 @@ import {ChainId} from './chainId'
 // export const ATOM_SEI_MAIN_EXPLORER = 'https://atomscan.com'
 
 // export const ATOM_SEI_TESTNET = 'https://sei-testnet-rpc.allthatnode.com:1317/cosmos'
-export const ATOM_SEI_TESTNET = 'https://sei-chain-incentivized.com/sei-chain-tm/'
+// export const ATOM_SEI_TESTNET = 'https://rpc.atlantic-2.seinetwork.io/'
+export const ATOM_SEI_TESTNET = 'https://sei-testnet-rpc.polkachu.com/'
+// export const ATOM_SEI_TESTNET = 'https://sei-testnet-2-rpc.brocha.in/'
 export const ATOM_SEI_TEST_CHAINID = ChainId.ATOM_SEI_TEST
 export const ATOM_SEI_TEST_EXPLORER = 'https://sei.explorers.guru'
 

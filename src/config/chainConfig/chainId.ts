@@ -155,4 +155,6 @@ export enum ChainId {
   FLR = '14',
   GMELD = '333000333',
   TENET = '1559',
+  ZEN_TEST = '1663',
+  PLS = '369',
 }

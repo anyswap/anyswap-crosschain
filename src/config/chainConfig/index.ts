@@ -110,6 +110,8 @@ import linea from './linea'
 import flr from './flr'
 import gmeld from './gmeld'
 import tenet from './tenet'
+import zen from './zen'
+import pls from './pls'
 
 import { ChainId } from './chainId'
 
@@ -119,6 +121,8 @@ interface ConFig {
   [key: string]: any
 }
 export const chainInfo:ConFig = {
+  ...pls,
+  ...zen,
   ...tenet,
   ...gmeld,
   ...flr,
@@ -316,6 +320,7 @@ const allChainList = [
   // ChainId.FLR,
   ChainId.GMELD,
   ChainId.TENET,
+  ChainId.PLS,
   // ChainId.BNB_TEST,
   // ChainId.RINKEBY,
 ]
@@ -359,6 +364,7 @@ const testChainList = [
   ChainId.EOS_TEST,
   ChainId.LINEA_TEST,
   ChainId.RBTC_TEST,
+  ChainId.ZEN_TEST,
 ]
 
 const useChain:any = {
