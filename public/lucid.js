@@ -1,4 +1,4 @@
-import { Lucid, Blockfrost, Data } from "https://unpkg.com/lucid-cardano/web/mod.js"
+import { Lucid, Blockfrost, Data } from "https://unpkg.com/lucid-cardano@0.10.4/web/mod.js"
 // https://github.com/spacebudz/lucid
 async function lucid() {
     // testnet
