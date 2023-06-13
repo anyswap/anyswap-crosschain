@@ -279,4 +279,8 @@ const useChain:any = {
 }
 
 const envType:any = env
-export const spportChainArr = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+
+const defChains = envType === 'dev' ? useChain['ALL_MAIN'] : useChain[USE_VERSION]
+// @ts-ignore
+const enabledChains = window && window.SO_CROSSCHAIN && window.SO_CROSSCHAIN.NETWORKS ? window.SO_CROSSCHAIN.NETWORKS : defChains
+export const spportChainArr = enabledChains
