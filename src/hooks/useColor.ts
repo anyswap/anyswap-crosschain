@@ -26,7 +26,16 @@ export function useThemeColors(): Colors {
   let primary5 = darkMode ? '#474747' : '#6b6b6b'
 
   if (brandColor) {
-    const color = new Color(brandColor)
+    let color = null
+    try {
+      color = new Color(brandColor)
+    } catch (e) {
+      try {
+        color = new Color(`#${brandColor}`)
+      } catch (e) {
+        color = new Color(primary1)
+      }
+    }
 
     primary1 = color.hex().toString()
     primary2 = color
