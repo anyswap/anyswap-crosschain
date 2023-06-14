@@ -429,7 +429,7 @@
   "networksInfo": "Networks info",
   "deployRouterFirst": "Deploy router first",
   "iHaveAlreadyDeployedNetworkRouter": "I've already deployed the network router",
-  "startServerWithThisCommand": "AWS->Instances->yourinstance->Connect then paste this command",
+  "startServerWithThisCommand": "Start your server with this command",
   "replaceKeyWithValidatorNodeKey": "Replace {{privateKey}} with a private key from the validator node network address",
   "useThisNetworkToSaveSettings": "Use this network to save settings (interface, contracts config, API address)",
   "interfaceSettingsAreVisibleOnlyForThisNetwork": "Interface settings are visible only for this network",
