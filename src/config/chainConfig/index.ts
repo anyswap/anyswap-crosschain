@@ -38,6 +38,7 @@ import kek, {KEK_MAIN_CHAINID} from './kek'
 import edg, {EDG_MAIN_CHAINID} from './edg'
 import hbit, {HBIT_MAIN_CHAINID} from './hashbit'
 import fkw, {FKW_MAIN_CHAINID} from './fkw'
+import ozo, {OZO_MAIN_CHAINID} from './ozone'
 
 
 import {VERSION, USE_VERSION, env} from '../constant'
@@ -86,6 +87,7 @@ export const chainInfo:ConFig = {
   ...edg,
   ...hbit,
   ...fkw,
+  ...ozo,
 }
 
 const allChainList = [
@@ -126,6 +128,7 @@ const allChainList = [
   MATIC_TEST_CHAINID,
   HBIT_MAIN_CHAINID,
   FKW_MAIN_CHAINID,
+  OZO_MAIN_CHAINID,
 ]
 
 const useChain:any = {
@@ -275,6 +278,7 @@ const useChain:any = {
     EDG_MAIN_CHAINID,
     HBIT_MAIN_CHAINID,
     FKW_MAIN_CHAINID,
+    OZO_MAIN_CHAINID,
   ]
 }
 
