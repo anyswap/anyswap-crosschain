@@ -53,3 +53,4 @@ cypress/fixtures/example.json
 *.zip
 /swap
 .cert/
+contracts/artifacts

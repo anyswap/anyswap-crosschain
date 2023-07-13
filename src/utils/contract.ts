@@ -78,7 +78,14 @@ export const deployContract = async (params: any) => {
 
 export const deployCrosschainERC20 = async (params: any) => {
   const { chainId, library, account, onHash, name, symbol, decimals, underlying, vault, minter, onDeployment } = params
-  const { abi, bytecode } = AnyswapERC20
+  const {
+    abi,
+    data: {
+      bytecode: {
+        object: bytecode
+      }
+    }
+  } = AnyswapERC20
 
   return deployContract({
     chainId,
@@ -104,7 +111,14 @@ export const deployCrosschainERC20 = async (params: any) => {
 
 export const deployRouter = async (params: any) => {
   const { chainId, library, account, onHash, onDeployment, factory, wNative, mpc } = params
-  const { abi, bytecode } = AnyswapV6Router
+  const {
+    abi,
+    data: {
+      bytecode: {
+        object: bytecode
+      }
+    }
+  } = AnyswapV6Router
 
   return deployContract({
     chainId,
@@ -120,7 +134,14 @@ export const deployRouter = async (params: any) => {
 
 export const deployRouterConfig = async (params: any) => {
   const { chainId, library, onHash, account, onDeployment } = params
-  const { abi, bytecode } = RouterConfig
+  const {
+    abi,
+    data: {
+      bytecode: {
+        object: bytecode
+      }
+    }
+  } = RouterConfig
 
   return deployContract({
     chainId,
