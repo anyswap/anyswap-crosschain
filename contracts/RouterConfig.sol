@@ -1,12 +1,7 @@
-/**
- *Submitted for verification at BscScan.com on 2021-07-08
-*/
-
-/**
- *Submitted for verification at BscScan.com on 2021-07-05
-*/
-
 // SPDX-License-Identifier: MIT
+// Compilation options
+// Solidity 0.8.6
+// Optimization: 200
 pragma solidity >=0.8.6;
 
 interface IConfigQuery {

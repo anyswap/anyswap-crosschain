@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// Compilation options
+// Solidity 0.8.6
+// Optimization: 200
 pragma solidity ^0.8.2;
 
 /**
