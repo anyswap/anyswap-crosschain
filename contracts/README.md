@@ -1,2 +1,2 @@
-Solidity 0.8.2
+Solidity 0.8.6
 Optimization: 200
