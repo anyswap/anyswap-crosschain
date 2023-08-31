@@ -39,7 +39,7 @@ import edg, {EDG_MAIN_CHAINID} from './edg'
 import hbit, {HBIT_MAIN_CHAINID} from './hashbit'
 import fkw, {FKW_MAIN_CHAINID} from './fkw'
 import ozo, {OZO_MAIN_CHAINID} from './ozone'
-import base, {XZO_MAIN_CHAINID} from './xzo'
+import xzo, {XZO_MAIN_CHAINID} from './xzo'
 
 
 import {VERSION, USE_VERSION, env} from '../constant'
