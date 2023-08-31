@@ -34,6 +34,7 @@ export default {
     tokenListUrl: tokenListUrl + XZO_MAIN_CHAINID,
     tokenList: formatSwapTokenList(symbol, tokenList),
     ...bridgeToken[USE_VERSION],
+    wrappedToken: '0xb48344E930106cED3413BA69669CaD8b6DD4e1A5',
     swapRouterToken: '',
     swapInitToken: '',
     multicalToken: '0x2250191beF1EC106CFbAdbE9f3E926B7066a94d7',
