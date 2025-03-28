@@ -4,7 +4,7 @@ import {ChainId} from './chainId'
 
 export const CFX_MAIN_CHAINID = ChainId.CFX
 export const CFX_MAINNET = getLocalRPC(CFX_MAIN_CHAINID, 'https://evm.confluxrpc.com')
-export const CFX_MAIN_EXPLORER = 'https://evm.confluxscan.io'
+export const CFX_MAIN_EXPLORER = 'https://evm.confluxscan.net'
 
 export const testTokenList = []
 
